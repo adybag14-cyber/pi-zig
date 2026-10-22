@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "status": "preserved_v38_existing63_runtime_prelaunch_grant_freshness_negative",
+  "reviewer": "Root",
+  "observed_utc": "2026-10-22T13:41:48.103238+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "batch": "existing63",
+  "classification": "strict_runtime_admission_failure_before_any_native_owner_or_test",
+  "runtime_control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-133427",
+  "runtime_proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-133427",
+  "runtime_launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-133427\\runtime-launch.json",
+    "bytes": 4944,
+    "sha256": "638FCD8D9D0BA8F988E3C61543DF098ACEA7C98C800AF5A37D7F031F012A4878"
+  },
+  "runtime_grant": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-133427\\root-grant.json",
+    "bytes": 27016,
+    "sha256": "A9D55D3D0C3F6A4A84ACC807EFFAEAA2CFCBDD7703E167217FD3BBEE021F466D"
+  },
+  "runtime_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-133427\\result.json",
+    "bytes": 3307,
+    "sha256": "46C6507F9FBFA458C2467E006A6924DA220BA6B1C7499B54D7FE394B9280FCE8"
+  },
+  "before": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-133427\\before.json",
+    "bytes": 16225928,
+    "sha256": "5D92318E2AC480328713F4AA39210A5F359B2E01BE333446F4B9AF4C0ABCC474"
+  },
+  "final": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-133427\\final.json",
+    "bytes": 16225928,
+    "sha256": "5D92318E2AC480328713F4AA39210A5F359B2E01BE333446F4B9AF4C0ABCC474"
+  },
+  "outer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-133427\\outer.json",
+    "bytes": 1640,
+    "sha256": "93DA60EE15F1BC1A5195BBC8C026E4FAF0717B6B2E70B4E77FA27F569A47CC11"
+  },
+  "outer_absence": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-133427\\outer-absence.json",
+    "bytes": 183,
+    "sha256": "D6E2E926B68EE072A3C06FE5AF6A17F50AEC0B03FB30DD9614AC162008E62D0C"
+  },
+  "terminal_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-133427\\independent-observed-job-status.json",
+    "bytes": 1644,
+    "sha256": "D84303E37E6FC6F308CAFFF1DD017F6C48116E683836743143E7B29F2AF7010F"
+  },
+  "reason": "Initial grant must be within300seconds before first child launch",
+  "declared_groups": 63,
+  "admission_attempted_groups": 1,
+  "unstarted_groups": 62,
+  "native_owners_started": 0,
+  "native_tests_started": 0,
+  "source_bookends_byte_equal": true,
+  "original_result_preserved": true,
+  "initial_grant_max_age_seconds": 300,
+  "group_native_timeout_seconds": 120,
+  "buildquery_acceptance_preserved": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-complete-buildquery-acceptance-20261021.json",
+    "bytes": 6281,
+    "sha256": "E6ADF28AEA05357A0C0CCFAE9BE63D27C020F17DA75F4D75E9136C62A10FDDDE"
+  },
+  "diagnostic_continue": false,
+  "native_test_failure": false,
+  "product_qualification": false,
+  "source_mutation_hold_released": false,
+  "next_action": "Independently issue a fresh strict RuntimeOnly grant and launcher against the same accepted BuildQuery; preserve this attempt in full and launch immediately after review."
+}

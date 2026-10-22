@@ -1,0 +1,171 @@
+{
+  "group": "native-vm-pending-promise",
+  "status": "awaiting_batch_closure",
+  "mode": "BuildQuery",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "receipt_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-vm-pending-promise",
+  "output_prefix": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-vm-pending-promise\\installed",
+  "installed_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-vm-pending-promise\\installed\\bin\\test.exe",
+  "installed_pdb": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-vm-pending-promise\\installed\\bin\\test.pdb",
+  "cached_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\2e3686f369abd371dba0874484cf8d61\\test.exe",
+  "phases": {
+    "compile": {
+      "failure": null,
+      "original_execution_failure": null,
+      "evidence": {
+        "valid": true,
+        "evidence_errors": [],
+        "owner": {
+          "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+          "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+          "arguments": [
+            "build",
+            "build-native-vm-pending-promise",
+            "-Doptimize=Debug",
+            "-Duse-llvm=true",
+            "-Ddiagnostic-tests=false",
+            "-j1",
+            "--test-timeout",
+            "120s",
+            "--prefix",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-vm-pending-promise\\installed",
+            "--cache-dir",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache",
+            "--global-cache-dir",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\global-cache",
+            "--summary",
+            "all"
+          ],
+          "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+          "pid": 3664,
+          "retained_handle": 3040,
+          "created_utc": "2026-10-21T15:58:24.6936619Z",
+          "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+          "timeout_seconds": 1320,
+          "status": "passed",
+          "live_identity": {
+            "created_utc": "2026-10-21T15:58:24.6936619Z",
+            "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+            "command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-vm-pending-promise -Doptimize=Debug -Duse-llvm=true -Ddiagnostic-tests=false -j1 --test-timeout 120s --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-vm-pending-promise\\installed --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\global-cache --summary all",
+            "command_line_method": "Win32_Process.CommandLine",
+            "pid": 3664
+          },
+          "exit_code": 0,
+          "completed_utc": "2026-10-21T16:58:33.1932215+01:00"
+        },
+        "canonical_results": null,
+        "raw_outputs": [
+          {
+            "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-vm-pending-promise\\compile.stdout.bin",
+            "bytes": 0,
+            "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+          },
+          {
+            "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-vm-pending-promise\\compile.stderr.log",
+            "bytes": 14676,
+            "sha256": "A5BFFDA129939A5D90A979B6D5AB1694B712F923F34BEE1047633B230E0D11A9"
+          }
+        ],
+        "current_owner_pid_present": 0,
+        "current_owned_descendants": [],
+        "preexisting_pid_ancestry": [],
+        "absence_error": null
+      },
+      "owner_binding": {
+        "status": "passed",
+        "errors": [],
+        "expected_executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "expected_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "expected_deadline": 1320
+      },
+      "postchecks": {
+        "evidence_valid": true,
+        "owner_bound": true,
+        "source_sealed": false,
+        "artifacts_bound": true,
+        "absence_closed": true,
+        "errors": [],
+        "source_seal_scope": "Whole batch before/final; no group is admissible until the final complete seal closes"
+      }
+    },
+    "metadata": {
+      "failure": null,
+      "original_execution_failure": null,
+      "evidence": {
+        "valid": true,
+        "evidence_errors": [],
+        "owner": {
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\2e3686f369abd371dba0874484cf8d61\\test.exe",
+          "executable_sha256": "C0778AA29F0356BD6B41AFDAC61CFB0022F75C72552494A5015D1704B6BE5F20",
+          "arguments": [
+            "--listen=-"
+          ],
+          "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+          "pid": 55836,
+          "retained_handle": 1332,
+          "created_utc": "2026-10-21T15:58:38.7943538Z",
+          "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+          "timeout_seconds": 30,
+          "status": "passed",
+          "live_identity": {
+            "created_utc": "2026-10-21T15:58:38.7943538Z",
+            "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\2e3686f369abd371dba0874484cf8d61\\test.exe",
+            "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\2e3686f369abd371dba0874484cf8d61\\test.exe\" --listen=-",
+            "command_line_method": "Win32_Process.CommandLine",
+            "pid": 55836
+          },
+          "exit_code": 0,
+          "completed_utc": "2026-10-21T16:58:38.9755582+01:00"
+        },
+        "canonical_results": null,
+        "raw_outputs": [
+          {
+            "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-vm-pending-promise\\metadata.stdout.bin",
+            "bytes": 2178,
+            "sha256": "48A6D3FD8E9F3814EAB17BD8361A4DE805BD2D1B413FF2E6C48DD64B4E808272"
+          },
+          {
+            "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-vm-pending-promise\\metadata.stderr.log",
+            "bytes": 0,
+            "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+          }
+        ],
+        "current_owner_pid_present": 0,
+        "current_owned_descendants": [],
+        "preexisting_pid_ancestry": [],
+        "absence_error": null
+      },
+      "owner_binding": {
+        "status": "passed",
+        "errors": [],
+        "expected_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\2e3686f369abd371dba0874484cf8d61\\test.exe",
+        "expected_sha256": "C0778AA29F0356BD6B41AFDAC61CFB0022F75C72552494A5015D1704B6BE5F20",
+        "expected_deadline": 30
+      },
+      "postchecks": {
+        "evidence_valid": true,
+        "owner_bound": true,
+        "source_sealed": false,
+        "artifacts_bound": true,
+        "absence_closed": true,
+        "errors": [],
+        "source_seal_scope": "Whole batch before/final; no group is admissible until the final complete seal closes"
+      }
+    }
+  },
+  "postseal": false,
+  "source_seal_scope": "whole_batch",
+  "errors": [],
+  "runtime_requested": false,
+  "runtime_owner_launch_attempted": false,
+  "actual_runtime_owner_started": false,
+  "native_selected_tests_started": null,
+  "attempted_phases": [
+    "compile",
+    "metadata"
+  ],
+  "owned_started_phases": [
+    "compile",
+    "metadata"
+  ]
+}

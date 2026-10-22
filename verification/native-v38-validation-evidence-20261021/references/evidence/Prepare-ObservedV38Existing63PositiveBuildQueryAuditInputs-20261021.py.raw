@@ -1,0 +1,265 @@
+"""Root-only assembly of the observed V38 existing63 positive BuildQuery audit inputs.
+Run only with a separately issued exact Root config after terminal success and
+metadata acceptance. The sole write is a create-only audit-input JSON. This
+helper neither runs the auditor nor grants native/runtime/source authority.
+"""
+from pathlib import Path
+import hashlib,json,re,subprocess,sys
+
+B=Path(r"C:\Users\adyba\pi-zig");E=B/"evidence";M=B/"main"
+HEAD="014062f2d139254acab4b985b4ae343db637166f"
+JOB="job-op-9f95f857e533a1e39a33e74e6d2243246c37f03b6a58e5a3108736d14b28470e"
+C=E/"root-native-foundation-fresh-v38-existing63-control-20261021-153711"
+P=E/"root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711"
+PREP=E/"combined-native-batch-v38-regression63-prepared-20261021"
+OUTPUT=C/"independent-positive-buildquery-audit-inputs.json"
+GROUPS=[
+    "native-node-file-handle-read",
+    "native-node-fs-callback-template",
+    "native-vm-simple-stack-source",
+    "native-vm-exotic-operations",
+    "native-node-diagnostic-context",
+    "native-node-native-debug",
+    "native-node-permission",
+    "native-node-fs-readwrap-reuse",
+    "native-node-reqwrap-callback-routing",
+    "native-vm-script-location",
+    "native-node-stream-read",
+    "native-node-environment-map",
+    "native-vm-backing-store-adoption",
+    "native-node-environment-paths",
+    "native-node-stream-fields",
+    "native-node-managed-buffers",
+    "native-node-fs-request-owner",
+    "native-vm-execution-termination",
+    "native-typebox-execution-termination",
+    "native-host-termination-ownership",
+    "native-node-stream-resource",
+    "native-node-package-json-parser",
+    "native-node-microtask-checkpoint",
+    "native-vm-property-retirement",
+    "native-vm-consuming-operands",
+    "native-vm-oom-occurrence",
+    "native-node-callback-scope",
+    "native-node-inspect-colors",
+    "native-vm-captured-frame-logging",
+    "native-node-experimental-warning",
+    "native-node-commonjs-helpers",
+    "native-node-process-warning",
+    "native-node-fs-request-transport",
+    "native-vm-array-buffer-view-length",
+    "native-vm-array-buffer-backing",
+    "native-vm-private-property",
+    "native-node-tcp-transport",
+    "native-vm-async-arguments",
+    "native-node-fs-write-uv",
+    "native-vm-sync-arguments",
+    "native-vm-async-retirement",
+    "native-vm-template-literal",
+    "native-vm-borrowed-bridges",
+    "vm-af-throw",
+    "native-ai-oauth-anthropic-genuine-af",
+    "native-node-module-creation",
+    "native-node-module-search-paths",
+    "native-node-fs-realpath-classic",
+    "native-node-fs-path-helpers",
+    "native-node-file-url-paths",
+    "native-sdk-tool-search-public",
+    "native-ai-radius-config",
+    "native-ai-radius-provider-genuine-af",
+    "native-node-inspect-entry",
+    "native-ai-oauth-radius-genuine-af",
+    "native-vm-existing-promise-settlement",
+    "native-node-options",
+    "native-node-uv-exception",
+    "native-vm-disallow-javascript",
+    "native-vm-continuation-data",
+    "native-vm-pending-promise",
+    "native-vm-native-global",
+    "native-vm-copy-data-properties"
+]
+MATRIX="8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03"
+DRIVER="1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+CLASSIFIER="3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+
+def require(ok,message):
+    if not ok:raise RuntimeError(message)
+def sha(raw):return hashlib.sha256(raw).hexdigest().upper()
+def digest(p):
+    h=hashlib.sha256()
+    with Path(p).open("rb") as f:
+        while block:=f.read(1024*1024):h.update(block)
+    return h.hexdigest().upper()
+def pin(p):
+    p=Path(p);return dict(path=str(p),bytes=p.stat().st_size,sha256=digest(p))
+def verify(row):
+    require(set(row)=={"path","bytes","sha256"},"Exact three-field file pin")
+    p=Path(row["path"])
+    require(p.is_absolute() and p.resolve().is_relative_to(B.resolve()),"Contained file pin")
+    require(type(row["bytes"])is int and row["bytes"]>0 and re.fullmatch(r"[0-9A-F]{64}",row["sha256"]) is not None,"Exact byte/hash pin")
+    require(pin(p)==row,"Current pinned file changed: "+str(p))
+    return p
+def read_pin(row):
+    p=verify(row);raw=p.read_bytes()
+    require(len(raw)==row["bytes"] and sha(raw)==row["sha256"],"Pinned JSON changed during read")
+    return json.loads(raw.decode("utf-8-sig"))
+def fixed(p,n,h):return dict(path=str(p),bytes=n,sha256=h)
+def current_json(p):
+    row=pin(p);return read_pin(row),row
+def git(*args):
+    return subprocess.check_output(["git","--no-optional-locks","-C",str(M),*args])
+def clean_head():
+    require(git("rev-parse","HEAD").decode().strip()==HEAD,"Current Main head changed")
+    require(git("status","--porcelain")==b"","Current Main is not clean")
+
+require(len(sys.argv)==3,"Exact Root preparation config path and SHA256 required")
+cfg_path=Path(sys.argv[1])
+require(cfg_path.is_absolute() and cfg_path.resolve().is_relative_to(E.resolve()),"Contained Root configuration")
+require(re.fullmatch(r"[0-9A-F]{64}",sys.argv[2]) is not None and digest(cfg_path)==sys.argv[2],"Exact Root configuration bytes")
+cfg_row=pin(cfg_path);cfg=read_pin(cfg_row)
+require(cfg["schema"]==1 and cfg["status"]=="root_reviewed_specific_v38_existing63_positive_audit_input_preparation" and cfg["reviewer"]=="Root","Specific Root input-preparation review")
+require(cfg["candidate_head"]==HEAD and cfg["job_id"]==JOB,"This exact candidate and durable job")
+require(Path(__file__).resolve()==(E/"Prepare-ObservedV38Existing63PositiveBuildQueryAuditInputs-20261021.py").resolve() and cfg["preparer_sha256"]==digest(__file__),"Exact reviewed input helper")
+require(cfg["helper_execution_authorized"] is True and cfg["audit_configuration_issuance_authorized"] is True,"Root explicitly authorizes helper and audit-config issuance only")
+for key in ("native_execution_authorized","runtime_authority","source_mutation_hold_released","qualification"):
+    require(cfg[key] is False,"No native/runtime/source/qualification authority")
+require(not OUTPUT.exists() and not (C/"independent-current-seals-and-owners.json").exists(),"Fresh config and independent closure required")
+
+fixed_rows={
+"grant":fixed(C/"root-grant.json",26495,"809D6F66E9F2CD416709B1E91270D5DBCCDA6F3C71E5959C891EABE9C2EB7ED8"),
+"launch":fixed(C/"launch.ps1",1784,"4599A9AA38872CA8B56200A1A2FA9E405F6A3111B89B510E904AF118632836C7"),
+"specific":fixed(E/"root-v38-existing63-buildquery-issued-config-20261021.json",24863,"E00D37EA2826EA5E4E9F9568EF7770FEC5F9A8FCD425CA4DBA3C2E52773EF28B"),
+"prepared":fixed(PREP/"buildquery-launch.json",4247,"F72A83BAB44684116803678378A0BC3A911BF848C1C325DC43DFF2A0616442CC"),
+"constructor":fixed(E/"Prepare-ReviewedV38BuildQueryGrant-20261021.py",10095,"5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B"),
+"auditor":fixed(E/"Audit-PositiveV38CompleteBuildQuery-20261021.py",37254,"6BCBE32702657CD2B5F62E8779CCF585B86D7A8CFFC04C2EB6FE25B4D6E41A9E"),
+"source_review":fixed(E/"root-v38-execution-bound-source-review-20261021.json",6950,"20ECFC7CF589BAB8E0090EEED59B2BE236CDE5F1F14DF4C2A68AD215C2E3013A")}
+for row in fixed_rows.values():verify(row)
+
+observed_paths={"before":P/"before.json","final":P/"final.json","result":P/"result.json",
+"outer":C/"outer.json","outer_absence":C/"outer-absence.json",
+"job_observation":C/"independent-observed-job-status.json",
+"metadata_acceptance":C/"independent-metadata-acceptance.json"}
+require(set(cfg["observed"])==set(observed_paths),"Every original completed input must be independently pinned")
+observed={}
+for key,path in observed_paths.items():
+    row=cfg["observed"][key];require(row["path"]==str(path),"Exact original observed path: "+key)
+    observed[key]=read_pin(row)
+envelope=observed["job_observation"];job=envelope["data"]
+require(envelope["ok"] is True and envelope["truncated"] is False,"Complete original durable-job observation")
+require(job["id"]==JOB and job["status"]=="succeeded" and job["exitCode"]==0 and job["runnerAlive"] is False,"Actual terminal success only")
+require(type(job["runnerPid"])is int and job["runnerPid"]>0 and type(job["childPid"])is int and job["childPid"]>0,"Original durable runner/launcher PIDs")
+require(isinstance(job["runnerProcessInstance"],str) and re.fullmatch(r"[0-9]{1,20}",job["runnerProcessInstance"]) is not None,"Original full-precision process creation instance")
+require(isinstance(job["createdAtUtc"],str) and job["createdAtUtc"] and isinstance(job["completedAtUtc"],str) and job["completedAtUtc"],"Original complete job time envelope")
+job_mapping=dict(id=job["id"],runner_pid=job["runnerPid"],launcher_pid=job["childPid"],
+runner_process_instance=job["runnerProcessInstance"],created_utc=job["createdAtUtc"],completed_utc=job["completedAtUtc"])
+
+grant=read_pin(fixed_rows["grant"]);prepared=read_pin(fixed_rows["prepared"]);specific=read_pin(fixed_rows["specific"])
+require(grant["candidate_head"]==HEAD and grant["mode"]=="BuildQuery" and grant["execution_authorized"] is True and grant["groups"]==GROUPS,"Exact original complete BuildQuery grant")
+require(grant["specific_root_configuration"]==fixed_rows["specific"] and grant["v38_execution_bound_source_review"]==fixed_rows["source_review"],"Original specific/source-review provenance")
+for row in grant.values():
+    if isinstance(row,dict) and {"path","bytes","sha256"}<=set(row):verify(row)
+source_review=read_pin(fixed_rows["source_review"])
+require(source_review["source_accepted"] is True and source_review["candidate_head"]==HEAD and source_review["matrix_sha256"]==MATRIX,"Root accepted exact bound sources")
+for kind,key in (("buildquery_constructor","constructor"),("positive_buildquery_auditor","auditor")):
+    require([r["bound"]for r in source_review["sources"]if r["kind"]==kind]==[fixed_rows[key]],"Exact reviewed source identity: "+kind)
+review=read_pin(grant["preparation_review"]);matrix=read_pin(review["matrix"])
+require(grant["preparation_review"]["path"]==str(PREP/"preparation-review.json") and review["matrix"]["path"]==str(PREP/"groups.json") and review["matrix"]["sha256"]==MATRIX,"Exact preparation and full matrix")
+require(review["candidate_head"]==HEAD and review["selected_group_names"]==GROUPS and review["selected_groups"]==63 and review["selected_declarations"]==1249 and review["actual_metadata_count"] is None,"Complete declared cohort; no predicted actual count")
+require(matrix["source_head_at_preparation"]==HEAD and len(matrix["groups"])==117 and sum(len(g["required_named"])for g in matrix["groups"])==2013,"Exact full source catalog")
+for key in ("driver","matrix","auditor","classifier","metadata_auditor_adaptation"):verify(review[key])
+require(review["driver"]["sha256"]==grant["driver_sha256"]==DRIVER and review["classifier"]["sha256"]==grant["classifier_sha256"]==CLASSIFIER,"Unchanged strict driver and classifier")
+require(specific["selected_group_names"]==GROUPS and specific["preparer_sha256"]==fixed_rows["constructor"]["sha256"],"Actual constructor/config cohort")
+require(prepared["candidate_head"]==HEAD and prepared["batch"]=="existing63" and prepared["control"]==str(C) and prepared["proof"]==str(P) and prepared["groups"]==GROUPS,"Exact direct launch identity")
+for key in ("grant","launch"):require(prepared[key]==fixed_rows[key],"Exact direct launch pin")
+require(prepared["specific_root_configuration"]==fixed_rows["specific"] and prepared["preparation_review"]==grant["preparation_review"] and prepared["metadata_auditor"]==review["auditor"],"Exact direct preparation/config/metadata auditor")
+require(prepared["matrix_sha256"]==MATRIX and prepared["driver_sha256"]==DRIVER and prepared["actual_metadata_count"] is None and prepared["runtime_authority"] is False and prepared["qualification"] is False,"Original metadata-only launch scope")
+adaptation,adaptation_pin=current_json(C/"grant-launch-adaptation.json")
+require(adaptation["grant"]==fixed_rows["grant"] and adaptation["launch"]==fixed_rows["launch"],"Exact original grant/launch adaptation")
+for key in ("complete_grant_inverse","complete_launch_byte_inverse","all_strict_gate_fields_unchanged"):require(adaptation[key] is True,"Original launch gates remain closed")
+require(adaptation["runtime_authority"] is False and adaptation["qualification"] is False,"No launch scope expansion")
+
+r=observed["result"];acceptance=observed["metadata_acceptance"]
+require(r["status"]=="passed_build_query_batch" and r["mode"]=="BuildQuery" and r["candidate_head"]==HEAD and r["errors"]==[],"Actual complete positive result only")
+require(r["driver_sha256"]==DRIVER and r["group_manifest_sha256"]==MATRIX,"Exact successful strict controller/catalog")
+for key in ("postseal","controller_environment_restored","initial_cache_absence","qualification_requested","fresh_cache_reproduction","all_groups_closed"):
+    require(r[key] is True,"Original complete positive result gate: "+key)
+for key in ("cache_seeded","runtime_requested","product_qualified"):require(r[key] is False,"No seeded/runtime/product claim")
+require(r["cache_mode"]=="fresh_batch" and r["source_seal_scope"]=="whole_batch" and r["absence"]["native_roots"]==[],"Actual fresh complete build scope")
+require([g["group"]for g in r["groups"]]==GROUPS and {p.name for p in (P/"groups").iterdir()if p.is_dir()}==set(GROUPS),"All 63 and only original ordered groups")
+require(acceptance["accepted"] is True and acceptance["candidate_head"]==HEAD and acceptance["runtime_started"] is False and acceptance["runtime_qualification"] is False,"Actual independent metadata acceptance")
+require(acceptance["build_result_sha256"]==cfg["observed"]["result"]["sha256"] and acceptance["build_source_seal_sha256"]==cfg["observed"]["final"]["sha256"] and acceptance["driver_sha256"]==DRIVER and acceptance["group_manifest_sha256"]==MATRIX,"Exact accepted result/seal/source bindings")
+require([g["group"]for g in acceptance["groups"]]==GROUPS,"Complete accepted metadata order")
+owners=[];actual_count=0;started=0
+for part,accepted in zip(r["groups"],acceptance["groups"]):
+    name=part["group"];gp=P/"groups"/name;group=next(g for g in matrix["groups"]if g["name"]==name)
+    local,_=current_json(gp/"result.json");require(local==part,"Original group equals aggregate")
+    require(part["status"]=="passed_build_query" and part["candidate_head"]==HEAD and part["postseal"] is True and part["errors"]==[],"Complete positive group")
+    require(part["owned_started_phases"]==part["attempted_phases"]==list(part["phases"])==["compile","metadata"],"Original complete compile/query sequence")
+    require(part["native_selected_tests_started"] is None,"No runtime test starts")
+    for key in ("runtime_requested","runtime_owner_launch_attempted","actual_runtime_owner_started"):require(part[key] is False,"No actual runtime")
+    started+=int(part["actual_runtime_owner_started"])
+    metadata,mpin=current_json(gp/"selected-tests.json")
+    require(metadata["group"]==name and metadata["candidate_head"]==HEAD and metadata["runtime_started"] is False and metadata["tests"]==accepted["tests"] and metadata["actual_count"]==accepted["actual_count"],"Actual accepted group metadata")
+    require(type(accepted["actual_count"])is int and 0<accepted["actual_count"]<=64 and len(accepted["tests"])==len(set(accepted["tests"]))==accepted["actual_count"],"Actual bounded unique metadata count")
+    require(all(accepted["tests"].count(n)==1 for n in group["required_named"]) and all(n in group["required_named"] or n in group["allowed_anonymous"]for n in accepted["tests"]),"Actual complete named controls and exact anonymous policy")
+    for filename,key in (("selected-tests.json","build_metadata_sha256"),("build-artifacts.json","build_artifacts_sha256"),("metadata.stdout.bin","independent_wire_sha256")):
+        require(digest(gp/filename)==accepted[key],"Actual accepted metadata/artifact/wire pin")
+    require((gp/"metadata.stderr.log").read_bytes()==b"","Original metadata stderr must be empty")
+    actual_count+=accepted["actual_count"]
+    for phase_name in part["owned_started_phases"]:
+        phase=part["phases"][phase_name];owner,_=current_json(gp/(phase_name+".json"))
+        require(owner["status"]=="passed" and owner["exit_code"]==0 and owner.get("error") is None and owner["retained_handle"]>0,"Original successful retained native owner")
+        require(type(owner["pid"])is int and owner["pid"]>0 and owner["created_utc"] and owner["completed_utc"],"Actual native creation/terminal identity")
+        require(phase["evidence"]["owner"]["pid"]==owner["pid"] and phase["evidence"]["valid"] is True and phase["evidence"]["evidence_errors"]==[],"Aggregate actual owner binding")
+        require(phase["failure"] is None and phase["original_execution_failure"] is None and phase["postchecks"]["errors"]==[],"No original phase failure")
+        for key in ("evidence_valid","owner_bound","source_sealed","artifacts_bound","absence_closed"):require(phase["postchecks"][key] is True,"Complete positive original phase")
+        owners.append(owner["pid"])
+
+before=observed["before"];final=observed["final"];roles=("source","tree","vendor","compiler","controls")
+for seal in (before,final):require(seal["candidate_head"]==HEAD and seal["clean"] is True and seal["errors"]==[],"Original clean complete bookend")
+require(all(before[k]==final[k] for k in roles),"Complete original source/compiler/control bookend equality")
+seal_counts={k:len(final[k])for k in roles}
+require(all(v>0 for v in seal_counts.values()) and seal_counts["vendor"]==1489 and seal_counts["compiler"]==19546,"Complete observed seal counts")
+clean_head()
+# Rehash the original current sealed input versions; full independent directory,
+# artifact, wire and process closure remains the separate unchanged auditor.
+current_pins={}
+for role in roles:
+    for row in final[role]:
+        path=Path(row["path"]);key=str(path)
+        require(path.is_absolute() and (path.resolve().is_relative_to(B.resolve()) or key in (r"C:\Program Files\PowerShell\7\pwsh.exe",r"C:\Program Files\PowerShell\7\pwsh.dll")),"Contained original seal path")
+        require(key not in current_pins or current_pins[key]==row["sha256"],"No conflicting original input versions")
+        current_pins[key]=row["sha256"]
+for path,expected in current_pins.items():require(digest(path)==expected,"Current original sealed input changed: "+path)
+outer=observed["outer"];absence=observed["outer_absence"]
+require(outer["status"]=="passed" and outer["exit_code"]==0 and outer.get("error") is None and outer["retained_handle"]>0 and outer["timeout_seconds"]==1800,"Actual bounded successful original outer")
+require(type(outer["pid"])is int and outer["pid"]>0 and absence["pid"]==outer["pid"] and absence["currently_absent"] is True and absence["current_records"]==[],"Original outer absence")
+require(outer["arguments"]==["-NoLogo","-NoProfile","-NonInteractive","-File",str(PREP/"Run-CombinedNativeBatch.ps1"),"-RootGrant",str(C/"root-grant.json"),"-Mode","BuildQuery"],"Exact original outer arguments")
+
+out=dict(status="root_reviewed_specific_v38_positive_buildquery_closure",
+audit_execution_authorized=cfg["audit_configuration_issuance_authorized"],native_execution_authorized=False,
+auditor_sha256=fixed_rows["auditor"]["sha256"],batch="existing63",candidate_head=HEAD,
+control=str(C),proof=str(P),preparation=str(PREP),
+declared_groups=review["selected_groups"],declared_controls=review["selected_declarations"],
+granted_groups=len(grant["groups"]),attempted_groups=len(r["groups"]),
+actual_metadata_count=actual_count,actual_tests_started=started,native_phase_count=len(owners),native_owner_pids=owners,
+seal_counts=seal_counts,job=job_mapping,outer_pid=outer["pid"],
+grant_preparer=fixed_rows["constructor"],grant_sha256=fixed_rows["grant"]["sha256"],
+grant_launch_adaptation_sha256=adaptation_pin["sha256"],buildquery_launch_sha256=fixed_rows["prepared"]["sha256"],
+matrix_sha256=MATRIX,preparation_review_sha256=grant["preparation_review"]["sha256"],
+independent_catalog_peer_sha256=grant["independent_catalog_peer"]["sha256"],
+root_catalog_acceptance_sha256=grant["root_catalog_acceptance"]["sha256"],
+metadata_acceptance=True,qualification=False,runtime_started=False,source_mutation_hold_released=False)
+for key in ("before","final","result","outer","outer_absence","metadata_acceptance"):
+    out[key+"_sha256"]=cfg["observed"][key]["sha256"]
+out["job_observation_sha256"]=cfg["observed"]["job_observation"]["sha256"]
+require(len(out)==39 and out["native_phase_count"]==2*out["attempted_groups"] and actual_count>0,"Complete observed auditor contract")
+clean_head()
+for row in [cfg_row,*fixed_rows.values(),*cfg["observed"].values(),adaptation_pin]:verify(row)
+require(not (C/"independent-current-seals-and-owners.json").exists(),"No prior independent closure")
+raw=(json.dumps(out,indent=2)+"\n").encode()
+with OUTPUT.open("xb") as f:f.write(raw)
+require(OUTPUT.read_bytes()==raw,"Exact output roundtrip")
+print(json.dumps(dict(output=pin(OUTPUT),groups=len(r["groups"]),actual_metadata_count=actual_count,
+native_phase_count=len(owners),seal_counts=seal_counts,auditor_executed=False,
+native_execution_authorized=False,source_mutation_hold_released=False)))

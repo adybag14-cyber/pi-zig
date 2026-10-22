@@ -1,0 +1,53 @@
+{
+  "mode": "RuntimeOnly",
+  "group": "native-node-reqwrap-callback-routing",
+  "compile": [
+    "build",
+    "build-native-node-reqwrap-callback-routing",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-Ddiagnostic-tests=false",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--prefix",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-reqwrap-callback-routing\\installed",
+    "--cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache",
+    "--global-cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\global-cache",
+    "--summary",
+    "all"
+  ],
+  "metadata": [
+    "--listen=-"
+  ],
+  "runtime": [
+    "--listen=-"
+  ],
+  "expected_names": [
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing Reset clears the actual callback before reuse without counting admission",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing selects the real callback after retain Detach and waiting decrement",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing negative raw admission keeps callback but does not strengthen count or synthesize completion",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing accepted bad descriptor preserves the real callback negative result",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing reset and redispatch precede old Wrapper and event retirement",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing callback error after redispatch preserves the new request pointer and event",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing typed callback failure still retires the final native Wrapper pointer",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing actual ordinary callback reason survives Entry destruction",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing actual native fatal callback still completes native request retirement",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing shared shutdown drains real callbacks after JavaScript is disabled",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing stopped native service returns its real status without a callback or count",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing retained Controller rejects a retired Hub before touching Entry inputs",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "expected_count": 13,
+  "named_controls": 12,
+  "source_seal_scope": "whole_batch",
+  "cache_authority": "One initially fresh private cache pair; serial exact-head group compilation; no seed lineage",
+  "compile_seconds": 1320,
+  "metadata_seconds": 30,
+  "runtime_whole_group_seconds": 120,
+  "pipe_settle_seconds": 10,
+  "installed_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-reqwrap-callback-routing\\installed\\bin\\native-node-reqwrap-callback-routing.exe",
+  "installed_pdb": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-reqwrap-callback-routing\\installed\\bin\\test.pdb"
+}

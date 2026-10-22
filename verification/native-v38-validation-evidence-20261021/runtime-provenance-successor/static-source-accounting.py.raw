@@ -1,0 +1,76 @@
+from pathlib import Path
+import ast,collections,hashlib,json,subprocess,sys
+r=json.loads(sys.argv[1]);root=Path(r["root"]);own=Path(r["own"])
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ p=Path(p);b=p.read_bytes();return dict(path=str(p),bytes=len(b),sha256=sha(b))
+for name,row in r["basis"].items():
+ assert not Path(row["path"]).is_relative_to(Path(r"C:\Users\adyba\pi-zig\main")),name
+ assert pin(row["path"])==row,name
+b=r["basis"];old=Path(b["canonical_predecessor"]["path"]).read_bytes();new=Path(b["candidate"]["path"]).read_bytes()
+assert old==Path(b["original_snapshot"]["path"]).read_bytes()==Path(b["original_negative_source"]["path"]).read_bytes()
+assert Path(b["original_failed_inputs"]["path"]).read_bytes()==Path(b["original_negative_inputs"]["path"]).read_bytes()
+proposal=json.loads(Path(b["proposal"]["path"]).read_bytes());assert len(proposal["edits"])==1
+e=proposal["edits"][0];a=e["before"].encode("ascii");z=e["after"].encode("ascii");offset=e["offset"]
+assert old.count(a)==1 and old.index(a)==offset and old.replace(a,z,1)==new and new.replace(z,a,1)==old
+assert sha(old)==e["before_sha256"]and sha(new)==e["after_sha256"]
+assert old[:offset]==new[:offset]and old[offset+len(a):]==new[offset+len(z):]
+oldtree=ast.parse(old);newtree=ast.parse(new)
+oldlines=old.splitlines(keepends=True);newlines=new.splitlines(keepends=True)
+old_start=old[:offset].count(b"\n")+1;old_end=old_start+a.count(b"\n")-1
+new_start=old_start;new_end=new_start+z.count(b"\n")-1
+shift=new_end-old_end
+def helper_rows(t,lines):
+ return {n.name:dict(start_line=n.lineno,end_line=n.end_lineno,bytes=len(b"".join(lines[n.lineno-1:n.end_lineno])),sha256=sha(b"".join(lines[n.lineno-1:n.end_lineno])))for n in t.body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))}
+h0=helper_rows(oldtree,oldlines);h1=helper_rows(newtree,newlines)
+assert h0==h1 and len(h0)==6
+def cfg_fields(t):
+ return sorted({n.slice.value for n in ast.walk(t)if isinstance(n,ast.Subscript)and isinstance(n.value,ast.Name)and n.value.id=="cfg"and isinstance(n.slice,ast.Constant)and isinstance(n.slice.value,str)})
+assert cfg_fields(oldtree)==cfg_fields(newtree)and len(cfg_fields(oldtree))==40
+def assertions(t):
+ return collections.Counter(ast.dump(n,include_attributes=False)for n in ast.walk(t)if isinstance(n,ast.Assert)or(isinstance(n,ast.Call)and isinstance(n.func,ast.Name)and n.func.id=="require"))
+before_assertions=assertions(oldtree);after_assertions=assertions(newtree)
+assert not before_assertions-after_assertions
+added=after_assertions-before_assertions
+assert sum(added.values())==3
+imports=lambda t:[ast.dump(n,include_attributes=False)for n in ast.walk(t)if isinstance(n,(ast.Import,ast.ImportFrom))]
+assert imports(oldtree)==imports(newtree)
+old_block=[n for n in oldtree.body if old_start<=n.lineno<=old_end]
+new_prefix=[n for n in newtree.body if n.end_lineno<new_start]
+new_suffix=[n for n in newtree.body if n.lineno>new_end]
+normalized=ast.Module(body=new_prefix+old_block+new_suffix,type_ignores=[])
+assert ast.dump(normalized,include_attributes=False)==ast.dump(oldtree,include_attributes=False)
+regions=[]
+for name,start,end in (("configuration_helpers_and_actual_launch_chain",1,89),("catalog_parent_and_runtime_grant_gates",92,166),("whole_current_source_and_artifact_seals",167,203),("complete_native_controls_and_raw_protocol",204,264),("original_outer_job_100ns_absence_and_final_write",265,301)):
+ data=b"".join(oldlines[start-1:end]);ns=start+(shift if start>old_end else 0);ne=end+(shift if start>old_end else 0)
+ assert data==b"".join(newlines[ns-1:ne])
+ regions.append(dict(role=name,original_lines=[start,end],candidate_lines=[ns,ne],bytes=len(data),sha256=sha(data),byte_identical=True))
+snapshot=b["historical_snapshot"];snapshot_bytes=Path(snapshot["path"]).read_bytes()
+original=dict(path=r"C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig",bytes=28378,sha256="93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422")
+commit="b13be24e44cc1bbc361639eb35900a368ae60eac";blob="src/native_node_file_handle_owner_test.zig"
+raw_git=subprocess.check_output(["git","--no-optional-locks","-C",str(own),"cat-file","blob",commit+":"+blob])
+assert raw_git==snapshot_bytes and len(raw_git)==original["bytes"]and sha(raw_git)==original["sha256"]
+expected=[dict(batch=x,role="fixture_unchanged_root_native-node-file-handle-owner",original=original,immutable_snapshot=snapshot,raw_commit=commit,exact_original_bytes=True)for x in ("new4","regression63")]
+review_details=[]
+for role in ("new4_preparation","regression_preparation"):
+ d=json.loads(Path(b[role]["path"]).read_bytes());assert d["historical_source_rebindings"]==expected
+ relationships={f"v37_{x['batch']}_{x['role']}":d["provenance"][f"v37_{x['batch']}_{x['role']}"]for x in expected}
+ assert all(v==snapshot for v in relationships.values())
+ review_details.append(dict(role=role,pin=b[role],historical_mappings=d["historical_source_rebindings"],retained_provenance_relationships=relationships,remaining_top_fields=sorted(k for k in d if k!="historical_source_rebindings"),provenance_entries=len(d["provenance"])))
+catalog=json.loads(Path(b["root_catalog_acceptance"]["path"]).read_bytes());peer=json.loads(Path(b["emitted_catalog_peer"]["path"]).read_bytes())
+assert all(b[k]in catalog["preparation_reviews"]for k in ("new4_preparation","regression_preparation"))
+assert catalog["independent_catalog_peer"]==b["emitted_catalog_peer"]and peer["verification"]["historical_owner_rebindings"]==2
+mat=json.loads(Path(b["common_matrix"]["path"]).read_bytes());owner=next(g for g in mat["groups"]if g["name"]=="native-node-file-handle-owner")
+current_owner=next(x for x in owner["source_pins"]if x["path"]==blob)
+assert current_owner["sha256"]=="03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+cfg=json.loads(Path(b["original_failed_inputs"]["path"]).read_bytes());neg=json.loads(Path(b["original_audit_negative"]["path"]).read_bytes())
+job=json.loads(Path(b["original_job_observation"]["path"]).read_bytes());stderr=Path(b["original_stderr"]["path"]).read_text()
+assert cfg["auditor_sha256"]==b["canonical_predecessor"]["sha256"]and cfg["preparation_review_sha256"]==b["new4_preparation"]["sha256"]
+assert neg["auditor"]==b["canonical_predecessor"]and neg["configuration"]==b["original_failed_inputs"]and neg["historical_source_rebindings"]==expected
+assert job["data"]["status"]=="failed"and job["data"]["exitCode"]==1 and "line 90" in stderr and original["path"]in stderr
+for name,row in b.items():assert pin(row["path"])==row,name
+proof=dict(schema=1,status="bounded_source_only_runtime_provenance_successor_static_accounting",inputs=b,finite_edit=dict(count=1,original_lines=[old_start,old_end],candidate_lines=[new_start,new_end],delta_bytes=len(new)-len(old),complete_forward=True,complete_inverse=True,all_outside_bytes_identical=True),unchanged_helpers=h0,unchanged_regions=regions,old_assertion_and_require_count=sum(before_assertions.values()),all_original_assertions_and_require_calls_retained=True,added_require_count=sum(added.values()),imports_unchanged=True,module_AST_outside_finite_edit_unchanged=True,input_contract=dict(required_cfg_fields=cfg_fields(oldtree),new_fields=[],changed_value_for_future_issuance="auditor_sha256",all_original_runtime_observation_fields_unchanged=True,original_config_preserved=True),historical_validation=dict(reviews=review_details,git_repository=str(own),raw_commit=commit,blob_path=blob,raw_git_bytes=len(raw_git),raw_git_sha256=sha(raw_git),snapshot_raw_git_complete_equality=True,original_main_path_not_read=True,current_owner_matrix_row=current_owner,current_owner_live_bytes_checked_by_this_review=False),preserved_negative=b["original_audit_negative"],source_only=True,candidate_or_prefix_executed=False,constructor_or_auditor_executed=False,native_executed=False,Main_accessed=False,configuration_issued=False,runtime_acceptance=False,qualification=False)
+out=root/"source-accounting.json";data=(json.dumps(proof,indent=2)+"\n").encode("ascii")
+with out.open("xb")as f:f.write(data)
+assert out.read_bytes()==data
+print(json.dumps(dict(proof=pin(out),inputs=len(b),helpers=len(h0),regions=len(regions),cfg_fields=len(cfg_fields(oldtree)),old_assertions=sum(before_assertions.values()),added_requires=sum(added.values()),historical_rows_each_review=len(expected),raw_git_snapshot_match=True,Main_accessed=False)))

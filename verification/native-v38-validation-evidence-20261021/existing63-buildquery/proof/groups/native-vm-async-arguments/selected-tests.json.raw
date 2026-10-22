@@ -1,0 +1,30 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\80c23d12737713e2acb2703b9e302318\\test.exe",
+  "binary_sha256": "568E1CF43205805BE7EF8A1A2CBDF0D609431724089AFA5939ECFD7D69689B1E",
+  "version": "0.16.0",
+  "actual_count": 18,
+  "tests": [
+    "native_async_arguments_test.test.VM async arguments supplied count and initialized formals remain independent of observable length",
+    "native_async_arguments_test.test.VM async arguments assignments before and after real Await use the same original formal slots",
+    "native_async_arguments_test.test.VM async arguments missing fourth and fifth formals retain assignments through another actual Await and GC",
+    "native_async_arguments_test.test.VM async arguments unused supplied extras remain owned after overwritten formals and retire before locals",
+    "native_async_arguments_test.test.VM async arguments zero declared formals still retain every supplied argument through suspension",
+    "native_async_arguments_test.test.VM async arguments store publishes the replacement before the sole prior holder finalizer reads its actual slot",
+    "native_async_arguments_test.test.VM async arguments actual caught private Await rejection can initialize a missing formal and return after another Await",
+    "native_async_arguments_test.test.VM async arguments uncaught ordinary Await rejection preserves raw identity while expanded formals retire",
+    "native_async_arguments_test.test.VM async arguments genuine return adoption sees current formals alive before ordered terminal close",
+    "native_async_arguments_test.test.VM async arguments missing assigned formal is marked during live GC and retires on actual gate abandonment",
+    "native_async_arguments_test.test.VM async arguments real arrow keeps lexical this separate from the supplied receiver while formals mutate",
+    "native_async_arguments_test.test.VM async arguments current getter rejects absent and legacy invocations while preserving an entry exception",
+    "native_async_arguments_test.test.VM async arguments pending call entry leaves the original supplied slot and body untouched",
+    "native_async_arguments_test.test.VM async arguments pending store consumes its incoming owner without changing the selected formal",
+    "native_async_arguments_test.test.VM async arguments actual assignment finalizer fatal prevents the next body and guest catch after Await",
+    "native_async_arguments_test.test.VM async arguments actual body fatal wins later parameter and local cleanup events with every root retired",
+    "native_async_arguments_test.test.VM async arguments current fatal before the second resume retires all assigned missing slots without body entry",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-vm-async-arguments",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

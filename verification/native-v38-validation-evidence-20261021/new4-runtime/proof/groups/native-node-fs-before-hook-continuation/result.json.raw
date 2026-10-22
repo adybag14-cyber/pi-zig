@@ -1,0 +1,130 @@
+{
+  "group": "native-node-fs-before-hook-continuation",
+  "status": "passed_selected_native_controls",
+  "mode": "RuntimeOnly",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "receipt_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-fs-before-hook-continuation",
+  "output_prefix": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\groups\\native-node-fs-before-hook-continuation\\installed",
+  "installed_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\groups\\native-node-fs-before-hook-continuation\\installed\\bin\\native-node-fs-before-hook-continuation.exe",
+  "installed_pdb": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\groups\\native-node-fs-before-hook-continuation\\installed\\bin\\test.pdb",
+  "cached_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\cache\\o\\18feadb97c45a3f2ab0e16b290a48423\\test.exe",
+  "phases": {
+    "runtime": {
+      "failure": null,
+      "original_execution_failure": null,
+      "evidence": {
+        "valid": true,
+        "evidence_errors": [],
+        "owner": {
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\cache\\o\\18feadb97c45a3f2ab0e16b290a48423\\test.exe",
+          "executable_sha256": "70FFC07A6083A60EDCAD19E0428909711966D03BC3C0F1631689FD716A82AFED",
+          "arguments": [
+            "--listen=-"
+          ],
+          "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+          "pid": 7856,
+          "retained_handle": 2148,
+          "created_utc": "2026-10-21T15:18:07.7354991Z",
+          "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+          "timeout_seconds": 120,
+          "status": "passed",
+          "live_identity": {
+            "command_line_method": "Win32_Process.CommandLine",
+            "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\cache\\o\\18feadb97c45a3f2ab0e16b290a48423\\test.exe",
+            "pid": 7856,
+            "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\cache\\o\\18feadb97c45a3f2ab0e16b290a48423\\test.exe\" --listen=-",
+            "created_utc": "2026-10-21T15:18:07.7354991Z"
+          },
+          "exit_code": 0,
+          "completed_utc": "2026-10-21T16:18:08.0132302+01:00"
+        },
+        "canonical_results": {
+          "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\cache\\o\\18feadb97c45a3f2ab0e16b290a48423\\test.exe",
+          "binary_sha256": "70FFC07A6083A60EDCAD19E0428909711966D03BC3C0F1631689FD716A82AFED",
+          "version": "0.16.0",
+          "expected": 4,
+          "started": 4,
+          "completed": 4,
+          "results": [
+            {
+              "index": 0,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 1,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 2,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 3,
+              "flags": 0,
+              "passed": true
+            }
+          ],
+          "failed_or_skipped_or_logged_or_leaked": 0,
+          "owner_receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-fs-before-hook-continuation\\runtime.json",
+          "status": "passed"
+        },
+        "raw_outputs": [
+          {
+            "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-fs-before-hook-continuation\\runtime.stdout.bin",
+            "bytes": 126,
+            "sha256": "FB0D3AF85B02A8610D216651CDEC6114A70E470397F07FD0F098C7F40AFF3E38"
+          },
+          {
+            "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-fs-before-hook-continuation\\runtime.stderr.log",
+            "bytes": 0,
+            "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+          }
+        ],
+        "current_owner_pid_present": 0,
+        "current_owned_descendants": [],
+        "preexisting_pid_ancestry": [],
+        "absence_error": null
+      },
+      "owner_binding": {
+        "status": "passed",
+        "errors": [],
+        "expected_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\cache\\o\\18feadb97c45a3f2ab0e16b290a48423\\test.exe",
+        "expected_sha256": "70FFC07A6083A60EDCAD19E0428909711966D03BC3C0F1631689FD716A82AFED",
+        "expected_deadline": 120
+      },
+      "postchecks": {
+        "evidence_valid": true,
+        "owner_bound": true,
+        "source_sealed": true,
+        "artifacts_bound": true,
+        "absence_closed": true,
+        "errors": [],
+        "source_seal_scope": "Whole batch before/final; no group is admissible until the final complete seal closes"
+      }
+    }
+  },
+  "postseal": true,
+  "source_seal_scope": "whole_batch",
+  "errors": [],
+  "runtime_requested": true,
+  "runtime_owner_launch_attempted": true,
+  "actual_runtime_owner_started": true,
+  "native_selected_tests_started": 4,
+  "attempted_phases": [
+    "runtime"
+  ],
+  "owned_started_phases": [
+    "runtime"
+  ],
+  "runtime_count_observation": {
+    "expected": 4,
+    "started": 4,
+    "completed": 4,
+    "failed_or_skipped_or_logged_or_leaked": 0,
+    "status": "passed",
+    "acceptance_authority": "Validated canonical result and all original owner/postseal gates remain required"
+  }
+}

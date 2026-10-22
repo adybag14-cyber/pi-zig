@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "summary": "Read logs for background job job-op-2caa28741b4463f61c5d8bd9da20a52d383ce8a7a20b9d863198c2003cd181d6.",
+  "data": {
+    "id": "job-op-2caa28741b4463f61c5d8bd9da20a52d383ce8a7a20b9d863198c2003cd181d6",
+    "status": "failed",
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\Prepare-FreshV38Catalog-20261021.py\", line 390, in <module>\r\n    assert observed[\"results\"] == expected_results\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError\r\n",
+    "maxChars": 4000,
+    "logs": {
+      "stdout": {
+        "totalBytes": 0,
+        "segments": [
+          {
+            "index": 0,
+            "bytes": 0
+          }
+        ],
+        "rotated": false
+      },
+      "stderr": {
+        "totalBytes": 356,
+        "segments": [
+          {
+            "index": 0,
+            "bytes": 356
+          }
+        ],
+        "rotated": false
+      },
+      "maxBytesPerSegment": 33554432,
+      "rotations": 2,
+      "truncated": false
+    }
+  },
+  "exitCode": null,
+  "truncated": false
+}

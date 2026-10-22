@@ -1,0 +1,277 @@
+"""Independent source-only peer of the five unresolved V38 execution drafts.
+Reads immutable source, finite proofs and provenance. AST/token inspection only:
+no candidate is imported, evaluated, executed, or partially executed. The only
+write is this directory's create-only source-proof.json after every assertion.
+"""
+from pathlib import Path
+import ast, hashlib, io, json, re, sys, tokenize
+B=Path(r"C:\Users\adyba\pi-zig")
+D=B/"worktrees/sdk-owners-resume-20261018/verification/v38-execution-unresolved-sourceonly-20261021"
+O=B/"evidence/independent-v38-execution-source-peer-20261021"
+assert Path(__file__).resolve()==O/"independent-static-peer.py" and sys.argv[1:]==[]
+seen={}
+def sha(data):return hashlib.sha256(data).hexdigest().upper()
+def require(value,reason):
+ if not value:raise AssertionError(reason)
+def actual(path):
+ path=Path(path); data=path.read_bytes()
+ return dict(path=str(path),bytes=len(data),sha256=sha(data))
+def read(row):
+ require(set(row)=={"path","bytes","sha256"},"exact source pin shape")
+ require(type(row["bytes"])is int and row["bytes"]>0 and re.fullmatch(r"[0-9A-F]{64}",row["sha256"]),"issued immutable source pin")
+ p=Path(row["path"]); data=p.read_bytes()
+ require((len(data),sha(data))==(row["bytes"],row["sha256"]),"pin: "+str(p))
+ key=str(p).casefold(); prior=seen.get(key)
+ require(prior is None or prior==row,"no path aliases or conflicting current versions")
+ seen[key]=dict(row)
+ return data
+def doc(row):return json.loads(read(row))
+def fixed(name,size,digest):return dict(path=str(D/name),bytes=size,sha256=digest)
+def check_nested(value):
+ if isinstance(value,dict):
+  if set(value)=={"path","bytes","sha256"} and type(value["bytes"])is int and isinstance(value["sha256"],str):read(value)
+  else:
+   for v in value.values():check_nested(v)
+ elif isinstance(value,list):
+  for v in value:check_nested(v)
+def tok(data):
+ require(data.isascii(),"ASCII source permits exact token-to-byte spans")
+ lines=data.splitlines(keepends=True); offsets=[0]
+ for line in lines:offsets.append(offsets[-1]+len(line))
+ def at(pos):return offsets[max(0,pos[0]-1)]+pos[1]
+ return [dict(kind=tokenize.tok_name[t.type],text=t.string,start=at(t.start),end=at(t.end),line=t.start[0]) for t in tokenize.tokenize(io.BytesIO(data).readline)]
+def functions(data):
+ lines=data.splitlines(keepends=True); result=[]
+ for n in ast.walk(ast.parse(data.decode("ascii"))):
+  if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef)):
+   b=b"".join(lines[n.lineno-1:n.end_lineno])
+   result.append((n.name,n.lineno,n.end_lineno,b))
+ return result
+class RemoveValues(ast.NodeTransformer):
+ def visit_Constant(self,node):
+  node.value=None
+  return node
+def structural(data):return ast.dump(RemoveValues().visit(ast.parse(data.decode("ascii"))),include_attributes=False)
+def assigned(tree,name):
+ rows=[n.value for n in tree.body if isinstance(n,ast.Assign)and len(n.targets)==1 and isinstance(n.targets[0],ast.Name)and n.targets[0].id==name]
+ require(len(rows)==1,"one assignment "+name)
+ return rows[0]
+HAND=fixed("handoff.json",14037,"22E7F27688223262F6FF78D0412E0D4447926E61738B66B6F92F055193D85777")
+AGG=fixed("finite-source-adaptation.json",14308,"C46AFC69DBBE7C485D2E94A631EBF221611B46C28BFC6B68146E92212323C245")
+DECL=fixed("authoring/declared-edits.json",28493,"C31D6F5327CD19B1E8BB8ECA2C3C88939C3B35B00D7A6E879F13231EDB3CA4F8")
+BIND=fixed("binding-contract.json",14736,"1B1637547A8A3FAA792C45563F31A73A726067E18CE96BB648832BF6187C3C69")
+hand,agg,decl,bindings=[doc(r)for r in (HAND,AGG,DECL,BIND)]
+require(hand["aggregate_finite_proof"]==AGG and hand["declared_edits"]==DECL and hand["future_binding_contract"]==BIND,"handoff exact selected packet")
+for v in (hand,agg,decl,bindings):check_nested(v)
+root=doc(hand["accepted_predecessor_root_review"])
+require(root["status"]=="root_accepted_exact_v37_retry1_execution_source_successors" and root["source_accepted"] is True,"accepted exact predecessor")
+require(root["candidate_head"]=="b13be24e44cc1bbc361639eb35900a368ae60eac" and root["required_grant_provenance_key"]=="v37_execution_bound_source_review","predecessor identity")
+require(hand["source_only"] is True and hand["production_or_Main_change"] is False,"unissued source-only packet")
+require(bindings["actual_job_id"] is None and bindings["actual_runtime_outcome"] is None and bindings["actual_metadata_count"] is None,"no fabricated actual outcome")
+require(bindings["bound_candidate_head"] is None and bindings["bound_matrix_sha256"] is None,"unbound future candidate")
+kinds=["buildquery_constructor","runtime_constructor","positive_buildquery_auditor","positive_runtime_auditor","observed_new4_positive_input_helper"]
+counts=[8,11,12,15,25];helpers_expected=[7,8,6,6,10];sizes=[10095,12499,37254,39911,18939]
+old_pins=[
+ (10109,"81FA8E7BA4DED5788F1618D393395666C82BC209791079DCCB3EEBDAEC6E9F58"),
+ (12513,"414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0"),
+ (37268,"2C89B824BE10438684ECAB4AC72197B7A54F9218F15578F9F1A4EB6FEFDB4063"),
+ (39946,"049C8CFE6053CDC7632BF44B57EB64BD8F220685AFB99FB029AC844EC3A4DC40"),
+ (18974,"8F0ECC3CAF504E858A29891E25BA78A0F06F258C4C4DEB1EDB87A11EF12DA344")]
+new_hashes=["3759AC9A4036009871D6FBF415AE9DFE06C8EF2E4D02CEF5FBFC64707A3B1B7D","4F1968D82D71BA5CFBF35337131D0910B967B7CAD85CE42B393B732BE94AF3B9","EF936499EAC349E71715AF123C768F6C611E0B1F8ED8D8D4E780C63806BF2B2E","683467EBD73ED043A06E86A19547B7EE1C63FBB66AC85CF0B5ACBE0DD8F9A187","88D31C0905C52EEE080C7CC2FDBF32F0DC4F39C7A5BCDFCE9C01E3F1BF85AC17"]
+markers={"head":"UNRESOLVED_V38_HEAD_XXXXXXXXXXXXXXXXXXXX","matrix":"UNRESOLVED_V38_MATRIX_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","bqHash":"UNRESOLVED_V38_BQ_CONSTRUCTOR_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","rtHash":"UNRESOLVED_V38_RT_CONSTRUCTOR_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+require(decl["markers"]==markers and [len(markers[k])for k in ("head","matrix","bqHash","rtHash")]==[40,64,64,64],"exact fixed-width non-hex markers")
+special={
+ '"b13be24e44cc1bbc361639eb35900a368ae60eac"':'"'+markers["head"]+'"',
+ '"E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37"':'"'+markers["matrix"]+'"',
+ '"81FA8E7BA4DED5788F1618D393395666C82BC209791079DCCB3EEBDAEC6E9F58"':'"'+markers["bqHash"]+'"',
+ '"414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0"':'"'+markers["rtHash"]+'"'}
+def permitted(t,source_index):
+ # Independently derive the finite change from the accepted original token,
+ # without using the candidate token or author's proposed replacement.
+ if t["kind"]=="STRING":
+  if t["text"] in special:return special[t["text"]]
+  return t["text"].replace("V37","V38").replace("v37","v38").replace("-Retry1-","-").replace("-retry1-","-")
+ if t["kind"]=="NUMBER":
+  return ({2:{"10109":"10095"},3:{"12513":"12499"},4:{"10109":"10095","37268":"37254"}}.get(source_index,{})).get(t["text"],t["text"])
+ return t["text"]
+sources=[];bodies=[];olds=[];total_strings=total_numbers=0
+require([s["kind"]for s in decl["sources"]]==kinds and decl["expected_edit_counts"]==counts and decl["expected_helper_counts"]==helpers_expected,"exact five-source shape")
+for i,row in enumerate(decl["sources"]):
+ old=read(row["baseline"]); new=read(row["candidate"])
+ require((len(old),sha(old))==old_pins[i] and (len(new),sha(new))==(sizes[i],new_hashes[i]),"explicit selected identities")
+ require(read(row["original"])==old,"saved original exact")
+ require([s["bound"]for s in root["sources"]if s["bound"]==row["baseline"]]==[row["baseline"]],"Root binds this exact baseline")
+ h=hand["sources"][i]; arow=agg["sources"][i]; require(h["kind"]==arow["kind"]==row["kind"],"kind mapping")
+ for key in ("baseline","candidate"):require(h[key]==arow[key]==row[key],"cross-document source pin "+key)
+ require(h["original"]==row["original"]==arow["original_snapshot"],"cross-document immutable original")
+ require(h["future_canonical_bound_path"]==row["canonical_bound_path"]==arow["future_canonical_bound_path"],"future path mapping")
+ proof=doc(arow["finite_proof"]);require(h["finite_proof"]==arow["finite_proof"],"finite pin")
+ require(proof["baseline"]==row["baseline"] and proof["candidate"]==row["candidate"] and proof["original_snapshot"]==row["original"],"finite exact source pair")
+ require(Path(row["canonical_bound_path"]).parent==B/"evidence","future canonical direct evidence child")
+ a,b=tok(old),tok(new);require(len(a)==len(b),"token inventory")
+ changed=[]
+ for ti,(x,y) in enumerate(zip(a,b)):
+  require(x["kind"]==y["kind"],"token kinds fixed")
+  want=permitted(x,i);require(y["text"]==want,"only independently permitted literal change at "+str((i,ti,x["text"])))
+  if want!=x["text"]:
+   require(x["kind"] in ("STRING","NUMBER"),"literal only")
+   changed.append((ti,x,y))
+ require(len(changed)==counts[i]==len(row["edits"])==len(proof["edits"]),"exact finite counts")
+ require(structural(old)==structural(new),"all nonconstant AST structure exact")
+ working=old;edits=[];fragments=[];old_end=new_end=delta=0
+ for n,((ti,x,y),de,pe) in enumerate(zip(changed,row["edits"],proof["edits"]),1):
+  before=x["text"].encode("ascii");after=y["text"].encode("ascii")
+  require(de==dict(token_type=x["kind"],original_start=x["start"],original_end=x["end"],line=x["line"],before=x["text"],after=y["text"]),"declared edit independently derived")
+  at=x["start"]+delta;require(at==y["start"],"actual candidate token offset")
+  require(old[x["start"]:x["end"]]==before and working[at:at+len(before)]==before,"exact current token preimage")
+  require(old[old_end:x["start"]]==new[new_end:at],"all untouched raw fragments")
+  f=dict(baseline_offset=old_end,candidate_offset=new_end,bytes=x["start"]-old_end,sha256=sha(old[old_end:x["start"]]),byte_identical=True);fragments.append(f)
+  before_hash=sha(working);working=working[:at]+after+working[at+len(before):]
+  er=dict(index=n,token_index=ti,token_kind=x["kind"],baseline_line=x["line"],baseline_offset=x["start"],offset_before_step=at,before=x["text"],after=y["text"],before_file_sha256=before_hash,after_file_sha256=sha(working))
+  require(pe==er,"every author intermediate and literal span exact")
+  edits.append(er);old_end=x["end"];new_end=at+len(after);delta+=len(after)-len(before)
+  total_strings+=int(x["kind"]=="STRING");total_numbers+=int(x["kind"]=="NUMBER")
+ require(working==new and old[old_end:]==new[new_end:],"complete source forward and tail")
+ fragments.append(dict(baseline_offset=old_end,candidate_offset=new_end,bytes=len(old)-old_end,sha256=sha(old[old_end:]),byte_identical=True))
+ require(proof["untouched_fragments"]==fragments,"complete author's untouched-fragment inventory")
+ inverse=new
+ for e in reversed(edits):
+  before=e["before"].encode("ascii");after=e["after"].encode("ascii");at=e["offset_before_step"]
+  require(sha(inverse)==e["after_file_sha256"] and inverse[at:at+len(after)]==after,"inverse exact postimage")
+  inverse=inverse[:at]+before+inverse[at+len(after):]
+  require(sha(inverse)==e["before_file_sha256"],"inverse intermediate")
+ require(inverse==old,"whole raw source inverse")
+ fa,fb=functions(old),functions(new);require(len(fa)==len(fb)==helpers_expected[i],"complete helper inventory")
+ helpers=[]
+ for (na,la,ea,ba),(nb,lb,eb,bb) in zip(fa,fb):
+  require(na==nb and ba==bb,"complete LF-delimited helper body "+na)
+  helpers.append(dict(name=na,baseline_line=la,candidate_line=lb,bytes=len(ba),sha256=sha(ba),byte_identical=True))
+ require(proof["unchanged_helpers"]==helpers,"author full helper inventory")
+ hist=[(j,t["text"])for j,t in enumerate(a)if t["kind"]=="STRING"and re.search(r"(?i)v(?:34|36)",t["text"])]
+ require(all(b[j]["text"]==s for j,s in hist),"historical V34 and V36 literal anchors")
+ require(proof["preserved_original_v34_and_v36_literal_tokens"]==[list(x)for x in hist],"historical literal inventory")
+ for field in ("complete_raw_forward_exact","complete_raw_inverse_exact","all_intermediate_hashes_verified","all_other_tokens_byte_identical","all_nonconstant_ast_structure_identical","all_untouched_raw_fragments_byte_identical"):require(proof[field] is True,"finite certificate "+field)
+ bodies.append(new);olds.append(old)
+ sources.append(dict(kind=row["kind"],baseline=row["baseline"],candidate=row["candidate"],finite_proof=arow["finite_proof"],edits=edits,untouched_fragments=fragments,helpers=helpers,historical_anchors=[list(x)for x in hist],raw_inverse_exact=True))
+require((sum(counts),total_strings,total_numbers)==(71,67,4) and sum(len(s["helpers"])for s in sources)==37,"aggregate finite totals")
+require(agg["per_source_counts"]==counts and agg["finite_edit_count"]==71 and agg["string_literal_edits"]==67 and agg["numeric_source_size_literal_edits"]==4,"aggregate claims")
+
+# Current marker contracts are independently resolved to token boundaries. No
+# marker is filled and no constructor/auditor/helper configuration is emitted.
+slot_rows=[]
+require([x["kind"]for x in bindings["source_bindings"]]==kinds,"binding source inventory")
+for i,(row,new) in enumerate(zip(bindings["source_bindings"],bodies)):
+ require(row["candidate"]==decl["sources"][i]["candidate"] and row["future_canonical_bound_path"]==decl["sources"][i]["canonical_bound_path"],"binding exact candidate")
+ ts=tok(new); unbound=[t for t in ts if t["kind"]=="STRING" and "UNRESOLVED" in t["text"]]
+ require(len(unbound)==[1,2,3,3,12][i],"exact remaining unresolved strings")
+ derived=[]
+ for t in unbound:
+  value=ast.literal_eval(t["text"]);require(isinstance(value,str),"text marker")
+  require("V37" not in value and "v37" not in value,"no obsolete unresolved marker")
+  derived.append(dict(token_kind="STRING",offset=t["start"],before=t["text"],value_length=len(value),line=t["line"],actual_value=None))
+ if i==4:
+  tree=ast.parse(new.decode("ascii")); node=assigned(tree,"fixed_rows")
+  require(isinstance(node,ast.Dict),"exact fixed rows AST")
+  fixed_rows={};zero=[]
+  for kn,vn in zip(node.keys,node.values):
+   key=ast.literal_eval(kn)
+   require(isinstance(vn,ast.Call)and isinstance(vn.func,ast.Name)and vn.func.id=="fixed"and len(vn.args)==3,"fixed row literal constructor")
+   require(isinstance(vn.args[0],ast.BinOp)and isinstance(vn.args[0].op,ast.Div),"fixed path syntax")
+   name=ast.literal_eval(vn.args[0].right);size=ast.literal_eval(vn.args[1]);digest=ast.literal_eval(vn.args[2])
+   fixed_rows[key]=dict(basename=name,bytes=size,sha256_marker=digest,line=vn.lineno)
+   if size==0:
+    require(isinstance(vn.args[1],ast.Constant)and type(vn.args[1].value)is int,"zero numeric size marker")
+    matches=[t for t in ts if t["line"]==vn.args[1].lineno and t["kind"]=="NUMBER"and t["text"]=="0"]
+    require(len(matches)==1,"unique zero-size literal per exact row")
+    t=matches[0];zero.append(key)
+    derived.append(dict(token_kind="NUMBER",fixed_row=key,offset=t["start"],before="0",line=t["line"],actual_value=None))
+  require(zero==["grant","launch","specific","prepared","source_review"],"five and only five zero sizes")
+  require(fixed_rows==agg["fixed_helper_rows_unresolved"],"entire fixed-row inventory")
+  require(fixed_rows["constructor"]["bytes"]==sizes[0] and fixed_rows["constructor"]["basename"]==Path(decl["sources"][0]["canonical_bound_path"]).name,"exact constructor size/path cross-reference")
+  require(fixed_rows["auditor"]["bytes"]==sizes[2] and fixed_rows["auditor"]["basename"]==Path(decl["sources"][2]["canonical_bound_path"]).name,"exact auditor size/path cross-reference")
+  require(fixed_rows["prepared"]["basename"]=="buildquery-launch.json" and fixed_rows["specific"]["basename"]=="root-v38-new4-buildquery-issued-config-20261021.json","fresh observed identities")
+  require(fixed_rows["source_review"]["basename"]=="root-v38-execution-bound-source-review-20261021.json","separate canonical Root receipt")
+ derived.sort(key=lambda x:x["offset"])
+ require(row["slots"]==derived and row["literal_binding_count"]==len(derived),"all actual token-bound future slots")
+ require(len(derived)==[1,2,3,3,17][i],"future binding counts")
+ slot_rows.append(dict(kind=kinds[i],slots=derived))
+require(sum(len(x["slots"])for x in slot_rows[:4])==9 and len(slot_rows[4]["slots"])==17,"9 plus 17 exact future bindings")
+require(bindings["first_four_future_binding_total"]==9 and bindings["observed_new4_helper_future_binding_total"]==17,"binding aggregate")
+require(bindings["observed_helper_batch"]=="new4" and bindings["existing63_observed_helper_adaptation_required"] is True,"new4 helper only")
+texts=[b.decode("ascii")for b in bodies];bq,rt,bqa,rta,helper=texts
+require([s.count('"buildquery-launch.json"')for s in texts]==[2,2,1,4,1],"same fresh record everywhere")
+require(all("-retry1-" not in t["text"] and "-Retry1-" not in t["text"]for b in bodies for t in tok(b)if t["kind"]=="STRING"),"current V38 output identities fresh")
+require(all(s.count(markers["head"])==1 for s in texts),"all five heads unresolved once")
+require(all(s.count(markers["matrix"])==1 for s in (rt,bqa,rta,helper)),"all four matrices unresolved once")
+require(bqa.count(markers["bqHash"])==helper.count(markers["bqHash"])==1 and rta.count(markers["rtHash"])==1,"dependent constructor hashes unresolved")
+require(all(not re.fullmatch("[0-9A-Fa-f]+",v) for v in markers.values()),"markers fail actual hash/head identity")
+for s in (bq,rt):
+ require('batch in ("new4","existing63")' in s and '(4,58) if batch=="new4" else (63,1249)' in s,"complete two batch shapes")
+ require('assert inverse==original' in s,"complete grant inversion")
+ require('"groups"]'in s and '"actual_metadata_count"'in s,"group/count binding")
+ require('b"evidence/combined-native-batch-v34-prepared-20261020"' in s,"unchanged V34 launcher anchor")
+ require('275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15'in s,"original63 ordered grant pin")
+require('expected_groups<=64' in bq and 'review["catalog_groups"]==117 and review["catalog_declarations"]==2013'in bq,"64 cap and 117/2013 catalog")
+require('assert cfg["actual_metadata_count"] is None and cfg["qualification"] is False'in bq,"no metadata prediction on BuildQuery preparation")
+require('updates=dict(cfg["grant_provenance_updates"])'in bq and 'verify_pins(cfg["grant_provenance_updates"])'in bq and 'grant.update(updates)'in bq,"pinned generic provenance update")
+require('original=read(bc/"root-grant.json");grant=copy.deepcopy(original)'in rt and 'verify_pins(grant);state()'in rt,"RuntimeOnly retains complete accepted grant provenance")
+bq_tree=ast.parse(bq);fixed_node=assigned(bq_tree,"fixed")
+fixed_constants={ast.literal_eval(k):ast.literal_eval(v)for k,v in zip(fixed_node.keys,fixed_node.values)if isinstance(v,(ast.Constant,ast.List))}
+required_fixed={"initial_grant_max_age_seconds":300,"minimum_free_kib":16777216,"compile_outer_seconds":1320,"metadata_outer_seconds":30,"runtime_outer_actual_seconds":120,"owner_settle_seconds":10,"outer_controller_seconds":1800,"reuse_unsealed_original_compile_caches":False,"cache_mode":"fresh_batch","cache_seed_manifest_path":None,"cache_seed_manifest_sha256":None,"allow_seed_source_delta_paths":[],"mode":"BuildQuery","runtime_restoration_claim":False}
+for k,v in required_fixed.items():require(fixed_constants[k]==v,"strict grant gate "+k)
+require('cfg["diagnostic_continue"] is False and cfg["qualification"] is False and cfg["source_mutation_hold_released"] is False'in rt,"strict runtime request")
+rt_keys=ast.literal_eval(assigned(ast.parse(rt),"fixed_keys"))
+require(len(rt_keys)==29 and len(set(rt_keys))==29,"entire strict RuntimeOnly gate tuple")
+for k in required_fixed:
+ if k!="mode":require(k in rt_keys,"strict runtime retains "+k)
+require('runtime_launch=raw.replace(b"\\\'BuildQuery\\\'",b"\\\'RuntimeOnly\\\'",1)' in rt or "runtime_launch=raw.replace(b\"'BuildQuery'\",b\"'RuntimeOnly'\",1)" in rt,"single mode-only launcher projection")
+require('b"DiagnosticContinue" not in raw' in rt,"no diagnostic runtime")
+require('isinstance(runtime_cfg["root_runtime_review"],str)' in rta and 'grant["root_review"]==runtime_cfg["root_runtime_review"]'in rta,"narrative Root review string remains separate")
+require('runtime_source_review=runtime_cfg["runtime_constructor_source_review"]'in rta and 'cfg["runtime_constructor_source_review_sha256"]'in rta,"separate pinned source-review field")
+require('all(want["failed"]==[] for want in selected)'in rta and '(gp/"runtime.stderr.log").read_bytes()==b""'in rta,"strict all-pass and empty original stderr")
+require('sum(o["failed"]for o in observations)==0'in rta and 'product_qualification=False,source_mutation_hold_released=False'in rta,"no failed flags/product or source release")
+require('"v38_execution_bound_source_review"'in helper and '"v37_execution_bound_source_review"'not in helper,"new mandatory review key")
+require('job["status"]=="succeeded" and job["exitCode"]==0 and job["runnerAlive"] is False'in helper,"actual terminal success")
+require('isinstance(job["runnerProcessInstance"],str)'in helper and '"Original full-precision process creation instance"'in helper,"preserved precise original owner identity")
+helper_tree=ast.parse(helper);mapping=assigned(helper_tree,"job_mapping")
+require(isinstance(mapping,ast.Call)and [k.arg for k in mapping.keywords]==["id","runner_pid","launcher_pid","runner_process_instance","created_utc","completed_utc"],"six-field original job mapping")
+require(ast.literal_eval(assigned(helper_tree,"GROUPS"))==["native-node-file-handle-owner","native-node-fs-before-hook-continuation","native-vm-error-constructor-name","native-node-file-handle-transfer"],"new4 complete order")
+require('review["selected_declarations"]==58 and review["actual_metadata_count"] is None'in helper,"declared versus actual counts")
+require('require(len(out)==39 and out["native_phase_count"]==2*out["attempted_groups"] and actual_count>0'in helper,"39-field actual observation output contract")
+require('source_review["source_accepted"] is True and source_review["candidate_head"]==HEAD and source_review["matrix_sha256"]==MATRIX'in helper,"observed bound review identity")
+require('with OUTPUT.open("xb") as f:f.write(raw)'in helper and 'require(OUTPUT.read_bytes()==raw' in helper,"create-only exact helper output")
+catalog=doc(agg["catalog_provenance_contract"])
+for bk,ck in (("preserved_fixed_v36_history_keys","fixed_v36_provenance_keys_retained"),("preserved_new_v37_history_keys","new_v37_history_keys"),("current_intake_keys","standard_current_intake_keys"),("bounded_correction_keys","bounded_correction_keys")):
+ require(bindings[bk]==catalog[ck],"catalog provenance shape "+bk)
+require(len(bindings["preserved_fixed_v36_history_keys"])==5 and len(bindings["preserved_new_v37_history_keys"])==7,"all historical outcomes retained separately")
+require(bindings["required_new_grant_provenance_key"]==agg["required_new_grant_provenance_key"]=="v38_execution_bound_source_review","mandatory V38 source review")
+require(bindings["required_future_root_bound_source_review"]==dict(path=str(B/"evidence/root-v38-execution-bound-source-review-20261021.json"),bytes=None,sha256=None),"unissued Root review pin")
+# Original helper's three accepted intervals plus large executable audit tails.
+critical=[]
+prior_agg=doc(agg["prior_accepted_source_authorities"][1])
+for row in prior_agg["helper_critical_regions"]:
+ raw=olds[4][row["candidate_offset"]:row["candidate_offset"]+row["bytes"]]
+ require(sha(raw)==row["sha256"]and len(raw)==row["bytes"]and bodies[4].count(raw)==1,"complete prior helper critical interval")
+ r=dict(name=row["name"],baseline_offset=row["candidate_offset"],candidate_offset=bodies[4].index(raw),bytes=len(raw),sha256=sha(raw),byte_identical=True)
+ critical.append(r)
+require(critical==agg["helper_critical_regions"],"three exact accepted helper critical regions")
+additional=[]
+for i,first,last,label in ((2,130,None,"BQ complete artifact/raw metadata/serial/current-owner closure tail"),(3,161,297,"Runtime complete seals/artifacts/raw wire/UTC100ns original and current owners")):
+ ob=olds[i].splitlines(keepends=True);nb=bodies[i].splitlines(keepends=True)
+ a=b"".join(ob[first-1:last]);b=b"".join(nb[first-1:last])
+ require(a==b and len(a)>10000,"complete unchanged audit executable region")
+ additional.append(dict(kind=kinds[i],name=label,first_line=first,last_line=last,bytes=len(a),sha256=sha(a),byte_identical=True))
+for v in (hand,agg,bindings):
+ for key in ("target_executed","prefix_executed","constructor_executed","auditor_executed","helper_executed","native_executed","Main_written","execution_configuration_issued","execution_authority","runtime_authority","source_mutation_hold_released","qualification"):
+  require(v[key] is False,"source-only evidence has no "+key)
+require(hand["finite_validation"]["total_literal_edits"]==71 and hand["finite_validation"]["unchanged_full_line_helpers"]==37,"handoff finite totals")
+# Repeat only the exact read pin set to close the static snapshot, without any
+# original candidate process, compiler, native owner probe, or Main inspection.
+for row in list(seen.values()):read(row)
+checker=actual(__file__)
+report=dict(schema=1,status="independently_verified_unresolved_v38_execution_source_adapters",reviewer="/root/handover_review",checker=checker,packet_handoff=HAND,aggregate_finite_proof=AGG,binding_contract=BIND,accepted_predecessor_root_review=hand["accepted_predecessor_root_review"],sources=sources,total_literal_edits=71,string_literal_edits=67,numeric_source_size_edits=4,all_complete_raw_forward_and_inverses_exact=True,all_intermediate_hashes_exact=True,all_untouched_fragments_and_nonconstant_structure_exact=True,unchanged_full_line_helpers=37,helper_critical_regions=critical,additional_unchanged_audit_regions=additional,future_bindings=slot_rows,first_four_unresolved_bindings=9,helper_actual_only_bindings=17,new4_groups=4,new4_declared_controls=58,existing_groups=63,existing_declared_controls=1249,catalog_groups=117,catalog_declared_controls=2013,maximum_selected_groups=64,strict_gate_constants=required_fixed,runtime_strict_gate_keys=list(rt_keys),required_new_source_review="v38_execution_bound_source_review",preserved_v36_history_keys=bindings["preserved_fixed_v36_history_keys"],preserved_v37_history_keys=bindings["preserved_new_v37_history_keys"],runtime_root_review_is_string=True,runtime_constructor_source_review_is_distinct_pin=True,actual_future_head=None,actual_future_matrix=None,actual_future_job=None,actual_future_metadata_count=None,actual_future_runtime_outcome=None,observed_input_helper_scope="new4 only; existing63 requires separately reviewed adaptation",input_versions=len(seen),inputs=sorted(seen.values(),key=lambda r:r["path"].casefold()),source_only=True,target_executed=False,prefix_executed=False,constructor_executed=False,auditor_executed=False,helper_executed=False,catalog_preparer_executed=False,native_executed=False,Main_written=False,index_written=False,execution_configuration_issued=False,execution_authority=False,runtime_authority=False,source_mutation_hold_released=False,qualification=False)
+out=O/"source-proof.json";require(not out.exists(),"proof is create-only")
+raw=(json.dumps(report,indent=2)+"\n").encode("ascii")
+with out.open("xb")as f:f.write(raw)
+require(out.read_bytes()==raw,"own proof exact readback")
+print(json.dumps(dict(status=report["status"],proof=actual(out),checker=checker,source_count=5,finite_edits=71,helpers=37,critical_regions=3,additional_regions=2,input_versions=len(seen),future_bindings=26,target_executed=False)))

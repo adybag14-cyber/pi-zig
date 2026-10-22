@@ -1,0 +1,158 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_unresolved_v38_literal_execution_adapters",
+  "reviewer": "Root",
+  "all71_literal_changes_read": true,
+  "complete_baselines_previously_root_accepted": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-retry1-execution-bound-source-review-20261021.json",
+    "bytes": 8935,
+    "sha256": "67148BD40AA1DACA49B6575CD22853CCD56229D95517CC58E7897A89ABCA9F77"
+  },
+  "sources": [
+    {
+      "kind": "buildquery_constructor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37BuildQueryGrant-Retry1-20261021.py",
+        "bytes": 10109,
+        "sha256": "81FA8E7BA4DED5788F1618D393395666C82BC209791079DCCB3EEBDAEC6E9F58"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Prepare-ReviewedV38BuildQueryGrant-20261021.py",
+        "bytes": 10095,
+        "sha256": "3759AC9A4036009871D6FBF415AE9DFE06C8EF2E4D02CEF5FBFC64707A3B1B7D"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\buildquery-constructor-finite.json",
+        "bytes": 9867,
+        "sha256": "D713267D8E32D185B6ACAC4E71145E91818E1B150E571EBCD61088D34B2CEAFF"
+      },
+      "edits": 8,
+      "helpers": 7
+    },
+    {
+      "kind": "runtime_constructor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37RuntimeGrant-Retry1-20261021.py",
+        "bytes": 12513,
+        "sha256": "414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Prepare-ReviewedV38RuntimeGrant-20261021.py",
+        "bytes": 12499,
+        "sha256": "4F1968D82D71BA5CFBF35337131D0910B967B7CAD85CE42B393B732BE94AF3B9"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\runtime-constructor-finite.json",
+        "bytes": 12653,
+        "sha256": "DB57289F34AB3190A2C07CCDBB13FC64060D19340BEA83103685CF11C7F8E617"
+      },
+      "edits": 11,
+      "helpers": 8
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37CompleteBuildQuery-Retry1-20261021.py",
+        "bytes": 37268,
+        "sha256": "2C89B824BE10438684ECAB4AC72197B7A54F9218F15578F9F1A4EB6FEFDB4063"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Audit-PositiveV38CompleteBuildQuery-20261021.py",
+        "bytes": 37254,
+        "sha256": "EF936499EAC349E71715AF123C768F6C611E0B1F8ED8D8D4E780C63806BF2B2E"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\positive-buildquery-auditor-finite.json",
+        "bytes": 13206,
+        "sha256": "7070C12B81C81440B9A84E98A77EBEBFAE860F68C8411252C8502BF00EEB2189"
+      },
+      "edits": 12,
+      "helpers": 6
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37StrictRuntime-Retry1-20261021.py",
+        "bytes": 39946,
+        "sha256": "049C8CFE6053CDC7632BF44B57EB64BD8F220685AFB99FB029AC844EC3A4DC40"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Audit-PositiveV38StrictRuntime-20261021.py",
+        "bytes": 39911,
+        "sha256": "683467EBD73ED043A06E86A19547B7EE1C63FBB66AC85CF0B5ACBE0DD8F9A187"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\positive-runtime-auditor-finite.json",
+        "bytes": 15494,
+        "sha256": "E0522ADB18016930EE2CD178FDECBABF1B5E8CD29FAF00AB5078007C76EDDCD2"
+      },
+      "edits": 15,
+      "helpers": 6
+    },
+    {
+      "kind": "observed_new4_positive_input_helper",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV37New4PositiveBuildQueryAuditInputs-Retry1-20261021-unresolved.py",
+        "bytes": 18974,
+        "sha256": "8F0ECC3CAF504E858A29891E25BA78A0F06F258C4C4DEB1EDB87A11EF12DA344"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Prepare-ObservedV38New4PositiveBuildQueryAuditInputs-20261021-unresolved.py",
+        "bytes": 18939,
+        "sha256": "88D31C0905C52EEE080C7CC2FDBF32F0DC4F39C7A5BCDFCE9C01E3F1BF85AC17"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\observed-new4-positive-input-helper-finite.json",
+        "bytes": 26289,
+        "sha256": "9CA3426A7638F069358D6E27A3DF2E4C91A1CF56008FF75E34825EC88987C9B4"
+      },
+      "edits": 25,
+      "helpers": 10
+    }
+  ],
+  "aggregate_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 14308,
+    "sha256": "C46AFC69DBBE7C485D2E94A631EBF221611B46C28BFC6B68146E92212323C245"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\handoff.json",
+    "bytes": 14037,
+    "sha256": "22E7F27688223262F6FF78D0412E0D4447926E61738B66B6F92F055193D85777"
+  },
+  "binding_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\binding-contract.json",
+    "bytes": 14736,
+    "sha256": "1B1637547A8A3FAA792C45563F31A73A726067E18CE96BB648832BF6187C3C69"
+  },
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\source-adaptation-check.py",
+    "bytes": 15380,
+    "sha256": "282981EBB9DA11339656D97654489032594EE7B043164C51FF177F470D042EFA"
+  },
+  "finite_edits": 71,
+  "string_literal_edits": 67,
+  "numeric_source_size_literals": 4,
+  "all_intermediate_hashes_and_complete_raw_inverses": true,
+  "all_untouched_fragments_and_nonconstant_AST_equal": true,
+  "unchanged_helpers": 37,
+  "unchanged_complete_helper_regions": 3,
+  "first_four_sources_future_slots": 9,
+  "new4_actual_helper_slots": 17,
+  "native_strict_300_second_freshness_16GiB_serial_and_process_closure_gates_preserved": true,
+  "shape_groups": [
+    4,
+    63
+  ],
+  "shape_declarations": [
+    58,
+    1249
+  ],
+  "existing63_observed_helper_requires_separate_adaptation": true,
+  "independent_peer_pending": true,
+  "actual_head_matrix_and_runtime_bindings_unresolved": true,
+  "source_only": true,
+  "target_executed": false,
+  "native_execution_authorized": false,
+  "application_qualified": false
+}

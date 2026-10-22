@@ -1,0 +1,25 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\03956cbaa24b15338b92ace844b3d424\\test.exe",
+  "binary_sha256": "F616022108D4C57FC1FAC048BB35EC6FF6702C86A4C7632F6F657344B248B548",
+  "version": "0.16.0",
+  "actual_count": 13,
+  "tests": [
+    "native_vm_copy_data_properties_test.test.VM copy properties assign skips a deleted own key and preserves the existing target",
+    "native_vm_copy_data_properties_test.test.VM copy properties includes an initially hidden key made enumerable by a prior getter",
+    "native_vm_copy_data_properties_test.test.VM copy properties skips a key made nonenumerable before its value read",
+    "native_vm_copy_data_properties_test.test.VM copy properties spread and rest skip deleted slots without inherited fallback",
+    "native_vm_copy_data_properties_test.test.VM copy properties reads replacement values but never adds keys created after the snapshot",
+    "native_vm_copy_data_properties_test.test.VM copy properties keeps numeric string and symbol key order with live symbol descriptors",
+    "native_vm_copy_data_properties_test.test.VM copy properties preserves actual proxy descriptor Get and target Set order",
+    "native_vm_copy_data_properties_test.test.VM copy properties rest excludes string and symbol keys before descriptor lookup",
+    "native_vm_copy_data_properties_test.test.VM copy properties target setters can change later source descriptors",
+    "native_vm_copy_data_properties_test.test.VM copy properties spread and rest create own data slots without prototype setters",
+    "native_vm_copy_data_properties_test.test.VM copy properties ordinary descriptor and getter failures keep identity and stop later copies",
+    "native_vm_copy_data_properties_test.test.VM copy properties returned flagged DATA remains a copied value",
+    "native_vm_copy_data_properties_test.test.VM copy properties actual fatal getter skips later value catch and finally"
+  ],
+  "group": "native-vm-copy-data-properties",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

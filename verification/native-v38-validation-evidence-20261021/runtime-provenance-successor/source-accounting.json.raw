@@ -1,0 +1,632 @@
+{
+  "schema": 1,
+  "status": "bounded_source_only_runtime_provenance_successor_static_accounting",
+  "inputs": {
+    "canonical_predecessor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py",
+      "bytes": 39911,
+      "sha256": "F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07"
+    },
+    "original_snapshot": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-sourceonly-20261021\\original\\Audit-PositiveV38StrictRuntime-20261021.py",
+      "bytes": 39911,
+      "sha256": "F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07"
+    },
+    "candidate": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-sourceonly-20261021\\candidate\\Audit-PositiveV38StrictRuntime-Provenance-20261021.py",
+      "bytes": 41516,
+      "sha256": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+    },
+    "proposal": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-sourceonly-20261021\\proposal.json",
+      "bytes": 4071,
+      "sha256": "187566AEE2793EBE5439D9033D2F4B5E3E1198901B4E79BBFA853F85E519B3D6"
+    },
+    "accepted_buildquery_auditor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38CompleteBuildQuery-20261021.py",
+      "bytes": 37254,
+      "sha256": "6BCBE32702657CD2B5F62E8779CCF585B86D7A8CFFC04C2EB6FE25B4D6E41A9E"
+    },
+    "root_catalog_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-source-acceptance-20261021.json",
+      "bytes": 4758,
+      "sha256": "911DCC32CF09C1610CE045572546668FF470EE62E9597DFC4D3DA6919480228B"
+    },
+    "new4_preparation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\preparation-review.json",
+      "bytes": 545118,
+      "sha256": "35A3A1E94699B3413179540C2C271A59E4924FF6149DE74FD662BBF3449D1D14"
+    },
+    "regression_preparation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-regression63-prepared-20261021\\preparation-review.json",
+      "bytes": 547326,
+      "sha256": "9362D1498B75DFEC3E452B1E2F06C8D1C526C16E615DC0F40C17C2C147816A58"
+    },
+    "common_matrix": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\groups.json",
+      "bytes": 1104585,
+      "sha256": "8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03"
+    },
+    "emitted_catalog_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-emitted-catalog-peer-20261021\\peer.json",
+      "bytes": 11113,
+      "sha256": "B69569A2987B1489F3582E72062CE90570FF558C93A3CD3AA5F40A02481612E3"
+    },
+    "original_failed_inputs": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\independent-positive-runtime-audit-inputs.json",
+      "bytes": 6496,
+      "sha256": "2636533F9B87A9FDC5737C239C0A7B230294359621EF4F8AB958B36EF457C6F7"
+    },
+    "original_audit_negative": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\negative.json",
+      "bytes": 5430,
+      "sha256": "194982710772F0E5F5E5012DFA783FC19F7D71DF327F1034A2799131C13CE2EF"
+    },
+    "original_negative_source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\original-auditor.py",
+      "bytes": 39911,
+      "sha256": "F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07"
+    },
+    "original_negative_inputs": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\original-issued-inputs.json",
+      "bytes": 6496,
+      "sha256": "2636533F9B87A9FDC5737C239C0A7B230294359621EF4F8AB958B36EF457C6F7"
+    },
+    "original_stderr": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\stderr.log",
+      "bytes": 1674,
+      "sha256": "523094075D3753A14F0732C1DE7FC3B29257EC8CA0CA3AA7DAADD9E7F7A18005"
+    },
+    "original_job_observation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\job-observation.json",
+      "bytes": 3359,
+      "sha256": "422AE27D68B89B8D4D6359667D847502885730A71E446BC3B902955F89AA263D"
+    },
+    "historical_snapshot": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+    }
+  },
+  "finite_edit": {
+    "count": 1,
+    "original_lines": [
+      90,
+      91
+    ],
+    "candidate_lines": [
+      90,
+      101
+    ],
+    "delta_bytes": 1605,
+    "complete_forward": true,
+    "complete_inverse": true,
+    "all_outside_bytes_identical": true
+  },
+  "unchanged_helpers": {
+    "require": {
+      "start_line": 34,
+      "end_line": 35,
+      "bytes": 64,
+      "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB"
+    },
+    "utc_ticks": {
+      "start_line": 37,
+      "end_line": 45,
+      "bytes": 576,
+      "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245"
+    },
+    "read": {
+      "start_line": 47,
+      "end_line": 47,
+      "bytes": 77,
+      "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E"
+    },
+    "digest": {
+      "start_line": 48,
+      "end_line": 52,
+      "bytes": 151,
+      "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC"
+    },
+    "pin": {
+      "start_line": 53,
+      "end_line": 53,
+      "bytes": 94,
+      "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C"
+    },
+    "verify_pins": {
+      "start_line": 54,
+      "end_line": 61,
+      "bytes": 568,
+      "sha256": "5576E465D77460F5AE653A28E3513FBCF8A935CF87A29D444F5239CB153B3EA6"
+    }
+  },
+  "unchanged_regions": [
+    {
+      "role": "configuration_helpers_and_actual_launch_chain",
+      "original_lines": [
+        1,
+        89
+      ],
+      "candidate_lines": [
+        1,
+        89
+      ],
+      "bytes": 8101,
+      "sha256": "EE85B68FFDDB7D21CD3E75AD6B10A33F99970E87D89FEF8EF3A55F1A4365CBA5",
+      "byte_identical": true
+    },
+    {
+      "role": "catalog_parent_and_runtime_grant_gates",
+      "original_lines": [
+        92,
+        166
+      ],
+      "candidate_lines": [
+        102,
+        176
+      ],
+      "bytes": 12817,
+      "sha256": "CBEA06DFAAB8308F0E422A570F08CA57A55B9648FC7EDD9D43D971AA2FCC90E7",
+      "byte_identical": true
+    },
+    {
+      "role": "whole_current_source_and_artifact_seals",
+      "original_lines": [
+        167,
+        203
+      ],
+      "candidate_lines": [
+        177,
+        213
+      ],
+      "bytes": 3825,
+      "sha256": "3A98A9326051BA502B4108FDA5BA75460C87C806C7FB2EE16D0F0772ACB3935A",
+      "byte_identical": true
+    },
+    {
+      "role": "complete_native_controls_and_raw_protocol",
+      "original_lines": [
+        204,
+        264
+      ],
+      "candidate_lines": [
+        214,
+        274
+      ],
+      "bytes": 7886,
+      "sha256": "4A9388FA818B9F2D09901DE51E8529C21D49A1ADFF4A5A19C13DF911198D11F2",
+      "byte_identical": true
+    },
+    {
+      "role": "original_outer_job_100ns_absence_and_final_write",
+      "original_lines": [
+        265,
+        301
+      ],
+      "candidate_lines": [
+        275,
+        311
+      ],
+      "bytes": 7101,
+      "sha256": "DA04C644DEA2D828546AB82A5829AF6A86F1745DED8B497C4F6CCD152F5D441F",
+      "byte_identical": true
+    }
+  ],
+  "old_assertion_and_require_count": 158,
+  "all_original_assertions_and_require_calls_retained": true,
+  "added_require_count": 3,
+  "imports_unchanged": true,
+  "module_AST_outside_finite_edit_unchanged": true,
+  "input_contract": {
+    "required_cfg_fields": [
+      "actual_metadata_count",
+      "audit_execution_authorized",
+      "auditor_sha256",
+      "batch",
+      "build_control",
+      "build_final_sha256",
+      "build_proof",
+      "build_result_sha256",
+      "buildquery_launch_sha256",
+      "candidate_head",
+      "control",
+      "declared_controls",
+      "declared_groups",
+      "diagnostic_continue",
+      "independent_build_closure_sha256",
+      "job",
+      "job_observation_sha256",
+      "metadata_acceptance_sha256",
+      "native_execution_authorized",
+      "outer_absence_sha256",
+      "outer_pid",
+      "outer_sha256",
+      "preparation",
+      "preparation_review_sha256",
+      "product_qualification",
+      "proof",
+      "root_buildquery_acceptance_sha256",
+      "runtime_before_sha256",
+      "runtime_configuration_sha256",
+      "runtime_constructor_source_review_sha256",
+      "runtime_final_sha256",
+      "runtime_grant_launch_adaptation_sha256",
+      "runtime_grant_preparer",
+      "runtime_grant_sha256",
+      "runtime_launch_sha256",
+      "runtime_result_sha256",
+      "seal_counts",
+      "selected",
+      "source_mutation_hold_released",
+      "status"
+    ],
+    "new_fields": [],
+    "changed_value_for_future_issuance": "auditor_sha256",
+    "all_original_runtime_observation_fields_unchanged": true,
+    "original_config_preserved": true
+  },
+  "historical_validation": {
+    "reviews": [
+      {
+        "role": "new4_preparation",
+        "pin": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\preparation-review.json",
+          "bytes": 545118,
+          "sha256": "35A3A1E94699B3413179540C2C271A59E4924FF6149DE74FD662BBF3449D1D14"
+        },
+        "historical_mappings": [
+          {
+            "batch": "new4",
+            "role": "fixture_unchanged_root_native-node-file-handle-owner",
+            "original": {
+              "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+              "bytes": 28378,
+              "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+            },
+            "immutable_snapshot": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+              "bytes": 28378,
+              "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+            },
+            "raw_commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+            "exact_original_bytes": true
+          },
+          {
+            "batch": "regression63",
+            "role": "fixture_unchanged_root_native-node-file-handle-owner",
+            "original": {
+              "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+              "bytes": 28378,
+              "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+            },
+            "immutable_snapshot": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+              "bytes": 28378,
+              "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+            },
+            "raw_commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+            "exact_original_bytes": true
+          }
+        ],
+        "retained_provenance_relationships": {
+          "v37_new4_fixture_unchanged_root_native-node-file-handle-owner": {
+            "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+            "bytes": 28378,
+            "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+          },
+          "v37_regression63_fixture_unchanged_root_native-node-file-handle-owner": {
+            "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+            "bytes": 28378,
+            "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+          }
+        },
+        "remaining_top_fields": [
+          "actual_metadata_count",
+          "all_driver_classifier_and_strict_gates_unchanged",
+          "auditor",
+          "auditor_change",
+          "batch",
+          "candidate_head",
+          "catalog_declarations",
+          "catalog_groups",
+          "classifier",
+          "combined_build_source_peer",
+          "complete_partition",
+          "driver",
+          "exact_intake_inventory",
+          "execution_authority",
+          "existing_named_control_lists_and_selected63_order_exact",
+          "exotic_correction_commit",
+          "matrix",
+          "matrix_refresh_adaptation",
+          "metadata_auditor_adaptation",
+          "new_dependency_rows",
+          "new_groups",
+          "new_intake_commits",
+          "new_source_roots_are_original_historical_pins",
+          "old_catalog_complete_structural_and_byte_inverse",
+          "old_dependency_prefix_except_reviewed_hashes_exact",
+          "old_dependency_rows_retained",
+          "old_group_objects_except_reviewed_source_pin_hashes_exact",
+          "partition_union_declarations",
+          "partition_union_groups",
+          "prepared_utc",
+          "preserved_declarations",
+          "preserved_groups",
+          "prior_metadata_transferred",
+          "prior_v34_accepted_actual_metadata_count",
+          "prior_v34_diagnostic_completed",
+          "prior_v34_diagnostic_flagged",
+          "prior_v34_diagnostic_incomplete",
+          "prior_v34_diagnostic_passed",
+          "prior_v34_diagnostic_started",
+          "prior_v34_diagnostic_unstarted",
+          "prior_v34_strict_flagged",
+          "prior_v34_strict_started",
+          "prior_v34_strict_unstarted",
+          "prior_v35_actual_partial_metadata_count",
+          "prior_v35_actual_tests_started",
+          "prior_v35_attempted_groups",
+          "prior_v35_granted_groups",
+          "prior_v35_intake_commits",
+          "prior_v35_original_first_compile_negative_preserved",
+          "prior_v35_unstarted_groups",
+          "prior_v36_accepted_actual_metadata_count",
+          "prior_v36_buildquery_completed_groups",
+          "prior_v36_buildquery_granted_groups",
+          "prior_v36_buildquery_runtime_tests_started",
+          "prior_v36_complete_buildquery_and_original_strict_runtime_negative_preserved",
+          "prior_v36_intake_commits",
+          "prior_v36_metadata_counts",
+          "prior_v36_original_product_qualification",
+          "prior_v36_original_runtime_qualification",
+          "prior_v36_original_strict_empty_stderr_and_all_tests_passing_gates_passed",
+          "prior_v36_runtime_attempted_groups",
+          "prior_v36_runtime_completed",
+          "prior_v36_runtime_failed",
+          "prior_v36_runtime_granted_groups",
+          "prior_v36_runtime_passed",
+          "prior_v36_runtime_started",
+          "prior_v36_runtime_unstarted",
+          "prior_v36_runtime_unstarted_groups",
+          "prior_v37_initial_admission_actual_metadata_count",
+          "prior_v37_initial_admission_attempted_groups",
+          "prior_v37_initial_admission_granted_groups",
+          "prior_v37_initial_admission_retry1_buildquery_and_strict_negative_preserved",
+          "prior_v37_initial_admission_unstarted_groups",
+          "prior_v37_initial_freshness_rejection_preserved",
+          "prior_v37_intake_commits",
+          "prior_v37_retry1_accepted_actual_metadata_count",
+          "prior_v37_retry1_buildquery_completed_groups",
+          "prior_v37_retry1_buildquery_granted_groups",
+          "prior_v37_retry1_buildquery_runtime_tests_started",
+          "prior_v37_retry1_failed_indices",
+          "prior_v37_retry1_metadata_counts",
+          "prior_v37_retry1_original_product_qualification",
+          "prior_v37_retry1_original_runtime_qualification",
+          "prior_v37_retry1_original_strict_empty_stderr_and_all_tests_passing_gates_passed",
+          "prior_v37_retry1_runtime_attempted_groups",
+          "prior_v37_retry1_runtime_completed",
+          "prior_v37_retry1_runtime_failed",
+          "prior_v37_retry1_runtime_granted_groups",
+          "prior_v37_retry1_runtime_passed",
+          "prior_v37_retry1_runtime_started",
+          "prior_v37_retry1_runtime_unstarted",
+          "prior_v37_retry1_runtime_unstarted_groups",
+          "provenance",
+          "qualification",
+          "quickjs_correction_commit",
+          "review",
+          "runtime_authority",
+          "schema",
+          "selected_current_source_roots",
+          "selected_declarations",
+          "selected_group_names",
+          "selected_groups",
+          "selected_order_note",
+          "source_dependency_inventory",
+          "source_integration_commit",
+          "source_inventory_refresh_adaptation",
+          "source_pin_changes",
+          "status",
+          "uv_correction_commit",
+          "whole_dependency_pin_changes"
+        ],
+        "provenance_entries": 1643
+      },
+      {
+        "role": "regression_preparation",
+        "pin": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-regression63-prepared-20261021\\preparation-review.json",
+          "bytes": 547326,
+          "sha256": "9362D1498B75DFEC3E452B1E2F06C8D1C526C16E615DC0F40C17C2C147816A58"
+        },
+        "historical_mappings": [
+          {
+            "batch": "new4",
+            "role": "fixture_unchanged_root_native-node-file-handle-owner",
+            "original": {
+              "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+              "bytes": 28378,
+              "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+            },
+            "immutable_snapshot": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+              "bytes": 28378,
+              "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+            },
+            "raw_commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+            "exact_original_bytes": true
+          },
+          {
+            "batch": "regression63",
+            "role": "fixture_unchanged_root_native-node-file-handle-owner",
+            "original": {
+              "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+              "bytes": 28378,
+              "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+            },
+            "immutable_snapshot": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+              "bytes": 28378,
+              "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+            },
+            "raw_commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+            "exact_original_bytes": true
+          }
+        ],
+        "retained_provenance_relationships": {
+          "v37_new4_fixture_unchanged_root_native-node-file-handle-owner": {
+            "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+            "bytes": 28378,
+            "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+          },
+          "v37_regression63_fixture_unchanged_root_native-node-file-handle-owner": {
+            "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+            "bytes": 28378,
+            "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+          }
+        },
+        "remaining_top_fields": [
+          "actual_metadata_count",
+          "all_driver_classifier_and_strict_gates_unchanged",
+          "auditor",
+          "auditor_change",
+          "batch",
+          "candidate_head",
+          "catalog_declarations",
+          "catalog_groups",
+          "classifier",
+          "combined_build_source_peer",
+          "complete_partition",
+          "driver",
+          "exact_intake_inventory",
+          "execution_authority",
+          "existing_named_control_lists_and_selected63_order_exact",
+          "exotic_correction_commit",
+          "matrix",
+          "matrix_refresh_adaptation",
+          "metadata_auditor_adaptation",
+          "new_dependency_rows",
+          "new_groups",
+          "new_intake_commits",
+          "new_source_roots_are_original_historical_pins",
+          "old_catalog_complete_structural_and_byte_inverse",
+          "old_dependency_prefix_except_reviewed_hashes_exact",
+          "old_dependency_rows_retained",
+          "old_group_objects_except_reviewed_source_pin_hashes_exact",
+          "partition_union_declarations",
+          "partition_union_groups",
+          "prepared_utc",
+          "preserved_declarations",
+          "preserved_groups",
+          "prior_metadata_transferred",
+          "prior_v34_accepted_actual_metadata_count",
+          "prior_v34_diagnostic_completed",
+          "prior_v34_diagnostic_flagged",
+          "prior_v34_diagnostic_incomplete",
+          "prior_v34_diagnostic_passed",
+          "prior_v34_diagnostic_started",
+          "prior_v34_diagnostic_unstarted",
+          "prior_v34_strict_flagged",
+          "prior_v34_strict_started",
+          "prior_v34_strict_unstarted",
+          "prior_v35_actual_partial_metadata_count",
+          "prior_v35_actual_tests_started",
+          "prior_v35_attempted_groups",
+          "prior_v35_granted_groups",
+          "prior_v35_intake_commits",
+          "prior_v35_original_first_compile_negative_preserved",
+          "prior_v35_unstarted_groups",
+          "prior_v36_accepted_actual_metadata_count",
+          "prior_v36_buildquery_completed_groups",
+          "prior_v36_buildquery_granted_groups",
+          "prior_v36_buildquery_runtime_tests_started",
+          "prior_v36_complete_buildquery_and_original_strict_runtime_negative_preserved",
+          "prior_v36_intake_commits",
+          "prior_v36_metadata_counts",
+          "prior_v36_original_product_qualification",
+          "prior_v36_original_runtime_qualification",
+          "prior_v36_original_strict_empty_stderr_and_all_tests_passing_gates_passed",
+          "prior_v36_runtime_attempted_groups",
+          "prior_v36_runtime_completed",
+          "prior_v36_runtime_failed",
+          "prior_v36_runtime_granted_groups",
+          "prior_v36_runtime_passed",
+          "prior_v36_runtime_started",
+          "prior_v36_runtime_unstarted",
+          "prior_v36_runtime_unstarted_groups",
+          "prior_v37_initial_admission_actual_metadata_count",
+          "prior_v37_initial_admission_attempted_groups",
+          "prior_v37_initial_admission_granted_groups",
+          "prior_v37_initial_admission_retry1_buildquery_and_strict_negative_preserved",
+          "prior_v37_initial_admission_unstarted_groups",
+          "prior_v37_initial_freshness_rejection_preserved",
+          "prior_v37_intake_commits",
+          "prior_v37_retry1_accepted_actual_metadata_count",
+          "prior_v37_retry1_buildquery_completed_groups",
+          "prior_v37_retry1_buildquery_granted_groups",
+          "prior_v37_retry1_buildquery_runtime_tests_started",
+          "prior_v37_retry1_failed_indices",
+          "prior_v37_retry1_metadata_counts",
+          "prior_v37_retry1_original_product_qualification",
+          "prior_v37_retry1_original_runtime_qualification",
+          "prior_v37_retry1_original_strict_empty_stderr_and_all_tests_passing_gates_passed",
+          "prior_v37_retry1_runtime_attempted_groups",
+          "prior_v37_retry1_runtime_completed",
+          "prior_v37_retry1_runtime_failed",
+          "prior_v37_retry1_runtime_granted_groups",
+          "prior_v37_retry1_runtime_passed",
+          "prior_v37_retry1_runtime_started",
+          "prior_v37_retry1_runtime_unstarted",
+          "prior_v37_retry1_runtime_unstarted_groups",
+          "provenance",
+          "qualification",
+          "quickjs_correction_commit",
+          "review",
+          "runtime_authority",
+          "schema",
+          "selected_current_source_roots",
+          "selected_declarations",
+          "selected_group_names",
+          "selected_groups",
+          "selected_order_note",
+          "source_dependency_inventory",
+          "source_integration_commit",
+          "source_inventory_refresh_adaptation",
+          "source_pin_changes",
+          "status",
+          "uv_correction_commit",
+          "whole_dependency_pin_changes"
+        ],
+        "provenance_entries": 1643
+      }
+    ],
+    "git_repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+    "raw_commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+    "blob_path": "src/native_node_file_handle_owner_test.zig",
+    "raw_git_bytes": 28378,
+    "raw_git_sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+    "snapshot_raw_git_complete_equality": true,
+    "original_main_path_not_read": true,
+    "current_owner_matrix_row": {
+      "path": "src/native_node_file_handle_owner_test.zig",
+      "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+    },
+    "current_owner_live_bytes_checked_by_this_review": false
+  },
+  "preserved_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\negative.json",
+    "bytes": 5430,
+    "sha256": "194982710772F0E5F5E5012DFA783FC19F7D71DF327F1034A2799131C13CE2EF"
+  },
+  "source_only": true,
+  "candidate_or_prefix_executed": false,
+  "constructor_or_auditor_executed": false,
+  "native_executed": false,
+  "Main_accessed": false,
+  "configuration_issued": false,
+  "runtime_acceptance": false,
+  "qualification": false
+}

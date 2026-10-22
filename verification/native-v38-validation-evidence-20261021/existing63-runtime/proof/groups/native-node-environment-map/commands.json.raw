@@ -1,0 +1,62 @@
+{
+  "mode": "RuntimeOnly",
+  "group": "native-node-environment-map",
+  "compile": [
+    "build",
+    "build-native-node-environment-map",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-Ddiagnostic-tests=false",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--prefix",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-environment-map\\installed",
+    "--cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache",
+    "--global-cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\global-cache",
+    "--summary",
+    "all"
+  ],
+  "metadata": [
+    "--listen=-"
+  ],
+  "runtime": [
+    "--listen=-"
+  ],
+  "expected_names": [
+    "native_node_environment_map_test.test.native environment map starts empty without exposing a detached key snapshot",
+    "native_node_environment_map_test.test.native environment map copies caller key and value storage before publication",
+    "native_node_environment_map_test.test.native environment map replacement constructs the original long temporary key",
+    "native_node_environment_map_test.test.native environment map Get constructs and retires a long C string lookup key",
+    "native_node_environment_map_test.test.native environment map Query constructs the same real temporary even for an absent key",
+    "native_node_environment_map_test.test.native environment map Get unlocks before its owned value survives a real replacement",
+    "native_node_environment_map_test.test.native environment map JS Get retains both original native string copies",
+    "native_node_environment_map_test.test.native environment map missing Get still allocates and retires its long temporary key",
+    "native_node_environment_map_test.test.native environment map Get and Query use C prefixes while Set retains full spans",
+    "native_node_environment_map_test.test.native environment map Delete selects the full span independently of C prefix lookups",
+    "native_node_environment_map_test.test.native environment map uses the original case sensitive map on admitted platforms",
+    "native_node_environment_map_test.test.native environment map enumeration follows the actual original standard container after growth and erase",
+    "native_node_environment_map_test.test.native environment map Clone copies actual entries before independent mutation",
+    "native_node_environment_map_test.test.native environment map enumeration retains its native owner after caller release",
+    "native_node_environment_map_test.test.native environment map mutation guard independently retains the live native table",
+    "native_node_environment_map_test.test.native environment map retained store survives full runtime and caller domain retirement",
+    "native_node_environment_map_test.test.native environment map actual workers share a mutex and domain after runtime retirement",
+    "native_node_environment_map_test.test.native environment map Clone allocations belong to the actual destination domain",
+    "native_node_environment_map_test.test.native environment map empty keys are ignored but empty values remain real entries",
+    "native_node_environment_map_test.test.native environment map native retry leaves actual pending and VM OOM occurrence untouched",
+    "native_node_environment_map_test.test.native environment map actual short string lookup needs no artificial heap allocation",
+    "native_node_environment_map_test.test.native environment map Delete constructs its real long span temporary before erase"
+  ],
+  "expected_count": 22,
+  "named_controls": 22,
+  "source_seal_scope": "whole_batch",
+  "cache_authority": "One initially fresh private cache pair; serial exact-head group compilation; no seed lineage",
+  "compile_seconds": 1320,
+  "metadata_seconds": 30,
+  "runtime_whole_group_seconds": 120,
+  "pipe_settle_seconds": 10,
+  "installed_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-environment-map\\installed\\bin\\test.exe",
+  "installed_pdb": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-environment-map\\installed\\bin\\test.pdb"
+}

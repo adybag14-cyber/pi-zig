@@ -1,0 +1,99 @@
+urce declarations or transferred to another head. \"\n \"The initial catalog schema failure and original new4 positive-auditor provenance failure remain separately preserved non-native attempts; \"\n \"the accepted new4 runtime is the unchanged original run, not a rerun. \"\n \"All prior history and the complete old checkpoint are retained. This proposal changes only progress and adds immutable evidence. \"\n \"Application qualification, bridge removal, publication and new source/native authority remain false.\")",
+    "after": " \"V38 retains separately accepted fresh BuildQuery metadata for new4(61) and original63(1285) on014062. \"\n \"The unchanged original new4 strict runtime is accepted. Original63 first had a zero-native prelaunch freshness rejection, \"\n \"then a closed strict partial native failure:17 of63 groups ran,321 tests completed,320 passed, one failed, and964 tests in46 groups were unstarted. \"\n \"The first16 group results remain partial_batch_not_admissible, not independently accepted. \"\n \"Seven observed attempts are appended, including three non-native negatives; only the actual partial native failure extends native-negative history. \"\n \"All original catalog/auditor/helper/preparer/static evidence and the complete old checkpoint are retained; inspection-only negatives add no validation attempts. \"\n \"Metadata is recorded per original cohort and never transferred to another head. This proposal changes only progress and adds immutable evidence. \"\n \"Application qualification, bridge removal, publication and new source/native authority remain false.\")"
+  },
+  {
+    "label": "Scoped negative checkpoint identity",
+    "before": " \"selected_native_runtime_accepted_for_this_head\":True,\"metadata_transferred_to_another_head\":False,",
+    "after": " \"selected_native_runtime_accepted_for_this_head\":False,\"new4_selected_native_runtime_accepted\":True,\n \"original63_partial_runtime_negative_closed\":True,\"original63_prelaunch_zero_native_negative_preserved\":True,\n \"metadata_transferred_to_another_head\":False,"
+  },
+  {
+    "label": "Eight replaced top-level keys",
+    "before": "            \"next_native_batch\",\"preserved_attempts\",\"execution_checkpoint_history\"}",
+    "after": "            \"next_native_batch\",\"preserved_attempts\",\"execution_checkpoint_history\",\"retained_recent_native_negatives\"}"
+  },
+  {
+    "label": "Retain native-negative prefix and append only actual native failure",
+    "before": "require(updated[\"retained_recent_native_negatives\"]==old[\"retained_recent_native_negatives\"],\"non-native failures do not alter native-negative history\")",
+    "after": "require(updated[\"retained_recent_native_negatives\"][:-1]==old[\"retained_recent_native_negatives\"] and\n        updated[\"retained_recent_native_negatives\"][-1]==native_negative_record,\"only actual partial native failure extends native-negative history\")"
+  },
+  {
+    "label": "Exact seven attempts and one native-negative increment",
+    "before": "increments = {\"integrated_source_units\":0,\"preserved_attempts\":6,\"retained_recent_native_negatives\":0,\"execution_checkpoint_history\":1}",
+    "after": "increments = {\"integrated_source_units\":0,\"preserved_attempts\":7,\"retained_recent_native_negatives\":1,\"execution_checkpoint_history\":1}"
+  },
+  {
+    "label": "Inverse wording matches eight restored keys",
+    "before": "restore only the seven replaced keys",
+    "after": "restore only the eight replaced keys"
+  },
+  {
+    "label": "Truthful native-negative history report",
+    "before": " \"source_build_paths\":0,\"native_negative_history_unchanged\":True,\"qualification\":False,",
+    "after": " \"source_build_paths\":0,\"native_negative_history_prefix_unchanged\":True,\n \"native_negative_records_added\":1,\"non_native_negative_records\":3,\"observed_attempts_added\":7,\"qualification\":False,"
+  },
+  {
+    "label": "Negative archive index scope",
+    "before": "\"exact_closed_v38_positive_phase_and_original_non_native_negative_archive\"",
+    "after": "\"exact_closed_v38_new4_positive_and_original63_partial_negative_archive\""
+  },
+  {
+    "label": "Ten represented bookends",
+    "before": "\"represented_original_bookend_files\":8",
+    "after": "\"represented_original_bookend_files\":10"
+  },
+  {
+    "label": "Ten less compressed counterparts",
+    "before": "\"separately_archived_raw_bookend_files\":8-2*len(seal_mappings)",
+    "after": "\"separately_archived_raw_bookend_files\":10-2*len(seal_mappings),\n \"prelaunch_bookend_files_retained_raw\":2,\"maximum_selected_equal_pair_gzip_count\":4"
+  },
+  {
+    "label": "Distinct unissued intake proposal",
+    "before": "\"exact_v38_positive_progress_archive_intake_unissued\"",
+    "after": "\"exact_v38_partial_negative_progress_archive_intake_unissued\""
+  },
+  {
+    "label": "Truthful manifest phase requirements",
+    "before": " \"complete_original63_success_required_and_verified\":True,\"all_original_negatives_preserved\":True,",
+    "after": " \"complete_original63_buildquery_success_verified\":True,\"original63_partial_runtime_negative_closed\":True,\n \"original63_zero_native_prelaunch_negative_preserved\":True,\"all_original_negatives_preserved\":True,"
+  },
+  {
+    "label": "Distinct preparation review status",
+    "before": "\"source_only_exact_v38_positive_progress_archive_prepared\"",
+    "after": "\"source_only_exact_v38_partial_negative_progress_archive_prepared\""
+  },
+  {
+    "label": "Truthful preparation review phase outcomes",
+    "before": " \"original63_both_success_acceptances_verified\":True,\"all_original_evidence_raw_bytes_preserved\":True,",
+    "after": " \"original63_buildquery_accepted\":True,\"original63_partial_runtime_negative_closed\":True,\n \"original63_prelaunch_zero_native_negative_preserved\":True,\"all_original_evidence_raw_bytes_preserved\":True,"
+  },
+  {
+    "label": "Ten bookends in preparation review",
+    "before": "\"represented_original_bookends\":8",
+    "after": "\"represented_original_bookends\":10"
+  },
+  {
+    "label": "Freeze102 supplemental originals without changing314 basis",
+    "before": "FIXED = {\n",
+    "after": "FIXED = {\n \"preservation\": (W/\"verification/v38-partial-negative-progress-archive-preparer-sourceonly-20261022/supplemental-preservation-inputs.json\",32895,\"4124B26CB6722E5426FF051C978A4D715B3015442E5722DA51A76E4C9F320509\"),\n"
+  },
+  {
+    "label": "Admit exact immutable supplemental preservation inventory",
+    "before": "\nexact(fixed(\"policy\"))\n",
+    "after": "\nexact(fixed(\"policy\"))\npreservation = decode(exact(fixed(\"preservation\")))\nrequire(preservation[\"schema\"]==1 and preservation[\"candidate_head\"]==HEAD and\n        preservation[\"required_raw_file_count\"]==len(preservation[\"required_raw_files\"])==102 and\n        len(preservation[\"role_pins\"])==13,\"exact supplemental immutable source/negative preservation basis\")\n"
+  },
+  {
+    "label": "Separate Root source approval binds supplemental scope",
+    "before": "require(source_review[\"partial_inventory\"]==fixed(\"inventory\") and source_review[\"progress_plan\"]==fixed(\"plan\"),\"source acceptance fixed policy\")",
+    "after": "require(source_review[\"partial_inventory\"]==fixed(\"inventory\") and source_review[\"progress_plan\"]==fixed(\"plan\"),\"source acceptance fixed policy\")\nrequire(source_review[\"supplemental_preservation_inventory\"]==fixed(\"preservation\"),\"Root exact supplemental preservation scope\")"
+  },
+  {
+    "label": "Require every supplemental source and negative raw version",
+    "before": "membership = copy_plan[\"observed_phase_membership\"]",
+    "after": "for required in preservation[\"required_raw_files\"]:\n    require(archived_pin(required[\"path\"])==required and\n            row_by_path[required[\"path\"].casefold()][\"representation\"]==\"raw_byte_exact\",\"all102 supplemental originals retained raw\")\nfor required in preservation[\"role_pins\"].values():\n    require(required in preservation[\"required_raw_files\"],\"selected observed roles are immutable archived originals\")\n\nmembership = copy_plan[\"observed_phase_membership\"]"
+  },
+  {
+    "label": "Retain exact preservation inventory in proposal",
+    "before": "auxiliary = [\n",
+    "after": "auxiliary = [\n (\"supplemental-preservation-inputs.json\",fixed(\"preservation\"),exact(fixed(\"preservation\"))),\n"
+  }
+]

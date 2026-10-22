@@ -1,0 +1,31 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\a8787d658b73c66f9aa59509218c5051\\test.exe",
+  "binary_sha256": "20AAAEEAB3C471096B50E5D6804DBB71021B258B92C7C52B9459323B5E960171",
+  "version": "0.16.0",
+  "actual_count": 19,
+  "tests": [
+    "native_node_process_warning_test.test.native process warning disabled Environment skips live emitWarning getter",
+    "native_node_process_warning_test.test.native process warning stopping Environment skips live emitWarning getter",
+    "native_node_process_warning_test.test.native process warning nonfunctions return false without coercion",
+    "native_node_process_warning_test.test.native process warning direct call preserves native process receiver and one argument",
+    "native_node_process_warning_test.test.native process warning nonempty type adds exactly the second argument",
+    "native_node_process_warning_test.test.native process warning code is ignored when type is empty",
+    "native_node_process_warning_test.test.native process warning nonempty type and code add exactly three arguments",
+    "native_node_process_warning_test.test.native process warning explicit UTF8 string views preserve embedded NULs",
+    "native_node_process_warning_test.test.native process warning formatted c string truncates only after actual formatting",
+    "native_node_process_warning_test.test.native process warning deprecation preserves full message and exact type code",
+    "native_node_process_warning_test.test.native process warning live method uses retained process after global replacement",
+    "native_node_process_warning_test.test.native process warning actual getter throw keeps exact ordinary reason",
+    "native_node_process_warning_test.test.native process warning actual callback throw keeps exact ordinary reason",
+    "native_node_process_warning_test.test.native process warning discarded flagged Error result remains returned DATA",
+    "native_node_process_warning_test.test.native process warning getter can replace method while selected function stays rooted",
+    "native_node_process_warning_test.test.native process warning ThrowUVException throws intrinsic actual Error fields",
+    "native_node_process_warning_test.test.native process warning ThrowUVException preserves normal false inherited assignment",
+    "native_node_process_warning_test.test.native process warning ThrowUVException has no canCallIntoJs guard",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-process-warning",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

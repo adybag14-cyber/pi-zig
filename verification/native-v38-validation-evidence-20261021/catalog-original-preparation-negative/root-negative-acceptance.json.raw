@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "status": "root_closed_v38_initial_catalog_preparation_schema_negative",
+  "reviewer": "Root",
+  "recorded_utc": "2026-10-21T14:34:15.021719+00:00",
+  "head": "014062f2d139254acab4b985b4ae343db637166f",
+  "preparer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\Prepare-FreshV38Catalog-20261021.py",
+    "bytes": 80847,
+    "sha256": "A112C96C5CFA58E338398948D7A8E5BF7F079B523AF7239FA5BE8F78E46118CD"
+  },
+  "configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-issued-configuration-20261021.json",
+    "bytes": 8747,
+    "sha256": "2E7C7CEEEE50949C7DCF401E8453D4BCA9B8129C8C431D1334306B2007E082C9"
+  },
+  "job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-initial-preparation-negative-20261021\\job-observation.json",
+    "bytes": 1958,
+    "sha256": "F5EC666123CF220DB6C14EF067CD5D7F43D873E93E43DC2AF195625E1849E5CB"
+  },
+  "job_log_tool_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-initial-preparation-negative-20261021\\job-log-tool-observation.json",
+    "bytes": 1210,
+    "sha256": "43DBE0531A03AEA989ACE3A0FE6227F59283C4072BB527973D15EFA63858A985"
+  },
+  "original_stderr_capture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-initial-preparation-negative-20261021\\original-stderr-capture.bin",
+    "bytes": 356,
+    "sha256": "85F9FCD10AB6EC69908518E0E82BD2B1AD599D71A4CBD5EEC53EF4323C803794"
+  },
+  "terminal_exit_code": 1,
+  "failure_line": 390,
+  "failure_expression": "assert observed[\"results\"] == expected_results",
+  "cause": "The exact original closure result records contain index, flags, passed and name; the newly authored expected dictionaries included only the first three fields.",
+  "original_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-closure.json",
+    "bytes": 22838,
+    "sha256": "321ABB743297FC9720D36E78F17B38441F8FAE3A60BEA32DE488FC248342F517"
+  },
+  "original_result_count": 19,
+  "original_failed_indices": [
+    5,
+    10,
+    11,
+    12,
+    16
+  ],
+  "original_passed_count": 14,
+  "preparation_directories_observed_absent": [
+    "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-regression63-prepared-20261021"
+  ],
+  "Main_clean_unchanged": true,
+  "candidate_configuration_and_original_evidence_unchanged": true,
+  "catalog_emitted": false,
+  "compiler_native_execution_occurred": false,
+  "grant_consumed_for_failed_preparation_only": true,
+  "new_preparation_authorized": false,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "next": "Review a separate bounded successor that also binds exact accepted test names, then issue a distinct catalog-only configuration."
+}

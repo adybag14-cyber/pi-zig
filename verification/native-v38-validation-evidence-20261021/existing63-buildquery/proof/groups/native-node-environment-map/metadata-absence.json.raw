@@ -1,0 +1,49 @@
+{
+  "phase": "metadata",
+  "status": "closed",
+  "evidence": {
+    "valid": true,
+    "evidence_errors": [],
+    "owner": {
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\aa4d4e9425d62d9a4c4c12da7b19969e\\test.exe",
+      "executable_sha256": "15A0A2620DD488F8207EE2BBD67633E2C49BB69AD871DDF4821833D73C263EC9",
+      "arguments": [
+        "--listen=-"
+      ],
+      "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+      "pid": 36620,
+      "retained_handle": 2752,
+      "created_utc": "2026-10-21T15:45:06.0955191Z",
+      "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+      "timeout_seconds": 30,
+      "status": "passed",
+      "live_identity": {
+        "created_utc": "2026-10-21T15:45:06.0955191Z",
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\aa4d4e9425d62d9a4c4c12da7b19969e\\test.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\aa4d4e9425d62d9a4c4c12da7b19969e\\test.exe\" --listen=-",
+        "command_line_method": "Win32_Process.CommandLine",
+        "pid": 36620
+      },
+      "exit_code": 0,
+      "completed_utc": "2026-10-21T16:45:06.2608003+01:00"
+    },
+    "canonical_results": null,
+    "raw_outputs": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-environment-map\\metadata.stdout.bin",
+        "bytes": 2881,
+        "sha256": "E7C82B781106F05F54408FC133E5D2DB31A1033711C80BCB7D7303BF9DFDF41B"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-environment-map\\metadata.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      }
+    ],
+    "current_owner_pid_present": 0,
+    "current_owned_descendants": [],
+    "preexisting_pid_ancestry": [],
+    "absence_error": null
+  },
+  "global_native": []
+}

@@ -1,0 +1,153 @@
+"""Independent read-only byte/data/Git audit of the emitted V38 catalogs.
+No preparer, auditor, helper or prefix is imported, evaluated or executed.
+Only this reviewer's final create-only proof write is permitted.
+"""
+from pathlib import Path
+import ast,copy,hashlib,json,os,subprocess
+B=Path(r"C:\Users\adyba\pi-zig");E=B/"evidence";M=B/"main"
+O=B/"worktrees/modules-io-resume-20261018/verification/v38-emitted-catalog-peer-20261021"
+HEAD="014062f2d139254acab4b985b4ae343db637166f"
+PREVIOUS="b13be24e44cc1bbc361639eb35900a368ae60eac"
+DRIVER="1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+CLASSIFIER="3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+MATRIX="8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03"
+INPUTS={};CACHE={}
+def sha(raw):return hashlib.sha256(raw).hexdigest().upper()
+def encode(value):return (json.dumps(value,indent=2)+"\n").encode()
+def key(p):return str(Path(p).resolve()).casefold()
+def admit(path,size=None,digest=None):
+ p=Path(path);assert p.is_absolute() and p.resolve().is_relative_to(B.resolve()),p
+ k=key(p)
+ if k not in CACHE:
+  raw=p.read_bytes();CACHE[k]=raw;INPUTS[k]=dict(path=str(p),bytes=len(raw),sha256=sha(raw))
+ raw=CACHE[k];r=INPUTS[k]
+ assert size is None or r["bytes"]==size,(p,size,r["bytes"])
+ assert digest is None or r["sha256"]==digest,(p,digest,r["sha256"])
+ return raw
+def pin(path):admit(path);return INPUTS[key(path)]
+def pinned(row):return admit(row["path"],row["bytes"],row["sha256"])
+def read(path):return json.loads(admit(path).decode("utf-8-sig"))
+def obj(row):return json.loads(pinned(row).decode("utf-8-sig"))
+def git(*args,input=None):
+ env=os.environ.copy();env["GIT_OPTIONAL_LOCKS"]="0"
+ p=subprocess.run(["git","--no-optional-locks","-C",str(M),*args],input=input,stdout=subprocess.PIPE,stderr=subprocess.PIPE,env=env,check=True)
+ return p.stdout
+def state():
+ head=git("rev-parse","HEAD").decode().strip()
+ status=git("status","--porcelain=v1","-z","--untracked-files=all")
+ assert head==HEAD and status==b"",(head,status)
+ return dict(head=head,clean=True,index_and_worktree_unchanged=True)
+start=state()
+cfgp=E/"root-v38-catalog-v2-issued-configuration-20261021.json"
+cfg=json.loads(admit(cfgp,8974,"7FE2F897B309AD7DD5FDD182529885D525D541227ADE616EF84798FDB503DAD9"))
+assert cfg["candidate_head"]==HEAD and cfg["previous_head"]==PREVIOUS
+assert cfg["catalog_preparation_authorized"] is True
+assert cfg["preparer_sha256"]=="5020211BDD5B229C3DAE0C744ADA4071FF03B9AB2698AFADF864EB483E437506"
+assert all(cfg[x] is False for x in ("native_execution_authorized","execution_authority","runtime_authority","qualification"))
+assert cfg["actual_metadata_count"] is None
+root=obj(cfg["root_preparer_source_review"])
+assert root["source_accepted"] is True and root["candidate_head"]==HEAD
+assert root["preparer"]==cfg["root_resource_ownership"]["target"]
+candidate=pinned(root["preparer"])
+ownpeer=obj(root["independent_peer"])
+assert ownpeer["status"]=="accepted_bounded_source_only_v38_catalog_result_name_successor"
+for name in ("independent_checker","independent_proof","finite_correction","sdk_handoff","original_preparation_negative","original_consumed_configuration","accepted_original_source_review"):
+ pinned(root[name])
+source_peer_path=E/"independent-v38-catalog-preparer-source-peer-20261021/peer.json"
+source_peer=json.loads(admit(source_peer_path,12074,"863957E490A7EBF46ED6ECAE790F41992107E440220CA66C1E1D9794D28B3468"))
+basis=obj(source_peer["independent_proof"])
+assert pin(source_peer["independent_proof"]["path"])["sha256"]=="AA04FFF8DE70624324E0CA8A17BBB34477CEB1D49E2CD8BFBB765B6CAFB3AA70"
+assert basis["distinct_input_versions"]==len(basis["inputs"])==1709
+for r in basis["inputs"]:pinned(r)
+pinned(source_peer["independent_checker"])
+jobp=E/"root-v38-catalog-v2-preparation-job-observation-20261021.json"
+job=json.loads(admit(jobp,1575,"B1E83E427B46B897E573ED459C96B8D1E5A37BA357E15DBD129AEFA4C7C2884A"))
+assert job["data"]["status"]=="succeeded" and job["data"]["exitCode"]==0
+dirs={b:Path(cfg["preparation_directories"][b])for b in ("new4","regression63")}
+olds={b:E/("combined-native-batch-v37-"+b+"-prepared-20261021")for b in dirs}
+expected_names=set(["Audit-CombinedNativeBatch.py","combined-build-source-peer.json","complete-batch-partition.json","exact-intake-source-inventory.json","Get-ModelsNativeCandidates.ps1","groups.json","matrix-refresh-adaptation.json","metadata-auditor-adaptation.json","new-roots-source-inventory.json","preparation-review.json","prior-v37-progress.json","process-ancestry-peer-modules.json","Run-CombinedNativeBatch.ps1","source-inventory-refresh-adaptation.json","uv-namespace-source-peer.json"])
+review_pins={"new4":(545118,"35A3A1E94699B3413179540C2C271A59E4924FF6149DE74FD662BBF3449D1D14"),"regression63":(547326,"9362D1498B75DFEC3E452B1E2F06C8D1C526C16E615DC0F40C17C2C147816A58")}
+auditor_pins={"new4":(17696,"57B862F828353F830FBAD4F707E2EB483EE7324CD6A62E169ACFECA0FC6119C0"),"regression63":(17704,"5B94D3BD4B6CA0E1B969394926A7F907485717FF25B75BA06D1D67D68A232682")}
+reviews={};outputs={};adaptations={}
+copies=["Run-CombinedNativeBatch.ps1","Get-ModelsNativeCandidates.ps1","combined-build-source-peer.json","process-ancestry-peer-modules.json","uv-namespace-source-peer.json"]
+for batch,d in dirs.items():
+ files=sorted(q for q in d.rglob("*")if q.is_file())
+ assert {q.relative_to(d).as_posix()for q in files}==expected_names and len(files)==15
+ outputs[batch]=[pin(p)for p in files]
+ reviews[batch]=json.loads(admit(d/"preparation-review.json",*review_pins[batch]))
+ assert admit(d/"groups.json",1104585,MATRIX)==admit(dirs["new4"]/"groups.json")
+ admit(d/"Audit-CombinedNativeBatch.py",*auditor_pins[batch])
+ admit(d/"Run-CombinedNativeBatch.ps1",60094,DRIVER)
+ admit(d/"Get-ModelsNativeCandidates.ps1",1786,CLASSIFIER)
+ for name in copies:assert admit(d/name)==admit(olds[batch]/name)
+ for name in ("metadata-auditor-adaptation.json","matrix-refresh-adaptation.json","source-inventory-refresh-adaptation.json"):
+  a=read(d/name);pinned(a["baseline"]);pinned(a["adapted"]);assert Path(a["adapted"]["path"]).parent==d
+  adaptations[(batch,name)]=a
+ for r in reviews[batch]["provenance"].values():pinned(r)
+ assert len(reviews[batch]["provenance"])==1643
+m=read(dirs["new4"]/"groups.json");old_m=read(olds["new4"]/"groups.json")
+assert admit(olds["new4"]/"groups.json",1104585,"E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37")==admit(olds["regression63"]/"groups.json")
+changes=adaptations[("new4","matrix-refresh-adaptation.json")]["source_pin_changes"]
+assert [(r["group_index"],r["row_index"])for r in changes]==[(113,0),(113,850),(114,850),(116,851)]
+expected_hashes={
+ "src/native_node_file_handle_owner_test.zig":("93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422","03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"),
+ "src/native_node_file_handle_owner_test_support.zig":("EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F","DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B")}
+restored=copy.deepcopy(m)
+for r in changes:
+ assert (r["before"],r["after"])==expected_hashes[r["path"]]
+ g=restored["groups"][r["group_index"]];p=g["source_pins"][r["row_index"]]
+ assert g["name"]==r["group"] and p==dict(path=r["path"],sha256=r["after"])
+ p["sha256"]=r["before"]
+for k in ("source_head_at_preparation","prepared_utc"):restored[k]=old_m[k]
+assert restored==old_m and encode(restored)==admit(olds["new4"]/"groups.json")
+assert encode(m)==admit(dirs["new4"]/"groups.json")
+assert m["source_head_at_preparation"]==HEAD
+assert len(m["groups"])==117 and sum(len(g["required_named"])for g in m["groups"])==2013
+assert m["whole_tree_dependency_pins"]==old_m["whole_tree_dependency_pins"] and len(m["whole_tree_dependency_pins"])==576
+current_rel={};external={}
+for r in [p for g in m["groups"]for p in g["source_pins"]]+m["whole_tree_dependency_pins"]:
+ name=r["path"];p=Path(name)
+ assert not p.is_absolute() and ".." not in p.parts
+ admit(M/p,digest=r["sha256"]);current_rel[name]=pin(M/p)
+for g in m["groups"]:
+ for r in g["external_pins"]:
+  admit(r["path"],digest=r["sha256"]);external[key(r["path"])]=pin(r["path"])
+assert len(current_rel)==1309 and len(external)==2
+inv=read(dirs["new4"]/"new-roots-source-inventory.json")
+assert admit(dirs["new4"]/"new-roots-source-inventory.json")==admit(dirs["regression63"]/"new-roots-source-inventory.json")
+ia=adaptations[("new4","source-inventory-refresh-adaptation.json")]
+old_inv=obj(ia["baseline"]);restored_inv=copy.deepcopy(inv);member_changes=ia["fixture_member_changes"]
+assert [(r["root_index"],r["module_index"])for r in member_changes]==[(0,673),(0,674),(1,673),(3,674)]
+for r in member_changes:
+ node=restored_inv["roots"][r["root_index"]]["modules"][r["module_index"]]
+ assert node["relative_path"]==r["path"]
+ assert (node["bytes"],node["sha256"])==(r["after_bytes"],r["after_sha256"])
+ assert (r["before_sha256"],r["after_sha256"])==expected_hashes[r["path"]]
+ node["bytes"],node["sha256"]=r["before_bytes"],r["before_sha256"]
+for k in ("schema","candidate_head","prepared_utc"):restored_inv[k]=old_inv[k]
+assert restored_inv==old_inv and encode(restored_inv)==pinned(ia["baseline"])
+assert encode(inv)==admit(dirs["new4"]/"new-roots-source-inventory.json")
+assert inv["schema"]=="pi-zig.v38-new-root-conservative-source-inventories.v1" and inv["candidate_head"]==HEAD and inv["prepared_utc"]==m["prepared_utc"]
+graphs=[]
+for g in inv["roots"]:
+ for r in g["modules"]+g["embeds"]:admit(M/r["relative_path"],r["bytes"],r["sha256"])
+ assert len(g["modules"])==g["conservative_module_count"] and len(g["embeds"])==g["conservative_embed_count"]
+ assert g["source_declared_controls"]==len(g["named_declarations"])
+ assert g["actual_metadata_count"] is None
+ assert all(g[k]is False for k in ("compiler_selected_reachability_claimed","compiler_executed","native_executed"))
+ graphs.append(dict(root=g["name"],modules=len(g["modules"]),embeds=len(g["embeds"]),names=len(g["named_declarations"]),anonymous_sources=len(g["anonymous_source_blocks"])))
+assert [(g["modules"],g["embeds"],g["names"],g["anonymous_sources"])for g in graphs]==[(710,243,18,8),(710,243,3,8),(1,0,24,0),(711,243,13,8)]
+partition=read(dirs["new4"]/"complete-batch-partition.json")
+assert admit(dirs["new4"]/"complete-batch-partition.json")==admit(dirs["regression63"]/"complete-batch-partition.json")
+selections={b:partition["partitions"][b]["groups"]for b in dirs}
+assert [len(selections[b])for b in dirs]==[4,63]
+assert not set(selections["new4"])&set(selections["regression63"])
+assert len(set(selections["new4"]+selections["regression63"]))==67
+byname={g["name"]:g for g in m["groups"]};assert len(byname)==117
+assert [sum(len(byname[n]["required_named"])for n in selections[b])for b in dirs]==[58,1249]
+assert partition["union_groups"]==67 and partition["union_declarations"]==1307 and partition["per_batch_cap"]==64
+assert partition["actual_metadata_count"] is None and partition["execution_authority"] is False
+for batch,d in dirs.items():
+ assert selections[batch]==read(olds[batch]/"complete-batch-partition.json")["partitions"][batch]["groups"]
+ assert partition["partitions"][batch]["preparation"]==str(d)
+ as

@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "resource_observation": {
+    "observed_utc": "2026-10-21T15:16:59.0767188+00:00",
+    "free_physical_kib": 24220976,
+    "required_kib": 16777216,
+    "eligible": true,
+    "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+    "process_rows": 483,
+    "native_candidates": []
+  },
+  "active_job_observation": {
+    "ok": true,
+    "summary": "Listed durable jobs.",
+    "data": {
+      "jobs": [],
+      "next_cursor": null,
+      "order": "job_id",
+      "limit": 20
+    },
+    "exitCode": null,
+    "truncated": false
+  }
+}

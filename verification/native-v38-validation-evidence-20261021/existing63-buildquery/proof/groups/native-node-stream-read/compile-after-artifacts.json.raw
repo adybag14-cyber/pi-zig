@@ -1,0 +1,90 @@
+{
+  "installed": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-stream-read\\installed\\bin\\native-node-stream-read.exe",
+      "bytes": 48532480,
+      "sha256": "498FAEF8D540ADEBCF8DC1CD7C755B21918A46FA1A7EA48E4E65C4786C0E02F8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-stream-read\\installed\\bin\\test.pdb",
+      "bytes": 16871424,
+      "sha256": "EDBB631CD7207A4871904FB5962EDE7AD2A2AFB5C10B2676402482AB148039A1"
+    }
+  ],
+  "cached_executables": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\03ff5ffc7cf14c167c8e90c3e9e0cca9\\test.exe",
+      "sha256": "8C01556E1DB590373AD4369245137786250D340D52222325A0D24CB2AEA01848",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\03ff5ffc7cf14c167c8e90c3e9e0cca9\\test.pdb",
+      "pdb_sha256": "560B9A071189504D0D12D969A11A0DA1A8EF68C59180D0DD4CCEB16C9536BD45"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\059432e0ce11e08b210592572789eac5\\test.exe",
+      "sha256": "498FAEF8D540ADEBCF8DC1CD7C755B21918A46FA1A7EA48E4E65C4786C0E02F8",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\059432e0ce11e08b210592572789eac5\\test.pdb",
+      "pdb_sha256": "EDBB631CD7207A4871904FB5962EDE7AD2A2AFB5C10B2676402482AB148039A1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\0a1d4af08b6440524932c5b63ceb955e\\test.exe",
+      "sha256": "9ECBFAEC8F502904D542A22103F03CAEC5F429B80FC7639C4A3A38B0994C0984",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\0a1d4af08b6440524932c5b63ceb955e\\test.pdb",
+      "pdb_sha256": "B7483C6BE417E76AA5B8675988948736CCD598A73BAC3E90F5BD100CDC97B766"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\12e80ac6943da4a0b0cff5e0dae74fd1\\test.exe",
+      "sha256": "D4A5AE3642F2C240FA913B941A90DEC1472651A43DCC933042D546975ACD7DD7",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\12e80ac6943da4a0b0cff5e0dae74fd1\\test.pdb",
+      "pdb_sha256": "CB068A491649BFCD95ABEB68B2EFF1826C50CD91A615D854E861FCFE6F95B1B9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\575afd337f4e184cc2e940face91c671\\test.exe",
+      "sha256": "AA592DD5372AFDF18A9BEF535940F0748CAB95CF71B28606913F739F340A9BEF",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\575afd337f4e184cc2e940face91c671\\test.pdb",
+      "pdb_sha256": "52A507D5987A8D1203E5AA0885010BA9FDF80CCECC66E369345F03D0772E97F4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\7401a5e3707242058b3de52905143f33\\test.exe",
+      "sha256": "1F215568F86A7437151C941A04F53A98FDD17D69C188093467AFF70FC0A5157F",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\7401a5e3707242058b3de52905143f33\\test.pdb",
+      "pdb_sha256": "DF7771BD74731399A1BB78DE52C679E985371DA0DE1315AA5FE49341310AF0E6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\78b1ce0ea78bdbfd956f7680c5d9bb72\\test.exe",
+      "sha256": "61151C06BEC4445FCF4C653E3EF6C86EB787D657ACECABFCF964668E0482576D",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\78b1ce0ea78bdbfd956f7680c5d9bb72\\test.pdb",
+      "pdb_sha256": "710BD19E1C252FF5C3E0B30566B7C658C53A0B520C574670A683FA1813C8CBF8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\a53b8503bd84fb3c15e2e0f468fb56c6\\test.exe",
+      "sha256": "EDCEAF213162F768A755D77D7071F383D5A0F5D30ADDE1EFE6EA333D38196DF6",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\a53b8503bd84fb3c15e2e0f468fb56c6\\test.pdb",
+      "pdb_sha256": "11BA84B77DC424C12F68DE2DF5428B3B90A507DBC2B5C72A2689EA7BB0F3692B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\b0feaafee38ecdcf2e9ffc444aad231a\\test.exe",
+      "sha256": "C59467A39D649C46CDF53D94DBC51A7D8526C60CE441128D676E5F12D4DF25F6",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\b0feaafee38ecdcf2e9ffc444aad231a\\test.pdb",
+      "pdb_sha256": "E89EFE18327518005B8FA5CA378D8A23BF12CD59B57148C5B368F7A548B86274"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\dcaf70486a54c99b7184f0f7f4567ec5\\test.exe",
+      "sha256": "E1F5C7C557FDE41518807774D09F90F6BD14A9F77520B855C60946F0F80316D8",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\dcaf70486a54c99b7184f0f7f4567ec5\\test.pdb",
+      "pdb_sha256": "9230E6AF38C33FE7A0243ACE7CE014CAECF1AF20362BDBDABF018DD49BFF9764"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\f412c7e28200d24fb8e44d423047745d\\test.exe",
+      "sha256": "F1A19EFEACE70F395D570F07FBD0E40A0F22920F3C8FABAE5412412EDFD5D655",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\f412c7e28200d24fb8e44d423047745d\\test.pdb",
+      "pdb_sha256": "32992A68D095EA9FDD1EF71951BF782DC5CB583E2F1C3F48833DF38BD57AA251"
+    }
+  ],
+  "pe": {
+    "reserved_stack_bytes": 16777216,
+    "committed_stack_bytes": 4096,
+    "Engine_guard_bytes": 1048576,
+    "guard_authority": "Frozen Engine default1MiB; no controller or source stack override",
+    "dynamic_stack_measured": false
+  },
+  "errors": []
+}

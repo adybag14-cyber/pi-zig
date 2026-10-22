@@ -1,0 +1,113 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\a53b8503bd84fb3c15e2e0f468fb56c6\\test.exe",
+  "binary_sha256": "EDCEAF213162F768A755D77D7071F383D5A0F5D30ADDE1EFE6EA333D38196DF6",
+  "version": "0.16.0",
+  "expected": 20,
+  "started": 20,
+  "completed": 20,
+  "results": [
+    {
+      "index": 0,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 1,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 2,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 3,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 4,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 5,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 6,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 7,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 8,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 9,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 10,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 11,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 12,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 13,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 14,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 15,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 16,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 17,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 18,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 19,
+      "flags": 0,
+      "passed": true
+    }
+  ],
+  "failed_or_skipped_or_logged_or_leaked": 0,
+  "owner_receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223\\groups\\native-node-native-debug\\runtime.json",
+  "status": "passed"
+}

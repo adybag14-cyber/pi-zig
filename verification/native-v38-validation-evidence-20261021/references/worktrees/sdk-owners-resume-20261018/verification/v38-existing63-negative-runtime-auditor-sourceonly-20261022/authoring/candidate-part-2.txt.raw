@@ -1,0 +1,113 @@
+e(len(complete_cached)==group_count and len({row["path"]for row in complete_cached})==group_count,"Complete original sixty-three cached executable/PDB pairs")
+require({str(p)for p in (build/"cache").rglob("test.exe")}=={row["path"]for row in complete_cached},"Complete current cached executable inventory")
+require({str(p)for p in (build/"cache").rglob("test.pdb")}=={row["pdb_path"]for row in complete_cached},"Complete current adjacent cached PDB inventory")
+for accepted in accept["groups"]:
+ gp=build/"groups"/accepted["group"];artifact=read(gp/"build-artifacts.json")
+ require(artifact["errors"]==[] and len(artifact["installed"])==2,"Original complete installed pair")
+ require({str(p)for p in (gp/"installed").rglob("*")if p.is_file()}=={row["path"]for row in artifact["installed"]},"Complete current installed artifact inventory")
+ exe=Path(accepted["cached_executable_path"]);installed_exe=[row for row in artifact["installed"]if row["path"].endswith(".exe")]
+ installed_pdb=[row for row in artifact["installed"]if row["path"].endswith(".pdb")]
+ require(len(installed_exe)==len(installed_pdb)==1 and installed_exe[0]["sha256"]==accepted["executable_sha256"] and installed_pdb[0]["sha256"]==accepted["pdb_sha256"],"Exact accepted installed/cached pairs")
+ for row in artifact["installed"]:require(Path(row["path"]).is_relative_to(gp/"installed") and Path(row["path"]).stat().st_size==row["bytes"],"Actual installed file lengths and roots")
+ pe=artifact["pe"]
+ require(pe["reserved_stack_bytes"]==16777216 and pe["committed_stack_bytes"]==4096 and pe["Engine_guard_bytes"]==1048576 and pe["dynamic_stack_measured"] is False,"Original static stack/guard declaration")
+ with exe.open("rb") as f:
+  dos=f.read(64);require(len(dos)==64 and dos[:2]==b"MZ","Actual accepted DOS header")
+  pe_offset=struct.unpack_from("<I",dos,60)[0];require(64<=pe_offset<=1024*1024,"Bounded actual PE header")
+  f.seek(pe_offset);header=f.read(112)
+ require(len(header)==112 and header[:4]==b"PE\0\0" and struct.unpack_from("<H",header,24)[0]==0x20b,"Actual accepted PE32+ executable")
+ require(struct.unpack_from("<QQ",header,96)==(pe["reserved_stack_bytes"],pe["committed_stack_bytes"]),"Actual static executable stack reservation and commit")
+ require(read(gp/"final-artifacts.json")==dict(installed=artifact["installed"],cached_executables=complete_cached,pe=pe,errors=[]),"Complete original final installed/cache journal")
+runtime_bounds=[];observations=[];runtime_receipts=[]
+selected=cfg["selected"]
+accepted_counts=[g["actual_count"]for g in accept["groups"]]
+require(len(selected)==executed_count and [want["group"]for want in selected]==grant["groups"][:executed_count] and [want["count"]for want in selected]==accepted_counts[:executed_count] and [want["failed"]for want in selected]==[[]for _ in range(executed_count-1)]+[[22]],"Exact actual ordered prefix and original failed index retained")
+require([want["count"]for want in selected]==[15,12,34,28,10,20,18,14,13,32,19,22,20,15,11,12,26] and sum(accepted_counts[:executed_count])==321 and sum(accepted_counts[executed_count:])==964 and sum(accepted_counts)==actual_count,"Actual complete accepted vector derives the exact runtime cutpoint")
+require(observation["not_started_groups"]==grant["groups"][executed_count:] and observation["not_started_tests"]==sum(accepted_counts[executed_count:]) and len(observation["not_started_groups"])==group_count-executed_count==46,"Complete original unstarted group order and accepted test count")
+for number,want in enumerate(selected):
+ g=r["groups"][number];accepted=accept["groups"][number];gp=proof/"groups"/g["group"]
+ require(g["group"]==accepted["group"]==want["group"] and accepted["actual_count"]==want["count"] and g["status"]==("failed" if want["failed"] else "partial_batch_not_admissible"),"Original group result and whole-batch scope preserved")
+ require(g["owned_started_phases"]==g["attempted_phases"]==["runtime"] and g["runtime_owner_launch_attempted"] is True and g["actual_runtime_owner_started"] is True,"Exact actual native execution scope")
+ require(read(gp/"result.json")==g and g["candidate_head"]==head and g["postseal"] is True and g["source_seal_scope"]=="whole_batch" and g["mode"]=="RuntimeOnly","Exact aggregate and standalone negative group/source scope")
+ require(list(g["phases"])==["runtime"] and g["runtime_requested"] is True and g["receipt_directory"]==str(gp),"No compiler or metadata phase in original runtime")
+ expected_artifacts=read(build/"groups"/g["group"]/"final-artifacts.json")
+ for journal in ("runtime-prerequisite-artifacts.json","runtime-before-artifacts.json","runtime-after-artifacts.json","final-artifacts.json"):
+  require(read(gp/journal)==expected_artifacts,"Original exact complete runtime artifact journal: "+journal)
+  runtime_receipts.append(pin(gp/journal))
+ canonical=read(gp/"runtime.results.json")
+ require(g["native_selected_tests_started"]==canonical["expected"]==canonical["started"]==canonical["completed"]==want["count"] and canonical["version"]=="0.16.0","Original canonical complete counts and version")
+ require(canonical["binary"]==accepted["cached_executable_path"] and canonical["binary_sha256"]==accepted["executable_sha256"] and canonical["owner_receipt"]==str(gp/"runtime.json"),"Original canonical artifact and owner binding")
+ require(canonical["failed_or_skipped_or_logged_or_leaked"]==len(want["failed"]) and canonical["status"]==("failed" if want["failed"] else "passed"),"Original canonical outcome unchanged")
+ phase=g["phases"]["runtime"];owner=read(gp/"runtime.json");absent=read(gp/"runtime-absence.json")
+ expected_binding_error="Actual terminal owner binding failed: Actual metadata/new API or ordinary retained runtime stderr must be empty"
+ require(g["errors"]==([expected_binding_error,"Native test protocol did not report every selected test passing without logs/leaks"] if want["failed"] else []) and phase["postchecks"]["errors"]==([expected_binding_error] if want["failed"] else []),"Exact original group and postcheck failures retained without additions or omissions")
+ require(digest(gp/"runtime.json")==want["owner_sha"],"Original bounded owner receipt")
+ require(owner["status"]=="passed" and owner["exit_code"]==0 and owner["timeout_seconds"]==120 and owner["retained_handle"]>0 and owner["pid"]==want["pid"] and owner["created_utc"]==want["created"],"Actual original terminal-zero native instance")
+ require(owner["executable"]==accepted["cached_executable_path"] and owner["executable_sha256"]==accepted["executable_sha256"] and owner["arguments"]==["--listen=-"] and owner["working_directory"]==str(main),"Exact native artifact/argv/root")
+ live=owner["live_identity"];created=utc_ticks(owner["created_utc"]);completed=utc_ticks(owner["completed_utc"])
+ require(live["pid"]==owner["pid"] and utc_ticks(live["created_utc"])==created and live["executable"]==owner["executable"] and live["command_line"]=='"'+owner["executable"]+'" --listen=-' and 0<=completed-created<=120*10000000,"Original live retained native instance and deadline")
+ admission=read(gp/"runtime-admission.json");probe=admission["probe"]
+ require(admission["status"]=="admitted" and probe["phase"]=="runtime" and probe["free_kib"]>=16777216 and probe["minimum_kib"]==16777216 and probe["native"]==[] and probe["native_roots"]==0 and 0<=created-utc_ticks(probe["utc"])<10*10000000,"Original fresh serial sixteen GiB native admission")
+ require(absent["status"]=="closed" and absent["phase"]=="runtime" and absent["global_native"]==[],"Original complete phase process absence")
+ for e in (absent["evidence"],phase["evidence"],r["absence"]["owners"][number]["evidence"]):
+  require(e["valid"] is True and e["evidence_errors"]==[] and e["owner"]["pid"]==owner["pid"] and utc_ticks(e["owner"]["created_utc"])==created and utc_ticks(e["owner"]["completed_utc"])==completed and e["owner"]["exit_code"]==owner["exit_code"] and e["current_owner_pid_present"]==0 and e["current_owned_descendants"]==[] and e["absence_error"] is None and e["canonical_results"]==canonical,"Actual phase terminal identity, canonical observation and original absence")
+  require(set(e["owner"])==set(owner),"Exact complete aggregate owner field inventory")
+  for key in owner:
+   if key in ("created_utc","completed_utc"):require(utc_ticks(e["owner"][key])==utc_ticks(owner[key]),"Exact original UTC100ns owner time")
+   elif key!="live_identity":require(e["owner"][key]==owner[key],"Exact aggregate original owner field: "+key)
+  aggregate_live=e["owner"]["live_identity"];standalone_live=owner["live_identity"]
+  require(set(aggregate_live)==set(standalone_live),"Exact complete nested live field inventory")
+  for key in standalone_live:
+   if key=="created_utc":require(utc_ticks(aggregate_live[key])==utc_ticks(standalone_live[key]),"Exact nested UTC100ns creation identity")
+   else:require(aggregate_live[key]==standalone_live[key],"Exact original nested live field: "+key)
+  ignored=e.get("preexisting_pid_ancestry")
+  require(isinstance(ignored,list),"Explicit original process-instance ancestry evidence")
+  for item in ignored:
+   observed=item["observed_process"]
+   require(item["reason"]=="Child creation predates this parent instance" and item["parent_pid"]==owner["pid"] and observed["ParentProcessId"]==owner["pid"],"Excluded ancestry must name the actual original parent")
+   require(item["parent_created_utc_ticks"]==created+621355968000000000 and item["child_created_utc_ticks"]==utc_ticks(observed["CreationDate"])+621355968000000000,"Independent exact UTC100ns ancestry conversion")
+   require(utc_ticks(observed["CreationDate"])<created-10,"Only proven preexisting child instances may be excluded")
+ expected_error="Native test protocol did not report every selected test passing without logs/leaks" if want["failed"] else None
+ require(phase["failure"]==phase["original_execution_failure"]==expected_error,"Original native test failure retained exactly")
+ require(phase["owner_binding"]["status"]==("invalid" if want["failed"] else "passed") and phase["owner_binding"]["errors"]==(["Actual metadata/new API or ordinary retained runtime stderr must be empty"] if want["failed"] else []),"Strict original empty-stderr gate remains negative only for actual failed group")
+ for key in ("evidence_valid","source_sealed","artifacts_bound","absence_closed"):require(phase["postchecks"][key] is True,"Original complete postcheck "+key)
+ require(phase["postchecks"]["owner_bound"] is (not bool(want["failed"])),"Original owner qualification not rewritten")
+ for row in phase["evidence"]["raw_outputs"]:
+  path=Path(row["path"]);require(path.is_relative_to(gp) and path.stat().st_size==row["bytes"] and digest(path)==row["sha256"],"Original raw runtime bytes unchanged")
+ require(digest(gp/"runtime.stdout.bin")==want["stdout_sha"] and digest(gp/"runtime.stderr.log")==want["stderr_sha"],"Exact original complete wire and ordinary stderr")
+  require((gp/"runtime.stderr.log").stat().st_size==(486 if want["failed"] else 0) and want["failed"]==([22] if number==executed_count-1 else []),"Original empty stderr for sixteen demoted groups and exact486-byte strict rejection in final failed group")
+ raw=(gp/"runtime.stdout.bin").read_bytes();offset=0;tags=[];results=[]
+ while offset<len(raw):
+  require(len(raw)-offset>=8,"Complete raw-wire frame header")
+  tag,size=struct.unpack_from("<II",raw,offset);offset+=8
+  require(size<=1024*1024 and size<=len(raw)-offset,"Bounded raw runtime frame")
+  payload=raw[offset:offset+size];offset+=size;tags.append(tag)
+  if tag==0:require(tags==[0] and payload==b"0.16.0","Original pinned version")
+  elif tag==5:require(size==0 and len(tags)%2==0,"Actual test-start frame")
+  elif tag==4:
+   require(size==12 and len(tags)%2==1 and tags[-2]==5,"Actual result following one start")
+   index,flags=struct.unpack("<IQ",payload)
+   require(index==len(results) and flags==(1 if index in want["failed"] else 0),"Exact original sequential result flags")
+   row=dict(index=index,flags=flags,passed=flags==0)
+   require(row==canonical["results"][index],"Independent raw frame equals original canonical result")
+   results.append(dict(**row,name=accepted["tests"][index]))
+  else:raise RuntimeError("Unexpected runtime frame")
+ require(tags==[0]+[x for _ in range(want["count"])for x in (5,4)] and len(results)==len(canonical["results"])==want["count"] and offset==len(raw)==want["stdout_bytes"],"Exact complete raw-wire inventory")
+ runtime_bounds.append(dict(pid=owner["pid"],created=created,completed=completed,role="runtime",group=g["group"]))
+ observations.append(dict(group=g["group"],started=want["count"],completed=want["count"],failed=len(want["failed"]),results=results,original_group_status=g["status"],canonical=pin(gp/"runtime.results.json")))
+ require(r["absence"]["owners"][number]["group"]==g["group"] and r["absence"]["owners"][number]["phase"]=="runtime" and absent["evidence"]==phase["evidence"]==r["absence"]["owners"][number]["evidence"],"Exact original aggregate absence sequence")
+  require(len(r["admission_probes"])==executed_count and r["admission_probes"][number]==probe,"Exact original ordered runtime admission probe")
+ runtime_receipts.extend(pin(gp/name)for name in ("runtime.json","runtime.results.json","runtime.stdout.bin","runtime.stderr.log","runtime-absence.json","runtime-admission.json","commands.json","result-provisional.json","result.json"))
+failed_names=[dict(group=o["group"],index=row["index"],flags=row["flags"],name=row["name"])for o in observations for row in o["results"]if not row["passed"]]
+require(failed_names==cfg["failed_names"]==[dict(group="native-node-fs-request-owner",index=22,flags=1,name=accept["groups"][executed_count-1]["tests"][22])],"Exact original failed index and accepted metadata name")
+require(sum(o["started"]for o in observations)==sum(o["completed"]for o in observations)==sum(accepted_counts[:executed_count])==321 and sum(o["failed"]for o in observations)==1 and sum(row["passed"]for o in observations for row in o["results"])==320 and sum(accepted_counts[executed_count:])==964,"Exactly321 actual indices complete, one fails,320 pass and964 never start")
+outer=read(control/"outer.json");oa=read(control/"outer-absence.json")
+require(digest(control/"outer.json")==cfg["outer_sha256"] and digest(control/"outer-absence.json")==cfg["outer_absence_sha256"],"Original outer and absence")
+require(outer["status"]=="failed" and outer["exit_code"]==1 and outer["timeout_seconds"]==1800 and outer["retained_handle"]>0 and outer["pid"]==cfg["outer_pid"],"Original bounded terminal negative outer")
+require(outer["arguments"]==["-NoLogo","-NoProfile","-NonInteractive","-File",str(prep/"Run-CombinedNativeBatch.ps1"),"-RootGrant",str(control/"root-grant.json"),"-Mode","RuntimeOnly"] and outer["executable_sha256"]=="FA2C8BB1E35CDD62AD15CD06A1D8F2C5961E9725A9BFA1E7CFD2C322F49E9619" and outer["working_directory"]==str(base),"Original exact outer control")
+outer_live=outer["live_identity"]
+require(outer["executable"]==r"C:\Program Files\PowerShell\7\pwsh.exe" and outer_live["pid"]==outer["pid"] and utc_ticks(outer_live["created_utc"])==utc_ticks(outer["created_utc"]) and outer_live["executable"]==outer["executable"],"Actual original retained outer creation identity")
+require(outer_live["command_line"]=='"'+outer["executable"]+'" '+' '.join(outer["arguments"]) and outer.get("error")=="Owned terminal failed: C:\\Program Files\\PowerShell\\7\\pwsh.exe" and 0<=utc_ticks(outer["completed_utc"])-utc_ticks(outer["created_utc"])<=1800*10000000,"Exact actual live outer command, native deadline and original failed termination")
+require(oa["pid"]==outer["pid"] and utc_ticks(oa["created_utc"])==utc_ticks(outer["created_utc"]) and oa["currently_absent"] is True and oa["current_records"]==[],"Original outer absence")
+require(digest(control/"independent-observed-job-status.json")==cfg["job_observation_sha256"]=="2BF82DFD6E0BB85F46C513902D38783ED5CB951AB73C3F466CED476923A8D535","Exact independently retained terminal job observation")
+job_envelope=r

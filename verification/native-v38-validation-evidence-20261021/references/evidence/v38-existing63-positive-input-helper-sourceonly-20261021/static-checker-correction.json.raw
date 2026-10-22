@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\source-adaptation-check.py",
+    "bytes": 21919,
+    "sha256": "1B1E590E863024AE09081732B0C6DDF84851BC03922349023CCAF909E77D5EE8"
+  },
+  "successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\source-adaptation-check-v2.py",
+    "bytes": 21956,
+    "sha256": "F9691CA7CB21BBAEEC268EC89AD80F963B9F8CEEA9E61654F35C978192FC5A23"
+  },
+  "correction": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\static-checker-correction.json",
+  "changes": [
+    {
+      "before": "O/\"source-adaptation-check.py\"",
+      "after": "O/\"source-adaptation-check-v2.py\""
+    },
+    {
+      "before": "need(len(layout)==4 and any(\"('groups/'+$Group)\"in x[\"text\"]for x in layout),\"generic exact driver group directories\")",
+      "after": "need([x[\"line\"]for x in layout]==[31,406,430,470,494] and any(\"('groups/'+$Group)\"in x[\"text\"]for x in layout),\"generic exact driver group directories\")"
+    }
+  ],
+  "original_execution_negative": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\source-adaptation-check.py\", line 177, in <module>\r\n    need(len(layout)==4 and any(\"('groups/'+$Group)\"in x[\"text\"]for x in layout),\"generic exact driver group directories\")\r\n    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\source-adaptation-check.py\", line 11, in need\r\n    if not ok:raise AssertionError(msg)\r\n              ^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: generic exact driver group directories",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\source-adaptation-check.py\", line 177, in <module>\r\n    need(len(layout)==4 and any(\"('groups/'+$Group)\"in x[\"text\"]for x in layout),\"generic exact driver group directories\")\r\n    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\source-adaptation-check.py\", line 11, in need\r\n    if not ok:raise AssertionError(msg)\r\n              ^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: generic exact driver group directories\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "observed_exact_layout": {
+    "ok": true,
+    "summary": "Ran python directly in the Windows host devbox.",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      },
+      "output": {
+        "mode": "tail",
+        "max_chars": 3000,
+        "max_lines": 0,
+        "stdout_original_chars": 725,
+        "stderr_original_chars": 0,
+        "stdout_capture_truncated": false,
+        "stderr_capture_truncated": false
+      }
+    },
+    "stdout": "{\"count\": 5, \"rows\": [{\"line\": 31, \"text\": \"$taskProof=Contained ([string]$taskGrant.receipt_directory) $taskWorkspace.evidence\"}, {\"line\": 406, \"text\": \"  $groupProof=Contained (Join-Path $taskBuildProof ('groups/'+$group)) $taskBuildProof\"}, {\"line\": 430, \"text\": \"  $taskProof=Contained (Join-Path $batchProof ('groups/'+$Group)) $batchProof\"}, {\"line\": 470, \"text\": \"    metadata{$metadata=Read-ComposedMetadata $taskBinary $taskRoot (Join-Path $taskProof $phase);$selection.names=@($metadata.tests);Save-Json $metadata 'selected-tests.json'}\"}, {\"line\": 494, \"text\": \"   if($taskBuildMode){Save-Json $taskArtifact 'build-artifacts.json'}\"}], \"outputs\": [[\"finite-source-adaptation.json\", false], [\"plan.json\", false]]}\r\n",
+    "exitCode": 0,
+    "truncated": false
+  },
+  "reason": "The generic layout scan also includes the initial batch-proof containment at original driver line31. Bind all five actual lines exactly, preserving the unchanged group-path assertion.",
+  "candidate_source_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\candidate\\Prepare-ObservedV38Existing63PositiveBuildQueryAuditInputs-20261021-unresolved.py",
+    "bytes": 21109,
+    "sha256": "0F8502D9AD3395551AFC08652795C77114EED504E13623F6D65CDE774FAEB06C"
+  },
+  "status": "retained_static_checker_negative_and_exact_inventory_successor",
+  "steps": [
+    {
+      "index": 1,
+      "offset": 452,
+      "before": "O/\"source-adaptation-check.py\"",
+      "after": "O/\"source-adaptation-check-v2.py\"",
+      "before_file_sha256": "1B1E590E863024AE09081732B0C6DDF84851BC03922349023CCAF909E77D5EE8",
+      "after_file_sha256": "F4C019B9F8CE2450AB677DE8CD7315F4E809C7BF0610D96DC484F3B9F60F962B"
+    },
+    {
+      "index": 2,
+      "offset": 15174,
+      "before": "need(len(layout)==4 and any(\"('groups/'+$Group)\"in x[\"text\"]for x in layout),\"generic exact driver group directories\")",
+      "after": "need([x[\"line\"]for x in layout]==[31,406,430,470,494] and any(\"('groups/'+$Group)\"in x[\"text\"]for x in layout),\"generic exact driver group directories\")",
+      "before_file_sha256": "F4C019B9F8CE2450AB677DE8CD7315F4E809C7BF0610D96DC484F3B9F60F962B",
+      "after_file_sha256": "F9691CA7CB21BBAEEC268EC89AD80F963B9F8CEEA9E61654F35C978192FC5A23"
+    }
+  ],
+  "complete_raw_forward_and_inverse": true,
+  "candidate_executed": false,
+  "prefix_executed": false,
+  "Main_accessed": false
+}

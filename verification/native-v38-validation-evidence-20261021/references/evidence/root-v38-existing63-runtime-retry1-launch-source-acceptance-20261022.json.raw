@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "status": "root_accepted_exact_v38_existing63_runtime_grant_and_launch",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-22T13:42:36.750529+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "runtime_launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-134223\\runtime-launch.json",
+    "bytes": 4951,
+    "sha256": "D52B73B8738E653774BC5E6E51B88EA7DC963C3EC52749B5809209FD035DEFD5"
+  },
+  "runtime_grant": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-134223\\root-grant.json",
+    "bytes": 27023,
+    "sha256": "7F3B7CE0574741302B8F07713025A42B3B94A36A1E7D745E8CA9B89172264775"
+  },
+  "runtime_launcher": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-134223\\launch.ps1",
+    "bytes": 1785,
+    "sha256": "63760E433773A87DEA6B25760DA023C3A36EB6E9B9696BBDB975023E4A29F8D6"
+  },
+  "specific_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-runtime-retry1-issued-config-20261022.json",
+    "bytes": 5919,
+    "sha256": "D8CC394FC26AD86E83A7159C4BC97F3A1350DB7375080CC562973B065167DA8D"
+  },
+  "adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-134223\\grant-launch-adaptation.json",
+    "bytes": 7768,
+    "sha256": "BBA703560F01D4B60CE28239E1A41F08F46923E510C579DBFB3A1FE550AFD1AB"
+  },
+  "grant_fields_changed": [
+    "grant_id",
+    "issued_utc",
+    "mode",
+    "receipt_directory",
+    "build_result_path",
+    "build_result_sha256",
+    "build_source_seal_path",
+    "build_source_seal_sha256",
+    "metadata_acceptance_path",
+    "metadata_acceptance_sha256",
+    "actual_metadata_count",
+    "independent_build_closure_path",
+    "independent_build_closure_sha256",
+    "build_specific_root_configuration",
+    "specific_root_configuration",
+    "root_buildquery_acceptance",
+    "root_review"
+  ],
+  "full_grant_inverse": true,
+  "one_launcher_mode_change": true,
+  "full_launcher_byte_inverse": true,
+  "all53_provenance_entries_unchanged": true,
+  "provenance_entries": 53,
+  "grant_pins_rehashed": 78,
+  "grant_age_seconds": 13.125797,
+  "groups": 63,
+  "declared_controls": 1249,
+  "actual_metadata_count": 1285,
+  "root_runtime_execution_release_already_issued": true,
+  "diagnostic_continue": false,
+  "compile_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

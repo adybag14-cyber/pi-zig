@@ -1,0 +1,143 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\03bca9e874fc82f2ca3974cbfdcf8305\\test.exe",
+  "binary_sha256": "43C67D4BE351C99D13B16C9CCCA677EAFDD9C8C21F9904ECC331756AB04D2977",
+  "version": "0.16.0",
+  "expected": 26,
+  "started": 26,
+  "completed": 26,
+  "results": [
+    {
+      "index": 0,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 1,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 2,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 3,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 4,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 5,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 6,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 7,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 8,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 9,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 10,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 11,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 12,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 13,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 14,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 15,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 16,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 17,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 18,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 19,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 20,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 21,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 22,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 23,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 24,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 25,
+      "flags": 0,
+      "passed": true
+    }
+  ],
+  "failed_or_skipped_or_logged_or_leaked": 1,
+  "owner_receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223\\groups\\native-node-fs-request-owner\\runtime.json",
+  "status": "failed"
+}

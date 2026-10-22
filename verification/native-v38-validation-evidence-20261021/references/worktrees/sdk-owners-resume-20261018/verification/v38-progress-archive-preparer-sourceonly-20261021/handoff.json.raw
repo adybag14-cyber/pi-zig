@@ -1,0 +1,181 @@
+{
+  "schema": 1,
+  "status": "unexecuted_bounded_v38_positive_archive_preparer_source_packet_ready_for_independent_review",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "selected": {
+    "candidate": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\candidate\\Prepare-V38PositiveProgressAndValidationArchive-20261021.py",
+      "bytes": 51755,
+      "sha256": "00F55DC94CC4151370B837FCDB02FFE991A07AC75C05EFE3022C66D079BD5A77"
+    },
+    "contract": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\source-contract.json",
+      "bytes": 22961,
+      "sha256": "2B8C3745D2E7F6F0D08E9FF6672B43F03DF080E053EFED56E254E039CF845C14"
+    },
+    "static_checker": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\static-accounting.py",
+      "bytes": 17175,
+      "sha256": "A82973F425A8E2431989A61814C8D5BAEB9B2D89CD7646BFC6B1A9C92F215494"
+    },
+    "static_accounting": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\static-accounting.json",
+      "bytes": 156837,
+      "sha256": "350E7ADE26395B1EE1E993F314DF23FDDBF693197A0CE3110C1FF691AB4BAD2D"
+    },
+    "readme": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\README.md",
+      "bytes": 9088,
+      "sha256": "09B8B56AB36B2F629D6702D59E3BD13CDA61BE81C11CDEBB490313318F96EA74"
+    }
+  },
+  "accepted_basis": {
+    "inventory": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\observed-evidence-inventory.json",
+      "bytes": 338781,
+      "sha256": "CDFBB34E737011ADD26B7560E5011DC55CADA2803D749B0E1C0263E5954FADED"
+    },
+    "plan": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\progress-patch-plan.json",
+      "bytes": 56327,
+      "sha256": "183647A8C0D250DBDD0747CD8E1220B415E9F205737092D4D13AF1DD0D730412"
+    },
+    "handoff": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\handoff.json",
+      "bytes": 5242,
+      "sha256": "E75BE89E1B57F32B72B896C35B5106A2069BE672192FCA2623BB1BA723D95187"
+    },
+    "policy": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021-v2.py",
+      "bytes": 75644,
+      "sha256": "079CE8663FFA9C337F5AC04D41E4222E6B2EFB9B39E5B459F6F4E460F9AC790D"
+    },
+    "accepted_new4_buildquery_root_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-complete-buildquery-acceptance-20261021.json",
+      "bytes": 3322,
+      "sha256": "AD8E19A0F01BCE2455EFC4A670881BD085CDD3A80A748D37F2BACBDA16C7F539"
+    },
+    "accepted_new4_runtime_root_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-complete-runtime-acceptance-20261021.json",
+      "bytes": 5591,
+      "sha256": "C2BA2AD029947BBD012F2B516F8F6DA8BD5BC32CEAA93A26F725BD260AA93F70"
+    }
+  },
+  "source_unchanged_since_initial_draft": true,
+  "original_authoring_parts": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\authoring\\source-part-01.txt",
+      "bytes": 11000,
+      "sha256": "0ECDFC8150CEBCACDA4C7550A1198DE80224C594D65A5A3BCA3F4D8BE7BE560E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\authoring\\source-part-02.txt",
+      "bytes": 11000,
+      "sha256": "A0EF6ACB746FE6B7FEA630B6F6151A22615E010FFA0A06FDDCF19212530AF420"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\authoring\\source-part-03.txt",
+      "bytes": 11000,
+      "sha256": "190090EC859AFB628D2E4E207ABA0EA32B00AEDF009AC1297503B51AC44B400D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\authoring\\source-part-04.txt",
+      "bytes": 11000,
+      "sha256": "C715EA9435F8B44B309C29940DFBD1DCDFA9BAD61431B1CDE60AAF406A26335A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\authoring\\source-part-05.txt",
+      "bytes": 7755,
+      "sha256": "7C4E6CD771A6BB6719C8D0A218AC66EDB717A5398F90C587211855DFCB991AC6"
+    }
+  ],
+  "complete_parts_concatenation_equal": true,
+  "static_accounting": {
+    "candidate_read_as_data_and_AST_only": true,
+    "all22_function_bodies_pinned": true,
+    "full9_disjoint_regions_cover_all51755_bytes": true,
+    "same_named_prior_helpers_byte_identical": [
+      "sha",
+      "relative",
+      "gzip_bytes"
+    ],
+    "other_helpers_fully_exposed_not_claimed_unchanged": true,
+    "new_constructor_whole_source_inverse_to_prior_policy_claimed": false,
+    "known_input_versions_rehashed": 314,
+    "known_direct_pin_relationships_verified": 183,
+    "immutable_historical_list_prefix_bases_verified": 181,
+    "distinct_input_pins": 319,
+    "literal_field_rows_checked": 104,
+    "boolean_gate_rows_checked": 40,
+    "known_original_new4_count_and_role_relationships_checked": true,
+    "dynamic_and_future_field_scope": "Known role-key and group-comprehension indices were separately checked as data. The exact future copy_plan/cohort/membership values remain unresolved and their complete contracts are saved.",
+    "actual_native_process100ns_tokens_preserved_as_raw_strings": true,
+    "static_checker_executed": true,
+    "candidate_or_extracted_prefix_executed": false,
+    "updated_progress_constructed": false,
+    "projected_progress_inverse_executed": false,
+    "gzip_executed": false
+  },
+  "contract_summary": {
+    "Root_configuration_exact_keys": 18,
+    "final_copy_plan_exact_keys": 11,
+    "row_exact_keys": 5,
+    "source_acceptance_required": "Separately pinned Root receipt for this exact source and fixed partial input basis; source acceptance itself has execution_authority=false.",
+    "preparation_release_required": "Separately issued exact Root config and its complete raw SHA; only evidence_preparation_authorized may be true.",
+    "known_inputs": "Retain exact ordered314 rows,183 direct relationships and two known bookend mappings before appending actual observations.",
+    "final_membership": "All four complete actual phases and both positive Root cohort receipts; each original file raw-pinned and represented; exact sorted final intake path list.",
+    "original63": "existing63 execution / regression63 preparation; exact retained63 order and63/1249 declarations; actual metadata and complete BQ/runtime receipts must agree.",
+    "original63_positive_owners_required": {
+      "buildquery_native_owners": 126,
+      "buildquery_process_intervals": 129,
+      "runtime_native_owners": 63,
+      "runtime_process_intervals": 66
+    },
+    "counts_are_requirements_not_observations": true,
+    "original63_F846_failure_or_config_adaptation_required": false,
+    "partial_or_failed_original63_supported": false,
+    "unsupported_outcome_action": "Stop before output and require a separate bounded negative design.",
+    "automatic_intake_paths": 14,
+    "future_intake_count": "N-G+14 after complete alias and exact-copy validation; preparation-review.json is outside intake.",
+    "old_progress_inverse_required": "Remove one new key; restore exactly seven old keys; reproduce all554689 raw bytes and all181 historical prefixes before physical writes.",
+    "gzip_policy": "Only explicitly listed byte-identical before/final pairs; deterministic parameters, two-source decompression and second encoding exact; otherwise keep raw pair.",
+    "physical_write_boundary_line": 674,
+    "Main_live_collision_check": "Deferred explicitly to separately reviewed exact Main intake."
+  },
+  "unresolved_actual_release_values": {
+    "Root_source_acceptance_pin": null,
+    "Root_preparation_configuration_pin": null,
+    "recorded_utc": null,
+    "final_copy_plan_pin": null,
+    "final_expected_output_paths": null,
+    "original63_Root_BuildQuery_acceptance_pin": null,
+    "original63_Root_runtime_acceptance_pin": null,
+    "original63_actual_metadata_count_bound_by_this_packet": null,
+    "original63_actual_group_counts_bound_by_this_packet": null,
+    "note": "Root's separately reported metadata observation does not replace the required final Root receipts. No current execution state is invented here."
+  },
+  "preserved_negative_history": {
+    "initial_catalog_A112_negative_retained": true,
+    "original_new4_F846_auditor_negative_retained": true,
+    "original_new4_native_runtime_not_rerun": true,
+    "no_original63_F846_failure_fabricated": true,
+    "native_negative_history_unchanged": true,
+    "prior_all_history_retained": true
+  },
+  "scope": {
+    "source_only": true,
+    "candidate_executed": false,
+    "candidate_prefix_executed": false,
+    "progress_or_archive_prepared": false,
+    "configuration_issued": false,
+    "execution_authority": false,
+    "Main_filesystem_read_or_written": false,
+    "index_accessed": false,
+    "native_execution_authorized": false,
+    "source_mutation_hold_released": false,
+    "application_qualified": false,
+    "production_bridge_removed": false,
+    "published_release": false
+  },
+  "next_step": "Root and an independent reviewer read this sealed source/contract/accounting. Any actual preparation requires a distinct exact release after both original63 positive receipts and final copy membership exist."
+}

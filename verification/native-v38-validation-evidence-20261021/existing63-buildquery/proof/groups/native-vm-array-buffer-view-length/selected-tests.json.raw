@@ -1,0 +1,23 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\4b2d07eabd358ff18547382defc22c7c\\test.exe",
+  "binary_sha256": "11C4752B8EB2F1874558775A495B115136AFF92095D13EF963BBC1427E066A24",
+  "version": "0.16.0",
+  "actual_count": 11,
+  "tests": [
+    "native_vm_array_buffer_view_length_test.test.VM view byteLength fixed spans use every actual typed-array element width and DataView bytes",
+    "native_vm_array_buffer_view_length_test.test.VM view byteLength bypasses guest getters and rejects live and revoked proxy brands",
+    "native_vm_array_buffer_view_length_test.test.VM view byteLength detached views return zero while actual lease acquisition still throws",
+    "native_vm_array_buffer_view_length_test.test.VM view byteLength fixed resizable views become zero out of bounds and recover on regrowth",
+    "native_vm_array_buffer_view_length_test.test.VM view byteLength tracking resizable spans round typed elements and preserve exact DataView bytes",
+    "native_vm_array_buffer_view_length_test.test.VM view byteLength shared growth preserves fixed spans and updates tracking spans",
+    "native_vm_array_buffer_view_length_test.test.VM view byteLength sees foreign runtime shared growth before any receiver realm getter",
+    "native_vm_array_buffer_view_length_test.test.VM view byteLength is allocation free under the real VM heap limit",
+    "native_vm_array_buffer_view_length_test.test.VM view byteLength preserves actual ordinary and uncatchable pending reasons without inspection",
+    "native_vm_array_buffer_view_length_test.test.VM view byteLength borrows without retaining the view or its native backing entitlement",
+    "native_vm_array_buffer_view_length_test.test.VM view byteLength leaves unmanaged external storage ownership and callback unchanged"
+  ],
+  "group": "native-vm-array-buffer-view-length",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

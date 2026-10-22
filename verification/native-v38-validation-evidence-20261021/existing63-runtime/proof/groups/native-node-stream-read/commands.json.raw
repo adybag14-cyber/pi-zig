@@ -1,0 +1,59 @@
+{
+  "mode": "RuntimeOnly",
+  "group": "native-node-stream-read",
+  "compile": [
+    "build",
+    "build-native-node-stream-read",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-Ddiagnostic-tests=false",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--prefix",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-stream-read\\installed",
+    "--cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache",
+    "--global-cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\global-cache",
+    "--summary",
+    "all"
+  ],
+  "metadata": [
+    "--listen=-"
+  ],
+  "runtime": [
+    "--listen=-"
+  ],
+  "expected_names": [
+    "native_node_stream_read_test.test.Node StreamBase read initializes the real default listener and native wrapper pointer",
+    "native_node_stream_read_test.test.Node StreamBase read selects internal onread beneath an ordinary own property and writes aliases first",
+    "native_node_stream_read_test.test.Node StreamBase read allocates actual native backing without a JS wrapper under an exhausted JS heap",
+    "native_node_stream_read_test.test.Node StreamBase read zero bytes consumes the managed token without a callback or trace",
+    "native_node_stream_read_test.test.Node StreamBase read negative status publishes undefined and leaves the positive byte counter unchanged",
+    "native_node_stream_read_test.test.Node StreamBase read full extent adopts the same native bytes and advances the counter before callback",
+    "native_node_stream_read_test.test.Node StreamBase read short extent performs the real exact native reallocation and copies before adoption",
+    "native_node_stream_read_test.test.Node StreamBase read later ArrayBuffer adoption bypasses the live global constructor",
+    "native_node_stream_read_test.test.Node StreamBase read a returned flagged Error stays successful DATA",
+    "native_node_stream_read_test.test.Node StreamBase read actual ordinary callback failure retains its exact reason through native cleanup",
+    "native_node_stream_read_test.test.Node StreamBase read actual fatal callback reason remains owned while static after trace still runs",
+    "native_node_stream_read_test.test.Node StreamBase read retains the selected callback across live replacement until caller scope retirement",
+    "native_node_stream_read_test.test.Node StreamBase read ignored callback return retires only after the static after operation",
+    "native_node_stream_read_test.test.Node StreamBase read can delete its actual native State before static after uses cached identifiers",
+    "native_node_stream_read_test.test.Node StreamBase read enters the real captured frame and restores the enclosing native callback scope",
+    "native_node_stream_read_test.test.Node StreamBase read disabled JS returns the actual empty callback while native buffer cleanup completes",
+    "native_node_stream_read_test.test.Node StreamBase read uses the live listener head and advances bytes before a real forwarding method",
+    "native_node_stream_read_test.test.Node StreamBase read null buffer negative status bypasses the managed map without an allocation",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "expected_count": 19,
+  "named_controls": 18,
+  "source_seal_scope": "whole_batch",
+  "cache_authority": "One initially fresh private cache pair; serial exact-head group compilation; no seed lineage",
+  "compile_seconds": 1320,
+  "metadata_seconds": 30,
+  "runtime_whole_group_seconds": 120,
+  "pipe_settle_seconds": 10,
+  "installed_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-stream-read\\installed\\bin\\native-node-stream-read.exe",
+  "installed_pdb": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-stream-read\\installed\\bin\\test.pdb"
+}

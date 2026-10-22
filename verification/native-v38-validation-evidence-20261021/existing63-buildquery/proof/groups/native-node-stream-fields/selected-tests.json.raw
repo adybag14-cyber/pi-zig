@@ -1,0 +1,23 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\c4d8c6ba91ac9dccb2bfd40ca7030fdc\\test.exe",
+  "binary_sha256": "16F024DEB0E0051EA1B53937B4BC4CFE77D9C01AE5069B39FCC60B49A4C6C61A",
+  "version": "0.16.0",
+  "actual_count": 11,
+  "tests": [
+    "native_node_stream_wrapper_test.test.Node StreamFields initial internal value is undefined and wrapper brand precedes native attachment",
+    "native_node_stream_wrapper_test.test.Node StreamFields real callback edge is internal and survives collection while wrapper remains rooted",
+    "native_node_stream_wrapper_test.test.Node StreamFields replacement is published before the previous sole callback edge retires",
+    "native_node_stream_wrapper_test.test.Node StreamFields native deletion clears only the State slot and leaves the actual onread value",
+    "native_node_stream_wrapper_test.test.Node StreamFields native strong wrapper root retains a real callback cycle until DeleteMe",
+    "native_node_stream_wrapper_test.test.Node StreamFields real weak wrapper retirement destroys native state before its callback edge",
+    "native_node_stream_wrapper_test.test.Node StreamFields realm cleanup detaches native state while late wrapper releases after disarm",
+    "native_node_stream_wrapper_test.test.Node StreamFields VM teardown retires detached onread after Fixture registry and Environment entitlements",
+    "native_node_stream_wrapper_test.test.Node StreamFields existing pending reason wins before native fields allocation at exhausted quota",
+    "native_node_stream_wrapper_test.test.Node StreamFields failed intrinsic wrapper allocation retires unattached native field storage",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-stream-fields",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "status": "root_accepted_exact_emitted_v38_existing63_buildquery_launcher",
+  "reviewer": "Root",
+  "recorded_utc": "2026-10-21T15:37:23.743322+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "prepared_launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-regression63-prepared-20261021\\buildquery-launch.json",
+    "bytes": 4247,
+    "sha256": "F72A83BAB44684116803678378A0BC3A911BF848C1C325DC43DFF2A0616442CC"
+  },
+  "grant": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\root-grant.json",
+    "bytes": 26495,
+    "sha256": "809D6F66E9F2CD416709B1E91270D5DBCCDA6F3C71E5959C891EABE9C2EB7ED8"
+  },
+  "launcher": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\launch.ps1",
+    "bytes": 1784,
+    "sha256": "4599A9AA38872CA8B56200A1A2FA9E405F6A3111B89B510E904AF118632836C7"
+  },
+  "grant_launch_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\grant-launch-adaptation.json",
+    "bytes": 33521,
+    "sha256": "5A15432ED5D4EDA2A7D1E72B4D886ED79C2BA40B9DBD2F4ED32A014FE2CD6EBB"
+  },
+  "configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-buildquery-issued-config-20261021.json",
+    "bytes": 24863,
+    "sha256": "E00D37EA2826EA5E4E9F9568EF7770FEC5F9A8FCD425CA4DBA3C2E52773EF28B"
+  },
+  "root_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-execution-bound-source-review-20261021.json",
+    "bytes": 6950,
+    "sha256": "20ECFC7CF589BAB8E0090EEED59B2BE236CDE5F1F14DF4C2A68AD215C2E3013A"
+  },
+  "root_catalog_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-source-acceptance-20261021.json",
+    "bytes": 4758,
+    "sha256": "911DCC32CF09C1610CE045572546668FF470EE62E9597DFC4D3DA6919480228B"
+  },
+  "original_grant_complete_structural_inverse": true,
+  "original_launcher_full_raw_inverse": true,
+  "only_launcher_path_literal_changed": true,
+  "grant_field_changes": 66,
+  "grant_pins_rehashed": 76,
+  "strict_guards": {
+    "initial_grant_max_age_seconds": 300,
+    "minimum_free_kib": 16777216,
+    "compile_outer_seconds": 1320,
+    "metadata_outer_seconds": 30,
+    "runtime_outer_actual_seconds": 120,
+    "owner_settle_seconds": 10,
+    "outer_controller_seconds": 1800,
+    "reuse_unsealed_original_compile_caches": false,
+    "cache_mode": "fresh_batch",
+    "cache_seed_manifest_path": null,
+    "cache_seed_manifest_sha256": null,
+    "allow_seed_source_delta_paths": [],
+    "runtime_restoration_claim": false,
+    "mode": "BuildQuery"
+  },
+  "grant_age_seconds_at_review": 12.037574,
+  "exact_launcher_execution_authorized": true,
+  "maximum_concurrent_native_batches": 1,
+  "resource_class": "heavy",
+  "outer_seconds": 1800,
+  "job_timeout_seconds": 1900,
+  "actual_metadata_count": null,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

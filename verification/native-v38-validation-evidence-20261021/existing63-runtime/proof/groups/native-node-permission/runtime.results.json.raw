@@ -1,0 +1,103 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\575afd337f4e184cc2e940face91c671\\test.exe",
+  "binary_sha256": "AA592DD5372AFDF18A9BEF535940F0748CAB95CF71B28606913F739F340A9BEF",
+  "version": "0.16.0",
+  "expected": 18,
+  "started": 18,
+  "completed": 18,
+  "results": [
+    {
+      "index": 0,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 1,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 2,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 3,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 4,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 5,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 6,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 7,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 8,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 9,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 10,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 11,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 12,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 13,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 14,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 15,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 16,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 17,
+      "flags": 0,
+      "passed": true
+    }
+  ],
+  "failed_or_skipped_or_logged_or_leaked": 0,
+  "owner_receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223\\groups\\native-node-permission\\runtime.json",
+  "status": "passed"
+}

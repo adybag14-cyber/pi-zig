@@ -1,0 +1,30 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\8b04586282f31b6ec0a8b139ad4c7699\\test.exe",
+  "binary_sha256": "B0473409D2F689B25782BD627758588704AF6DB222E46B61727137D2FB4D3F9A",
+  "version": "0.16.0",
+  "actual_count": 18,
+  "tests": [
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges prototype performs one live read and preserves returned object identity",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges prototype fallback uses bound and proxy constructor foreign realms",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges prototype abrupt getter and revoked proxy keep actual failure",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges for in preserves primitive array prototype and string key rules",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges for in actual snapshot skips deletion and excludes later additions",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges for in real proxy keys descriptors and prototype calls preserve trace",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges for in snapshot and later inherited has failure keep exact ordinary reasons",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges for in owns its input duplicate until iterator retirement",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges call array preserves live length index coercion strict receiver and no iterator",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges call array checks callable before reading array like arguments",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges call array enforces actual argument cap and index abrupt completion",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges call array actual argument copies survive callee and retire before next statement",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges same operation private DATA remains ordinary across all guest seams",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges actual current B preempts older DATA at every guest seam",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges argument-list retirement B prevents the later guest statement",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges every pending guard preserves its reason and skips guest work",
+    "native_vm_borrowed_bridges_test.test.VM borrowed bridges ordinary call preserves successfully returned private DATA identity",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-vm-borrowed-bridges",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

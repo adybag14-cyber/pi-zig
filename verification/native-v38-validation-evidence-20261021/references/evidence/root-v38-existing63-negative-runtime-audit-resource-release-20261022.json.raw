@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v38_existing63_partial_negative_runtime_audit_resource_release",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-22T14:12:50.847765+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-NegativeV38Existing63Retry1StrictRuntime-20261022.py",
+    "bytes": 54860,
+    "sha256": "DC14ED9842E396207F0F3447FCAC57E7D4F0C021E6AFF340F80C0FDD722C4A2D"
+  },
+  "configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-134223\\independent-negative-runtime-audit-inputs.json",
+    "bytes": 83556,
+    "sha256": "5E605E2DD7813A6106A135863EDEDC11B802AB87F9F927C3D23E8BB92FE495F2"
+  },
+  "source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-negative-runtime-auditor-source-acceptance-20261022.json",
+    "bytes": 8359,
+    "sha256": "C692E1BD3048A24AC7166C278B95F0529E3BF568B522DD8B9E0EB1E1D1507F40"
+  },
+  "independent_peer": {
+    "peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-existing63-negative-runtime-auditor-source-peer-20261022\\peer.json",
+      "bytes": 6868,
+      "sha256": "E2CC20885654FF461D3B7307BA72FBEB69C5C9D84B62B6CEC09CECE6FD444C23"
+    },
+    "checker": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-existing63-negative-runtime-auditor-source-peer-20261022\\source-check-v2.py",
+      "bytes": 38066,
+      "sha256": "06D8835F82746E880616768F170EE25EA5D75516477AA3404FF428EEEB8732FA"
+    },
+    "proof": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-existing63-negative-runtime-auditor-source-peer-20261022\\source-proof.json",
+      "bytes": 406002,
+      "sha256": "3DDC0297EC9E9245A11936D0806EAFDE7F27554880FD0F8B3D43C01294148D90"
+    }
+  },
+  "contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-existing63-negative-runtime-auditor-sourceonly-20261022\\unissued-input-contract.json",
+    "bytes": 90991,
+    "sha256": "353807F65F6EB6D04319F9BBF44CF47F1397F02543A1E31E83EB37755E473348"
+  },
+  "configuration_binding": {
+    "exact_field_count": 52,
+    "only_structural_change_from_inert_shape": "audit_execution_authorized: false -> true",
+    "whole_structural_inverse_verified": true,
+    "all_original_selected_job_and_receipt_fields_unchanged": true,
+    "raw_configuration_sha256_required_on_CLI": true
+  },
+  "resource": {
+    "program": "python",
+    "resource_class": "io-heavy",
+    "timeout_seconds": 240,
+    "one_auditor_process": true,
+    "source_artifact_and_process_read_only": true,
+    "output": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-134223\\independent-negative-runtime-closure.json"
+  },
+  "audit_execution_authorized": true,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

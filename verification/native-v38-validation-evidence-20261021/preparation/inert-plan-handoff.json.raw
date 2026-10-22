@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "status": "inert_source_only_v38_archive_and_progress_plan_ready_for_later_completion",
+  "recorded_utc": "2026-10-21T15:44:45.993138+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "capture_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\capture-inert-plan.py",
+    "bytes": 18395,
+    "sha256": "1AB9E816B2799EAEC27A030C9DD5B566B4F5AD8AF9EA568AC2D2D7F9120F8D3D"
+  },
+  "observed_evidence_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\observed-evidence-inventory.json",
+    "bytes": 338781,
+    "sha256": "CDFBB34E737011ADD26B7560E5011DC55CADA2803D749B0E1C0263E5954FADED"
+  },
+  "progress_patch_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\progress-patch-plan.json",
+    "bytes": 56327,
+    "sha256": "183647A8C0D250DBDD0747CD8E1220B415E9F205737092D4D13AF1DD0D730412"
+  },
+  "checks": {
+    "known_new4_counts": {
+      "buildquery_root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-complete-buildquery-acceptance-20261021.json",
+        "bytes": 3322,
+        "sha256": "AD8E19A0F01BCE2455EFC4A670881BD085CDD3A80A748D37F2BACBDA16C7F539"
+      },
+      "runtime_root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-complete-runtime-acceptance-20261021.json",
+        "bytes": 5591,
+        "sha256": "C2BA2AD029947BBD012F2B516F8F6DA8BD5BC32CEAA93A26F725BD260AA93F70"
+      },
+      "declared_groups": 4,
+      "declared_controls": 58,
+      "actual_metadata_count": 61,
+      "actual_group_counts": [
+        19,
+        4,
+        24,
+        14
+      ],
+      "started": 61,
+      "completed": 61,
+      "failed": 0,
+      "unstarted": 0,
+      "strict_empty_stderr": true,
+      "runtime_owner_count": 4,
+      "process_intervals_closed": 7,
+      "original_runtime_rerun": false,
+      "selected_native_runtime_accepted": true,
+      "product_qualification": false
+    },
+    "complete_selected_input_files_rehashed": 314,
+    "one_exact_git_progress_basis": {
+      "git_worktree": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018",
+      "commit": "014062f2d139254acab4b985b4ae343db637166f",
+      "relative_path": "verification/port-roadmap-resume-20261018/progress.json",
+      "bytes": 554689,
+      "sha256": "BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028",
+      "blob_sha1": "ec7a71bd873c789fcb42918501816357c599d2a6",
+      "filesystem_Main_access": false
+    },
+    "nested_history_lists_in_current_basis": 181,
+    "top_level_history_lengths": {
+      "integrated_source_units": 65,
+      "preserved_attempts": 38,
+      "retained_recent_native_negatives": 14,
+      "execution_checkpoint_history": 14
+    },
+    "bookend_raw_sizes": [
+      16165225,
+      16170132
+    ],
+    "all_four_raw_bookends_retained_as_original_input_pins": true,
+    "before_equals_final_per_phase": true,
+    "compression_performed": false,
+    "configuration_change_keys": [
+      "auditor_sha256"
+    ],
+    "original63_outcomes_unresolved": true,
+    "raw_original_evidence_reencoded": false
+  },
+  "mapping_scope": "314 immutable observed file versions plus current progress from immutable Git. 312 proposed archive names arise from combining only the two verified identical bookend pairs. These are partial plan counts, not an issued manifest or future commit-path count. Original63 phase evidence and eventual preparation/review/intake evidence are unresolved.",
+  "history_policy": "Preserve every old nested list prefix, the complete old checkpoint and byte-exact prior progress; any later finite patch must have a full structural/raw-byte inverse. Keep non-native preparation/auditor negatives distinct from native runtime outcomes.",
+  "gzip_policy": "Inherited accepted V37 recipe: gzip.GzipFile(filename=\"\", mode=\"wb\", fileobj=..., mtime=0, compresslevel=9), deterministic header 1f8b08000000000002ff; later creation must prove full decompression to both original sources and repeated encoding equality. No gzip was created here.",
+  "original_runtime_auditor_negative": "Original F846/2636 and original stderr/job remain separately pinned; corrected A73A/DE8E inputs differ only in auditor_sha256. Root C2BA accepts the unchanged original61-test native run through closure5F5D. No native rerun is inferred or authorized.",
+  "next_priority": "Pause for Root-requested actual17-binding original63 helper peer when real terminal/metadata inputs exist. Populate a separate immutable plan successor only after observed original63 outcomes and Root acceptance.",
+  "read_only_capture_executed": true,
+  "archive_preparer_executed": false,
+  "candidate_or_prefix_executed": false,
+  "archive_or_manifest_created": false,
+  "progress_patch_applied": false,
+  "configuration_issued": false,
+  "Main_filesystem_access": false,
+  "native_execution_authorized": false,
+  "source_intake_authorized": false,
+  "application_qualified": false,
+  "production_bridge_removed": false
+}

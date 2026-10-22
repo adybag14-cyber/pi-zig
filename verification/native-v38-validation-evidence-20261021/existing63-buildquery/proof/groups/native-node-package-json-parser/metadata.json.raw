@@ -1,0 +1,23 @@
+{
+  "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\b095108addccedcf092a17a23b2213e4\\test.exe",
+  "executable_sha256": "058A0F10E557BA3C54AADF7B14CAAB3A7A6D45247FFEC967E58A0C83AB8C47F4",
+  "arguments": [
+    "--listen=-"
+  ],
+  "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+  "pid": 42108,
+  "retained_handle": 2480,
+  "created_utc": "2026-10-21T15:47:14.5250226Z",
+  "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+  "timeout_seconds": 30,
+  "status": "passed",
+  "live_identity": {
+    "created_utc": "2026-10-21T15:47:14.5250226Z",
+    "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\b095108addccedcf092a17a23b2213e4\\test.exe",
+    "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\b095108addccedcf092a17a23b2213e4\\test.exe\" --listen=-",
+    "command_line_method": "Win32_Process.CommandLine",
+    "pid": 42108
+  },
+  "exit_code": 0,
+  "completed_utc": "2026-10-21T15:47:14.6512137+00:00"
+}

@@ -1,0 +1,437 @@
+{
+  "schema": 1,
+  "status": "unissued_source_only_partial_negative_archive_contract",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "selected_preparer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\candidate\\Prepare-V38PartialNegativeProgressAndValidationArchive-20261022.py",
+    "bytes": 76267,
+    "sha256": "EE11C073C1D1CAD599D7F88B34B78133A5E3A90F68D1E1094D6AF77D7C5128AB"
+  },
+  "finite_source_accounting": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\finite-source-adaptation.json",
+    "bytes": 71386,
+    "sha256": "4865C51ECA0AAE56C4DCBC726F85549EDCB9F911292E7EF0B16C69381E8C15C9"
+  },
+  "observed_input_accounting": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\observed-contract-accounting.json",
+    "bytes": 1787220,
+    "sha256": "364EABFBE2958399D0AAA29C172EFA4C4601F03F537628D0432BCD4DBF3ACE07"
+  },
+  "supplemental_preservation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\supplemental-preservation-inputs.json",
+    "bytes": 32895,
+    "sha256": "4124B26CB6722E5426FF051C978A4D715B3015442E5722DA51A76E4C9F320509"
+  },
+  "original_positive_only_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\candidate\\Prepare-V38PositiveProgressAndValidationArchive-20261021.py",
+    "bytes": 51755,
+    "sha256": "00F55DC94CC4151370B837FCDB02FFE991A07AC75C05EFE3022C66D079BD5A77"
+  },
+  "future_configuration_shape": {
+    "schema": 1,
+    "status": "root_reviewed_specific_v38_partial_negative_progress_archive_preparation",
+    "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+    "preparer_sha256": "EE11C073C1D1CAD599D7F88B34B78133A5E3A90F68D1E1094D6AF77D7C5128AB",
+    "source_review": null,
+    "final_copy_plan": null,
+    "recorded_utc": null,
+    "output_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022",
+    "archive_target_prefix": "verification/native-v38-validation-evidence-20261021",
+    "expected_output_paths": null,
+    "evidence_preparation_authorized": false,
+    "main_intake_authorized": false,
+    "native_execution_authorized": false,
+    "runtime_authority": false,
+    "source_mutation_hold_released": false,
+    "application_qualified": false,
+    "production_bridge_removed": false,
+    "published_release": false
+  },
+  "configuration_contract": {
+    "exact_key_count": 18,
+    "argument_shape": [
+      "absolute Root evidence config path",
+      "actual uppercase SHA256 of exact issued config bytes"
+    ],
+    "source_review_pin_shape": {
+      "path": "absolute evidence receipt path",
+      "bytes": "observed integer",
+      "sha256": "observed uppercase SHA256"
+    },
+    "unresolved_fields": [
+      "source_review",
+      "final_copy_plan",
+      "recorded_utc",
+      "expected_output_paths"
+    ],
+    "only_future_release_boolean_change": "Root must separately set evidence_preparation_authorized=true after source peer and exact copy review; every Main/native/runtime/product boolean remains false.",
+    "current_template_is_not_authority": true
+  },
+  "future_source_acceptance_required_fields": {
+    "status": "root_accepted_bounded_v38_partial_negative_archive_preparer",
+    "reviewer": "Root",
+    "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+    "preparer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\candidate\\Prepare-V38PartialNegativeProgressAndValidationArchive-20261022.py",
+      "bytes": 76267,
+      "sha256": "EE11C073C1D1CAD599D7F88B34B78133A5E3A90F68D1E1094D6AF77D7C5128AB"
+    },
+    "partial_inventory": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\observed-evidence-inventory.json",
+      "bytes": 338781,
+      "sha256": "CDFBB34E737011ADD26B7560E5011DC55CADA2803D749B0E1C0263E5954FADED"
+    },
+    "progress_plan": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\progress-patch-plan.json",
+      "bytes": 56327,
+      "sha256": "183647A8C0D250DBDD0747CD8E1220B415E9F205737092D4D13AF1DD0D730412"
+    },
+    "supplemental_preservation_inventory": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\supplemental-preservation-inputs.json",
+      "bytes": 32895,
+      "sha256": "4124B26CB6722E5426FF051C978A4D715B3015442E5722DA51A76E4C9F320509"
+    },
+    "source_accepted": true,
+    "execution_authority": false,
+    "main_intake_authorized": false,
+    "native_execution_authorized": false
+  },
+  "future_source_acceptance_note": "This is a required future receipt schema, not a source acceptance or execution grant. Additional review provenance is allowed; actual receipt bytes/hash remain unresolved.",
+  "future_copy_plan_shape": {
+    "schema": 1,
+    "status": "root_reviewed_exact_final_v38_partial_negative_archive_copy_plan",
+    "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+    "reviewer": "Root",
+    "partial_inventory": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\observed-evidence-inventory.json",
+      "bytes": 338781,
+      "sha256": "CDFBB34E737011ADD26B7560E5011DC55CADA2803D749B0E1C0263E5954FADED"
+    },
+    "progress_plan": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\progress-patch-plan.json",
+      "bytes": 56327,
+      "sha256": "183647A8C0D250DBDD0747CD8E1220B415E9F205737092D4D13AF1DD0D730412"
+    },
+    "rows": null,
+    "direct_pin_relationships": null,
+    "observed_phase_membership": null,
+    "bookend_plans": null,
+    "cohorts": {
+      "new4": {
+        "buildquery_root_acceptance": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-complete-buildquery-acceptance-20261021.json",
+          "bytes": 3322,
+          "sha256": "AD8E19A0F01BCE2455EFC4A670881BD085CDD3A80A748D37F2BACBDA16C7F539"
+        },
+        "runtime_root_acceptance": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-complete-runtime-acceptance-20261021.json",
+          "bytes": 5591,
+          "sha256": "C2BA2AD029947BBD012F2B516F8F6DA8BD5BC32CEAA93A26F725BD260AA93F70"
+        }
+      },
+      "existing63": {
+        "buildquery_root_acceptance": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-complete-buildquery-acceptance-20261021.json",
+          "bytes": 6281,
+          "sha256": "E6ADF28AEA05357A0C0CCFAE9BE63D27C020F17DA75F4D75E9136C62A10FDDDE"
+        },
+        "prelaunch_root_negative": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-runtime-prelaunch-freshness-negative-20261022.json",
+          "bytes": 3666,
+          "sha256": "52FA347ED7E7DECDD445613E125281A593DCA51B5B96CB790E3E2AE2FC6CA588"
+        },
+        "runtime_negative_root_acceptance": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-retry1-original-negative-runtime-acceptance-20261022.json",
+          "bytes": 5667,
+          "sha256": "2F26F9A1CD8FB66B1AC2330F7D2BBD6E5B30F5E842346B21BC8FFAD683D361E4"
+        }
+      }
+    }
+  },
+  "copy_plan_contract": {
+    "exact_key_count": 11,
+    "row_keys": [
+      "original",
+      "roles",
+      "proposed_archive_relative_path",
+      "representation",
+      "archive_created"
+    ],
+    "original_pin_keys": [
+      "path",
+      "bytes",
+      "sha256"
+    ],
+    "known_row_prefix": 314,
+    "known_direct_relationship_prefix": 183,
+    "known_bookend_map_prefix": 2,
+    "rows_requirements": [
+      "Retain all314 original row objects/order/representations exactly; append each additional original path once.",
+      "Include all102 exact supplemental raw inputs and all five complete actual phase memberships, source authorities, metadata and direct receipts consumed by the source.",
+      "Every original path must be contained evidence/worktree-verification. Main files, native binaries, cache and installed-artifact directories are forbidden.",
+      "Raw rows retain exact original bytes, .raw suffix, explicit nonempty roles, archive_created=false; only explicit equal before/final pair rows may share a target.",
+      "Final copy plan remains Root-reviewed inert data until a separate issued configuration explicitly permits evidence preparation."
+    ],
+    "direct_relationship_keys": [
+      "document",
+      "json_path",
+      "exact_referenced_pin"
+    ],
+    "direct_relationship_requirements": "Preserve the183 known ordered edges. Every appended edge must bind an actual archived document and exact referenced current immutable version. Do not turn retained historical Main preimage descriptors into live input pins or indiscriminately recurse them.",
+    "phase_order": [
+      "new4-buildquery",
+      "new4-runtime",
+      "existing63-buildquery",
+      "existing63-runtime-prelaunch",
+      "existing63-runtime"
+    ],
+    "membership_keys": [
+      "phase",
+      "proof",
+      "control",
+      "proof_top_level_files",
+      "control_top_level_files",
+      "group_files",
+      "excluded_subdirectories",
+      "excluded_group_subdirectories"
+    ],
+    "actual_phase_readout_source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\observed-contract-accounting.json",
+      "bytes": 1787220,
+      "sha256": "364EABFBE2958399D0AAA29C172EFA4C4601F03F537628D0432BCD4DBF3ACE07"
+    },
+    "observed_phase_file_counts_at_static_read": [
+      90,
+      73,
+      1214,
+      19,
+      253
+    ],
+    "phase_group_counts": [
+      4,
+      4,
+      63,
+      1,
+      17
+    ],
+    "only_excluded_directories": {
+      "buildquery_proof": [
+        "cache",
+        "global-cache"
+      ],
+      "buildquery_group": [
+        "installed"
+      ],
+      "runtime_proof": [],
+      "runtime_group": []
+    },
+    "phase_note": "The current exact readout is evidence. Root's final membership must include every actual file present at issue/execution; the preparer compares complete top-level and group directory membership before writes."
+  },
+  "bookend_contract": {
+    "represented_original_files": 10,
+    "minimum_equal_pair_gzip_count": 2,
+    "maximum_equal_pair_gzip_count": 4,
+    "required_first_two_maps": "Exact unchanged new4 maps from original inventory",
+    "eligible_phases": [
+      "new4-buildquery",
+      "new4-runtime",
+      "existing63-buildquery",
+      "existing63-runtime"
+    ],
+    "forced_raw_phase": "existing63-runtime-prelaunch",
+    "forced_raw_originals": 2,
+    "parameters": {
+      "filename": "",
+      "mtime": 0,
+      "compresslevel": 9,
+      "header_hex": "1f8b08000000000002ff"
+    },
+    "unissued_pair_fields": {
+      "compressed_pin": null,
+      "compression_executed": false
+    },
+    "count_equation": "compressed pairs G; separately raw bookends10-2*G",
+    "acceptance": "Both original raw files must be identical; gzip must roundtrip to each and independently reencode identically. Gzip is permitted only during a later separately released preparation, never by this source packet.",
+    "compression_performed": false
+  },
+  "history_contract": {
+    "original_progress": {
+      "bytes": 554689,
+      "sha256": "BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028"
+    },
+    "immutable_source": "raw Git blob at014062:verification/port-roadmap-resume-20261018/progress.json, read through SDK worktree; no Main filesystem/index",
+    "old_lengths": {
+      "integrated_source_units": 65,
+      "preserved_attempts": 38,
+      "retained_recent_native_negatives": 14,
+      "execution_checkpoint_history": 14
+    },
+    "new_lengths_if_preparation_released": {
+      "integrated_source_units": 65,
+      "preserved_attempts": 45,
+      "retained_recent_native_negatives": 15,
+      "execution_checkpoint_history": 15
+    },
+    "all_old_nested_list_prefixes": 181,
+    "replaced_top_level_keys": [
+      "current_source_head_at_record",
+      "updated_utc",
+      "record_note",
+      "current_execution_checkpoint",
+      "next_native_batch",
+      "preserved_attempts",
+      "execution_checkpoint_history",
+      "retained_recent_native_negatives"
+    ],
+    "added_top_level_keys": [
+      "v38_validation_and_archive_checkpoint"
+    ],
+    "inverse": "Remove only the new root key and restore the eight named existing keys from the archived raw basis. Structural equality and exact554689-byte canonical JSON equality are required before any staged write.",
+    "attempt_order": [
+      "initial non-native catalog negative",
+      "new4 complete fresh BuildQuery",
+      "original new4 positive-runtime auditor provenance negative",
+      "accepted unchanged original new4 strict runtime",
+      "original63 complete fresh BuildQuery",
+      "original63 zero-native prelaunch grant freshness negative",
+      "original63 retry1 partial native runtime negative"
+    ],
+    "non_native_negative_records": 3,
+    "native_negative_records_added": 1,
+    "inspection_or_static_source_findings_add_attempts": false,
+    "qualified_scope": "Only original new4 strict runtime is accepted. Aggregate selected-native-runtime acceptance and original63 positive-group acceptance remain false; original63 negative closure is preserved without qualification."
+  },
+  "observed_outcomes": {
+    "new4": {
+      "metadata": 61,
+      "actual_group_counts": [
+        19,
+        4,
+        24,
+        14
+      ],
+      "buildquery_accepted": true,
+      "strict_runtime_accepted": true,
+      "original_runtime_rerun": false
+    },
+    "existing63": {
+      "metadata": 1285,
+      "declared_groups": 63,
+      "declared_controls": 1249,
+      "buildquery_accepted": true,
+      "prelaunch_classified_owners": 0,
+      "prelaunch_classified_tests": 0,
+      "prelaunch_raw_native_selected_tests_started": null,
+      "runtime_attempted_groups": 17,
+      "runtime_started": 321,
+      "runtime_completed": 321,
+      "runtime_passed": 320,
+      "runtime_failed": 1,
+      "unstarted_groups": 46,
+      "unstarted_tests": 964,
+      "first16_group_status": "partial_batch_not_admissible",
+      "final_group": "native-node-fs-request-owner",
+      "failed_index": 22,
+      "negative_closure_accepted": true,
+      "positive_group_acceptance": false
+    }
+  },
+  "output_contract": {
+    "staging_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022",
+    "archive_target_prefix": "verification/native-v38-validation-evidence-20261021",
+    "only_existing_replacement": "verification/port-roadmap-resume-20261018/progress.json",
+    "fixed_additional_targets": [
+      "verification/port-roadmap-resume-20261018/progress.json",
+      "verification/native-v38-validation-evidence-20261021/prior-progress.json.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/supplemental-preservation-inputs.json.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/partial-observed-inventory.json.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/partial-progress-plan.json.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/inert-plan-handoff.json.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/prior-accepted-policy.py.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/preparer.py.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/root-issued-configuration.json.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/root-source-acceptance.json.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/root-final-copy-plan.json.raw",
+      "verification/native-v38-validation-evidence-20261021/history-preservation.json",
+      "verification/native-v38-validation-evidence-20261021/seal-archive-map.json",
+      "verification/native-v38-validation-evidence-20261021/archive-index.json",
+      "verification/native-v38-validation-evidence-20261021/manifest.json"
+    ],
+    "fixed_additional_target_count": 15,
+    "target_count_equation": "distinct proposed targets in final copy rows +15",
+    "expected_output_paths": "Root binds the complete sorted exact union of copy-row targets and the15 fixed targets. No output hashes or commit IDs are predicted.",
+    "create_only_stage": true,
+    "all_original_input_rehash_before_and_after": true,
+    "manifest_row_keys": [
+      "target",
+      "source",
+      "bytes",
+      "sha256",
+      "before",
+      "role"
+    ],
+    "manifest_before": "Only progress has {bytes:554689,sha256:BEB78...}; every new archive target has null.",
+    "manifest_keys": [
+      "schema",
+      "status",
+      "comparison_head",
+      "path_count_including_manifest",
+      "rows",
+      "manifest_target",
+      "source_build_paths",
+      "existing_progress_replacements",
+      "all314_known_inputs_retained",
+      "all181_nested_prefixes_and_full_progress_inverse_verified",
+      "final_copy_plan",
+      "source_review",
+      "complete_original63_buildquery_success_verified",
+      "original63_partial_runtime_negative_closed",
+      "original63_zero_native_prelaunch_negative_preserved",
+      "all_original_negatives_preserved",
+      "main_worktree_collision_check_deferred_to_separate_exact_intake",
+      "main_applied",
+      "source_mutation_hold_released",
+      "main_intake_authorized",
+      "native_execution_authorized",
+      "application_qualified",
+      "production_bridge_removed",
+      "published_release",
+      "scope"
+    ]
+  },
+  "separate_intake_contract": {
+    "compatible_prior_archive_adapter": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37ProgressNegativeIntake-20261021.py",
+      "bytes": 9721,
+      "sha256": "3991CF3DD80DDE51C551417644CF1E2AF376BDAF538DC8C7F7D6135538FAE5AC"
+    },
+    "prior_adapter_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-intake-peer-20261021\\peer.json",
+      "bytes": 7767,
+      "sha256": "3458C9C8AB2913D88BA1787522A180613982DD452714D1D159E7F2D1810A4B1C"
+    },
+    "future_binding_requires": [
+      "actual emitted manifest bytes/hash/path/count",
+      "actual frozen Main preimage and complete byte checks",
+      "independent emitted-output peer",
+      "separate Root source/intake release",
+      "complete raw index/commit membership/inverse"
+    ],
+    "root_planned_stronger_adapter": "Root/Handover may separately adapt accepted8A676 strengthened adapter with its additional manifest mode/byte/alias contract and one preserved original-manifest row. That projection is outside this preparer; EE11 original manifest must remain unchanged.",
+    "adapter_executed": false,
+    "Main_intake_authorized": false
+  },
+  "source_scope": {
+    "candidate_or_prefix_executed": false,
+    "gzip_executed": false,
+    "progress_projected": false,
+    "configuration_issued": false,
+    "Main_read_or_written": false,
+    "index_mutated": false,
+    "native_execution_authorized": false,
+    "source_mutation_hold_released": false,
+    "application_qualified": false,
+    "production_bridge_removed": false,
+    "published_release": false
+  }
+}

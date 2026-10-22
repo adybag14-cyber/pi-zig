@@ -1,0 +1,136 @@
+{
+  "schema": 1,
+  "status": "unexecuted_v38_catalog_result_name_successor_ready_for_independent_peer",
+  "packet_directory": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\Prepare-FreshV38Catalog-20261021.py",
+    "bytes": 80847,
+    "sha256": "A112C96C5CFA58E338398948D7A8E5BF7F079B523AF7239FA5BE8F78E46118CD"
+  },
+  "original_snapshot": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\original-Prepare-FreshV38Catalog-20261021.py",
+    "bytes": 80847,
+    "sha256": "A112C96C5CFA58E338398948D7A8E5BF7F079B523AF7239FA5BE8F78E46118CD"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\Prepare-FreshV38Catalog-20261021-v2.py",
+    "bytes": 80888,
+    "sha256": "5020211BDD5B229C3DAE0C744ADA4071FF03B9AB2698AFADF864EB483E437506"
+  },
+  "preserved_initial_source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 137539,
+    "sha256": "F6869376B2D6B42C007589244CA25DA2C988C10EEBCFE4DA36C87DC4B5ACDF58"
+  },
+  "finite_source_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\finite-source-correction.json",
+    "bytes": 16549,
+    "sha256": "9871CEB41B363BF69F225E66E748829CA46A560AC597EC1FA9CB793D90DFFEEE"
+  },
+  "selected_static_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\source-correction-check-v2.py",
+    "bytes": 11225,
+    "sha256": "63A4D4BC3A632942AB4F7CC2AE6045FD9FCBDBDD68DC8400572A202DE481A183"
+  },
+  "declared_edits": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\declared-edits.json",
+    "bytes": 4718,
+    "sha256": "4CD4ED929018A4B13F0869532EAA5D988970F8592D449AAC98DA9A3246058F74"
+  },
+  "preserved_checker_selector_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\checker-selector-negative.json",
+    "bytes": 1892,
+    "sha256": "B5D705369E9A191C85B5B61442BA7E8563FF70C272CBE8DB5EF967692D0C6F32"
+  },
+  "checker_selector_successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\checker-selector-adaptation.json",
+    "bytes": 1930,
+    "sha256": "AC0D8848C8C95CD3E47CB1CC15BC31C02E91FE16EB0EB69B1AEAAA5241F1BC8F"
+  },
+  "original_preparation_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-initial-preparation-negative-20261021\\root-negative-acceptance.json",
+    "bytes": 3023,
+    "sha256": "14FB17F6E9497A530D999EE3D05C43521A7F830C4A185CD4505C28BE6BBB6400"
+  },
+  "original_failed_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-issued-configuration-20261021.json",
+    "bytes": 8747,
+    "sha256": "2E7C7CEEEE50949C7DCF401E8453D4BCA9B8129C8C431D1334306B2007E082C9"
+  },
+  "original_failed_job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-initial-preparation-negative-20261021\\job-observation.json",
+    "bytes": 1958,
+    "sha256": "F5EC666123CF220DB6C14EF067CD5D7F43D873E93E43DC2AF195625E1849E5CB"
+  },
+  "original_stderr_capture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-initial-preparation-negative-20261021\\original-stderr-capture.bin",
+    "bytes": 356,
+    "sha256": "85F9FCD10AB6EC69908518E0E82BD2B1AD599D71A4CBD5EEC53EF4323C803794"
+  },
+  "accepted_original_metadata": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-metadata-acceptance.json",
+    "bytes": 14153,
+    "sha256": "6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B"
+  },
+  "accepted_original_runtime_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-closure.json",
+    "bytes": 22838,
+    "sha256": "321ABB743297FC9720D36E78F17B38441F8FAE3A60BEA32DE488FC248342F517"
+  },
+  "original_canonical_runtime_results": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.results.json",
+    "bytes": 2043,
+    "sha256": "9B224B5628500F9018F32B6338DF13A7BA5A6DCC067C391D5D555FFE621A8B50"
+  },
+  "finding": "The accepted original runtime closure has four fields per result: index, flags, passed and name. The first V38 preparer authored only the first three expected fields, so its strict whole-record equality failed even though the original records were intact.",
+  "correction": "Move the existing byte-identical exact V37 metadata proof/load immediately before expected_results; add name=metadata['groups'][0]['tests'][i] to each existing range(19) record; remove only the displaced later load. Keep the complete observed-results equality and every later metadata acceptance/identity/group/count gate unchanged.",
+  "scope": {
+    "finite_hunks": 2,
+    "net_bytes_added": 41,
+    "unchanged_helpers": 21,
+    "all_other_source_bytes_unchanged": true,
+    "complete_forward_and_raw_inverse": true,
+    "all_intermediate_hashes": true,
+    "whole_module_ast_unchanged_after_only_load_relocation_and_name_field_normalization": true,
+    "all_imports_unchanged": true,
+    "no_production_or_fixture_change": true
+  },
+  "historical_data_validation": {
+    "records": 19,
+    "keys": [
+      "index",
+      "flags",
+      "passed",
+      "name"
+    ],
+    "failed_indices": [
+      5,
+      10,
+      11,
+      12,
+      16
+    ],
+    "passed": 14,
+    "anonymous_test_index": 18,
+    "anonymous_test_name": "extensions.native_durable_storage.test_0",
+    "accepted_metadata_exact_names_retained": true,
+    "original_canonical_three_field_records_retained": true,
+    "original_full_four_field_closure_records_retained": true,
+    "future_metadata_count": null,
+    "future_runtime_result": null
+  },
+  "preservation": "A112, F686, the consumed initial 2E7C configuration, the original failed job and stderr, and the complete accepted V37 runtime/metadata records remain immutable. This packet is additive. The first static checker negative is separate from the source candidate and retained with its exact one-hunk checker-only correction.",
+  "review_and_issuance": "Module is reviewing this exact 5020211B source and 9871CEB4 proof. Root must accept the successor and issue a distinct catalog-only configuration before any preparation retry. The consumed initial configuration is not reused; no execution authority is supplied by this handoff.",
+  "performed": "Only static byte/AST/data checks ran. The checker compares immutable accepted JSON records independently; it never imports, evaluates or executes any candidate statement or prefix.",
+  "successor_source_only": true,
+  "successor_or_prefix_executed": false,
+  "catalog_preparer_executed_by_this_task": false,
+  "catalog_output_written": false,
+  "compiler_native_reference_or_constructor_executed": false,
+  "Main_or_index_written": false,
+  "new_configuration_issued": false,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

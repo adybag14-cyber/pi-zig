@@ -1,0 +1,147 @@
+{
+  "status": "accepted_bounded_source_only_partial_negative_archive_preparer",
+  "reviewer": "/root/module_io_port",
+  "source_only": true,
+  "full_candidate_source_read": true,
+  "candidate_imported_or_evaluated": false,
+  "candidate_prefix_executed": false,
+  "no_bounded_source_blocker_found": true,
+  "scope": "Finite successor from the separately preserved 00F55 positive-only archive author. This source review does not execute either author or independently re-run the native closure.",
+  "findings": [
+    "All 39 declared source edits replay through the exact intermediate hashes and reverse to all 51,755 original bytes. No source outside those edits changes.",
+    "All 22 original full-line function bodies, including check_positive, remain exact. The six new helpers separate original63 complete BuildQuery, the original zero-owner prelaunch admission rejection, and the independently closed partial native negative. Ten selected old gate regions remain exact.",
+    "The 18-key configuration, 11-key copy-plan, and five-key row schemas remain exact. Separate Root statuses and exact source/config/final-copy-plan pins gate a new create-only output directory. The supplemental 102 raw originals are mandatory provenance, not extra validation attempts.",
+    "All 314 old inventory rows and 183 original pin relationships still match current immutable originals. The prior 554,689-byte progress Git object round-trips exactly and all 181 historical list bases are retained. The source restores eight changed keys in its full inverse, including retained_recent_native_negatives.",
+    "Actual accepted original63 metadata provides the exact 63-element vector totaling 1,285. The partial native results match all 321 original index/flag/name records: 320 passes, one failure, 46 groups and 964 tests unstarted. The first 16 group statuses remain partial_batch_not_admissible, with no positive group acceptance.",
+    "The prelaunch raw native_selected_tests_started remains null. Root's separate classification of zero launched native owners/tests is recorded explicitly. The prelaunch attempt does not enter native-negative history.",
+    "Seven observed attempts are appended in the existing history convention. Exactly three non-native failures are distinguished from one native partial failure, which alone extends the native-negative list. Existing source/product qualification fields remain false and source-unit history remains unchanged.",
+    "Five observed phase scopes cover ten before/final files. The prelaunch pair must remain raw; at most four other byte-identical pairs may use the unchanged deterministic gzip and full round-trip gates. Raw stderr, protocol data, decimal100ns identities, and all original version bytes remain unmodified.",
+    "Create-only evidence writes remain after all source, receipt, exact copy-membership, full history inverse, frozen Git object/attribute, and current-original recheck gates. Main/index/native execution and intake remain separate Root actions."
+  ],
+  "limits": [
+    "The own independent source/data checker verifies 674 current versions, including its own source, without evaluating candidate code. SDK's separate complete five-phase readout is retained and source-reviewed; this peer does not claim that its larger accounting document was executed by this agent.",
+    "Root's already accepted C1BA negative closure and 2F26 acceptance supply native process/seal closure authority. This source peer performs no fresh process probe, compiler invocation, native runtime or protocol re-execution.",
+    "The final Root source acceptance, exact final copy plan and its complete output membership, issued preparation configuration, emitted archive/progress, and any Main intake remain future artifacts requiring separate review.",
+    "No gzip encoding or progress projection was executed during this peer. Full inverse and compression requirements are source gates, not newly generated archive claims."
+  ],
+  "inspection_notes": [
+    "One initial combined source display and one finite-proof summary exceeded their output budgets. The missing candidate text was recovered from retained complete tool outputs, and a bounded finite summary recovered the proof metadata. Neither event executed or changed the candidate.",
+    "No independent checker assertion or authoring failure occurred in this peer. All predecessor authoring and checker negatives remain selected by the supplemental preservation inventory."
+  ],
+  "candidate_or_prefix_executed": false,
+  "adapter_executed": false,
+  "other_checker_executed": false,
+  "gzip_executed": false,
+  "archive_generated": false,
+  "progress_projected": false,
+  "Main_or_index_accessed": false,
+  "configuration_issued": false,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "application_qualified": false,
+  "source_contract_fully_read": true,
+  "actual_observed_reference": {
+    "original63_buildquery_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-complete-buildquery-acceptance-20261021.json",
+      "bytes": 6281,
+      "sha256": "E6ADF28AEA05357A0C0CCFAE9BE63D27C020F17DA75F4D75E9136C62A10FDDDE"
+    },
+    "prelaunch_negative": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-runtime-prelaunch-freshness-negative-20261022.json",
+      "bytes": 3666,
+      "sha256": "52FA347ED7E7DECDD445613E125281A593DCA51B5B96CB790E3E2AE2FC6CA588"
+    },
+    "negative_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-134223\\independent-negative-runtime-closure.json",
+      "bytes": 232840,
+      "sha256": "C1BA83DB4C8A70DDF1C9170458D44E0CADCAF1F10C85E9898B55736D31663CB9"
+    },
+    "negative_Root_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-retry1-original-negative-runtime-acceptance-20261022.json",
+      "bytes": 5667,
+      "sha256": "2F26F9A1CD8FB66B1AC2330F7D2BBD6E5B30F5E842346B21BC8FFAD683D361E4"
+    }
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\candidate\\Prepare-V38PartialNegativeProgressAndValidationArchive-20261022.py",
+    "bytes": 76267,
+    "sha256": "EE11C073C1D1CAD599D7F88B34B78133A5E3A90F68D1E1094D6AF77D7C5128AB"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\candidate\\Prepare-V38PositiveProgressAndValidationArchive-20261021.py",
+    "bytes": 51755,
+    "sha256": "00F55DC94CC4151370B837FCDB02FFE991A07AC75C05EFE3022C66D079BD5A77"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\finite-source-adaptation.json",
+    "bytes": 71386,
+    "sha256": "4865C51ECA0AAE56C4DCBC726F85549EDCB9F911292E7EF0B16C69381E8C15C9"
+  },
+  "source_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\source-contract.json",
+    "bytes": 20144,
+    "sha256": "48F18D2746B15737494ED449AB1EE350F1B60CB81F2E583EAC04F9C339EB1DD4"
+  },
+  "supplemental_preservation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\supplemental-preservation-inputs.json",
+    "bytes": 32895,
+    "sha256": "4124B26CB6722E5426FF051C978A4D715B3015442E5722DA51A76E4C9F320509"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-partial-negative-progress-archive-independent-peer-20261022\\source-audit.py",
+    "bytes": 18308,
+    "sha256": "4C70F2B99A36CEB01B2A84FB0B065E6E7B24224301CA4E48365772AE7390284D"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-partial-negative-progress-archive-independent-peer-20261022\\source-proof.json",
+    "bytes": 231097,
+    "sha256": "814D691555E85BAAC4708685FC3C46D3DA7722B72304AF7F522DD02DB0A3D1F7"
+  },
+  "author_finite_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\finite-source-check.py",
+    "bytes": 8186,
+    "sha256": "34B4C33C8E8EFAE5BCBCE8AC4CEA932C5CCDA1F31C5E4245CE5F8521D0F812CC"
+  },
+  "author_observed_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\observed-contract-check.py",
+    "bytes": 13011,
+    "sha256": "04F3F89A33AAEEB78F34C38E13F9E2C9E06C53336EF423BB4AA418A12DA6D66A"
+  },
+  "author_observed_readout": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\observed-contract-accounting.json",
+    "bytes": 1787220,
+    "sha256": "364EABFBE2958399D0AAA29C172EFA4C4601F03F537628D0432BCD4DBF3ACE07"
+  },
+  "static_check_summary": {
+    "current_versions_including_own_checker": 674,
+    "finite_steps": 39,
+    "full_raw_inverse_bytes": 51755,
+    "unchanged_helpers": 22,
+    "new_helpers": 6,
+    "unchanged_gate_regions": 10,
+    "known_inventory_versions": 314,
+    "direct_pin_relationships": 183,
+    "old_list_prefix_bases": 181,
+    "supplemental_raw_originals": 102,
+    "configuration_keys": 18,
+    "copy_plan_keys": 11,
+    "row_keys": 5,
+    "actual_original63_metadata": 1285,
+    "actual_partial_started": 321,
+    "actual_partial_completed": 321,
+    "actual_partial_passed": 320,
+    "actual_partial_failed": 1,
+    "unstarted_groups": 46,
+    "unstarted_tests": 964,
+    "driver_demotions": 16
+  },
+  "unresolved_execution_artifacts": {
+    "Root_source_acceptance": null,
+    "final_copy_plan": null,
+    "exact_expected_output_paths": null,
+    "issued_configuration": null,
+    "emitted_archive_and_progress": null,
+    "Main_intake_release": null
+  },
+  "final_contract_metadata_checks": true
+}

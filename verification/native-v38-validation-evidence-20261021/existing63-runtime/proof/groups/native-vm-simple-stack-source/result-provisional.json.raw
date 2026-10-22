@@ -1,0 +1,280 @@
+{
+  "group": "native-vm-simple-stack-source",
+  "status": "awaiting_batch_closure",
+  "mode": "RuntimeOnly",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "receipt_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223\\groups\\native-vm-simple-stack-source",
+  "output_prefix": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-vm-simple-stack-source\\installed",
+  "installed_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-vm-simple-stack-source\\installed\\bin\\test.exe",
+  "installed_pdb": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-vm-simple-stack-source\\installed\\bin\\test.pdb",
+  "cached_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\0a1d4af08b6440524932c5b63ceb955e\\test.exe",
+  "phases": {
+    "runtime": {
+      "failure": null,
+      "original_execution_failure": null,
+      "evidence": {
+        "valid": true,
+        "evidence_errors": [],
+        "owner": {
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\0a1d4af08b6440524932c5b63ceb955e\\test.exe",
+          "executable_sha256": "9ECBFAEC8F502904D542A22103F03CAEC5F429B80FC7639C4A3A38B0994C0984",
+          "arguments": [
+            "--listen=-"
+          ],
+          "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+          "pid": 19984,
+          "retained_handle": 1296,
+          "created_utc": "2026-10-22T13:43:26.1126968Z",
+          "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+          "timeout_seconds": 120,
+          "status": "passed",
+          "live_identity": {
+            "created_utc": "2026-10-22T13:43:26.1126968Z",
+            "pid": 19984,
+            "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\0a1d4af08b6440524932c5b63ceb955e\\test.exe\" --listen=-",
+            "command_line_method": "Win32_Process.CommandLine",
+            "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\0a1d4af08b6440524932c5b63ceb955e\\test.exe"
+          },
+          "exit_code": 0,
+          "completed_utc": "2026-10-22T14:43:26.5312166+01:00"
+        },
+        "canonical_results": {
+          "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\0a1d4af08b6440524932c5b63ceb955e\\test.exe",
+          "binary_sha256": "9ECBFAEC8F502904D542A22103F03CAEC5F429B80FC7639C4A3A38B0994C0984",
+          "version": "0.16.0",
+          "expected": 34,
+          "started": 34,
+          "completed": 34,
+          "results": [
+            {
+              "index": 0,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 1,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 2,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 3,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 4,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 5,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 6,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 7,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 8,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 9,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 10,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 11,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 12,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 13,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 14,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 15,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 16,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 17,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 18,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 19,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 20,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 21,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 22,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 23,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 24,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 25,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 26,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 27,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 28,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 29,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 30,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 31,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 32,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 33,
+              "flags": 0,
+              "passed": true
+            }
+          ],
+          "failed_or_skipped_or_logged_or_leaked": 0,
+          "owner_receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223\\groups\\native-vm-simple-stack-source\\runtime.json",
+          "status": "passed"
+        },
+        "raw_outputs": [
+          {
+            "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223\\groups\\native-vm-simple-stack-source\\runtime.stdout.bin",
+            "bytes": 966,
+            "sha256": "E0F1E1E55AD9122DE01CC9D10E59EE85C50E2C156E784ED8577714F7D1B15F09"
+          },
+          {
+            "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223\\groups\\native-vm-simple-stack-source\\runtime.stderr.log",
+            "bytes": 0,
+            "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+          }
+        ],
+        "current_owner_pid_present": 0,
+        "current_owned_descendants": [],
+        "preexisting_pid_ancestry": [],
+        "absence_error": null
+      },
+      "owner_binding": {
+        "status": "passed",
+        "errors": [],
+        "expected_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\0a1d4af08b6440524932c5b63ceb955e\\test.exe",
+        "expected_sha256": "9ECBFAEC8F502904D542A22103F03CAEC5F429B80FC7639C4A3A38B0994C0984",
+        "expected_deadline": 120
+      },
+      "postchecks": {
+        "evidence_valid": true,
+        "owner_bound": true,
+        "source_sealed": false,
+        "artifacts_bound": true,
+        "absence_closed": true,
+        "errors": [],
+        "source_seal_scope": "Whole batch before/final; no group is admissible until the final complete seal closes"
+      }
+    }
+  },
+  "postseal": false,
+  "source_seal_scope": "whole_batch",
+  "errors": [],
+  "runtime_requested": true,
+  "runtime_owner_launch_attempted": true,
+  "actual_runtime_owner_started": true,
+  "native_selected_tests_started": 34,
+  "attempted_phases": [
+    "runtime"
+  ],
+  "owned_started_phases": [
+    "runtime"
+  ],
+  "runtime_count_observation": {
+    "expected": 34,
+    "started": 34,
+    "completed": 34,
+    "failed_or_skipped_or_logged_or_leaked": 0,
+    "status": "passed",
+    "acceptance_authority": "Validated canonical result and all original owner/postseal gates remain required"
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "resource_observation": {
+    "observed_utc": "2026-10-22T13:34:07.4665405+00:00",
+    "free_physical_kib": 30464732,
+    "minimum_free_kib": 16777216,
+    "native_candidates": [],
+    "eligible": true
+  },
+  "active_job_observation": {
+    "ok": true,
+    "summary": "Listed durable jobs.",
+    "data": {
+      "jobs": [
+        {
+          "id": "job-1792674291260-2cfedf79-716",
+          "status": "running",
+          "createdAtUtc": "2026-10-22T13:04:51.260Z",
+          "startedAtUtc": "2026-10-22T13:04:51.439Z",
+          "completedAtUtc": null,
+          "exitCode": null,
+          "runnerAlive": true
+        }
+      ],
+      "next_cursor": null,
+      "order": "job_id",
+      "limit": 100
+    },
+    "exitCode": null,
+    "truncated": false
+  },
+  "unrelated_watch_job_observation": {
+    "ok": true,
+    "summary": "Background job job-1792674291260-2cfedf79-716 is running.",
+    "data": {
+      "id": "job-1792674291260-2cfedf79-716",
+      "status": "running",
+      "mode": "program",
+      "createdAtUtc": "2026-10-22T13:04:51.260Z",
+      "startedAtUtc": "2026-10-22T13:04:51.439Z",
+      "completedAtUtc": null,
+      "runnerPid": 36024,
+      "exitCode": null,
+      "readOnly": false,
+      "resourceClass": "watch",
+      "runtimeMode": "host",
+      "queuedAtUtc": "2026-10-22T13:04:51.300Z",
+      "runnerProcessInstance": "134371478912727153",
+      "queueWaitMs": 92,
+      "executionSlot": 0,
+      "executionSlots": [
+        0
+      ],
+      "executionPool": "watch",
+      "executionWeight": 1,
+      "childPid": 8280,
+      "runnerAlive": true,
+      "heartbeatAgeMs": 4878,
+      "jobDir": "C:\\Users\\adyba\\docker-chatgpt-devbox\\run\\jobs\\job-1792674291260-2cfedf79-716"
+    },
+    "exitCode": null,
+    "truncated": false
+  },
+  "unrelated_watch_process_observation": [
+    {
+      "pid": 36024,
+      "parent_pid": 31920,
+      "name": "devbox-mcp.exe",
+      "executable": "C:\\Users\\adyba\\docker-chatgpt-devbox\\run\\native\\releases\\9bad086623e165a252da014401cc3c8aebe9b739029f789a0b6c0f5679b1823c\\devbox-mcp.exe",
+      "created_utc": "2026-10-22T13:04:51.2727150Z",
+      "references_pi_zig": false,
+      "references_native_command": false
+    },
+    {
+      "pid": 8280,
+      "parent_pid": 36024,
+      "name": "pwsh.exe",
+      "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+      "created_utc": "2026-10-22T13:04:51.4869650Z",
+      "references_pi_zig": false,
+      "references_native_command": false
+    }
+  ],
+  "root_resource_admission_policy": "No native candidates and no active execution-pool jobs. The exact already-running unrelated PowerShell watch job is in the separate watch pool, references neither pi-zig nor native commands, and is left untouched. Root retains the exclusive native lease and unchanged16GiB admission, source/artifact and per-phase absence gates."
+}

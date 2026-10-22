@@ -1,0 +1,416 @@
+{
+  "schema": 1,
+  "status": "source_only_v38_catalog_result_name_successor_verified",
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\source-correction-check-v2.py",
+    "bytes": 11225,
+    "sha256": "63A4D4BC3A632942AB4F7CC2AE6045FD9FCBDBDD68DC8400572A202DE481A183"
+  },
+  "declared_edits": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\declared-edits.json",
+    "bytes": 4718,
+    "sha256": "4CD4ED929018A4B13F0869532EAA5D988970F8592D449AAC98DA9A3246058F74"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\Prepare-FreshV38Catalog-20261021.py",
+    "bytes": 80847,
+    "sha256": "A112C96C5CFA58E338398948D7A8E5BF7F079B523AF7239FA5BE8F78E46118CD"
+  },
+  "original_snapshot": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\original-Prepare-FreshV38Catalog-20261021.py",
+    "bytes": 80847,
+    "sha256": "A112C96C5CFA58E338398948D7A8E5BF7F079B523AF7239FA5BE8F78E46118CD"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\Prepare-FreshV38Catalog-20261021-v2.py",
+    "bytes": 80888,
+    "sha256": "5020211BDD5B229C3DAE0C744ADA4071FF03B9AB2698AFADF864EB483E437506"
+  },
+  "preserved_original_finite_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 137539,
+    "sha256": "F6869376B2D6B42C007589244CA25DA2C988C10EEBCFE4DA36C87DC4B5ACDF58"
+  },
+  "authorities": {
+    "root_preparation_negative": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-initial-preparation-negative-20261021\\root-negative-acceptance.json",
+      "bytes": 3023,
+      "sha256": "14FB17F6E9497A530D999EE3D05C43521A7F830C4A185CD4505C28BE6BBB6400"
+    },
+    "failed_configuration": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-issued-configuration-20261021.json",
+      "bytes": 8747,
+      "sha256": "2E7C7CEEEE50949C7DCF401E8453D4BCA9B8129C8C431D1334306B2007E082C9"
+    },
+    "failed_job_observation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-initial-preparation-negative-20261021\\job-observation.json",
+      "bytes": 1958,
+      "sha256": "F5EC666123CF220DB6C14EF067CD5D7F43D873E93E43DC2AF195625E1849E5CB"
+    },
+    "failed_stderr": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-initial-preparation-negative-20261021\\original-stderr-capture.bin",
+      "bytes": 356,
+      "sha256": "85F9FCD10AB6EC69908518E0E82BD2B1AD599D71A4CBD5EEC53EF4323C803794"
+    },
+    "accepted_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-metadata-acceptance.json",
+      "bytes": 14153,
+      "sha256": "6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B"
+    },
+    "accepted_runtime_negative_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-closure.json",
+      "bytes": 22838,
+      "sha256": "321ABB743297FC9720D36E78F17B38441F8FAE3A60BEA32DE488FC248342F517"
+    },
+    "canonical_original_runtime_results": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.results.json",
+      "bytes": 2043,
+      "sha256": "9B224B5628500F9018F32B6338DF13A7BA5A6DCC067C391D5D555FFE621A8B50"
+    }
+  },
+  "finite_hunks": 2,
+  "edits": [
+    {
+      "index": 1,
+      "baseline_offset": 32516,
+      "offset_before_step": 32516,
+      "before": "expected_results = [{\"index\":i,\"flags\":1 if i in (5,10,11,12,16) else 0,\"passed\":i not in (5,10,11,12,16)} for i in range(19)]\n",
+      "after": "metadata = proof(\"prior_v37_retry1_metadata_acceptance\",build_control/\"independent-metadata-acceptance.json\",\"6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B\",14153)\nexpected_results = [{\"index\":i,\"flags\":1 if i in (5,10,11,12,16) else 0,\"passed\":i not in (5,10,11,12,16),\"name\":metadata[\"groups\"][0][\"tests\"][i]} for i in range(19)]\n",
+      "purpose": "Move the unchanged exact metadata proof before result construction and include its ordered canonical name in each existing index/flag/pass row.",
+      "before_file_sha256": "A112C96C5CFA58E338398948D7A8E5BF7F079B523AF7239FA5BE8F78E46118CD",
+      "after_file_sha256": "24140B05B66CECCBFE70487283AD74D3A01A60E6A1FE744E147E46E0CB2BF5A2"
+    },
+    {
+      "index": 2,
+      "baseline_offset": 33789,
+      "offset_before_step": 34013,
+      "before": "metadata = proof(\"prior_v37_retry1_metadata_acceptance\",build_control/\"independent-metadata-acceptance.json\",\"6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B\",14153)\n",
+      "after": "",
+      "purpose": "Remove only the displaced duplicate load; all following metadata identity/group/count gates remain byte-identical.",
+      "before_file_sha256": "24140B05B66CECCBFE70487283AD74D3A01A60E6A1FE744E147E46E0CB2BF5A2",
+      "after_file_sha256": "5020211BDD5B229C3DAE0C744ADA4071FF03B9AB2698AFADF864EB483E437506"
+    }
+  ],
+  "all_intermediate_hashes": true,
+  "complete_raw_forward_exact": true,
+  "complete_raw_inverse_exact": true,
+  "unchanged_raw_fragments": [
+    {
+      "baseline_offset": 0,
+      "candidate_offset": 0,
+      "bytes": 32516,
+      "sha256": "077E9A80395C50725C72B0930ABEB1C7242A8876C75E7A43CF01417946E81829",
+      "byte_identical": true
+    },
+    {
+      "baseline_offset": 32643,
+      "candidate_offset": 32867,
+      "bytes": 1146,
+      "sha256": "C896B7F372B5FF367E07F1D10379F5A220A6AE584B8C83A7EC37FA6DD0492C03",
+      "byte_identical": true
+    },
+    {
+      "baseline_offset": 33972,
+      "candidate_offset": 34013,
+      "bytes": 46875,
+      "sha256": "E248F35128749CD9AC8EA7D399DB10A845F20A867FEE202A0C827393E3AF0672",
+      "byte_identical": true
+    }
+  ],
+  "all_other_source_bytes_unchanged": true,
+  "all_21_helpers_byte_identical": [
+    {
+      "name": "sha",
+      "bytes": 65,
+      "sha256": "ACC12A90964A54F651A83AA95D98D6C1DA6A3CECA2C91DE37FC32A3E285A0AB9",
+      "byte_identical": true
+    },
+    {
+      "name": "h",
+      "bytes": 47,
+      "sha256": "A06776AB9ADED3BA96E1B6E394B38DF21C40B4F55867E7F702A01B3D76A082CD",
+      "byte_identical": true
+    },
+    {
+      "name": "read",
+      "bytes": 77,
+      "sha256": "CF3E24BC7E2DB6108F39086C404DC6498A007F9EA7E5667D544594831FE56A03",
+      "byte_identical": true
+    },
+    {
+      "name": "pin",
+      "bytes": 108,
+      "sha256": "1655C893659B604FF2837058FC8D9AAB6DD8D2A09BFC9B0B6E1D8CD0826AA641",
+      "byte_identical": true
+    },
+    {
+      "name": "exact",
+      "bytes": 189,
+      "sha256": "00813B64494B5D59FA1CB48A7D583211DFDEA0D72DA7CD3A2639BF3738D993E3",
+      "byte_identical": true
+    },
+    {
+      "name": "put",
+      "bytes": 116,
+      "sha256": "AC08C2580A79B7F23AD319205F4E1685B1AA1406A5ADF76FBF48818285DFE2B8",
+      "byte_identical": true
+    },
+    {
+      "name": "git",
+      "bytes": 74,
+      "sha256": "61C4A0157F7B0FB41C90EF01087F61D449A9A7542D102A257F52C6C5091CA64A",
+      "byte_identical": true
+    },
+    {
+      "name": "declared",
+      "bytes": 88,
+      "sha256": "25AB779F4692022D6293AC54A07760A93BE99749C2056226EB960577A6E87684",
+      "byte_identical": true
+    },
+    {
+      "name": "relative",
+      "bytes": 460,
+      "sha256": "3832F2FA0AD07C5C3A12DB35FBB24CA94ED1C4D9C720BDA4B4E616A369C97311",
+      "byte_identical": true
+    },
+    {
+      "name": "state",
+      "bytes": 220,
+      "sha256": "874316E214E7D1E1C2E7A6284751CA87D64BFDBAF0BE6D5B8781ADF431AA0D5C",
+      "byte_identical": true
+    },
+    {
+      "name": "blob_id",
+      "bytes": 103,
+      "sha256": "6E5245DA4C212D122A8E3C7E81AC289E4EC81A783B3C99D2ECB0442F16F36BA1",
+      "byte_identical": true
+    },
+    {
+      "name": "tree",
+      "bytes": 577,
+      "sha256": "0F626D6FE9409B3D33903C2E08D5049AA4169F74CC13E522623A34BFBF233DEE",
+      "byte_identical": true
+    },
+    {
+      "name": "committed",
+      "bytes": 156,
+      "sha256": "8B789CECF414702CEADD3A804F2D095C7BF2006A0A0D599800D3498359D98BC0",
+      "byte_identical": true
+    },
+    {
+      "name": "changed",
+      "bytes": 116,
+      "sha256": "0628F0C67A674DDEED789BD1AC83B71C41785608737F8C1CF7936A71BE898ED5",
+      "byte_identical": true
+    },
+    {
+      "name": "proof",
+      "bytes": 109,
+      "sha256": "71A1DB1D8C68F17C0D848EF3828E8EC69FD3AAF2A6942E62567420A5419BE29F",
+      "byte_identical": true
+    },
+    {
+      "name": "configured",
+      "bytes": 344,
+      "sha256": "491ACFB4835A8E37C2E4A9A6CC7547AC77B2CE9FD8DA8D119CC9C74B4074F997",
+      "byte_identical": true
+    },
+    {
+      "name": "current",
+      "bytes": 155,
+      "sha256": "8193E185EB9F749C0DA21151A99FF822228C47EB8BC2EDDFDC71B3E4916B5E5A",
+      "byte_identical": true
+    },
+    {
+      "name": "expected_pin",
+      "bytes": 245,
+      "sha256": "2D29A61749FCA1F13E5C8F7EAE0C3D8382EF5AC90C98D67ED98FB3E93EB846C4",
+      "byte_identical": true
+    },
+    {
+      "name": "closure",
+      "bytes": 1700,
+      "sha256": "C777FE1218DCE652BC99C7B067308E81D2941017138B9C28107BF5CAF74BE024",
+      "byte_identical": true
+    },
+    {
+      "name": "anonymous_names",
+      "bytes": 206,
+      "sha256": "646853BED553FFE1D78CC9FEBC7BD0068C08FEDFAA36A686DD8BA70E718C893D",
+      "byte_identical": true
+    },
+    {
+      "name": "matrix_current",
+      "bytes": 423,
+      "sha256": "81425DC864B3C3D333745017A8A5359BB18954FD472C1B8E1C3256C446A1C1DD",
+      "byte_identical": true
+    }
+  ],
+  "imports_unchanged": true,
+  "metadata_proof_call_byte_identical_and_moved_once": true,
+  "metadata_move": {
+    "original_line": 400,
+    "candidate_line": 389
+  },
+  "result_comparison": {
+    "original_expected_line": 389,
+    "candidate_expected_line": 390,
+    "only_added_dictionary_key": "name",
+    "exact_name_ast": "metadata[\"groups\"][0][\"tests\"][i]",
+    "original_range19_and_index_flag_pass_expressions_unchanged": true,
+    "whole_record_equality_unchanged": true
+  },
+  "complete_module_ast_equal_after_only_metadata_relocation_and_name_field_normalization": true,
+  "historical_causal_data": {
+    "actual_original_job_id": "job-op-2caa28741b4463f61c5d8bd9da20a52d383ce8a7a20b9d863198c2003cd181d6",
+    "actual_original_failure_line": 390,
+    "original_catalog_emitted": false,
+    "original_three_field_comparison_passes": false,
+    "successor_four_field_data_match": true,
+    "accepted_metadata_group": "native-node-file-handle-owner",
+    "ordered_records": [
+      {
+        "index": 0,
+        "flags": 0,
+        "passed": true,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner constructor attaches the same native stream and transfers the real descriptor on release"
+      },
+      {
+        "index": 1,
+        "flags": 0,
+        "passed": true,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner optional Number IntegerValue follows pinned V8 truncation and saturation"
+      },
+      {
+        "index": 2,
+        "flags": 0,
+        "passed": true,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner non Number optional arguments perform no guest coercion"
+      },
+      {
+        "index": 3,
+        "flags": 0,
+        "passed": true,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner keeps the full public method template an explicit dependency"
+      },
+      {
+        "index": 4,
+        "flags": 0,
+        "passed": true,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner explicit close keeps one Promise and one actual CLOSE request through cleanup"
+      },
+      {
+        "index": 5,
+        "flags": 1,
+        "passed": false,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose"
+      },
+      {
+        "index": 6,
+        "flags": 0,
+        "passed": true,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner real stopped service admission rejects without fabricating completion or closing the descriptor"
+      },
+      {
+        "index": 7,
+        "flags": 0,
+        "passed": true,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner retained CloseReq wrapper loses native state after both callback references retire"
+      },
+      {
+        "index": 8,
+        "flags": 0,
+        "passed": true,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner CloseReq Global keeps the handle and weak BindingData alive until actual completion"
+      },
+      {
+        "index": 9,
+        "flags": 0,
+        "passed": true,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner GC closes synchronously and the warning ticket retains no handle or BindingData"
+      },
+      {
+        "index": 10,
+        "flags": 1,
+        "passed": false,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once"
+      },
+      {
+        "index": 11,
+        "flags": 1,
+        "passed": false,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason"
+      },
+      {
+        "index": 12,
+        "flags": 1,
+        "passed": false,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner failed GC close queues one refed actual UVException ticket"
+      },
+      {
+        "index": 13,
+        "flags": 0,
+        "passed": true,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner cleanup skips unrefed GC warning execution and destroys its native capture"
+      },
+      {
+        "index": 14,
+        "flags": 0,
+        "passed": true,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner GC uses the retained real service for synchronous close after worker join"
+      },
+      {
+        "index": 15,
+        "flags": 0,
+        "passed": true,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner consumes the real read engine and reuses its physical ReadWrap across concrete handles"
+      },
+      {
+        "index": 16,
+        "flags": 1,
+        "passed": false,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity"
+      },
+      {
+        "index": 17,
+        "flags": 0,
+        "passed": true,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner real Hub shutdown drains accepted close without settling its guest Promise"
+      },
+      {
+        "index": 18,
+        "flags": 0,
+        "passed": true,
+        "name": "extensions.native_durable_storage.test_0"
+      }
+    ],
+    "record_keys": [
+      "index",
+      "flags",
+      "passed",
+      "name"
+    ],
+    "failed_indices": [
+      5,
+      10,
+      11,
+      12,
+      16
+    ],
+    "passed_count": 14,
+    "anonymous_index18": "extensions.native_durable_storage.test_0",
+    "future_metadata_or_runtime_prediction": false
+  },
+  "fresh_configuration_required": true,
+  "original_configuration_reused": false,
+  "successor_source_only": true,
+  "successor_or_prefix_executed": false,
+  "preparer_or_generator_executed_by_this_checker": false,
+  "compiler_native_reference_or_constructor_executed": false,
+  "Main_or_index_written": false,
+  "new_execution_configuration_issued": false,
+  "actual_future_metadata_count": null,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "qualification": false
+}

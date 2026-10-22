@@ -1,0 +1,110 @@
+"""Static source-only finite accounting. Never imports or evaluates the candidate."""
+from pathlib import Path
+import ast,hashlib,json
+W=Path(r"C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018")
+D=W/"verification/v38-partial-negative-progress-archive-preparer-sourceonly-20261022"
+OLD=W/"verification/v38-progress-archive-preparer-sourceonly-20261021/candidate/Prepare-V38PositiveProgressAndValidationArchive-20261021.py"
+NEW=D/"candidate/Prepare-V38PartialNegativeProgressAndValidationArchive-20261022.py"
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ b=p.read_bytes();return {"path":str(p),"bytes":len(b),"sha256":sha(b)}
+def encode(v):return (json.dumps(v,indent=2,ensure_ascii=False)+"\n").encode()
+def put(p,v):
+ b=encode(v);assert not p.exists()
+ with p.open("xb") as f:f.write(b)
+ assert p.read_bytes()==b
+ return pin(p)
+old,new=OLD.read_bytes(),NEW.read_bytes()
+assert (len(old),sha(old))==(51755,"00F55DC94CC4151370B837FCDB02FFE991A07AC75C05EFE3022C66D079BD5A77")
+assert (len(new),sha(new))==(76267,"EE11C073C1D1CAD599D7F88B34B78133A5E3A90F68D1E1094D6AF77D7C5128AB")
+parts=[D/"authoring"/("finite-edits-part-"+str(i)+".txt") for i in range(3)]
+edits=json.loads(b"".join(p.read_bytes() for p in parts))
+assert len(edits)==39
+state=old;steps=[]
+for n,e in enumerate(edits,1):
+ b,a=e["before"].encode(),e["after"].encode()
+ assert state.count(b)==1
+ offset=state.index(b);after=state[:offset]+a+state[offset+len(b):]
+ assert after[:offset]==state[:offset] and after[offset+len(a):]==state[offset+len(b):]
+ steps.append({"number":n,"label":e["label"],"offset":offset,"before":e["before"],"after":e["after"],
+ "before_state_sha256":sha(state),"after_state_sha256":sha(after),"before_bytes":len(b),"after_bytes":len(a),
+ "unchanged_prefix_sha256":sha(state[:offset]),"unchanged_suffix_sha256":sha(state[offset+len(b):])})
+ state=after
+assert state==new
+for row in reversed(steps):
+ at=row["offset"];a=row["after"].encode();b=row["before"].encode()
+ assert sha(state)==row["after_state_sha256"] and state[at:at+len(a)]==a
+ state=state[:at]+b+state[at+len(a):]
+ assert sha(state)==row["before_state_sha256"]
+assert state==old
+ot,nt=ast.parse(old.decode()),ast.parse(new.decode())
+def bodies(raw,tree):
+ lines=raw.splitlines(keepends=True)
+ return {n.name:(n,b"".join(lines[n.lineno-1:n.end_lineno])) for n in tree.body if isinstance(n,ast.FunctionDef)}
+ob,nb=bodies(old,ot),bodies(new,nt)
+assert len(ob)==22 and len(nb)==28
+helpers=[]
+for name,(on,b) in ob.items():
+ nn,a=nb[name];assert b==a
+ helpers.append({"name":name,"bytes":len(b),"sha256":sha(b),"old_lines":[on.lineno,on.end_lineno],"new_lines":[nn.lineno,nn.end_lineno]})
+assert set(nb)-set(ob)=={"retained_pin","selected_observed","check_existing63_buildquery",
+"check_existing63_prelaunch","check_existing63_partial_negative","check_existing63_negative_cohort"}
+new_helpers=[{"name":name,"bytes":len(nb[name][1]),"sha256":sha(nb[name][1]),"lines":[nb[name][0].lineno,nb[name][0].end_lineno]} for name in sorted(set(nb)-set(ob))]
+assert [ast.dump(x,include_attributes=False) for x in ot.body if isinstance(x,(ast.Import,ast.ImportFrom))]==[ast.dump(x,include_attributes=False) for x in nt.body if isinstance(x,(ast.Import,ast.ImportFrom))]
+def literal(tree,name):
+ return ast.literal_eval(next(n.value for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id==name for t in n.targets)))
+assert literal(ot,"CONFIG_KEYS")==literal(nt,"CONFIG_KEYS") and len(literal(nt,"CONFIG_KEYS"))==18
+assert literal(ot,"COPY_KEYS")==literal(nt,"COPY_KEYS") and len(literal(nt,"COPY_KEYS"))==11
+assert literal(ot,"ROW_KEYS")==literal(nt,"ROW_KEYS")
+assert literal(nt,"PHASES")==("new4-buildquery","new4-runtime","existing63-buildquery","existing63-runtime-prelaunch","existing63-runtime")
+assert len(literal(nt,"ORIGINAL63_COUNTS"))==63 and sum(literal(nt,"ORIGINAL63_COUNTS"))==1285
+assert literal(nt,"increments")=={"integrated_source_units":0,"preserved_attempts":7,"retained_recent_native_negatives":1,"execution_checkpoint_history":1}
+assert len(literal(nt,"replaced"))==8 and "retained_recent_native_negatives" in literal(nt,"replaced")
+regions=[
+ ("original314_and183_basis",'require(inventory["source_file_versions"]','source_review = '),
+ ("complete_old_progress_and181_list_basis",'\nfrozen_ref()\nold_raw = ','\nrows = copy_plan["rows"]'),
+ ("strict_original_copy_rows",'\nrows = copy_plan["rows"]','\ndef archived_pin'),
+ ("original_direct_pin_relationships",'\nfor edge in copy_plan["direct_pin_relationships"]','\n\nmembership = '),
+ ("known_new4_membership",'\n    if index<2:\n        prior = ','\nCOMMON_TRUE = '),
+ ("catalog_and_new4_auditor_original_negative",'\ncatalog_negative_path = ','\nnegative_records.append('),
+ ("exact_equal_pair_gzip_and_raw",'\narchive_rows,seal_mappings = [],[]','\n# Derive '),
+ ("all181_nested_prefixes_and_raw_inverse",'\nlist_checks = []','\nprogress_pin = '),
+ ("exact_output_Git_and_rechecks",'\nall_targets = ','\n# The only writes start here'),
+ ("create_only_tail_and_final_rechecks",'\n# The only writes start here','\nreview = {')]
+# Two boundaries gained adjacent successor-only validation; select the exact old region bytes.
+protected=[]
+for name,start,end in regions:
+ if name=="original_direct_pin_relationships":
+  b=old[old.index(start.encode()):old.index(end.encode(),old.index(start.encode()))]
+  assert new.count(b)==1
+ elif name=="catalog_and_new4_auditor_original_negative":
+  startb=old.index(start.encode());endb=old.index(b'\npayloads,roles,preimages',startb);b=old[startb:endb]
+  assert new.count(b)==1
+ else:
+  startb=old.index(start.encode());endb=old.index(end.encode(),startb);b=old[startb:endb]
+  assert new.count(b)==1,(name,len(b))
+ protected.append({"name":name,"old_offset":old.index(b),"new_offset":new.index(b),"bytes":len(b),"sha256":sha(b)})
+pres=D/"supplemental-preservation-inputs.json";pr=json.loads(pres.read_bytes())
+assert pin(pres)=={"path":str(pres),"bytes":32895,"sha256":"4124B26CB6722E5426FF051C978A4D715B3015442E5722DA51A76E4C9F320509"}
+assert len(pr["required_raw_files"])==pr["required_raw_file_count"]==102
+for p in pr["required_raw_files"]:assert pin(Path(p["path"]))==p
+assert len(pr["role_pins"])==13 and all(p in pr["required_raw_files"] for p in pr["role_pins"].values())
+writes=[]
+for node in ast.walk(nt):
+ if isinstance(node,ast.Call):
+  if isinstance(node.func,ast.Name):assert node.func.id not in ("exec","eval","compile","__import__")
+  if isinstance(node.func,ast.Attribute) and node.func.attr in ("mkdir","open","write","write_bytes","write_text","unlink","rename","replace"):
+   writes.append({"line":node.lineno,"expression":ast.get_source_segment(new.decode(),node)})
+# Gzip's memory-buffer write and the unchanged final create-only tail are the only write calls.
+assert all(x["expression"]=="gz.write(raw)" or x["line"]>=next(n.lineno for n in nt.body if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call) and ast.unparse(n.value)=="OUT.mkdir()") or x["expression"] in ('cfg["recorded_utc"].replace("Z","+00:00")','control.name.replace("-control-","-buildquery-" if is_build else "-",1)') for x in writes)
+proof={"schema":1,"status":"static_only_exact39_edit_inverse_and_unchanged_positive_source_accounting",
+"original":pin(OLD),"candidate":pin(NEW),"finite_edit_count":len(steps),"steps":steps,
+"full_forward_equal":True,"full_raw_inverse_equal":True,"unchanged_helpers":helpers,"new_helpers":new_helpers,
+"unchanged_regions":protected,"imports_unchanged":True,"configuration_keys":sorted(literal(nt,"CONFIG_KEYS")),
+"copy_plan_keys":sorted(literal(nt,"COPY_KEYS")),"row_keys":sorted(literal(nt,"ROW_KEYS")),
+"complete_source_AST_parsed":True,"supplemental_preservation":pin(pres),"supplemental_current_pins_rehashed":102,
+"write_call_accounting":writes,"candidate_imported_or_evaluated":False,"candidate_prefix_executed":False,
+"gzip_executed":False,"progress_projected":False,"configuration_issued":False,"Main_access":False,
+"native_execution_authorized":False}
+p=put(D/"finite-source-adaptation.json",proof)
+print(json.dumps({"proof":p,"edits":len(steps),"unchanged_helpers":len(helpers),"new_helpers":len(new_helpers),"regions":len(protected)}))

@@ -1,0 +1,56 @@
+{
+  "ok": true,
+  "summary": "Background job job-op-32701b61c52d36566ec17d4c2c17f681daf3c7d65ed68d26cad069778dcafe9d is failed.",
+  "data": {
+    "id": "job-op-32701b61c52d36566ec17d4c2c17f681daf3c7d65ed68d26cad069778dcafe9d",
+    "status": "failed",
+    "mode": "program",
+    "createdAtUtc": "2026-10-21T15:21:15.185Z",
+    "startedAtUtc": "2026-10-21T15:21:15.254Z",
+    "completedAtUtc": "2026-10-21T15:21:18.197Z",
+    "runnerPid": 38604,
+    "exitCode": 1,
+    "readOnly": false,
+    "resourceClass": "io-heavy",
+    "runtimeMode": "host",
+    "queuedAtUtc": "2026-10-21T15:21:15.229Z",
+    "runnerProcessInstance": "134370696752045342",
+    "queueWaitMs": 11,
+    "executionSlot": 1,
+    "executionSlots": [
+      1,
+      0
+    ],
+    "executionPool": "execution",
+    "executionWeight": 2,
+    "childPid": 19724,
+    "error": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py\", line 90, in <module>\r\n    review=read(prep/\"preparation-review.json\");verify_pins(review)\r\n                                                ~~~~~~~~~~~^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py\", line 59, in verify_pins\r\n    for child in value.values():verify_pins(child)\r\n                                ~~~~~~~~~~~^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py\", line 61, in verify_pins\r\n    for child in value:verify_pins(child)\r\n                       ~~~~~~~~~~~^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py\", line 59, in verify_pins\r\n    for child in value.values():verify_pins(child)\r\n                                ~~~~~~~~~~~^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py\", line 58, in verify_pins\r\n    actual=pin(path);require(actual[\"sha256\"]==value[\"sha256\"] and (\"bytes\" not in value or actual[\"bytes\"]==value[\"bytes\"]),\"Immutable provenance bytes changed: \"+str(path))\r\n                     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py\", line 35, in require\r\n    if not ok:raise RuntimeError(message)\r\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nRuntimeError: Immutable provenance bytes changed: C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+    "logs": {
+      "stdout": {
+        "maxBytes": 33554432,
+        "rotations": 2,
+        "rotationsPerformed": 0,
+        "totalBytes": 0,
+        "currentBytes": 0,
+        "truncated": false,
+        "failed": false,
+        "error": null
+      },
+      "stderr": {
+        "maxBytes": 33554432,
+        "rotations": 2,
+        "rotationsPerformed": 0,
+        "totalBytes": 1674,
+        "currentBytes": 1674,
+        "truncated": false,
+        "failed": false,
+        "error": null
+      },
+      "truncated": false
+    },
+    "runnerAlive": false,
+    "jobDir": "C:\\Users\\adyba\\docker-chatgpt-devbox\\run\\jobs\\job-op-32701b61c52d36566ec17d4c2c17f681daf3c7d65ed68d26cad069778dcafe9d"
+  },
+  "exitCode": null,
+  "truncated": false
+}

@@ -1,0 +1,76 @@
+"""Static byte/AST proof only. Never import, compile, evaluate, or run either auditor."""
+from pathlib import Path
+import ast,hashlib,json,difflib
+D=Path(__file__).resolve().parent
+E=Path(r"C:\Users\adyba\pi-zig\evidence")
+P=E/"root-native-foundation-v37-new4-runtime-control-20261021-132912/Audit-NegativeV37Retry1New4StrictRuntime.py"
+C=D/"candidate/Audit-NegativeV38Existing63Retry1StrictRuntime.py"
+A=E/"Audit-PositiveV38StrictRuntime-Provenance-20261021.py"
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ b=p.read_bytes();return dict(path=str(p),bytes=len(b),sha256=sha(b))
+def save(p,v):
+ b=(json.dumps(v,indent=2)+"\n").encode()
+ with p.open("xb") as f:f.write(b)
+ assert p.read_bytes()==b
+ return pin(p)
+old=P.read_bytes();new=C.read_bytes();donor=A.read_bytes()
+assert (len(old),sha(old))==(47992,"77B7214537A583410F686B560FA158097087C836C5A7DD34345FE8ED5266ECC8")
+assert (len(new),sha(new))==(54572,"07A07ACE576C918EFDA2D5525A708401C8A1674C6A5AEC5FC90E5F7110D1AADA")
+assert (len(donor),sha(donor))==(41516,"A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102")
+edits=json.loads((D/"authoring/reviewed-edits.json").read_bytes());assert len(edits)==49
+state=old;steps=[]
+for number,row in enumerate(edits):
+ before=row["before"].encode();after=row["after"].encode();at=row["offset"]
+ assert state[at:at+len(before)]==before
+ prior=state;state=state[:at]+after+state[at+len(before):]
+ assert state[:at]+before+state[at+len(after):]==prior
+ steps.append(dict(number=number+1,label=row["label"],offset=at,before=row["before"],after=row["after"],preimage_bytes=len(prior),preimage_sha256=sha(prior),postimage_bytes=len(state),postimage_sha256=sha(state),one_step_inverse_exact=True))
+assert state==new
+for row in reversed(steps):
+ before=row["before"].encode();after=row["after"].encode();at=row["offset"]
+ assert sha(state)==row["postimage_sha256"] and state[at:at+len(after)]==after
+ state=state[:at]+before+state[at+len(after):]
+ assert sha(state)==row["preimage_sha256"]
+assert state==old
+def bodies(raw):
+ ls=raw.splitlines(keepends=True);tree=ast.parse(raw)
+ return {node.name:b"".join(ls[node.lineno-1:node.end_lineno]) for node in tree.body if isinstance(node,ast.FunctionDef)}
+ob=bodies(old);nb=bodies(new)
+assert set(ob)==set(nb)=={"require","utc_ticks","read","digest","pin","verify_pins"}
+assert all(ob[k]==nb[k] for k in ob)
+helper_rows=[dict(name=k,bytes=len(ob[k]),sha256=sha(ob[k]),unchanged=True) for k in ob]
+historical=b"".join(donor.splitlines(keepends=True)[89:101])
+assert new.count(historical)==1
+ol=old.splitlines(keepends=True)
+ranges=[
+ ("imports",2,3),("six helpers",17,45),("strict nonqualification",54,54),
+ ("historical V34 negative basis",57,59),("grant inverse, strict gates and complete parent closure",118,153),
+ ("current source identities and role duplicates",169,181),("current full directories and input rehash",183,191),
+ ("parent inputs and actual artifact commitments",195,203),("all installed/cache inventories and PE declarations",205,223),
+ ("every original group, UTC100ns owner, admission and strict postcheck",227,277),
+ ("raw frame decoder",279,295),("runtime absence ordering",296,298),
+ ("original negative outer identity",304,311),("current process/PID reuse classifier",324,334),
+ ("nonqualification and create-only output",341,342)
+]
+regions=[]
+for name,start,end in ranges:
+ b=b"".join(ol[start-1:end]);assert old.count(b)==new.count(b)==1,(name,start,end)
+ regions.append(dict(name=name,baseline_lines=[start,end],bytes=len(b),sha256=sha(b),candidate_offset=new.index(b),unchanged=True))
+ops=difflib.SequenceMatcher(a=old,b=new,autojunk=False).get_opcodes();fragments=[]
+for tag,i,j,x,y in ops:
+ if tag=="equal":
+  assert old[i:j]==new[x:y]
+  fragments.append(dict(baseline_offset=i,candidate_offset=x,bytes=j-i,sha256=sha(old[i:j])))
+assert sum(j-i for _,i,j,_,_ in ops)==len(old) and sum(y-x for _,_,_,x,y in ops)==len(new)
+nt=ast.parse(new);ot=ast.parse(old)
+def imports(t):return [ast.dump(n,include_attributes=False) for n in t.body if isinstance(n,(ast.Import,ast.ImportFrom))]
+assert imports(ot)==imports(nt)
+sets=[n for n in ast.walk(nt)if isinstance(n,ast.Set)and all(isinstance(v,ast.Constant)and isinstance(v.value,str)for v in n.elts)]
+keys=next(set(v.value for v in n.elts)for n in sets if any(v.value=="audit_execution_authorized"for v in n.elts))
+old_cfg=json.loads((P.parent/"independent-negative-runtime-audit-inputs.json").read_bytes())
+assert keys==set(old_cfg)|{"audit_execution_authorized","auditor_sha256"} and len(keys)==52
+assert b'with output.open("xb") as f:' in new
+assert sum(isinstance(n,ast.Call)and isinstance(n.func,ast.Attribute)and n.func.attr=="check_output"for n in ast.walk(nt))==sum(isinstance(n,ast.Call)and isinstance(n.func,ast.Attribute)and n.func.attr=="check_output"for n in ast.walk(ot))+1
+report=dict(schema=1,status="static_finite_source_adaptation_verified_candidate_unexecuted",baseline=pin(P),candidate=pin(C),historical_policy_donor=pin(A),checker=pin(Path(__file__)),edits=steps,edit_count=len(steps),complete_forward_exact=True,complete_raw_inverse_exact=True,unchanged_helpers=helper_rows,unchanged_regions=regions,all_other_bytes_accounted_by_unchanged_fragments=fragments,old_bytes=sum(j-i for _,i,j,_,_ in ops),new_bytes=sum(y-x for _,_,_,x,y in ops),exact_A73A_historical_block=dict(donor_lines=[90,101],bytes=len(historical),sha256=sha(historical),candidate_offset=new.index(historical)),imports_unchanged=True,configuration_required_keys=sorted(keys),configuration_fields=52,configuration_additions=["audit_execution_authorized","auditor_sha256"],candidate_evaluated=False,candidate_prefix_evaluated=False,native_executed=False,main_accessed=False,execution_authority=False,qualification=False,original_authoring_negative=pin(D/"authoring/indentation-check-negative-and-correction.json"))
+print(json.dumps(save(D/"finite-source-adaptation.json",report)))

@@ -1,0 +1,1631 @@
+{
+  "schema": 1,
+  "status": "unissued_literal_cohort_adaptation_for_v38_existing63_observed_inputs",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Prepare-ObservedV38New4PositiveBuildQueryAuditInputs-20261021-unresolved.py",
+    "bytes": 18939,
+    "sha256": "88D31C0905C52EEE080C7CC2FDBF32F0DC4F39C7A5BCDFCE9C01E3F1BF85AC17"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\candidate\\Prepare-ObservedV38Existing63PositiveBuildQueryAuditInputs-20261021-unresolved.py",
+    "bytes": 21109,
+    "sha256": "0F8502D9AD3395551AFC08652795C77114EED504E13623F6D65CDE774FAEB06C"
+  },
+  "accepted_baseline_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-execution-source-peer-20261021\\peer.json",
+    "bytes": 12797,
+    "sha256": "92118B1B9844BB21FBB99A915B37C3CF0CFD2F1AAC3C0DE0D0AFED14FF221F35"
+  },
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\source-adaptation-check-v2.py",
+    "bytes": 21956,
+    "sha256": "F9691CA7CB21BBAEEC268EC89AD80F963B9F8CEEA9E61654F35C978192FC5A23"
+  },
+  "source_scope": "13 literal changes only; never execute this candidate as part of the static proof",
+  "finite_edit_count": 13,
+  "string_token_edits": 10,
+  "numeric_token_edits": 2,
+  "ordered_literal_list_replacement": 1,
+  "edits": [
+    {
+      "index": 1,
+      "kind": "STRING",
+      "original_line": 1,
+      "original_offset": 0,
+      "offset_before_step": 0,
+      "before": "\"\"\"Root-only assembly of the observed V38 new4 positive BuildQuery audit inputs.\nRun only with a separately issued exact Root config after terminal success and\nmetadata acceptance. The sole write is a create-only audit-input JSON. This\nhelper neither runs the auditor nor grants native/runtime/source authority.\n\"\"\"",
+      "after": "\"\"\"Root-only assembly of the observed V38 existing63 positive BuildQuery audit inputs.\nRun only with a separately issued exact Root config after terminal success and\nmetadata acceptance. The sole write is a create-only audit-input JSON. This\nhelper neither runs the auditor nor grants native/runtime/source authority.\n\"\"\"",
+      "before_file_sha256": "88D31C0905C52EEE080C7CC2FDBF32F0DC4F39C7A5BCDFCE9C01E3F1BF85AC17",
+      "after_file_sha256": "ABB5385E84B21E6BFF9F071E382E040C378D8EDE699C9534E23668A403245D6B"
+    },
+    {
+      "index": 2,
+      "kind": "STRING",
+      "original_line": 12,
+      "original_offset": 569,
+      "offset_before_step": 575,
+      "before": "\"root-native-foundation-fresh-v38-new4-control-UNRESOLVEDSTAMP\"",
+      "after": "\"root-native-foundation-fresh-v38-existing63-control-UNRESOLVEDSTAMP\"",
+      "before_file_sha256": "ABB5385E84B21E6BFF9F071E382E040C378D8EDE699C9534E23668A403245D6B",
+      "after_file_sha256": "15F0A391484FEFC45918C1FA20CAEFDCAC825037978EBC5CE1072E8866009E1E"
+    },
+    {
+      "index": 3,
+      "kind": "STRING",
+      "original_line": 13,
+      "original_offset": 637,
+      "offset_before_step": 649,
+      "before": "\"root-native-foundation-fresh-v38-new4-buildquery-UNRESOLVEDSTAMP\"",
+      "after": "\"root-native-foundation-fresh-v38-existing63-buildquery-UNRESOLVEDSTAMP\"",
+      "before_file_sha256": "15F0A391484FEFC45918C1FA20CAEFDCAC825037978EBC5CE1072E8866009E1E",
+      "after_file_sha256": "D6F99BC41C18F644F52517B42C9466D11760B2C0404FCAAA8325745B1739954E"
+    },
+    {
+      "index": 4,
+      "kind": "STRING",
+      "original_line": 14,
+      "original_offset": 711,
+      "offset_before_step": 729,
+      "before": "\"combined-native-batch-v38-new4-prepared-20261021\"",
+      "after": "\"combined-native-batch-v38-regression63-prepared-20261021\"",
+      "before_file_sha256": "D6F99BC41C18F644F52517B42C9466D11760B2C0404FCAAA8325745B1739954E",
+      "after_file_sha256": "FF4506E662E6C2ADB95F9D6C62800E60BBD24C5E0BE56A99C22CF02B3EDECC05"
+    },
+    {
+      "index": 5,
+      "kind": "LITERAL_LIST",
+      "original_line": 16,
+      "original_offset": 830,
+      "offset_before_step": 856,
+      "before": "[\"native-node-file-handle-owner\",\"native-node-fs-before-hook-continuation\",\n        \"native-vm-error-constructor-name\",\"native-node-file-handle-transfer\"]",
+      "after": "[\n    \"native-node-file-handle-read\",\n    \"native-node-fs-callback-template\",\n    \"native-vm-simple-stack-source\",\n    \"native-vm-exotic-operations\",\n    \"native-node-diagnostic-context\",\n    \"native-node-native-debug\",\n    \"native-node-permission\",\n    \"native-node-fs-readwrap-reuse\",\n    \"native-node-reqwrap-callback-routing\",\n    \"native-vm-script-location\",\n    \"native-node-stream-read\",\n    \"native-node-environment-map\",\n    \"native-vm-backing-store-adoption\",\n    \"native-node-environment-paths\",\n    \"native-node-stream-fields\",\n    \"native-node-managed-buffers\",\n    \"native-node-fs-request-owner\",\n    \"native-vm-execution-termination\",\n    \"native-typebox-execution-termination\",\n    \"native-host-termination-ownership\",\n    \"native-node-stream-resource\",\n    \"native-node-package-json-parser\",\n    \"native-node-microtask-checkpoint\",\n    \"native-vm-property-retirement\",\n    \"native-vm-consuming-operands\",\n    \"native-vm-oom-occurrence\",\n    \"native-node-callback-scope\",\n    \"native-node-inspect-colors\",\n    \"native-vm-captured-frame-logging\",\n    \"native-node-experimental-warning\",\n    \"native-node-commonjs-helpers\",\n    \"native-node-process-warning\",\n    \"native-node-fs-request-transport\",\n    \"native-vm-array-buffer-view-length\",\n    \"native-vm-array-buffer-backing\",\n    \"native-vm-private-property\",\n    \"native-node-tcp-transport\",\n    \"native-vm-async-arguments\",\n    \"native-node-fs-write-uv\",\n    \"native-vm-sync-arguments\",\n    \"native-vm-async-retirement\",\n    \"native-vm-template-literal\",\n    \"native-vm-borrowed-bridges\",\n    \"vm-af-throw\",\n    \"native-ai-oauth-anthropic-genuine-af\",\n    \"native-node-module-creation\",\n    \"native-node-module-search-paths\",\n    \"native-node-fs-realpath-classic\",\n    \"native-node-fs-path-helpers\",\n    \"native-node-file-url-paths\",\n    \"native-sdk-tool-search-public\",\n    \"native-ai-radius-config\",\n    \"native-ai-radius-provider-genuine-af\",\n    \"native-node-inspect-entry\",\n    \"native-ai-oauth-radius-genuine-af\",\n    \"native-vm-existing-promise-settlement\",\n    \"native-node-options\",\n    \"native-node-uv-exception\",\n    \"native-vm-disallow-javascript\",\n    \"native-vm-continuation-data\",\n    \"native-vm-pending-promise\",\n    \"native-vm-native-global\",\n    \"native-vm-copy-data-properties\"\n]",
+      "before_file_sha256": "FF4506E662E6C2ADB95F9D6C62800E60BBD24C5E0BE56A99C22CF02B3EDECC05",
+      "after_file_sha256": "61B87911912040924E49D3FBD5F253356E3618140F72EC70A2C18FAF6E1D18FB"
+    },
+    {
+      "index": 6,
+      "kind": "STRING",
+      "original_line": 57,
+      "original_offset": 3063,
+      "offset_before_step": 5202,
+      "before": "\"root_reviewed_specific_v38_new4_positive_audit_input_preparation\"",
+      "after": "\"root_reviewed_specific_v38_existing63_positive_audit_input_preparation\"",
+      "before_file_sha256": "61B87911912040924E49D3FBD5F253356E3618140F72EC70A2C18FAF6E1D18FB",
+      "after_file_sha256": "0B5BD17A02D923895DA332D443FFFDFA79EE5DE05734E5BFB9A5D7888FAFD733"
+    },
+    {
+      "index": 7,
+      "kind": "STRING",
+      "original_line": 59,
+      "original_offset": 3336,
+      "offset_before_step": 5481,
+      "before": "\"Prepare-ObservedV38New4PositiveBuildQueryAuditInputs-20261021.py\"",
+      "after": "\"Prepare-ObservedV38Existing63PositiveBuildQueryAuditInputs-20261021.py\"",
+      "before_file_sha256": "0B5BD17A02D923895DA332D443FFFDFA79EE5DE05734E5BFB9A5D7888FAFD733",
+      "after_file_sha256": "94C8755EA4022827D62E08D6FF96AE1030010EC5EF4C6042A0C3B8F77179DA03"
+    },
+    {
+      "index": 8,
+      "kind": "STRING",
+      "original_line": 68,
+      "original_offset": 4243,
+      "offset_before_step": 6394,
+      "before": "\"root-v38-new4-buildquery-issued-config-20261021.json\"",
+      "after": "\"root-v38-existing63-buildquery-issued-config-20261021.json\"",
+      "before_file_sha256": "94C8755EA4022827D62E08D6FF96AE1030010EC5EF4C6042A0C3B8F77179DA03",
+      "after_file_sha256": "E6CB4EEB3F3E802F8D806EE3B27B332DA92C1522986525A054087439B2A690C9"
+    },
+    {
+      "index": 9,
+      "kind": "NUMBER",
+      "original_line": 104,
+      "original_offset": 8039,
+      "offset_before_step": 10196,
+      "before": "4",
+      "after": "63",
+      "before_file_sha256": "E6CB4EEB3F3E802F8D806EE3B27B332DA92C1522986525A054087439B2A690C9",
+      "after_file_sha256": "157CD44DDA04EF49FF788A72013B107FF4722374CB7EFC0E504ABB954D604CD4"
+    },
+    {
+      "index": 10,
+      "kind": "NUMBER",
+      "original_line": 104,
+      "original_offset": 8078,
+      "offset_before_step": 10236,
+      "before": "58",
+      "after": "1249",
+      "before_file_sha256": "157CD44DDA04EF49FF788A72013B107FF4722374CB7EFC0E504ABB954D604CD4",
+      "after_file_sha256": "64E488A65AEAE25149F5F40F31B32FF46C219D43107976175BC9A54A69FE54FC"
+    },
+    {
+      "index": 11,
+      "kind": "STRING",
+      "original_line": 109,
+      "original_offset": 8862,
+      "offset_before_step": 11022,
+      "before": "\"new4\"",
+      "after": "\"existing63\"",
+      "before_file_sha256": "64E488A65AEAE25149F5F40F31B32FF46C219D43107976175BC9A54A69FE54FC",
+      "after_file_sha256": "2E71EBA5CE22A73AE9343651DE000B4987BE4FB5051FFB167940E1B4B491394F"
+    },
+    {
+      "index": 12,
+      "kind": "STRING",
+      "original_line": 125,
+      "original_offset": 11066,
+      "offset_before_step": 13232,
+      "before": "\"All four and only original ordered groups\"",
+      "after": "\"All 63 and only original ordered groups\"",
+      "before_file_sha256": "2E71EBA5CE22A73AE9343651DE000B4987BE4FB5051FFB167940E1B4B491394F",
+      "after_file_sha256": "AD93FEDEDBE7587592CBB7068586FAE630543E28FDCFC738DEF1D1FCEC1EEF6E"
+    },
+    {
+      "index": 13,
+      "kind": "STRING",
+      "original_line": 178,
+      "original_offset": 17012,
+      "offset_before_step": 19176,
+      "before": "\"new4\"",
+      "after": "\"existing63\"",
+      "before_file_sha256": "AD93FEDEDBE7587592CBB7068586FAE630543E28FDCFC738DEF1D1FCEC1EEF6E",
+      "after_file_sha256": "0F8502D9AD3395551AFC08652795C77114EED504E13623F6D65CDE774FAEB06C"
+    }
+  ],
+  "complete_raw_forward_exact": true,
+  "complete_raw_inverse_exact": true,
+  "all_intermediate_hashes_exact": true,
+  "all_untouched_fragments": [
+    {
+      "original_offset": 0,
+      "candidate_offset": 0,
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "original_offset": 315,
+      "candidate_offset": 321,
+      "bytes": 254,
+      "sha256": "75B5636BF281101B2319FAD6192B403D0DC3CCB96C7900A9CE160FC1ACA62A83"
+    },
+    {
+      "original_offset": 632,
+      "candidate_offset": 644,
+      "bytes": 5,
+      "sha256": "C0A539318FA2CE40C66CF64CB4AE30C033B52EF31CD102C75E894466F3AA14F3"
+    },
+    {
+      "original_offset": 703,
+      "candidate_offset": 721,
+      "bytes": 8,
+      "sha256": "5EE9E1FE952320B63A37BF30BF2F9420CDED5802A41ECEAC96229047074F9A27"
+    },
+    {
+      "original_offset": 761,
+      "candidate_offset": 787,
+      "bytes": 69,
+      "sha256": "C0B91BC51E8BC4F1BD959592D52B6F08C62565F448FAAD9A58A323ABFFF79E9A"
+    },
+    {
+      "original_offset": 984,
+      "candidate_offset": 3123,
+      "bytes": 2079,
+      "sha256": "69C27393AADBC1D91C6D46FEEDDC9300D8B1D1B8770E3FFFE965298D5753E2ED"
+    },
+    {
+      "original_offset": 3129,
+      "candidate_offset": 5274,
+      "bytes": 207,
+      "sha256": "BAF66A80D521B32F46DA79F4C066068B85FDDF606272405E50B34D1410A77C67"
+    },
+    {
+      "original_offset": 3402,
+      "candidate_offset": 5553,
+      "bytes": 841,
+      "sha256": "488AEF6D9A2A9C77B6F2A863B5C2F42DA0E729FE1EDA3D0383B57C6E29FA6656"
+    },
+    {
+      "original_offset": 4297,
+      "candidate_offset": 6454,
+      "bytes": 3742,
+      "sha256": "32EE5F6D59BBB3D1990DDB88703B9524D34129A06EFA30823A3FFC5F7B9BE918"
+    },
+    {
+      "original_offset": 8040,
+      "candidate_offset": 10198,
+      "bytes": 38,
+      "sha256": "6515E802D95F49DE0DF7749817AE357D5B8450BF13387D97C61177C4F6ED5CEC"
+    },
+    {
+      "original_offset": 8080,
+      "candidate_offset": 10240,
+      "bytes": 782,
+      "sha256": "D4AA662B8D3B23FB456148EFD7F567FF6F9F002D08EE7C4BC36FA30E46532132"
+    },
+    {
+      "original_offset": 8868,
+      "candidate_offset": 11034,
+      "bytes": 2198,
+      "sha256": "23C3CB0BFD744EA27BA0625E0B49CB2EA00262CE367A5BFB98107F7E93B24E87"
+    },
+    {
+      "original_offset": 11109,
+      "candidate_offset": 13273,
+      "bytes": 5903,
+      "sha256": "24078A1269ADABE8C1CDD4D5E6CC12E2FD208FED6E7E58A71D449BF6DA254F31"
+    },
+    {
+      "original_offset": 17018,
+      "candidate_offset": 19188,
+      "bytes": 1921,
+      "sha256": "3C1281E27141C1B314081F42486A4318BF477B639CA8F6116FA5A41A0F20227A"
+    }
+  ],
+  "all_nonconstant_logic_outside_explicit_GROUPS_literal_exact": true,
+  "complete_nonconstant_ast_inventory_identical": false,
+  "ast_inventory_qualification": "GROUPS changes from four literal elements to 63; the surrounding executable structure is identical after replacing only that explicit literal-container node. No false claim that list node cardinality is unchanged.",
+  "unchanged_complete_helpers": [
+    {
+      "name": "require",
+      "baseline_line": 22,
+      "candidate_line": 85,
+      "bytes": 67,
+      "sha256": "6BE7166935F5DFB388A5956D4AA6502092E6369CFDFFECA9F3E1E2E490327278"
+    },
+    {
+      "name": "sha",
+      "baseline_line": 24,
+      "candidate_line": 87,
+      "bytes": 60,
+      "sha256": "0DA028679B0C76DB05C2D4E51461B0715296811B3124685F6AE5A5E7992AA3AA"
+    },
+    {
+      "name": "digest",
+      "baseline_line": 25,
+      "candidate_line": 88,
+      "bytes": 160,
+      "sha256": "32EA65C3F92328E599E4747D4D6F65AE42B78DA012BEA0134320B8D7C4303457"
+    },
+    {
+      "name": "pin",
+      "baseline_line": 30,
+      "candidate_line": 93,
+      "bytes": 91,
+      "sha256": "5BC5E0F51AC01263A04662EC3C1F614CD3F53665B2ED276E6C02FE78742DE2A1"
+    },
+    {
+      "name": "verify",
+      "baseline_line": 32,
+      "candidate_line": 95,
+      "bytes": 429,
+      "sha256": "35321E3086E923AF42E5A0B3F6F8D7B6AD4540C93ED981B1114A532B56BA268B"
+    },
+    {
+      "name": "read_pin",
+      "baseline_line": 39,
+      "candidate_line": 102,
+      "bytes": 201,
+      "sha256": "ED98E906305412C77F867755EF1142903CE98FA4BA60E3DD1CAE24EB1AF00703"
+    },
+    {
+      "name": "fixed",
+      "baseline_line": 43,
+      "candidate_line": 106,
+      "bytes": 59,
+      "sha256": "A6EE3A7F72491787F90C604A97194AF4ECA71B6A089A5B73138DA44095F2CA38"
+    },
+    {
+      "name": "current_json",
+      "baseline_line": 44,
+      "candidate_line": 107,
+      "bytes": 61,
+      "sha256": "257E28B3FA11F7E0C208BCA10A6105A12D20BA37736F1219C8DE3DADD44ADA52"
+    },
+    {
+      "name": "git",
+      "baseline_line": 46,
+      "candidate_line": 109,
+      "bytes": 100,
+      "sha256": "198C9597406BE5D57C3C110C0DC945E8E71816E5BF661C13FDC3AE79191B0FD0"
+    },
+    {
+      "name": "clean_head",
+      "baseline_line": 48,
+      "candidate_line": 111,
+      "bytes": 180,
+      "sha256": "0EAABAD47F8550D12ECDBF0669BEAA38E40305AAF67F62551FE68890EB960DE3"
+    }
+  ],
+  "critical_regions": [
+    {
+      "name": "complete_original_job_observation_and_six_field_mapping",
+      "original_sha256": "C45D6AFA387B7AFC03ECF162960561B9CB8794FF9EA9CCC7A3A0465772AA8999",
+      "candidate_sha256": "C45D6AFA387B7AFC03ECF162960561B9CB8794FF9EA9CCC7A3A0465772AA8999",
+      "original_bytes": 1603,
+      "candidate_bytes": 1603,
+      "candidate_offset": 7127,
+      "byte_identical": true,
+      "only_allowed_difference": null
+    },
+    {
+      "name": "original_result_metadata_native_owners_and_all_failure_gates",
+      "original_sha256": "8A3B4495E070910F2C40E4BE85F35A7D1880E26CF405A2D712B69F252E534D71",
+      "candidate_sha256": "9FFBF19C89C4B332BD0B0FBD6779F4DF10DB3D0A66F101BEE040656AEAF37B1B",
+      "original_bytes": 4711,
+      "candidate_bytes": 4709,
+      "candidate_offset": 12249,
+      "byte_identical": false,
+      "only_allowed_difference": "four -> 63 in one diagnostic message; executable gates exact"
+    },
+    {
+      "name": "complete_bookend_current_seals_and_original_outer_gates",
+      "original_sha256": "89051C1D7DAAF80A2950ECD6A5EC297C1A302BF00CE5BC359C410988A968785F",
+      "candidate_sha256": "89051C1D7DAAF80A2950ECD6A5EC297C1A302BF00CE5BC359C410988A968785F",
+      "original_bytes": 1982,
+      "candidate_bytes": 1982,
+      "candidate_offset": 16958,
+      "byte_identical": true,
+      "only_allowed_difference": null
+    }
+  ],
+  "unresolved_future_bindings": [
+    {
+      "kind": "STRING",
+      "offset": 450,
+      "line": 10,
+      "before": "\"UNRESOLVED_V38_HEAD_XXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 497,
+      "line": 11,
+      "before": "\"UNRESOLVED_V38_JOB_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 575,
+      "line": 12,
+      "before": "\"root-native-foundation-fresh-v38-existing63-control-UNRESOLVEDSTAMP\"",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 649,
+      "line": 13,
+      "before": "\"root-native-foundation-fresh-v38-existing63-buildquery-UNRESOLVEDSTAMP\"",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 3131,
+      "line": 81,
+      "before": "\"UNRESOLVED_V38_MATRIX_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "NUMBER",
+      "row": "grant",
+      "offset": 6203,
+      "line": 129,
+      "before": "0",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 6205,
+      "line": 129,
+      "before": "\"UNRESOLVED_V38_GRANT_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "NUMBER",
+      "row": "launch",
+      "offset": 6304,
+      "line": 130,
+      "before": "0",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 6306,
+      "line": 130,
+      "before": "\"UNRESOLVED_V38_LAUNCH_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "NUMBER",
+      "row": "specific",
+      "offset": 6455,
+      "line": 131,
+      "before": "0",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 6457,
+      "line": 131,
+      "before": "\"UNRESOLVED_V38_SPECIFIC_CONFIG_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "NUMBER",
+      "row": "prepared",
+      "offset": 6573,
+      "line": 132,
+      "before": "0",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 6575,
+      "line": 132,
+      "before": "\"UNRESOLVED_V38_PREPARED_LAUNCH_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 6721,
+      "line": 133,
+      "before": "\"UNRESOLVED_V38_BQ_CONSTRUCTOR_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 6864,
+      "line": 134,
+      "before": "\"UNRESOLVED_V38_BQ_AUDITOR_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "NUMBER",
+      "row": "source_review",
+      "offset": 7012,
+      "line": 135,
+      "before": "0",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 7014,
+      "line": 135,
+      "before": "\"UNRESOLVED_V38_SOURCE_REVIEW_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    }
+  ],
+  "ordered_selection_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\root-grant.json",
+    "bytes": 12270,
+    "sha256": "275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15"
+  },
+  "ordered_groups": [
+    "native-node-file-handle-read",
+    "native-node-fs-callback-template",
+    "native-vm-simple-stack-source",
+    "native-vm-exotic-operations",
+    "native-node-diagnostic-context",
+    "native-node-native-debug",
+    "native-node-permission",
+    "native-node-fs-readwrap-reuse",
+    "native-node-reqwrap-callback-routing",
+    "native-vm-script-location",
+    "native-node-stream-read",
+    "native-node-environment-map",
+    "native-vm-backing-store-adoption",
+    "native-node-environment-paths",
+    "native-node-stream-fields",
+    "native-node-managed-buffers",
+    "native-node-fs-request-owner",
+    "native-vm-execution-termination",
+    "native-typebox-execution-termination",
+    "native-host-termination-ownership",
+    "native-node-stream-resource",
+    "native-node-package-json-parser",
+    "native-node-microtask-checkpoint",
+    "native-vm-property-retirement",
+    "native-vm-consuming-operands",
+    "native-vm-oom-occurrence",
+    "native-node-callback-scope",
+    "native-node-inspect-colors",
+    "native-vm-captured-frame-logging",
+    "native-node-experimental-warning",
+    "native-node-commonjs-helpers",
+    "native-node-process-warning",
+    "native-node-fs-request-transport",
+    "native-vm-array-buffer-view-length",
+    "native-vm-array-buffer-backing",
+    "native-vm-private-property",
+    "native-node-tcp-transport",
+    "native-vm-async-arguments",
+    "native-node-fs-write-uv",
+    "native-vm-sync-arguments",
+    "native-vm-async-retirement",
+    "native-vm-template-literal",
+    "native-vm-borrowed-bridges",
+    "vm-af-throw",
+    "native-ai-oauth-anthropic-genuine-af",
+    "native-node-module-creation",
+    "native-node-module-search-paths",
+    "native-node-fs-realpath-classic",
+    "native-node-fs-path-helpers",
+    "native-node-file-url-paths",
+    "native-sdk-tool-search-public",
+    "native-ai-radius-config",
+    "native-ai-radius-provider-genuine-af",
+    "native-node-inspect-entry",
+    "native-ai-oauth-radius-genuine-af",
+    "native-vm-existing-promise-settlement",
+    "native-node-options",
+    "native-node-uv-exception",
+    "native-vm-disallow-javascript",
+    "native-vm-continuation-data",
+    "native-vm-pending-promise",
+    "native-vm-native-global",
+    "native-vm-copy-data-properties"
+  ],
+  "selected_group_definitions": [
+    {
+      "group": "native-node-file-handle-read",
+      "target": "build-native-node-file-handle-read",
+      "artifact": "native-node-file-handle-read",
+      "source_root": "src/native_node_file_handle_read_test.zig",
+      "declared_controls": 14,
+      "required_names_sha256": "0BAB26296B52BD301482D6FDF96D134F298FBF71854595308C7A75E08EB697CB",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-fs-callback-template",
+      "target": "build-native-node-fs-callback-template",
+      "artifact": "native-node-fs-callback-template",
+      "source_root": "src/native_node_fs_callback_template_test.zig",
+      "declared_controls": 11,
+      "required_names_sha256": "4126BC75D77B7BC60C48372A3BCFD9046368C4A7FE054122A925143885CD2733",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-simple-stack-source",
+      "target": "build-native-vm-simple-stack-source",
+      "artifact": "test",
+      "source_root": "src/native_vm_simple_stack_source_test.zig",
+      "declared_controls": 33,
+      "required_names_sha256": "3CEBF8C9EDB3605521D1956A448AA3675D32670EA65DBDF868D30E250AD87E31",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-exotic-operations",
+      "target": "build-native-vm-exotic-operations",
+      "artifact": "test",
+      "source_root": "src/native_vm_exotic_operations_test.zig",
+      "declared_controls": 28,
+      "required_names_sha256": "E5F0CDD4AEED8A5E51CFF5806EDA418AA2112CD9DE891E6E40B265A798A4BCA4",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-diagnostic-context",
+      "target": "build-native-node-diagnostic-context",
+      "artifact": "test",
+      "source_root": "src/native_node_diagnostic_context_test.zig",
+      "declared_controls": 10,
+      "required_names_sha256": "9F0D9560736500D81FB070BBF37F4B57AC2C9933DF7E61BF2D49089DA2EC77E0",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-native-debug",
+      "target": "build-native-node-native-debug",
+      "artifact": "test",
+      "source_root": "src/native_node_native_debug_test.zig",
+      "declared_controls": 20,
+      "required_names_sha256": "F2A5C0204BE308E9AEC341CD493D9EB0AD7F5E1D463E6B39422FFB1414B6B4DE",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-permission",
+      "target": "build-native-node-permission",
+      "artifact": "test",
+      "source_root": "src/native_node_permission_test.zig",
+      "declared_controls": 18,
+      "required_names_sha256": "11C8697BD248DCC61FB86EAE39314F3964E4ECD70B24D98481DAFCCEE5D5D522",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-fs-readwrap-reuse",
+      "target": "build-native-node-fs-readwrap-reuse",
+      "artifact": "test",
+      "source_root": "src/native_node_fs_readwrap_reuse_test.zig",
+      "declared_controls": 14,
+      "required_names_sha256": "B42545FD6BA8E696E3F3A847359A49E47536B4CE97B36092C3450B23D469CD39",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-reqwrap-callback-routing",
+      "target": "build-native-node-reqwrap-callback-routing",
+      "artifact": "native-node-reqwrap-callback-routing",
+      "source_root": "src/native_node_reqwrap_callback_routing_test.zig",
+      "declared_controls": 12,
+      "required_names_sha256": "89A20C25B1A242425247AB9DCFB183C6174FCA4AE029417E78339E8446595348",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-script-location",
+      "target": "build-native-vm-script-location",
+      "artifact": "test",
+      "source_root": "src/native_vm_script_location_test.zig",
+      "declared_controls": 32,
+      "required_names_sha256": "45D85D5D045B83F64668E6161C3504BAC7D91097ECC5242202C71375BA4A6F4B",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-stream-read",
+      "target": "build-native-node-stream-read",
+      "artifact": "native-node-stream-read",
+      "source_root": "src/native_node_stream_read_test.zig",
+      "declared_controls": 18,
+      "required_names_sha256": "473C439AE51696FC3D95817F467A2EEBFB1461551A2560CCE1F88B5F893C5F10",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-environment-map",
+      "target": "build-native-node-environment-map",
+      "artifact": "test",
+      "source_root": "src/native_node_environment_map_test.zig",
+      "declared_controls": 22,
+      "required_names_sha256": "6EEB8F50F6A3DF2B0ED960700FAADEFB6ED174F0AA63CC497EF8B6E891CFCD2C",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "target": "build-native-vm-backing-store-adoption",
+      "artifact": "test",
+      "source_root": "src/native_vm_backing_store_adoption_test.zig",
+      "declared_controls": 20,
+      "required_names_sha256": "0B3BAC13BF15BFF1AA35CE6E81A3ACA5AC3949BEC9A8439F25ECE56D9974A202",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-environment-paths",
+      "target": "build-native-node-environment-paths",
+      "artifact": "test",
+      "source_root": "src/native_node_environment_paths_test.zig",
+      "declared_controls": 15,
+      "required_names_sha256": "187FC88CC75859935F2E3C8BC111E70DA87EF76B86583F596CC5A5DE76203EDB",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-stream-fields",
+      "target": "build-native-node-stream-fields",
+      "artifact": "native-node-stream-fields",
+      "source_root": "src/native_node_stream_wrapper_test.zig",
+      "declared_controls": 10,
+      "required_names_sha256": "5B2C6A0C393D52DB013E60A67A2A9898E9EE428983DA3A4E173FD8F24F0855C6",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "target": "build-native-node-managed-buffers",
+      "artifact": "test",
+      "source_root": "src/native_node_managed_buffers_test.zig",
+      "declared_controls": 12,
+      "required_names_sha256": "C9F48D185BA02B2BE585B6AB11700062301B994EB3EEDCA155F32B99ED09BCA0",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-fs-request-owner",
+      "target": "build-native-node-fs-request-owner",
+      "artifact": "native-node-fs-request-owner",
+      "source_root": "src/native_node_fs_request_owner_test.zig",
+      "declared_controls": 25,
+      "required_names_sha256": "D2B333EA3105F8C1EA1AE63C6D3B46C390A2B126B96292338517E2CB479BF9AF",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-execution-termination",
+      "target": "build-native-vm-execution-termination",
+      "artifact": "test",
+      "source_root": "src/native_vm_execution_termination_test.zig",
+      "declared_controls": 30,
+      "required_names_sha256": "ABF50AD77BEFFAA85EC305BF470A87F68B19C3595EECBC6DC5E8DCC84D1D86FE",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-typebox-execution-termination",
+      "target": "build-native-typebox-execution-termination",
+      "artifact": "test",
+      "source_root": "src/native_typebox_execution_termination_test.zig",
+      "declared_controls": 15,
+      "required_names_sha256": "A603BF3538BE3EFD3F9E44463DB42813586E8B27110F5A8CA9E3227C1381CC3D",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-host-termination-ownership",
+      "target": "build-native-host-termination-ownership",
+      "artifact": "native-host-termination-ownership",
+      "source_root": "src/native_host_termination_ownership_test.zig",
+      "declared_controls": 16,
+      "required_names_sha256": "DC0E6B6C28332CD188C37699CB575A9E398DEAE34DD5D0BFD9BED549CCD34811",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-stream-resource",
+      "target": "build-native-node-stream-resource",
+      "artifact": "native-node-stream-resource",
+      "source_root": "src/native_node_stream_resource_test.zig",
+      "declared_controls": 8,
+      "required_names_sha256": "F45438BD0221DA7B523CC73A4DA7E731EE1475B7C3916422A0B8D621640C8573",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-package-json-parser",
+      "target": "build-native-node-package-json-parser",
+      "artifact": "test",
+      "source_root": "src/native_node_package_json_parser_test.zig",
+      "declared_controls": 23,
+      "required_names_sha256": "7C88CA6811741871B218999A35EBCC67F906DB42225D220263B5674E3F504B8A",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-microtask-checkpoint",
+      "target": "build-native-node-microtask-checkpoint",
+      "artifact": "native-node-microtask-checkpoint",
+      "source_root": "src/native_node_microtask_checkpoint_test.zig",
+      "declared_controls": 20,
+      "required_names_sha256": "6EF5ADBF4D8030918FAB96009DCE54F9670D1BF72B3806949AB64D0E753FAB59",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-property-retirement",
+      "target": "build-native-vm-property-retirement",
+      "artifact": "test",
+      "source_root": "src/native_vm_property_retirement_test.zig",
+      "declared_controls": 20,
+      "required_names_sha256": "F4AEEBB0644D3CCB23F8338EF41947906AB9234858A71E11F5E8E368C0F18352",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-consuming-operands",
+      "target": "build-native-vm-consuming-operands",
+      "artifact": "test",
+      "source_root": "src/native_vm_consuming_operand_test.zig",
+      "declared_controls": 25,
+      "required_names_sha256": "E9C51AF6DD4D9A4650FA20B9A23EA4EB432A942C2A25EEEC3B31D0FECCA145FD",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-oom-occurrence",
+      "target": "build-native-vm-oom-occurrence",
+      "artifact": "test",
+      "source_root": "src/native_vm_oom_occurrence_test.zig",
+      "declared_controls": 13,
+      "required_names_sha256": "FCF9718223527386FA1E78000E35FF990FDE59A1C1045BEEB2260F283FA7317C",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-callback-scope",
+      "target": "build-native-node-callback-scope",
+      "artifact": "native-node-callback-scope",
+      "source_root": "src/native_node_callback_scope_test.zig",
+      "declared_controls": 28,
+      "required_names_sha256": "A8A54975A6A2CC2469DF9CD7FD6D7CD2FD6DB455628B0E372E3AB6A48E25AE83",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-inspect-colors",
+      "target": "build-native-node-inspect-colors",
+      "artifact": "native-node-inspect-colors",
+      "source_root": "src/native_node_inspect_colors_test.zig",
+      "declared_controls": 15,
+      "required_names_sha256": "02962C475B5CA3E16A418C6EA3E3638C74DBBF198EBE82E326C18FC5BBDC0F4B",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-captured-frame-logging",
+      "target": "build-native-vm-captured-frame-logging",
+      "artifact": "test",
+      "source_root": "src/native_vm_captured_frame_logging_test.zig",
+      "declared_controls": 19,
+      "required_names_sha256": "2A495F45038AEC38B45E23A42D87EB7C48867EA6EC4B93261A715544AFAA3E76",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-experimental-warning",
+      "target": "build-native-node-experimental-warning",
+      "artifact": "native-node-experimental-warning",
+      "source_root": "src/native_node_experimental_warning_test.zig",
+      "declared_controls": 17,
+      "required_names_sha256": "F07B497BFAC0C6D21DCFD7AA57BE8162760442A96D0D8C12664AEA5603CE9E92",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-commonjs-helpers",
+      "target": "build-native-node-commonjs-helpers",
+      "artifact": "native-node-commonjs-helpers",
+      "source_root": "src/native_node_commonjs_helpers_test.zig",
+      "declared_controls": 24,
+      "required_names_sha256": "366D47238DBA6D2769313AC6D8B13FF7772CA5A90056C3FD59F46F2E1BECADC3",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-process-warning",
+      "target": "build-native-node-process-warning",
+      "artifact": "test",
+      "source_root": "src/native_node_process_warning_test.zig",
+      "declared_controls": 18,
+      "required_names_sha256": "6D620A5B1EE3BB042BE80CE890FA9E111036AEED1982A29A0CAEEF00E2517124",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-fs-request-transport",
+      "target": "build-native-node-fs-request-transport",
+      "artifact": "test",
+      "source_root": "src/native_node_fs_request_transport_test.zig",
+      "declared_controls": 14,
+      "required_names_sha256": "BDCD02BC7BA092BF33B483601AE530DC8BF2990A5EA738D059651522C2B72AAC",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-array-buffer-view-length",
+      "target": "build-native-vm-array-buffer-view-length",
+      "artifact": "test",
+      "source_root": "src/native_vm_array_buffer_view_length_test.zig",
+      "declared_controls": 11,
+      "required_names_sha256": "36DAA33AA62A6245FD132D8266D81695984F832AD55D4F0B4A2AC14E50E01F6F",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-array-buffer-backing",
+      "target": "build-native-vm-array-buffer-backing",
+      "artifact": "test",
+      "source_root": "src/native_vm_array_buffer_backing_test.zig",
+      "declared_controls": 24,
+      "required_names_sha256": "6437CE4EAFD12447879ABC67248E8233A8F6487D4AB092327E3716ACA1D116A2",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-private-property",
+      "target": "build-native-vm-private-property",
+      "artifact": "native-vm-private-property",
+      "source_root": "src/native_vm_private_property_test.zig",
+      "declared_controls": 9,
+      "required_names_sha256": "0F6B2ED81EED6B5F325300FEA359F1F76918B29955C8A221F45C62F937FBD876",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-tcp-transport",
+      "target": "build-native-node-tcp-transport",
+      "artifact": "test",
+      "source_root": "src/native_node_tcp_transport_test.zig",
+      "declared_controls": 12,
+      "required_names_sha256": "66FE484E6EA8748F893579A9FD5A840A806BFE60966B1D93353C9FB943A1423E",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-async-arguments",
+      "target": "build-native-vm-async-arguments",
+      "artifact": "test",
+      "source_root": "src/native_async_arguments_test.zig",
+      "declared_controls": 17,
+      "required_names_sha256": "5201534FB201AB7B50AD5CE35F31A42DDC96679BCD320EC2187415906EE4449B",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-fs-write-uv",
+      "target": "build-native-node-fs-write-uv",
+      "artifact": "native-node-fs-write-uv",
+      "source_root": "src/native_node_fs_write_uv_test.zig",
+      "declared_controls": 12,
+      "required_names_sha256": "B3CDD84DB7473DF7F28534091F0E3F66D89710F51FCCD751A82434CEDE6F30ED",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-sync-arguments",
+      "target": "build-native-vm-sync-arguments",
+      "artifact": "test",
+      "source_root": "src/native_vm_sync_arguments_test.zig",
+      "declared_controls": 22,
+      "required_names_sha256": "06F29EE5465B5B73FE15E8002D102D885ED591073E78268165EE809D34CC066B",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-async-retirement",
+      "target": "build-native-vm-async-retirement",
+      "artifact": "test",
+      "source_root": "src/native_async_frame_retirement_test.zig",
+      "declared_controls": 30,
+      "required_names_sha256": "A134D74C841D5012E0FB200E73F0FD1A9630CF3FD17E5CA1067C6325DC32995E",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-template-literal",
+      "target": "build-native-vm-template-literal",
+      "artifact": "test",
+      "source_root": "src/native_template_literal_test.zig",
+      "declared_controls": 18,
+      "required_names_sha256": "5A59DE3BA22C7F51D119DC3691C656245CA60AD03FAAEAF050CB766F3CC11E15",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-borrowed-bridges",
+      "target": "build-native-vm-borrowed-bridges",
+      "artifact": "test",
+      "source_root": "src/native_vm_borrowed_bridges_test.zig",
+      "declared_controls": 17,
+      "required_names_sha256": "93C67F1E87A102925206019E09FD0CA67A74C80EFA3CB0DEF658BB87FA9E4B7C",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "vm-af-throw",
+      "target": "build-native-vm-af-throw",
+      "artifact": "vm-af-throw",
+      "source_root": "src/native_await_rejection_data_test.zig",
+      "declared_controls": 30,
+      "required_names_sha256": "5CF1C32651361A5ACE8BAB76163E53EBFBCE9F02AFCDCEE0CB478AF74879DF05",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-ai-oauth-anthropic-genuine-af",
+      "target": "build-native-ai-oauth-anthropic-genuine-af",
+      "artifact": "native-ai-oauth-anthropic-genuine-af",
+      "source_root": "src/native_ai_oauth_anthropic_genuine_af_test.zig",
+      "declared_controls": 25,
+      "required_names_sha256": "0D17CE3DDA286B90CA415FF47C15A68048B48E3205AC5F94CBE27E42FE4FBD0B",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-module-creation",
+      "target": "build-native-node-module-creation",
+      "artifact": "native-node-module-creation",
+      "source_root": "src/native_node_module_creation_test.zig",
+      "declared_controls": 30,
+      "required_names_sha256": "2B4702F026A6C568DCA196B0047BE0CD8E55B213D285D682374AC3EC3F24B7FA",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-module-search-paths",
+      "target": "build-native-node-module-search-paths",
+      "artifact": "native-node-module-search-paths",
+      "source_root": "src/native_node_module_search_paths_test.zig",
+      "declared_controls": 20,
+      "required_names_sha256": "0A7491400D24CA6295F0C171F94C06789F83BDD33AC485245BF15EAC26F016BE",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-fs-realpath-classic",
+      "target": "build-native-node-fs-realpath-classic",
+      "artifact": "native-node-fs-realpath-classic",
+      "source_root": "src/native_node_fs_realpath_classic_test.zig",
+      "declared_controls": 23,
+      "required_names_sha256": "26D9A95E54C318157BA48A918A5E120E6EC9AAD010F24F28ECBF883232C3D5E9",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-fs-path-helpers",
+      "target": "build-native-node-fs-path-helpers",
+      "artifact": "native-node-fs-path-helpers",
+      "source_root": "src/native_node_fs_path_helpers_test.zig",
+      "declared_controls": 18,
+      "required_names_sha256": "BEA3A64B04ED55F9941F6EE8CC74E9BED177AD148DFB0D8EA568F31D48A64023",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-file-url-paths",
+      "target": "build-native-node-file-url-paths",
+      "artifact": "native-node-file-url-paths",
+      "source_root": "src/native_node_file_url_paths_test.zig",
+      "declared_controls": 19,
+      "required_names_sha256": "EBE1D6A0115D99BADA3B6C6009D7BD74B39C2CD6FE673AF4D3D72D476B852B72",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-sdk-tool-search-public",
+      "target": "build-native-sdk-tool-search-public",
+      "artifact": "native-sdk-tool-search-public",
+      "source_root": "src/native_sdk_tool_search_public_test.zig",
+      "declared_controls": 26,
+      "required_names_sha256": "FF8C6EB4F48B3CECF2973A1FE3172A783C631B0D9A3AEC92572ABAFAD6D67480",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-ai-radius-config",
+      "target": "build-native-ai-radius-config",
+      "artifact": "native-ai-radius-config",
+      "source_root": "src/native_ai_radius_config_test.zig",
+      "declared_controls": 25,
+      "required_names_sha256": "037BA832437331C01AADBC9A5DC3E887543445F9D9CED1ED179F171E0DC00BC4",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-ai-radius-provider-genuine-af",
+      "target": "build-native-ai-radius-provider-genuine-af",
+      "artifact": "native-ai-radius-provider-genuine-af",
+      "source_root": "src/native_ai_radius_provider_genuine_af_test.zig",
+      "declared_controls": 28,
+      "required_names_sha256": "065168BC174AC548CCC4AFB5E490BB876E955093897E1891A1293D065E5F7928",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-inspect-entry",
+      "target": "build-native-node-inspect-entry",
+      "artifact": "native-node-inspect-entry",
+      "source_root": "src/native_node_inspect_entry_test.zig",
+      "declared_controls": 37,
+      "required_names_sha256": "5FB6A7E265F9E7974608637E8A6D3D865A99D3DD338898E05EDDBA4925BE3C0A",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-ai-oauth-radius-genuine-af",
+      "target": "build-native-ai-oauth-radius-genuine-af",
+      "artifact": "native-ai-oauth-radius-genuine-af",
+      "source_root": "src/native_ai_oauth_radius_genuine_af_test.zig",
+      "declared_controls": 34,
+      "required_names_sha256": "C532167F156BFE9B794150422CE5AA865C2121FA0C34D709CC0E5DDCC2A095AC",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-existing-promise-settlement",
+      "target": "build-native-vm-existing-promise-settlement",
+      "artifact": "test",
+      "source_root": "src/native_vm_existing_promise_settlement_test.zig",
+      "declared_controls": 17,
+      "required_names_sha256": "587D916BFE358B8B61F7AAF877FF8E1F505742D4756E46454FD9001B99599240",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-options",
+      "target": "build-native-node-options",
+      "artifact": "native-node-options",
+      "source_root": "src/native_node_options_test.zig",
+      "declared_controls": 29,
+      "required_names_sha256": "DDDC46307ACC5F77AB92486DF82B5A84D34310B0A82FA060A1262F4FD1108784",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-node-uv-exception",
+      "target": "build-native-node-uv-exception",
+      "artifact": "test",
+      "source_root": "src/native_node_uv_exception_test.zig",
+      "declared_controls": 6,
+      "required_names_sha256": "8D4AEB01DD89B17918520F2D659A84AE0D37327839AFAA8F60D09B2130B9BE1C",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-disallow-javascript",
+      "target": "build-native-vm-disallow-javascript",
+      "artifact": "test",
+      "source_root": "src/native_vm_disallow_javascript_test.zig",
+      "declared_controls": 22,
+      "required_names_sha256": "CF759777CCD4C11F641F2CC8E831E3AE484970DA09FB21560C9A921B30E26AC0",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-continuation-data",
+      "target": "build-native-vm-continuation-data",
+      "artifact": "test",
+      "source_root": "src/native_vm_continuation_data_test.zig",
+      "declared_controls": 23,
+      "required_names_sha256": "6E548555015CD452FA1C44C314000F7DAD24D3E33BE3FBFBDEF4D430B76C4080",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-pending-promise",
+      "target": "build-native-vm-pending-promise",
+      "artifact": "test",
+      "source_root": "src/native_vm_pending_promise_test.zig",
+      "declared_controls": 15,
+      "required_names_sha256": "003CB71B29AED3D3295E429D38639F5788671DE7108F297B162F41961A547434",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-native-global",
+      "target": "build-native-vm-native-global",
+      "artifact": "test",
+      "source_root": "src/native_vm_native_global_test.zig",
+      "declared_controls": 18,
+      "required_names_sha256": "DC7FA554F9846263FDE479B5DC77A0548840E9ABD20A01A858DC48F1E8C2FA9A",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    },
+    {
+      "group": "native-vm-copy-data-properties",
+      "target": "build-native-vm-copy-data-properties",
+      "artifact": "test",
+      "source_root": "src/native_vm_copy_data_properties_test.zig",
+      "declared_controls": 13,
+      "required_names_sha256": "6FB6184D107335F03643FBB18A3C12C0E3CFCE002EA3207D245CBF849FCC2AF9",
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty"
+    }
+  ],
+  "selected_named_controls": 1249,
+  "selected_required_names_ordered_sha256": "0B5BC3B76140E27C26EA43507DA4D1DB82AC519896A1A204BABC78133219E61E",
+  "selected_definition_equality_fields": [
+    "name",
+    "target",
+    "artifact",
+    "source_root",
+    "required_named",
+    "historical_order",
+    "allowed_anonymous",
+    "runtime_stderr_policy"
+  ],
+  "selected_definition_equality_across_v34_v37": true,
+  "driver": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-regression63-prepared-20261021\\Run-CombinedNativeBatch.ps1",
+    "bytes": 60094,
+    "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+  },
+  "driver_layout_excerpts": [
+    {
+      "line": 31,
+      "text": "$taskProof=Contained ([string]$taskGrant.receipt_directory) $taskWorkspace.evidence"
+    },
+    {
+      "line": 406,
+      "text": "  $groupProof=Contained (Join-Path $taskBuildProof ('groups/'+$group)) $taskBuildProof"
+    },
+    {
+      "line": 430,
+      "text": "  $taskProof=Contained (Join-Path $batchProof ('groups/'+$Group)) $batchProof"
+    },
+    {
+      "line": 470,
+      "text": "    metadata{$metadata=Read-ComposedMetadata $taskBinary $taskRoot (Join-Path $taskProof $phase);$selection.names=@($metadata.tests);Save-Json $metadata 'selected-tests.json'}"
+    },
+    {
+      "line": 494,
+      "text": "   if($taskBuildMode){Save-Json $taskArtifact 'build-artifacts.json'}"
+    }
+  ],
+  "compatible_positive_auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Audit-PositiveV38CompleteBuildQuery-20261021.py",
+    "bytes": 37254,
+    "sha256": "EF936499EAC349E71715AF123C768F6C611E0B1F8ED8D8D4E780C63806BF2B2E"
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v34-prepared-20261020\\groups.json",
+      "bytes": 573554,
+      "sha256": "6781CFD769B70925293C6C7B0D7AEECFC0DB87A8790FB5D61379A20A78C6443F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-regression63-prepared-20261021\\groups.json",
+      "bytes": 1104585,
+      "sha256": "E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-regression63-prepared-20261021\\Run-CombinedNativeBatch.ps1",
+      "bytes": 60094,
+      "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-execution-source-peer-20261021\\peer.json",
+      "bytes": 12797,
+      "sha256": "92118B1B9844BB21FBB99A915B37C3CF0CFD2F1AAC3C0DE0D0AFED14FF221F35"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\root-grant.json",
+      "bytes": 12270,
+      "sha256": "275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\authoring-inspection-preflight.json",
+      "bytes": 6441,
+      "sha256": "FAE0AB2CEBA703D76E25A573DA448DF0010CE07D15C8E1FD58D42C7C7CFFC90E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\candidate\\Prepare-ObservedV38Existing63PositiveBuildQueryAuditInputs-20261021-unresolved.py",
+      "bytes": 21109,
+      "sha256": "0F8502D9AD3395551AFC08652795C77114EED504E13623F6D65CDE774FAEB06C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Audit-PositiveV38CompleteBuildQuery-20261021.py",
+      "bytes": 37254,
+      "sha256": "EF936499EAC349E71715AF123C768F6C611E0B1F8ED8D8D4E780C63806BF2B2E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Prepare-ObservedV38New4PositiveBuildQueryAuditInputs-20261021-unresolved.py",
+      "bytes": 18939,
+      "sha256": "88D31C0905C52EEE080C7CC2FDBF32F0DC4F39C7A5BCDFCE9C01E3F1BF85AC17"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\finite-source-adaptation.json",
+      "bytes": 14308,
+      "sha256": "C46AFC69DBBE7C485D2E94A631EBF221611B46C28BFC6B68146E92212323C245"
+    }
+  ],
+  "input_versions": 10,
+  "retained_authoring_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\authoring-inspection-preflight.json",
+    "bytes": 6441,
+    "sha256": "FAE0AB2CEBA703D76E25A573DA448DF0010CE07D15C8E1FD58D42C7C7CFFC90E"
+  },
+  "source_only": true,
+  "Main_accessed": false,
+  "candidate_executed": false,
+  "prefix_executed": false,
+  "constructor_executed": false,
+  "auditor_executed": false,
+  "helper_executed": false,
+  "native_executed": false,
+  "configuration_issued": false,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

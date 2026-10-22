@@ -1,0 +1,56 @@
+{
+  "ok": true,
+  "summary": "Background job job-op-2caa28741b4463f61c5d8bd9da20a52d383ce8a7a20b9d863198c2003cd181d6 is failed.",
+  "data": {
+    "id": "job-op-2caa28741b4463f61c5d8bd9da20a52d383ce8a7a20b9d863198c2003cd181d6",
+    "status": "failed",
+    "mode": "program",
+    "createdAtUtc": "2026-10-21T14:32:17.188Z",
+    "startedAtUtc": "2026-10-21T14:32:17.291Z",
+    "completedAtUtc": "2026-10-21T14:32:19.008Z",
+    "runnerPid": 8672,
+    "exitCode": 1,
+    "readOnly": false,
+    "resourceClass": "io-heavy",
+    "runtimeMode": "host",
+    "queuedAtUtc": "2026-10-21T14:32:17.251Z",
+    "runnerProcessInstance": "134370667372209073",
+    "queueWaitMs": 10,
+    "executionSlot": 1,
+    "executionSlots": [
+      1,
+      0
+    ],
+    "executionPool": "execution",
+    "executionWeight": 2,
+    "childPid": 27060,
+    "error": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\Prepare-FreshV38Catalog-20261021.py\", line 390, in <module>\r\n    assert observed[\"results\"] == expected_results\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError",
+    "logs": {
+      "stdout": {
+        "maxBytes": 33554432,
+        "rotations": 2,
+        "rotationsPerformed": 0,
+        "totalBytes": 0,
+        "currentBytes": 0,
+        "truncated": false,
+        "failed": false,
+        "error": null
+      },
+      "stderr": {
+        "maxBytes": 33554432,
+        "rotations": 2,
+        "rotationsPerformed": 0,
+        "totalBytes": 356,
+        "currentBytes": 356,
+        "truncated": false,
+        "failed": false,
+        "error": null
+      },
+      "truncated": false
+    },
+    "runnerAlive": false,
+    "jobDir": "C:\\Users\\adyba\\docker-chatgpt-devbox\\run\\jobs\\job-op-2caa28741b4463f61c5d8bd9da20a52d383ce8a7a20b9d863198c2003cd181d6"
+  },
+  "exitCode": null,
+  "truncated": false
+}

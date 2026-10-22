@@ -1,0 +1,191 @@
+ demotions")
+    failed = []
+    for number,group in enumerate(existing63[:17]):
+        gp = rp/"groups"/group
+        canonical = doc(gp/"runtime.results.json")
+        observed,accepted = runtime["observed_groups"][number],metadata["groups"][number]
+        n,fail = ORIGINAL63_COUNTS[number],int(number==16)
+        expected = [{"index":i,"flags":int(number==16 and i==22),"passed":not(number==16 and i==22)} for i in range(n)]
+        require(canonical["expected"]==canonical["started"]==canonical["completed"]==n and
+                canonical["failed_or_skipped_or_logged_or_leaked"]==fail and canonical["status"]==("failed" if fail else "passed"),"all original canonical partial counts")
+        require(canonical["results"]==expected,"exact320 zero flags andsingle flag1")
+        expected_named = [dict(row,name=accepted["tests"][i]) for i,row in enumerate(expected)]
+        require(observed["results"]==expected_named and observed["started"]==observed["completed"]==n and
+                observed["failed"]==fail and observed["original_group_status"]==result["groups"][number]["status"],"all321 actual names and demotions")
+        require(observed["canonical"]==archived_pin(gp/"runtime.results.json"),"exact original canonical bytes")
+        require((len(raw(gp/"runtime.stderr.log"))==0)==(number<16),"retain first16 empty andfailed nonempty stderr")
+        for row in expected_named:
+            if not row["passed"]:
+                failed.append(dict(group=group,**{k:row[k] for k in ("index","flags","name")}))
+    require(failed==root["failed_tests"]==runtime["observed_failed_tests"] and root["failed_indices"]==[22],"actual sole failure identity retained")
+    require(len(runtime["original_attempted_group_files"])==238,"all238 original group files")
+    for key in ("original_receipts","original_attempted_group_files","original_outer_outputs"):
+        for row in runtime[key]:
+            retained_pin(row)
+    require(runtime["original_root_partial_observation"]==root["original_root_observation"],"exact original Root partial observation")
+    audit_cfg = document(root["audit_configuration"])
+    require(len(audit_cfg)==52 and audit_cfg["candidate_head"]==HEAD and audit_cfg["batch"]=="existing63" and
+            audit_cfg["auditor_sha256"]==root["independent_negative_auditor"]["sha256"] and
+            audit_cfg["actual_metadata_count"]==1285 and audit_cfg["runtime_result_sha256"]==root["runtime_result"]["sha256"],"original exact52-field negative audit contract")
+    audit_job = document(root["audit_job_observation"])["data"]
+    require(audit_job["status"]=="succeeded" and audit_job["exitCode"]==0 and audit_job["runnerAlive"] is False and
+            type(audit_job["runnerProcessInstance"]) is str and re.fullmatch(r"[0-9]+",audit_job["runnerProcessInstance"]),"successful audit-only job exact100ns string")
+    job = doc(rc/"independent-observed-job-status.json")["data"]
+    require(job["status"]=="failed" and job["exitCode"]==1 and job["runnerAlive"] is False and
+            job["id"]=="job-op-a17015be461f2f37aa27a1fb9d09260c7b06385213ec73ce3381b74d5007b063" and
+            job["runnerProcessInstance"]=="134371501570189138","original native failed job exact100ns string")
+    return {
+      "status":runtime["status"],"root_acceptance":root_pin,"closure":root["independent_negative_closure"],
+      "result":root["runtime_result"],"audit_configuration":root["audit_configuration"],
+      "observed_started":321,"observed_completed":321,"observed_failed":1,"observed_passed":320,"not_started":964,
+      "native_owner_count":17,"actual_process_intervals_closed":20,"granted_groups":63,"attempted_groups":17,
+      "unstarted_groups":46,"not_started_groups":copy.deepcopy(existing63[17:]),
+      "failed_tests":copy.deepcopy(failed),"original_group_statuses":["partial_batch_not_admissible"]*16+["failed"],
+      "negative_closure_accepted":True,"original_strict_failures_preserved":True,
+      "positive_group_acceptance":False,"selected_native_runtime_accepted":False,
+      "product_qualification":False,"runtime_qualification":False,"source_mutation_hold_released":False}
+
+def check_existing63_negative_cohort():
+    bq_pin,bq,metadata,bq_record = check_existing63_buildquery()
+    prelaunch = check_existing63_prelaunch(bq_pin)
+    runtime = check_existing63_partial_negative(bq_pin,bq,metadata)
+    return {
+      "batch":"existing63","source_head":HEAD,"groups":copy.deepcopy(existing63),
+      "declared_groups":63,"declared_controls":1249,"actual_metadata_count":1285,
+      "actual_group_counts":copy.deepcopy(ORIGINAL63_COUNTS),"buildquery":bq_record,
+      "prelaunch":prelaunch,"runtime":runtime,"metadata_transferred_to_another_head":False,
+      "source_mutation_hold_released":False}
+
+new4 = check_positive("new4",NEW4,58,0)
+original63 = check_existing63_negative_cohort()
+catalog_negative_path = E/"root-v38-catalog-initial-preparation-negative-20261021/root-negative-acceptance.json"
+audit_negative_path = E/"root-v38-new4-positive-runtime-audit-original-negative-20261021/negative.json"
+require(archived_pin(catalog_negative_path)["sha256"]=="14FB17F6E9497A530D999EE3D05C43521A7F830C4A185CD4505C28BE6BBB6400","original catalog negative")
+require(archived_pin(audit_negative_path)["sha256"]=="194982710772F0E5F5E5012DFA783FC19F7D71DF327F1034A2799131C13CE2EF","original auditor negative")
+catalog_negative,audit_negative = doc(catalog_negative_path),doc(audit_negative_path)
+require(catalog_negative["terminal_exit_code"]==1 and catalog_negative["compiler_native_execution_occurred"] is False,"non-native catalog failure retained")
+require(audit_negative["original_audit_exit_code"]==1 and audit_negative["runtime_acceptance"] is False,"original failed auditor remains negative")
+require(audit_negative["auditor"]["sha256"]=="F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07","original F846 source retained")
+old_input_pin,new_input_pin = (plan["separate_non_native_negatives"][1][k] for k in ("original_input","corrected_input"))
+old_input,new_input = document(old_input_pin),document(new_input_pin)
+require(set(old_input)==set(new_input) and len(old_input)==40 and
+        [k for k in old_input if old_input[k]!=new_input[k]]==["auditor_sha256"],"only exact original auditor config correction")
+require(old_input["auditor_sha256"]==audit_negative["auditor"]["sha256"] and
+        new_input["auditor_sha256"]=="A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102","separate original and corrected audit sources")
+negative_records = [
+ {"name":"V38 initial catalog non-native preparation negative","status":catalog_negative["status"],
+  "source_head":HEAD,"root_acceptance":archived_pin(catalog_negative_path),"native_failure":False,
+  "new_native_execution_authorized":False,"original_evidence_unchanged":True},
+ {"name":"V38 original new4 positive-runtime auditor provenance negative","status":audit_negative["status"],
+  "source_head":HEAD,"root_acceptance":archived_pin(audit_negative_path),"native_failure":False,
+  "original_audit_accepted_runtime":False,"original_native_run_rerun":False,
+  "new_native_execution_authorized":False,"original_evidence_unchanged":True},
+]
+
+negative_records.append(copy.deepcopy(original63["prelaunch"]))
+native_negative_record = dict(
+ name="V38 original63 retry1 strict runtime partial native negative",source_head=HEAD,batch="existing63",
+ declared_groups=63,declared_controls=1249,actual_metadata_observed=1285,native_failure=True,
+ original_evidence_unchanged=True,new_native_execution_authorized=False,**copy.deepcopy(original63["runtime"]))
+require(len(negative_records)==3 and all(n["native_failure"] is False for n in negative_records),"only three actual non-native failures")
+
+payloads,roles,preimages,payload_aliases = {},{},{},set()
+def add(target,value,role,before=None):
+    target = relative(target)
+    require(target==PROGRESS or target.startswith(ARCHIVE+"/"),"staged progress/archive only")
+    require(target!=MANIFEST_TARGET and target.casefold() not in payload_aliases,"unique staged target")
+    payload_aliases.add(target.casefold())
+    payloads[target],roles[target],preimages[target] = value,role,before
+    return pin(OUT/"projected"/target,value)
+
+archive_rows,seal_mappings = [],[]
+for row in rows:
+    if row["representation"]=="raw_byte_exact":
+        target = row["proposed_archive_relative_path"]
+        require(len(target_owners[target.casefold()])==1,"no raw target alias")
+        out_pin = add(target,raw(row["original"]["path"]),"immutable_original_bytes")
+        archive_rows.append({"original":row["original"],"target":target,"projected":out_pin})
+represented = set()
+for pair in copy_plan["bookend_plans"]:
+    index = PHASES.index(pair["phase"])
+    require(pair["compressed_pin"] is None and pair["compression_executed"] is False,"unexecuted exact phase gzip mapping")
+    proof = Path(membership[index]["proof"])
+    require(pair["originals"]==[archived_pin(proof/"before.json"),archived_pin(proof/"final.json")],"both original bookend pins")
+    before,final = raw(proof/"before.json"),raw(proof/"final.json")
+    require(before==final and pair["byte_identical_verified"] is True,"only byte-identical bookend pairs compressed")
+    seal = decode(before)
+    require(seal["candidate_head"]==HEAD and seal["clean"] is True and seal["errors"]==[],"original complete clean source seal")
+    counts = {k:len(seal[k]) for k in ("source","tree","vendor","compiler","controls")}
+    require(counts==pair["seal_counts"] and counts["vendor"]==1489 and counts["compiler"]==19546,"all actual seal counts")
+    target = pair["proposed_archive_relative_path"]
+    require(target==ARCHIVE+"/"+PHASES[index]+"/proof/before-and-final.json.gz","exact gzip target")
+    same = target_owners[target.casefold()]
+    require(len(same)==2 and [r["original"] for r in same]==pair["originals"],"each gzip represents exactly the two observed originals")
+    require(all(r["representation"]=="proposed_lossless_gzip_identical_bookend_pair" and r["proposed_archive_relative_path"]==target for r in same),"only explicit pair aliases")
+    require(pair["future_parameters"]=={"filename":"","mtime":0,"compresslevel":9,"header_hex":"1f8b08000000000002ff"},"fixed accepted gzip recipe")
+    compressed = gzip_bytes(before)
+    require(compressed[:10]==bytes.fromhex("1f8b08000000000002ff"),"accepted deterministic gzip header")
+    require(gzip.decompress(compressed)==before==final and gzip_bytes(before)==compressed,"two-source roundtrip and repeated encoding exact")
+    out_pin = add(target,compressed,"lossless_identical_original_bookend_pair")
+    represented.update(r["original"]["path"].casefold() for r in same)
+    seal_mappings.append({"phase":pair["phase"],"originals":pair["originals"],"target":target,"projected":out_pin,
+                          "seal_counts":counts,"complete_two_source_roundtrip":True,
+                          "deterministic_second_encoding_equal":True,"gzip":{"filename":"","mtime":0,"compresslevel":9,"header_hex":compressed[:10].hex()}})
+require(represented=={r["original"]["path"].casefold() for r in rows if r["representation"]=="proposed_lossless_gzip_identical_bookend_pair"},"no unrepresented original input")
+
+# Any future phase not explicitly selected for equal-pair gzip retains both raw originals.
+for m in membership:
+    if m["phase"] not in {p["phase"] for p in copy_plan["bookend_plans"]}:
+        for name in ("before.json","final.json"):
+            require(row_by_path[str(Path(m["proof"])/name).casefold()]["representation"]=="raw_byte_exact","uncombined bookend retained raw")
+
+# Derive only the scoped accepted/negative checkpoint after every exact phase contract above.
+attempts = [
+ negative_records[0],
+ dict(name="V38 new4 complete fresh BuildQuery",source_head=HEAD,batch="new4",
+      declared_groups=4,declared_controls=58,actual_metadata_observed=new4["actual_metadata_count"],**copy.deepcopy(new4["buildquery"])),
+ negative_records[1],
+ dict(name="V38 accepted original new4 strict runtime",source_head=HEAD,batch="new4",
+      declared_groups=4,declared_controls=58,actual_metadata_observed=new4["actual_metadata_count"],**copy.deepcopy(new4["runtime"])),
+ dict(name="V38 original63 complete fresh BuildQuery",source_head=HEAD,batch="existing63",
+      declared_groups=63,declared_controls=1249,actual_metadata_observed=original63["actual_metadata_count"],**copy.deepcopy(original63["buildquery"])),
+ negative_records[2],
+ copy.deepcopy(native_negative_record),
+]
+next_plan = copy.deepcopy(old["next_native_batch"])
+require(next_plan["batch_group_counts"]==[4,63] and next_plan["batch_source_declarations"]==[58,1249],"exact completed disjoint source partitions")
+require(next_plan["total_selected_groups"]==67 and next_plan["total_selected_source_declarations"]==1307 and
+        next_plan["catalog_expected_groups"]==117 and next_plan["catalog_expected_source_declarations"]==2013 and next_plan["group_cap"]==64,"unchanged selected/catalog limits")
+next_plan.update(
+ status="v38_buildquery_accepted_original63_partial_runtime_negative_closed_awaiting_separate_root_next_scope",
+ actual_metadata_count=None,execution_authority=False,runtime_authority=False,qualification=False,
+ prior_metadata_transferred=False,source_mutation_hold_released=False,
+ v38_observed_metadata_by_batch={"new4":new4["actual_metadata_count"],"existing63":original63["actual_metadata_count"]},
+ v38_both_complete_buildquery_and_strict_runtime_accepted=False,
+ v38_both_complete_buildquery_accepted=True,v38_new4_strict_runtime_accepted=True,
+ v38_original63_prelaunch_negative_preserved=True,v38_original63_partial_runtime_negative_closed=True,
+ requirements="Both exact V38 batches have accepted fresh BuildQuery metadata on014062. Only new4 has accepted strict RuntimeOnly; "
+              "original63 retains the zero-native prelaunch rejection and the closed17-group partial native failure with321 completed, "
+              "320 passed, one failed and964 unstarted tests. All16 driver-demoted group results remain unqualified. "
+              "This active incomplete port and retained plan issue no native, source or product authority. A repair, later validation, "
+              "source intake, bridge removal and application qualification require separate Root work.")
+updated = copy.deepcopy(old)
+updated["preserved_attempts"].extend(copy.deepcopy(attempts))
+updated["retained_recent_native_negatives"].append(copy.deepcopy(native_negative_record))
+updated["execution_checkpoint_history"].append(copy.deepcopy(old["current_execution_checkpoint"]))
+checkpoint = copy.deepcopy(old["current_execution_checkpoint"])
+checkpoint.update(
+ schema=9,status="v38_new4_accepted_original63_buildquery_accepted_partial_runtime_negative_closed_archive_proposed",
+ source_head=HEAD,recorded_utc=now,next_validation=copy.deepcopy(next_plan),
+ v38_new4=copy.deepcopy(new4),v38_original63=copy.deepcopy(original63),
+ v38_non_native_preparation_and_auditor_negatives=copy.deepcopy(negative_records),
+ selected_native_runtime_accepted=False,v38_new4_selected_native_runtime_accepted=True,
+ v38_original63_partial_negative_closed=True,runtime_qualification=False,
+ source_mutation_hold_released=False,native_execution_authorized=False,
+ production_bridge_removed=False,application_qualification=False)
+updated["current_execution_checkpoint"] = checkpoint
+updated["next_native_batch"] = copy.deepcopy(next_plan)
+updated["current_source_head_at_record"] = HEAD
+updated["updated_utc"] = now
+updated["record_note"] = (
+ "

@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v38_new4_positive_runtime_provenance_audit_resource_release",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-21T15:30:13.216966+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-Provenance-20261021.py",
+    "bytes": 41516,
+    "sha256": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+  },
+  "configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\independent-positive-runtime-audit-inputs-provenance.json",
+    "bytes": 6496,
+    "sha256": "DE8E88C773C7B2DB6AD536FC0F4C748B70DC5EF8C8C009E5370C3312EB5E6DC4"
+  },
+  "configuration_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\positive-runtime-auditor-configuration-adaptation.json",
+    "bytes": 1639,
+    "sha256": "E91502B116C8E38B754AF417AEC4A60C5ED43F406A1535026B0B33E97DC28FDC"
+  },
+  "source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-positive-runtime-provenance-successor-source-acceptance-20261021.json",
+    "bytes": 4434,
+    "sha256": "12D45623A19BB66517FF8DF2C47CD69F32A167361572A0313D651505528A8F49"
+  },
+  "preserved_original_audit_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\negative.json",
+    "bytes": 5430,
+    "sha256": "194982710772F0E5F5E5012DFA783FC19F7D71DF327F1034A2799131C13CE2EF"
+  },
+  "original_runtime_job_id": "job-op-fdd37cd9d50eb9c68ce43708ab950745d34cf298e91b0fd11fc1b4dd9e2111d5",
+  "actual_metadata_count": 61,
+  "resource": {
+    "program": "python",
+    "resource_class": "io-heavy",
+    "timeout_seconds": 240,
+    "one_auditor_process": true,
+    "source_artifact_and_process_read_only": true,
+    "create_only_output": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\independent-positive-runtime-closure.json"
+  },
+  "audit_execution_authorized": true,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "product_qualification": false
+}

@@ -1,0 +1,189 @@
+"""Static finite proof for the unissued V38 original63 observed-input helper.
+No candidate, prefix, constructor, native command, or Main path is executed or
+read. Only retained evidence/source snapshots are read; output is create-only.
+"""
+from pathlib import Path
+import ast,hashlib,io,json,re,sys,tokenize
+B=Path(r"C:\Users\adyba\pi-zig");E=B/"evidence";O=E/"v38-existing63-positive-input-helper-sourceonly-20261021"
+assert Path(__file__).resolve()==O/"source-adaptation-check.py" and sys.argv[1:]==[]
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def need(ok,msg):
+ if not ok:raise AssertionError(msg)
+seen={}
+def pin(p):
+ p=Path(p);b=p.read_bytes();return dict(path=str(p),bytes=len(b),sha256=sha(b))
+def read(p,n,h):
+ p=Path(p);need(not p.is_relative_to(B/"main"),"No Main access")
+ b=p.read_bytes();need(len(b)==n and sha(b)==h,"exact immutable input "+str(p))
+ row=dict(path=str(p),bytes=n,sha256=h);seen[str(p)]=row;return b
+def jread(p,n,h):return json.loads(read(p,n,h))
+old_path=B/"worktrees/sdk-owners-resume-20261018/verification/v38-execution-unresolved-sourceonly-20261021/candidate/Prepare-ObservedV38New4PositiveBuildQueryAuditInputs-20261021-unresolved.py"
+new_path=O/"candidate/Prepare-ObservedV38Existing63PositiveBuildQueryAuditInputs-20261021-unresolved.py"
+old=read(old_path,18939,"88D31C0905C52EEE080C7CC2FDBF32F0DC4F39C7A5BCDFCE9C01E3F1BF85AC17")
+new=read(new_path,21109,"0F8502D9AD3395551AFC08652795C77114EED504E13623F6D65CDE774FAEB06C")
+prior=jread(E/"independent-v38-execution-source-peer-20261021/peer.json",12797,"92118B1B9844BB21FBB99A915B37C3CF0CFD2F1AAC3C0DE0D0AFED14FF221F35")
+need(prior["source_accepted"] is True and prior["sources"][4]["candidate"]==pin(old_path),"accepted source-only baseline")
+agg=jread(B/"worktrees/sdk-owners-resume-20261018/verification/v38-execution-unresolved-sourceonly-20261021/finite-source-adaptation.json",14308,"C46AFC69DBBE7C485D2E94A631EBF221611B46C28BFC6B68146E92212323C245")
+grant_path=E/"root-native-foundation-fresh-v34-control-20261020-202924/root-grant.json"
+grant=jread(grant_path,12270,"275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15")
+groups=grant["groups"];need(len(groups)==len(set(groups))==63,"exact original63 grant order")
+a=jread(E/"combined-native-batch-v34-prepared-20261020/groups.json",573554,"6781CFD769B70925293C6C7B0D7AEECFC0DB87A8790FB5D61379A20A78C6443F")
+c=jread(E/"combined-native-batch-v37-regression63-prepared-20261021/groups.json",1104585,"E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37")
+driver_path=E/"combined-native-batch-v37-regression63-prepared-20261021/Run-CombinedNativeBatch.ps1"
+driver=read(driver_path,60094,"1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601")
+negative=jread(O/"authoring-inspection-preflight.json",6441,"FAE0AB2CEBA703D76E25A573DA448DF0010CE07D15C8E1FD58D42C7C7CFFC90E")
+need(negative["original_tool_result"]["exitCode"]==1 and negative["corrected_inspection_outcome"]["exitCode"]==0,"retained read-only quote error and corrected inspection")
+keys=("name","target","artifact","source_root","required_named","historical_order","allowed_anonymous","runtime_stderr_policy")
+am={x["name"]:x for x in a["groups"]};cm={x["name"]:x for x in c["groups"]}
+selected=[];all_names=[]
+for n in groups:
+ need({k:am[n][k]for k in keys}=={k:cm[n][k]for k in keys},"eight unchanged selected definition fields "+n)
+ g=cm[n];names=g["required_named"];need(len(names)==len(set(names))and all(isinstance(x,str)for x in names),"unique literal declared names")
+ all_names.append([n,names]);nb=(json.dumps(names,separators=(",",":"))+"\n").encode("ascii")
+ selected.append(dict(group=n,target=g["target"],artifact=g["artifact"],source_root=g["source_root"],declared_controls=len(names),required_names_sha256=sha(nb),allowed_anonymous=g["allowed_anonymous"],runtime_stderr_policy=g["runtime_stderr_policy"]))
+need(sum(r["declared_controls"]for r in selected)==1249 and max(r["declared_controls"]for r in selected)==37,"actual retained source declarations")
+need(len(c["groups"])==117 and sum(len(g["required_named"])for g in c["groups"])==2013,"full retained V37 catalog")
+ordered_names_sha256=sha((json.dumps(all_names,separators=(",",":"))+"\n").encode("ascii"))
+def positions(data):
+ starts=[0]
+ for line in data.splitlines(keepends=True):starts.append(starts[-1]+len(line))
+ return starts
+def at(starts,pos):return starts[max(0,pos[0]-1)]+pos[1]
+def assignment(data,name):
+ rows=[n for n in ast.parse(data.decode("ascii")).body if isinstance(n,ast.Assign)and len(n.targets)==1 and isinstance(n.targets[0],ast.Name)and n.targets[0].id==name]
+ need(len(rows)==1,"one literal assignment "+name)
+ return rows[0].value
+def group_span(data):
+ n=assignment(data,"GROUPS");need(isinstance(n,ast.List),"literal list cohort")
+ st=positions(data);lo=at(st,(n.lineno,n.col_offset));hi=at(st,(n.end_lineno,n.end_col_offset))
+ return lo,hi,ast.literal_eval(n)
+os,oe,old_groups=group_span(old);ns,ne,new_groups=group_span(new)
+need(old_groups==["native-node-file-handle-owner","native-node-fs-before-hook-continuation","native-vm-error-constructor-name","native-node-file-handle-transfer"]and new_groups==groups,"cohort list replacement")
+def tokens(data,span=None):
+ need(data.isascii(),"exact ASCII byte/token positions")
+ starts=positions(data);out=[];placed=False
+ for t in tokenize.tokenize(io.BytesIO(data).readline):
+  a,z=at(starts,t.start),at(starts,t.end)
+  if span and a>=span[0] and z<=span[1]:
+   if not placed:
+    out.append(dict(kind="LITERAL_LIST",text=data[span[0]:span[1]].decode("ascii"),start=span[0],end=span[1],line=t.start[0]));placed=True
+   continue
+  out.append(dict(kind=tokenize.tok_name[t.type],text=t.string,start=a,end=z,line=t.start[0]))
+ return out
+ta,tb=tokens(old,(os,oe)),tokens(new,(ns,ne));need(len(ta)==len(tb),"all non-cohort token inventories")
+literal_map={
+ '"root-native-foundation-fresh-v38-new4-control-UNRESOLVEDSTAMP"':'"root-native-foundation-fresh-v38-existing63-control-UNRESOLVEDSTAMP"',
+ '"root-native-foundation-fresh-v38-new4-buildquery-UNRESOLVEDSTAMP"':'"root-native-foundation-fresh-v38-existing63-buildquery-UNRESOLVEDSTAMP"',
+ '"combined-native-batch-v38-new4-prepared-20261021"':'"combined-native-batch-v38-regression63-prepared-20261021"',
+ '"root_reviewed_specific_v38_new4_positive_audit_input_preparation"':'"root_reviewed_specific_v38_existing63_positive_audit_input_preparation"',
+ '"Prepare-ObservedV38New4PositiveBuildQueryAuditInputs-20261021.py"':'"Prepare-ObservedV38Existing63PositiveBuildQueryAuditInputs-20261021.py"',
+ '"root-v38-new4-buildquery-issued-config-20261021.json"':'"root-v38-existing63-buildquery-issued-config-20261021.json"',
+ '"new4"':'"existing63"',
+ '"All four and only original ordered groups"':'"All 63 and only original ordered groups"'}
+def expected(t):
+ if t["kind"]=="LITERAL_LIST":return new[ns:ne].decode("ascii")
+ if t["kind"]=="STRING":
+  if t["text"].startswith('"""Root-only assembly of the observed V38 new4 '):return t["text"].replace("V38 new4 ","V38 existing63 ",1)
+  return literal_map.get(t["text"],t["text"])
+ if t["kind"]=="NUMBER":
+  line=old.splitlines()[t["line"]-1]
+  if b'review["selected_groups"]==4 and review["selected_declarations"]==58' in line:
+   return {"4":"63","58":"1249"}.get(t["text"],t["text"])
+ return t["text"]
+changes=[]
+for i,(x,y)in enumerate(zip(ta,tb)):
+ need(x["kind"]==y["kind"] and y["text"]==expected(x),"only exact permitted literal difference")
+ if x["text"]!=y["text"]:changes.append((i,x,y))
+need(len(changes)==13 and [sum(x["kind"]==k for _,x,_ in changes)for k in ("STRING","NUMBER","LITERAL_LIST")]==[10,2,1],"minimal exact finite counts")
+class Shape(ast.NodeTransformer):
+ def visit_Assign(self,n):
+  if len(n.targets)==1 and isinstance(n.targets[0],ast.Name)and n.targets[0].id=="GROUPS":n.value=ast.Constant(value=None)
+  return self.generic_visit(n)
+ def visit_Constant(self,n):n.value=None;return n
+need(ast.dump(Shape().visit(ast.parse(old.decode("ascii"))),include_attributes=False)==ast.dump(Shape().visit(ast.parse(new.decode("ascii"))),include_attributes=False),"all nonconstant logic exact outside explicitly replaced literal cohort")
+working=old;steps=[];fragments=[];delta=old_end=new_end=0
+for number,(ti,x,y)in enumerate(changes,1):
+ before=x["text"].encode("ascii");after=y["text"].encode("ascii");offset=x["start"]+delta
+ need(offset==y["start"]and working[offset:offset+len(before)]==before,"current finite preimage")
+ need(old[old_end:x["start"]]==new[new_end:offset],"all untouched source fragments")
+ fragments.append(dict(original_offset=old_end,candidate_offset=new_end,bytes=x["start"]-old_end,sha256=sha(old[old_end:x["start"]])))
+ prior_hash=sha(working);working=working[:offset]+after+working[offset+len(before):]
+ steps.append(dict(index=number,kind=x["kind"],original_line=x["line"],original_offset=x["start"],offset_before_step=offset,before=x["text"],after=y["text"],before_file_sha256=prior_hash,after_file_sha256=sha(working)))
+ old_end=x["end"];new_end=offset+len(after);delta+=len(after)-len(before)
+need(working==new and old[old_end:]==new[new_end:],"complete raw forward and tail")
+fragments.append(dict(original_offset=old_end,candidate_offset=new_end,bytes=len(old)-old_end,sha256=sha(old[old_end:])))
+inverse=new
+for s in reversed(steps):
+ before=s["before"].encode("ascii");after=s["after"].encode("ascii");offset=s["offset_before_step"]
+ need(sha(inverse)==s["after_file_sha256"]and inverse[offset:offset+len(after)]==after,"inverse postimage")
+ inverse=inverse[:offset]+before+inverse[offset+len(after):]
+ need(sha(inverse)==s["before_file_sha256"],"inverse intermediate")
+need(inverse==old,"complete raw inverse")
+def functions(data):
+ lines=data.splitlines(keepends=True)
+ return [(n.name,n.lineno,b"".join(lines[n.lineno-1:n.end_lineno]))for n in ast.walk(ast.parse(data.decode("ascii")))if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))]
+fa,fb=functions(old),functions(new);need(len(fa)==len(fb)==10,"all ten helpers")
+helpers=[]
+for (name,line,body),(name2,line2,body2)in zip(fa,fb):
+ need(name==name2 and body==body2,"entire helper unchanged")
+ helpers.append(dict(name=name,baseline_line=line,candidate_line=line2,bytes=len(body),sha256=sha(body)))
+critical=[]
+for r in agg["helper_critical_regions"]:
+ raw=old[r["candidate_offset"]:r["candidate_offset"]+r["bytes"]];need(sha(raw)==r["sha256"],"baseline critical span")
+ projected=raw.replace(b'"All four and only original ordered groups"',b'"All 63 and only original ordered groups"')
+ need(new.count(projected)==1,"complete critical region after only diagnostic literal")
+ critical.append(dict(name=r["name"],original_sha256=sha(raw),candidate_sha256=sha(projected),original_bytes=len(raw),candidate_bytes=len(projected),candidate_offset=new.index(projected),byte_identical=raw==projected,only_allowed_difference=None if raw==projected else "four -> 63 in one diagnostic message; executable gates exact"))
+need(sum(r["byte_identical"]for r in critical)==2,"two unchanged critical regions and one diagnostic literal only")
+
+# Reproduce the future 17 binding slots without filling any of them.
+all_tokens=tokens(new);slots=[]
+for t in all_tokens:
+ if t["kind"]=="STRING"and "UNRESOLVED" in t["text"]:
+  slots.append(dict(kind="STRING",offset=t["start"],line=t["line"],before=t["text"],actual_value=None))
+node=assignment(new,"fixed_rows");need(isinstance(node,ast.Dict),"fixed-row map")
+fixed_rows={}
+for kn,vn in zip(node.keys,node.values):
+ key=ast.literal_eval(kn);need(isinstance(vn,ast.Call)and isinstance(vn.func,ast.Name)and vn.func.id=="fixed","fixed pin only")
+ value=vn.args;need(len(value)==3 and isinstance(value[0],ast.BinOp)and isinstance(value[0].op,ast.Div),"fixed path")
+ name=ast.literal_eval(value[0].right);size=ast.literal_eval(value[1]);digest=ast.literal_eval(value[2])
+ fixed_rows[key]=dict(basename=name,bytes=size,sha256_marker=digest)
+ if size==0:
+  matches=[t for t in all_tokens if t["kind"]=="NUMBER"and t["line"]==value[1].lineno and t["text"]=="0"];need(len(matches)==1,"zero size token")
+  t=matches[0];slots.append(dict(kind="NUMBER",row=key,offset=t["start"],line=t["line"],before="0",actual_value=None))
+slots.sort(key=lambda x:x["offset"])
+need(len(slots)==17 and sum(x["kind"]=="STRING"for x in slots)==12 and sum(x["kind"]=="NUMBER"for x in slots)==5,"exact same 17 unresolved actual slots")
+need([k for k,v in fixed_rows.items()if v["bytes"]==0]==["grant","launch","specific","prepared","source_review"],"same five future sizes")
+need(fixed_rows["constructor"]["bytes"]==10095 and fixed_rows["auditor"]["bytes"]==37254,"unchanged generic source sizes")
+need(fixed_rows["specific"]["basename"]=="root-v38-existing63-buildquery-issued-config-20261021.json"and fixed_rows["prepared"]["basename"]=="buildquery-launch.json","existing63 exact fresh path roles")
+need(fixed_rows["source_review"]["basename"]=="root-v38-execution-bound-source-review-20261021.json","shared required V38 source review")
+code=new.decode("ascii")
+need('grant["v38_execution_bound_source_review"]==fixed_rows["source_review"]'in code,"actual bound-review gate retained")
+need('job["status"]=="succeeded" and job["exitCode"]==0 and job["runnerAlive"] is False'in code,"actual terminal positive gate")
+need('review["selected_groups"]==63 and review["selected_declarations"]==1249 and review["actual_metadata_count"] is None'in code,"complete original63 declarations remain distinct from actual metadata")
+need('prepared["batch"]=="existing63"'in code and 'batch="existing63"'in code,"matching actual launch and auditor output batch")
+need('actual_count=0;started=0'in code and 'actual_count+=accepted["actual_count"]'in code,"actual count derives only from acceptance")
+need('0<accepted["actual_count"]<=64'in code,"unchanged per-group protocol cap")
+need('require(len(out)==39 and out["native_phase_count"]==2*out["attempted_groups"] and actual_count>0'in code,"unchanged 39-key observed auditor contract")
+need('with OUTPUT.open("xb") as f:f.write(raw)'in code,"create-only output")
+need('review["actual_metadata_count"] is None'in code and 'prepared["actual_metadata_count"] is None'in code,"no transfer from any historical metadata total")
+need('metadata["tests"]==accepted["tests"]'in code and 'all(accepted["tests"].count(n)==1 for n in group["required_named"])'in code,"every actual named declaration remains checked")
+bqa_path=B/"worktrees/sdk-owners-resume-20261018/verification/v38-execution-unresolved-sourceonly-20261021/candidate/Audit-PositiveV38CompleteBuildQuery-20261021.py"
+bqa=read(bqa_path,37254,"EF936499EAC349E71715AF123C768F6C611E0B1F8ED8D8D4E780C63806BF2B2E").decode("ascii")
+need('"existing63"'in bqa and 'declared_groups' in bqa and '1249' in bqa,"generic positive auditor supports full original63")
+need('root-native-foundation-fresh-v38-'in bqa and 'combined-native-batch-v38-'in bqa,"generic positive auditor path schema")
+layout=[]
+for number,line in enumerate(driver.decode("utf-8-sig").splitlines(),1):
+ if any(x in line for x in ("$taskProof=Contained","$groupProof=Contained","Save-Json $metadata 'selected-tests.json'","Save-Json $taskArtifact 'build-artifacts.json'")):layout.append(dict(line=number,text=line))
+need(len(layout)==4 and any("('groups/'+$Group)"in x["text"]for x in layout),"generic exact driver group directories")
+# This static checker writes only its finite proof and plan after all checks.
+for row in list(seen.values()):read(row["path"],row["bytes"],row["sha256"])
+checker=pin(__file__)
+finite=dict(schema=1,status="unissued_literal_cohort_adaptation_for_v38_existing63_observed_inputs",baseline=pin(old_path),candidate=pin(new_path),accepted_baseline_peer=pin(E/"independent-v38-execution-source-peer-20261021/peer.json"),checker=checker,source_scope="13 literal changes only; never execute this candidate as part of the static proof",finite_edit_count=13,string_token_edits=10,numeric_token_edits=2,ordered_literal_list_replacement=1,edits=steps,complete_raw_forward_exact=True,complete_raw_inverse_exact=True,all_intermediate_hashes_exact=True,all_untouched_fragments=fragments,all_nonconstant_logic_outside_explicit_GROUPS_literal_exact=True,complete_nonconstant_ast_inventory_identical=False,ast_inventory_qualification="GROUPS changes from four literal elements to 63; the surrounding executable structure is identical after replacing only that explicit literal-container node. No false claim that list node cardinality is unchanged.",unchanged_complete_helpers=helpers,critical_regions=critical,unresolved_future_bindings=slots,ordered_selection_authority=pin(grant_path),ordered_groups=groups,selected_group_definitions=selected,selected_named_controls=1249,selected_required_names_ordered_sha256=ordered_names_sha256,selected_definition_equality_fields=list(keys),selected_definition_equality_across_v34_v37=True,driver=pin(driver_path),driver_layout_excerpts=layout,compatible_positive_auditor=pin(bqa_path),inputs=sorted(seen.values(),key=lambda x:x["path"].casefold()),input_versions=len(seen),retained_authoring_negative=pin(O/"authoring-inspection-preflight.json"),source_only=True,Main_accessed=False,candidate_executed=False,prefix_executed=False,constructor_executed=False,auditor_executed=False,helper_executed=False,native_executed=False,configuration_issued=False,execution_authority=False,runtime_authority=False,source_mutation_hold_released=False,qualification=False)
+fp=O/"finite-source-adaptation.json";fb=(json.dumps(finite,indent=2)+"\n").encode("ascii")
+plan=dict(schema=1,status="unissued_v38_existing63_observed_positive_input_helper_plan",candidate=pin(new_path),finite_proof=dict(path=str(fp),bytes=len(fb),sha256=sha(fb)),checker=checker,baseline=pin(old_path),future_canonical_helper=str(E/"Prepare-ObservedV38Existing63PositiveBuildQueryAuditInputs-20261021.py"),batch="existing63",preparation_directory=str(E/"combined-native-batch-v38-regression63-prepared-20261021"),specific_buildquery_configuration=str(E/"root-v38-existing63-buildquery-issued-config-20261021.json"),prepared_launch_basename="buildquery-launch.json",input_helper_configuration_status="root_reviewed_specific_v38_existing63_positive_audit_input_preparation",positive_auditor_configuration_status="root_reviewed_specific_v38_positive_buildquery_closure",control_basename_pattern="root-native-foundation-fresh-v38-existing63-control-<actual stamp>",proof_basename_pattern="root-native-foundation-fresh-v38-existing63-buildquery-<actual stamp>",cohort=dict(groups=63,declared_controls=1249,maximum_declared_in_group=37,ordered_grant=pin(grant_path),full_catalog_groups=117,full_catalog_declarations=2013,required_names_ordered_sha256=ordered_names_sha256),minimum_finite_changes=dict(total=13,string_tokens=10,numeric_tokens=2,literal_ordered_list=1,description="Ten string changes cover the displayed batch, identity/status paths, prepared batch, output batch and one diagnostic message; the two numeric literals cover 63 groups and 1249 declarations; the one GROUPS literal contains the full original grant order."),layout_findings=["The unchanged 1DD3 controller creates groups/<exact group name> for every group in both batches.","selected-tests.json, build-artifacts.json, compile.json, metadata.json and the original group/result envelopes retain the same generic schema.","Repeated artifact basename test is isolated by the group proof directory; no artifact selector is specialized in the helper.","The helper still requires compile then metadata for every group, complete selected and accepted order, raw metadata pins, empty original metadata stderr, and every declared named control exactly once.","The actual per-group metadata count remains independently accepted and bounded by64; the source maximum37 is not an observed test count.","The generic positive BuildQuery auditor already supports existing63/1249; its source is unchanged by this draft."],future_binding=dict(actual_head=None,actual_matrix=None,actual_job_id=None,actual_metadata_count=None,actual_runtime_outcome=None,total_slots=17,string_slots=12,size_slots=5,slots=slots,root_execution_source_review_key="v38_execution_bound_source_review",root_execution_source_review_path=str(E/"root-v38-execution-bound-source-review-20261021.json")),execution_prerequisites=["Root separately reviews this exact source adaptation and any later actual binding.","Actual committed final head, emitted matrix and exact bound constructor/auditor pins must exist.","A separately authorized original63 BuildQuery must supply actual control/proof/grant/config/prepared-launch/job identities.","Root must capture an original terminal-success job observation and independently accept all63 actual metadata groups.","Only a separate exact Root helper/config issuance may create the39-field positive audit inputs; a separate full audit closes all original/current source, artifacts and processes."],unchanged_observed_job_mapping_fields=["id","runner_pid","launcher_pid","runner_process_instance","created_utc","completed_utc"],retained_authoring_negative=finite["retained_authoring_negative"],actual_counts_never_copied_from_v34_or_new4=True,source_only=True,Main_accessed=False,candidate_executed=False,prefix_executed=False,constructor_executed=False,auditor_executed=False,helper_executed=False,native_executed=False,configuration_issued=False,execution_authority=False,runtime_authority=False,source_mutation_hold_released=False,qualification=False)
+pp=O/"plan.json";pb=(json.dumps(plan,indent=2)+"\n").encode("ascii")
+need(not fp.exists()and not pp.exists(),"all static outputs create-only")
+for p,b in ((fp,fb),(pp,pb)):
+ with p.open("xb")as f:f.write(b)
+ need(p.read_bytes()==b,"own static output exact")
+print(json.dumps(dict(candidate=pin(new_path),finite_proof=pin(fp),plan=pin(pp),checker=checker,finite_edits=13,unchanged_helpers=10,unresolved_bindings=17,ordered_groups=63,declared_controls=1249,input_versions=len(seen),candidate_executed=False,Main_accessed=False)))

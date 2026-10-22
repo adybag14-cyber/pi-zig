@@ -1,0 +1,153 @@
+"""Independent static source peer of the inert V38 archive preparer.
+Reads source as bytes/AST and immutable evidence as data. Never evaluates the
+candidate, any extracted body/prefix, its gzip/progress construction, or config.
+Only this fresh review proof is written; Git reads use the modules-io worktree.
+"""
+import ast, hashlib, json, os, re, subprocess
+from pathlib import Path, PureWindowsPath
+
+W=Path(r"C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018")
+E=Path(r"C:\Users\adyba\pi-zig\evidence")
+S=Path(r"C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018\verification\v38-progress-archive-preparer-sourceonly-20261021")
+D=W/"verification/v38-progress-archive-preparer-peer-sourceonly-20261022"
+HEAD="014062f2d139254acab4b985b4ae343db637166f"
+inputs={}; cache={}
+def sha(b): return hashlib.sha256(b).hexdigest().upper()
+def enc(v): return (json.dumps(v,indent=2,ensure_ascii=False)+"\n").encode()
+def read(p,n=None,h=None):
+    p=Path(p); k=str(p).casefold()
+    assert p.is_absolute() and (p.is_relative_to(E) or (p.is_relative_to(E.parent/"worktrees") and "verification" in p.parts)),str(p)
+    b=cache.get(k)
+    if b is None: b=p.read_bytes(); cache[k]=b
+    if n is not None: assert len(b)==n,(str(p),len(b),n)
+    if h is not None: assert sha(b)==h,(str(p),sha(b),h)
+    inputs[k]={"path":str(p),"bytes":len(b),"sha256":sha(b)}
+    return b
+def pinned(q):
+    assert set(q)=={"path","bytes","sha256"},q
+    return read(q["path"],q["bytes"],q["sha256"])
+def obj(q): return json.loads(pinned(q))
+def pin(p): return inputs[str(Path(p)).casefold()]
+def git(*args):
+    q=subprocess.run(["git","--no-optional-locks","-c","core.fsmonitor=false","-C",str(W),*args],capture_output=True,env={**os.environ,"GIT_OPTIONAL_LOCKS":"0"})
+    assert q.returncode==0,q.stderr.decode(errors="replace")
+    return q.stdout
+P=S/"candidate/Prepare-V38PositiveProgressAndValidationArchive-20261021.py"
+src=read(P,51755,"00F55DC94CC4151370B837FCDB02FFE991A07AC75C05EFE3022C66D079BD5A77")
+contract=json.loads(read(S/"source-contract.json",22961,"2B8C3745D2E7F6F0D08E9FF6672B43F03DF080E053EFED56E254E039CF845C14"))
+account=json.loads(read(S/"static-accounting.json",156837,"350E7ADE26395B1EE1E993F314DF23FDDBF693197A0CE3110C1FF691AB4BAD2D"))
+read(S/"static-accounting.py",17175,"A82973F425A8E2431989A61814C8D5BAEB9B2D89CD7646BFC6B1A9C92F215494")
+handoff=json.loads(read(S/"handoff.json",10178,"5273E17812784D776739BCCDE5FBFF77C09835DDE5175601178E496018FDBE01"))
+read(S/"README.md",9088,"09B8B56AB36B2F629D6702D59E3BD13CDA61BE81C11CDEBB490313318F96EA74")
+assert contract["candidate"]==account["candidate"]==pin(P)
+fixed=contract["fixed_inputs"]
+known=obj(fixed["inventory"]); plan=obj(fixed["plan"]); inert=obj(fixed["handoff"]); prior=pinned(fixed["policy"])
+assert known["candidate_head"]==plan["candidate_head"]==inert["candidate_head"]==HEAD
+tree=ast.parse(src); lines=src.splitlines(keepends=True)
+old_tree=ast.parse(prior); old_lines=prior.splitlines(keepends=True)
+defs=[n for n in tree.body if isinstance(n,ast.FunctionDef)]
+assert len(defs)==22 and not any(isinstance(n,(ast.AsyncFunctionDef,ast.Try)) for n in ast.walk(tree))
+def body(ls,n): return b"".join(ls[n.lineno-1:n.end_lineno])
+old_defs={n.name:n for n in old_tree.body if isinstance(n,ast.FunctionDef)}
+helpers=[]
+for n in defs:
+    b=body(lines,n); o=old_defs.get(n.name); ob=body(old_lines,o) if o else None
+    helpers.append({"name":n.name,"first_line":n.lineno,"last_line":n.end_lineno,"bytes":len(b),"sha256":sha(b),"same_named_prior_helper":None if o is None else {"first_line":o.lineno,"last_line":o.end_lineno,"bytes":len(ob),"sha256":sha(ob),"full_raw_bytes_equal":ob==b}})
+assert helpers==account["source_accounting"]["functions"]
+assert [x["name"] for x in helpers if x["same_named_prior_helper"] and x["same_named_prior_helper"]["full_raw_bytes_equal"]]==["sha","relative","gzip_bytes"]
+starts=[1,140,208,291,405,432,481,572,673,len(lines)+1]
+regions=[{"first_line":a,"last_line":b-1,"bytes":len(b"".join(lines[a-1:b-1])),"sha256":sha(b"".join(lines[a-1:b-1]))} for a,b in zip(starts,starts[1:])]
+assert regions==account["source_accounting"]["full_file_disjoint_regions"] and sum(r["bytes"] for r in regions)==len(src)
+const={}
+for n in tree.body:
+    if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name):
+        try: const[n.targets[0].id]=ast.literal_eval(n.value)
+        except (ValueError,TypeError): pass
+assert const["HEAD"]==HEAD
+assert set(contract["configuration_contract"]["field_rules"])==const["CONFIG_KEYS"] and len(const["CONFIG_KEYS"])==18
+assert set(contract["copy_plan_contract"]["field_rules"])==const["COPY_KEYS"] and len(const["COPY_KEYS"])==11
+assert set(contract["copy_plan_contract"]["row_contract"]["exact_keys"])==const["ROW_KEYS"] and len(const["ROW_KEYS"])==5
+assert const["PHASES"]==("new4-buildquery","new4-runtime","existing63-buildquery","existing63-runtime")
+writes=[(n.lineno,ast.unparse(n)) for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr in ("open","mkdir","write","write_bytes","write_text")]
+assert min(i for i,s in writes if s!="gz.write(raw)")==674
+assert all(i>=674 or s=="gz.write(raw)" for i,s in writes)
+assert sorted(s for i,s in writes if ".open(" in s)==sorted(["path.open('xb')","(OUT / 'manifest.json').open('xb')","(OUT / 'preparation-review.json').open('xb')"])
+assert not any(isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id in ("eval","exec","compile","__import__") for n in ast.walk(tree))
+calls=[(n.lineno,ast.unparse(n)) for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=="check_positive"]
+assert calls==[(406,"check_positive('new4', NEW4, 58, 0)"),(407,"check_positive('existing63', existing63, 1249, 2)")]
+assert [n.func.attr for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and isinstance(n.func.value,ast.Name) and n.func.value.id=="subprocess"]==["run"]
+# Bind the manually read decisive source gates, without evaluating predicates.
+fragments=[
+ 'flags(cfg,true=("evidence_preparation_authorized",),false=(',
+ 'require(copy_plan["rows"][:314]==inventory["rows"]',
+ 'require(copy_plan["direct_pin_relationships"][:183]==inventory["direct_pin_relationships"]',
+ 'require(copy_plan["bookend_plans"][:2]==inventory["bookend_plans"]',
+ 'require(set(copy_plan["cohorts"])=={"new4","existing63"}',
+ 'actual,counts = bq["actual_metadata_count"],bq["actual_group_counts"]',
+ 'require(rt["actual_metadata_count"]==actual and rt["actual_group_counts"]==counts',
+ 'require(type(value["actual_metadata_count"]) is int and value["actual_metadata_count"]>0',
+ 'require(review["actual_metadata_count"] is None',
+ 'require(count==63 and declared==1249',
+ 'negative_records = [',
+ 'require(set(old_input)==set(new_input) and len(old_input)==40',
+ '[k for k in old_input if old_input[k]!=new_input[k]]==["auditor_sha256"]',
+ 'require(before==final and pair["byte_identical_verified"] is True',
+ 'require(gzip.decompress(compressed)==before==final and gzip_bytes(before)==compressed',
+ 'require(updated["retained_recent_native_negatives"]==old["retained_recent_native_negatives"]',
+ 'require(updated["integrated_source_units"]==old["integrated_source_units"]',
+ 'require(updated["execution_checkpoint_history"][-1]==old["current_execution_checkpoint"]',
+ 'current[:len(items)]==items',
+ 'require(inverse==old and encode(inverse)==old_raw',
+ 'require([r["target"] for r in manifest_rows if r["before"] is not None]==[PROGRESS]',
+ 'cfg["expected_output_paths"]==sorted(target_names)',
+ 'require(len({n.casefold() for n in target_names})==len(target_names)',
+ 'git("check-attr","--source="+HEAD,"-z","--stdin",*attributes',
+ 'value in (b"unset",b"unspecified")',
+ 'require(path.read_bytes()==value,"original input changed before staging")',
+ 'require(config_path.read_bytes()==config_raw and self_path.read_bytes()==self_raw',
+ 'require(git("cat-file","blob",HEAD+":"+PROGRESS)==old_raw',
+ 'require(path.read_bytes()==value,"original input changed after staging")',
+]
+gates=[]
+for fragment in fragments:
+    needle=fragment.encode(); assert needle in src,fragment
+    off=src.index(needle); gates.append({"line":src[:off].count(b"\n")+1,"bytes":len(needle),"sha256":sha(needle),"fragment":fragment})
+assert const["replaced"]=={"current_source_head_at_record","updated_utc","record_note","current_execution_checkpoint","next_native_batch","preserved_attempts","execution_checkpoint_history"}
+assert const["added"]=={"v38_validation_and_archive_checkpoint"}
+assert const["increments"]=={"integrated_source_units":0,"preserved_attempts":6,"retained_recent_native_negatives":0,"execution_checkpoint_history":1}
+assert contract["output_membership_contract"]["intake_count_rule"].startswith("N - G + 14") and len(contract["output_membership_contract"]["automatic_intake_paths"])==14
+# Current immutable evidence. No future original63 closure, config or output is read.
+rows=known["rows"]; assert len(rows)==known["source_file_versions"]==314
+idx={}
+for r in rows:
+    q=r["original"]; key=q["path"].casefold(); assert key not in idx
+    assert r["archive_created"] is False and set(r)==const["ROW_KEYS"]
+    assert PureWindowsPath(q["path"]).suffix.lower() not in (".exe",".dll",".pdb")
+    pinned(q); idx[key]=q
+assert len({r["proposed_archive_relative_path"].casefold() for r in rows})==312
+edges=known["direct_pin_relationships"]; assert len(edges)==183
+for edge in edges:
+    d=obj(edge["document"])
+    for k in edge["json_path"]: d=d[k]
+    q=edge["exact_referenced_pin"]
+    assert {k:d[k] for k in ("path","bytes","sha256")}==q and idx[q["path"].casefold()]==q
+def archived(p):
+    return obj(idx[str(Path(p)).casefold()])
+history_raw=git("cat-file","blob",HEAD+":verification/port-roadmap-resume-20261018/progress.json")
+assert len(history_raw)==554689 and sha(history_raw)=="BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028"
+assert hashlib.sha1(b"blob 554689\0"+history_raw).hexdigest()=="ec7a71bd873c789fcb42918501816357c599d2a6"
+old=json.loads(history_raw); assert enc(old)==history_raw
+def lists(v,path=()):
+    out=[]
+    if isinstance(v,list):
+        out.append({"path":list(path),"length":len(v),"canonical_sha256":sha(enc(v))})
+        for i,x in enumerate(v): out+=lists(x,path+(i,))
+    elif isinstance(v,dict):
+        for k,x in v.items(): out+=lists(x,path+(k,))
+    return out
+hist=lists(old); assert len(hist)==181 and hist==plan["nested_history_prefix_basis"]
+assert {k:len(old[k]) for k in const["old_lengths"]}==const["old_lengths"]==plan["preserved_top_level_history_lengths"]
+assert old["next_native_batch"]==old["current_execution_checkpoint"]["next_validation"]
+assert sha(enc(old["current_execution_checkpoint"]))=="2BE50BC332A1C14FA9217364AAE9885CABB8C61B320DA6D48D9F8CEC63E666DE"
+groups=const["NEW4"]; retained=old["next_native_batch"]["retained63_group_order"]
+assert len(retained)==len(set(retained))==63 and set(retained).isdisjoin

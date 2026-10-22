@@ -1,0 +1,6 @@
+C:\Users\adyba\pi-zig\main\src\native_node_fs_request_owner_test.zig:233:13: 0x7ff7996d1883 in takeCaught (test_zcu.obj)
+            return error.ExpectedActualFSRequestCapturedReason;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_fs_request_owner_test.zig:976:20: 0x7ff7996d2554 in test.native FS request owner physical completion preserves live Promise getter failure and still retires the request (test_zcu.obj)
+    const caught = try f.takeCaught();
+                   ^

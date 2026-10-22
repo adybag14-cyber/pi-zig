@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_exact_v37_fixture_source_intake_release",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-21T14:08:17.675085+00:00",
+  "basis_main_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "branch": "work/pi-zig-consolidated-20261016",
+  "executor_sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4",
+  "executor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+    "bytes": 9719,
+    "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+  },
+  "receipt_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-20261021",
+  "authorized_phases": {
+    "fixture": {
+      "manifest_sha256": "236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9",
+      "total_commit_paths": 44
+    }
+  },
+  "required_current_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\manifest.json",
+      "bytes": 20679,
+      "sha256": "236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+      "bytes": 9719,
+      "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\executor-finite-adaptation.json",
+      "bytes": 2345,
+      "sha256": "015AC7CCF9B9DCA273874A10E7BF06A7B449248F5A9B40106F73609A53921FDF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-filehandle-runtime-fixture-intake-peer-20261021\\peer.json",
+      "bytes": 4434,
+      "sha256": "CE9579242B01CAB1683416AAE8B82900C0C6D79464F1ACB118240A1CA7517109"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-source-acceptance-20261021.json",
+      "bytes": 5656,
+      "sha256": "9896A0FDAE942CF2F579555E602EB23CD4E07BBFD8FFEAAF50787A21A9FBAD85"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-intake-executor-static-review-20261021.json",
+      "bytes": 1660,
+      "sha256": "A211B80D4847E7DB5FD5EB913C31A1672337F30A013C2007FFC0A24E270D4E9D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-closure.json",
+      "bytes": 22838,
+      "sha256": "321ABB743297FC9720D36E78F17B38441F8FAE3A60BEA32DE488FC248342F517"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-retry1-original-negative-runtime-acceptance-20261021.json",
+      "bytes": 3131,
+      "sha256": "D305B2B2E462CA38BCC4D0E8B44F51E8F997DA902ABBD323E1F9283B51BC6557"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-filehandle-runtime-fixture-intake-peer-20261021\\source-audit.py",
+      "bytes": 13271,
+      "sha256": "0DB76485133F67F9AEDF027C0B5E32301135EE29747B5D0C78B025CB18E0BC82"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-filehandle-runtime-fixture-intake-peer-20261021\\source-audit.json",
+      "bytes": 70089,
+      "sha256": "2D1620F33CC30E4675DA66630235557333EF3B6EB704C47566E8477047DDE5B7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV36FixtureSourceIntake-20261021.py",
+      "bytes": 9709,
+      "sha256": "6613A7F431D132B72C948FBCB61E1988FA4799AD3AE660BC65B9BAA3E9AE48F0"
+    }
+  ],
+  "source_intake_authorized": true,
+  "specific_intake_exception_authorized": true,
+  "source_mutation_hold_released": false,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "production_bridge_removed": false,
+  "push_authorized_by_this_release": false,
+  "resource_class": "light",
+  "timeout_seconds": 300,
+  "program": "python",
+  "phase": "fixture",
+  "scope": "Root authorizes exactly the accepted two test/support replacements plus41 immutable source/review archives and their manifest, one exact44-path source-only commit on clean b13. The three executor substitutions and full inverse to6613 were independently verified; all11 helpers/full execution body and complete Git safety gates remain exact. Root read peer/checker and rehashed47 peer inputs/all44 donor rows. The original V37 negative is independently closed,34,365 files verified and all4 owners absent. This narrow completed source-intake exception grants no native, compiler, generator, extra Main edit or push authority; re-freeze at the resulting clean commit for separate progress/archive and fresh validation."
+}

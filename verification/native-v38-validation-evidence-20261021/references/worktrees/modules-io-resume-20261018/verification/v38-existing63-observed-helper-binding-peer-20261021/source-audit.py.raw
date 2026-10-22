@@ -1,0 +1,259 @@
+"""Independent static peer of seventeen observed V38 existing63 helper bindings.
+Never imports, evaluates or runs the helper, a helper prefix, native code, or Main.
+Only immutable evidence/source reads and create-only own proof output.
+"""
+from pathlib import Path
+import ast, copy, hashlib, io, json, tokenize
+B=Path(r"C:\Users\adyba\pi-zig")
+E=B/"evidence"
+D=B/"worktrees/modules-io-resume-20261018/verification/v38-existing63-observed-helper-binding-peer-20261021"
+OUT=D/"source-proof.json"
+assert not OUT.exists(),str(OUT)
+H=lambda b:hashlib.sha256(b).hexdigest().upper()
+seen={}
+def read(p,n=None,h=None):
+    p=Path(p);s=str(p.resolve()).replace("\\","/").casefold()
+    assert s.startswith(str(B).replace("\\","/").casefold()+"/")
+    assert not s.startswith(str(B/"main").replace("\\","/").casefold()+"/"),"Main reads forbidden"
+    raw=p.read_bytes();row=dict(path=str(p),bytes=len(raw),sha256=H(raw))
+    if n is not None:assert row["bytes"]==n,(p,row["bytes"],n)
+    if h is not None:assert row["sha256"]==h,(p,row["sha256"],h)
+    key=str(p).replace("\\","/").casefold()
+    assert key not in seen or seen[key]==row,(p,"conflicting current version")
+    seen[key]=row
+    return raw,row
+def pinned(row):
+    assert {"path","bytes","sha256"}<=set(row)
+    return read(row["path"],row["bytes"],row["sha256"])[0]
+def document(row):return json.loads(pinned(row))
+def live_json(p):
+    raw,row=read(p);return json.loads(raw),row
+binding_raw,binding_pin=read(E/"root-v38-existing63-observed-helper-binding-20261021.json",21203,"29832FE5805866AA73C862BBA8462EF6477E13F2FB68DF3169372A19AB51DDD1")
+b=json.loads(binding_raw)
+assert b["status"]=="root_accepted_exact_v38_existing63_observed_helper_binding"
+assert (b["binding_count"],b["string_bindings"],b["size_bindings"])==(17,12,5)
+old=pinned(b["baseline"]);new=pinned(b["bound"])
+assert (len(old),H(old))==(21109,"0F8502D9AD3395551AFC08652795C77114EED504E13623F6D65CDE774FAEB06C")
+assert (len(new),H(new))==(21126,"587C672FEADE88312B34CC40FBFBDF045E671C2B3BD3F3AEA4DB2C0909CFA086")
+for row in b["inputs"]:pinned(row)
+plan=document(b["binding_plan"])
+peer=document(b["accepted_unresolved_source_peer"])
+prior=document(b["root_unresolved_source_acceptance"])
+assert prior["source_accepted"] is True and prior["candidate"]==b["baseline"]
+assert prior["independent_peer"]==b["accepted_unresolved_source_peer"]
+assert prior["plan"]==b["binding_plan"] and prior["future_unresolved_bindings"]==17
+assert plan["future_canonical_helper"]==b["bound"]["path"]
+assert plan["future_binding"]["total_slots"]==17
+for key in ("independent_source_audit","independent_decisive_proof"):pinned(prior[key])
+
+# Every edit is independently bound to an original Python lexical token.
+def tokens(raw):
+    ls=raw.decode("utf-8").splitlines(keepends=True)
+    offsets=[];total=0
+    for line in ls:offsets.append(total);total+=len(line.encode("utf-8"))
+    out=[]
+    for t in tokenize.tokenize(io.BytesIO(raw).readline):
+        if t.type in (tokenize.ENCODING,tokenize.ENDMARKER):continue
+        offset=offsets[t.start[0]-1]+len(ls[t.start[0]-1][:t.start[1]].encode("utf-8"))
+        out.append((t.type,t.string,offset))
+    return out
+ot,nt=tokens(old),tokens(new)
+assert len(ot)==len(nt)
+changes=[]
+for a,z in zip(ot,nt):
+    assert a[0]==z[0]
+    if a[1]!=z[1]:
+        assert a[0] in (tokenize.STRING,tokenize.NUMBER)
+        changes.append((a,z))
+assert len(changes)==17
+assert sum(a[0]==tokenize.STRING for a,z in changes)==12
+steps=b["steps"];slots=plan["future_binding"]["slots"]
+assert len(steps)==len(slots)==17
+current=old;delta=0;fragments=[];previous_old=previous_new=0
+for i,(step,slot,(a,z)) in enumerate(zip(steps,slots,changes),1):
+    assert step["index"]==i
+    assert step["token_kind"]==slot["kind"]==tokenize.tok_name[a[0]]
+    assert step["original_offset"]==slot["offset"]==a[2]
+    assert step["before"]==slot["before"]==a[1]
+    assert step["after"]==z[1]
+    start=step["offset_before_step"]
+    assert start==a[2]+delta==z[2]
+    left=old[previous_old:a[2]];right=new[previous_new:z[2]]
+    assert left==right
+    fragments.append(dict(original_offset=previous_old,bound_offset=previous_new,bytes=len(left),sha256=H(left)))
+    before=a[1].encode();after=z[1].encode()
+    assert H(current)==step["before_file_sha256"]
+    assert current[start:start+len(before)]==before
+    current=current[:start]+after+current[start+len(before):]
+    assert H(current)==step["after_file_sha256"]
+    assert ast.literal_eval(z[1])==step["actual_value"]
+    previous_old=a[2]+len(before);previous_new=z[2]+len(after)
+    delta+=len(after)-len(before)
+assert current==new and delta==17
+left=old[previous_old:];right=new[previous_new:];assert left==right
+fragments.append(dict(original_offset=previous_old,bound_offset=previous_new,bytes=len(left),sha256=H(left)))
+assert fragments==b["untouched_fragments"]
+inverse=new
+for step in reversed(steps):
+    at=step["offset_before_step"];before=step["before"].encode();after=step["after"].encode()
+    assert H(inverse)==step["after_file_sha256"] and inverse[at:at+len(after)]==after
+    inverse=inverse[:at]+before+inverse[at+len(after):]
+    assert H(inverse)==step["before_file_sha256"]
+assert inverse==old
+
+# Normalize only the seventeen actually changed constants, not arbitrary source.
+ta,tz=ast.parse(old),ast.parse(new)
+ca=[n for n in ast.walk(ta)if isinstance(n,ast.Constant)]
+cz=[n for n in ast.walk(tz)if isinstance(n,ast.Constant)]
+assert len(ca)==len(cz)
+changed_constants=0
+for a,z in zip(ca,cz):
+    if type(a.value)!=type(z.value) or a.value!=z.value:
+        assert type(a.value)==type(z.value) and type(a.value) in (str,int)
+        z.value=a.value;changed_constants+=1
+assert changed_constants==17
+assert ast.dump(ta,include_attributes=False)==ast.dump(tz,include_attributes=False)
+def bodies(raw):
+    lines=raw.splitlines(keepends=True);tree=ast.parse(raw);out=[]
+    for n in tree.body:
+        if isinstance(n,ast.FunctionDef):
+            body=b"".join(lines[n.lineno-1:n.end_lineno])
+            out.append((n.name,n.lineno,body))
+    return out
+fa,fz=bodies(old),bodies(new);helpers=[]
+assert len(fa)==len(fz)==len(b["unchanged_complete_helpers"])==10
+for (an,al,ab),(zn,zl,zb),reported in zip(fa,fz,b["unchanged_complete_helpers"]):
+    assert an==zn and ab==zb
+    row=dict(name=an,baseline_line=al,bound_line=zl,bytes=len(ab),sha256=H(ab))
+    assert row==reported;helpers.append(row)
+markers=[
+("complete_original_job_observation_and_six_field_mapping",b"observed_paths={",b"grant=read_pin("),
+("original_result_metadata_native_owners_and_all_failure_gates",b'r=observed["result"]',b'before=observed["before"]'),
+("complete_bookend_current_seals_and_original_outer_gates",b'before=observed["before"]',b"out=dict(")]
+regions=[]
+for (name,start,end),reported in zip(markers,b["unchanged_complete_critical_regions"]):
+    aa,az=old.index(start),new.index(start)
+    body=old[aa:old.index(end,aa)];other=new[az:new.index(end,az)]
+    assert body==other
+    row=dict(name=name,baseline_offset=aa,bound_offset=az,bytes=len(body),sha256=H(body))
+    assert row==reported;regions.append(row)
+
+# Extract literal/path data from AST without evaluating any target expression.
+tree=ast.parse(new);assign={}
+for n in tree.body:
+    if isinstance(n,ast.Assign):
+        for target in n.targets:
+            if isinstance(target,ast.Name):assign[target.id]=n.value
+literals={k:ast.literal_eval(assign[k]) for k in ("HEAD","JOB","GROUPS","MATRIX","DRIVER","CLASSIFIER")}
+env={"B":B,"E":E}
+def path_expr(n):
+    if isinstance(n,ast.Name):return env[n.id]
+    if isinstance(n,ast.Constant) and isinstance(n.value,str):return n.value
+    if isinstance(n,ast.BinOp) and isinstance(n.op,ast.Div):return path_expr(n.left)/path_expr(n.right)
+    raise AssertionError(ast.dump(n))
+for k in ("C","P","PREP","OUTPUT"):env[k]=path_expr(assign[k])
+assert env["C"].parent==env["P"].parent==env["PREP"].parent==E
+assert env["PREP"]==E/"combined-native-batch-v38-regression63-prepared-20261021"
+assert env["OUTPUT"]==env["C"]/"independent-positive-buildquery-audit-inputs.json"
+fixed={}
+node=assign["fixed_rows"];assert isinstance(node,ast.Dict)
+for key,val in zip(node.keys,node.values):
+    assert isinstance(val,ast.Call) and isinstance(val.func,ast.Name) and val.func.id=="fixed" and len(val.args)==3 and not val.keywords
+    fixed[ast.literal_eval(key)]=dict(path=str(path_expr(val.args[0])),bytes=ast.literal_eval(val.args[1]),sha256=ast.literal_eval(val.args[2]))
+assert set(fixed)=={"grant","launch","specific","prepared","constructor","auditor","source_review"}
+for row in fixed.values():pinned(row)
+assert fixed["constructor"]["path"]==str(E/"Prepare-ReviewedV38BuildQueryGrant-20261021.py")
+assert fixed["auditor"]["path"]==str(E/"Audit-PositiveV38CompleteBuildQuery-20261021.py")
+assert fixed["source_review"]["path"]==str(E/"root-v38-execution-bound-source-review-20261021.json")
+assert fixed["source_review"]["sha256"]=="20ECFC7CF589BAB8E0090EEED59B2BE236CDE5F1F14DF4C2A68AD215C2E3013A"
+
+grant=document(fixed["grant"]);specific=document(fixed["specific"]);prepared=document(fixed["prepared"]);source=document(fixed["source_review"])
+review=document(grant["preparation_review"]);matrix=document(review["matrix"])
+job_envelope=document(b["terminal_job_observation"]);job=job_envelope["data"]
+meta=document(b["metadata_acceptance"])
+assert b["terminal_job_observation"]["path"]==str(env["C"]/"independent-observed-job-status.json")
+assert b["metadata_acceptance"]["path"]==str(env["C"]/"independent-metadata-acceptance.json")
+assert job_envelope["ok"] is True and job_envelope["truncated"] is False
+assert job["id"]==literals["JOB"]==b["actual_job_id"]
+assert job["status"]=="succeeded" and job["exitCode"]==0 and job["runnerAlive"] is False
+assert isinstance(job["runnerProcessInstance"],str) and job["runnerProcessInstance"].isdigit()
+assert job["createdAtUtc"] and job["completedAtUtc"] and job["runnerPid"]>0 and job["childPid"]>0
+head=literals["HEAD"];groups=literals["GROUPS"];mh=literals["MATRIX"]
+assert head==b["actual_candidate_head"]==prepared["candidate_head"]==source["candidate_head"]==grant["candidate_head"]==review["candidate_head"]==meta["candidate_head"]
+assert head=="014062f2d139254acab4b985b4ae343db637166f"
+assert mh==b["actual_matrix_sha256"]==source["matrix_sha256"]==review["matrix"]["sha256"]==prepared["matrix_sha256"]==meta["group_manifest_sha256"]
+assert source["source_accepted"] is True
+for kind,key in (("buildquery_constructor","constructor"),("positive_buildquery_auditor","auditor")):
+    assert [x["bound"]for x in source["sources"]if x["kind"]==kind]==[fixed[key]]
+assert grant["specific_root_configuration"]==fixed["specific"]
+assert grant["v38_execution_bound_source_review"]==fixed["source_review"]
+assert prepared["grant"]==fixed["grant"] and prepared["launch"]==fixed["launch"]
+assert prepared["specific_root_configuration"]==fixed["specific"] and prepared["preparation_review"]==grant["preparation_review"]
+assert prepared["batch"]==specific["batch"]=="existing63"
+assert prepared["control"]==str(env["C"]) and prepared["proof"]==str(env["P"])
+assert specific["preparer_sha256"]==fixed["constructor"]["sha256"]
+assert specific["grant_provenance_updates"]["v38_execution_bound_source_review"]==fixed["source_review"]
+assert len(groups)==len(set(groups))==63
+assert grant["groups"]==prepared["groups"]==specific["selected_group_names"]==review["selected_group_names"]==groups
+assert review["selected_groups"]==63 and review["selected_declarations"]==1249
+assert prepared["actual_metadata_count"] is None and review["actual_metadata_count"] is None
+assert grant["mode"]=="BuildQuery" and grant["execution_authorized"] is True
+assert prepared["runtime_authority"] is False and prepared["qualification"] is False
+assert len(matrix["groups"])==117 and sum(len(x["required_named"])for x in matrix["groups"])==2013
+assert matrix["source_head_at_preparation"]==head
+old_order=document(plan["cohort"]["ordered_grant"]);assert old_order["groups"]==groups
+for key in ("driver","classifier","auditor","metadata_auditor_adaptation"):pinned(review[key])
+assert grant["driver_sha256"]==review["driver"]["sha256"]==literals["DRIVER"]
+assert grant["classifier_sha256"]==review["classifier"]["sha256"]==literals["CLASSIFIER"]
+assert prepared["metadata_auditor"]==review["auditor"]
+for key in ("independent_catalog_peer","root_catalog_acceptance"):pinned(grant[key])
+adapt,adapt_pin=live_json(env["C"]/"grant-launch-adaptation.json")
+assert adapt["grant"]==fixed["grant"] and adapt["launch"]==fixed["launch"]
+assert all(adapt[k] is True for k in ("complete_grant_inverse","complete_launch_byte_inverse","all_strict_gate_fields_unchanged"))
+assert adapt["runtime_authority"] is False and adapt["qualification"] is False
+
+expected_actual=[head,job["id"],env["C"].name,env["P"].name,mh]
+for key in ("grant","launch","specific","prepared"):expected_actual.extend([fixed[key]["bytes"],fixed[key]["sha256"]])
+expected_actual.extend([fixed["constructor"]["sha256"],fixed["auditor"]["sha256"],fixed["source_review"]["bytes"],fixed["source_review"]["sha256"]])
+assert len(expected_actual)==17 and [s["actual_value"]for s in steps]==expected_actual
+assert meta["accepted"] is True and meta["runtime_started"] is False and meta["runtime_qualification"] is False
+assert meta["driver_sha256"]==literals["DRIVER"] and [g["group"]for g in meta["groups"]]==groups
+result_raw,result_pin=read(env["P"]/"result.json",h=meta["build_result_sha256"]);result=json.loads(result_raw)
+final_raw,final_pin=read(env["P"]/"final.json",h=meta["build_source_seal_sha256"])
+assert result["status"]=="passed_build_query_batch" and result["mode"]=="BuildQuery" and result["candidate_head"]==head
+assert result["errors"]==[] and result["all_groups_closed"] is True and result["postseal"] is True
+assert result["runtime_requested"] is False and result["product_qualified"] is False
+assert result["driver_sha256"]==literals["DRIVER"] and result["group_manifest_sha256"]==mh
+assert [g["group"]for g in result["groups"]]==groups
+counts=[];native_phase_count=0
+for accepted,part in zip(meta["groups"],result["groups"]):
+    name=accepted["group"];catalog=next(g for g in matrix["groups"]if g["name"]==name)
+    count=accepted["actual_count"];tests=accepted["tests"]
+    assert type(count)is int and 0<count<=64 and len(tests)==len(set(tests))==count
+    assert all(tests.count(x)==1 for x in catalog["required_named"])
+    assert all(x in catalog["required_named"] or x in catalog["allowed_anonymous"]for x in tests)
+    assert part["status"]=="passed_build_query" and part["candidate_head"]==head and part["errors"]==[]
+    assert part["owned_started_phases"]==part["attempted_phases"]==["compile","metadata"]
+    assert part["actual_runtime_owner_started"] is False and part["native_selected_tests_started"] is None
+    native_phase_count+=len(part["owned_started_phases"])
+    counts.append(dict(group=name,declared=len(catalog["required_named"]),actual=count))
+actual=sum(x["actual"]for x in counts);declared=sum(x["declared"]for x in counts)
+assert actual==1285 and declared==1249 and native_phase_count==126
+# Actual1285 is derived here from the pinned accepted metadata, never a source substitution.
+assert not any(s["actual_value"]==1285 for s in steps)
+proof=dict(schema=1,status="passed_independent_static_exact17_observed_binding",
+binding=binding_pin,baseline=b["baseline"],candidate=b["bound"],accepted_unresolved_source_peer=b["accepted_unresolved_source_peer"],
+root_unresolved_source_acceptance=b["root_unresolved_source_acceptance"],binding_steps=steps,
+full_forward_and_inverse_exact=True,unchanged_fragments=fragments,constant_changes=changed_constants,
+normalized_AST_equal=True,unchanged_helpers=helpers,unchanged_critical_regions=regions,
+fixed_rows=fixed,original_job=dict(id=job["id"],runner_pid=job["runnerPid"],launcher_pid=job["childPid"],runner_process_instance=job["runnerProcessInstance"],created_utc=job["createdAtUtc"],completed_utc=job["completedAtUtc"]),
+observed_metadata=dict(acceptance=b["metadata_acceptance"],result=result_pin,final_seal=final_pin,groups=63,declared_controls=declared,actual_metadata_count=actual,native_compile_query_phases=native_phase_count,groups_and_counts=counts),
+declared_and_actual_kept_separate=True,source_review_crossbindings_exact=True,
+input_pins=sorted(seen.values(),key=lambda r:r["path"].casefold()),
+limits="Finite source and immutable observed-input binding only. No helper/prefix execution, independent artifact/current source/process closure, runtime qualification or configuration issuance. Whole native audit remains separately required.",
+authority=dict(source_only=True,Main_accessed=False,Main_changed=False,helper_executed=False,prefix_executed=False,constructor_executed=False,auditor_executed=False,native_execution_authorized=False,configuration_issued=False,source_mutation_hold_released=False,qualification=False))
+raw=(json.dumps(proof,indent=2)+"\n").encode()
+D.mkdir(parents=True,exist_ok=True)
+with OUT.open("xb")as f:f.write(raw)
+assert OUT.read_bytes()==raw
+print(json.dumps(dict(path=str(OUT),bytes=len(raw),sha256=H(raw),inputs=len(seen),bindings=17,helpers=10,regions=3,observed_metadata=actual,Main_accessed=False,target_executed=False)))

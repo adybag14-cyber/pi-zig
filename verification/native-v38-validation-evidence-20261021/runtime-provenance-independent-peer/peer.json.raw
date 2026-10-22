@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_v38_positive_runtime_provenance_successor",
+  "reviewer": "/root/module_io_port",
+  "source_only": true,
+  "source_accepted": true,
+  "scope": "One exact preparation-review admission-block correction. The full original F846 source and the complete changed block were read; the remaining candidate bytes are identical to that original source.",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-sourceonly-20261021\\candidate\\Audit-PositiveV38StrictRuntime-Provenance-20261021.py",
+    "bytes": 41516,
+    "sha256": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+  },
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-sourceonly-20261021\\proposal.json",
+    "bytes": 4071,
+    "sha256": "187566AEE2793EBE5439D9033D2F4B5E3E1198901B4E79BBFA853F85E519B3D6"
+  },
+  "canonical_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py",
+    "bytes": 39911,
+    "sha256": "F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07"
+  },
+  "preserved_original_snapshot": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-sourceonly-20261021\\original\\Audit-PositiveV38StrictRuntime-20261021.py",
+    "bytes": 39911,
+    "sha256": "F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-peer-20261021\\source-audit.py",
+    "bytes": 12167,
+    "sha256": "DAED44A476F2D6E6937DBFE3FCD42F38EF97DAC4F350B586A7CB2668A93CCB45"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-peer-20261021\\source-proof.json",
+    "bytes": 24278,
+    "sha256": "0DA66E133DE9017B9633458DF2DE6170238E59D9A009B7DCCE1B39813C4E2303"
+  },
+  "independent_checker_exit_code": 0,
+  "original_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\negative.json",
+    "bytes": 5430,
+    "sha256": "194982710772F0E5F5E5012DFA783FC19F7D71DF327F1034A2799131C13CE2EF"
+  },
+  "original_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\independent-positive-runtime-audit-inputs.json",
+    "bytes": 6496,
+    "sha256": "2636533F9B87A9FDC5737C239C0A7B230294359621EF4F8AB958B36EF457C6F7"
+  },
+  "verification": {
+    "blockers": [],
+    "finite_edits": 1,
+    "whole_byte_forward_and_inverse_exact": true,
+    "unchanged_prefix": {
+      "bytes": 8101,
+      "sha256": "EE85B68FFDDB7D21CD3E75AD6B10A33F99970E87D89FEF8EF3A55F1A4365CBA5"
+    },
+    "unchanged_suffix": {
+      "bytes": 31629,
+      "sha256": "D5EBC5F2F60403BE05232B81DAFBFA37E59FDF7767DF1BE9DF18974A285E3325"
+    },
+    "complete_helper_bodies_unchanged": 6,
+    "configuration_field_count": 40,
+    "configuration_direct_AST_accesses_unchanged": true,
+    "new_configuration_fields": [],
+    "only_future_configuration_value_change": "auditor_sha256",
+    "exact_historical_mapping_rows": 2,
+    "actual_provenance_relationships": 2,
+    "accepted_preparation_reviews": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\preparation-review.json",
+        "bytes": 545118,
+        "sha256": "35A3A1E94699B3413179540C2C271A59E4924FF6149DE74FD662BBF3449D1D14"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-regression63-prepared-20261021\\preparation-review.json",
+        "bytes": 547326,
+        "sha256": "9362D1498B75DFEC3E452B1E2F06C8D1C526C16E615DC0F40C17C2C147816A58"
+      }
+    ],
+    "raw_git_objects_verified": 2,
+    "original_runtime_artifact_and_seal_files_rehashed": 15,
+    "input_versions_rehashed_including_own_checker": 35
+  },
+  "causal_findings": [
+    "The original failure was an auditor provenance-category error: two historical original descriptors retain the old Main filename and 93D00 byte version. They are not current-source pins. The accepted review already rebinds both actual provenance roles to an immutable snapshot.",
+    "The successor pins the entire preparation review before interpreting its history. It requires the complete exact two-row new4/regression63 mapping, including the original descriptor, immutable path, b13 commit and exact_original_bytes flag; additional or altered rows fail.",
+    "Both v37_<batch>_<role> provenance relationships must equal the exact historical snapshot. The unchanged verify_pins helper checks that snapshot, then the fixed read-only Git command must return the same complete 28378-byte b13 blob and SHA256. This validates history rather than exempting a mismatched file.",
+    "Every other preparation-review field still passes through the unchanged recursive verify_pins. Complete current source inventories, source/compiler/control bookends, accepted artifacts, original wire/all-zero results/empty stderr, grant inverses and exact UTC100ns process closure remain byte-identical later gates.",
+    "Independent Git reads used the assigned modules-io worktree, not Main. Historical b13 bytes equal the frozen snapshot; current014 bytes equal corrected03327 and differ from history. Both versions retain their distinct roles.",
+    "The original failed F846 auditor, its2636 issued configuration, failure observation/logs and preserved copies remain exact. Fifteen original runtime owner/wire/stderr/aggregate/seal files also rehash to their existing pins; this check does not replace the full runtime closure.",
+    "The input schema remains40 fields with no new required field. Any future Root-issued successor configuration changes only auditor_sha256 while preserving the original issued configuration. No configuration was created by this peer."
+  ],
+  "historical_raw_git": {
+    "commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+    "path": "src/native_node_file_handle_owner_test.zig",
+    "bytes": 28378,
+    "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+  },
+  "current_raw_git": {
+    "commit": "014062f2d139254acab4b985b4ae343db637166f",
+    "path": "src/native_node_file_handle_owner_test.zig",
+    "bytes": 28576,
+    "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+  },
+  "performed": "Only the independent source-audit.py executed. It parses source as data, reconstructs one forward/inverse edit, hashes immutable evidence and reads two Git blobs through the assigned worktree. It writes only its own create-only proof and this receipt.",
+  "limits": "Source-only acceptance of A73A. Root must separately review and authorize the exact successor audit and its input configuration. A fresh complete artifact/source/process audit remains necessary before runtime acceptance. The original native run is retained; this receipt does not rerun it or qualify the application.",
+  "Main_accessed": false,
+  "Main_written": false,
+  "index_written": false,
+  "target_executed": false,
+  "prefix_executed": false,
+  "helper_executed": false,
+  "auditor_executed": false,
+  "native_executed": false,
+  "configuration_issued": false,
+  "execution_authority": false,
+  "runtime_acceptance": false,
+  "product_qualification": false,
+  "source_mutation_hold_released": false
+}

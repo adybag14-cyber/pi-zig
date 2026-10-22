@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018\verification\native-foundation-v38-catalog-preparer-sourceonly-20261021\Prepare-FreshV38Catalog-20261021.py", line 390, in <module>
+    assert observed["results"] == expected_results
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

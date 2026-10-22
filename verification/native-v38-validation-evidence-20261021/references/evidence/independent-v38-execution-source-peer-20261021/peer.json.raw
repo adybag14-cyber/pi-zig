@@ -1,0 +1,258 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_v38_execution_drafts",
+  "reviewer": "/root/handover_review",
+  "source_only": true,
+  "source_accepted": true,
+  "scope": "Independent complete source read and static finite proof for five unresolved V38 execution drafts from exact accepted V37 Retry1 sources. This receipt is not a source binding or execution release.",
+  "packet_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\handoff.json",
+    "bytes": 14037,
+    "sha256": "22E7F27688223262F6FF78D0412E0D4447926E61738B66B6F92F055193D85777"
+  },
+  "aggregate_finite_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 14308,
+    "sha256": "C46AFC69DBBE7C485D2E94A631EBF221611B46C28BFC6B68146E92212323C245"
+  },
+  "binding_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\binding-contract.json",
+    "bytes": 14736,
+    "sha256": "1B1637547A8A3FAA792C45563F31A73A726067E18CE96BB648832BF6187C3C69"
+  },
+  "accepted_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-retry1-execution-bound-source-review-20261021.json",
+    "bytes": 8935,
+    "sha256": "67148BD40AA1DACA49B6575CD22853CCD56229D95517CC58E7897A89ABCA9F77"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-execution-source-peer-20261021\\independent-static-peer.py",
+    "bytes": 27310,
+    "sha256": "04F74B7356DC334801A28BEE91BACA7703B9970EF6DD848AFAEDED8DD7684809"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-execution-source-peer-20261021\\source-proof.json",
+    "bytes": 96488,
+    "sha256": "D71ED644167C3F3C59009A746B9257B72ABE4F4880ACAA17A834BEB75DADF68A"
+  },
+  "independent_checker_exit_code": 0,
+  "sources": [
+    {
+      "kind": "buildquery_constructor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37BuildQueryGrant-Retry1-20261021.py",
+        "bytes": 10109,
+        "sha256": "81FA8E7BA4DED5788F1618D393395666C82BC209791079DCCB3EEBDAEC6E9F58"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Prepare-ReviewedV38BuildQueryGrant-20261021.py",
+        "bytes": 10095,
+        "sha256": "3759AC9A4036009871D6FBF415AE9DFE06C8EF2E4D02CEF5FBFC64707A3B1B7D"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\buildquery-constructor-finite.json",
+        "bytes": 9867,
+        "sha256": "D713267D8E32D185B6ACAC4E71145E91818E1B150E571EBCD61088D34B2CEAFF"
+      },
+      "literal_edits": 8,
+      "unchanged_helpers": 7,
+      "future_canonical_bound_path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV38BuildQueryGrant-20261021.py"
+    },
+    {
+      "kind": "runtime_constructor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37RuntimeGrant-Retry1-20261021.py",
+        "bytes": 12513,
+        "sha256": "414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Prepare-ReviewedV38RuntimeGrant-20261021.py",
+        "bytes": 12499,
+        "sha256": "4F1968D82D71BA5CFBF35337131D0910B967B7CAD85CE42B393B732BE94AF3B9"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\runtime-constructor-finite.json",
+        "bytes": 12653,
+        "sha256": "DB57289F34AB3190A2C07CCDBB13FC64060D19340BEA83103685CF11C7F8E617"
+      },
+      "literal_edits": 11,
+      "unchanged_helpers": 8,
+      "future_canonical_bound_path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV38RuntimeGrant-20261021.py"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37CompleteBuildQuery-Retry1-20261021.py",
+        "bytes": 37268,
+        "sha256": "2C89B824BE10438684ECAB4AC72197B7A54F9218F15578F9F1A4EB6FEFDB4063"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Audit-PositiveV38CompleteBuildQuery-20261021.py",
+        "bytes": 37254,
+        "sha256": "EF936499EAC349E71715AF123C768F6C611E0B1F8ED8D8D4E780C63806BF2B2E"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\positive-buildquery-auditor-finite.json",
+        "bytes": 13206,
+        "sha256": "7070C12B81C81440B9A84E98A77EBEBFAE860F68C8411252C8502BF00EEB2189"
+      },
+      "literal_edits": 12,
+      "unchanged_helpers": 6,
+      "future_canonical_bound_path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38CompleteBuildQuery-20261021.py"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37StrictRuntime-Retry1-20261021.py",
+        "bytes": 39946,
+        "sha256": "049C8CFE6053CDC7632BF44B57EB64BD8F220685AFB99FB029AC844EC3A4DC40"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Audit-PositiveV38StrictRuntime-20261021.py",
+        "bytes": 39911,
+        "sha256": "683467EBD73ED043A06E86A19547B7EE1C63FBB66AC85CF0B5ACBE0DD8F9A187"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\positive-runtime-auditor-finite.json",
+        "bytes": 15494,
+        "sha256": "E0522ADB18016930EE2CD178FDECBABF1B5E8CD29FAF00AB5078007C76EDDCD2"
+      },
+      "literal_edits": 15,
+      "unchanged_helpers": 6,
+      "future_canonical_bound_path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py"
+    },
+    {
+      "kind": "observed_new4_positive_input_helper",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV37New4PositiveBuildQueryAuditInputs-Retry1-20261021-unresolved.py",
+        "bytes": 18974,
+        "sha256": "8F0ECC3CAF504E858A29891E25BA78A0F06F258C4C4DEB1EDB87A11EF12DA344"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Prepare-ObservedV38New4PositiveBuildQueryAuditInputs-20261021-unresolved.py",
+        "bytes": 18939,
+        "sha256": "88D31C0905C52EEE080C7CC2FDBF32F0DC4F39C7A5BCDFCE9C01E3F1BF85AC17"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\observed-new4-positive-input-helper-finite.json",
+        "bytes": 26289,
+        "sha256": "9CA3426A7638F069358D6E27A3DF2E4C91A1CF56008FF75E34825EC88987C9B4"
+      },
+      "literal_edits": 25,
+      "unchanged_helpers": 10,
+      "future_canonical_bound_path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV38New4PositiveBuildQueryAuditInputs-20261021.py"
+    }
+  ],
+  "findings": {
+    "blockers": [],
+    "all_five_candidate_sources_completely_read": true,
+    "all_71_changes_independently_derived_from_original_tokens": true,
+    "changes": {
+      "per_source": [
+        8,
+        11,
+        12,
+        15,
+        25
+      ],
+      "strings": 67,
+      "numeric_source_size_literals": 4
+    },
+    "all_intermediate_hashes_verified": true,
+    "complete_raw_forward_and_inverse_exact": true,
+    "all_untouched_fragments_and_nonconstant_structure_exact": true,
+    "complete_helpers_byte_identical": 37,
+    "accepted_helper_critical_regions_byte_identical": 3,
+    "additional_complete_auditor_regions_byte_identical": 2,
+    "source_versions_rehashed": 29,
+    "source_versions_plus_own_checker": 30,
+    "numeric_source_sizes": [
+      10095,
+      12499,
+      37254,
+      39911,
+      18939
+    ],
+    "historical_v34_and_v36_literal_anchors_exact": true,
+    "all_prior_v37_retry1_source_and_acceptance_files_preserved": true,
+    "actual_future_metadata_count": null,
+    "actual_future_runtime_outcome": null
+  },
+  "preserved_validation": {
+    "grant_max_age_seconds": 300,
+    "minimum_free_kib": 16777216,
+    "maximum_selected_groups": 64,
+    "compile_seconds": 1320,
+    "metadata_seconds": 30,
+    "runtime_seconds": 120,
+    "owner_settle_seconds": 10,
+    "outer_seconds": 1800,
+    "strict_runtime_gate_fields": 29,
+    "driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+    "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+    "selected_batches": [
+      {
+        "name": "new4",
+        "groups": 4,
+        "declared_controls": 58
+      },
+      {
+        "name": "existing63",
+        "groups": 63,
+        "declared_controls": 1249
+      }
+    ],
+    "full_catalog_groups": 117,
+    "full_catalog_declarations": 2013,
+    "diagnostic_continue": false,
+    "complete_original_and_current_source_tree_vendor_compiler_control_inventories": true,
+    "complete_current_artifact_universes_and_serial_journals": true,
+    "raw_metadata_and_strict_runtime_wire_decoders": true,
+    "all_positive_runtime_flags_zero_and_original_stderr_empty": true,
+    "utc100ns_creation_instance_and_full_interval_reconciliation": true,
+    "all_original_native_outer_runner_launcher_and_current_absence_gates": true,
+    "whole_grant_and_launcher_inverses": true,
+    "all_output_writes_create_only": true
+  },
+  "future_binding_contract": {
+    "constructor_and_auditor_markers": [
+      1,
+      2,
+      3,
+      3
+    ],
+    "total_first_stage_bindings": 9,
+    "helper_actual_string_bindings": 12,
+    "helper_actual_size_bindings": 5,
+    "helper_actual_total_bindings": 17,
+    "head_marker_chars": 40,
+    "hash_marker_chars": 64,
+    "canonical_buildquery_record": "buildquery-launch.json",
+    "canonical_root_review_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-execution-bound-source-review-20261021.json",
+    "mandatory_grant_provenance_key": "v38_execution_bound_source_review",
+    "root_runtime_review_type": "string",
+    "runtime_constructor_source_review": "distinct pinned receipt; never substitute an object for root_runtime_review",
+    "preserved_v36_history_keys": 5,
+    "preserved_v37_history_keys": 7,
+    "history_retention": "The unchanged recursively verified grant_provenance_updates contract carries current V38 pins and the separately retained V36/V37 historical records. RuntimeOnly copies and inversely restores the accepted BuildQuery grant.",
+    "helper_scope": "new4 only; existing63 needs its own separately reviewed actual-input adaptation",
+    "bindings_not_performed": true,
+    "helper_may_run_only_after_actual_terminal_success_and_independent_metadata_acceptance": true
+  },
+  "performed": "Only the independent-static-peer.py file was executed. It reads pinned source/proof files, parses AST/tokens, reconstructs original/candidate bytes in memory, and writes only the create-only source-proof.json. It never imports or evaluates a candidate, prefix, target helper, constructor, auditor or native process.",
+  "limits": "This peer accepts the unresolved source adaptation. Root must separately bind actual committed head, emitted matrix and saved constructor hashes, review the exact bound sources, and issue each specific execution configuration. The 17 helper bindings require an actual submitted job and original control/proof/grant/config/record; this receipt observes no future job, metadata or runtime outcome.",
+  "Main_read_or_written": false,
+  "index_written": false,
+  "target_executed": false,
+  "prefix_executed": false,
+  "constructor_executed": false,
+  "auditor_executed": false,
+  "helper_executed": false,
+  "catalog_preparer_executed": false,
+  "native_executed": false,
+  "execution_configuration_issued": false,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

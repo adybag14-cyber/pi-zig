@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_v37_filehandle_runtime_fixture_correction",
+  "review_scope": "Exactly two fixture files: the FileHandle owner test and its support. Review covers the eight declared edits, callback-resource ownership and the selected Windows invalid-descriptor causal path.",
+  "candidate_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\proposal.json",
+    "bytes": 21669,
+    "sha256": "2933A7AB4CCC196984FC27419B3E4A64DCCEB99B0834734AA7B357EE1280C7FC"
+  },
+  "selected_authority_inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs-v2.json",
+    "bytes": 16810,
+    "sha256": "B97468E1DD34137C80A6199BABE6E227FEBDB5BD3FD0654B31EA3F05CF8C123F"
+  },
+  "preserved_authority_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs.json",
+    "bytes": 16810,
+    "sha256": "940ED7F295FDE2A6D4F2F7770B7041E15F810B2A3D6C8FF8CCA8B5079A1B7727"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\source-audit.py",
+    "bytes": 13017,
+    "sha256": "CC8CF1D47EAC0B4C9EABF739370F78896288030782C090F33DC6248A71AD7DD8"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\source-audit.json",
+    "bytes": 101785,
+    "sha256": "74591C1609D2A07397D44585C0BD92C1BEDB406AC9663AFF77161D4449CA9512"
+  },
+  "main_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "selected_files": [
+    {
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28576,
+        "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+      },
+      "finite_edits": 6
+    },
+    {
+      "relative_path": "src/native_node_file_handle_owner_test_support.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 33152,
+        "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 33411,
+        "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+      },
+      "finite_edits": 2
+    }
+  ],
+  "checks": {
+    "all_intermediate_hashes_and_whole_raw_inverses": true,
+    "current_Main_and_raw_Git_preimages_exact": true,
+    "Main_clean_before_and_after": true,
+    "independent_input_pins": 45,
+    "independent_source_ranges": 48,
+    "declared_controls": 58,
+    "root_declaration_counts": [
+      18,
+      3,
+      24,
+      13
+    ],
+    "all_test_names_and_imports_preserved": true,
+    "all_std_testing_expect_lines_exact": true,
+    "existing_finishImmediate_and_initialized_aware_errdefer_exact": true,
+    "SDK_snapshots_equal_installed_original_bytes": 3,
+    "authority_v1_to_v2_one_range_edit_and_inverse_exact": true,
+    "all_pinned_inputs_rehashed_at_end": true
+  },
+  "findings": [
+    "The owner root receives six edits and support receives two. No production edit is selected. The complete raw inverse recovers both current b13 Main files and their Git blobs. All four selected roots retain their exact names/import sets; 58 is a declaration count, not a prediction of future compiler metadata.",
+    "The original Windows libuv VERIFY_FD rejects only -1; fs__close deliberately returns success for fd <= 2. Therefore the earlier -2 fixture could not establish a failing close. The new std.math.maxInt(c_int) is 2147483647 on the selected target: it is a valid signed Int32 input, differs from the unchanged production -1 sentinel, and exceeds the UCRT descriptor table bound 128 * 64 = 8192. The positive value also selects the actual _close call after libuv's bounded modulo-bucket lookup. The original UV_EBADF mapping, Promise rejection, AfterClose, refed GC error ticket and exact exception/pending assertions remain.",
+    "The selected network build includes original win/core.c and win/fs.c with no CRT macro override. Pinned _mingw.h defaults __MSVCRT_VERSION__ to 0xE00 and enables UCRT, satisfying libuv's >=0x800 handler condition. uv_fs_close INIT invokes uv__fs_req_init -> uv__once_init before work; service loop initialization also invokes it before worker publication. The original libuv initializer installs its returning no-op invalid-parameter handler. Official Microsoft _close documentation specifies -1/EBADF when that handler permits continuation. The preserved SDK source verifies descriptor validation before table access and return through the installed global handler.",
+    "Read-only PE import decoding of the already accepted BF100B0B owner binary independently confirms _close from api-ms-win-crt-stdio-l1-1-0.dll and _set_invalid_parameter_handler from api-ms-win-crt-runtime-l1-1-0.dll; no thread-local handler setter import is present. Its full import inventory hash is FB62DE635650479F63C2DCDB8F9C5A24C9E610C59626EECFD699AC42C9F47A57. The artifact was never launched. This corroborates the selected CRT family and does not assert loaded DLL byte identity with the installed SDK source.",
+    "The callback-resource change matches pinned Node env.cc 1392-1399: allocate a fresh plain object only when can_call_into_js is true. immediateResource uses the actual Scope.object allocation boundary and duplicates the owned local before expression finish retires local roots. The caller's defer releases its escaped entitlement after CallbackScope.init duplicates it. The actual CallbackScope retains that resource until deinit; its object check stays unchanged.",
+    "NativeCallback remains stable heap storage allocated by the fixture Environment. Allocation/expression failure uses the existing errdefer; partially initialized callback scope is marked failed and deinitialized before frame destruction. The new local defer and the scope's separate duplicate prevent a new root leak. On canCallIntoJs=false the existing undefined/failed-scope path remains, without allocating the object. finishImmediate, callback completion, queue destruction and cleanup policy are byte-exact.",
+    "The new plain object stores no tested FileHandle, BindingData property or native capture. Existing handle/BindingData lifetime controls remain intact. Fixture remains stack-local; this review makes no heap-placement claim for Fixture itself.",
+    "The original proposal's pending CRT qualifier is preserved verbatim. This independent receipt resolves the bounded source question using authority v2, contained SDK snapshots, official documentation, selected build/header source and the accepted artifact's import bytes. The predecessor authority file remains unchanged; v2 only expands the original INIT/POST excerpt from lines 84-96 to 74-97.",
+    "Original Retry1 result, 546-byte protocol stdout and 68389-byte stderr remain hash-exact. The original five failed indices 5,10,11,12,16 and other unstarted groups are not rewritten or counted as a candidate result."
+  ],
+  "concrete_blockers": [],
+  "limits": [
+    "Source acceptance of a fixture correction only. No candidate compile, native run, source generator, reference run, target/prefix/helper execution, Main mutation or intake occurred in this review.",
+    "The reviewer executed only the independently authored byte/source checker, read-only Git commands, and PE byte decoding. No SDK preparer/checker was imported or executed.",
+    "Installed SDK source is preserved in three contained snapshots as corroborating implementation authority. It is not a claim of exact runtime DLL build provenance.",
+    "Future actual metadata and test outcomes remain unresolved. Root must separately review and authorize exact source intake and fresh native execution."
+  ],
+  "source_only": true,
+  "candidate_executed": false,
+  "adapter_executed": false,
+  "Main_written": false,
+  "native_execution_authorized": false,
+  "compiler_execution": false,
+  "source_generator_execution": false,
+  "application_qualified": false,
+  "future_actual_metadata": null
+}

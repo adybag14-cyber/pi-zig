@@ -1,0 +1,27 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\2e3686f369abd371dba0874484cf8d61\\test.exe",
+  "binary_sha256": "C0778AA29F0356BD6B41AFDAC61CFB0022F75C72552494A5015D1704B6BE5F20",
+  "version": "0.16.0",
+  "actual_count": 15,
+  "tests": [
+    "native_vm_pending_promise_test.test.VM pending Promise intrinsic allocation ignores the live global constructor and uses its actual realm prototype",
+    "native_vm_pending_promise_test.test.VM pending Promise init sees one real object while the original resolving capability still creates its pair",
+    "native_vm_pending_promise_test.test.VM pending Promise direct init has undefined parent inside an actual parent-aware reaction allocation",
+    "native_vm_pending_promise_test.test.VM pending Promise live init callback observes and modifies the exact object before return",
+    "native_vm_pending_promise_test.test.VM pending Promise real init hook may settle the same object before allocation returns",
+    "native_vm_pending_promise_test.test.VM pending Promise ordinary hook failure preserves its exact reason and an independently retained result",
+    "native_vm_pending_promise_test.test.VM pending Promise actual fatal init throw stops guest catch and finally and retires the unretained result",
+    "native_vm_pending_promise_test.test.VM pending Promise existing ordinary or fatal pending wins before allocation and the real init hook",
+    "native_vm_pending_promise_test.test.VM pending Promise actual heap allocation failure reports pending null without init or leaked objects",
+    "native_vm_pending_promise_test.test.VM pending Promise ordinary hook failure yields to an actual result-retirement fatal",
+    "native_vm_pending_promise_test.test.VM pending Promise first actual init fatal survives a later actual result-retirement fatal",
+    "native_vm_pending_promise_test.test.VM pending Promise disabled execution permits intrinsic allocation but guards the real guest init callback",
+    "native_vm_pending_promise_test.test.VM pending Promise returned object uses real thenable adoption and reaction settlement",
+    "native_vm_pending_promise_test.test.VM pending Promise foreign context selects its own intrinsic prototype and actual init context",
+    "native_vm_pending_promise_test.test.VM pending Promise marked hook DATA stays data and original resolving functions retain their one-shot latch"
+  ],
+  "group": "native-vm-pending-promise",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

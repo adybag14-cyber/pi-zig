@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "status": "unexecuted_source_only_bounded_runtime_provenance_successor",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-sourceonly-20261021\\original\\Audit-PositiveV38StrictRuntime-20261021.py",
+    "bytes": 39911,
+    "sha256": "F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07"
+  },
+  "canonical_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py",
+    "bytes": 39911,
+    "sha256": "F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-sourceonly-20261021\\candidate\\Audit-PositiveV38StrictRuntime-Provenance-20261021.py",
+    "bytes": 41516,
+    "sha256": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+  },
+  "original_failure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\negative.json",
+    "bytes": 5430,
+    "sha256": "194982710772F0E5F5E5012DFA783FC19F7D71DF327F1034A2799131C13CE2EF"
+  },
+  "edits": [
+    {
+      "offset": 8101,
+      "before": "review=read(prep/\"preparation-review.json\");verify_pins(review)\nrequire(digest(prep/\"preparation-review.json\")==cfg[\"preparation_review_sha256\"],\"Exact reviewed batch preparation\")\n",
+      "after": "review=read(prep/\"preparation-review.json\")\nrequire(digest(prep/\"preparation-review.json\")==cfg[\"preparation_review_sha256\"],\"Exact reviewed batch preparation\")\nhistorical_original=dict(path=str(main/\"src/native_node_file_handle_owner_test.zig\"),bytes=28378,sha256=\"93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422\")\nhistorical_snapshot=dict(path=str(base/\"worktrees/sdk-owners-resume-20261018/verification/v37-file-handle-runtime-fixtures-sourceonly-20261021/original/src/native_node_file_handle_owner_test.zig\"),bytes=28378,sha256=\"93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422\")\nhistorical_commit=\"b13be24e44cc1bbc361639eb35900a368ae60eac\"\nhistorical_rows=review[\"historical_source_rebindings\"]\nrequire(historical_rows==[dict(batch=b,role=\"fixture_unchanged_root_native-node-file-handle-owner\",original=historical_original,immutable_snapshot=historical_snapshot,raw_commit=historical_commit,exact_original_bytes=True)for b in (\"new4\",\"regression63\")],\"Exact complete historical preimage mappings\")\nrequire(all(review[\"provenance\"][\"v37_\"+row[\"batch\"]+\"_\"+row[\"role\"]]==historical_snapshot for row in historical_rows),\"Historical provenance is rebound to the exact immutable snapshot\")\nverify_pins(historical_snapshot)\nhistorical_raw=subprocess.check_output([\"git\",\"--no-optional-locks\",\"cat-file\",\"blob\",historical_commit+\":src/native_node_file_handle_owner_test.zig\"],cwd=main)\nrequire(len(historical_raw)==historical_original[\"bytes\"] and hashlib.sha256(historical_raw).hexdigest().upper()==historical_original[\"sha256\"] and historical_raw==Path(historical_snapshot[\"path\"]).read_bytes(),\"Historical snapshot equals the exact original raw Git blob\")\nverify_pins({key:value for key,value in review.items() if key!=\"historical_source_rebindings\"})\n",
+      "before_sha256": "F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07",
+      "after_sha256": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+    }
+  ],
+  "complete_raw_forward": true,
+  "complete_raw_inverse": true,
+  "unchanged_prefix_bytes": 8101,
+  "unchanged_suffix_bytes": 31629,
+  "input_contract_new_fields": [],
+  "input_value_change_required": [
+    "auditor_sha256"
+  ],
+  "original_input_and_completed_runtime_unchanged": true,
+  "source_only": true,
+  "candidate_or_prefix_executed": false,
+  "auditor_executed": false,
+  "native_executed": false,
+  "configuration_issued": false,
+  "Main_accessed": false,
+  "qualification": false
+}

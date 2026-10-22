@@ -1,0 +1,282 @@
+{
+  "schema": 1,
+  "status": "sealed_unexecuted_v38_partial_negative_archive_progress_preparer_source_handoff",
+  "owner": "/root/sdk_environment_port",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "selected_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\candidate\\Prepare-V38PartialNegativeProgressAndValidationArchive-20261022.py",
+    "bytes": 76267,
+    "sha256": "EE11C073C1D1CAD599D7F88B34B78133A5E3A90F68D1E1094D6AF77D7C5128AB"
+  },
+  "original_positive_only_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\candidate\\Prepare-V38PositiveProgressAndValidationArchive-20261021.py",
+    "bytes": 51755,
+    "sha256": "00F55DC94CC4151370B837FCDB02FFE991A07AC75C05EFE3022C66D079BD5A77"
+  },
+  "original_positive_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-preparer-peer-sourceonly-20261022\\peer.json",
+    "bytes": 10390,
+    "sha256": "474D83D55685B6034C28CD7931B0CBDA681E317D8B6286C7A45677D2A76149DC"
+  },
+  "finite_source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\finite-source-adaptation.json",
+    "bytes": 71386,
+    "sha256": "4865C51ECA0AAE56C4DCBC726F85549EDCB9F911292E7EF0B16C69381E8C15C9"
+  },
+  "finite_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\finite-source-check.py",
+    "bytes": 8186,
+    "sha256": "34B4C33C8E8EFAE5BCBCE8AC4CEA932C5CCDA1F31C5E4245CE5F8521D0F812CC"
+  },
+  "observed_input_accounting": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\observed-contract-accounting.json",
+    "bytes": 1787220,
+    "sha256": "364EABFBE2958399D0AAA29C172EFA4C4601F03F537628D0432BCD4DBF3ACE07"
+  },
+  "observed_input_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\observed-contract-check.py",
+    "bytes": 13011,
+    "sha256": "04F3F89A33AAEEB78F34C38E13F9E2C9E06C53336EF423BB4AA418A12DA6D66A"
+  },
+  "source_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\source-contract.json",
+    "bytes": 20144,
+    "sha256": "48F18D2746B15737494ED449AB1EE350F1B60CB81F2E583EAC04F9C339EB1DD4"
+  },
+  "contract_schema_accounting": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\contract-schema-accounting.json",
+    "bytes": 9221,
+    "sha256": "43B23B425BCF82F296C8BC1929204F95055C18116E0F891871426373DB3FB733"
+  },
+  "contract_schema_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\contract-schema-check.py",
+    "bytes": 4178,
+    "sha256": "A7C4FDE587FEBC6B9AF7F05F081F2719A71F83A2376FFE8223386CB7D01A8B69"
+  },
+  "supplemental_preservation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\supplemental-preservation-inputs.json",
+    "bytes": 32895,
+    "sha256": "4124B26CB6722E5426FF051C978A4D715B3015442E5722DA51A76E4C9F320509"
+  },
+  "basis_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\observed-evidence-inventory.json",
+    "bytes": 338781,
+    "sha256": "CDFBB34E737011ADD26B7560E5011DC55CADA2803D749B0E1C0263E5954FADED"
+  },
+  "basis_progress_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\progress-patch-plan.json",
+    "bytes": 56327,
+    "sha256": "183647A8C0D250DBDD0747CD8E1220B415E9F205737092D4D13AF1DD0D730412"
+  },
+  "actual_original63_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-134223\\independent-negative-runtime-closure.json",
+    "bytes": 232840,
+    "sha256": "C1BA83DB4C8A70DDF1C9170458D44E0CADCAF1F10C85E9898B55736D31663CB9"
+  },
+  "actual_original63_negative_root_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-retry1-original-negative-runtime-acceptance-20261022.json",
+    "bytes": 5667,
+    "sha256": "2F26F9A1CD8FB66B1AC2330F7D2BBD6E5B30F5E842346B21BC8FFAD683D361E4"
+  },
+  "scope_and_reason": [
+    "The previous00F55 source requires both complete strict runtimes and could not truthfully admit the actual original63 outcome. It remains preserved and unexecuted; its positive check_positive helper is byte-identical here and called only for accepted new4.",
+    "Six separate helpers validate actual original63 BQ1285, zero-native prelaunch52FA and independently closed partial-negativeC1BA/Root2F26, including exact raw receipts, original job strings and full actual names.",
+    "All old314 known row objects and183 ordered direct-pin relationships remain exact prefixes. The102 additional source/negative/helper/inspection inputs are independently pinned and must be archived raw. Complete actual file membership is required for all five phases.",
+    "The Root-approved FS pump fixture repair belongs to a separate21-source intake. It is excluded from this native-validation archive source scope."
+  ],
+  "finite_accounting": {
+    "edits": 39,
+    "all_intermediate_hashes": true,
+    "all_unchanged_prefix_and_suffix_hashes": true,
+    "full_forward_equal": true,
+    "full_raw_inverse_equal": true,
+    "original_helpers_byte_identical": 22,
+    "new_helpers": 6,
+    "unchanged_regions": 10,
+    "imports_unchanged": true,
+    "configuration_keys_unchanged": 18,
+    "copy_plan_keys_unchanged": 11,
+    "row_schema_unchanged": true
+  },
+  "new_helpers": [
+    "retained_pin",
+    "selected_observed",
+    "check_existing63_buildquery",
+    "check_existing63_prelaunch",
+    "check_existing63_partial_negative",
+    "check_existing63_negative_cohort"
+  ],
+  "actual_data_checks": {
+    "distinct_current_inputs_rehashed": 1884,
+    "literal_field_accesses_checked": 197,
+    "literal_boolean_gates_checked": 61,
+    "whole_original63_metadata_names": 1285,
+    "completed_runtime_names_and_flags": 321,
+    "prelaunch_raw_null_preserved": true,
+    "first16_partial_batch_not_admissible_preserved": true,
+    "sole_failure_index22_preserved": true,
+    "phase_file_counts_at_source_review": [
+      90,
+      73,
+      1214,
+      19,
+      253
+    ],
+    "phase_group_counts": [
+      4,
+      4,
+      63,
+      1,
+      17
+    ],
+    "source_declaration_counts_not_actual_metadata": true
+  },
+  "history_and_status_delta": {
+    "old_lengths": [
+      65,
+      38,
+      14,
+      14
+    ],
+    "new_lengths_if_released": [
+      65,
+      45,
+      15,
+      15
+    ],
+    "length_order": [
+      "integrated_source_units",
+      "preserved_attempts",
+      "retained_recent_native_negatives",
+      "execution_checkpoint_history"
+    ],
+    "attempts_added": 7,
+    "non_native_negatives": 3,
+    "native_negatives_added": 1,
+    "all181_original_nested_list_prefixes_preserved": true,
+    "complete_old_checkpoint_appended": true,
+    "raw_original_progress_bytes": 554689,
+    "inverse_restored_top_level_keys": 8,
+    "new_root_keys": 1,
+    "no_source_units_added": true,
+    "aggregate_selected_native_runtime_acceptance": false,
+    "new4_scoped_selected_runtime_acceptance": true,
+    "original63_positive_group_acceptance": false,
+    "inspection_findings_are_provenance_only": true
+  },
+  "compression_delta": {
+    "old_represented_bookend_files": 8,
+    "new_represented_bookend_files": 10,
+    "maximum_equal_pair_gzip_count_unchanged": 4,
+    "minimum_known_maps_unchanged": 2,
+    "prelaunch_bookends_forced_raw": 2,
+    "raw_count": "10 -2*selected_gzip_pairs",
+    "eligible_pair_scope": "new4 BuildQuery/runtime, original63 BuildQuery/partial runtime; each must be byte-identical before/final.",
+    "gzip_parameters": {
+      "filename": "",
+      "mtime": 0,
+      "compresslevel": 9
+    },
+    "both_original_roundtrips_and_repeat_encoding_required": true,
+    "gzip_executed": false
+  },
+  "separate_future_authority": {
+    "Root_source_acceptance": null,
+    "independent_source_peer": null,
+    "Root_final_copy_plan": null,
+    "Root_issued_configuration": null,
+    "exact_final_output_paths": null,
+    "expected_output_hashes": null,
+    "progress_commit": null,
+    "reason": "No preparation release or current output claim exists in this source-only packet. Source contract lists the exact future Root acceptance/config/copy fields and observed inputs; Root must independently issue the final exact release."
+  },
+  "future_preparation": {
+    "source_contract_fields": "future_configuration_shape(18),future_source_acceptance_required_fields,future_copy_plan_shape(11),copy_plan_contract,bookend_contract,history_contract,output_contract",
+    "output_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022",
+    "fixed_archive_prefix": "verification/native-v38-validation-evidence-20261021",
+    "automatic_targets": 15,
+    "expected_target_formula": "distinct copy-row targets +15",
+    "only_existing_replacement": "verification/port-roadmap-resume-20261018/progress.json",
+    "Main_and_index_access_forbidden": true,
+    "all_acceptance_inverse_attribute_copy_membership_gates_before_first_output_write": true,
+    "create_only_staging": true
+  },
+  "separate_intake": {
+    "prior_compatible_adapter": "3991CF3D remains historical and unexecuted. Root has selected a separate strengthened8A676 adapter projection.",
+    "manifest_emitted_by_this_source": "rows target/source/bytes/sha256/before/role; only progress has a non-null preimage; manifest_target and path_count_including_manifest are explicit.",
+    "stronger_intake_normalization": "Root/Handover owns five future bindings and a separately reviewed normalized manifest, retaining the complete unchanged emitted EE11 manifest as an additional original evidence row. This handoff does not normalize or execute intake.",
+    "Main_intake_authorized": false
+  },
+  "authoring_observation": {
+    "kind": "in_memory_literal_lookup_rejected_before_source_or_file_change",
+    "finding": "One attempted insertion used a mistyped policy preimage; the unique-match guard stopped before mutation. The insertion was then authored using the exact FIXED-map boundary. All39 sealed edits bind only the saved EE11 source.",
+    "validation_attempt": false,
+    "native_attempt": false,
+    "candidate_defect": false
+  },
+  "preserved_source_artifacts": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\authoring\\partial-negative-source-part-0.txt",
+      "bytes": 15500,
+      "sha256": "83D3704091B5171424F6C001862987885EDE0F11985E82EF94867DE86E495CC0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\authoring\\partial-negative-source-part-1.txt",
+      "bytes": 15500,
+      "sha256": "94F4F01FFFDB7818B5ABFA92AEADEFFA91BD271AA76540F78A41496F20873896"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\authoring\\partial-negative-source-part-2.txt",
+      "bytes": 15500,
+      "sha256": "93C755DBFDDDD0768461964B61F0579F7722EE8B0FCC244E11AC014B0EA9324B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\authoring\\partial-negative-source-part-3.txt",
+      "bytes": 15500,
+      "sha256": "5966BF7ECFBFE6DA6B9800C76271DF07A31B58BCB8111F10D02DF9F0FD22F867"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\authoring\\partial-negative-source-part-4.txt",
+      "bytes": 14267,
+      "sha256": "C55FDBC000F7259F41C9DE743308D1DC9B27D48A6AE644B3BD841F9E759FD501"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\authoring\\finite-edits-part-0.txt",
+      "bytes": 15500,
+      "sha256": "E23527CA6B8D13734E80FE793093749679B41D07CB7B54BFE298888F56D85F78"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\authoring\\finite-edits-part-1.txt",
+      "bytes": 15500,
+      "sha256": "8FB5753010320848A18E61752A2E690956994F3323B0124EAF50F7F34AD06A50"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\authoring\\finite-edits-part-2.txt",
+      "bytes": 8407,
+      "sha256": "A2FA1C80535A4361E91062DC34EC23F7C87CC237939FCD91E98E6CFCF4C0ADAD"
+    }
+  ],
+  "completion": {
+    "candidate_source_saved": true,
+    "finite_raw_inverse_verified": true,
+    "actual_input_schema_accounted": true,
+    "inert_contract_saved": true,
+    "source_peer_requested_from": "/root/module_io_port",
+    "Root_full_source_review_in_progress": true
+  },
+  "candidate_executed": false,
+  "candidate_prefix_executed": false,
+  "preparer_or_auditor_executed_by_author": false,
+  "gzip_executed": false,
+  "progress_projected": false,
+  "configuration_issued": false,
+  "Main_read_or_written": false,
+  "index_mutated": false,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "application_qualified": false,
+  "production_bridge_removed": false,
+  "published_release": false
+}

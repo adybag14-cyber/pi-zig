@@ -1,0 +1,31 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\fa151e2da9eaf805f87b3e3140098683\\test.exe",
+  "binary_sha256": "544619729EA34B20D051E00599BB9AEC372445BC83A19F94E8A3F8075FDA09D8",
+  "version": "0.16.0",
+  "actual_count": 19,
+  "tests": [
+    "native_template_literal_test.test.VM template literal intrinsic interpolation ignores mutable String and concat",
+    "native_template_literal_test.test.VM template literal converts each substitution with string hint before the next expression",
+    "native_template_literal_test.test.VM template literal observes ordinary ToPrimitive fallback once before later work",
+    "native_template_literal_test.test.VM template literal ordinary conversion throw preserves identity and skips later substitutions",
+    "native_template_literal_test.test.VM template literal rejects Symbol conversion before a later expression",
+    "native_template_literal_test.test.VM template literal keeps cooked empty multiline wide and nested results",
+    "native_template_literal_test.test.VM template literal conversions bracket an actual Await in source order",
+    "native_template_literal_test.test.VM template literal early conversion rejection prevents a later Await expression",
+    "native_template_literal_test.test.VM template literal tagged calls retain raw values receiver and cached frozen template identity",
+    "native_template_literal_test.test.VM template literal tagged invalid escapes preserve raw strings and undefined cooked entries",
+    "native_template_literal_test.test.VM template literal untagged invalid escape remains a compile-time SyntaxError",
+    "native_template_literal_test.test.VM template literal retires the sole converted operand before the next expression",
+    "native_template_literal_test.test.VM template literal operand retirement native fatal preempts an ordinary conversion throw",
+    "native_template_literal_test.test.VM template literal conversion native fatal survives a later flagged cleanup event",
+    "native_template_literal_test.test.VM template literal successful conversion retirement fatal blocks later expression and guest catch",
+    "native_template_literal_test.test.VM template literal preserves the original ordinary conversion throw through ordinary operand cleanup",
+    "native_template_literal_test.test.VM template literal current bytecode serializes and executes eager intrinsic interpolation",
+    "native_template_literal_test.test.VM template literal old opcode version is rejected before bytecode consumption",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-vm-template-literal",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

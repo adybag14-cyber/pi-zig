@@ -1,0 +1,29 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\7feae097c30f20954c81322243c4b651\\test.exe",
+  "binary_sha256": "16776B01C4DDDA5FDA1AC9E23C4CD07D21CADA49BBC976A2D34F40BB6B9137D2",
+  "version": "0.16.0",
+  "actual_count": 17,
+  "tests": [
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement uses the same existing intrinsic Promise and borrowed result",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement settled guard observes no value under a failing allocation limit",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement primitive resolution creates no new resolver allocation",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement gets then synchronously and invokes it through the actual queued job",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement uses a genuine input Promise live then override",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement repeated native calls during adoption differ from the settled guard",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement extraction preserves original resolving function one-shot latch",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement self resolution rejects the same Promise with actual TypeError",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement ordinary then getter throw rejects while noncallable then fulfills",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement returned flagged Error DATA remains a normal value or rejection",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement accepts a genuine foreign realm Promise and rejects proxy brands intrinsically",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement prior pending entry wins before brand and then with borrowed inputs intact",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement actual uncatchable then getter escapes without guest catch or later work",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement actual thenable job allocation failure leaves pending and permits retry",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement reaction allocation failure preserves already published state and current error",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement borrows resolution and selected method through caller-owned retirement",
+    "native_vm_existing_promise_settlement_test.test.VM Promise settlement actual queued job retains operands across caller release and live GC"
+  ],
+  "group": "native-vm-existing-promise-settlement",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

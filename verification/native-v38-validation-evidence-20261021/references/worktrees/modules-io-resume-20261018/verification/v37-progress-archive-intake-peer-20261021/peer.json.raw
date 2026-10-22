@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_progress_negative_intake_adapter_and_manifest",
+  "reviewer": "/root/module_io_port",
+  "source_only": true,
+  "candidate_manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\manifest.json",
+    "bytes": 134632,
+    "sha256": "345F3E3F5B71F6FA14618E402F9D7116AE841BDCD0B534D0E1BEB95933A3D878"
+  },
+  "candidate_executor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37ProgressNegativeIntake-20261021.py",
+    "bytes": 9721,
+    "sha256": "3991CF3DD80DDE51C551417644CF1E2AF376BDAF538DC8C7F7D6135538FAE5AC"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\executor-finite-adaptation.json",
+    "bytes": 4343,
+    "sha256": "8287436A4FB4B6FD0E4859680DF7218C829872985562063DB810152F62EEB2FB"
+  },
+  "accepted_baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV36ProgressNegativeIntake-20261021.py",
+    "bytes": 9719,
+    "sha256": "812B0230170D738246EBA95EF7FBCC3165CADEFAE58E92DDA07229FB2E21D7CD"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-intake-peer-20261021\\source-audit-v2.py",
+    "bytes": 18366,
+    "sha256": "3C3D3849F0F9B0BF42391AACADCE158B366090D3E7A462B844D6E29B4D8544A2"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-intake-peer-20261021\\source-audit.json",
+    "bytes": 223324,
+    "sha256": "47EA01C5A4EE26C586023A07AC3BE615B368B38AE768399455CBDC068F2C006E"
+  },
+  "preparation_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\preparation-review.json",
+    "bytes": 3272,
+    "sha256": "C5F2B34644690C6B5F11F2B463A5004B3671BA633D743156D21D5D1812C3643C"
+  },
+  "issued_preparation_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-negative-archive-issued-configuration-20261021.json",
+    "bytes": 12745,
+    "sha256": "3CD25A720BFA525AC13C761A1C825033DBD3609FDDCEF54F9985CE72E20BFD12"
+  },
+  "main_basis": "f878aa40ab4bc4629f2cf57b281fcd2e7329473b",
+  "decisive_checks": {
+    "executor_full_source_read": true,
+    "exact_literal_edits": 3,
+    "all_intermediate_hashes_and_full_inverse": true,
+    "unchanged_full_line_helpers": 11,
+    "unchanged_complete_execution_tail": {
+      "bytes": 9143,
+      "sha256": "810483D37D5BFA7DBE7F26C44CECE9D325EFC56399C8F5B940CC3ECF670F2FDF"
+    },
+    "exact_commit_paths": 215,
+    "existing_replacements": 1,
+    "new_targets_absent_in_checkout_and_Git": 214,
+    "only_existing_replacement": "verification/port-roadmap-resume-20261018/progress.json",
+    "archive_membership": {
+      "raw": 207,
+      "gzip": 2,
+      "mapping_and_history_proofs": 4,
+      "manifest": 1
+    },
+    "every_projected_file_and_manifest_row_exact": true,
+    "all_207_raw_targets_reconstructed_from_accepted_inventory_and_issued_configuration": true,
+    "all_original_raw_bytes_equal": true,
+    "input_files_rehashed": 434,
+    "original_progress": {
+      "bytes": 438396,
+      "sha256": "18E61B7DFE07DA5D13C64E4B933EC519312AFED1DC7B29AC4789AC0C3A5EB49F"
+    },
+    "projected_progress": {
+      "bytes": 554689,
+      "sha256": "BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028"
+    },
+    "complete_original_progress_raw_inverse": true,
+    "unchanged_nested_historical_list_prefixes": 138,
+    "history_list_lengths_before": [
+      64,
+      35,
+      12,
+      13
+    ],
+    "history_list_lengths_after": [
+      65,
+      38,
+      14,
+      14
+    ],
+    "both_gzip_original_before_and_final_roundtrips": true,
+    "independent_deterministic_reencoding_equal": true,
+    "git_attribute_values_checked": 645,
+    "all_215_filtered_hash_objects_equal_raw": true,
+    "no_effective_filters_encodings_ident": true,
+    "no_active_hooks": true,
+    "autocrlf_false": true,
+    "main_clean_before_and_after": true,
+    "all_checked_input_bytes_unchanged": true
+  },
+  "findings": [
+    "The executor differs from the accepted V36 baseline only in its descriptive version literal, frozen Main basis, and exact one-phase manifest tuple. All release/pin, preimage, scope, attribute, stage, raw index/commit and clean-state gates remain byte-exact in the complete execution tail.",
+    "The 215-path set contains one progress replacement and 214 absent archive targets. The 207 raw mappings were independently rebuilt from the immutable observed inventory, actual fixture source/execution records, accepted preparation source, issued configuration and seven explicit extras. Every original and projected byte pair matches; the projected directory has no extra files.",
+    "Both compressed archives decode to their complete original before.json and final.json bytes: 15933885 bytes for BuildQuery and 15938792 for strict runtime. Headers, CRC/decompression, original seal counts and independent deterministic encodings match. No native artifact or cache file is introduced.",
+    "All 138 historical list prefixes and every unrelated top-level field remain exact. Removing the one new top-level record and restoring the nine declared current fields reproduces the full original 438396-byte progress. The full old checkpoint is appended, and the three V37 outcomes remain distinct with all five original failing indices and the nonempty runtime stderr retained.",
+    "The new current-root list matches Main while the original historical root list and complete 4+63 group order remain unchanged. Future metadata, runtime acceptance, application qualification and new execution authority remain unresolved or false."
+  ],
+  "preserved_checker_authoring_negative": {
+    "initial_checker": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-intake-peer-20261021\\source-audit.py",
+      "bytes": 18352,
+      "sha256": "B778FD47759EC68AF9F8C79BADA863BE6B66C5B15878A58B29E4D9E0E01B9FEF"
+    },
+    "observation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-intake-peer-20261021\\source-audit-authoring-negative.json",
+      "bytes": 2303,
+      "sha256": "3D00238A99B386A216DBEDD96C5808BC29F4A11B63DEA5826FAD98DD2FFE20AA"
+    },
+    "finite_correction": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-intake-peer-20261021\\checker-finite-correction.json",
+      "bytes": 1339,
+      "sha256": "106F524BE17A8CA372EBF7DBA31198118DBA120FE7AD9EB46B99EA7DAD28A3F1"
+    },
+    "cause": "The reviewer's own loop binding shadowed its path-key helper. The first checker stopped before its sole proof write. The successor renames that binding and its reference, with a full byte inverse; no reviewed candidate changed.",
+    "candidate_defect": false
+  },
+  "concrete_blockers": [],
+  "scope_limits": "This accepts the bounded emitted proposal and intake adapter for separate Root review/release. It does not execute the adapter, any reviewed prefix or preparer, and does not authorize Main mutation or native validation. Gzip work was independent in-memory inspection of already emitted data. Historical native outcomes are preserved, not requalified.",
+  "adapter_executed": false,
+  "preparer_executed_by_reviewer": false,
+  "target_prefix_executed": false,
+  "main_applied": false,
+  "index_changed": false,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "application_qualified": false,
+  "source_mutation_hold_released": false
+}

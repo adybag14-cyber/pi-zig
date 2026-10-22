@@ -1,0 +1,26 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\bf9780433ddc533410c51f4c6840765d\\test.exe",
+  "binary_sha256": "E80913286B1A2D26C8CC9EB45991D3A9A32FDAB225D9F5F49D88F8A1113E7F67",
+  "version": "0.16.0",
+  "actual_count": 14,
+  "tests": [
+    "native_node_fs_request_transport_test.test.native actual FS transport constructs request storage before dispatch and rolls it back unsubmitted",
+    "native_node_fs_request_transport_test.test.native actual FS transport distinguishes charged wrapper allocation failure from ordinary invalid input",
+    "native_node_fs_request_transport_test.test.native actual FS transport opens a real path and defers uv cleanup until the explicit cutpoint",
+    "native_node_fs_request_transport_test.test.native actual FS transport reads the real offset span position EOF and zero length",
+    "native_node_fs_request_transport_test.test.native actual FS transport reports ordinary bad descriptor through one genuine accepted callback",
+    "native_node_fs_request_transport_test.test.native actual FS transport rejects invalid spans without submitting or consuming the request",
+    "native_node_fs_request_transport_test.test.native actual FS transport retains the original backing allocation through guest detachment",
+    "native_node_fs_request_transport_test.test.native actual FS transport request backing and event survive the original runtime and memory entitlement",
+    "native_node_fs_request_transport_test.test.native actual FS transport event owns a request after its initial caller entitlement is released",
+    "native_node_fs_request_transport_test.test.native actual FS transport cancellation preserves the one actual callback across completion races",
+    "native_node_fs_request_transport_test.test.native actual FS transport rejected open admission cannot cancel an uninitialized work request",
+    "native_node_fs_request_transport_test.test.native actual FS transport and TCP closure share one ordered native event FIFO",
+    "native_node_fs_request_transport_test.test.native actual FS transport stop joins all accepted requests and retains every completion for draining",
+    "native_node_fs_request_transport_test.test.native actual FS transport stopped admission remains an ordinary status with explicit cleanup and no event"
+  ],
+  "group": "native-node-fs-request-transport",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

@@ -1,0 +1,40 @@
+$ErrorActionPreference='Stop'
+
+$taskBase='C:\Users\adyba\pi-zig'
+
+$taskOuter=Join-Path $taskBase 'evidence/root-crypto58-native-outer-prepared-20261017/outer-owned-process.ps1'
+
+if((Get-FileHash -LiteralPath $taskOuter).Hash -cne '53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B'){throw 'Owned outer helper changed'}
+
+. $taskOuter
+
+$taskReceipt=Join-Path $PSScriptRoot 'outer'
+
+$taskArguments=@('-NoLogo','-NoProfile','-NonInteractive','-File',(Join-Path $taskBase 'evidence/combined-native-batch-v38-regression63-prepared-20261021/Run-CombinedNativeBatch.ps1'),'-RootGrant',(Join-Path $PSScriptRoot 'root-grant.json'),'-Mode','BuildQuery')
+
+$taskFailed=$false
+
+try { $taskDone=Invoke-CiOwnedProcess 'C:\Program Files\PowerShell\7\pwsh.exe' $taskArguments $taskBase $taskReceipt 1800; $taskDone|ConvertTo-Json -Depth 8 }
+
+catch { $taskFailed=$true; [Console]::Error.WriteLine([string]$_) }
+
+finally {
+
+ if(Test-Path -LiteralPath ($taskReceipt+'.json')) {
+
+  $taskObserved=Get-Content -LiteralPath ($taskReceipt+'.json') -Raw|ConvertFrom-Json
+
+  $taskLive=@(Get-CimInstance Win32_Process -Filter "ProcessId = $($taskObserved.pid)")
+
+  $taskAbsent=[ordered]@{pid=$taskObserved.pid;created_utc=$taskObserved.created_utc;observed_utc=[DateTimeOffset]::UtcNow.ToString('o');currently_absent=($taskLive.Count -eq 0);current_records=@($taskLive|Select-Object ProcessId,CreationDate,ExecutablePath)}
+
+  $taskAbsent|ConvertTo-Json -Depth 8|Set-Content -LiteralPath (Join-Path $PSScriptRoot 'outer-absence.json') -Encoding utf8NoBOM
+
+  if(!$taskAbsent.currently_absent){$taskFailed=$true}
+
+ } else { $taskFailed=$true; [Console]::Error.WriteLine('Outer ownership receipt missing; reconcile independently') }
+
+}
+
+if($taskFailed){exit 1}
+

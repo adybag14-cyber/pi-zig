@@ -1,0 +1,479 @@
+{
+  "schema": "pi-zig.v37-file-handle-runtime-fixture-authority-inputs.v1",
+  "sources": [
+    {
+      "key": "proposal",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\proposal.json",
+      "bytes": 21669,
+      "sha256": "2933A7AB4CCC196984FC27419B3E4A64DCCEB99B0834734AA7B357EE1280C7FC",
+      "ranges": [],
+      "snapshot": null
+    },
+    {
+      "key": "original_test",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "ranges": [
+        {
+          "first_line": 176,
+          "last_line": 197,
+          "role": "Accepted invalid-close input and unchanged EBADF/rejection controls"
+        },
+        {
+          "first_line": 359,
+          "last_line": 379,
+          "role": "Failed GC close input and retained reference/error-message assertions"
+        },
+        {
+          "first_line": 453,
+          "last_line": 484,
+          "role": "Real before-hook close result and exact pending identity assertions"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "original_fixture",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33152,
+      "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F",
+      "ranges": [
+        {
+          "first_line": 82,
+          "last_line": 132,
+          "role": "Original NativeCallback stable storage, errdefer and undefined-resource call"
+        },
+        {
+          "first_line": 386,
+          "last_line": 405,
+          "role": "Exact signed descriptor construction into the real FileHandle owner"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "candidate_test",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28576,
+      "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6",
+      "ranges": [
+        {
+          "first_line": 6,
+          "last_line": 18,
+          "role": "Single INT_MAX descriptor constant; no new import"
+        },
+        {
+          "first_line": 365,
+          "last_line": 381,
+          "role": "Same GC failure assertions with matching exact decimal descriptor"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "candidate_fixture",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33411,
+      "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B",
+      "ranges": [
+        {
+          "first_line": 90,
+          "last_line": 116,
+          "role": "Conditional fresh plain resource, expression escape, local defer and existing unwind"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "argument",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9",
+      "ranges": [
+        {
+          "first_line": 9,
+          "last_line": 14,
+          "role": "Duplicate entitlement and existing expression finish boundary"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "operation_scope",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+      "ranges": [
+        {
+          "first_line": 13,
+          "last_line": 27,
+          "role": "Checked actual allocation ownership and failure cleanup"
+        },
+        {
+          "first_line": 71,
+          "last_line": 71,
+          "role": "Fresh JS_NewObject through generation/checked allocation"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "owned_boundary",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+      "bytes": 9934,
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "ranges": [
+        {
+          "first_line": 85,
+          "last_line": 95,
+          "role": "Local ownership and failure release"
+        },
+        {
+          "first_line": 114,
+          "last_line": 134,
+          "role": "Local roots retire separately from escaped return"
+        },
+        {
+          "first_line": 158,
+          "last_line": 163,
+          "role": "Finished escape entitlement"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "callback_scope",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E",
+      "ranges": [
+        {
+          "first_line": 433,
+          "last_line": 442,
+          "role": "Unchanged strict present-resource object check"
+        },
+        {
+          "first_line": 671,
+          "last_line": 691,
+          "role": "Scope retain/duplicate and canCallIntoJs early return"
+        },
+        {
+          "first_line": 775,
+          "last_line": 791,
+          "role": "Scope duplicate release and environment/depth teardown"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "immediates",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_native_immediates.zig",
+      "bytes": 8688,
+      "sha256": "4D08479443076E84E1B16005FEC0078BAD08BD19D31DD6012266752E44CE7578",
+      "ranges": [
+        {
+          "first_line": 123,
+          "last_line": 148,
+          "role": "Selected real native task execution/destruction, exception and scope completion order"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "owner",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D",
+      "ranges": [
+        {
+          "first_line": 223,
+          "last_line": 238,
+          "role": "Unchanged real Int32 constructor admission"
+        },
+        {
+          "first_line": 275,
+          "last_line": 288,
+          "role": "Unchanged sentinel -1 CHECK and actual close dispatch"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "close_request",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A",
+      "ranges": [
+        {
+          "first_line": 270,
+          "last_line": 298,
+          "role": "Real native completion selects UVException rejection only for result<0"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "gc_close",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_gc_close.zig",
+      "bytes": 6402,
+      "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4",
+      "ranges": [
+        {
+          "first_line": 41,
+          "last_line": 55,
+          "role": "Unchanged fixed native buffer and actual UVException throw"
+        },
+        {
+          "first_line": 98,
+          "last_line": 134,
+          "role": "Real sync close, sentinel CHECK, captured descriptor and result-based refed queue"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "node_env",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\node-env.v24.13.cc",
+      "bytes": 84987,
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9",
+      "ranges": [
+        {
+          "first_line": 1389,
+          "last_line": 1400,
+          "role": "Pinned Node conditional Object::New native-immediate callback resource"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "node_authority",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority-acquisition.json",
+      "bytes": 10905,
+      "sha256": "28C98F0DE650DFA0F97E1D1BCE71E2D7EEE0A61012CE36A1732DD46C81DADF7C",
+      "ranges": [],
+      "snapshot": null
+    },
+    {
+      "key": "uv_fs",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs.c",
+      "bytes": 105366,
+      "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693",
+      "ranges": [
+        {
+          "first_line": 74,
+          "last_line": 97,
+          "role": "INIT/POST connect every public FS call to request initialization and sync/async execution"
+        },
+        {
+          "first_line": 117,
+          "last_line": 122,
+          "role": "Only -1 is rejected by VERIFY_FD"
+        },
+        {
+          "first_line": 397,
+          "last_line": 410,
+          "role": "Every request initializes libuv once"
+        },
+        {
+          "first_line": 668,
+          "last_line": 695,
+          "role": "fd<=2 success versus actual CRT _close and EBADF mapping"
+        },
+        {
+          "first_line": 3241,
+          "last_line": 3245,
+          "role": "uv_fs_close uses INIT before storing descriptor/POST"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "uv_core",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\core.c",
+      "bytes": 18494,
+      "sha256": "3026F2888B3360E65A2E2662508EEF6BA9B1AF17735391CA6F79DC06887B8B23",
+      "ranges": [
+        {
+          "first_line": 73,
+          "last_line": 79,
+          "role": "Returning invalid-parameter handler under selected CRT condition"
+        },
+        {
+          "first_line": 179,
+          "last_line": 198,
+          "role": "Actual installation before native work; debug report hook"
+        },
+        {
+          "first_line": 227,
+          "last_line": 238,
+          "role": "Loop creation also initializes libuv first"
+        },
+        {
+          "first_line": 332,
+          "last_line": 334,
+          "role": "uv_once guards actual initialization"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "uv_service",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+      "bytes": 46648,
+      "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+      "ranges": [
+        {
+          "first_line": 676,
+          "last_line": 697,
+          "role": "Actual service initializes loop before worker publication"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "network_build",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_node_network.zig",
+      "bytes": 5905,
+      "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369",
+      "ranges": [
+        {
+          "first_line": 9,
+          "last_line": 29,
+          "role": "Selected library and Windows flags do not override CRT macros"
+        },
+        {
+          "first_line": 83,
+          "last_line": 90,
+          "role": "Actual Windows core/fs source membership"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "mingw_header",
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\_mingw.h",
+      "bytes": 19371,
+      "sha256": "9DAA9C8670CB7E5D73E2290A020D8CBEBF55BC19FD4C5E2F27E661C98827C3B6",
+      "ranges": [
+        {
+          "first_line": 229,
+          "last_line": 247,
+          "role": "Pinned selected default CRT0xE00 and UCRT satisfy libuv >=0x800"
+        }
+      ],
+      "snapshot": null
+    },
+    {
+      "key": "ucrt_close",
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Source\\10.0.26100.0\\ucrt\\lowio\\close.cpp",
+      "bytes": 2884,
+      "sha256": "66EF4CA9584690771768589C039BA04E024AD6FA5758958473E6BCE4209603F3",
+      "ranges": [
+        {
+          "first_line": 50,
+          "last_line": 77,
+          "role": "Actual descriptor range validation precedes table access and OS-close path"
+        }
+      ],
+      "snapshot": "windows-sdk-10.0.26100-ucrt-close.cpp"
+    },
+    {
+      "key": "ucrt_lowio",
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Source\\10.0.26100.0\\ucrt\\inc\\corecrt_internal_lowio.h",
+      "bytes": 11985,
+      "sha256": "1465B3388C22524A779C19DCD709EEFF116993D21A0068E639281181DDB2A751",
+      "ranges": [
+        {
+          "first_line": 110,
+          "last_line": 129,
+          "role": "128*64 bounded descriptor index table"
+        },
+        {
+          "first_line": 150,
+          "last_line": 166,
+          "role": "Actual finite table type and valid _nhandle range"
+        }
+      ],
+      "snapshot": "windows-sdk-10.0.26100-corecrt-internal-lowio.h"
+    },
+    {
+      "key": "ucrt_invalid_parameter",
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Source\\10.0.26100.0\\ucrt\\misc\\invalid_parameter.cpp",
+      "bytes": 10714,
+      "sha256": "B09696292D181B0D51D360377F933763B7B1BE796557AB3334F481800B0C3F2E",
+      "ranges": [
+        {
+          "first_line": 99,
+          "last_line": 114,
+          "role": "Thread-local override precedes actual global handler; normal return avoids Watson"
+        }
+      ],
+      "snapshot": "windows-sdk-10.0.26100-ucrt-invalid-parameter.cpp"
+    },
+    {
+      "key": "doc_setmaxstdio",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\_setmaxstdio.md",
+      "bytes": 2790,
+      "sha256": "367035800B397585FA213D7B45D6EEA4937700894B9AD3E9FCDBD45C6FEA0578",
+      "ranges": [],
+      "snapshot": null
+    },
+    {
+      "key": "doc_close",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\_close.md",
+      "bytes": 2050,
+      "sha256": "A8D0AFB0CCDBF82FFC426F5CD12DE4D5051FDB6DE36CCD1B02119119CCB419DD",
+      "ranges": [],
+      "snapshot": null
+    },
+    {
+      "key": "doc_acquisition",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\native-hermes-primary-fetch.json",
+      "bytes": 9887,
+      "sha256": "9CE71D3BE82597741722A7CDF47A75707C76646E0655DD9DFE7F7B6AD41E9B08",
+      "ranges": [],
+      "snapshot": null
+    },
+    {
+      "key": "runtime_result",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\result.json",
+      "bytes": 8438,
+      "sha256": "20387216D12CBABE8C6763CB26E0C3228897F6AAAE500E69F18B94201CC38C10",
+      "ranges": [],
+      "snapshot": null
+    },
+    {
+      "key": "runtime_owner",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.json",
+      "bytes": 1228,
+      "sha256": "73AE870C555B868366E33B52366E42E99BADF550B5AEA4DFD35251993809D659",
+      "ranges": [],
+      "snapshot": null
+    },
+    {
+      "key": "runtime_stderr",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stderr.log",
+      "bytes": 68389,
+      "sha256": "1BB42117F374DECBF5C91100686DF7DA7D686A285ECF9F874423D5799AF945ED",
+      "ranges": [],
+      "snapshot": null
+    },
+    {
+      "key": "runtime_stdout",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stdout.bin",
+      "bytes": 546,
+      "sha256": "28AC47910B5D5309DD1A1454816A2C051A0E420C51BD0827D4EC61F5D5528C9E",
+      "ranges": [],
+      "snapshot": null
+    },
+    {
+      "key": "catalog",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\groups.json",
+      "bytes": 1104585,
+      "sha256": "E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37",
+      "ranges": [],
+      "snapshot": null
+    }
+  ]
+}

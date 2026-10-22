@@ -1,0 +1,26 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\78b1ce0ea78bdbfd956f7680c5d9bb72\\test.exe",
+  "binary_sha256": "61151C06BEC4445FCF4C653E3EF6C86EB787D657ACECABFCF964668E0482576D",
+  "version": "0.16.0",
+  "actual_count": 14,
+  "tests": [
+    "native_node_fs_readwrap_reuse_test.test.native actual FS reuse initial Reset preserves unsubmitted storage and charge",
+    "native_node_fs_readwrap_reuse_test.test.native actual FS reuse raw span preserves offset sentinels and payload after cleanup",
+    "native_node_fs_readwrap_reuse_test.test.native actual FS reuse invalid raw spans leave the same request admissible",
+    "native_node_fs_readwrap_reuse_test.test.native actual FS reuse Reset rejects submitted and queued work until actual dequeue",
+    "native_node_fs_readwrap_reuse_test.test.native actual FS reuse dequeued result still requires actual cleanup before Reset",
+    "native_node_fs_readwrap_reuse_test.test.native actual FS reuse new completion queues before old event entitlement retires",
+    "native_node_fs_readwrap_reuse_test.test.native actual FS reuse old release preserves the reused embedded event FIFO next link",
+    "native_node_fs_readwrap_reuse_test.test.native actual FS reuse several event tickets may own one embedded address",
+    "native_node_fs_readwrap_reuse_test.test.native actual FS reuse completion owns request after old event and explicit owner retire",
+    "native_node_fs_readwrap_reuse_test.test.native actual FS reuse lease cleanup releases backing before later raw span",
+    "native_node_fs_readwrap_reuse_test.test.native actual FS reuse raw request can later acquire a genuine JS backing lease",
+    "native_node_fs_readwrap_reuse_test.test.native actual FS reuse null zero length and later EOF preserve real result zero",
+    "native_node_fs_readwrap_reuse_test.test.native actual FS reuse cancellation and stop retain exactly the reused completion",
+    "native_node_fs_readwrap_reuse_test.test.native actual FS reuse raw admission and Reset preserve actual pending without JS heap work"
+  ],
+  "group": "native-node-fs-readwrap-reuse",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

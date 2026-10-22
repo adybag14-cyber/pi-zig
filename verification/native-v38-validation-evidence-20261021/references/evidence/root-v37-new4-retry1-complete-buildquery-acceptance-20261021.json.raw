@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "root_accepted_complete_v37_new4_retry1_buildquery",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-21T13:27:35.935604+00:00",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "batch": "new4",
+  "groups": [
+    "native-node-file-handle-owner",
+    "native-node-fs-before-hook-continuation",
+    "native-vm-error-constructor-name",
+    "native-node-file-handle-transfer"
+  ],
+  "declared_groups": 4,
+  "declared_controls": 58,
+  "actual_metadata_count": 61,
+  "complete_buildquery_accepted": true,
+  "build_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\result.json",
+    "bytes": 67229,
+    "sha256": "8A86FD362D0E48FABAB9BE0F6E6902BECDDDA8F4F779AE8E73FB6492D927DBFC"
+  },
+  "build_final": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\final.json",
+    "bytes": 15933885,
+    "sha256": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27"
+  },
+  "metadata_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-metadata-acceptance.json",
+    "bytes": 14153,
+    "sha256": "6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B"
+  },
+  "independent_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-current-seals-and-owners.json",
+    "bytes": 224405,
+    "sha256": "7299F65541DED34F87D3671FAA895C2F0E9B2C8B9149AE4757DE466B5FD11382"
+  },
+  "original_job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-observed-job-status.json",
+    "bytes": 1572,
+    "sha256": "79BDD040C8AE961F2190A684AEA93E45BB899F42CD087BCE5BE6E593289FD311"
+  },
+  "before": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\before.json",
+    "bytes": 15933885,
+    "sha256": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27"
+  },
+  "root_review": "Root accepts the original fa17 fresh V37 Retry1 BuildQuery only after the unchanged34D2 independent metadata audit and2C89 complete source/artifact/directory/process audit both succeeded. All four ordered groups compile and query successfully; actual metadata19/4/24/14 totals61 and no tests ran. All14785 source,14798 tree,1489 vendor,19546 compiler and14 control entries match whole before/final seals. The independent closure rehashed34354 distinct files, verified complete directory inventories, original artifacts/raw wires and all eight terminal-zero native owners plus outer/runner/launcher intervals at full UTC100ns precision. Current original owners, direct children and classifier-native candidates are absent. Root read every semantic closure field and independently rehashed all60 original receipts and733 supplemental current preparation pins. The expired initial V37 attempt and V36 negatives remain separate immutable history. Runtime requires a fresh distinct exact strict RuntimeOnly grant at this same clean frozen Main b13, using only this accepted artifact cohort.",
+  "source_mutation_hold_released": false,
+  "runtime_execution_authorized": false,
+  "qualification": false,
+  "application_qualified": false
+}

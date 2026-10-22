@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "status": "root_accepted_original_v37_retry1_new4_strict_runtime_negative_closure",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-21T13:55:41.383690+00:00",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "batch": "new4",
+  "independent_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-closure.json",
+    "bytes": 22838,
+    "sha256": "321ABB743297FC9720D36E78F17B38441F8FAE3A60BEA32DE488FC248342F517"
+  },
+  "independent_negative_auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\Audit-NegativeV37Retry1New4StrictRuntime.py",
+    "bytes": 47992,
+    "sha256": "77B7214537A583410F686B560FA158097087C836C5A7DD34345FE8ED5266ECC8"
+  },
+  "audit_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-audit-inputs.json",
+    "bytes": 11361,
+    "sha256": "7B5903FF048D7545C9DE37089413BAED532EA7FFDFD7F556EF4631D287BDCD8C"
+  },
+  "root_audit_release": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\root-negative-runtime-audit-release.json",
+    "bytes": 5004,
+    "sha256": "F86B2BF4E9937AC1286E02F038D50374E03838DCE70E044DF989328FDCBF99F9"
+  },
+  "audit_job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-audit-job-observation.json",
+    "bytes": 1559,
+    "sha256": "93ED30ABDCBED9FA178C2071CFE3E63EF1165BCC6F0BFE5B7071D7904AF328FE"
+  },
+  "root_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-retry1-negative-runtime-auditor-static-review-20261021.json",
+    "bytes": 11625,
+    "sha256": "C7B6F70D4C7C672A7325F2092364DBC0B0793EAE6D39098714F51EF85C3842C7"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v37-retry1-negative-runtime-auditor-source-peer-20261021\\peer.json",
+    "bytes": 12425,
+    "sha256": "2C3D67EDA05DD06FE5CE50622DD5B2BB705BC14BAB7DFEE3FCB4BF225D4B213F"
+  },
+  "complete_buildquery_accepted": true,
+  "actual_metadata_count": 61,
+  "granted_groups": 4,
+  "attempted_groups": 1,
+  "unstarted_groups": 3,
+  "runtime_started": 19,
+  "runtime_completed": 19,
+  "runtime_failed": 5,
+  "runtime_passed": 14,
+  "runtime_unstarted": 42,
+  "failed_indices": [
+    5,
+    10,
+    11,
+    12,
+    16
+  ],
+  "whole_bookends_unchanged": true,
+  "all_34365_current_sealed_files_and_complete_inventories_verified": true,
+  "all_four_original_process_instances_and_children_closed": true,
+  "original_nonempty_stderr_and_failure_flags_preserved": true,
+  "root_rehashed_distinct_pins": 44,
+  "negative_closure_accepted": true,
+  "source_intake_requires_separate_exact_root_release": true,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "runtime_qualification": false,
+  "product_qualification": false
+}

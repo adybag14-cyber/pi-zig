@@ -1,0 +1,156 @@
+ative","runtime_negative_root_acceptance"},"exact original63 acceptance roles")
+    bq_pin = selected_observed("existing63_buildquery_root")
+    require(cohort["buildquery_root_acceptance"]==bq_pin,"actual original63 BQ acceptance")
+    bq = document(bq_pin)
+    groups,counts,actual = existing63,ORIGINAL63_COUNTS,1285
+    require(bq["status"]=="root_accepted_complete_fresh_v38_existing63_buildquery" and bq["reviewer"]=="Root","original63 Root complete BQ acceptance")
+    require(bq["candidate_head"]==HEAD and bq["batch"]=="existing63" and bq["groups"]==groups,"exact original63 BQ identity/order")
+    require(bq["declared_groups"]==63 and bq["declared_controls"]==1249 and
+            bq["actual_metadata_count"]==actual and bq["actual_group_counts"]==counts and sum(counts)==actual,"actual original63 metadata vector")
+    flags(bq,true=("complete_buildquery_accepted","complete_source_and_current_directory_seals","all_original_terminal0_owner_gates_passed"),
+          false=("runtime_started","runtime_execution_authorized","qualification","source_mutation_hold_released"))
+    require(bq["native_owner_count"]==126 and bq["actual_process_intervals_closed"]==129 and bq["actual_tests_started"]==0,"complete original63 BQ owners")
+    bp,bc = Path(membership[2]["proof"]),Path(membership[2]["control"])
+    for key,path in {"build_result":bp/"result.json","build_final":bp/"final.json",
+                     "metadata_acceptance":bc/"independent-metadata-acceptance.json",
+                     "independent_closure":bc/"independent-current-seals-and-owners.json"}.items():
+        require(bq[key]==archived_pin(path),"original63 BQ exact parent pin "+key)
+    build,metadata = document(bq["independent_closure"]),document(bq["metadata_acceptance"])
+    result = doc(bp/"result.json")
+    require(build["status"]=="independently_closed_complete_fresh_build_query" and build["candidate_head"]==HEAD,"original63 positive independent BQ")
+    flags(build,true=COMMON_TRUE+("all_original_terminal0_owner_gates_passed",),
+          false=("runtime_started","qualification","cache_seeded","source_mutation_hold_released"))
+    require(build["granted_groups"]==build["attempted_groups"]==63 and build["unstarted_groups"]==0,"all63 BQ groups closed")
+    require(build["native_owner_count"]==126 and len(build["actual_process_intervals"])==129 and build["actual_tests_started"]==0,"all129 BQ process intervals")
+    require(build["actual_metadata_count"]==actual and [g["group"] for g in build["groups"]]==groups and
+            [g["actual_metadata_count"] for g in build["groups"]]==counts,"complete original63 BQ metadata")
+    require(metadata["status"]=="independently_accepted_combined_native_batch_metadata" and metadata["accepted"] is True and metadata["candidate_head"]==HEAD,"original63 accepted raw metadata")
+    flags(metadata,false=("runtime_started","runtime_qualification"))
+    require([g["group"] for g in metadata["groups"]]==groups and [g["actual_count"] for g in metadata["groups"]]==counts,"exact63 accepted metadata groups")
+    require(all(len(g["tests"])==n for g,n in zip(metadata["groups"],counts)),"complete1285 actual metadata names")
+    require(build["metadata_acceptance"]==bq["metadata_acceptance"] and
+            metadata["build_result_sha256"]==bq["build_result"]["sha256"] and
+            metadata["build_source_seal_sha256"]==bq["build_final"]["sha256"],"original63 BQ metadata/source linkage")
+    require(result["status"]=="passed_build_query_batch" and result["mode"]=="BuildQuery" and result["candidate_head"]==HEAD,"original63 raw BQ success")
+    require([g["group"] for g in result["groups"]]==groups and all(g["status"]=="passed_build_query" for g in result["groups"]),"complete63 original BQ results")
+    job = doc(bc/"independent-observed-job-status.json")["data"]
+    require(job["status"]=="succeeded" and job["exitCode"]==0 and job["runnerAlive"] is False and
+            type(job["runnerProcessInstance"]) is str and re.fullmatch(r"[0-9]+",job["runnerProcessInstance"]),"original63 successful job decimal100ns identity")
+    prep = E/"combined-native-batch-v38-regression63-prepared-20261021"
+    review,matrix = doc(prep/"preparation-review.json"),doc(prep/"groups.json")
+    require(review["candidate_head"]==HEAD and review["selected_group_names"]==groups and
+            review["selected_groups"]==63 and review["selected_declarations"]==1249,"exact prepared original63")
+    require(review["actual_metadata_count"] is None and archived_pin(prep/"groups.json")["sha256"]==MATRIX_SHA,"original63 source declarations do not predict metadata")
+    require(len(matrix["groups"])==117 and sum(len(g["required_named"]) for g in matrix["groups"])==2013 and
+            len(matrix["whole_tree_dependency_pins"])==576,"whole accepted shared catalog")
+    return bq_pin,bq,metadata,{
+      "status":build["status"],"root_acceptance":bq_pin,"closure":bq["independent_closure"],
+      "metadata_acceptance":bq["metadata_acceptance"],"result":bq["build_result"],
+      "native_owner_count":126,"actual_tests_started":0,"runtime_qualification":False}
+
+def check_existing63_prelaunch(bq_pin):
+    root_pin = selected_observed("existing63_prelaunch_root")
+    require(copy_plan["cohorts"]["existing63"]["prelaunch_root_negative"]==root_pin,"exact initial admission negative")
+    root = document(root_pin)
+    pc,pp = Path(membership[3]["control"]),Path(membership[3]["proof"])
+    require(root["status"]=="preserved_v38_existing63_runtime_prelaunch_grant_freshness_negative" and
+            root["reviewer"]=="Root" and root["candidate_head"]==HEAD and root["batch"]=="existing63","Root exact prelaunch rejection")
+    require(root["classification"]=="strict_runtime_admission_failure_before_any_native_owner_or_test" and
+            root["runtime_control"]==str(pc) and root["runtime_proof"]==str(pp),"exact prelaunch phase")
+    require(root["buildquery_acceptance_preserved"]==bq_pin,"prelaunch exact accepted BQ parent")
+    reason = "Initial grant must be within300seconds before first child launch"
+    require(root["reason"]==reason and root["declared_groups"]==63 and root["admission_attempted_groups"]==1 and
+            root["unstarted_groups"]==62 and root["native_owners_started"]==root["native_tests_started"]==0,"Root classified zero-native admission failure")
+    require(root["initial_grant_max_age_seconds"]==300 and root["group_native_timeout_seconds"]==120,"unchanged admission/native limits")
+    flags(root,true=("source_bookends_byte_equal","original_result_preserved"),
+          false=("diagnostic_continue","native_test_failure","product_qualification","source_mutation_hold_released"))
+    for key,path in {"runtime_launch":pc/"runtime-launch.json","runtime_grant":pc/"root-grant.json",
+                     "runtime_result":pp/"result.json","before":pp/"before.json","final":pp/"final.json",
+                     "outer":pc/"outer.json","outer_absence":pc/"outer-absence.json",
+                     "terminal_observation":pc/"independent-observed-job-status.json"}.items():
+        require(root[key]==archived_pin(path),"all exact prelaunch original receipts "+key)
+    result = doc(pp/"result.json")
+    require(result["status"]=="failed" and result["mode"]=="RuntimeOnly" and result["candidate_head"]==HEAD and
+            result["group_manifest_sha256"]==MATRIX_SHA,"unchanged raw prelaunch result identity")
+    require(result["errors"]==[reason] and len(result["groups"])==1 and result["groups"][0]["group"]==existing63[0],"exact one attempted admission")
+    flags(result,true=("postseal","controller_environment_restored","runtime_requested"),
+          false=("all_groups_closed","product_qualified","cache_seeded"))
+    first = result["groups"][0]
+    require(first["status"]=="failed" and first["errors"]==[reason] and first["phases"]=={} and
+            first["attempted_phases"]==["runtime"] and first["owned_started_phases"]==[],"original no-owner phase state")
+    flags(first,false=("runtime_owner_launch_attempted","actual_runtime_owner_started"))
+    require(first["native_selected_tests_started"] is None,"retain raw null distinct from Root classified zero")
+    require(result["absence"]=={"native_roots":[],"owners":[]} and len(result["admission_probes"])==1,"original no native owner admission evidence")
+    require(raw(pp/"before.json")==raw(pp/"final.json"),"original prelaunch bookends equal")
+    for name in ("before.json","final.json"):
+        require(row_by_path[str(pp/name).casefold()]["representation"]=="raw_byte_exact","both prelaunch seals retained raw")
+    job = document(root["terminal_observation"])["data"]
+    require(job["status"]=="failed" and job["exitCode"]==1 and job["runnerAlive"] is False and
+            job["id"]=="job-op-0975772fcc8e984e84c4d255a0b9805571c22200314b7111deb9a88e5824bc0c" and
+            job["runnerProcessInstance"]=="134371499352045058","original prelaunch failed job and exact100ns string")
+    return {
+      "name":"V38 original63 initial runtime prelaunch grant freshness negative",
+      "status":root["status"],"source_head":HEAD,"batch":"existing63","root_acceptance":root_pin,
+      "result":root["runtime_result"],"buildquery_parent":bq_pin,"native_failure":False,
+      "admission_attempted_groups":1,"groups_without_admission":62,
+      "raw_native_selected_tests_started":None,"classified_native_owners_started":0,"classified_native_tests_started":0,
+      "accepted_metadata":1285,"all_native_tests_unstarted":1285,
+      "original_job_observation":root["terminal_observation"],"original_evidence_unchanged":True,
+      "new_native_execution_authorized":False,"source_mutation_hold_released":False,"product_qualification":False}
+
+def check_existing63_partial_negative(bq_pin,bq,metadata):
+    root_pin = selected_observed("existing63_negative_root")
+    require(copy_plan["cohorts"]["existing63"]["runtime_negative_root_acceptance"]==root_pin,"actual original63 partial-negative acceptance")
+    root = document(root_pin)
+    rc,rp = Path(membership[4]["control"]),Path(membership[4]["proof"])
+    require(root["status"]=="root_accepted_original_v38_existing63_retry1_strict_runtime_negative_closure" and
+            root["reviewer"]=="Root" and root["candidate_head"]==HEAD and root["batch"]=="existing63","Root exact native negative closure")
+    flags(root,true=("complete_buildquery_accepted","negative_closure_accepted","whole_bookends_unchanged",
+                     "all_current_sealed_files_and_complete_inventories_verified","all_original_process_instances_and_children_closed",
+                     "original_nonempty_stderr_and_failure_flags_preserved","root_exact100ns_intervals_recomputed"),
+          false=("positive_group_acceptance","native_execution_authorized","source_mutation_hold_released",
+                 "runtime_qualification","product_qualification"))
+    expected_counts = {"actual_metadata_count":1285,"granted_groups":63,"attempted_groups":17,"unstarted_groups":46,
+      "runtime_started":321,"runtime_completed":321,"runtime_failed":1,"runtime_passed":320,"runtime_unstarted":964,
+      "distinct_current_sealed_files":34739,"closed_original_process_intervals":20,"current_native_candidates":0,
+      "original_attempted_group_file_count":238}
+    require(all(root[k]==v for k,v in expected_counts.items()),"all exact observed negative Root counts")
+    require(root["root_buildquery_acceptance"]==bq_pin and root["metadata_acceptance"]==bq["metadata_acceptance"] and
+            root["independent_build_closure"]==bq["independent_closure"],"negative exact accepted BQ and1285-metadata parent")
+    require(root["independent_negative_closure"]==selected_observed("existing63_negative_closure") and
+            root["independent_negative_auditor"]==selected_observed("existing63_negative_auditor") and
+            root["audit_configuration"]==selected_observed("existing63_negative_audit_configuration"),"exact DC14 audited source/config/closure")
+    for key,value in root.items():
+        if isinstance(value,dict) and set(value)=={"path","bytes","sha256"}:
+            retained_pin(value)
+    runtime = document(root["independent_negative_closure"])
+    require(runtime["status"]=="independently_closed_negative_strict_runtime" and
+            runtime["candidate_head"]==HEAD and runtime["batch"]=="existing63","actual independent negative closure")
+    flags(runtime,true=COMMON_TRUE+("original_strict_failures_preserved",),
+          false=("all_original_strict_empty_stderr_and_all_tests_passing_gates_passed",
+                 "runtime_qualification","product_qualification","source_mutation_hold_released"))
+    require(runtime["metadata_acceptance"]==bq["metadata_acceptance"] and runtime["independent_build_closure"]==bq["independent_closure"],"independent negative BQ parent")
+    require(runtime["declared_groups"]==63 and runtime["declared_controls"]==1249 and runtime["granted_groups"]==63 and
+            runtime["accepted_cohort"]==1285 and runtime["attempted_groups"]==17 and runtime["unstarted_groups"]==46,"exact negative source and metadata cohort")
+    require(runtime["runtime_owner_count"]==17 and len(runtime["actual_process_intervals"])==20 and
+            runtime["distinct_current_files_rehashed"]==34739,"exact17 owners20 process intervals andcurrent seals")
+    require(runtime["observed_started"]==runtime["observed_completed"]==321 and runtime["observed_passed"]==320 and
+            runtime["observed_failed"]==1 and runtime["not_started"]==964,"exact partial runtime321/320/1/964")
+    require(runtime["seal_counts"]==root["seal_counts"]=={"source":15041,"tree":15054,"vendor":1489,"compiler":19546,"controls":143},"exact complete seal domains")
+    require(runtime["not_started_groups"]==existing63[17:] and
+            [g["group"] for g in runtime["observed_groups"]]==existing63[:17],"exact17-prefix and46 unstarted order")
+    require(sum(ORIGINAL63_COUNTS[:17])==321 and sum(ORIGINAL63_COUNTS[17:])==964,"counts derived from full1285 metadata vector")
+    require(runtime["current_absence"]["owners"]==runtime["current_absence"]["direct_children"]==runtime["current_absence"]["native"]==[],"accepted complete current absence")
+    require(runtime["auditor"]==root["independent_negative_auditor"] and runtime["audit_configuration"]==root["audit_configuration"],"original independent audit/source relationship")
+    for key,path in {"runtime_result":rp/"result.json","runtime_before":rp/"before.json","runtime_final":rp/"final.json"}.items():
+        require(root[key]==archived_pin(path),"Root exact failed runtime original "+key)
+    require(raw(rp/"before.json")==raw(rp/"final.json"),"negative complete source bookends identical")
+    result = doc(rp/"result.json")
+    require(result["status"]=="failed" and result["mode"]=="RuntimeOnly" and result["candidate_head"]==HEAD and
+            result["group_manifest_sha256"]==MATRIX_SHA,"unchanged original failed batch")
+    require([g["group"] for g in result["groups"]]==existing63[:17] and
+            result["errors"]==["Native test protocol did not report every selected test passing without logs/leaks"],"exact original17 partial result and failure")
+    flags(result,true=("postseal","controller_environment_restored","runtime_requested"),
+          false=("all_groups_closed","product_qualified","cache_seeded"))
+    require([g["status"] for g in result["groups"]]==["partial_batch_not_admissible"]*16+["failed"] and
+            root["first16_original_group_status"]=="partial_batch_not_admissible","retain all16 driver

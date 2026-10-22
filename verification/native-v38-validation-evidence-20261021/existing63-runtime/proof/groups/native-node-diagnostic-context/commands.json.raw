@@ -1,0 +1,50 @@
+{
+  "mode": "RuntimeOnly",
+  "group": "native-node-diagnostic-context",
+  "compile": [
+    "build",
+    "build-native-node-diagnostic-context",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-Ddiagnostic-tests=false",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--prefix",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-diagnostic-context\\installed",
+    "--cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache",
+    "--global-cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\global-cache",
+    "--summary",
+    "all"
+  ],
+  "metadata": [
+    "--listen=-"
+  ],
+  "runtime": [
+    "--listen=-"
+  ],
+  "expected_names": [
+    "native_node_diagnostic_context_test.test.Node diagnostic context actual VM creation does not admit an ambient context",
+    "native_node_diagnostic_context_test.test.Node diagnostic context nested actual contexts restore their caller without retaining a VM",
+    "native_node_diagnostic_context_test.test.Node diagnostic context explicit native-only admission masks and restores an entered caller",
+    "native_node_diagnostic_context_test.test.Node diagnostic context same-context reentry leaves the outer borrowed admission live",
+    "native_node_diagnostic_context_test.test.Node diagnostic context native projection works with an exhausted JS heap without allocating",
+    "native_node_diagnostic_context_test.test.Node diagnostic context ordinary and fatal pending reasons remain the same actual owned value",
+    "native_node_diagnostic_context_test.test.Node diagnostic context private termination lease and actual pending token survive admission",
+    "native_node_diagnostic_context_test.test.Node diagnostic context C++ locals retire before nested and outer scopes restore",
+    "native_node_diagnostic_context_test.test.Node diagnostic context C++ early return keeps each destructor in its real caller scope",
+    "native_node_diagnostic_context_test.test.Node diagnostic context actual worker thread neither inherits nor overwrites its caller admission"
+  ],
+  "expected_count": 10,
+  "named_controls": 10,
+  "source_seal_scope": "whole_batch",
+  "cache_authority": "One initially fresh private cache pair; serial exact-head group compilation; no seed lineage",
+  "compile_seconds": 1320,
+  "metadata_seconds": 30,
+  "runtime_whole_group_seconds": 120,
+  "pipe_settle_seconds": 10,
+  "installed_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-diagnostic-context\\installed\\bin\\test.exe",
+  "installed_pdb": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-diagnostic-context\\installed\\bin\\test.pdb"
+}

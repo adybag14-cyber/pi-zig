@@ -1,0 +1,1043 @@
+{
+  "schema": 1,
+  "status": "static_only_exact39_edit_inverse_and_unchanged_positive_source_accounting",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\candidate\\Prepare-V38PositiveProgressAndValidationArchive-20261021.py",
+    "bytes": 51755,
+    "sha256": "00F55DC94CC4151370B837FCDB02FFE991A07AC75C05EFE3022C66D079BD5A77"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\candidate\\Prepare-V38PartialNegativeProgressAndValidationArchive-20261022.py",
+    "bytes": 76267,
+    "sha256": "EE11C073C1D1CAD599D7F88B34B78133A5E3A90F68D1E1094D6AF77D7C5128AB"
+  },
+  "finite_edit_count": 39,
+  "steps": [
+    {
+      "number": 1,
+      "label": "Truthful partial-negative source scope",
+      "offset": 0,
+      "before": "\"\"\"Unexecuted V38 positive archive/progress preparer.\nRequires a separately issued exact Root config, accepted source receipt and final\ncopy plan after both original63 phases are independently closed and Root accepted.",
+      "after": "\"\"\"Unexecuted V38 partial-negative archive/progress preparer.\nRequires a separately issued exact Root config, accepted source receipt and final\ncopy plan binding the actual accepted BQ and separately closed negative runtime.",
+      "before_state_sha256": "00F55DC94CC4151370B837FCDB02FFE991A07AC75C05EFE3022C66D079BD5A77",
+      "after_state_sha256": "B93B913BA0E7B4CDECE96DC8CC9981B7D495F79496271761FDEE2BE2B57141BB",
+      "before_bytes": 218,
+      "after_bytes": 224,
+      "unchanged_prefix_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "unchanged_suffix_sha256": "F500FDF7053C2C36B055A2EC1BF2AA81F03BB08E342F68565C0E68900AD12ED5"
+    },
+    {
+      "number": 2,
+      "label": "Distinct staging directory",
+      "offset": 954,
+      "before": "OUT = E / \"pending-v38-progress-and-validation-archive-intake-20261021\"",
+      "after": "OUT = E / \"pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\"",
+      "before_state_sha256": "B93B913BA0E7B4CDECE96DC8CC9981B7D495F79496271761FDEE2BE2B57141BB",
+      "after_state_sha256": "17823C34CDFAD32E0B94BEB2A4048D5305B94B70A1CAD52BD47AE46ECD9C067E",
+      "before_bytes": 71,
+      "after_bytes": 88,
+      "unchanged_prefix_sha256": "3EFF5FFDCCACE6C1C7AA061983ABC9E164A23B48A6686D772AD13490117E14DA",
+      "unchanged_suffix_sha256": "E92A490C81F648948E9C8E7615A3B39222542A2D541C264F00E6AAC25CE53E6F"
+    },
+    {
+      "number": 3,
+      "label": "Five exact observed phases",
+      "offset": 2694,
+      "before": "PHASES = (\"new4-buildquery\",\"new4-runtime\",\"existing63-buildquery\",\"existing63-runtime\")",
+      "after": "PHASES = (\"new4-buildquery\",\"new4-runtime\",\"existing63-buildquery\",\n          \"existing63-runtime-prelaunch\",\"existing63-runtime\")\nCOMPRESSIBLE_PHASES = tuple(p for p in PHASES if p!=\"existing63-runtime-prelaunch\")\nORIGINAL63_COUNTS = [15,12,34,28,10,20,18,14,13,32,19,22,20,15,11,12,26,30,16,17,9,23,21,20,25,13,29,16,19,18,25,19,14,11,24,9,12,18,13,23,31,19,18,31,26,31,21,24,19,20,27,26,29,38,35,17,30,7,22,23,15,18,13]\nORIGINAL63_SUFFIXES = (\"20261021-153711\",\"20261022-133427\",\"20261022-134223\")",
+      "before_state_sha256": "17823C34CDFAD32E0B94BEB2A4048D5305B94B70A1CAD52BD47AE46ECD9C067E",
+      "after_state_sha256": "223859BC8858775E5A7B0E3525E63DF4A8D62C28485912AEFB720A4F294D1222",
+      "before_bytes": 88,
+      "after_bytes": 500,
+      "unchanged_prefix_sha256": "0389068CE0C9A1F1B2D7C6BA8179153AAC5E13525257C0F8C7D3DD7271BA915A",
+      "unchanged_suffix_sha256": "639E11354688088E299C35106F1F9FED1CC469FEB428ACBC4439D59EBC6CE716"
+    },
+    {
+      "number": 4,
+      "label": "Exact distinct Root preparation release status",
+      "offset": 7385,
+      "before": "cfg[\"status\"]==\"root_reviewed_specific_v38_positive_progress_archive_preparation\"",
+      "after": "cfg[\"status\"]==\"root_reviewed_specific_v38_partial_negative_progress_archive_preparation\"",
+      "before_state_sha256": "223859BC8858775E5A7B0E3525E63DF4A8D62C28485912AEFB720A4F294D1222",
+      "after_state_sha256": "CF9AA0CEBB634B75BE26E40A7FB9F526C43BB5CDB22552AE25C274E54887CC2B",
+      "before_bytes": 81,
+      "after_bytes": 89,
+      "unchanged_prefix_sha256": "F92036FA325679289C4CB4A0F9857A4748285AF0EAC05256C95F3194D0F2489E",
+      "unchanged_suffix_sha256": "976165A2ACE76796DBB4CF8BC9280CC45D0B72C7649140CE0BCA2FDFA95E0D27"
+    },
+    {
+      "number": 5,
+      "label": "Exact distinct Root source-acceptance status",
+      "offset": 9095,
+      "before": "source_review[\"status\"]==\"root_accepted_bounded_v38_positive_archive_preparer\"",
+      "after": "source_review[\"status\"]==\"root_accepted_bounded_v38_partial_negative_archive_preparer\"",
+      "before_state_sha256": "CF9AA0CEBB634B75BE26E40A7FB9F526C43BB5CDB22552AE25C274E54887CC2B",
+      "after_state_sha256": "D5D8EA400F50D31FC14080C240EF2040DB0CAEA04CA8D68D7282F3E089BA1698",
+      "before_bytes": 78,
+      "after_bytes": 86,
+      "unchanged_prefix_sha256": "45258D5AA6FAA06EA0C99239E774F19188C2DC754989FF5BB29F7F0E7297AB20",
+      "unchanged_suffix_sha256": "95D9D73DF9AB8255F926001FB2B6D41DF9B351370E75B6B3DAE458872F1C7182"
+    },
+    {
+      "number": 6,
+      "label": "Exact distinct final copy-plan status",
+      "offset": 9823,
+      "before": "copy_plan[\"status\"]==\"root_reviewed_exact_final_v38_positive_archive_copy_plan\"",
+      "after": "copy_plan[\"status\"]==\"root_reviewed_exact_final_v38_partial_negative_archive_copy_plan\"",
+      "before_state_sha256": "D5D8EA400F50D31FC14080C240EF2040DB0CAEA04CA8D68D7282F3E089BA1698",
+      "after_state_sha256": "2E97083B594D3475F8B09764EA8BA812C1A681C132B8B1444AB8BD09035F269E",
+      "before_bytes": 79,
+      "after_bytes": 87,
+      "unchanged_prefix_sha256": "04BC69180E73EC8716BF99D5C2D73D810E8BBD96DDE5532ACD1EA7F89B6AD8DD",
+      "unchanged_suffix_sha256": "2C720B433FF889AEBA1AFB7304B8DA800E5DC127EC80101EFDAA83B0CCFDB84C"
+    },
+    {
+      "number": 7,
+      "label": "No prelaunch gzip admission",
+      "offset": 10683,
+      "before": "all(p[\"phase\"] in PHASES for p in copy_plan[\"bookend_plans\"])",
+      "after": "all(p[\"phase\"] in COMPRESSIBLE_PHASES for p in copy_plan[\"bookend_plans\"])",
+      "before_state_sha256": "2E97083B594D3475F8B09764EA8BA812C1A681C132B8B1444AB8BD09035F269E",
+      "after_state_sha256": "0BAE8A0E320A969C139769DD0DACA03FCE8512011A5B94370FEC20501D9D1A2E",
+      "before_bytes": 61,
+      "after_bytes": 74,
+      "unchanged_prefix_sha256": "86AFFB9E7A78FA9CF0EFDEAD4867413ADF0237FAB540F7B6B6F0C286B8A9ABD8",
+      "unchanged_suffix_sha256": "05546673C5C6C42AFF0F968B0BE0BBD8630E67CA514C671A0858EFA24DA3B001"
+    },
+    {
+      "number": 8,
+      "label": "Require scoped complete evidence, not original63 success",
+      "offset": 10792,
+      "before": "require(set(copy_plan[\"cohorts\"])=={\"new4\",\"existing63\"},\"both complete cohorts required\")",
+      "after": "require(set(copy_plan[\"cohorts\"])=={\"new4\",\"existing63\"},\"accepted new4 and exact original63 negative cohort required\")",
+      "before_state_sha256": "0BAE8A0E320A969C139769DD0DACA03FCE8512011A5B94370FEC20501D9D1A2E",
+      "after_state_sha256": "C6B924DAA94E51D125606F08367CA61E8D657495EF42B1DC87AEFB864B25ED71",
+      "before_bytes": 90,
+      "after_bytes": 119,
+      "unchanged_prefix_sha256": "70D436385C33E26DCA4D5342C4B85C202C990474CC66E84779A42BB97CB103D3",
+      "unchanged_suffix_sha256": "1C16EA2D501C3E9E494E0796A8576E702AD2BFA9EDDFDCDB3028D78611DBDE38"
+    },
+    {
+      "number": 9,
+      "label": "Observed five-phase membership",
+      "offset": 14959,
+      "before": "require([m[\"phase\"] for m in membership]==list(PHASES),\"four exact observed phase scopes\")\nfor index,m in enumerate(membership):\n    batch = \"new4\" if index<2 else \"existing63\"\n    is_build = index%2==0\n    groups = NEW4 if index<2 else existing63",
+      "after": "require([m[\"phase\"] for m in membership]==list(PHASES),\"five exact observed phase scopes\")\nfor index,m in enumerate(membership):\n    batch = \"new4\" if index<2 else \"existing63\"\n    is_build = m[\"phase\"].endswith(\"-buildquery\")\n    groups = NEW4 if index<2 else existing63[:1] if index==3 else existing63[:17] if index==4 else existing63",
+      "before_state_sha256": "C6B924DAA94E51D125606F08367CA61E8D657495EF42B1DC87AEFB864B25ED71",
+      "after_state_sha256": "F70DE799D973062331861E9093241F18AA18B85F2F0FB25832F281198A6754A7",
+      "before_bytes": 247,
+      "after_bytes": 336,
+      "unchanged_prefix_sha256": "6FEAF69DD62DAF2BC80003F7C70F030CCDD7A5F6C9254DBEA018C4B6047962DF",
+      "unchanged_suffix_sha256": "9E380BE6DFDD3375D76BC25850383E49C93121E0AB8343A943CE23D54EB0D0E2"
+    },
+    {
+      "number": 10,
+      "label": "Fixed actual original63 phase identities",
+      "offset": 15670,
+      "before": "    require(proof.name==control.name.replace(\"-control-\",\"-buildquery-\" if is_build else \"-\",1),\"actual phase proof identity\")",
+      "after": "    require(proof.name==control.name.replace(\"-control-\",\"-buildquery-\" if is_build else \"-\",1),\"actual phase proof identity\")\n    if index>=2:\n        require(control.name==cp+ORIGINAL63_SUFFIXES[index-2],\"exact original63 observed phase instance\")",
+      "before_state_sha256": "F70DE799D973062331861E9093241F18AA18B85F2F0FB25832F281198A6754A7",
+      "after_state_sha256": "BF2C5AD62D383DD90DEA48C1807947CF6DFAE136644E0C5025707F12C74A64A3",
+      "before_bytes": 126,
+      "after_bytes": 249,
+      "unchanged_prefix_sha256": "66BC319CE8B1BA2B232C7A0AFC85B4C837EC1AC07BC91198A4044BFBBB4D7C06",
+      "unchanged_suffix_sha256": "A0580813A435328331E9C06EA2CE80392BB343EAB8A589853B4A5B0D8C4807B7"
+    },
+    {
+      "number": 11,
+      "label": "Separate negative contracts with unchanged positive helper",
+      "offset": 29502,
+      "before": "new4 = check_positive(\"new4\",NEW4,58,0)\noriginal63 = check_positive(\"existing63\",existing63,1249,2)",
+      "after": "\ndef retained_pin(row):\n    require(archived_pin(row[\"path\"])==row,\"exact selected original retained\")\n    return raw(row[\"path\"])\n\ndef selected_observed(role):\n    row = preservation[\"role_pins\"][role]\n    retained_pin(row)\n    return row\n\ndef check_existing63_buildquery():\n    cohort = copy_plan[\"cohorts\"][\"existing63\"]\n    require(set(cohort)=={\"buildquery_root_acceptance\",\"prelaunch_root_negative\",\"runtime_negative_root_acceptance\"},\"exact original63 acceptance roles\")\n    bq_pin = selected_observed(\"existing63_buildquery_root\")\n    require(cohort[\"buildquery_root_acceptance\"]==bq_pin,\"actual original63 BQ acceptance\")\n    bq = document(bq_pin)\n    groups,counts,actual = existing63,ORIGINAL63_COUNTS,1285\n    require(bq[\"status\"]==\"root_accepted_complete_fresh_v38_existing63_buildquery\" and bq[\"reviewer\"]==\"Root\",\"original63 Root complete BQ acceptance\")\n    require(bq[\"candidate_head\"]==HEAD and bq[\"batch\"]==\"existing63\" and bq[\"groups\"]==groups,\"exact original63 BQ identity/order\")\n    require(bq[\"declared_groups\"]==63 and bq[\"declared_controls\"]==1249 and\n            bq[\"actual_metadata_count\"]==actual and bq[\"actual_group_counts\"]==counts and sum(counts)==actual,\"actual original63 metadata vector\")\n    flags(bq,true=(\"complete_buildquery_accepted\",\"complete_source_and_current_directory_seals\",\"all_original_terminal0_owner_gates_passed\"),\n          false=(\"runtime_started\",\"runtime_execution_authorized\",\"qualification\",\"source_mutation_hold_released\"))\n    require(bq[\"native_owner_count\"]==126 and bq[\"actual_process_intervals_closed\"]==129 and bq[\"actual_tests_started\"]==0,\"complete original63 BQ owners\")\n    bp,bc = Path(membership[2][\"proof\"]),Path(membership[2][\"control\"])\n    for key,path in {\"build_result\":bp/\"result.json\",\"build_final\":bp/\"final.json\",\n                     \"metadata_acceptance\":bc/\"independent-metadata-acceptance.json\",\n                     \"independent_closure\":bc/\"independent-current-seals-and-owners.json\"}.items():\n        require(bq[key]==archived_pin(path),\"original63 BQ exact parent pin \"+key)\n    build,metadata = document(bq[\"independent_closure\"]),document(bq[\"metadata_acceptance\"])\n    result = doc(bp/\"result.json\")\n    require(build[\"status\"]==\"independently_closed_complete_fresh_build_query\" and build[\"candidate_head\"]==HEAD,\"original63 positive independent BQ\")\n    flags(build,true=COMMON_TRUE+(\"all_original_terminal0_owner_gates_passed\",),\n          false=(\"runtime_started\",\"qualification\",\"cache_seeded\",\"source_mutation_hold_released\"))\n    require(build[\"granted_groups\"]==build[\"attempted_groups\"]==63 and build[\"unstarted_groups\"]==0,\"all63 BQ groups closed\")\n    require(build[\"native_owner_count\"]==126 and len(build[\"actual_process_intervals\"])==129 and build[\"actual_tests_started\"]==0,\"all129 BQ process intervals\")\n    require(build[\"actual_metadata_count\"]==actual and [g[\"group\"] for g in build[\"groups\"]]==groups and\n            [g[\"actual_metadata_count\"] for g in build[\"groups\"]]==counts,\"complete original63 BQ metadata\")\n    require(metadata[\"status\"]==\"independently_accepted_combined_native_batch_metadata\" and metadata[\"accepted\"] is True and metadata[\"candidate_head\"]==HEAD,\"original63 accepted raw metadata\")\n    flags(metadata,false=(\"runtime_started\",\"runtime_qualification\"))\n    require([g[\"group\"] for g in metadata[\"groups\"]]==groups and [g[\"actual_count\"] for g in metadata[\"groups\"]]==counts,\"exact63 accepted metadata groups\")\n    require(all(len(g[\"tests\"])==n for g,n in zip(metadata[\"groups\"],counts)),\"complete1285 actual metadata names\")\n    require(build[\"metadata_acceptance\"]==bq[\"metadata_acceptance\"] and\n            metadata[\"build_result_sha256\"]==bq[\"build_result\"][\"sha256\"] and\n            metadata[\"build_source_seal_sha256\"]==bq[\"build_final\"][\"sha256\"],\"original63 BQ metadata/source linkage\")\n    require(result[\"status\"]==\"passed_build_query_batch\" and result[\"mode\"]==\"BuildQuery\" and result[\"candidate_head\"]==HEAD,\"original63 raw BQ success\")\n    require([g[\"group\"] for g in result[\"groups\"]]==groups and all(g[\"status\"]==\"passed_build_query\" for g in result[\"groups\"]),\"complete63 original BQ results\")\n    job = doc(bc/\"independent-observed-job-status.json\")[\"data\"]\n    require(job[\"status\"]==\"succeeded\" and job[\"exitCode\"]==0 and job[\"runnerAlive\"] is False and\n            type(job[\"runnerProcessInstance\"]) is str and re.fullmatch(r\"[0-9]+\",job[\"runnerProcessInstance\"]),\"original63 successful job decimal100ns identity\")\n    prep = E/\"combined-native-batch-v38-regression63-prepared-20261021\"\n    review,matrix = doc(prep/\"preparation-review.json\"),doc(prep/\"groups.json\")\n    require(review[\"candidate_head\"]==HEAD and review[\"selected_group_names\"]==groups and\n            review[\"selected_groups\"]==63 and review[\"selected_declarations\"]==1249,\"exact prepared original63\")\n    require(review[\"actual_metadata_count\"] is None and archived_pin(prep/\"groups.json\")[\"sha256\"]==MATRIX_SHA,\"original63 source declarations do not predict metadata\")\n    require(len(matrix[\"groups\"])==117 and sum(len(g[\"required_named\"]) for g in matrix[\"groups\"])==2013 and\n            len(matrix[\"whole_tree_dependency_pins\"])==576,\"whole accepted shared catalog\")\n    return bq_pin,bq,metadata,{\n      \"status\":build[\"status\"],\"root_acceptance\":bq_pin,\"closure\":bq[\"independent_closure\"],\n      \"metadata_acceptance\":bq[\"metadata_acceptance\"],\"result\":bq[\"build_result\"],\n      \"native_owner_count\":126,\"actual_tests_started\":0,\"runtime_qualification\":False}\n\ndef check_existing63_prelaunch(bq_pin):\n    root_pin = selected_observed(\"existing63_prelaunch_root\")\n    require(copy_plan[\"cohorts\"][\"existing63\"][\"prelaunch_root_negative\"]==root_pin,\"exact initial admission negative\")\n    root = document(root_pin)\n    pc,pp = Path(membership[3][\"control\"]),Path(membership[3][\"proof\"])\n    require(root[\"status\"]==\"preserved_v38_existing63_runtime_prelaunch_grant_freshness_negative\" and\n            root[\"reviewer\"]==\"Root\" and root[\"candidate_head\"]==HEAD and root[\"batch\"]==\"existing63\",\"Root exact prelaunch rejection\")\n    require(root[\"classification\"]==\"strict_runtime_admission_failure_before_any_native_owner_or_test\" and\n            root[\"runtime_control\"]==str(pc) and root[\"runtime_proof\"]==str(pp),\"exact prelaunch phase\")\n    require(root[\"buildquery_acceptance_preserved\"]==bq_pin,\"prelaunch exact accepted BQ parent\")\n    reason = \"Initial grant must be within300seconds before first child launch\"\n    require(root[\"reason\"]==reason and root[\"declared_groups\"]==63 and root[\"admission_attempted_groups\"]==1 and\n            root[\"unstarted_groups\"]==62 and root[\"native_owners_started\"]==root[\"native_tests_started\"]==0,\"Root classified zero-native admission failure\")\n    require(root[\"initial_grant_max_age_seconds\"]==300 and root[\"group_native_timeout_seconds\"]==120,\"unchanged admission/native limits\")\n    flags(root,true=(\"source_bookends_byte_equal\",\"original_result_preserved\"),\n          false=(\"diagnostic_continue\",\"native_test_failure\",\"product_qualification\",\"source_mutation_hold_released\"))\n    for key,path in {\"runtime_launch\":pc/\"runtime-launch.json\",\"runtime_grant\":pc/\"root-grant.json\",\n                     \"runtime_result\":pp/\"result.json\",\"before\":pp/\"before.json\",\"final\":pp/\"final.json\",\n                     \"outer\":pc/\"outer.json\",\"outer_absence\":pc/\"outer-absence.json\",\n                     \"terminal_observation\":pc/\"independent-observed-job-status.json\"}.items():\n        require(root[key]==archived_pin(path),\"all exact prelaunch original receipts \"+key)\n    result = doc(pp/\"result.json\")\n    require(result[\"status\"]==\"failed\" and result[\"mode\"]==\"RuntimeOnly\" and result[\"candidate_head\"]==HEAD and\n            result[\"group_manifest_sha256\"]==MATRIX_SHA,\"unchanged raw prelaunch result identity\")\n    require(result[\"errors\"]==[reason] and len(result[\"groups\"])==1 and result[\"groups\"][0][\"group\"]==existing63[0],\"exact one attempted admission\")\n    flags(result,true=(\"postseal\",\"controller_environment_restored\",\"runtime_requested\"),\n          false=(\"all_groups_closed\",\"product_qualified\",\"cache_seeded\"))\n    first = result[\"groups\"][0]\n    require(first[\"status\"]==\"failed\" and first[\"errors\"]==[reason] and first[\"phases\"]=={} and\n            first[\"attempted_phases\"]==[\"runtime\"] and first[\"owned_started_phases\"]==[],\"original no-owner phase state\")\n    flags(first,false=(\"runtime_owner_launch_attempted\",\"actual_runtime_owner_started\"))\n    require(first[\"native_selected_tests_started\"] is None,\"retain raw null distinct from Root classified zero\")\n    require(result[\"absence\"]=={\"native_roots\":[],\"owners\":[]} and len(result[\"admission_probes\"])==1,\"original no native owner admission evidence\")\n    require(raw(pp/\"before.json\")==raw(pp/\"final.json\"),\"original prelaunch bookends equal\")\n    for name in (\"before.json\",\"final.json\"):\n        require(row_by_path[str(pp/name).casefold()][\"representation\"]==\"raw_byte_exact\",\"both prelaunch seals retained raw\")\n    job = document(root[\"terminal_observation\"])[\"data\"]\n    require(job[\"status\"]==\"failed\" and job[\"exitCode\"]==1 and job[\"runnerAlive\"] is False and\n            job[\"id\"]==\"job-op-0975772fcc8e984e84c4d255a0b9805571c22200314b7111deb9a88e5824bc0c\" and\n            job[\"runnerProcessInstance\"]==\"134371499352045058\",\"original prelaunch failed job and exact100ns string\")\n    return {\n      \"name\":\"V38 original63 initial runtime prelaunch grant freshness negative\",\n      \"status\":root[\"status\"],\"source_head\":HEAD,\"batch\":\"existing63\",\"root_acceptance\":root_pin,\n      \"result\":root[\"runtime_result\"],\"buildquery_parent\":bq_pin,\"native_failure\":False,\n      \"admission_attempted_groups\":1,\"groups_without_admission\":62,\n      \"raw_native_selected_tests_started\":None,\"classified_native_owners_started\":0,\"classified_native_tests_started\":0,\n      \"accepted_metadata\":1285,\"all_native_tests_unstarted\":1285,\n      \"original_job_observation\":root[\"terminal_observation\"],\"original_evidence_unchanged\":True,\n      \"new_native_execution_authorized\":False,\"source_mutation_hold_released\":False,\"product_qualification\":False}\n\ndef check_existing63_partial_negative(bq_pin,bq,metadata):\n    root_pin = selected_observed(\"existing63_negative_root\")\n    require(copy_plan[\"cohorts\"][\"existing63\"][\"runtime_negative_root_acceptance\"]==root_pin,\"actual original63 partial-negative acceptance\")\n    root = document(root_pin)\n    rc,rp = Path(membership[4][\"control\"]),Path(membership[4][\"proof\"])\n    require(root[\"status\"]==\"root_accepted_original_v38_existing63_retry1_strict_runtime_negative_closure\" and\n            root[\"reviewer\"]==\"Root\" and root[\"candidate_head\"]==HEAD and root[\"batch\"]==\"existing63\",\"Root exact native negative closure\")\n    flags(root,true=(\"complete_buildquery_accepted\",\"negative_closure_accepted\",\"whole_bookends_unchanged\",\n                     \"all_current_sealed_files_and_complete_inventories_verified\",\"all_original_process_instances_and_children_closed\",\n                     \"original_nonempty_stderr_and_failure_flags_preserved\",\"root_exact100ns_intervals_recomputed\"),\n          false=(\"positive_group_acceptance\",\"native_execution_authorized\",\"source_mutation_hold_released\",\n                 \"runtime_qualification\",\"product_qualification\"))\n    expected_counts = {\"actual_metadata_count\":1285,\"granted_groups\":63,\"attempted_groups\":17,\"unstarted_groups\":46,\n      \"runtime_started\":321,\"runtime_completed\":321,\"runtime_failed\":1,\"runtime_passed\":320,\"runtime_unstarted\":964,\n      \"distinct_current_sealed_files\":34739,\"closed_original_process_intervals\":20,\"current_native_candidates\":0,\n      \"original_attempted_group_file_count\":238}\n    require(all(root[k]==v for k,v in expected_counts.items()),\"all exact observed negative Root counts\")\n    require(root[\"root_buildquery_acceptance\"]==bq_pin and root[\"metadata_acceptance\"]==bq[\"metadata_acceptance\"] and\n            root[\"independent_build_closure\"]==bq[\"independent_closure\"],\"negative exact accepted BQ and1285-metadata parent\")\n    require(root[\"independent_negative_closure\"]==selected_observed(\"existing63_negative_closure\") and\n            root[\"independent_negative_auditor\"]==selected_observed(\"existing63_negative_auditor\") and\n            root[\"audit_configuration\"]==selected_observed(\"existing63_negative_audit_configuration\"),\"exact DC14 audited source/config/closure\")\n    for key,value in root.items():\n        if isinstance(value,dict) and set(value)=={\"path\",\"bytes\",\"sha256\"}:\n            retained_pin(value)\n    runtime = document(root[\"independent_negative_closure\"])\n    require(runtime[\"status\"]==\"independently_closed_negative_strict_runtime\" and\n            runtime[\"candidate_head\"]==HEAD and runtime[\"batch\"]==\"existing63\",\"actual independent negative closure\")\n    flags(runtime,true=COMMON_TRUE+(\"original_strict_failures_preserved\",),\n          false=(\"all_original_strict_empty_stderr_and_all_tests_passing_gates_passed\",\n                 \"runtime_qualification\",\"product_qualification\",\"source_mutation_hold_released\"))\n    require(runtime[\"metadata_acceptance\"]==bq[\"metadata_acceptance\"] and runtime[\"independent_build_closure\"]==bq[\"independent_closure\"],\"independent negative BQ parent\")\n    require(runtime[\"declared_groups\"]==63 and runtime[\"declared_controls\"]==1249 and runtime[\"granted_groups\"]==63 and\n            runtime[\"accepted_cohort\"]==1285 and runtime[\"attempted_groups\"]==17 and runtime[\"unstarted_groups\"]==46,\"exact negative source and metadata cohort\")\n    require(runtime[\"runtime_owner_count\"]==17 and len(runtime[\"actual_process_intervals\"])==20 and\n            runtime[\"distinct_current_files_rehashed\"]==34739,\"exact17 owners20 process intervals andcurrent seals\")\n    require(runtime[\"observed_started\"]==runtime[\"observed_completed\"]==321 and runtime[\"observed_passed\"]==320 and\n            runtime[\"observed_failed\"]==1 and runtime[\"not_started\"]==964,\"exact partial runtime321/320/1/964\")\n    require(runtime[\"seal_counts\"]==root[\"seal_counts\"]=={\"source\":15041,\"tree\":15054,\"vendor\":1489,\"compiler\":19546,\"controls\":143},\"exact complete seal domains\")\n    require(runtime[\"not_started_groups\"]==existing63[17:] and\n            [g[\"group\"] for g in runtime[\"observed_groups\"]]==existing63[:17],\"exact17-prefix and46 unstarted order\")\n    require(sum(ORIGINAL63_COUNTS[:17])==321 and sum(ORIGINAL63_COUNTS[17:])==964,\"counts derived from full1285 metadata vector\")\n    require(runtime[\"current_absence\"][\"owners\"]==runtime[\"current_absence\"][\"direct_children\"]==runtime[\"current_absence\"][\"native\"]==[],\"accepted complete current absence\")\n    require(runtime[\"auditor\"]==root[\"independent_negative_auditor\"] and runtime[\"audit_configuration\"]==root[\"audit_configuration\"],\"original independent audit/source relationship\")\n    for key,path in {\"runtime_result\":rp/\"result.json\",\"runtime_before\":rp/\"before.json\",\"runtime_final\":rp/\"final.json\"}.items():\n        require(root[key]==archived_pin(path),\"Root exact failed runtime original \"+key)\n    require(raw(rp/\"before.json\")==raw(rp/\"final.json\"),\"negative complete source bookends identical\")\n    result = doc(rp/\"result.json\")\n    require(result[\"status\"]==\"failed\" and result[\"mode\"]==\"RuntimeOnly\" and result[\"candidate_head\"]==HEAD and\n            result[\"group_manifest_sha256\"]==MATRIX_SHA,\"unchanged original failed batch\")\n    require([g[\"group\"] for g in result[\"groups\"]]==existing63[:17] and\n            result[\"errors\"]==[\"Native test protocol did not report every selected test passing without logs/leaks\"],\"exact original17 partial result and failure\")\n    flags(result,true=(\"postseal\",\"controller_environment_restored\",\"runtime_requested\"),\n          false=(\"all_groups_closed\",\"product_qualified\",\"cache_seeded\"))\n    require([g[\"status\"] for g in result[\"groups\"]]==[\"partial_batch_not_admissible\"]*16+[\"failed\"] and\n            root[\"first16_original_group_status\"]==\"partial_batch_not_admissible\",\"retain all16 driver demotions\")\n    failed = []\n    for number,group in enumerate(existing63[:17]):\n        gp = rp/\"groups\"/group\n        canonical = doc(gp/\"runtime.results.json\")\n        observed,accepted = runtime[\"observed_groups\"][number],metadata[\"groups\"][number]\n        n,fail = ORIGINAL63_COUNTS[number],int(number==16)\n        expected = [{\"index\":i,\"flags\":int(number==16 and i==22),\"passed\":not(number==16 and i==22)} for i in range(n)]\n        require(canonical[\"expected\"]==canonical[\"started\"]==canonical[\"completed\"]==n and\n                canonical[\"failed_or_skipped_or_logged_or_leaked\"]==fail and canonical[\"status\"]==(\"failed\" if fail else \"passed\"),\"all original canonical partial counts\")\n        require(canonical[\"results\"]==expected,\"exact320 zero flags andsingle flag1\")\n        expected_named = [dict(row,name=accepted[\"tests\"][i]) for i,row in enumerate(expected)]\n        require(observed[\"results\"]==expected_named and observed[\"started\"]==observed[\"completed\"]==n and\n                observed[\"failed\"]==fail and observed[\"original_group_status\"]==result[\"groups\"][number][\"status\"],\"all321 actual names and demotions\")\n        require(observed[\"canonical\"]==archived_pin(gp/\"runtime.results.json\"),\"exact original canonical bytes\")\n        require((len(raw(gp/\"runtime.stderr.log\"))==0)==(number<16),\"retain first16 empty andfailed nonempty stderr\")\n        for row in expected_named:\n            if not row[\"passed\"]:\n                failed.append(dict(group=group,**{k:row[k] for k in (\"index\",\"flags\",\"name\")}))\n    require(failed==root[\"failed_tests\"]==runtime[\"observed_failed_tests\"] and root[\"failed_indices\"]==[22],\"actual sole failure identity retained\")\n    require(len(runtime[\"original_attempted_group_files\"])==238,\"all238 original group files\")\n    for key in (\"original_receipts\",\"original_attempted_group_files\",\"original_outer_outputs\"):\n        for row in runtime[key]:\n            retained_pin(row)\n    require(runtime[\"original_root_partial_observation\"]==root[\"original_root_observation\"],\"exact original Root partial observation\")\n    audit_cfg = document(root[\"audit_configuration\"])\n    require(len(audit_cfg)==52 and audit_cfg[\"candidate_head\"]==HEAD and audit_cfg[\"batch\"]==\"existing63\" and\n            audit_cfg[\"auditor_sha256\"]==root[\"independent_negative_auditor\"][\"sha256\"] and\n            audit_cfg[\"actual_metadata_count\"]==1285 and audit_cfg[\"runtime_result_sha256\"]==root[\"runtime_result\"][\"sha256\"],\"original exact52-field negative audit contract\")\n    audit_job = document(root[\"audit_job_observation\"])[\"data\"]\n    require(audit_job[\"status\"]==\"succeeded\" and audit_job[\"exitCode\"]==0 and audit_job[\"runnerAlive\"] is False and\n            type(audit_job[\"runnerProcessInstance\"]) is str and re.fullmatch(r\"[0-9]+\",audit_job[\"runnerProcessInstance\"]),\"successful audit-only job exact100ns string\")\n    job = doc(rc/\"independent-observed-job-status.json\")[\"data\"]\n    require(job[\"status\"]==\"failed\" and job[\"exitCode\"]==1 and job[\"runnerAlive\"] is False and\n            job[\"id\"]==\"job-op-a17015be461f2f37aa27a1fb9d09260c7b06385213ec73ce3381b74d5007b063\" and\n            job[\"runnerProcessInstance\"]==\"134371501570189138\",\"original native failed job exact100ns string\")\n    return {\n      \"status\":runtime[\"status\"],\"root_acceptance\":root_pin,\"closure\":root[\"independent_negative_closure\"],\n      \"result\":root[\"runtime_result\"],\"audit_configuration\":root[\"audit_configuration\"],\n      \"observed_started\":321,\"observed_completed\":321,\"observed_failed\":1,\"observed_passed\":320,\"not_started\":964,\n      \"native_owner_count\":17,\"actual_process_intervals_closed\":20,\"granted_groups\":63,\"attempted_groups\":17,\n      \"unstarted_groups\":46,\"not_started_groups\":copy.deepcopy(existing63[17:]),\n      \"failed_tests\":copy.deepcopy(failed),\"original_group_statuses\":[\"partial_batch_not_admissible\"]*16+[\"failed\"],\n      \"negative_closure_accepted\":True,\"original_strict_failures_preserved\":True,\n      \"positive_group_acceptance\":False,\"selected_native_runtime_accepted\":False,\n      \"product_qualification\":False,\"runtime_qualification\":False,\"source_mutation_hold_released\":False}\n\ndef check_existing63_negative_cohort():\n    bq_pin,bq,metadata,bq_record = check_existing63_buildquery()\n    prelaunch = check_existing63_prelaunch(bq_pin)\n    runtime = check_existing63_partial_negative(bq_pin,bq,metadata)\n    return {\n      \"batch\":\"existing63\",\"source_head\":HEAD,\"groups\":copy.deepcopy(existing63),\n      \"declared_groups\":63,\"declared_controls\":1249,\"actual_metadata_count\":1285,\n      \"actual_group_counts\":copy.deepcopy(ORIGINAL63_COUNTS),\"buildquery\":bq_record,\n      \"prelaunch\":prelaunch,\"runtime\":runtime,\"metadata_transferred_to_another_head\":False,\n      \"source_mutation_hold_released\":False}\n\nnew4 = check_positive(\"new4\",NEW4,58,0)\noriginal63 = check_existing63_negative_cohort()",
+      "before_state_sha256": "BF2C5AD62D383DD90DEA48C1807947CF6DFAE136644E0C5025707F12C74A64A3",
+      "after_state_sha256": "D862B7B1878D1AE32E5AAE1C56751297F6742BC49F96EB97629B086A2037844B",
+      "before_bytes": 99,
+      "after_bytes": 20735,
+      "unchanged_prefix_sha256": "AD0AD52135D3DA2E9E663BE6CA7DA78FD201D7AD0E518E0601B874ED42358D63",
+      "unchanged_suffix_sha256": "E952213C8BEE177284DD6CD7038BCCA8B80D57DF3EF18F968013EB18EC16B381"
+    },
+    {
+      "number": 12,
+      "label": "Three non-native records and one true native negative",
+      "offset": 52573,
+      "before": "payloads,roles,preimages,payload_aliases = {},{},{},set()",
+      "after": "negative_records.append(copy.deepcopy(original63[\"prelaunch\"]))\nnative_negative_record = dict(\n name=\"V38 original63 retry1 strict runtime partial native negative\",source_head=HEAD,batch=\"existing63\",\n declared_groups=63,declared_controls=1249,actual_metadata_observed=1285,native_failure=True,\n original_evidence_unchanged=True,new_native_execution_authorized=False,**copy.deepcopy(original63[\"runtime\"]))\nrequire(len(negative_records)==3 and all(n[\"native_failure\"] is False for n in negative_records),\"only three actual non-native failures\")\n\npayloads,roles,preimages,payload_aliases = {},{},{},set()",
+      "before_state_sha256": "D862B7B1878D1AE32E5AAE1C56751297F6742BC49F96EB97629B086A2037844B",
+      "after_state_sha256": "FAD5B58A817D29B50F519DC23483A91DA9A69F8AB4663250EB009D2892526C67",
+      "before_bytes": 57,
+      "after_bytes": 603,
+      "unchanged_prefix_sha256": "876CD362CBE1E15B9407C36C24C31A920F858BC4FE793E66C7FADED640F70C2D",
+      "unchanged_suffix_sha256": "8856378F46878B8203B2113D14FDE15FDFCC71943F22EA930D6858CB91B783E4"
+    },
+    {
+      "number": 13,
+      "label": "Truthful seven-attempt history",
+      "offset": 56985,
+      "before": "# Derive the positive checkpoint only after every original63 positive gate above.",
+      "after": "# Derive only the scoped accepted/negative checkpoint after every exact phase contract above.",
+      "before_state_sha256": "FAD5B58A817D29B50F519DC23483A91DA9A69F8AB4663250EB009D2892526C67",
+      "after_state_sha256": "A676BB7C8A57B37D19DB7BF97F8B1ACCFE9D37D37A96DEE5BCD70AD98514D900",
+      "before_bytes": 81,
+      "after_bytes": 93,
+      "unchanged_prefix_sha256": "9CC1020607BD997C7315645A12F723B23DAB9E5ECDF8037D33E5B45DD14770A1",
+      "unchanged_suffix_sha256": "AC13B38363C814EF8FEEB4756F6AB7B77BBF9F8B290CE4E07A83BD04BEF3E3F9"
+    },
+    {
+      "number": 14,
+      "label": "Prelaunch and partial-negative attempts after original63 BQ",
+      "offset": 57818,
+      "before": " dict(name=\"V38 original63 accepted strict runtime\",source_head=HEAD,batch=\"existing63\",\n      declared_groups=63,declared_controls=1249,actual_metadata_observed=original63[\"actual_metadata_count\"],**copy.deepcopy(original63[\"runtime\"])),",
+      "after": " negative_records[2],\n copy.deepcopy(native_negative_record),",
+      "before_state_sha256": "A676BB7C8A57B37D19DB7BF97F8B1ACCFE9D37D37A96DEE5BCD70AD98514D900",
+      "after_state_sha256": "B0357468F0EE6C960CBE85D8D5ED900E1687975CA1B83710B44168778280DEA8",
+      "before_bytes": 238,
+      "after_bytes": 61,
+      "unchanged_prefix_sha256": "C4C8992427899866F2FCA492EE6124D6A04611DD7F06CEFE8B87D52043B1B4A9",
+      "unchanged_suffix_sha256": "98CD7F2A8008FA37D20654363C0C6F0705933AB950BF04649EB7F1BF4D930E6D"
+    },
+    {
+      "number": 15,
+      "label": "Partial-negative next-plan status",
+      "offset": 58388,
+      "before": "status=\"v38_disjoint_selected_batches_accepted_awaiting_separate_root_next_scope\"",
+      "after": "status=\"v38_buildquery_accepted_original63_partial_runtime_negative_closed_awaiting_separate_root_next_scope\"",
+      "before_state_sha256": "B0357468F0EE6C960CBE85D8D5ED900E1687975CA1B83710B44168778280DEA8",
+      "after_state_sha256": "E912F24310DAF77A4618338F8037F2DD464F2EDBFFECC39C0DBACD0E72D93DC3",
+      "before_bytes": 81,
+      "after_bytes": 109,
+      "unchanged_prefix_sha256": "69937AFEBC8B034B1B25AF50E7DE16967B2BE13E1EA5DF8E27638070EC8E288D",
+      "unchanged_suffix_sha256": "25F30480176E9C7ABA915E373803C4BDFFD2A03DE284C49EC143A8109541D536"
+    },
+    {
+      "number": 16,
+      "label": "No false full runtime acceptance",
+      "offset": 58790,
+      "before": " v38_both_complete_buildquery_and_strict_runtime_accepted=True,\n requirements=\"Both exact V38 batches have separately accepted fresh BuildQuery and strict RuntimeOnly evidence on014062. \"\n              \"This remains an active incomplete port. The retained planning template issues no new native or source authority; \"\n              \"future scope, metadata, source intake, production bridge removal and application qualification require separate Root work.\")",
+      "after": " v38_both_complete_buildquery_and_strict_runtime_accepted=False,\n v38_both_complete_buildquery_accepted=True,v38_new4_strict_runtime_accepted=True,\n v38_original63_prelaunch_negative_preserved=True,v38_original63_partial_runtime_negative_closed=True,\n requirements=\"Both exact V38 batches have accepted fresh BuildQuery metadata on014062. Only new4 has accepted strict RuntimeOnly; \"\n              \"original63 retains the zero-native prelaunch rejection and the closed17-group partial native failure with321 completed, \"\n              \"320 passed, one failed and964 unstarted tests. All16 driver-demoted group results remain unqualified. \"\n              \"This active incomplete port and retained plan issue no native, source or product authority. A repair, later validation, \"\n              \"source intake, bridge removal and application qualification require separate Root work.\")",
+      "before_state_sha256": "E912F24310DAF77A4618338F8037F2DD464F2EDBFFECC39C0DBACD0E72D93DC3",
+      "after_state_sha256": "C271DEF301094257B316E77511030BBCB5C13B7DD1E354AC26BE54DAAC0312B2",
+      "before_bytes": 457,
+      "after_bytes": 881,
+      "unchanged_prefix_sha256": "915D7C7B32E86B02365202EB1B92F4DA5EA172C2DECC8D1460A84DE4555BDC84",
+      "unchanged_suffix_sha256": "A00C73F9BB9889B671635D9733492B555FA62648AB8ECB7CB4758C059F3BB5A2"
+    },
+    {
+      "number": 17,
+      "label": "Append exactly one native negative",
+      "offset": 59701,
+      "before": "updated[\"preserved_attempts\"].extend(copy.deepcopy(attempts))",
+      "after": "updated[\"preserved_attempts\"].extend(copy.deepcopy(attempts))\nupdated[\"retained_recent_native_negatives\"].append(copy.deepcopy(native_negative_record))",
+      "before_state_sha256": "C271DEF301094257B316E77511030BBCB5C13B7DD1E354AC26BE54DAAC0312B2",
+      "after_state_sha256": "1B7992EABD4A6CEE9F13404F87D55D00850F644DBB7DE802DABF4576F20033A0",
+      "before_bytes": 61,
+      "after_bytes": 151,
+      "unchanged_prefix_sha256": "B72F8EF03EBA3948922B4F2C3E5948E0B674E9177BECB32421967DC46558B949",
+      "unchanged_suffix_sha256": "AF02E817713EE4350ECF41D51D14DE1237B845442AAD8D79C6C392C7679E1796"
+    },
+    {
+      "number": 18,
+      "label": "Partial-negative checkpoint status",
+      "offset": 60036,
+      "before": "schema=9,status=\"v38_disjoint_buildquery_and_strict_runtime_accepted_archive_proposed\"",
+      "after": "schema=9,status=\"v38_new4_accepted_original63_buildquery_accepted_partial_runtime_negative_closed_archive_proposed\"",
+      "before_state_sha256": "1B7992EABD4A6CEE9F13404F87D55D00850F644DBB7DE802DABF4576F20033A0",
+      "after_state_sha256": "BF9EA423E0D14F8FE13EA2CA3746410EA04B3D36E6C2425A13E7C18039917994",
+      "before_bytes": 86,
+      "after_bytes": 115,
+      "unchanged_prefix_sha256": "38BB9BFDB62940E65B2AEA08418A375E048501564CAF3AB71EE2B3CBC7B4079B",
+      "unchanged_suffix_sha256": "2E0BFAD6E3731DC74AA3386816D038F61198B08A422BC0391E7678B985C15421"
+    },
+    {
+      "number": 19,
+      "label": "Keep scoped success but false aggregate runtime acceptance",
+      "offset": 60385,
+      "before": " selected_native_runtime_accepted=True,runtime_qualification=False,",
+      "after": " selected_native_runtime_accepted=False,v38_new4_selected_native_runtime_accepted=True,\n v38_original63_partial_negative_closed=True,runtime_qualification=False,",
+      "before_state_sha256": "BF9EA423E0D14F8FE13EA2CA3746410EA04B3D36E6C2425A13E7C18039917994",
+      "after_state_sha256": "EDE2ABCB98D5209D435692A7059A6CC6038479D38DFB757A1925E95460E9131B",
+      "before_bytes": 67,
+      "after_bytes": 161,
+      "unchanged_prefix_sha256": "7F06CBED73780E8A807C89F44C930240348C85D2DE48EB5E73BF6349EFB2F30C",
+      "unchanged_suffix_sha256": "7DFB1F7EB3185567C830764386286F82A546A1965AC5E5907369B0F6DE02F7C5"
+    },
+    {
+      "number": 20,
+      "label": "Truthful archive record note",
+      "offset": 60898,
+      "before": " \"V38 completed two separately granted disjoint selected batches on014062: four new groups and all original63 in the retained order. \"\n \"Each has independently accepted fresh BuildQuery metadata and strict positive runtime with exact original evidence. \"\n \"Observed metadata totals are recorded per cohort, not inferred from source declarations or transferred to another head. \"\n \"The initial catalog schema failure and original new4 positive-auditor provenance failure remain separately preserved non-native attempts; \"\n \"the accepted new4 runtime is the unchanged original run, not a rerun. \"\n \"All prior history and the complete old checkpoint are retained. This proposal changes only progress and adds immutable evidence. \"\n \"Application qualification, bridge removal, publication and new source/native authority remain false.\")",
+      "after": " \"V38 retains separately accepted fresh BuildQuery metadata for new4(61) and original63(1285) on014062. \"\n \"The unchanged original new4 strict runtime is accepted. Original63 first had a zero-native prelaunch freshness rejection, \"\n \"then a closed strict partial native failure:17 of63 groups ran,321 tests completed,320 passed, one failed, and964 tests in46 groups were unstarted. \"\n \"The first16 group results remain partial_batch_not_admissible, not independently accepted. \"\n \"Seven observed attempts are appended, including three non-native negatives; only the actual partial native failure extends native-negative history. \"\n \"All original catalog/auditor/helper/preparer/static evidence and the complete old checkpoint are retained; inspection-only negatives add no validation attempts. \"\n \"Metadata is recorded per original cohort and never transferred to another head. This proposal changes only progress and adds immutable evidence. \"\n \"Application qualification, bridge removal, publication and new source/native authority remain false.\")",
+      "before_state_sha256": "EDE2ABCB98D5209D435692A7059A6CC6038479D38DFB757A1925E95460E9131B",
+      "after_state_sha256": "6C48F2BC1C99089DCA62A28D73903DB8C0B5C909027E8A894703EE32591F936D",
+      "before_bytes": 832,
+      "after_bytes": 1049,
+      "unchanged_prefix_sha256": "BBD6DF4B51624279E95ABB24FD11867FEB2AF1E7CEE2B759B836AF40438A6FF8",
+      "unchanged_suffix_sha256": "A24D8031B88CA2855D91DCE0AB3C1A7DB10B846967C8A0BBA8069120252EE34B"
+    },
+    {
+      "number": 21,
+      "label": "Scoped negative checkpoint identity",
+      "offset": 62585,
+      "before": " \"selected_native_runtime_accepted_for_this_head\":True,\"metadata_transferred_to_another_head\":False,",
+      "after": " \"selected_native_runtime_accepted_for_this_head\":False,\"new4_selected_native_runtime_accepted\":True,\n \"original63_partial_runtime_negative_closed\":True,\"original63_prelaunch_zero_native_negative_preserved\":True,\n \"metadata_transferred_to_another_head\":False,",
+      "before_state_sha256": "6C48F2BC1C99089DCA62A28D73903DB8C0B5C909027E8A894703EE32591F936D",
+      "after_state_sha256": "5B7C2EC36026E364A680545A045C17BBA30898190D7CF1C66A65BBF808BF27C4",
+      "before_bytes": 100,
+      "after_bytes": 259,
+      "unchanged_prefix_sha256": "6FAC9EEBE5E16B07C329F04DB145E689B15D5B62BA6F980AAD88FF1732B5D6C8",
+      "unchanged_suffix_sha256": "A548B4BB20300C701D71B9BCFA71E285AB37B1DA63540F82D29A5C99977D7EE2"
+    },
+    {
+      "number": 22,
+      "label": "Eight replaced top-level keys",
+      "offset": 63153,
+      "before": "            \"next_native_batch\",\"preserved_attempts\",\"execution_checkpoint_history\"}",
+      "after": "            \"next_native_batch\",\"preserved_attempts\",\"execution_checkpoint_history\",\"retained_recent_native_negatives\"}",
+      "before_state_sha256": "5B7C2EC36026E364A680545A045C17BBA30898190D7CF1C66A65BBF808BF27C4",
+      "after_state_sha256": "1FDCD612008025C581CF6293DB928B6B6A42CC77450C82CA6E81D67D84EDCBA2",
+      "before_bytes": 84,
+      "after_bytes": 119,
+      "unchanged_prefix_sha256": "DC82C79F925FD42541F27FD329ECE24A7AE08CFA3E16AE13CDD047F4E98F5F2C",
+      "unchanged_suffix_sha256": "BAD0E32CC5E5BDDCCF1CDB4E74927E56CE801257147CD70CCF9BFA06DECF330B"
+    },
+    {
+      "number": 23,
+      "label": "Retain native-negative prefix and append only actual native failure",
+      "offset": 63644,
+      "before": "require(updated[\"retained_recent_native_negatives\"]==old[\"retained_recent_native_negatives\"],\"non-native failures do not alter native-negative history\")",
+      "after": "require(updated[\"retained_recent_native_negatives\"][:-1]==old[\"retained_recent_native_negatives\"] and\n        updated[\"retained_recent_native_negatives\"][-1]==native_negative_record,\"only actual partial native failure extends native-negative history\")",
+      "before_state_sha256": "1FDCD612008025C581CF6293DB928B6B6A42CC77450C82CA6E81D67D84EDCBA2",
+      "after_state_sha256": "0F4D3562E776E1A48C5D29B97B893F71F8C4609697F126E0929A924660F5D911",
+      "before_bytes": 152,
+      "after_bytes": 251,
+      "unchanged_prefix_sha256": "E5D246948E50FE056F35B56D358EEE126D2472335737020BD30FC82C6B24A5C7",
+      "unchanged_suffix_sha256": "B50EC4CA02D9370CBC3F4E361D5E70A4CBAFFB489042BFB8E43590D93507CD8F"
+    },
+    {
+      "number": 24,
+      "label": "Exact seven attempts and one native-negative increment",
+      "offset": 64021,
+      "before": "increments = {\"integrated_source_units\":0,\"preserved_attempts\":6,\"retained_recent_native_negatives\":0,\"execution_checkpoint_history\":1}",
+      "after": "increments = {\"integrated_source_units\":0,\"preserved_attempts\":7,\"retained_recent_native_negatives\":1,\"execution_checkpoint_history\":1}",
+      "before_state_sha256": "0F4D3562E776E1A48C5D29B97B893F71F8C4609697F126E0929A924660F5D911",
+      "after_state_sha256": "A35E364604725BA71BA4A3F44A0A71FC78CCFEE18D20BD90454DCA7765A175F2",
+      "before_bytes": 135,
+      "after_bytes": 135,
+      "unchanged_prefix_sha256": "FF04EEA5A3DB3F65B8E02A1DD0B3B33C3281D7B757DED8CAB96D27EB02A2FC61",
+      "unchanged_suffix_sha256": "39F3090956CA593FC8B765CA1B89F66E677AA38FD1066748D01D356F8D61F109"
+    },
+    {
+      "number": 25,
+      "label": "Inverse wording matches eight restored keys",
+      "offset": 66885,
+      "before": "restore only the seven replaced keys",
+      "after": "restore only the eight replaced keys",
+      "before_state_sha256": "A35E364604725BA71BA4A3F44A0A71FC78CCFEE18D20BD90454DCA7765A175F2",
+      "after_state_sha256": "D78E4A0E3DBE4FD8CB58B8626A0B1B3558A7DEFD07BC038960895F94DB2DE03B",
+      "before_bytes": 36,
+      "after_bytes": 36,
+      "unchanged_prefix_sha256": "AE1879E59FCDA228A4D4B54017CE06DE2DAA839562A1ADAED476928F1181A2C0",
+      "unchanged_suffix_sha256": "3E59C0DA973B72EE3AFADEB38401FA2B6D7A18E6469E429154B215D6B42E3527"
+    },
+    {
+      "number": 26,
+      "label": "Truthful native-negative history report",
+      "offset": 67029,
+      "before": " \"source_build_paths\":0,\"native_negative_history_unchanged\":True,\"qualification\":False,",
+      "after": " \"source_build_paths\":0,\"native_negative_history_prefix_unchanged\":True,\n \"native_negative_records_added\":1,\"non_native_negative_records\":3,\"observed_attempts_added\":7,\"qualification\":False,",
+      "before_state_sha256": "D78E4A0E3DBE4FD8CB58B8626A0B1B3558A7DEFD07BC038960895F94DB2DE03B",
+      "after_state_sha256": "35807C6689F6046935D94D1B3906F4BD6F589C9038113CD39E23FDAC3CA20034",
+      "before_bytes": 87,
+      "after_bytes": 190,
+      "unchanged_prefix_sha256": "27EA73C3C4D54DF05B72B851CDCC48F84A1037B7FAF5245DF43828F15235F8A0",
+      "unchanged_suffix_sha256": "587C3D9E0CEF0E4D5845D9D34C1E41FD621DF04F4D612189AA63965CA3E3C51D"
+    },
+    {
+      "number": 27,
+      "label": "Negative archive index scope",
+      "offset": 67480,
+      "before": "\"exact_closed_v38_positive_phase_and_original_non_native_negative_archive\"",
+      "after": "\"exact_closed_v38_new4_positive_and_original63_partial_negative_archive\"",
+      "before_state_sha256": "35807C6689F6046935D94D1B3906F4BD6F589C9038113CD39E23FDAC3CA20034",
+      "after_state_sha256": "EF0C2814E6DCFA8D64180F0BFF4DFAD7B0C018BF2739A63F19CA553D346CC984",
+      "before_bytes": 74,
+      "after_bytes": 72,
+      "unchanged_prefix_sha256": "255BFB250A72D6612206789A4E2F3C48455176DAB830058AD0472A5AC5CB2ECF",
+      "unchanged_suffix_sha256": "DE280E733E49C66C08C64894F6217E80BB6FA7D1A92961F0C0EE58B2EDB6C21E"
+    },
+    {
+      "number": 28,
+      "label": "Ten represented bookends",
+      "offset": 67835,
+      "before": "\"represented_original_bookend_files\":8",
+      "after": "\"represented_original_bookend_files\":10",
+      "before_state_sha256": "EF0C2814E6DCFA8D64180F0BFF4DFAD7B0C018BF2739A63F19CA553D346CC984",
+      "after_state_sha256": "AC5F7C23B199DC6EBE5CA1E1011E25CD4A564F8F8747B801AEF7ECDB10C47A66",
+      "before_bytes": 38,
+      "after_bytes": 39,
+      "unchanged_prefix_sha256": "41719F1AD11E4E8014F3840EA993AF0567A4480EF01685A3A539CFCB8383F42F",
+      "unchanged_suffix_sha256": "74670E2C1AB8959AA906E0F549C5721E83E18C484CE12FE0BDCE09C87B6E2ED1"
+    },
+    {
+      "number": 29,
+      "label": "Ten less compressed counterparts",
+      "offset": 67923,
+      "before": "\"separately_archived_raw_bookend_files\":8-2*len(seal_mappings)",
+      "after": "\"separately_archived_raw_bookend_files\":10-2*len(seal_mappings),\n \"prelaunch_bookend_files_retained_raw\":2,\"maximum_selected_equal_pair_gzip_count\":4",
+      "before_state_sha256": "AC5F7C23B199DC6EBE5CA1E1011E25CD4A564F8F8747B801AEF7ECDB10C47A66",
+      "after_state_sha256": "C295C09C2BCED671962476F4C5E52B4527D5C6AA687519C3F496EF23B3360762",
+      "before_bytes": 62,
+      "after_bytes": 149,
+      "unchanged_prefix_sha256": "461AAFA0ED847DBBE62C4236140E2BD3B6F3F0D7EDC3ED2E816272CE18FDC54A",
+      "unchanged_suffix_sha256": "B3A92FBBB938C73EB9D4E7AF0D4506ADB48326BD519E36D590364272F316DAF7"
+    },
+    {
+      "number": 30,
+      "label": "Distinct unissued intake proposal",
+      "offset": 68890,
+      "before": "\"exact_v38_positive_progress_archive_intake_unissued\"",
+      "after": "\"exact_v38_partial_negative_progress_archive_intake_unissued\"",
+      "before_state_sha256": "C295C09C2BCED671962476F4C5E52B4527D5C6AA687519C3F496EF23B3360762",
+      "after_state_sha256": "3E3611BE766CBDF1CCC880DBFD67B4F878CCA99ED196AA65E501554CF3B19B91",
+      "before_bytes": 53,
+      "after_bytes": 61,
+      "unchanged_prefix_sha256": "76090C397D05ABCE9DAC01B69A2A8B26029E7615664098753BB2720CB0EE27D2",
+      "unchanged_suffix_sha256": "91119CFAB172AD4D3AAFB5C550C8626084F09540BF208A9734679BD0B671C64B"
+    },
+    {
+      "number": 31,
+      "label": "Truthful manifest phase requirements",
+      "offset": 69331,
+      "before": " \"complete_original63_success_required_and_verified\":True,\"all_original_negatives_preserved\":True,",
+      "after": " \"complete_original63_buildquery_success_verified\":True,\"original63_partial_runtime_negative_closed\":True,\n \"original63_zero_native_prelaunch_negative_preserved\":True,\"all_original_negatives_preserved\":True,",
+      "before_state_sha256": "3E3611BE766CBDF1CCC880DBFD67B4F878CCA99ED196AA65E501554CF3B19B91",
+      "after_state_sha256": "489064E8899B72722D45B71B6BCB98BCD84E3F76BE525A0E0FB1843D7286CBD5",
+      "before_bytes": 98,
+      "after_bytes": 207,
+      "unchanged_prefix_sha256": "BE16BFF7FABE2175C1634FC8ACF9B1C5B5D4A4232F882AE7391D5AFD8E350134",
+      "unchanged_suffix_sha256": "C1558E6128666C7653087A2BFEBF73787E35F706B616CCE5F9439D80E767FD87"
+    },
+    {
+      "number": 32,
+      "label": "Distinct preparation review status",
+      "offset": 73453,
+      "before": "\"source_only_exact_v38_positive_progress_archive_prepared\"",
+      "after": "\"source_only_exact_v38_partial_negative_progress_archive_prepared\"",
+      "before_state_sha256": "489064E8899B72722D45B71B6BCB98BCD84E3F76BE525A0E0FB1843D7286CBD5",
+      "after_state_sha256": "82C1CBA2B39B23D9CF95926DACBC7CBA29AC50B77DBCA2FE794A3BC99FF71F53",
+      "before_bytes": 58,
+      "after_bytes": 66,
+      "unchanged_prefix_sha256": "2681D03BD987DEF8030EB1BDD00D42DD2B6033376840C613B137DE32CD0084FE",
+      "unchanged_suffix_sha256": "2A387912F22CC0001B2F96F0FFE23408326285AF42AA0C624DBE6A5AF3E983DF"
+    },
+    {
+      "number": 33,
+      "label": "Truthful preparation review phase outcomes",
+      "offset": 74081,
+      "before": " \"original63_both_success_acceptances_verified\":True,\"all_original_evidence_raw_bytes_preserved\":True,",
+      "after": " \"original63_buildquery_accepted\":True,\"original63_partial_runtime_negative_closed\":True,\n \"original63_prelaunch_zero_native_negative_preserved\":True,\"all_original_evidence_raw_bytes_preserved\":True,",
+      "before_state_sha256": "82C1CBA2B39B23D9CF95926DACBC7CBA29AC50B77DBCA2FE794A3BC99FF71F53",
+      "after_state_sha256": "FF99211C744E2DB0F3C147C4FE0896CAC8584E2AFE04352525DAAF7AFC4413CA",
+      "before_bytes": 102,
+      "after_bytes": 199,
+      "unchanged_prefix_sha256": "7BCF9ADC4EA2A7EF395E6F4A5262F6EC7356A110AD6040F1D643DEDBA660635C",
+      "unchanged_suffix_sha256": "29D0B8C244E17224B0BCF079547A87D6B6253372F192723518E88F3E1A838298"
+    },
+    {
+      "number": 34,
+      "label": "Ten bookends in preparation review",
+      "offset": 74328,
+      "before": "\"represented_original_bookends\":8",
+      "after": "\"represented_original_bookends\":10",
+      "before_state_sha256": "FF99211C744E2DB0F3C147C4FE0896CAC8584E2AFE04352525DAAF7AFC4413CA",
+      "after_state_sha256": "DA4C85B18E569B25D33F64EC0BCE1BAF3031AFBCC4F51401DCF055E9AE14D1A4",
+      "before_bytes": 33,
+      "after_bytes": 34,
+      "unchanged_prefix_sha256": "7AA3E049180D681B4F17616FE6830E256DB034B575ABCE8539940196A65226A9",
+      "unchanged_suffix_sha256": "7CD2CFE3F4653ED6A3CA4DB28B9F3808739963BD9DAFA5F4D24A7722A8998D83"
+    },
+    {
+      "number": 35,
+      "label": "Freeze102 supplemental originals without changing314 basis",
+      "offset": 1411,
+      "before": "FIXED = {\n",
+      "after": "FIXED = {\n \"preservation\": (W/\"verification/v38-partial-negative-progress-archive-preparer-sourceonly-20261022/supplemental-preservation-inputs.json\",32895,\"4124B26CB6722E5426FF051C978A4D715B3015442E5722DA51A76E4C9F320509\"),\n",
+      "before_state_sha256": "DA4C85B18E569B25D33F64EC0BCE1BAF3031AFBCC4F51401DCF055E9AE14D1A4",
+      "after_state_sha256": "7923EF7921BA4CBCF9ABB44ECA5377FBA45A5AD49C519B2D607E049F4219B402",
+      "before_bytes": 10,
+      "after_bytes": 225,
+      "unchanged_prefix_sha256": "5398D60C7513BBF1EDC58510B6DBBBCA276441E42FE39E2F1B5D7830194817D2",
+      "unchanged_suffix_sha256": "22ADCDAF378C96D285FF45CD5906EF361B8A4C58E2139DB98A472CCF98070005"
+    },
+    {
+      "number": 36,
+      "label": "Admit exact immutable supplemental preservation inventory",
+      "offset": 8709,
+      "before": "\nexact(fixed(\"policy\"))\n",
+      "after": "\nexact(fixed(\"policy\"))\npreservation = decode(exact(fixed(\"preservation\")))\nrequire(preservation[\"schema\"]==1 and preservation[\"candidate_head\"]==HEAD and\n        preservation[\"required_raw_file_count\"]==len(preservation[\"required_raw_files\"])==102 and\n        len(preservation[\"role_pins\"])==13,\"exact supplemental immutable source/negative preservation basis\")\n",
+      "before_state_sha256": "7923EF7921BA4CBCF9ABB44ECA5377FBA45A5AD49C519B2D607E049F4219B402",
+      "after_state_sha256": "325149AB7C4717DD23E7BD77E991AB5B3EB558DB9884C09D30B3A03A9B605CF6",
+      "before_bytes": 24,
+      "after_bytes": 363,
+      "unchanged_prefix_sha256": "55BB7EEB04EA29DEDF744FFF6B83EB4AADE6BCB1876657815C0107421C494AA8",
+      "unchanged_suffix_sha256": "1715127D514E4C5F15796B4DCDE4702BD1C6D66541B09FE62FA52D825A3ABB28"
+    },
+    {
+      "number": 37,
+      "label": "Separate Root source approval binds supplemental scope",
+      "offset": 9944,
+      "before": "require(source_review[\"partial_inventory\"]==fixed(\"inventory\") and source_review[\"progress_plan\"]==fixed(\"plan\"),\"source acceptance fixed policy\")",
+      "after": "require(source_review[\"partial_inventory\"]==fixed(\"inventory\") and source_review[\"progress_plan\"]==fixed(\"plan\"),\"source acceptance fixed policy\")\nrequire(source_review[\"supplemental_preservation_inventory\"]==fixed(\"preservation\"),\"Root exact supplemental preservation scope\")",
+      "before_state_sha256": "325149AB7C4717DD23E7BD77E991AB5B3EB558DB9884C09D30B3A03A9B605CF6",
+      "after_state_sha256": "D5AA48BCAE3F8A8E86DA085C338E3495C68A81F03C160DB0545308C9E3C1442E",
+      "before_bytes": 146,
+      "after_bytes": 276,
+      "unchanged_prefix_sha256": "6AA2CC122F6438AEAE54A47BA3CAE83A3E9B23DED5B53EE3B28E3BFCFFAA37D6",
+      "unchanged_suffix_sha256": "8A0C1165BDC256103E6207DA924F8A73903672A1BFA5D85B526827C3884AE18A"
+    },
+    {
+      "number": 38,
+      "label": "Require every supplemental source and negative raw version",
+      "offset": 15591,
+      "before": "membership = copy_plan[\"observed_phase_membership\"]",
+      "after": "for required in preservation[\"required_raw_files\"]:\n    require(archived_pin(required[\"path\"])==required and\n            row_by_path[required[\"path\"].casefold()][\"representation\"]==\"raw_byte_exact\",\"all102 supplemental originals retained raw\")\nfor required in preservation[\"role_pins\"].values():\n    require(required in preservation[\"required_raw_files\"],\"selected observed roles are immutable archived originals\")\n\nmembership = copy_plan[\"observed_phase_membership\"]",
+      "before_state_sha256": "D5AA48BCAE3F8A8E86DA085C338E3495C68A81F03C160DB0545308C9E3C1442E",
+      "after_state_sha256": "C3A5ECCCCFABEED0F57DE64CACBFB956BF7B1D0AED7A29DADCA74D040E91EC43",
+      "before_bytes": 51,
+      "after_bytes": 467,
+      "unchanged_prefix_sha256": "C273AFFA979F7C2D40558FB20FCB4272E59356507E30D8FC6621A2BACBC72104",
+      "unchanged_suffix_sha256": "E569952D2BE6FD2F6BEEA3942EFFC47C3722AA2BED94291F101CF01E24450284"
+    },
+    {
+      "number": 39,
+      "label": "Retain exact preservation inventory in proposal",
+      "offset": 66354,
+      "before": "auxiliary = [\n",
+      "after": "auxiliary = [\n (\"supplemental-preservation-inputs.json\",fixed(\"preservation\"),exact(fixed(\"preservation\"))),\n",
+      "before_state_sha256": "C3A5ECCCCFABEED0F57DE64CACBFB956BF7B1D0AED7A29DADCA74D040E91EC43",
+      "after_state_sha256": "EE11C073C1D1CAD599D7F88B34B78133A5E3A90F68D1E1094D6AF77D7C5128AB",
+      "before_bytes": 14,
+      "after_bytes": 109,
+      "unchanged_prefix_sha256": "55673BC44D304DD8240C0693224FA0748095D00413B4AFEC73614F07039A8DAF",
+      "unchanged_suffix_sha256": "2E4C9D8FFA10E70AC42748C4B22D44B4CDD0BE6B31B4ABBA44A1BEBE069CEEEE"
+    }
+  ],
+  "full_forward_equal": true,
+  "full_raw_inverse_equal": true,
+  "unchanged_helpers": [
+    {
+      "name": "require",
+      "bytes": 74,
+      "sha256": "958F6B995DD5F2799D63FA134494121FD41DD97506C20485426BC902771514E9",
+      "old_lines": [
+        45,
+        47
+      ],
+      "new_lines": [
+        50,
+        52
+      ]
+    },
+    {
+      "name": "sha",
+      "bytes": 65,
+      "sha256": "ACC12A90964A54F651A83AA95D98D6C1DA6A3CECA2C91DE37FC32A3E285A0AB9",
+      "old_lines": [
+        49,
+        50
+      ],
+      "new_lines": [
+        54,
+        55
+      ]
+    },
+    {
+      "name": "encode",
+      "bytes": 99,
+      "sha256": "F48F8E12BB29E258011E33C6B3EE45E63949EE84DD711022DB3CDA20DF9E1C4A",
+      "old_lines": [
+        52,
+        53
+      ],
+      "new_lines": [
+        57,
+        58
+      ]
+    },
+    {
+      "name": "decode",
+      "bytes": 64,
+      "sha256": "EF61BA410755AA19D9DFF86842943E163FBC98C7AE9C7E7DBBEE2E490B6EC433",
+      "old_lines": [
+        55,
+        56
+      ],
+      "new_lines": [
+        60,
+        61
+      ]
+    },
+    {
+      "name": "pin",
+      "bytes": 84,
+      "sha256": "3EB4C8D07A7681290D722A16CC43DAB867CA7D886ADB1B07D9EBB71CB53C4029",
+      "old_lines": [
+        58,
+        59
+      ],
+      "new_lines": [
+        63,
+        64
+      ]
+    },
+    {
+      "name": "inside",
+      "bytes": 745,
+      "sha256": "DC1ABC0B743C7EB9475C5505B43A336FE7ACD4F6148739A61034EFF3F2E1AACF",
+      "old_lines": [
+        61,
+        75
+      ],
+      "new_lines": [
+        66,
+        80
+      ]
+    },
+    {
+      "name": "relative",
+      "bytes": 534,
+      "sha256": "D843A26B0950595C46DE852F1D1B27B961DE70BDBED0D9978FD81A95148ECAB6",
+      "old_lines": [
+        77,
+        84
+      ],
+      "new_lines": [
+        82,
+        89
+      ]
+    },
+    {
+      "name": "exact",
+      "bytes": 575,
+      "sha256": "2DE72446DC44AED90649C1AD6E21B003A87886624210EC1F57BFCE7C5889A1FE",
+      "old_lines": [
+        86,
+        96
+      ],
+      "new_lines": [
+        91,
+        101
+      ]
+    },
+    {
+      "name": "fixed",
+      "bytes": 109,
+      "sha256": "E4BD6B78460C0B035F07A93BEF1238FC094ED1CCADAB31EBA622A75506401B3C",
+      "old_lines": [
+        98,
+        100
+      ],
+      "new_lines": [
+        103,
+        105
+      ]
+    },
+    {
+      "name": "get",
+      "bytes": 88,
+      "sha256": "6FBAEE101D356219745756CAA08AC56CC7F01B178794377F9141C90C8DA7481C",
+      "old_lines": [
+        102,
+        105
+      ],
+      "new_lines": [
+        107,
+        110
+      ]
+    },
+    {
+      "name": "list_paths",
+      "bytes": 309,
+      "sha256": "8350FAE5574FC03BC157863B1982C34B8346A5E09F4CA0B4D326480A9BA7E242",
+      "old_lines": [
+        107,
+        114
+      ],
+      "new_lines": [
+        112,
+        119
+      ]
+    },
+    {
+      "name": "git",
+      "bytes": 310,
+      "sha256": "1BE81168B4BD188E3FF8C2AD55F2C53C5DFAC9D63D332AA418A678D78A342854",
+      "old_lines": [
+        116,
+        120
+      ],
+      "new_lines": [
+        121,
+        125
+      ]
+    },
+    {
+      "name": "frozen_ref",
+      "bytes": 115,
+      "sha256": "6C3912E94928F5879D29948D72AF4C0AD6628F0C2C6B343000B49E5F59135438",
+      "old_lines": [
+        122,
+        123
+      ],
+      "new_lines": [
+        127,
+        128
+      ]
+    },
+    {
+      "name": "flags",
+      "bytes": 211,
+      "sha256": "83397C4CB51A98CFCDD2A7B52A75CB8F0EDED1AFB5507E3D2CF235A8E1AD03C3",
+      "old_lines": [
+        125,
+        129
+      ],
+      "new_lines": [
+        130,
+        134
+      ]
+    },
+    {
+      "name": "gzip_bytes",
+      "bytes": 181,
+      "sha256": "F3FEE0F7502E42C5112750BEE55ED802E1C682B161214427D9A1A1DFB138E237",
+      "old_lines": [
+        131,
+        135
+      ],
+      "new_lines": [
+        136,
+        140
+      ]
+    },
+    {
+      "name": "names",
+      "bytes": 110,
+      "sha256": "EC13812C0206A705A0A20F1EA85938BD1CAD5B307525CE82946132C8102036D7",
+      "old_lines": [
+        137,
+        138
+      ],
+      "new_lines": [
+        142,
+        143
+      ]
+    },
+    {
+      "name": "archived_pin",
+      "bytes": 201,
+      "sha256": "CD3EB4CCACA76A24AFE7C0AFB4536B0CEB75AB6427B2085A133049493C6DF68D",
+      "old_lines": [
+        229,
+        232
+      ],
+      "new_lines": [
+        239,
+        242
+      ]
+    },
+    {
+      "name": "raw",
+      "bytes": 69,
+      "sha256": "AC11B1C0C471E55D72DC96B1C3377F4B7281367BDB6CE4E23EC14A16856CCA05",
+      "old_lines": [
+        234,
+        235
+      ],
+      "new_lines": [
+        244,
+        245
+      ]
+    },
+    {
+      "name": "doc",
+      "bytes": 67,
+      "sha256": "D0A102EE80BFD9E62AF70BAD1BB5A7CA6B4FABDC6122DA914D847EE75DC6843E",
+      "old_lines": [
+        237,
+        239
+      ],
+      "new_lines": [
+        247,
+        249
+      ]
+    },
+    {
+      "name": "document",
+      "bytes": 128,
+      "sha256": "61C465F70390DA5E8C3E923D889FB46C6A62C1E57D741AA722D85C203092FF0F",
+      "old_lines": [
+        241,
+        243
+      ],
+      "new_lines": [
+        251,
+        253
+      ]
+    },
+    {
+      "name": "check_positive",
+      "bytes": 11554,
+      "sha256": "997459FAB135A794C5D4726673748BDA93F96697E15F1858E76448F9E05B68F2",
+      "old_lines": [
+        291,
+        404
+      ],
+      "new_lines": [
+        309,
+        422
+      ]
+    },
+    {
+      "name": "add",
+      "bytes": 431,
+      "sha256": "385C5EAE6AC4073023F459C7D28A0BCAD4CD3AEDF9803C2050D658E63575944E",
+      "old_lines": [
+        433,
+        439
+      ],
+      "new_lines": [
+        683,
+        689
+      ]
+    }
+  ],
+  "new_helpers": [
+    {
+      "name": "check_existing63_buildquery",
+      "bytes": 5251,
+      "sha256": "4046B0E996E47070BEDD45A32BAB0A4C24027295FDF7183C8830F49419DC4D75",
+      "lines": [
+        434,
+        484
+      ]
+    },
+    {
+      "name": "check_existing63_negative_cohort",
+      "bytes": 623,
+      "sha256": "9B151C5F21A7ECED8B9DEB0EE54DBF312552F0438C0AAD0DF7E6F0BCFF2C09DE",
+      "lines": [
+        638,
+        647
+      ]
+    },
+    {
+      "name": "check_existing63_partial_negative",
+      "bytes": 9943,
+      "sha256": "C7AA1EEE20C9A0AEA5555FDE99B9D233167832BECA8A3D9D72708327649509BD",
+      "lines": [
+        536,
+        636
+      ]
+    },
+    {
+      "name": "check_existing63_prelaunch",
+      "bytes": 4586,
+      "sha256": "6246FE6819FA6C711A8A8E1D9E528C0421253AC35F93C93534B09477126557AF",
+      "lines": [
+        486,
+        534
+      ]
+    },
+    {
+      "name": "retained_pin",
+      "bytes": 130,
+      "sha256": "91D191B71B954DE8FB351A0EECB3B0D0499040AF51557657F02F7813F6392034",
+      "lines": [
+        425,
+        427
+      ]
+    },
+    {
+      "name": "selected_observed",
+      "bytes": 108,
+      "sha256": "986D6D40324EEA30B9A869273508730C2947A77D9217ED11F39C8333168522F8",
+      "lines": [
+        429,
+        432
+      ]
+    }
+  ],
+  "unchanged_regions": [
+    {
+      "name": "original314_and183_basis",
+      "old_offset": 8196,
+      "new_offset": 9193,
+      "bytes": 396,
+      "sha256": "550A94D1AD02E8F1BFF8B72C71417367F30E9C9BED815FD76F192D77EC76AAB0"
+    },
+    {
+      "name": "complete_old_progress_and181_list_basis",
+      "old_offset": 10411,
+      "new_offset": 11596,
+      "bytes": 1755,
+      "sha256": "9447E647CB1D962AEDE7C44A326AC7250A3C4E9058C6B4E6B39F3DE02BCEA6B8"
+    },
+    {
+      "name": "strict_original_copy_rows",
+      "old_offset": 12166,
+      "new_offset": 13351,
+      "bytes": 1255,
+      "sha256": "FD38C3DAF917F1E014BFF049E7414DDC20311982F118A65648C764537781A736"
+    },
+    {
+      "name": "original_direct_pin_relationships",
+      "old_offset": 13890,
+      "new_offset": 15075,
+      "bytes": 514,
+      "sha256": "47D892F86948AAF14D6EAF1AECA9C651CE33A6F10B8415C5211337926911E20E"
+    },
+    {
+      "name": "known_new4_membership",
+      "old_offset": 16472,
+      "new_offset": 18285,
+      "bytes": 550,
+      "sha256": "5C4A28B3209A2F9DABCF781162FAA83964AD50959E0212B275D0B81F6BE8C8D0"
+    },
+    {
+      "name": "catalog_and_new4_auditor_original_negative",
+      "old_offset": 28888,
+      "new_offset": 51337,
+      "bytes": 2335,
+      "sha256": "01DD0201180AF78FD7B72CF56A4ED6544C87B20A20FA741AFD88A91D40BD451F"
+    },
+    {
+      "name": "exact_equal_pair_gzip_and_raw",
+      "old_offset": 31713,
+      "new_offset": 54708,
+      "bytes": 3376,
+      "sha256": "F42299E0E1F6C1A25E83D819E1F67026822CC054FE05E8F313B9AA896D2E36FC"
+    },
+    {
+      "name": "all181_nested_prefixes_and_raw_inverse",
+      "old_offset": 41420,
+      "new_offset": 65425,
+      "bytes": 631,
+      "sha256": "5686BFAB4516F6B791A5E92E70F2469AF15429945CEBC21BA310BFA0E4B0F282"
+    },
+    {
+      "name": "exact_output_Git_and_rechecks",
+      "old_offset": 46867,
+      "new_offset": 71273,
+      "bytes": 2517,
+      "sha256": "08B4D04F4D07C52A59602D5A0613478D123D2A6D3CCC3DADDB8CBF270D001497"
+    },
+    {
+      "name": "create_only_tail_and_final_rechecks",
+      "old_offset": 49384,
+      "new_offset": 73790,
+      "bytes": 825,
+      "sha256": "85D27ABBEFC5F713C284F3D37BB9014F857CE45AB25A479C8D12F057E7520B63"
+    }
+  ],
+  "imports_unchanged": true,
+  "configuration_keys": [
+    "application_qualified",
+    "archive_target_prefix",
+    "candidate_head",
+    "evidence_preparation_authorized",
+    "expected_output_paths",
+    "final_copy_plan",
+    "main_intake_authorized",
+    "native_execution_authorized",
+    "output_directory",
+    "preparer_sha256",
+    "production_bridge_removed",
+    "published_release",
+    "recorded_utc",
+    "runtime_authority",
+    "schema",
+    "source_mutation_hold_released",
+    "source_review",
+    "status"
+  ],
+  "copy_plan_keys": [
+    "bookend_plans",
+    "candidate_head",
+    "cohorts",
+    "direct_pin_relationships",
+    "observed_phase_membership",
+    "partial_inventory",
+    "progress_plan",
+    "reviewer",
+    "rows",
+    "schema",
+    "status"
+  ],
+  "row_keys": [
+    "archive_created",
+    "original",
+    "proposed_archive_relative_path",
+    "representation",
+    "roles"
+  ],
+  "complete_source_AST_parsed": true,
+  "supplemental_preservation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\supplemental-preservation-inputs.json",
+    "bytes": 32895,
+    "sha256": "4124B26CB6722E5426FF051C978A4D715B3015442E5722DA51A76E4C9F320509"
+  },
+  "supplemental_current_pins_rehashed": 102,
+  "write_call_accounting": [
+    {
+      "line": 938,
+      "expression": "OUT.mkdir()"
+    },
+    {
+      "line": 165,
+      "expression": "cfg[\"recorded_utc\"].replace(\"Z\",\"+00:00\")"
+    },
+    {
+      "line": 942,
+      "expression": "path.parent.mkdir(parents=True,exist_ok=True)"
+    },
+    {
+      "line": 946,
+      "expression": "(OUT/\"manifest.json\").open(\"xb\")"
+    },
+    {
+      "line": 947,
+      "expression": "f.write(manifest_raw)"
+    },
+    {
+      "line": 969,
+      "expression": "(OUT/\"preparation-review.json\").open(\"xb\")"
+    },
+    {
+      "line": 970,
+      "expression": "f.write(encode(review))"
+    },
+    {
+      "line": 139,
+      "expression": "gz.write(raw)"
+    },
+    {
+      "line": 943,
+      "expression": "path.open(\"xb\")"
+    },
+    {
+      "line": 944,
+      "expression": "f.write(payloads[row[\"target\"]])"
+    },
+    {
+      "line": 278,
+      "expression": "control.name.replace(\"-control-\",\"-buildquery-\" if is_build else \"-\",1)"
+    }
+  ],
+  "candidate_imported_or_evaluated": false,
+  "candidate_prefix_executed": false,
+  "gzip_executed": false,
+  "progress_projected": false,
+  "configuration_issued": false,
+  "Main_access": false,
+  "native_execution_authorized": false
+}

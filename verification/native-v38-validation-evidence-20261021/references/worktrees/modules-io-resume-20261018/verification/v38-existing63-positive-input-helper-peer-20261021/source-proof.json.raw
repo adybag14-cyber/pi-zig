@@ -1,0 +1,1186 @@
+{
+  "schema": 1,
+  "status": "passed_independent_static_v38_existing63_positive_input_helper_peer",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\candidate\\Prepare-ObservedV38Existing63PositiveBuildQueryAuditInputs-20261021-unresolved.py",
+    "bytes": 21109,
+    "sha256": "0F8502D9AD3395551AFC08652795C77114EED504E13623F6D65CDE774FAEB06C"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Prepare-ObservedV38New4PositiveBuildQueryAuditInputs-20261021-unresolved.py",
+    "bytes": 18939,
+    "sha256": "88D31C0905C52EEE080C7CC2FDBF32F0DC4F39C7A5BCDFCE9C01E3F1BF85AC17"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 66421,
+    "sha256": "A554D8FC6DBF549DA5A6CB95659BE8EB430CA1DA487960D725BF474AB2FBD900"
+  },
+  "plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\plan.json",
+    "bytes": 9366,
+    "sha256": "945BED05F7B85548589690B83FF62D7B979678FEA089B5D8BDFBF628C6BCF02A"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-existing63-positive-input-helper-peer-20261021\\source-audit.py",
+    "bytes": 18138,
+    "sha256": "CF0EEE2FB00B3FFF0EF1C9E67BF4727D8A3B82A22B8D9433ABC3091D973498FB"
+  },
+  "finite_edits": [
+    {
+      "index": 1,
+      "kind": "STRING",
+      "original_line": 1,
+      "original_offset": 0,
+      "offset_before_step": 0,
+      "before": "\"\"\"Root-only assembly of the observed V38 new4 positive BuildQuery audit inputs.\nRun only with a separately issued exact Root config after terminal success and\nmetadata acceptance. The sole write is a create-only audit-input JSON. This\nhelper neither runs the auditor nor grants native/runtime/source authority.\n\"\"\"",
+      "after": "\"\"\"Root-only assembly of the observed V38 existing63 positive BuildQuery audit inputs.\nRun only with a separately issued exact Root config after terminal success and\nmetadata acceptance. The sole write is a create-only audit-input JSON. This\nhelper neither runs the auditor nor grants native/runtime/source authority.\n\"\"\"",
+      "before_file_sha256": "88D31C0905C52EEE080C7CC2FDBF32F0DC4F39C7A5BCDFCE9C01E3F1BF85AC17",
+      "after_file_sha256": "ABB5385E84B21E6BFF9F071E382E040C378D8EDE699C9534E23668A403245D6B"
+    },
+    {
+      "index": 2,
+      "kind": "STRING",
+      "original_line": 12,
+      "original_offset": 569,
+      "offset_before_step": 575,
+      "before": "\"root-native-foundation-fresh-v38-new4-control-UNRESOLVEDSTAMP\"",
+      "after": "\"root-native-foundation-fresh-v38-existing63-control-UNRESOLVEDSTAMP\"",
+      "before_file_sha256": "ABB5385E84B21E6BFF9F071E382E040C378D8EDE699C9534E23668A403245D6B",
+      "after_file_sha256": "15F0A391484FEFC45918C1FA20CAEFDCAC825037978EBC5CE1072E8866009E1E"
+    },
+    {
+      "index": 3,
+      "kind": "STRING",
+      "original_line": 13,
+      "original_offset": 637,
+      "offset_before_step": 649,
+      "before": "\"root-native-foundation-fresh-v38-new4-buildquery-UNRESOLVEDSTAMP\"",
+      "after": "\"root-native-foundation-fresh-v38-existing63-buildquery-UNRESOLVEDSTAMP\"",
+      "before_file_sha256": "15F0A391484FEFC45918C1FA20CAEFDCAC825037978EBC5CE1072E8866009E1E",
+      "after_file_sha256": "D6F99BC41C18F644F52517B42C9466D11760B2C0404FCAAA8325745B1739954E"
+    },
+    {
+      "index": 4,
+      "kind": "STRING",
+      "original_line": 14,
+      "original_offset": 711,
+      "offset_before_step": 729,
+      "before": "\"combined-native-batch-v38-new4-prepared-20261021\"",
+      "after": "\"combined-native-batch-v38-regression63-prepared-20261021\"",
+      "before_file_sha256": "D6F99BC41C18F644F52517B42C9466D11760B2C0404FCAAA8325745B1739954E",
+      "after_file_sha256": "FF4506E662E6C2ADB95F9D6C62800E60BBD24C5E0BE56A99C22CF02B3EDECC05"
+    },
+    {
+      "index": 5,
+      "kind": "LITERAL_LIST",
+      "original_line": 16,
+      "original_offset": 830,
+      "offset_before_step": 856,
+      "before": "[\"native-node-file-handle-owner\",\"native-node-fs-before-hook-continuation\",\n        \"native-vm-error-constructor-name\",\"native-node-file-handle-transfer\"]",
+      "after": "[\n    \"native-node-file-handle-read\",\n    \"native-node-fs-callback-template\",\n    \"native-vm-simple-stack-source\",\n    \"native-vm-exotic-operations\",\n    \"native-node-diagnostic-context\",\n    \"native-node-native-debug\",\n    \"native-node-permission\",\n    \"native-node-fs-readwrap-reuse\",\n    \"native-node-reqwrap-callback-routing\",\n    \"native-vm-script-location\",\n    \"native-node-stream-read\",\n    \"native-node-environment-map\",\n    \"native-vm-backing-store-adoption\",\n    \"native-node-environment-paths\",\n    \"native-node-stream-fields\",\n    \"native-node-managed-buffers\",\n    \"native-node-fs-request-owner\",\n    \"native-vm-execution-termination\",\n    \"native-typebox-execution-termination\",\n    \"native-host-termination-ownership\",\n    \"native-node-stream-resource\",\n    \"native-node-package-json-parser\",\n    \"native-node-microtask-checkpoint\",\n    \"native-vm-property-retirement\",\n    \"native-vm-consuming-operands\",\n    \"native-vm-oom-occurrence\",\n    \"native-node-callback-scope\",\n    \"native-node-inspect-colors\",\n    \"native-vm-captured-frame-logging\",\n    \"native-node-experimental-warning\",\n    \"native-node-commonjs-helpers\",\n    \"native-node-process-warning\",\n    \"native-node-fs-request-transport\",\n    \"native-vm-array-buffer-view-length\",\n    \"native-vm-array-buffer-backing\",\n    \"native-vm-private-property\",\n    \"native-node-tcp-transport\",\n    \"native-vm-async-arguments\",\n    \"native-node-fs-write-uv\",\n    \"native-vm-sync-arguments\",\n    \"native-vm-async-retirement\",\n    \"native-vm-template-literal\",\n    \"native-vm-borrowed-bridges\",\n    \"vm-af-throw\",\n    \"native-ai-oauth-anthropic-genuine-af\",\n    \"native-node-module-creation\",\n    \"native-node-module-search-paths\",\n    \"native-node-fs-realpath-classic\",\n    \"native-node-fs-path-helpers\",\n    \"native-node-file-url-paths\",\n    \"native-sdk-tool-search-public\",\n    \"native-ai-radius-config\",\n    \"native-ai-radius-provider-genuine-af\",\n    \"native-node-inspect-entry\",\n    \"native-ai-oauth-radius-genuine-af\",\n    \"native-vm-existing-promise-settlement\",\n    \"native-node-options\",\n    \"native-node-uv-exception\",\n    \"native-vm-disallow-javascript\",\n    \"native-vm-continuation-data\",\n    \"native-vm-pending-promise\",\n    \"native-vm-native-global\",\n    \"native-vm-copy-data-properties\"\n]",
+      "before_file_sha256": "FF4506E662E6C2ADB95F9D6C62800E60BBD24C5E0BE56A99C22CF02B3EDECC05",
+      "after_file_sha256": "61B87911912040924E49D3FBD5F253356E3618140F72EC70A2C18FAF6E1D18FB"
+    },
+    {
+      "index": 6,
+      "kind": "STRING",
+      "original_line": 57,
+      "original_offset": 3063,
+      "offset_before_step": 5202,
+      "before": "\"root_reviewed_specific_v38_new4_positive_audit_input_preparation\"",
+      "after": "\"root_reviewed_specific_v38_existing63_positive_audit_input_preparation\"",
+      "before_file_sha256": "61B87911912040924E49D3FBD5F253356E3618140F72EC70A2C18FAF6E1D18FB",
+      "after_file_sha256": "0B5BD17A02D923895DA332D443FFFDFA79EE5DE05734E5BFB9A5D7888FAFD733"
+    },
+    {
+      "index": 7,
+      "kind": "STRING",
+      "original_line": 59,
+      "original_offset": 3336,
+      "offset_before_step": 5481,
+      "before": "\"Prepare-ObservedV38New4PositiveBuildQueryAuditInputs-20261021.py\"",
+      "after": "\"Prepare-ObservedV38Existing63PositiveBuildQueryAuditInputs-20261021.py\"",
+      "before_file_sha256": "0B5BD17A02D923895DA332D443FFFDFA79EE5DE05734E5BFB9A5D7888FAFD733",
+      "after_file_sha256": "94C8755EA4022827D62E08D6FF96AE1030010EC5EF4C6042A0C3B8F77179DA03"
+    },
+    {
+      "index": 8,
+      "kind": "STRING",
+      "original_line": 68,
+      "original_offset": 4243,
+      "offset_before_step": 6394,
+      "before": "\"root-v38-new4-buildquery-issued-config-20261021.json\"",
+      "after": "\"root-v38-existing63-buildquery-issued-config-20261021.json\"",
+      "before_file_sha256": "94C8755EA4022827D62E08D6FF96AE1030010EC5EF4C6042A0C3B8F77179DA03",
+      "after_file_sha256": "E6CB4EEB3F3E802F8D806EE3B27B332DA92C1522986525A054087439B2A690C9"
+    },
+    {
+      "index": 9,
+      "kind": "NUMBER",
+      "original_line": 104,
+      "original_offset": 8039,
+      "offset_before_step": 10196,
+      "before": "4",
+      "after": "63",
+      "before_file_sha256": "E6CB4EEB3F3E802F8D806EE3B27B332DA92C1522986525A054087439B2A690C9",
+      "after_file_sha256": "157CD44DDA04EF49FF788A72013B107FF4722374CB7EFC0E504ABB954D604CD4"
+    },
+    {
+      "index": 10,
+      "kind": "NUMBER",
+      "original_line": 104,
+      "original_offset": 8078,
+      "offset_before_step": 10236,
+      "before": "58",
+      "after": "1249",
+      "before_file_sha256": "157CD44DDA04EF49FF788A72013B107FF4722374CB7EFC0E504ABB954D604CD4",
+      "after_file_sha256": "64E488A65AEAE25149F5F40F31B32FF46C219D43107976175BC9A54A69FE54FC"
+    },
+    {
+      "index": 11,
+      "kind": "STRING",
+      "original_line": 109,
+      "original_offset": 8862,
+      "offset_before_step": 11022,
+      "before": "\"new4\"",
+      "after": "\"existing63\"",
+      "before_file_sha256": "64E488A65AEAE25149F5F40F31B32FF46C219D43107976175BC9A54A69FE54FC",
+      "after_file_sha256": "2E71EBA5CE22A73AE9343651DE000B4987BE4FB5051FFB167940E1B4B491394F"
+    },
+    {
+      "index": 12,
+      "kind": "STRING",
+      "original_line": 125,
+      "original_offset": 11066,
+      "offset_before_step": 13232,
+      "before": "\"All four and only original ordered groups\"",
+      "after": "\"All 63 and only original ordered groups\"",
+      "before_file_sha256": "2E71EBA5CE22A73AE9343651DE000B4987BE4FB5051FFB167940E1B4B491394F",
+      "after_file_sha256": "AD93FEDEDBE7587592CBB7068586FAE630543E28FDCFC738DEF1D1FCEC1EEF6E"
+    },
+    {
+      "index": 13,
+      "kind": "STRING",
+      "original_line": 178,
+      "original_offset": 17012,
+      "offset_before_step": 19176,
+      "before": "\"new4\"",
+      "after": "\"existing63\"",
+      "before_file_sha256": "AD93FEDEDBE7587592CBB7068586FAE630543E28FDCFC738DEF1D1FCEC1EEF6E",
+      "after_file_sha256": "0F8502D9AD3395551AFC08652795C77114EED504E13623F6D65CDE774FAEB06C"
+    }
+  ],
+  "full_forward_and_inverse_exact": true,
+  "untouched_fragments": [
+    {
+      "original_offset": 0,
+      "candidate_offset": 0,
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "original_offset": 315,
+      "candidate_offset": 321,
+      "bytes": 254,
+      "sha256": "75B5636BF281101B2319FAD6192B403D0DC3CCB96C7900A9CE160FC1ACA62A83"
+    },
+    {
+      "original_offset": 632,
+      "candidate_offset": 644,
+      "bytes": 5,
+      "sha256": "C0A539318FA2CE40C66CF64CB4AE30C033B52EF31CD102C75E894466F3AA14F3"
+    },
+    {
+      "original_offset": 703,
+      "candidate_offset": 721,
+      "bytes": 8,
+      "sha256": "5EE9E1FE952320B63A37BF30BF2F9420CDED5802A41ECEAC96229047074F9A27"
+    },
+    {
+      "original_offset": 761,
+      "candidate_offset": 787,
+      "bytes": 69,
+      "sha256": "C0B91BC51E8BC4F1BD959592D52B6F08C62565F448FAAD9A58A323ABFFF79E9A"
+    },
+    {
+      "original_offset": 984,
+      "candidate_offset": 3123,
+      "bytes": 2079,
+      "sha256": "69C27393AADBC1D91C6D46FEEDDC9300D8B1D1B8770E3FFFE965298D5753E2ED"
+    },
+    {
+      "original_offset": 3129,
+      "candidate_offset": 5274,
+      "bytes": 207,
+      "sha256": "BAF66A80D521B32F46DA79F4C066068B85FDDF606272405E50B34D1410A77C67"
+    },
+    {
+      "original_offset": 3402,
+      "candidate_offset": 5553,
+      "bytes": 841,
+      "sha256": "488AEF6D9A2A9C77B6F2A863B5C2F42DA0E729FE1EDA3D0383B57C6E29FA6656"
+    },
+    {
+      "original_offset": 4297,
+      "candidate_offset": 6454,
+      "bytes": 3742,
+      "sha256": "32EE5F6D59BBB3D1990DDB88703B9524D34129A06EFA30823A3FFC5F7B9BE918"
+    },
+    {
+      "original_offset": 8040,
+      "candidate_offset": 10198,
+      "bytes": 38,
+      "sha256": "6515E802D95F49DE0DF7749817AE357D5B8450BF13387D97C61177C4F6ED5CEC"
+    },
+    {
+      "original_offset": 8080,
+      "candidate_offset": 10240,
+      "bytes": 782,
+      "sha256": "D4AA662B8D3B23FB456148EFD7F567FF6F9F002D08EE7C4BC36FA30E46532132"
+    },
+    {
+      "original_offset": 8868,
+      "candidate_offset": 11034,
+      "bytes": 2198,
+      "sha256": "23C3CB0BFD744EA27BA0625E0B49CB2EA00262CE367A5BFB98107F7E93B24E87"
+    },
+    {
+      "original_offset": 11109,
+      "candidate_offset": 13273,
+      "bytes": 5903,
+      "sha256": "24078A1269ADABE8C1CDD4D5E6CC12E2FD208FED6E7E58A71D449BF6DA254F31"
+    },
+    {
+      "original_offset": 17018,
+      "candidate_offset": 19188,
+      "bytes": 1921,
+      "sha256": "3C1281E27141C1B314081F42486A4318BF477B639CA8F6116FA5A41A0F20227A"
+    }
+  ],
+  "unchanged_complete_helpers": [
+    {
+      "name": "require",
+      "baseline_line": 22,
+      "candidate_line": 85,
+      "bytes": 67,
+      "sha256": "6BE7166935F5DFB388A5956D4AA6502092E6369CFDFFECA9F3E1E2E490327278"
+    },
+    {
+      "name": "sha",
+      "baseline_line": 24,
+      "candidate_line": 87,
+      "bytes": 60,
+      "sha256": "0DA028679B0C76DB05C2D4E51461B0715296811B3124685F6AE5A5E7992AA3AA"
+    },
+    {
+      "name": "digest",
+      "baseline_line": 25,
+      "candidate_line": 88,
+      "bytes": 160,
+      "sha256": "32EA65C3F92328E599E4747D4D6F65AE42B78DA012BEA0134320B8D7C4303457"
+    },
+    {
+      "name": "pin",
+      "baseline_line": 30,
+      "candidate_line": 93,
+      "bytes": 91,
+      "sha256": "5BC5E0F51AC01263A04662EC3C1F614CD3F53665B2ED276E6C02FE78742DE2A1"
+    },
+    {
+      "name": "verify",
+      "baseline_line": 32,
+      "candidate_line": 95,
+      "bytes": 429,
+      "sha256": "35321E3086E923AF42E5A0B3F6F8D7B6AD4540C93ED981B1114A532B56BA268B"
+    },
+    {
+      "name": "read_pin",
+      "baseline_line": 39,
+      "candidate_line": 102,
+      "bytes": 201,
+      "sha256": "ED98E906305412C77F867755EF1142903CE98FA4BA60E3DD1CAE24EB1AF00703"
+    },
+    {
+      "name": "fixed",
+      "baseline_line": 43,
+      "candidate_line": 106,
+      "bytes": 59,
+      "sha256": "A6EE3A7F72491787F90C604A97194AF4ECA71B6A089A5B73138DA44095F2CA38"
+    },
+    {
+      "name": "current_json",
+      "baseline_line": 44,
+      "candidate_line": 107,
+      "bytes": 61,
+      "sha256": "257E28B3FA11F7E0C208BCA10A6105A12D20BA37736F1219C8DE3DADD44ADA52"
+    },
+    {
+      "name": "git",
+      "baseline_line": 46,
+      "candidate_line": 109,
+      "bytes": 100,
+      "sha256": "198C9597406BE5D57C3C110C0DC945E8E71816E5BF661C13FDC3AE79191B0FD0"
+    },
+    {
+      "name": "clean_head",
+      "baseline_line": 48,
+      "candidate_line": 111,
+      "bytes": 180,
+      "sha256": "0EAABAD47F8550D12ECDBF0669BEAA38E40305AAF67F62551FE68890EB960DE3"
+    }
+  ],
+  "critical_regions": [
+    {
+      "name": "complete_original_job_observation_and_six_field_mapping",
+      "original_sha256": "C45D6AFA387B7AFC03ECF162960561B9CB8794FF9EA9CCC7A3A0465772AA8999",
+      "candidate_sha256": "C45D6AFA387B7AFC03ECF162960561B9CB8794FF9EA9CCC7A3A0465772AA8999",
+      "original_bytes": 1603,
+      "candidate_bytes": 1603,
+      "candidate_offset": 7127,
+      "byte_identical": true,
+      "only_allowed_difference": null
+    },
+    {
+      "name": "original_result_metadata_native_owners_and_all_failure_gates",
+      "original_sha256": "8A3B4495E070910F2C40E4BE85F35A7D1880E26CF405A2D712B69F252E534D71",
+      "candidate_sha256": "9FFBF19C89C4B332BD0B0FBD6779F4DF10DB3D0A66F101BEE040656AEAF37B1B",
+      "original_bytes": 4711,
+      "candidate_bytes": 4709,
+      "candidate_offset": 12249,
+      "byte_identical": false,
+      "only_allowed_difference": "four -> 63 in one diagnostic message; executable gates exact"
+    },
+    {
+      "name": "complete_bookend_current_seals_and_original_outer_gates",
+      "original_sha256": "89051C1D7DAAF80A2950ECD6A5EC297C1A302BF00CE5BC359C410988A968785F",
+      "candidate_sha256": "89051C1D7DAAF80A2950ECD6A5EC297C1A302BF00CE5BC359C410988A968785F",
+      "original_bytes": 1982,
+      "candidate_bytes": 1982,
+      "candidate_offset": 16958,
+      "byte_identical": true,
+      "only_allowed_difference": null
+    }
+  ],
+  "nonconstant_logic_outside_explicit_cohort_exact": true,
+  "ordered_selection_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\root-grant.json",
+    "bytes": 12270,
+    "sha256": "275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15"
+  },
+  "ordered_groups": [
+    "native-node-file-handle-read",
+    "native-node-fs-callback-template",
+    "native-vm-simple-stack-source",
+    "native-vm-exotic-operations",
+    "native-node-diagnostic-context",
+    "native-node-native-debug",
+    "native-node-permission",
+    "native-node-fs-readwrap-reuse",
+    "native-node-reqwrap-callback-routing",
+    "native-vm-script-location",
+    "native-node-stream-read",
+    "native-node-environment-map",
+    "native-vm-backing-store-adoption",
+    "native-node-environment-paths",
+    "native-node-stream-fields",
+    "native-node-managed-buffers",
+    "native-node-fs-request-owner",
+    "native-vm-execution-termination",
+    "native-typebox-execution-termination",
+    "native-host-termination-ownership",
+    "native-node-stream-resource",
+    "native-node-package-json-parser",
+    "native-node-microtask-checkpoint",
+    "native-vm-property-retirement",
+    "native-vm-consuming-operands",
+    "native-vm-oom-occurrence",
+    "native-node-callback-scope",
+    "native-node-inspect-colors",
+    "native-vm-captured-frame-logging",
+    "native-node-experimental-warning",
+    "native-node-commonjs-helpers",
+    "native-node-process-warning",
+    "native-node-fs-request-transport",
+    "native-vm-array-buffer-view-length",
+    "native-vm-array-buffer-backing",
+    "native-vm-private-property",
+    "native-node-tcp-transport",
+    "native-vm-async-arguments",
+    "native-node-fs-write-uv",
+    "native-vm-sync-arguments",
+    "native-vm-async-retirement",
+    "native-vm-template-literal",
+    "native-vm-borrowed-bridges",
+    "vm-af-throw",
+    "native-ai-oauth-anthropic-genuine-af",
+    "native-node-module-creation",
+    "native-node-module-search-paths",
+    "native-node-fs-realpath-classic",
+    "native-node-fs-path-helpers",
+    "native-node-file-url-paths",
+    "native-sdk-tool-search-public",
+    "native-ai-radius-config",
+    "native-ai-radius-provider-genuine-af",
+    "native-node-inspect-entry",
+    "native-ai-oauth-radius-genuine-af",
+    "native-vm-existing-promise-settlement",
+    "native-node-options",
+    "native-node-uv-exception",
+    "native-vm-disallow-javascript",
+    "native-vm-continuation-data",
+    "native-vm-pending-promise",
+    "native-vm-native-global",
+    "native-vm-copy-data-properties"
+  ],
+  "selected": [
+    {
+      "group": "native-node-file-handle-read",
+      "declared_controls": 14,
+      "artifact": "native-node-file-handle-read",
+      "target": "build-native-node-file-handle-read"
+    },
+    {
+      "group": "native-node-fs-callback-template",
+      "declared_controls": 11,
+      "artifact": "native-node-fs-callback-template",
+      "target": "build-native-node-fs-callback-template"
+    },
+    {
+      "group": "native-vm-simple-stack-source",
+      "declared_controls": 33,
+      "artifact": "test",
+      "target": "build-native-vm-simple-stack-source"
+    },
+    {
+      "group": "native-vm-exotic-operations",
+      "declared_controls": 28,
+      "artifact": "test",
+      "target": "build-native-vm-exotic-operations"
+    },
+    {
+      "group": "native-node-diagnostic-context",
+      "declared_controls": 10,
+      "artifact": "test",
+      "target": "build-native-node-diagnostic-context"
+    },
+    {
+      "group": "native-node-native-debug",
+      "declared_controls": 20,
+      "artifact": "test",
+      "target": "build-native-node-native-debug"
+    },
+    {
+      "group": "native-node-permission",
+      "declared_controls": 18,
+      "artifact": "test",
+      "target": "build-native-node-permission"
+    },
+    {
+      "group": "native-node-fs-readwrap-reuse",
+      "declared_controls": 14,
+      "artifact": "test",
+      "target": "build-native-node-fs-readwrap-reuse"
+    },
+    {
+      "group": "native-node-reqwrap-callback-routing",
+      "declared_controls": 12,
+      "artifact": "native-node-reqwrap-callback-routing",
+      "target": "build-native-node-reqwrap-callback-routing"
+    },
+    {
+      "group": "native-vm-script-location",
+      "declared_controls": 32,
+      "artifact": "test",
+      "target": "build-native-vm-script-location"
+    },
+    {
+      "group": "native-node-stream-read",
+      "declared_controls": 18,
+      "artifact": "native-node-stream-read",
+      "target": "build-native-node-stream-read"
+    },
+    {
+      "group": "native-node-environment-map",
+      "declared_controls": 22,
+      "artifact": "test",
+      "target": "build-native-node-environment-map"
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "declared_controls": 20,
+      "artifact": "test",
+      "target": "build-native-vm-backing-store-adoption"
+    },
+    {
+      "group": "native-node-environment-paths",
+      "declared_controls": 15,
+      "artifact": "test",
+      "target": "build-native-node-environment-paths"
+    },
+    {
+      "group": "native-node-stream-fields",
+      "declared_controls": 10,
+      "artifact": "native-node-stream-fields",
+      "target": "build-native-node-stream-fields"
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "declared_controls": 12,
+      "artifact": "test",
+      "target": "build-native-node-managed-buffers"
+    },
+    {
+      "group": "native-node-fs-request-owner",
+      "declared_controls": 25,
+      "artifact": "native-node-fs-request-owner",
+      "target": "build-native-node-fs-request-owner"
+    },
+    {
+      "group": "native-vm-execution-termination",
+      "declared_controls": 30,
+      "artifact": "test",
+      "target": "build-native-vm-execution-termination"
+    },
+    {
+      "group": "native-typebox-execution-termination",
+      "declared_controls": 15,
+      "artifact": "test",
+      "target": "build-native-typebox-execution-termination"
+    },
+    {
+      "group": "native-host-termination-ownership",
+      "declared_controls": 16,
+      "artifact": "native-host-termination-ownership",
+      "target": "build-native-host-termination-ownership"
+    },
+    {
+      "group": "native-node-stream-resource",
+      "declared_controls": 8,
+      "artifact": "native-node-stream-resource",
+      "target": "build-native-node-stream-resource"
+    },
+    {
+      "group": "native-node-package-json-parser",
+      "declared_controls": 23,
+      "artifact": "test",
+      "target": "build-native-node-package-json-parser"
+    },
+    {
+      "group": "native-node-microtask-checkpoint",
+      "declared_controls": 20,
+      "artifact": "native-node-microtask-checkpoint",
+      "target": "build-native-node-microtask-checkpoint"
+    },
+    {
+      "group": "native-vm-property-retirement",
+      "declared_controls": 20,
+      "artifact": "test",
+      "target": "build-native-vm-property-retirement"
+    },
+    {
+      "group": "native-vm-consuming-operands",
+      "declared_controls": 25,
+      "artifact": "test",
+      "target": "build-native-vm-consuming-operands"
+    },
+    {
+      "group": "native-vm-oom-occurrence",
+      "declared_controls": 13,
+      "artifact": "test",
+      "target": "build-native-vm-oom-occurrence"
+    },
+    {
+      "group": "native-node-callback-scope",
+      "declared_controls": 28,
+      "artifact": "native-node-callback-scope",
+      "target": "build-native-node-callback-scope"
+    },
+    {
+      "group": "native-node-inspect-colors",
+      "declared_controls": 15,
+      "artifact": "native-node-inspect-colors",
+      "target": "build-native-node-inspect-colors"
+    },
+    {
+      "group": "native-vm-captured-frame-logging",
+      "declared_controls": 19,
+      "artifact": "test",
+      "target": "build-native-vm-captured-frame-logging"
+    },
+    {
+      "group": "native-node-experimental-warning",
+      "declared_controls": 17,
+      "artifact": "native-node-experimental-warning",
+      "target": "build-native-node-experimental-warning"
+    },
+    {
+      "group": "native-node-commonjs-helpers",
+      "declared_controls": 24,
+      "artifact": "native-node-commonjs-helpers",
+      "target": "build-native-node-commonjs-helpers"
+    },
+    {
+      "group": "native-node-process-warning",
+      "declared_controls": 18,
+      "artifact": "test",
+      "target": "build-native-node-process-warning"
+    },
+    {
+      "group": "native-node-fs-request-transport",
+      "declared_controls": 14,
+      "artifact": "test",
+      "target": "build-native-node-fs-request-transport"
+    },
+    {
+      "group": "native-vm-array-buffer-view-length",
+      "declared_controls": 11,
+      "artifact": "test",
+      "target": "build-native-vm-array-buffer-view-length"
+    },
+    {
+      "group": "native-vm-array-buffer-backing",
+      "declared_controls": 24,
+      "artifact": "test",
+      "target": "build-native-vm-array-buffer-backing"
+    },
+    {
+      "group": "native-vm-private-property",
+      "declared_controls": 9,
+      "artifact": "native-vm-private-property",
+      "target": "build-native-vm-private-property"
+    },
+    {
+      "group": "native-node-tcp-transport",
+      "declared_controls": 12,
+      "artifact": "test",
+      "target": "build-native-node-tcp-transport"
+    },
+    {
+      "group": "native-vm-async-arguments",
+      "declared_controls": 17,
+      "artifact": "test",
+      "target": "build-native-vm-async-arguments"
+    },
+    {
+      "group": "native-node-fs-write-uv",
+      "declared_controls": 12,
+      "artifact": "native-node-fs-write-uv",
+      "target": "build-native-node-fs-write-uv"
+    },
+    {
+      "group": "native-vm-sync-arguments",
+      "declared_controls": 22,
+      "artifact": "test",
+      "target": "build-native-vm-sync-arguments"
+    },
+    {
+      "group": "native-vm-async-retirement",
+      "declared_controls": 30,
+      "artifact": "test",
+      "target": "build-native-vm-async-retirement"
+    },
+    {
+      "group": "native-vm-template-literal",
+      "declared_controls": 18,
+      "artifact": "test",
+      "target": "build-native-vm-template-literal"
+    },
+    {
+      "group": "native-vm-borrowed-bridges",
+      "declared_controls": 17,
+      "artifact": "test",
+      "target": "build-native-vm-borrowed-bridges"
+    },
+    {
+      "group": "vm-af-throw",
+      "declared_controls": 30,
+      "artifact": "vm-af-throw",
+      "target": "build-native-vm-af-throw"
+    },
+    {
+      "group": "native-ai-oauth-anthropic-genuine-af",
+      "declared_controls": 25,
+      "artifact": "native-ai-oauth-anthropic-genuine-af",
+      "target": "build-native-ai-oauth-anthropic-genuine-af"
+    },
+    {
+      "group": "native-node-module-creation",
+      "declared_controls": 30,
+      "artifact": "native-node-module-creation",
+      "target": "build-native-node-module-creation"
+    },
+    {
+      "group": "native-node-module-search-paths",
+      "declared_controls": 20,
+      "artifact": "native-node-module-search-paths",
+      "target": "build-native-node-module-search-paths"
+    },
+    {
+      "group": "native-node-fs-realpath-classic",
+      "declared_controls": 23,
+      "artifact": "native-node-fs-realpath-classic",
+      "target": "build-native-node-fs-realpath-classic"
+    },
+    {
+      "group": "native-node-fs-path-helpers",
+      "declared_controls": 18,
+      "artifact": "native-node-fs-path-helpers",
+      "target": "build-native-node-fs-path-helpers"
+    },
+    {
+      "group": "native-node-file-url-paths",
+      "declared_controls": 19,
+      "artifact": "native-node-file-url-paths",
+      "target": "build-native-node-file-url-paths"
+    },
+    {
+      "group": "native-sdk-tool-search-public",
+      "declared_controls": 26,
+      "artifact": "native-sdk-tool-search-public",
+      "target": "build-native-sdk-tool-search-public"
+    },
+    {
+      "group": "native-ai-radius-config",
+      "declared_controls": 25,
+      "artifact": "native-ai-radius-config",
+      "target": "build-native-ai-radius-config"
+    },
+    {
+      "group": "native-ai-radius-provider-genuine-af",
+      "declared_controls": 28,
+      "artifact": "native-ai-radius-provider-genuine-af",
+      "target": "build-native-ai-radius-provider-genuine-af"
+    },
+    {
+      "group": "native-node-inspect-entry",
+      "declared_controls": 37,
+      "artifact": "native-node-inspect-entry",
+      "target": "build-native-node-inspect-entry"
+    },
+    {
+      "group": "native-ai-oauth-radius-genuine-af",
+      "declared_controls": 34,
+      "artifact": "native-ai-oauth-radius-genuine-af",
+      "target": "build-native-ai-oauth-radius-genuine-af"
+    },
+    {
+      "group": "native-vm-existing-promise-settlement",
+      "declared_controls": 17,
+      "artifact": "test",
+      "target": "build-native-vm-existing-promise-settlement"
+    },
+    {
+      "group": "native-node-options",
+      "declared_controls": 29,
+      "artifact": "native-node-options",
+      "target": "build-native-node-options"
+    },
+    {
+      "group": "native-node-uv-exception",
+      "declared_controls": 6,
+      "artifact": "test",
+      "target": "build-native-node-uv-exception"
+    },
+    {
+      "group": "native-vm-disallow-javascript",
+      "declared_controls": 22,
+      "artifact": "test",
+      "target": "build-native-vm-disallow-javascript"
+    },
+    {
+      "group": "native-vm-continuation-data",
+      "declared_controls": 23,
+      "artifact": "test",
+      "target": "build-native-vm-continuation-data"
+    },
+    {
+      "group": "native-vm-pending-promise",
+      "declared_controls": 15,
+      "artifact": "test",
+      "target": "build-native-vm-pending-promise"
+    },
+    {
+      "group": "native-vm-native-global",
+      "declared_controls": 18,
+      "artifact": "test",
+      "target": "build-native-vm-native-global"
+    },
+    {
+      "group": "native-vm-copy-data-properties",
+      "declared_controls": 13,
+      "artifact": "test",
+      "target": "build-native-vm-copy-data-properties"
+    }
+  ],
+  "source_declarations": 1249,
+  "maximum_declared_in_group": 37,
+  "ordered_required_names_sha256": "0B5BC3B76140E27C26EA43507DA4D1DB82AC519896A1A204BABC78133219E61E",
+  "current_v38_definitions_equal_v34_v37": true,
+  "future_bindings": [
+    {
+      "kind": "STRING",
+      "offset": 450,
+      "line": 10,
+      "before": "\"UNRESOLVED_V38_HEAD_XXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 497,
+      "line": 11,
+      "before": "\"UNRESOLVED_V38_JOB_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 575,
+      "line": 12,
+      "before": "\"root-native-foundation-fresh-v38-existing63-control-UNRESOLVEDSTAMP\"",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 649,
+      "line": 13,
+      "before": "\"root-native-foundation-fresh-v38-existing63-buildquery-UNRESOLVEDSTAMP\"",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 3131,
+      "line": 81,
+      "before": "\"UNRESOLVED_V38_MATRIX_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "NUMBER",
+      "row": "grant",
+      "offset": 6203,
+      "line": 129,
+      "before": "0",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 6205,
+      "line": 129,
+      "before": "\"UNRESOLVED_V38_GRANT_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "NUMBER",
+      "row": "launch",
+      "offset": 6304,
+      "line": 130,
+      "before": "0",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 6306,
+      "line": 130,
+      "before": "\"UNRESOLVED_V38_LAUNCH_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "NUMBER",
+      "row": "specific",
+      "offset": 6455,
+      "line": 131,
+      "before": "0",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 6457,
+      "line": 131,
+      "before": "\"UNRESOLVED_V38_SPECIFIC_CONFIG_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "NUMBER",
+      "row": "prepared",
+      "offset": 6573,
+      "line": 132,
+      "before": "0",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 6575,
+      "line": 132,
+      "before": "\"UNRESOLVED_V38_PREPARED_LAUNCH_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 6721,
+      "line": 133,
+      "before": "\"UNRESOLVED_V38_BQ_CONSTRUCTOR_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 6864,
+      "line": 134,
+      "before": "\"UNRESOLVED_V38_BQ_AUDITOR_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    },
+    {
+      "kind": "NUMBER",
+      "row": "source_review",
+      "offset": 7012,
+      "line": 135,
+      "before": "0",
+      "actual_value": null
+    },
+    {
+      "kind": "STRING",
+      "offset": 7014,
+      "line": 135,
+      "before": "\"UNRESOLVED_V38_SOURCE_REVIEW_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+      "actual_value": null
+    }
+  ],
+  "actual_metadata_count": null,
+  "actual_runtime_outcome": null,
+  "source_defined_group_and_metadata_caps": 64,
+  "actual_count_writes": [
+    "Constant(value=0)",
+    "AugAssign(target=Name(id='actual_count', ctx=Store()), op=Add(), value=Subscript(value=Name(id='accepted', ctx=Load()), slice=Constant(value='actual_count'), ctx=Load()))"
+  ],
+  "output_fields": [
+    "status",
+    "audit_execution_authorized",
+    "native_execution_authorized",
+    "auditor_sha256",
+    "batch",
+    "candidate_head",
+    "control",
+    "proof",
+    "preparation",
+    "declared_groups",
+    "declared_controls",
+    "granted_groups",
+    "attempted_groups",
+    "actual_metadata_count",
+    "actual_tests_started",
+    "native_phase_count",
+    "native_owner_pids",
+    "seal_counts",
+    "job",
+    "outer_pid",
+    "grant_preparer",
+    "grant_sha256",
+    "grant_launch_adaptation_sha256",
+    "buildquery_launch_sha256",
+    "matrix_sha256",
+    "preparation_review_sha256",
+    "independent_catalog_peer_sha256",
+    "root_catalog_acceptance_sha256",
+    "metadata_acceptance",
+    "qualification",
+    "runtime_started",
+    "source_mutation_hold_released",
+    "before_sha256",
+    "final_sha256",
+    "result_sha256",
+    "outer_sha256",
+    "outer_absence_sha256",
+    "metadata_acceptance_sha256",
+    "job_observation_sha256"
+  ],
+  "generic_auditor_literal_config_fields": [
+    "actual_metadata_count",
+    "actual_tests_started",
+    "attempted_groups",
+    "audit_execution_authorized",
+    "auditor_sha256",
+    "batch",
+    "buildquery_launch_sha256",
+    "candidate_head",
+    "control",
+    "declared_controls",
+    "declared_groups",
+    "final_sha256",
+    "grant_launch_adaptation_sha256",
+    "grant_preparer",
+    "grant_sha256",
+    "granted_groups",
+    "independent_catalog_peer_sha256",
+    "job",
+    "job_observation_sha256",
+    "matrix_sha256",
+    "metadata_acceptance",
+    "metadata_acceptance_sha256",
+    "native_execution_authorized",
+    "native_owner_pids",
+    "native_phase_count",
+    "outer_pid",
+    "preparation",
+    "preparation_review_sha256",
+    "proof",
+    "qualification",
+    "result_sha256",
+    "root_catalog_acceptance_sha256",
+    "runtime_started",
+    "seal_counts",
+    "source_mutation_hold_released",
+    "status"
+  ],
+  "driver_layout_excerpts": [
+    {
+      "line": 31,
+      "text": "$taskProof=Contained ([string]$taskGrant.receipt_directory) $taskWorkspace.evidence"
+    },
+    {
+      "line": 406,
+      "text": "  $groupProof=Contained (Join-Path $taskBuildProof ('groups/'+$group)) $taskBuildProof"
+    },
+    {
+      "line": 430,
+      "text": "  $taskProof=Contained (Join-Path $batchProof ('groups/'+$Group)) $batchProof"
+    },
+    {
+      "line": 470,
+      "text": "    metadata{$metadata=Read-ComposedMetadata $taskBinary $taskRoot (Join-Path $taskProof $phase);$selection.names=@($metadata.tests);Save-Json $metadata 'selected-tests.json'}"
+    },
+    {
+      "line": 494,
+      "text": "   if($taskBuildMode){Save-Json $taskArtifact 'build-artifacts.json'}"
+    }
+  ],
+  "metadata_gates": [
+    "0<accepted[\"actual_count\"]<=64",
+    "len(accepted[\"tests\"])==len(set(accepted[\"tests\"]))==accepted[\"actual_count\"]",
+    "actual_count+=accepted[\"actual_count\"]",
+    "all(accepted[\"tests\"].count(n)==1 for n in group[\"required_named\"])",
+    "all(n in group[\"required_named\"] or n in group[\"allowed_anonymous\"]for n in accepted[\"tests\"])",
+    "metadata[\"tests\"]==accepted[\"tests\"] and metadata[\"actual_count\"]==accepted[\"actual_count\"]",
+    "review[\"selected_groups\"]==63 and review[\"selected_declarations\"]==1249 and review[\"actual_metadata_count\"] is None",
+    "prepared[\"actual_metadata_count\"] is None",
+    "part[\"owned_started_phases\"]==part[\"attempted_phases\"]==list(part[\"phases\"])==[\"compile\",\"metadata\"]",
+    "with OUTPUT.open(\"xb\") as f:f.write(raw)",
+    "require(len(out)==39 and out[\"native_phase_count\"]==2*out[\"attempted_groups\"] and actual_count>0",
+    "job[\"status\"]==\"succeeded\" and job[\"exitCode\"]==0 and job[\"runnerAlive\"] is False"
+  ],
+  "retained_checker_negative_and_successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\static-checker-correction.json",
+    "bytes": 5920,
+    "sha256": "0638848843B1D9032B3E3D26A01B206BF00068D9AA7E19322B0B095FB4F36221"
+  },
+  "retained_authoring_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\authoring-inspection-preflight.json",
+    "bytes": 6441,
+    "sha256": "FAE0AB2CEBA703D76E25A573DA448DF0010CE07D15C8E1FD58D42C7C7CFFC90E"
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v34-prepared-20261020\\groups.json",
+      "bytes": 573554,
+      "sha256": "6781CFD769B70925293C6C7B0D7AEECFC0DB87A8790FB5D61379A20A78C6443F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-regression63-prepared-20261021\\groups.json",
+      "bytes": 1104585,
+      "sha256": "E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-regression63-prepared-20261021\\Run-CombinedNativeBatch.ps1",
+      "bytes": 60094,
+      "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-regression63-prepared-20261021\\groups.json",
+      "bytes": 1104585,
+      "sha256": "8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-regression63-prepared-20261021\\Run-CombinedNativeBatch.ps1",
+      "bytes": 60094,
+      "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-execution-source-peer-20261021\\peer.json",
+      "bytes": 12797,
+      "sha256": "92118B1B9844BB21FBB99A915B37C3CF0CFD2F1AAC3C0DE0D0AFED14FF221F35"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\root-grant.json",
+      "bytes": 12270,
+      "sha256": "275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\authoring-inspection-preflight.json",
+      "bytes": 6441,
+      "sha256": "FAE0AB2CEBA703D76E25A573DA448DF0010CE07D15C8E1FD58D42C7C7CFFC90E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\candidate\\Prepare-ObservedV38Existing63PositiveBuildQueryAuditInputs-20261021-unresolved.py",
+      "bytes": 21109,
+      "sha256": "0F8502D9AD3395551AFC08652795C77114EED504E13623F6D65CDE774FAEB06C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\finite-source-adaptation.json",
+      "bytes": 66421,
+      "sha256": "A554D8FC6DBF549DA5A6CB95659BE8EB430CA1DA487960D725BF474AB2FBD900"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\plan.json",
+      "bytes": 9366,
+      "sha256": "945BED05F7B85548589690B83FF62D7B979678FEA089B5D8BDFBF628C6BCF02A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\source-adaptation-check-v2.py",
+      "bytes": 21956,
+      "sha256": "F9691CA7CB21BBAEEC268EC89AD80F963B9F8CEEA9E61654F35C978192FC5A23"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\source-adaptation-check.py",
+      "bytes": 21919,
+      "sha256": "1B1E590E863024AE09081732B0C6DDF84851BC03922349023CCAF909E77D5EE8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\static-checker-correction.json",
+      "bytes": 5920,
+      "sha256": "0638848843B1D9032B3E3D26A01B206BF00068D9AA7E19322B0B095FB4F36221"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-existing63-positive-input-helper-peer-20261021\\source-audit.py",
+      "bytes": 18138,
+      "sha256": "CF0EEE2FB00B3FFF0EF1C9E67BF4727D8A3B82A22B8D9433ABC3091D973498FB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Audit-PositiveV38CompleteBuildQuery-20261021.py",
+      "bytes": 37254,
+      "sha256": "EF936499EAC349E71715AF123C768F6C611E0B1F8ED8D8D4E780C63806BF2B2E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\candidate\\Prepare-ObservedV38New4PositiveBuildQueryAuditInputs-20261021-unresolved.py",
+      "bytes": 18939,
+      "sha256": "88D31C0905C52EEE080C7CC2FDBF32F0DC4F39C7A5BCDFCE9C01E3F1BF85AC17"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-execution-unresolved-sourceonly-20261021\\finite-source-adaptation.json",
+      "bytes": 14308,
+      "sha256": "C46AFC69DBBE7C485D2E94A631EBF221611B46C28BFC6B68146E92212323C245"
+    }
+  ],
+  "input_versions": 18,
+  "blockers": [],
+  "source_only": true,
+  "Main_accessed": false,
+  "Main_written": false,
+  "target_executed": false,
+  "prefix_executed": false,
+  "constructor_executed": false,
+  "auditor_executed": false,
+  "helper_executed": false,
+  "native_executed": false,
+  "configuration_issued": false,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

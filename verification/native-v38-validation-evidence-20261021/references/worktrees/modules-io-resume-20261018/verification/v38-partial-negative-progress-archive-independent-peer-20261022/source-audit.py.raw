@@ -1,0 +1,246 @@
+"""Independent static source/immutable-data review. Never evaluates the archive candidate or any prefix."""
+from pathlib import Path
+import ast,hashlib,json,subprocess
+W=Path(r'C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018')
+S=Path(r'C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018')
+E=Path(r'C:\Users\adyba\pi-zig\evidence')
+D=S/'verification/v38-partial-negative-progress-archive-preparer-sourceonly-20261022'
+O=S/'verification/v38-progress-archive-preparer-sourceonly-20261021'
+P=W/'verification/v38-partial-negative-progress-archive-independent-peer-20261022'
+H='014062f2d139254acab4b985b4ae343db637166f'
+inputs={};cache={}
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def norm(p):return str(p).replace('/','\\').casefold()
+def pin(p,expected=None):
+ p=Path(p)
+ assert p.is_absolute()
+ assert p.is_relative_to(E) or (p.is_relative_to(E.parent/'worktrees') and 'verification' in p.parts)
+ k=norm(p)
+ if k not in cache:
+  b=p.read_bytes();cache[k]=b;inputs[k]={'path':str(p),'bytes':len(b),'sha256':sha(b)}
+ b=cache[k];r=inputs[k]
+ if expected:assert (len(b),sha(b))==expected,(r,expected)
+ return r
+def verify(r):
+ q=pin(r['path'],(r['bytes'],r['sha256']))
+ assert norm(q['path'])==norm(r['path'])
+ return r
+def body(p,expected=None):pin(p,expected);return cache[norm(p)]
+def read(p,expected=None):return json.loads(body(p,expected))
+def document(r):verify(r);return json.loads(cache[norm(r['path'])])
+def enc(x):return (json.dumps(x,indent=2,ensure_ascii=False)+'\n').encode()
+def put(p,value):
+ b=enc(value);p.parent.mkdir(parents=True,exist_ok=True)
+ with p.open('xb') as f:f.write(b)
+ assert p.read_bytes()==b
+ return {'path':str(p),'bytes':len(b),'sha256':sha(b)}
+oldpath=O/'candidate/Prepare-V38PositiveProgressAndValidationArchive-20261021.py'
+newpath=D/'candidate/Prepare-V38PartialNegativeProgressAndValidationArchive-20261022.py'
+old=body(oldpath,(51755,'00F55DC94CC4151370B837FCDB02FFE991A07AC75C05EFE3022C66D079BD5A77'))
+new=body(newpath,(76267,'EE11C073C1D1CAD599D7F88B34B78133A5E3A90F68D1E1094D6AF77D7C5128AB'))
+finite=read(D/'finite-source-adaptation.json',(71386,'4865C51ECA0AAE56C4DCBC726F85549EDCB9F911292E7EF0B16C69381E8C15C9'))
+pin(D/'finite-source-check.py',(8186,'34B4C33C8E8EFAE5BCBCE8AC4CEA932C5CCDA1F31C5E4245CE5F8521D0F812CC'))
+assert finite['original']==pin(oldpath) and finite['candidate']==pin(newpath)
+assert len(finite['steps'])==finite['finite_edit_count']==39
+state=old;changes=[]
+for i,row in enumerate(finite['steps'],1):
+ before,after=row['before'].encode(),row['after'].encode();at=row['offset']
+ assert row['number']==i and state.count(before)==1 and state.find(before)==at
+ assert len(before)==row['before_bytes'] and len(after)==row['after_bytes']
+ assert sha(state)==row['before_state_sha256']
+ left,right=state[:at],state[at+len(before):]
+ assert sha(left)==row['unchanged_prefix_sha256'] and sha(right)==row['unchanged_suffix_sha256']
+ successor=left+after+right
+ assert sha(successor)==row['after_state_sha256']
+ changes.append({'number':i,'label':row['label'],'before_state':sha(state),'after_state':sha(successor),
+                 'before_bytes':len(before),'after_bytes':len(after),'unchanged_remainder':True})
+ state=successor
+assert state==new
+for row in reversed(finite['steps']):
+ before,after=row['before'].encode(),row['after'].encode();at=row['offset']
+ assert sha(state)==row['after_state_sha256'] and state[at:at+len(after)]==after
+ state=state[:at]+before+state[at+len(after):]
+ assert sha(state)==row['before_state_sha256']
+assert state==old
+ot,nt=ast.parse(old.decode()),ast.parse(new.decode())
+def functions(raw,tree):
+ ls=raw.splitlines(keepends=True)
+ return {n.name:(n,b''.join(ls[n.lineno-1:n.end_lineno])) for n in tree.body if isinstance(n,ast.FunctionDef)}
+of,nf=functions(old,ot),functions(new,nt)
+assert len(of)==22 and len(nf)==28
+helpers=[]
+for name,(node,b) in of.items():
+ nn,a=nf[name];assert a==b
+ helpers.append({'name':name,'bytes':len(b),'sha256':sha(b),'old_lines':[node.lineno,node.end_lineno],'new_lines':[nn.lineno,nn.end_lineno]})
+assert helpers==finite['unchanged_helpers']
+added=set(nf)-set(of)
+assert added=={'retained_pin','selected_observed','check_existing63_buildquery','check_existing63_prelaunch','check_existing63_partial_negative','check_existing63_negative_cohort'}
+assert len(finite['unchanged_regions'])==10
+for r in finite['unchanged_regions']:
+ b=old[r['old_offset']:r['old_offset']+r['bytes']]
+ a=new[r['new_offset']:r['new_offset']+r['bytes']]
+ assert b==a and sha(b)==r['sha256'] and old.count(b)==new.count(b)==1
+for r in finite['new_helpers']:
+ n,b=nf[r['name']]
+ assert r=={'name':r['name'],'bytes':len(b),'sha256':sha(b),'lines':[n.lineno,n.end_lineno]}
+def literal(tree,name):
+ xs=[n.value for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id==name for t in n.targets)]
+ assert len(xs)==1
+ return ast.literal_eval(xs[0])
+for key,count in [('CONFIG_KEYS',18),('COPY_KEYS',11),('ROW_KEYS',5)]:
+ assert literal(ot,key)==literal(nt,key) and len(literal(nt,key))==count
+assert literal(ot,'HEAD')==literal(nt,'HEAD')==H
+assert literal(nt,'PHASES')==('new4-buildquery','new4-runtime','existing63-buildquery','existing63-runtime-prelaunch','existing63-runtime')
+assert literal(nt,'ORIGINAL63_SUFFIXES')==('20261021-153711','20261022-133427','20261022-134223')
+assert literal(nt,'increments')=={'integrated_source_units':0,'preserved_attempts':7,'retained_recent_native_negatives':1,'execution_checkpoint_history':1}
+assert literal(nt,'replaced')==literal(ot,'replaced')|{'retained_recent_native_negatives'}
+assert len(literal(nt,'replaced'))==8 and literal(nt,'added')=={'v38_validation_and_archive_checkpoint'}
+assert [ast.dump(n) for n in ot.body if isinstance(n,(ast.Import,ast.ImportFrom))]==[ast.dump(n) for n in nt.body if isinstance(n,(ast.Import,ast.ImportFrom))]
+assert not any(isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id in ('exec','eval','compile','__import__') for n in ast.walk(nt))
+source=new.decode()
+assert source.count('OUT.mkdir()')==1 and source.index('OUT.mkdir()')>source.index('require(git("cat-file","blob",HEAD+":"+PROGRESS)==old_raw')
+assert 'all(p["phase"] in COMPRESSIBLE_PHASES' in source
+assert 'COMPRESSIBLE_PHASES = tuple(p for p in PHASES if p!="existing63-runtime-prelaunch")' in source
+assert source.count('check_positive("new4",NEW4,58,0)')==1 and 'check_positive("existing63"' not in source
+assert 'new4 = check_positive("new4",NEW4,58,0)\noriginal63 = check_existing63_negative_cohort()' in source
+assert 'increments = {"integrated_source_units":0,"preserved_attempts":7,"retained_recent_native_negatives":1,"execution_checkpoint_history":1}' in source
+assert 'restore only the eight replaced keys' in source
+assert '"raw_original100ns_bytes_and_strings_unchanged":True' in source
+# Supplemental source/inspection proofs are provenance, not extra native attempts.
+pres=read(D/'supplemental-preservation-inputs.json',(32895,'4124B26CB6722E5426FF051C978A4D715B3015442E5722DA51A76E4C9F320509'))
+assert pres['candidate_head']==H and pres['required_raw_file_count']==len(pres['required_raw_files'])==102
+assert len(pres['role_pins'])==13 and pres['inspection_only_records_add_attempts'] is False
+assert len({norm(r['path']) for r in pres['required_raw_files']})==102
+for r in pres['required_raw_files']:verify(r)
+assert all(r in pres['required_raw_files'] for r in pres['role_pins'].values())
+roles=pres['role_pins']
+# Keep the complete originally reviewed 314 versions and all183 direct relationships.
+I=W/'verification/v38-progress-archive-plan-sourceonly-20261021'
+inventory=read(I/'observed-evidence-inventory.json',(338781,'CDFBB34E737011ADD26B7560E5011DC55CADA2803D749B0E1C0263E5954FADED'))
+plan=read(I/'progress-patch-plan.json',(56327,'183647A8C0D250DBDD0747CD8E1220B415E9F205737092D4D13AF1DD0D730412'))
+pin(I/'handoff.json',(5242,'E75BE89E1B57F32B72B896C35B5106A2069BE672192FCA2623BB1BA723D95187'))
+assert inventory['source_file_versions']==len(inventory['rows'])==314
+for row in inventory['rows']:verify(row['original'])
+def get(v,path):
+ for k in path:v=v[k]
+ return v
+assert len(inventory['direct_pin_relationships'])==183
+for edge in inventory['direct_pin_relationships']:
+ d=document(edge['document']);r=edge['exact_referenced_pin'];verify(r)
+ got=get(d,edge['json_path']);assert {k:got[k] for k in ('path','bytes','sha256')}==r
+# Read immutable Git only through this worktree; no checkout, index or Main access.
+q=subprocess.run(['git','--no-optional-locks','-C',str(W),'cat-file','blob',H+':verification/port-roadmap-resume-20261018/progress.json'],capture_output=True)
+assert q.returncode==0
+oldprogress=q.stdout;assert (len(oldprogress),sha(oldprogress))==(554689,'BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028')
+assert hashlib.sha1(b'blob '+str(len(oldprogress)).encode()+b'\0'+oldprogress).hexdigest()=='ec7a71bd873c789fcb42918501816357c599d2a6'
+progress=json.loads(oldprogress);assert enc(progress)==oldprogress
+def lists(v,path=()):
+ if isinstance(v,list):
+  yield path,v
+  for i,x in enumerate(v):yield from lists(x,path+(i,))
+ elif isinstance(v,dict):
+  for k,x in v.items():yield from lists(x,path+(k,))
+basis=[{'path':list(p),'length':len(v),'canonical_sha256':sha(enc(v))} for p,v in lists(progress)]
+assert basis==plan['nested_history_prefix_basis'] and len(basis)==181
+assert {k:len(progress[k]) for k in ('integrated_source_units','preserved_attempts','retained_recent_native_negatives','execution_checkpoint_history')}=={'integrated_source_units':65,'preserved_attempts':38,'retained_recent_native_negatives':14,'execution_checkpoint_history':14}
+groups=progress['next_native_batch']['retained63_group_order']
+assert len(groups)==63 and len(set(groups))==63
+# Actual original63 positive BQ metadata is observed, never inherited from declarations.
+bq=document(roles['existing63_buildquery_root'])
+assert bq['candidate_head']==H and bq['groups']==groups and bq['actual_metadata_count']==1285
+metadata=document(bq['metadata_acceptance']);build=document(bq['independent_closure'])
+counts=[g['actual_count'] for g in metadata['groups']]
+assert counts==literal(nt,'ORIGINAL63_COUNTS')==bq['actual_group_counts'] and sum(counts)==1285
+assert [g['group'] for g in metadata['groups']]==groups and all(len(g['tests'])==n for g,n in zip(metadata['groups'],counts))
+assert build['status']=='independently_closed_complete_fresh_build_query' and build['actual_metadata_count']==1285
+assert build['native_owner_count']==126 and len(build['actual_process_intervals'])==129 and build['actual_tests_started']==0
+# Pin exact zero-native admission failure, preserving raw null rather than changing it to zero.
+pre=document(roles['existing63_prelaunch_root'])
+assert pre['classification']=='strict_runtime_admission_failure_before_any_native_owner_or_test'
+assert pre['native_owners_started']==pre['native_tests_started']==0 and pre['native_test_failure'] is False
+assert pre['buildquery_acceptance_preserved']==roles['existing63_buildquery_root']
+for r in pre.values():
+ if isinstance(r,dict) and set(r)=={'path','bytes','sha256'}:verify(r)
+pr=document(pre['runtime_result']);f=pr['groups'][0]
+assert len(pr['groups'])==1 and f['group']==groups[0] and f['phases']=={} and f['owned_started_phases']==[]
+assert f['actual_runtime_owner_started'] is False and f['runtime_owner_launch_attempted'] is False and f['native_selected_tests_started'] is None
+assert pr['absence']=={'native_roots':[],'owners':[]} and pr['errors']==['Initial grant must be within300seconds before first child launch']
+assert cache[norm(pre['before']['path'])]==cache[norm(pre['final']['path'])]
+pjob=document(pre['terminal_observation'])['data']
+assert pjob['status']=='failed' and pjob['exitCode']==1 and pjob['runnerAlive'] is False
+assert pjob['runnerProcessInstance']=='134371499352045058'
+# Read accepted closure as original data; do not invoke it or fresh process probes.
+root=document(roles['existing63_negative_root']);neg=document(roles['existing63_negative_closure'])
+assert root['independent_negative_closure']==roles['existing63_negative_closure']
+assert root['independent_negative_auditor']==roles['existing63_negative_auditor']
+assert root['audit_configuration']==roles['existing63_negative_audit_configuration']
+for r in root.values():
+ if isinstance(r,dict) and set(r)=={'path','bytes','sha256'}:verify(r)
+assert root['negative_closure_accepted'] and root['positive_group_acceptance'] is False
+assert root['runtime_qualification'] is root['product_qualification'] is root['source_mutation_hold_released'] is False
+assert neg['status']=='independently_closed_negative_strict_runtime' and neg['candidate_head']==H and neg['batch']=='existing63'
+assert neg['observed_started']==neg['observed_completed']==321 and neg['observed_passed']==320 and neg['observed_failed']==1 and neg['not_started']==964
+assert sum(counts[:17])==321 and sum(counts[17:])==964
+assert neg['runtime_owner_count']==17 and len(neg['actual_process_intervals'])==20
+assert neg['distinct_current_files_rehashed']==34739
+assert neg['current_absence']['owners']==neg['current_absence']['direct_children']==neg['current_absence']['native']==[]
+assert neg['not_started_groups']==groups[17:] and [x['group'] for x in neg['observed_groups']]==groups[:17]
+assert neg['metadata_acceptance']==bq['metadata_acceptance'] and neg['independent_build_closure']==bq['independent_closure']
+assert neg['original_root_partial_observation']==root['original_root_observation']
+for key in ('original_receipts','original_attempted_group_files','original_outer_outputs'):
+ for r in neg[key]:verify(r)
+assert len(neg['original_attempted_group_files'])==238
+assert cache[norm(root['runtime_before']['path'])]==cache[norm(root['runtime_final']['path'])]
+rp=Path(root['runtime_result']['path']).parent;rc=Path(root['independent_negative_closure']['path']).parent
+result=document(root['runtime_result'])
+assert result['status']=='failed' and result['all_groups_closed'] is False
+assert [x['group'] for x in result['groups']]==groups[:17]
+assert [x['status'] for x in result['groups']]==['partial_batch_not_admissible']*16+['failed']
+assert result['errors']==['Native test protocol did not report every selected test passing without logs/leaks']
+observed=[];failed=[]
+for i,g in enumerate(groups[:17]):
+ gd=rp/'groups'/g
+ canonical=read(gd/'runtime.results.json');n=counts[i];fail=int(i==16)
+ expect=[{'index':j,'flags':int(i==16 and j==22),'passed':not(i==16 and j==22)} for j in range(n)]
+ names=[dict(x,name=metadata['groups'][i]['tests'][j]) for j,x in enumerate(expect)]
+ assert canonical['results']==expect and canonical['expected']==canonical['started']==canonical['completed']==n
+ assert canonical['failed_or_skipped_or_logged_or_leaked']==fail and canonical['status']==('failed' if fail else 'passed')
+ o=neg['observed_groups'][i]
+ assert o['results']==names and o['canonical']==pin(gd/'runtime.results.json')
+ assert o['original_group_status']==result['groups'][i]['status']
+ stderr=body(gd/'runtime.stderr.log')
+ assert (len(stderr)==0)==(i<16)
+ observed.append({'group':g,'count':n,'failed':fail,'original_group_status':o['original_group_status'],'canonical':pin(gd/'runtime.results.json'),'stderr':pin(gd/'runtime.stderr.log')})
+ failed.extend(dict(group=g,**{k:x[k] for k in ('index','flags','name')}) for x in names if not x['passed'])
+assert failed==root['failed_tests']==neg['observed_failed_tests'] and root['failed_indices']==[22]
+njob=read(rc/'independent-observed-job-status.json')['data']
+assert njob['status']=='failed' and njob['exitCode']==1 and njob['runnerAlive'] is False
+assert njob['runnerProcessInstance']=='134371501570189138'
+cfg=document(root['audit_configuration'])
+assert len(cfg)==52 and cfg['auditor_sha256']==roles['existing63_negative_auditor']['sha256']
+assert cfg['actual_metadata_count']==1285 and cfg['runtime_result_sha256']==root['runtime_result']['sha256']
+job=document(root['audit_job_observation'])['data']
+assert job['status']=='succeeded' and job['exitCode']==0 and job['runnerAlive'] is False
+# This proves only source/data bindings. No candidate, projection or gzip is evaluated.
+proof={'schema':1,'status':'passed_independent_bounded_partial_negative_archive_source_checks',
+ 'source_only':True,'baseline':pin(oldpath),'candidate':pin(newpath),'finite_adaptation':pin(D/'finite-source-adaptation.json'),
+ '39_forward_intermediate_and_complete_inverse':True,'steps':changes,'unchanged_22_helpers':helpers,
+ 'six_new_helpers':finite['new_helpers'],'ten_unchanged_regions':finite['unchanged_regions'],
+ 'unchanged_configuration_keys':sorted(literal(nt,'CONFIG_KEYS')),'unchanged_copy_plan_keys':sorted(literal(nt,'COPY_KEYS')),
+ 'supplemental_102_raw_versions':pin(D/'supplemental-preservation-inputs.json'),
+ 'known_314_versions_rehashed':True,'all183_original_relationships_verified':True,
+ 'immutable_progress':{'head':H,'path':'verification/port-roadmap-resume-20261018/progress.json','bytes':len(oldprogress),'sha256':sha(oldprogress)},
+ '181_prior_history_bases_verified':True,'progress_not_projected':True,'eight_key_full_inverse_source_preserved':True,
+ 'attempt_history_additions':7,'native_negative_additions':1,'non_native_negative_records':3,
+ 'actual_metadata_counts':counts,'actual_1285_total':1285,'actual_prelaunch_raw_native_tests_started':None,
+ 'prelaunch_classified_native_owners':0,'prelaunch_classified_native_tests':0,
+ 'actual_partial':{'groups':17,'started':321,'completed':321,'passed':320,'failed':1,'unstarted_groups':46,'unstarted_tests':964,'actual_process_intervals':20},
+ 'failed_tests':failed,'observed_groups':observed,'all16_driver_demotions_retained':True,
+ 'ten_bookends_four_compressible_pairs_source_gate':True,'prelaunch_two_bookends_raw_source_gate':True,
+ 'all_current_input_pins':list(inputs.values()),
+ 'candidate_or_prefix_executed':False,'other_checker_executed':False,'gzip_executed':False,
+ 'archive_or_progress_generated':False,'Main_or_index_accessed':False,'configuration_issued':False,
+ 'native_execution_authorized':False,'source_mutation_hold_released':False,'application_qualified':False}
+proof['source_audit']=pin(Path(__file__))
+out=put(P/'source-proof.json',proof)
+print(json.dumps({'proof':out,'input_versions':len(inputs),'edits':39,'unchanged_helpers':22,'regions':10,'actual_partial':proof['actual_partial']}))

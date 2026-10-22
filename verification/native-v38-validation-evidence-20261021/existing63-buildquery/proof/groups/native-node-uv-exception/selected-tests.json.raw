@@ -1,0 +1,19 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\92f19dde46477876baab7811d649d655\\test.exe",
+  "binary_sha256": "7B251F72F352B014DC6CF4EA75D3B7A12C49DCE1D67383E0889939600FDF9889",
+  "version": "0.16.0",
+  "actual_count": 7,
+  "tests": [
+    "native_node_uv_exception_test.test.native UVException preserves intrinsic Error and ordered own field descriptors",
+    "native_node_uv_exception_test.test.native UVException nonthrowing Set preserves inherited readonly and getter-only fields",
+    "native_node_uv_exception_test.test.native UVException invokes each inherited setter with the actual Error in source order",
+    "native_node_uv_exception_test.test.native UVException normal false assignment still reaches the remaining actual setters",
+    "native_node_uv_exception_test.test.native UVException retains OneByteString C-string and UTF8 path distinctions",
+    "native_node_uv_exception_test.test.native UVException successfully constructed flagged Error remains returned DATA",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-uv-exception",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

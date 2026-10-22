@@ -1,0 +1,708 @@
+"""Unexecuted V38 positive archive/progress preparer.
+Requires a separately issued exact Root config, accepted source receipt and final
+copy plan after both original63 phases are independently closed and Root accepted.
+Creates a reviewable proposal only. No Main/index access, native invocation,
+configuration issuance, grant reuse, source intake or application qualification.
+"""
+from pathlib import Path, PurePosixPath
+import copy, datetime, gzip, hashlib, io, json, re, subprocess, sys
+
+B = Path(r"C:\Users\adyba\pi-zig")
+E = B / "evidence"
+W = B / "worktrees/sdk-owners-resume-20261018"
+PLAN_DIR = B / "worktrees/modules-io-resume-20261018/verification/v38-progress-archive-plan-sourceonly-20261021"
+HEAD = "014062f2d139254acab4b985b4ae343db637166f"
+BRANCH_REF = "refs/heads/work/pi-zig-consolidated-20261016"
+PROGRESS = "verification/port-roadmap-resume-20261018/progress.json"
+ARCHIVE = "verification/native-v38-validation-evidence-20261021"
+OUT = E / "pending-v38-progress-and-validation-archive-intake-20261021"
+MANIFEST_TARGET = ARCHIVE + "/manifest.json"
+BASIS_SHA = "BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028"
+MATRIX_SHA = "8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03"
+NEW4 = ["native-node-file-handle-owner", "native-node-fs-before-hook-continuation",
+        "native-vm-error-constructor-name", "native-node-file-handle-transfer"]
+FIXED = {
+ "inventory": (PLAN_DIR/"observed-evidence-inventory.json",338781,"CDFBB34E737011ADD26B7560E5011DC55CADA2803D749B0E1C0263E5954FADED"),
+ "plan": (PLAN_DIR/"progress-patch-plan.json",56327,"183647A8C0D250DBDD0747CD8E1220B415E9F205737092D4D13AF1DD0D730412"),
+ "handoff": (PLAN_DIR/"handoff.json",5242,"E75BE89E1B57F32B72B896C35B5106A2069BE672192FCA2623BB1BA723D95187"),
+ "policy": (E/"v37-progress-negative-archive-sourceonly-20261021/candidate/Prepare-V37ProgressAndNegativeArchive-20261021-v2.py",75644,"079CE8663FFA9C337F5AC04D41E4222E6B2EFB9B39E5B459F6F4E460F9AC790D"),
+}
+CONFIG_KEYS = {
+ "schema","status","candidate_head","preparer_sha256","source_review","final_copy_plan",
+ "recorded_utc","output_directory","archive_target_prefix","expected_output_paths",
+ "evidence_preparation_authorized","main_intake_authorized","native_execution_authorized",
+ "runtime_authority","source_mutation_hold_released","application_qualified",
+ "production_bridge_removed","published_release",
+}
+COPY_KEYS = {
+ "schema","status","candidate_head","reviewer","partial_inventory","progress_plan",
+ "rows","direct_pin_relationships","observed_phase_membership","bookend_plans","cohorts",
+}
+ROW_KEYS = {"original","roles","proposed_archive_relative_path","representation","archive_created"}
+PHASES = ("new4-buildquery","new4-runtime","existing63-buildquery","existing63-runtime")
+originals = {}
+
+def require(ok,label):
+    if not ok:
+        raise AssertionError(label)
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest().upper()
+
+def encode(value):
+    return (json.dumps(value,indent=2,ensure_ascii=False)+"\n").encode("utf-8")
+
+def decode(raw):
+    return json.loads(raw.decode("utf-8-sig"))
+
+def pin(path,raw):
+    return {"path":str(path),"bytes":len(raw),"sha256":sha(raw)}
+
+def inside(path):
+    path = Path(path)
+    require(path.is_absolute() and path.is_relative_to(B),"contained absolute input")
+    require(not path.is_relative_to(B/"main"),"Main filesystem input forbidden")
+    require(path.is_relative_to(E) or
+            (path.is_relative_to(B/"worktrees") and "verification" in path.parts),
+            "only evidence or worktree verification inputs")
+    current = path
+    while current != B:
+        require(not current.is_symlink(),"symlink input/output")
+        if hasattr(current,"is_junction"):
+            require(not current.is_junction(),"junction input/output")
+        current = current.parent
+    require(path.resolve().is_relative_to(B.resolve()),"resolved input containment")
+    return path
+
+def relative(name):
+    require(isinstance(name,str) and re.fullmatch(r"[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*",name),"unsafe target")
+    require(not PurePosixPath(name).is_absolute(),"absolute target")
+    reserved = {"CON","PRN","AUX","NUL",*[f"COM{i}" for i in range(1,10)],*[f"LPT{i}" for i in range(1,10)]}
+    for part in name.split("/"):
+        require(part not in (".","..") and not part.endswith(("."," ")),"target dot alias")
+        require(part.split(".")[0].upper() not in reserved,"target device alias")
+    return name
+
+def exact(row):
+    require(isinstance(row,dict) and set(row)=={"path","bytes","sha256"},"exact pin shape")
+    path = inside(row["path"])
+    require(type(row["bytes"]) is int and row["bytes"]>=0,"pin length")
+    require(isinstance(row["sha256"],str) and re.fullmatch(r"[0-9A-F]{64}",row["sha256"]),"pin SHA")
+    raw = path.read_bytes()
+    require(pin(path,raw)==row,"exact original input: "+str(path))
+    key = str(path).casefold()
+    require(key not in originals or originals[key][1]==raw,"input changed between reads")
+    originals[key] = (path,raw)
+    return raw
+
+def fixed(key):
+    path,size,digest = FIXED[key]
+    return {"path":str(path),"bytes":size,"sha256":digest}
+
+def get(value,path):
+    for item in path:
+        value = value[item]
+    return value
+
+def list_paths(value,path=()):
+    if isinstance(value,list):
+        yield path,value
+        for index,item in enumerate(value):
+            yield from list_paths(item,path+(index,))
+    elif isinstance(value,dict):
+        for key,item in value.items():
+            yield from list_paths(item,path+(key,))
+
+def git(*args,input=None):
+    q = subprocess.run(["git","--no-optional-locks","-c","core.fsmonitor=false","-C",str(W),*args],
+                       input=input,capture_output=True)
+    require(q.returncode==0,("read-only Git",args,q.returncode,q.stderr.decode("utf-8",errors="replace")))
+    return q.stdout
+
+def frozen_ref():
+    require(git("rev-parse",BRANCH_REF).decode().strip()==HEAD,"frozen consolidated branch ref")
+
+def flags(value,true=(),false=()):
+    for key in true:
+        require(value[key] is True,"required accepted gate: "+key)
+    for key in false:
+        require(value[key] is False,"required false scope: "+key)
+
+def gzip_bytes(raw):
+    out = io.BytesIO()
+    with gzip.GzipFile(filename="",mode="wb",fileobj=out,mtime=0,compresslevel=9) as gz:
+        gz.write(raw)
+    return out.getvalue()
+
+def names(directory,dirs=False):
+    return sorted(p.name for p in directory.iterdir() if p.is_dir() is dirs)
+
+require(len(sys.argv)==3,"exact separately issued Root config path and SHA256")
+config_path = inside(sys.argv[1])
+require(config_path.is_relative_to(E),"Root configuration in evidence")
+require(re.fullmatch(r"[0-9A-F]{64}",sys.argv[2]),"exact configuration SHA")
+config_raw = config_path.read_bytes()
+require(sha(config_raw)==sys.argv[2],"Root configuration bytes")
+cfg = decode(config_raw)
+require(set(cfg)==CONFIG_KEYS and cfg["schema"]==1,"exact Root configuration schema")
+require(cfg["status"]=="root_reviewed_specific_v38_positive_progress_archive_preparation","Root release status")
+require(cfg["candidate_head"]==HEAD,"fixed source head")
+flags(cfg,true=("evidence_preparation_authorized",),false=(
+ "main_intake_authorized","native_execution_authorized","runtime_authority",
+ "source_mutation_hold_released","application_qualified","production_bridge_removed","published_release"))
+self_path = inside(__file__)
+self_raw = self_path.read_bytes()
+require(sha(self_raw)==cfg["preparer_sha256"],"exact reviewed preparer")
+require(cfg["output_directory"]==str(OUT) and cfg["archive_target_prefix"]==ARCHIVE,"fixed staging scope")
+require(not OUT.exists(),"new create-only staging directory")
+inside(OUT)
+require(isinstance(cfg["recorded_utc"],str),"exact Root timestamp")
+moment = datetime.datetime.fromisoformat(cfg["recorded_utc"].replace("Z","+00:00"))
+require(moment.utcoffset()==datetime.timedelta(0),"UTC recording timestamp")
+now = cfg["recorded_utc"]
+inventory = decode(exact(fixed("inventory")))
+plan = decode(exact(fixed("plan")))
+handoff = decode(exact(fixed("handoff")))
+exact(fixed("policy"))
+require(inventory["candidate_head"]==plan["candidate_head"]==handoff["candidate_head"]==HEAD,"fixed partial plan basis")
+require(inventory["source_file_versions"]==len(inventory["rows"])==314,"all314 known versions")
+require(len(inventory["direct_pin_relationships"])==183,"all183 known direct relationships")
+require(inventory["proposed_distinct_archive_paths"]==312,"known two equal-pair reductions")
+require(plan["history_prefix_count"]==len(plan["nested_history_prefix_basis"])==181,"all181 historical prefixes")
+source_review = decode(exact(cfg["source_review"]))
+require(source_review["status"]=="root_accepted_bounded_v38_positive_archive_preparer" and source_review["reviewer"]=="Root","separate Root source acceptance")
+require(source_review["candidate_head"]==HEAD and source_review["preparer"]==pin(self_path,self_raw),"source acceptance exact source")
+require(source_review["partial_inventory"]==fixed("inventory") and source_review["progress_plan"]==fixed("plan"),"source acceptance fixed policy")
+flags(source_review,true=("source_accepted",),false=("execution_authority","main_intake_authorized","native_execution_authorized"))
+copy_plan = decode(exact(cfg["final_copy_plan"]))
+require(set(copy_plan)==COPY_KEYS and copy_plan["schema"]==1,"complete final copy plan schema")
+require(copy_plan["status"]=="root_reviewed_exact_final_v38_positive_archive_copy_plan" and copy_plan["reviewer"]=="Root","separate final Root copy plan")
+require(copy_plan["candidate_head"]==HEAD and copy_plan["partial_inventory"]==fixed("inventory") and copy_plan["progress_plan"]==fixed("plan"),"copy plan accepted basis")
+require(copy_plan["rows"][:314]==inventory["rows"],"known314 rows/order/representations exact")
+require(copy_plan["direct_pin_relationships"][:183]==inventory["direct_pin_relationships"],"known183 pin relationships exact")
+require(copy_plan["bookend_plans"][:2]==inventory["bookend_plans"],"known two bookend mappings exact")
+require(2<=len(copy_plan["bookend_plans"])<=4,"only observed equal bookend pairs selected for gzip")
+require(len({p["phase"] for p in copy_plan["bookend_plans"]})==len(copy_plan["bookend_plans"]) and
+        all(p["phase"] in PHASES for p in copy_plan["bookend_plans"]),"unique observed bookend phases")
+require(set(copy_plan["cohorts"])=={"new4","existing63"},"both complete cohorts required")
+
+frozen_ref()
+old_raw = git("cat-file","blob",HEAD+":"+PROGRESS)
+require(len(old_raw)==554689 and sha(old_raw)==BASIS_SHA,"exact immutable Git progress basis")
+require(hashlib.sha1(b"blob "+str(len(old_raw)).encode()+b"\0"+old_raw).hexdigest()=="ec7a71bd873c789fcb42918501816357c599d2a6","raw Git blob identity")
+old = decode(old_raw)
+require(encode(old)==old_raw,"full old progress exact JSON roundtrip")
+require(old["status"]=="active_incomplete" and old["schema"]==1,"old progress schema")
+flags(old,false=("application_qualification","production_bridge_removed","published_release"))
+require(old["next_native_batch"]==old["current_execution_checkpoint"]["next_validation"],"old duplicate next-plan equality")
+require(old["current_execution_checkpoint"]["schema"]==8,"old checkpoint schema8")
+require(sha(encode(old["current_execution_checkpoint"]))=="2BE50BC332A1C14FA9217364AAE9885CABB8C61B320DA6D48D9F8CEC63E666DE","complete old checkpoint")
+old_lengths = {"integrated_source_units":65,"preserved_attempts":38,"retained_recent_native_negatives":14,"execution_checkpoint_history":14}
+require({k:len(old[k]) for k in old_lengths}==old_lengths==plan["preserved_top_level_history_lengths"],"four exact history lengths")
+history_basis = [{"path":list(p),"length":len(v),"canonical_sha256":sha(encode(v))} for p,v in list_paths(old)]
+require(history_basis==plan["nested_history_prefix_basis"] and len(history_basis)==181,"entire historical list basis")
+existing63 = old["next_native_batch"]["retained63_group_order"]
+require(len(existing63)==len(set(existing63))==63 and set(existing63).isdisjoint(NEW4),"complete disjoint original63")
+require(old["next_native_batch"]["status"]=="preparing_fresh_v38_complete_disjoint_batches","frozen next plan status")
+
+rows = copy_plan["rows"]
+row_by_path = {}
+target_owners = {}
+for row in rows:
+    require(set(row)==ROW_KEYS and row["archive_created"] is False,"exact inert copy row")
+    path = inside(row["original"]["path"])
+    require(path.suffix.lower() not in (".exe",".pdb",".dll"),"no native binary archive")
+    require(not any(p in ("cache","global-cache",".zig-cache","zig-out","installed") for p in path.parts),"no compiler/artifact cache archive")
+    key = str(path).casefold()
+    require(key not in row_by_path,"unique original version/path")
+    exact(row["original"])
+    row_by_path[key] = row
+    target = relative(row["proposed_archive_relative_path"])
+    require(target.startswith(ARCHIVE+"/"),"archive-only copy target")
+    require(isinstance(row["roles"],list) and row["roles"] and all(isinstance(v,str) for v in row["roles"]),"explicit source roles")
+    require(row["representation"] in ("raw_byte_exact","proposed_lossless_gzip_identical_bookend_pair"),"supported exact representation")
+    if row["representation"]=="raw_byte_exact":
+        require(target.endswith(".raw"),"raw originals retain raw extension")
+    target_owners.setdefault(target.casefold(),[]).append(row)
+require(len(row_by_path)==len(rows),"all original rows unique")
+
+def archived_pin(path):
+    key = str(inside(path)).casefold()
+    require(key in row_by_path,"required observed file missing from exact copy plan: "+str(path))
+    return row_by_path[key]["original"]
+
+def raw(path):
+    return originals[str(inside(path)).casefold()][1]
+
+def doc(path):
+    archived_pin(path)
+    return decode(raw(path))
+
+def document(row):
+    require(archived_pin(row["path"])==row,"accepted document in exact archive")
+    return doc(row["path"])
+
+for edge in copy_plan["direct_pin_relationships"]:
+    require(set(edge)=={"document","json_path","exact_referenced_pin"},"explicit pin edge")
+    value = get(document(edge["document"]),edge["json_path"])
+    require(isinstance(value,dict) and {k:value[k] for k in ("path","bytes","sha256")}==edge["exact_referenced_pin"],"original direct pin relation")
+    document_pin = archived_pin(edge["exact_referenced_pin"]["path"])
+    require(document_pin==edge["exact_referenced_pin"],"referenced raw version retained")
+
+membership = copy_plan["observed_phase_membership"]
+require([m["phase"] for m in membership]==list(PHASES),"four exact observed phase scopes")
+for index,m in enumerate(membership):
+    batch = "new4" if index<2 else "existing63"
+    is_build = index%2==0
+    groups = NEW4 if index<2 else existing63
+    proof,control = inside(m["proof"]),inside(m["control"])
+    require(proof.parent==control.parent==E,"phase roots directly under evidence")
+    cp = "root-native-foundation-"+("fresh-" if is_build else "")+"v38-"+batch+("-control-" if is_build else "-runtime-control-")
+    require(re.fullmatch(re.escape(cp)+r"\d{8}-\d{6}",control.name),"actual phase control identity")
+    require(proof.name==control.name.replace("-control-","-buildquery-" if is_build else "-",1),"actual phase proof identity")
+    require(m["proof_top_level_files"]==["before.json","final.json","result.json"]==names(proof),"whole original proof membership")
+    require(m["control_top_level_files"]==names(control) and names(control,True)==[],"whole original control membership")
+    require(set(m["group_files"])==set(groups) and names(proof/"groups",True)==sorted(groups),"all original group directories")
+    require(names(proof,True)==sorted(["groups"]+m["excluded_subdirectories"]),"explicit excluded phase directories")
+    require(set(m["excluded_subdirectories"])==({"cache","global-cache"} if is_build else set()),"only original caches excluded")
+    for group in groups:
+        gd = proof/"groups"/group
+        require(m["group_files"][group]==names(gd),"all original group receipts")
+        require(names(gd,True)==sorted(m["excluded_group_subdirectories"][group]),"all original group subdirectories")
+        require(set(m["excluded_group_subdirectories"][group])==({"installed"} if is_build else set()),"only installed binaries excluded")
+        for name in m["group_files"][group]:
+            archived_pin(gd/name)
+    for name in m["proof_top_level_files"]:
+        archived_pin(proof/name)
+    for name in m["control_top_level_files"]:
+        archived_pin(control/name)
+    if index<2:
+        prior = inventory["observed_phase_membership"][index]
+        for key in ("phase","proof","control","proof_top_level_files","excluded_subdirectories","excluded_group_subdirectories"):
+            require(m[key]==prior[key],"known phase identity")
+        require(set(prior["control_top_level_files"])<=set(m["control_top_level_files"]),"all known original controls retained")
+        for group in groups:
+            require(set(prior["group_files"][group])<=set(m["group_files"][group]),"all known group receipts retained")
+
+COMMON_TRUE = ("whole_bookends_unchanged","current_all_sealed_inputs_rehashed",
+ "current_complete_directory_inventories_verified","current_actual_process_instances_absent",
+ "controller_environment_restored")
+
+def check_positive(batch,groups,declared,index):
+    cohort = copy_plan["cohorts"][batch]
+    require(set(cohort)=={"buildquery_root_acceptance","runtime_root_acceptance"},"exact final cohort authorities")
+    bq_pin,rt_pin = cohort["buildquery_root_acceptance"],cohort["runtime_root_acceptance"]
+    if batch=="new4":
+        require(bq_pin==plan["known_new4"]["buildquery_root_acceptance"] and
+                rt_pin==plan["known_new4"]["runtime_root_acceptance"],"unchanged accepted new4 authorities")
+    bq,rt = document(bq_pin),document(rt_pin)
+    count = len(groups)
+    require(bq["status"]=="root_accepted_complete_fresh_v38_"+batch+"_buildquery","Root complete BQ only")
+    require(rt["status"]=="root_accepted_complete_strict_v38_"+batch+"_runtime","Root complete strict runtime only")
+    for value in (bq,rt):
+        require(value["reviewer"]=="Root" and value["candidate_head"]==HEAD and value["batch"]==batch,"accepted original cohort identity")
+        require(value["groups"]==groups and value["declared_groups"]==count and value["declared_controls"]==declared,"accepted complete source cohort")
+        require(type(value["actual_metadata_count"]) is int and value["actual_metadata_count"]>0,"observed positive metadata count")
+        require(len(value["actual_group_counts"])==count and all(type(n) is int and n>0 for n in value["actual_group_counts"]),"complete observed group counts")
+        require(sum(value["actual_group_counts"])==value["actual_metadata_count"],"observed metadata sum")
+        flags(value,false=("source_mutation_hold_released",))
+    actual,counts = bq["actual_metadata_count"],bq["actual_group_counts"]
+    require(rt["actual_metadata_count"]==actual and rt["actual_group_counts"]==counts,"BQ/runtime same actual cohort")
+    flags(bq,true=("complete_buildquery_accepted","complete_source_and_current_directory_seals","all_original_terminal0_owner_gates_passed"),
+          false=("runtime_started","runtime_execution_authorized","qualification"))
+    flags(rt,true=("strict_native_runtime_accepted","whole_bookends_unchanged",
+                   "complete_source_and_current_directory_seals",
+                   "all_original_strict_empty_stderr_and_all_tests_passing_gates_passed",
+                   "selected_native_runtime_qualification"),false=("product_qualification",))
+    require(bq["native_owner_count"]==2*count and bq["actual_process_intervals_closed"]==2*count+3 and bq["actual_tests_started"]==0,"complete original BQ owners")
+    require(rt["runtime_owner_count"]==count and rt["actual_process_intervals_closed"]==count+3,"complete original runtime owners")
+    require(rt["observed_started"]==rt["observed_completed"]==actual and rt["observed_failed"]==rt["not_started"]==0,"complete positive runtime counts")
+    bm,rm = membership[index],membership[index+1]
+    bp,bc,rp,rc = Path(bm["proof"]),Path(bm["control"]),Path(rm["proof"]),Path(rm["control"])
+    role_paths = {
+      "build_result":bp/"result.json","build_final":bp/"final.json",
+      "metadata_acceptance":bc/"independent-metadata-acceptance.json",
+      "independent_closure":bc/"independent-current-seals-and-owners.json",
+    }
+    for key,path in role_paths.items():
+        require(bq[key]==archived_pin(path),"Root BQ exact original "+key)
+    require(rt["runtime_result"]==archived_pin(rp/"result.json") and rt["runtime_final"]==archived_pin(rp/"final.json"),"Root exact original runtime result/seal")
+    require(rt["independent_runtime_closure"]==archived_pin(rc/"independent-positive-runtime-closure.json"),"Root positive runtime closure")
+    require(rt["root_buildquery_acceptance"]==bq_pin and rt["metadata_acceptance"]==bq["metadata_acceptance"] and
+            rt["independent_build_closure"]==bq["independent_closure"],"runtime exact accepted parent")
+    build,metadata = document(bq["independent_closure"]),document(bq["metadata_acceptance"])
+    runtime = document(rt["independent_runtime_closure"])
+    build_result,runtime_result = doc(bp/"result.json"),doc(rp/"result.json")
+    require(build["status"]=="independently_closed_complete_fresh_build_query" and build["candidate_head"]==HEAD,"accepted positive independent BQ")
+    flags(build,true=COMMON_TRUE+("all_original_terminal0_owner_gates_passed",),
+          false=("runtime_started","qualification","cache_seeded","source_mutation_hold_released"))
+    require(build["granted_groups"]==build["attempted_groups"]==count and build["unstarted_groups"]==0,"all BQ groups closed")
+    require(build["native_owner_count"]==2*count and len(build["actual_process_intervals"])==2*count+3 and build["actual_tests_started"]==0,"all actual BQ process intervals")
+    require(build["actual_metadata_count"]==actual and [g["group"] for g in build["groups"]]==groups and
+            [g["actual_metadata_count"] for g in build["groups"]]==counts,"closure actual metadata")
+    require(metadata["status"]=="independently_accepted_combined_native_batch_metadata" and metadata["accepted"] is True and metadata["candidate_head"]==HEAD,"accepted raw metadata")
+    flags(metadata,false=("runtime_started","runtime_qualification"))
+    require([g["group"] for g in metadata["groups"]]==groups and [g["actual_count"] for g in metadata["groups"]]==counts,"all accepted actual groups")
+    require(build["metadata_acceptance"]==bq["metadata_acceptance"] and
+            metadata["build_result_sha256"]==bq["build_result"]["sha256"] and
+            metadata["build_source_seal_sha256"]==bq["build_final"]["sha256"],"actual metadata/source linkage")
+    require(build_result["status"]=="passed_build_query_batch" and build_result["mode"]=="BuildQuery" and build_result["candidate_head"]==HEAD,"original BQ success")
+    require([g["group"] for g in build_result["groups"]]==groups and
+            all(g["status"]=="passed_build_query" for g in build_result["groups"]),"complete BQ results")
+    require(runtime["status"]=="independently_closed_positive_strict_runtime" and runtime["candidate_head"]==HEAD and runtime["batch"]==batch,"accepted positive independent runtime")
+    flags(runtime,true=COMMON_TRUE+("all_original_strict_empty_stderr_and_all_tests_passing_gates_passed","runtime_qualification"),
+          false=("product_qualification","source_mutation_hold_released"))
+    require(runtime["metadata_acceptance"]==bq["metadata_acceptance"] and runtime["independent_build_closure"]==bq["independent_closure"],"runtime independent parent links")
+    require(runtime["declared_groups"]==count and runtime["declared_controls"]==declared and runtime["accepted_cohort"]==actual,"complete independent runtime cohort")
+    require(runtime["observed_started"]==runtime["observed_completed"]==actual and runtime["observed_failed"]==runtime["not_started"]==0,"independent all-positive counts")
+    require(runtime["runtime_owner_count"]==count and len(runtime["actual_process_intervals"])==count+3,"all runtime intervals")
+    require([g["group"] for g in runtime["observed_groups"]]==groups,"all independent runtime groups")
+    require(runtime_result["status"]=="passed_selected_native_batch" and runtime_result["mode"]=="RuntimeOnly" and runtime_result["candidate_head"]==HEAD,"original strict runtime success")
+    require([g["group"] for g in runtime_result["groups"]]==groups and runtime_result["errors"]==[],"whole original runtime result")
+    flags(runtime_result,true=("postseal","controller_environment_restored","runtime_requested","all_groups_closed"),false=("product_qualified","cache_seeded"))
+    for number,group in enumerate(groups):
+        accepted = metadata["groups"][number]
+        observed = runtime["observed_groups"][number]
+        gp = rp/"groups"/group
+        canonical = doc(gp/"runtime.results.json")
+        require(observed["started"]==observed["completed"]==counts[number] and observed["failed"]==0,"accepted per-group runtime counts")
+        require(canonical["expected"]==canonical["started"]==canonical["completed"]==counts[number] and canonical["failed_or_skipped_or_logged_or_leaked"]==0 and canonical["status"]=="passed","canonical all-positive original counts")
+        require(canonical["results"]==[{"index":i,"flags":0,"passed":True} for i in range(counts[number])],"exact canonical zero flags")
+        require(observed["results"]==[dict(row,name=accepted["tests"][i]) for i,row in enumerate(canonical["results"])],"all actual names and original observations")
+        require(raw(gp/"runtime.stderr.log")==b"","original strict empty stderr retained")
+    require(rt["auditor"]["sha256"]=="A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102" and
+            rt["auditor_source_acceptance"]["sha256"]=="12D45623A19BB66517FF8DF2C47CD69F32A167361572A0313D651505528A8F49","accepted corrected auditor source")
+    document(rt["auditor_source_acceptance"])
+    require(archived_pin(rt["auditor"]["path"])==rt["auditor"],"exact accepted auditor retained")
+    audit_cfg = document(rt["audit_configuration"])
+    require(audit_cfg["auditor_sha256"]==rt["auditor"]["sha256"] and audit_cfg["batch"]==batch and audit_cfg["actual_metadata_count"]==actual,"actual positive audit configuration")
+    for control in (bc,rc):
+        job = doc(control/"independent-observed-job-status.json")["data"]
+        require(job["status"]=="succeeded" and job["exitCode"]==0 and job["runnerAlive"] is False and
+                type(job["runnerProcessInstance"]) is str and re.fullmatch(r"[0-9]+",job["runnerProcessInstance"]),"original successful job and exact decimal100ns identity")
+    prep = E/("combined-native-batch-v38-"+("new4" if batch=="new4" else "regression63")+"-prepared-20261021")
+    review,matrix = doc(prep/"preparation-review.json"),doc(prep/"groups.json")
+    require(review["candidate_head"]==HEAD and review["selected_group_names"]==groups and review["selected_groups"]==count and review["selected_declarations"]==declared,"accepted exact prepared cohort")
+    require(review["actual_metadata_count"] is None and archived_pin(prep/"groups.json")["sha256"]==MATRIX_SHA,"source declarations never predict metadata")
+    require(len(matrix["groups"])==117 and sum(len(g["required_named"]) for g in matrix["groups"])==2013 and len(matrix["whole_tree_dependency_pins"])==576,"complete shared catalog")
+    if batch=="new4":
+        require(counts==[19,4,24,14] and actual==61 and rt["original_runtime_rerun"] is False,"unchanged already accepted original new4 run")
+    else:
+        require(count==63 and declared==1249,"original63 source-only constants")
+        # Original63 needs no invented F846 failure or auditor-config adaptation.
+    return {
+      "batch":batch,"source_head":HEAD,"groups":groups,"declared_groups":count,"declared_controls":declared,
+      "actual_metadata_count":actual,"actual_group_counts":counts,
+      "buildquery":{"status":build["status"],"root_acceptance":bq_pin,"closure":bq["independent_closure"],
+                   "metadata_acceptance":bq["metadata_acceptance"],"result":bq["build_result"],
+                   "native_owner_count":2*count,"actual_tests_started":0,"runtime_qualification":False},
+      "runtime":{"status":runtime["status"],"root_acceptance":rt_pin,"closure":rt["independent_runtime_closure"],
+                 "result":rt["runtime_result"],"observed_started":actual,"observed_completed":actual,
+                 "observed_failed":0,"not_started":0,"native_owner_count":count,
+                 "selected_native_runtime_accepted":True,"product_qualification":False},
+      "metadata_transferred_to_another_head":False,"source_mutation_hold_released":False,
+    }
+
+new4 = check_positive("new4",NEW4,58,0)
+original63 = check_positive("existing63",existing63,1249,2)
+catalog_negative_path = E/"root-v38-catalog-initial-preparation-negative-20261021/root-negative-acceptance.json"
+audit_negative_path = E/"root-v38-new4-positive-runtime-audit-original-negative-20261021/negative.json"
+require(archived_pin(catalog_negative_path)["sha256"]=="14FB17F6E9497A530D999EE3D05C43521A7F830C4A185CD4505C28BE6BBB6400","original catalog negative")
+require(archived_pin(audit_negative_path)["sha256"]=="194982710772F0E5F5E5012DFA783FC19F7D71DF327F1034A2799131C13CE2EF","original auditor negative")
+catalog_negative,audit_negative = doc(catalog_negative_path),doc(audit_negative_path)
+require(catalog_negative["terminal_exit_code"]==1 and catalog_negative["compiler_native_execution_occurred"] is False,"non-native catalog failure retained")
+require(audit_negative["original_audit_exit_code"]==1 and audit_negative["runtime_acceptance"] is False,"original failed auditor remains negative")
+require(audit_negative["auditor"]["sha256"]=="F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07","original F846 source retained")
+old_input_pin,new_input_pin = (plan["separate_non_native_negatives"][1][k] for k in ("original_input","corrected_input"))
+old_input,new_input = document(old_input_pin),document(new_input_pin)
+require(set(old_input)==set(new_input) and len(old_input)==40 and
+        [k for k in old_input if old_input[k]!=new_input[k]]==["auditor_sha256"],"only exact original auditor config correction")
+require(old_input["auditor_sha256"]==audit_negative["auditor"]["sha256"] and
+        new_input["auditor_sha256"]=="A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102","separate original and corrected audit sources")
+negative_records = [
+ {"name":"V38 initial catalog non-native preparation negative","status":catalog_negative["status"],
+  "source_head":HEAD,"root_acceptance":archived_pin(catalog_negative_path),"native_failure":False,
+  "new_native_execution_authorized":False,"original_evidence_unchanged":True},
+ {"name":"V38 original new4 positive-runtime auditor provenance negative","status":audit_negative["status"],
+  "source_head":HEAD,"root_acceptance":archived_pin(audit_negative_path),"native_failure":False,
+  "original_audit_accepted_runtime":False,"original_native_run_rerun":False,
+  "new_native_execution_authorized":False,"original_evidence_unchanged":True},
+]
+
+payloads,roles,preimages,payload_aliases = {},{},{},set()
+def add(target,value,role,before=None):
+    target = relative(target)
+    require(target==PROGRESS or target.startswith(ARCHIVE+"/"),"staged progress/archive only")
+    require(target!=MANIFEST_TARGET and target.casefold() not in payload_aliases,"unique staged target")
+    payload_aliases.add(target.casefold())
+    payloads[target],roles[target],preimages[target] = value,role,before
+    return pin(OUT/"projected"/target,value)
+
+archive_rows,seal_mappings = [],[]
+for row in rows:
+    if row["representation"]=="raw_byte_exact":
+        target = row["proposed_archive_relative_path"]
+        require(len(target_owners[target.casefold()])==1,"no raw target alias")
+        out_pin = add(target,raw(row["original"]["path"]),"immutable_original_bytes")
+        archive_rows.append({"original":row["original"],"target":target,"projected":out_pin})
+represented = set()
+for pair in copy_plan["bookend_plans"]:
+    index = PHASES.index(pair["phase"])
+    require(pair["compressed_pin"] is None and pair["compression_executed"] is False,"unexecuted exact phase gzip mapping")
+    proof = Path(membership[index]["proof"])
+    require(pair["originals"]==[archived_pin(proof/"before.json"),archived_pin(proof/"final.json")],"both original bookend pins")
+    before,final = raw(proof/"before.json"),raw(proof/"final.json")
+    require(before==final and pair["byte_identical_verified"] is True,"only byte-identical bookend pairs compressed")
+    seal = decode(before)
+    require(seal["candidate_head"]==HEAD and seal["clean"] is True and seal["errors"]==[],"original complete clean source seal")
+    counts = {k:len(seal[k]) for k in ("source","tree","vendor","compiler","controls")}
+    require(counts==pair["seal_counts"] and counts["vendor"]==1489 and counts["compiler"]==19546,"all actual seal counts")
+    target = pair["proposed_archive_relative_path"]
+    require(target==ARCHIVE+"/"+PHASES[index]+"/proof/before-and-final.json.gz","exact gzip target")
+    same = target_owners[target.casefold()]
+    require(len(same)==2 and [r["original"] for r in same]==pair["originals"],"each gzip represents exactly the two observed originals")
+    require(all(r["representation"]=="proposed_lossless_gzip_identical_bookend_pair" and r["proposed_archive_relative_path"]==target for r in same),"only explicit pair aliases")
+    require(pair["future_parameters"]=={"filename":"","mtime":0,"compresslevel":9,"header_hex":"1f8b08000000000002ff"},"fixed accepted gzip recipe")
+    compressed = gzip_bytes(before)
+    require(compressed[:10]==bytes.fromhex("1f8b08000000000002ff"),"accepted deterministic gzip header")
+    require(gzip.decompress(compressed)==before==final and gzip_bytes(before)==compressed,"two-source roundtrip and repeated encoding exact")
+    out_pin = add(target,compressed,"lossless_identical_original_bookend_pair")
+    represented.update(r["original"]["path"].casefold() for r in same)
+    seal_mappings.append({"phase":pair["phase"],"originals":pair["originals"],"target":target,"projected":out_pin,
+                          "seal_counts":counts,"complete_two_source_roundtrip":True,
+                          "deterministic_second_encoding_equal":True,"gzip":{"filename":"","mtime":0,"compresslevel":9,"header_hex":compressed[:10].hex()}})
+require(represented=={r["original"]["path"].casefold() for r in rows if r["representation"]=="proposed_lossless_gzip_identical_bookend_pair"},"no unrepresented original input")
+
+# Any future phase not explicitly selected for equal-pair gzip retains both raw originals.
+for m in membership:
+    if m["phase"] not in {p["phase"] for p in copy_plan["bookend_plans"]}:
+        for name in ("before.json","final.json"):
+            require(row_by_path[str(Path(m["proof"])/name).casefold()]["representation"]=="raw_byte_exact","uncombined bookend retained raw")
+
+# Derive the positive checkpoint only after every original63 positive gate above.
+attempts = [
+ negative_records[0],
+ dict(name="V38 new4 complete fresh BuildQuery",source_head=HEAD,batch="new4",
+      declared_groups=4,declared_controls=58,actual_metadata_observed=new4["actual_metadata_count"],**copy.deepcopy(new4["buildquery"])),
+ negative_records[1],
+ dict(name="V38 accepted original new4 strict runtime",source_head=HEAD,batch="new4",
+      declared_groups=4,declared_controls=58,actual_metadata_observed=new4["actual_metadata_count"],**copy.deepcopy(new4["runtime"])),
+ dict(name="V38 original63 complete fresh BuildQuery",source_head=HEAD,batch="existing63",
+      declared_groups=63,declared_controls=1249,actual_metadata_observed=original63["actual_metadata_count"],**copy.deepcopy(original63["buildquery"])),
+ dict(name="V38 original63 accepted strict runtime",source_head=HEAD,batch="existing63",
+      declared_groups=63,declared_controls=1249,actual_metadata_observed=original63["actual_metadata_count"],**copy.deepcopy(original63["runtime"])),
+]
+next_plan = copy.deepcopy(old["next_native_batch"])
+require(next_plan["batch_group_counts"]==[4,63] and next_plan["batch_source_declarations"]==[58,1249],"exact completed disjoint source partitions")
+require(next_plan["total_selected_groups"]==67 and next_plan["total_selected_source_declarations"]==1307 and
+        next_plan["catalog_expected_groups"]==117 and next_plan["catalog_expected_source_declarations"]==2013 and next_plan["group_cap"]==64,"unchanged selected/catalog limits")
+next_plan.update(
+ status="v38_disjoint_selected_batches_accepted_awaiting_separate_root_next_scope",
+ actual_metadata_count=None,execution_authority=False,runtime_authority=False,qualification=False,
+ prior_metadata_transferred=False,source_mutation_hold_released=False,
+ v38_observed_metadata_by_batch={"new4":new4["actual_metadata_count"],"existing63":original63["actual_metadata_count"]},
+ v38_both_complete_buildquery_and_strict_runtime_accepted=True,
+ requirements="Both exact V38 batches have separately accepted fresh BuildQuery and strict RuntimeOnly evidence on014062. "
+              "This remains an active incomplete port. The retained planning template issues no new native or source authority; "
+              "future scope, metadata, source intake, production bridge removal and application qualification require separate Root work.")
+updated = copy.deepcopy(old)
+updated["preserved_attempts"].extend(copy.deepcopy(attempts))
+updated["execution_checkpoint_history"].append(copy.deepcopy(old["current_execution_checkpoint"]))
+checkpoint = copy.deepcopy(old["current_execution_checkpoint"])
+checkpoint.update(
+ schema=9,status="v38_disjoint_buildquery_and_strict_runtime_accepted_archive_proposed",
+ source_head=HEAD,recorded_utc=now,next_validation=copy.deepcopy(next_plan),
+ v38_new4=copy.deepcopy(new4),v38_original63=copy.deepcopy(original63),
+ v38_non_native_preparation_and_auditor_negatives=copy.deepcopy(negative_records),
+ selected_native_runtime_accepted=True,runtime_qualification=False,
+ source_mutation_hold_released=False,native_execution_authorized=False,
+ production_bridge_removed=False,application_qualification=False)
+updated["current_execution_checkpoint"] = checkpoint
+updated["next_native_batch"] = copy.deepcopy(next_plan)
+updated["current_source_head_at_record"] = HEAD
+updated["updated_utc"] = now
+updated["record_note"] = (
+ "V38 completed two separately granted disjoint selected batches on014062: four new groups and all original63 in the retained order. "
+ "Each has independently accepted fresh BuildQuery metadata and strict positive runtime with exact original evidence. "
+ "Observed metadata totals are recorded per cohort, not inferred from source declarations or transferred to another head. "
+ "The initial catalog schema failure and original new4 positive-auditor provenance failure remain separately preserved non-native attempts; "
+ "the accepted new4 runtime is the unchanged original run, not a rerun. "
+ "All prior history and the complete old checkpoint are retained. This proposal changes only progress and adds immutable evidence. "
+ "Application qualification, bridge removal, publication and new source/native authority remain false.")
+updated["v38_validation_and_archive_checkpoint"] = {
+ "schema":1,"recorded_utc":now,"source_head_at_record":HEAD,
+ "new4":copy.deepcopy(new4),"original63":copy.deepcopy(original63),
+ "non_native_negatives":copy.deepcopy(negative_records),
+ "observed_selected_groups":67,"source_declarations":1307,
+ "observed_actual_metadata_total":new4["actual_metadata_count"]+original63["actual_metadata_count"],
+ "separate_grants_preserved":True,"group_cap_unchanged":64,
+ "prior_progress_archive":ARCHIVE+"/prior-progress.json.raw","archive_prefix":ARCHIVE,
+ "full_prior_checkpoint_appended":True,"complete_historical_list_prefixes_preserved":True,
+ "selected_native_runtime_accepted_for_this_head":True,"metadata_transferred_to_another_head":False,
+ "runtime_qualification":False,"application_qualification":False,"production_bridge_removed":False,
+ "published_release":False,"source_mutation_hold_released":False,"native_execution_authorized":False,
+}
+replaced = {"current_source_head_at_record","updated_utc","record_note","current_execution_checkpoint",
+            "next_native_batch","preserved_attempts","execution_checkpoint_history"}
+added = {"v38_validation_and_archive_checkpoint"}
+require(added.isdisjoint(old) and set(updated)==set(old)|added,"one exact new progress field")
+for key in old:
+    if key not in replaced:
+        require(updated[key]==old[key],"unrelated old progress field changed")
+require(updated["integrated_source_units"]==old["integrated_source_units"],"no source/product intake")
+require(updated["retained_recent_native_negatives"]==old["retained_recent_native_negatives"],"non-native failures do not alter native-negative history")
+require(updated["execution_checkpoint_history"][-1]==old["current_execution_checkpoint"],"complete old checkpoint appended")
+increments = {"integrated_source_units":0,"preserved_attempts":6,"retained_recent_native_negatives":0,"execution_checkpoint_history":1}
+for key,length in old_lengths.items():
+    require(updated[key][:length]==old[key] and len(updated[key])==length+increments[key],"exact top-level history prefix/count")
+list_checks = []
+for path,items in list_paths(old):
+    current = get(updated,path)
+    require(isinstance(current,list) and current[:len(items)]==items,"every historical nested list prefix")
+    list_checks.append({"path":list(path),"old_length":len(items),"new_length":len(current),"unchanged_prefix_sha256":sha(encode(items))})
+require(len(list_checks)==181,"all181 nested prefixes checked")
+inverse = copy.deepcopy(updated)
+for key in added:
+    del inverse[key]
+for key in replaced:
+    inverse[key] = copy.deepcopy(old[key])
+require(inverse==old and encode(inverse)==old_raw,"complete structural and554689-byte raw inverse")
+progress_pin = add(PROGRESS,encode(updated),"only_existing_progress_replacement",{"bytes":554689,"sha256":BASIS_SHA})
+add(ARCHIVE+"/prior-progress.json.raw",old_raw,"exact_immutable_Git_progress_preimage")
+
+# These deterministic preparation records are separate from the exact observed copy list.
+auxiliary = [
+ ("partial-observed-inventory.json",fixed("inventory"),exact(fixed("inventory"))),
+ ("partial-progress-plan.json",fixed("plan"),exact(fixed("plan"))),
+ ("inert-plan-handoff.json",fixed("handoff"),exact(fixed("handoff"))),
+ ("prior-accepted-policy.py",fixed("policy"),exact(fixed("policy"))),
+ ("preparer.py",pin(self_path,self_raw),self_raw),
+ ("root-issued-configuration.json",pin(config_path,config_raw),config_raw),
+ ("root-source-acceptance.json",cfg["source_review"],exact(cfg["source_review"])),
+ ("root-final-copy-plan.json",cfg["final_copy_plan"],exact(cfg["final_copy_plan"])),
+]
+for name,source,raw_bytes in auxiliary:
+    target = ARCHIVE+"/preparation/"+name+".raw"
+    out_pin = add(target,raw_bytes,"exact_preparation_input_bytes")
+    archive_rows.append({"original":source,"target":target,"projected":out_pin})
+history_report = {
+ "schema":1,"status":"complete181_historical_prefixes_and_progress_raw_inverse_verified",
+ "basis_head":HEAD,"basis_progress":{"bytes":554689,"sha256":BASIS_SHA},
+ "prior_progress_archive":ARCHIVE+"/prior-progress.json.raw","projected_progress":progress_pin,
+ "replaced_top_level_keys":sorted(replaced),"added_top_level_keys":sorted(added),
+ "old_top_level_history_lengths":old_lengths,"new_top_level_history_lengths":{k:len(updated[k]) for k in old_lengths},
+ "nested_historical_lists_checked":181,"nested_list_checks":list_checks,
+ "complete_old_checkpoint_appended":True,"old_checkpoint_sha256":sha(encode(old["current_execution_checkpoint"])),
+ "complete_structural_inverse":True,"complete_raw_byte_inverse":True,
+ "inverse_method":"Remove only the one added key and restore only the seven replaced keys from the archived raw basis; indent2 ensure_ascii=false UTF8 plusLF reproduces all554689 original bytes.",
+ "source_build_paths":0,"native_negative_history_unchanged":True,"qualification":False,
+}
+add(ARCHIVE+"/history-preservation.json",encode(history_report),"complete_progress_inverse_and_history_proof")
+add(ARCHIVE+"/seal-archive-map.json",encode(seal_mappings),"lossless_observed_two_source_bookend_mappings")
+archive_index = {
+ "schema":1,"status":"exact_closed_v38_positive_phase_and_original_non_native_negative_archive",
+ "candidate_head":HEAD,"original_partial_inventory":fixed("inventory"),"final_copy_plan":cfg["final_copy_plan"],
+ "known_input_versions_retained":314,"all_selected_observed_input_versions":len(rows),
+ "raw_archive_files":archive_rows,"compressed_original_bookends":seal_mappings,
+ "represented_original_bookend_files":8,"compressed_bookend_pairs":len(seal_mappings),
+ "separately_archived_raw_bookend_files":8-2*len(seal_mappings),
+ "cache_files_archived":0,"native_binary_files_archived":0,
+ "raw_original100ns_bytes_and_strings_unchanged":True,
+ "original_execution_authority_is_historical_not_reusable":True,
+ "original_files_modified":False,"native_execution_authorized":False,
+ "main_intake_authorized":False,"source_mutation_hold_released":False,"qualification":False,
+}
+add(ARCHIVE+"/archive-index.json",encode(archive_index),"complete_exact_raw_and_gzip_archive_mapping")
+manifest_rows = [
+ {"target":target,"source":str(OUT/"projected"/target),"bytes":len(payloads[target]),
+  "sha256":sha(payloads[target]),"before":preimages[target],"role":roles[target]}
+ for target in sorted(payloads)
+]
+require([r["target"] for r in manifest_rows if r["before"] is not None]==[PROGRESS],"only old progress replaced")
+manifest = {
+ "schema":1,"status":"exact_v38_positive_progress_archive_intake_unissued",
+ "comparison_head":HEAD,"path_count_including_manifest":len(manifest_rows)+1,
+ "rows":manifest_rows,"manifest_target":MANIFEST_TARGET,
+ "source_build_paths":0,"existing_progress_replacements":1,
+ "all314_known_inputs_retained":True,"all181_nested_prefixes_and_full_progress_inverse_verified":True,
+ "final_copy_plan":cfg["final_copy_plan"],"source_review":cfg["source_review"],
+ "complete_original63_success_required_and_verified":True,"all_original_negatives_preserved":True,
+ "main_worktree_collision_check_deferred_to_separate_exact_intake":True,
+ "main_applied":False,"source_mutation_hold_released":False,"main_intake_authorized":False,
+ "native_execution_authorized":False,"application_qualified":False,"production_bridge_removed":False,"published_release":False,
+ "scope":"Only one exact progress replacement and new immutable evidence. No source/build/native/index/cache action. Root must independently review this complete proposal and separately release any Main intake.",
+}
+manifest_raw = encode(manifest)
+all_targets = [(r["target"],payloads[r["target"]]) for r in manifest_rows]+[(MANIFEST_TARGET,manifest_raw)]
+target_names = [n for n,_ in all_targets]
+require(isinstance(cfg["expected_output_paths"],list) and cfg["expected_output_paths"]==sorted(target_names),"Root exact final output/copy membership")
+require(len({n.casefold() for n in target_names})==len(target_names),"complete Windows target aliases")
+entries,entry_aliases = {},set()
+for item in git("ls-tree","-r","-z",HEAD).split(b"\0"):
+    if item:
+        meta,name = item.split(b"\t",1)
+        mode,kind,oid = meta.decode().split()
+        name = name.decode("utf-8")
+        require(name.casefold() not in entry_aliases,"committed Windows aliases")
+        entry_aliases.add(name.casefold())
+        entries[name] = (mode,kind,oid)
+require(not any(n.casefold()==ARCHIVE.casefold() or n.casefold().startswith(ARCHIVE.casefold()+"/") for n in entries),"new archive absent from immutable committed basis")
+old_oid = hashlib.sha1(b"blob "+str(len(old_raw)).encode()+b"\0"+old_raw).hexdigest()
+require(entries[PROGRESS] in (("100644","blob",old_oid),("100755","blob",old_oid)),"exact committed progress preimage")
+for target,_ in all_targets:
+    relative(target)
+    require(target==PROGRESS or target.casefold() not in entry_aliases,"new committed archive targets")
+# Attribute inspection reads the frozen Git tree through W; it creates no index.
+attributes = ("text","eol","filter","working-tree-encoding","ident")
+attr_raw = git("check-attr","--source="+HEAD,"-z","--stdin",*attributes,
+               input=b"\0".join(n.encode("utf-8") for n in target_names)+b"\0")
+attr_parts = attr_raw.split(b"\0")
+require(attr_parts[-1]==b"" and len(attr_parts)-1==3*len(attributes)*len(target_names),"complete frozen-tree attribute result")
+for index,target in enumerate(target_names):
+    off = index*3*len(attributes)
+    for j,attribute in enumerate(attributes):
+        name,key,value = attr_parts[off+3*j:off+3*j+3]
+        require(name==target.encode() and key==attribute.encode() and value in (b"unset",b"unspecified"),"no Git byte conversion on archive/progress targets")
+frozen_ref()
+require(not OUT.exists(),"final create-only stage gate")
+for path,value in originals.values():
+    require(path.read_bytes()==value,"original input changed before staging")
+require(config_path.read_bytes()==config_raw and self_path.read_bytes()==self_raw,"source/config unchanged")
+require(git("cat-file","blob",HEAD+":"+PROGRESS)==old_raw,"immutable progress unchanged")
+
+# The only writes start here, below every acceptance, history and exact-copy gate.
+OUT.mkdir()
+for row in manifest_rows:
+    path = inside(row["source"])
+    require(path.is_relative_to(OUT),"staged output containment")
+    path.parent.mkdir(parents=True,exist_ok=True)
+    with path.open("xb") as f:
+        f.write(payloads[row["target"]])
+    require(path.read_bytes()==payloads[row["target"]],"exact staged output")
+with (OUT/"manifest.json").open("xb") as f:
+    f.write(manifest_raw)
+require((OUT/"manifest.json").read_bytes()==manifest_raw,"exact complete manifest")
+frozen_ref()
+for path,value in originals.values():
+    require(path.read_bytes()==value,"original input changed after staging")
+require(config_path.read_bytes()==config_raw and self_path.read_bytes()==self_raw,"source/config unchanged after staging")
+review = {
+ "schema":1,"status":"source_only_exact_v38_positive_progress_archive_prepared",
+ "candidate_head":HEAD,"prepared_utc":now,"preparer":pin(self_path,self_raw),
+ "root_configuration":pin(config_path,config_raw),"source_review":cfg["source_review"],
+ "manifest":pin(OUT/"manifest.json",manifest_raw),"commit_paths":len(all_targets),
+ "projected_progress":progress_pin,"known_original_inputs":314,"observed_original_inputs":len(rows),
+ "all181_historical_prefixes_preserved":True,"complete554689_byte_progress_inverse":True,
+ "new4_actual_metadata":new4["actual_metadata_count"],"existing63_actual_metadata":original63["actual_metadata_count"],
+ "original63_both_success_acceptances_verified":True,"all_original_evidence_raw_bytes_preserved":True,
+ "compressed_bookend_pairs":len(seal_mappings),"represented_original_bookends":8,"gzip_full_roundtrips_and_second_encodings_verified":True,
+ "frozen_tree_git_attributes_sha256":sha(attr_raw),"Main_and_index_not_accessed":True,
+ "native_execution_authorized":False,"main_intake_authorized":False,
+ "source_mutation_hold_released":False,"application_qualified":False,
+ "production_bridge_removed":False,"published_release":False,
+}
+with (OUT/"preparation-review.json").open("xb") as f:
+    f.write(encode(review))
+print(json.dumps({"manifest":review["manifest"],"review":pin(OUT/"preparation-review.json",encode(review)),
+                  "commit_paths":len(all_targets),"progress":progress_pin,
+                  "Main_access":False,"native_execution":False,"configuration_issued":False}))

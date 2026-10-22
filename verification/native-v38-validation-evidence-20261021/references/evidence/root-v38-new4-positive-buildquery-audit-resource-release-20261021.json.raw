@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v38_new4_complete_buildquery_audit_resource_release",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-21T15:15:32.108495+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38CompleteBuildQuery-20261021.py",
+    "bytes": 37254,
+    "sha256": "6BCBE32702657CD2B5F62E8779CCF585B86D7A8CFFC04C2EB6FE25B4D6E41A9E"
+  },
+  "configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-control-20261021-145503\\independent-positive-buildquery-audit-inputs.json",
+    "bytes": 3077,
+    "sha256": "D377A46DB7BC3A27CAE49F3CF4AA651880EE2B4464617D2B7880BE6976FEB851"
+  },
+  "source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-execution-bound-source-review-20261021.json",
+    "bytes": 6950,
+    "sha256": "20ECFC7CF589BAB8E0090EEED59B2BE236CDE5F1F14DF4C2A68AD215C2E3013A"
+  },
+  "observed_input_helper_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-observed-helper-issued-config-20261021.json",
+    "bytes": 3766,
+    "sha256": "BA197F846EB0A6CF133F81398A11223AC4247879E63C1C195B0FB8CB163576C1"
+  },
+  "metadata_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-control-20261021-145503\\independent-metadata-acceptance.json",
+    "bytes": 14150,
+    "sha256": "9786B2A3CACBB66E95FF5852447CF1676BFFEBD24B5F26194755150147F685AF"
+  },
+  "resource": {
+    "program": "python",
+    "resource_class": "io-heavy",
+    "timeout_seconds": 240,
+    "one_auditor_process": true,
+    "source_artifact_and_process_read_only": true,
+    "output": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-control-20261021-145503\\independent-current-seals-and-owners.json"
+  },
+  "audit_execution_authorized": true,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

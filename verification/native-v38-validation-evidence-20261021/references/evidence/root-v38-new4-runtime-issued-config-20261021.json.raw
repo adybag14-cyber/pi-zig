@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v38_runtime_preparation",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-21T15:17:05.519283+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "preparer_sha256": "7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322",
+  "batch": "new4",
+  "declared_groups": 4,
+  "declared_controls": 58,
+  "runtime_execution_authorized": true,
+  "compile_execution_authorized": false,
+  "diagnostic_continue": false,
+  "qualification": false,
+  "source_mutation_hold_released": false,
+  "actual_metadata_count": 61,
+  "selected_group_names": [
+    "native-node-file-handle-owner",
+    "native-node-fs-before-hook-continuation",
+    "native-vm-error-constructor-name",
+    "native-node-file-handle-transfer"
+  ],
+  "buildquery_launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\buildquery-launch.json",
+    "bytes": 2092,
+    "sha256": "3309BAC061E13596E9FC2E149A6FE360E5D0ABD789351275D07BDF9CE4E1DEDC"
+  },
+  "build_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\result.json",
+    "bytes": 67219,
+    "sha256": "16307DDF6331643E0268AD6FB4D2B737F266FCFFE2117DAE28B0C6604C8CD77A"
+  },
+  "build_final": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\final.json",
+    "bytes": 16165225,
+    "sha256": "5AEC1D0C366EF90B9C4B5A2D0F77FB0D8C78CF523176EEB5AA206E47F10881E5"
+  },
+  "metadata_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-control-20261021-145503\\independent-metadata-acceptance.json",
+    "bytes": 14150,
+    "sha256": "9786B2A3CACBB66E95FF5852447CF1676BFFEBD24B5F26194755150147F685AF"
+  },
+  "independent_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-control-20261021-145503\\independent-current-seals-and-owners.json",
+    "bytes": 499851,
+    "sha256": "D2278B82C53DFC2CB9AB2351B9DF7BFDAE80D57C6D670F60A1E7269AF71E5CEB"
+  },
+  "root_buildquery_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-complete-buildquery-acceptance-20261021.json",
+    "bytes": 3322,
+    "sha256": "AD8E19A0F01BCE2455EFC4A670881BD085CDD3A80A748D37F2BACBDA16C7F539"
+  },
+  "root_runtime_review": "Root issues one complete strict RuntimeOnly batch for the exact four-group V38 BuildQuery closed on014062. All61 actual accepted metadata indices must complete with zero original flags and empty stderr. Preserve exact17-field grant inverse, serial owned processes, fresh16GiB admission, exact source/artifact bookends,120-second per-group owner and1800-second outer. DiagnosticContinue is false. This is no application qualification or source mutation release.",
+  "runtime_constructor_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-execution-bound-source-review-20261021.json",
+    "bytes": 6950,
+    "sha256": "20ECFC7CF589BAB8E0090EEED59B2BE236CDE5F1F14DF4C2A68AD215C2E3013A"
+  },
+  "resource_preflight": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-runtime-resource-preflight-20261021.json",
+    "bytes": 585,
+    "sha256": "8EEFD374A76610737B197122970C0CE58C89283151C97C34620EA9A42D96CAD4"
+  },
+  "resource": {
+    "one_constructor": true,
+    "constructor_timeout_seconds": 90,
+    "one_native_job": true,
+    "native_resource_class": "heavy",
+    "native_job_timeout_seconds": 1900,
+    "outer_controller_seconds": 1800,
+    "runtime_outer_actual_seconds": 120,
+    "owner_settle_seconds": 10,
+    "minimum_free_kib": 16777216,
+    "compile_execution_authorized": false
+  }
+}

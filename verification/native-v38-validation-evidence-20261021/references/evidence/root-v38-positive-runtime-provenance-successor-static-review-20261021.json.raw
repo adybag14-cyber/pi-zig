@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "status": "root_static_replay_of_bounded_runtime_provenance_successor",
+  "reviewer": "Root",
+  "source_only": true,
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-sourceonly-20261021\\proposal.json",
+    "bytes": 4071,
+    "sha256": "187566AEE2793EBE5439D9033D2F4B5E3E1198901B4E79BBFA853F85E519B3D6"
+  },
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py",
+    "bytes": 39911,
+    "sha256": "F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-sourceonly-20261021\\candidate\\Audit-PositiveV38StrictRuntime-Provenance-20261021.py",
+    "bytes": 41516,
+    "sha256": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+  },
+  "one_edit_offset": 8101,
+  "old_bytes": 181,
+  "new_bytes": 1786,
+  "full_forward_and_inverse_exact": true,
+  "unchanged_prefix": {
+    "bytes": 8101,
+    "sha256": "EE85B68FFDDB7D21CD3E75AD6B10A33F99970E87D89FEF8EF3A55F1A4365CBA5"
+  },
+  "unchanged_suffix": {
+    "bytes": 31629,
+    "sha256": "D5EBC5F2F60403BE05232B81DAFBFA37E59FDF7767DF1BE9DF18974A285E3325"
+  },
+  "all_six_complete_helpers_byte_identical": [
+    {
+      "name": "require",
+      "bytes": 64,
+      "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB"
+    },
+    {
+      "name": "utc_ticks",
+      "bytes": 576,
+      "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245"
+    },
+    {
+      "name": "read",
+      "bytes": 77,
+      "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E"
+    },
+    {
+      "name": "digest",
+      "bytes": 151,
+      "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC"
+    },
+    {
+      "name": "pin",
+      "bytes": 94,
+      "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C"
+    },
+    {
+      "name": "verify_pins",
+      "bytes": 568,
+      "sha256": "5576E465D77460F5AE653A28E3513FBCF8A935CF87A29D444F5239CB153B3EA6"
+    }
+  ],
+  "input_contract_fields": 40,
+  "only_required_input_value_change": "auditor_sha256",
+  "original_native_and_failed_audit_unchanged": true,
+  "accepted_after_independent_peer": false,
+  "candidate_executed": false,
+  "execution_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

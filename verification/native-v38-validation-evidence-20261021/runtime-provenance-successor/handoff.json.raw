@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "status": "sealed_source_only_runtime_provenance_successor",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-sourceonly-20261021\\candidate\\Audit-PositiveV38StrictRuntime-Provenance-20261021.py",
+    "bytes": 41516,
+    "sha256": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+  },
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-sourceonly-20261021\\proposal.json",
+    "bytes": 4071,
+    "sha256": "187566AEE2793EBE5439D9033D2F4B5E3E1198901B4E79BBFA853F85E519B3D6"
+  },
+  "preserved_original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-sourceonly-20261021\\original\\Audit-PositiveV38StrictRuntime-20261021.py",
+    "bytes": 39911,
+    "sha256": "F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07"
+  },
+  "source_accounting": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-sourceonly-20261021\\source-accounting.json",
+    "bytes": 26823,
+    "sha256": "91ECDA37793790BE330557CAB6E466FA00DA51EAE8D562A34C26209FDD18A39C"
+  },
+  "static_accounting_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-sourceonly-20261021\\static-source-accounting.py",
+    "bytes": 8398,
+    "sha256": "27A5E39D837E975821C90B449C4DB552921318C0AF919DE7995C107100A16050"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-positive-runtime-provenance-successor-peer-20261021\\peer.json",
+    "bytes": 7707,
+    "sha256": "80FF0CD979D74D00997E71059617D92CA506458E34DAB58C2B0AC99529935606"
+  },
+  "original_audit_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\negative.json",
+    "bytes": 5430,
+    "sha256": "194982710772F0E5F5E5012DFA783FC19F7D71DF327F1034A2799131C13CE2EF"
+  },
+  "original_failed_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\independent-positive-runtime-audit-inputs.json",
+    "bytes": 6496,
+    "sha256": "2636533F9B87A9FDC5737C239C0A7B230294359621EF4F8AB958B36EF457C6F7"
+  },
+  "accepted_buildquery_auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38CompleteBuildQuery-20261021.py",
+    "bytes": 37254,
+    "sha256": "6BCBE32702657CD2B5F62E8779CCF585B86D7A8CFFC04C2EB6FE25B4D6E41A9E"
+  },
+  "root_catalog_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-source-acceptance-20261021.json",
+    "bytes": 4758,
+    "sha256": "911DCC32CF09C1610CE045572546668FF470EE62E9597DFC4D3DA6919480228B"
+  },
+  "emitted_catalog_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-emitted-catalog-peer-20261021\\peer.json",
+    "bytes": 11113,
+    "sha256": "B69569A2987B1489F3582E72062CE90570FF558C93A3CD3AA5F40A02481612E3"
+  },
+  "accepted_reviews": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\preparation-review.json",
+      "bytes": 545118,
+      "sha256": "35A3A1E94699B3413179540C2C271A59E4924FF6149DE74FD662BBF3449D1D14"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-regression63-prepared-20261021\\preparation-review.json",
+      "bytes": 547326,
+      "sha256": "9362D1498B75DFEC3E452B1E2F06C8D1C526C16E615DC0F40C17C2C147816A58"
+    }
+  ],
+  "cause": "F846 recursively classified the two historical_source_rebindings.original preimage descriptors as current filesystem pins. Their old Main pathname is intentional; current provenance already binds the immutable original snapshot and current source has a distinct reviewed version.",
+  "correction": [
+    "Hash the complete preparation review before interpreting its retained history.",
+    "Require the exact complete two-row new4/regression63 historical mapping, including original and immutable descriptors, role, b13 commit and exact_original_bytes.",
+    "Require both v37_<batch>_<role> provenance entries to equal the immutable snapshot.",
+    "Use the unchanged pin verifier for the snapshot; require its full bytes to equal the exact b13 raw Git blob and fixed size/hash.",
+    "Use unchanged recursive verify_pins on every other preparation-review field. There is no generic mismatch exemption."
+  ],
+  "verification": {
+    "finite_hunks": 1,
+    "complete_raw_inverse": true,
+    "unchanged_helpers": 6,
+    "unchanged_full_regions": 5,
+    "original_assertions_and_require_calls_retained": 158,
+    "additional_history_require_calls": 3,
+    "selected_inputs_rehashed": 17,
+    "both_reviews_history_and_relationships_verified": true,
+    "owned_worktree_raw_git_snapshot_equality": true,
+    "imports_unchanged": true
+  },
+  "input_contract": {
+    "required_fields": 40,
+    "new_fields": [],
+    "future_changed_value": "auditor_sha256",
+    "future_value": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102",
+    "all_original_observation_fields_remain_exact": true,
+    "original_runtime_configuration_and_source_review_pins_remain_original": true,
+    "new_configuration_not_created": true
+  },
+  "preserved_limits": {
+    "original_native_run_not_repeated": true,
+    "original_auditor_failure_preserved": true,
+    "source_only": true,
+    "candidate_or_prefix_executed": false,
+    "constructor_or_auditor_executed": false,
+    "native_executed": false,
+    "Main_accessed": false,
+    "Main_or_index_written": false,
+    "configuration_issued": false,
+    "runtime_acceptance": false,
+    "product_qualification": false,
+    "source_mutation_hold_released": false
+  }
+}

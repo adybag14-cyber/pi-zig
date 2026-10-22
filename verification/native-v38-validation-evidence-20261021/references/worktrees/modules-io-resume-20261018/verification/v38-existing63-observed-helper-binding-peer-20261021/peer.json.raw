@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_v38_existing63_observed_helper_binding",
+  "reviewer": "module_io_port independent peer",
+  "reviewed_utc": "2026-10-22T12:55:55.972758+00:00",
+  "source_accepted": true,
+  "source_only": true,
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV38Existing63PositiveBuildQueryAuditInputs-20261021.py",
+    "bytes": 21126,
+    "sha256": "587C672FEADE88312B34CC40FBFBDF045E671C2B3BD3F3AEA4DB2C0909CFA086"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-existing63-positive-input-helper-sourceonly-20261021\\candidate\\Prepare-ObservedV38Existing63PositiveBuildQueryAuditInputs-20261021-unresolved.py",
+    "bytes": 21109,
+    "sha256": "0F8502D9AD3395551AFC08652795C77114EED504E13623F6D65CDE774FAEB06C"
+  },
+  "finite_binding": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-observed-helper-binding-20261021.json",
+    "bytes": 21203,
+    "sha256": "29832FE5805866AA73C862BBA8462EF6477E13F2FB68DF3169372A19AB51DDD1"
+  },
+  "accepted_unresolved_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-existing63-positive-input-helper-peer-20261021\\peer.json",
+    "bytes": 7410,
+    "sha256": "8E9E6DA0FE0574D50F52519201DB0CD98943F98106172028958BE3ECC624FBF9"
+  },
+  "root_unresolved_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-observed-helper-source-acceptance-20261021.json",
+    "bytes": 3112,
+    "sha256": "8933C5068CD78AF578E52F1EAD96F50E6BD8ED5A4F28773AD1FA4CB3E8EE3AF1"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-existing63-observed-helper-binding-peer-20261021\\source-audit.py",
+    "bytes": 17218,
+    "sha256": "8E8E9A44BE137D05EDAC8C8B58A080682E758E75A1B5E10D1B16E7C780F8C271"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-existing63-observed-helper-binding-peer-20261021\\source-proof.json",
+    "bytes": 34764,
+    "sha256": "88F050A3EC71290E14AC5089E49FA88603B392C1F0E75EDB026D75CC4210E8C2"
+  },
+  "scope": "Exact seventeen actual bindings to the previously accepted unresolved original63 observed-input helper. This peer accepts the finite source and observed-input bindings only; it neither assembles the audit inputs nor closes the native build.",
+  "decisive_checks": {
+    "current_input_versions_rehashed": 30,
+    "binding_count": 17,
+    "string_bindings": 12,
+    "size_bindings": 5,
+    "all_intermediate_hashes_and_full_raw_inverse": true,
+    "unchanged_complete_fragments": 18,
+    "only_selected_lexical_tokens_changed": true,
+    "only_seventeen_changed_constants_normalized_AST_equal": true,
+    "complete_helper_bodies_unchanged": 10,
+    "complete_critical_regions_unchanged": 3,
+    "canonical_constructor_auditor_paths_sizes_hashes_match_source_review_20EC": true,
+    "actual_grant_launcher_specific_configuration_and_prepared_launch_match": true,
+    "source_review_provenance_key": "v38_execution_bound_source_review",
+    "original_V34_group_order_preserved": true,
+    "existing63_cohort_uses_regression63_preparation": true,
+    "whole_catalog_groups": 117,
+    "whole_catalog_declarations": 2013,
+    "observed_groups": 63,
+    "source_declared_controls": 1249,
+    "observed_metadata_count": 1285,
+    "maximum_observed_metadata_per_group": 38,
+    "per_group_metadata_limit": 64,
+    "actual_count_is_sum_of_accepted_metadata_not_historical_or_source_literal": true,
+    "actual_compile_metadata_phase_entries": 126,
+    "original_successful_job_envelope_retained_as_raw_strings": true,
+    "native_runtime_requested_in_observed_BuildQuery": false
+  },
+  "actual_job": {
+    "id": "job-op-9f95f857e533a1e39a33e74e6d2243246c37f03b6a58e5a3108736d14b28470e",
+    "runner_pid": 3996,
+    "launcher_pid": 24428,
+    "runner_process_instance": "134370706524520826",
+    "created_utc": "2026-10-21T15:37:32.433Z",
+    "completed_utc": "2026-10-21T16:02:37.471Z"
+  },
+  "actual_metadata_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\independent-metadata-acceptance.json",
+    "bytes": 242533,
+    "sha256": "C219D8E0E3BC372C1A818B783F1F461A89A37B58CF5B6BF86650A50E0ADA9BAF"
+  },
+  "original_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\result.json",
+    "bytes": 1044504,
+    "sha256": "A80B07D02FB7393E335E093EAB945455DD23DA82AD7B15ECC4171C8F3F45DA3F"
+  },
+  "original_final_seal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\final.json",
+    "bytes": 16165285,
+    "sha256": "E0B4F23FEB76DFAA549F1B029B9AF55DEAF908CC8EF66335A17FE33E023BFE2A"
+  },
+  "critical_source_regions": [
+    {
+      "name": "complete_original_job_observation_and_six_field_mapping",
+      "baseline_offset": 7127,
+      "bound_offset": 7144,
+      "bytes": 1603,
+      "sha256": "C45D6AFA387B7AFC03ECF162960561B9CB8794FF9EA9CCC7A3A0465772AA8999"
+    },
+    {
+      "name": "original_result_metadata_native_owners_and_all_failure_gates",
+      "baseline_offset": 12249,
+      "bound_offset": 12266,
+      "bytes": 4709,
+      "sha256": "9FFBF19C89C4B332BD0B0FBD6779F4DF10DB3D0A66F101BEE040656AEAF37B1B"
+    },
+    {
+      "name": "complete_bookend_current_seals_and_original_outer_gates",
+      "baseline_offset": 16958,
+      "bound_offset": 16975,
+      "bytes": 1982,
+      "sha256": "89051C1D7DAAF80A2950ECD6A5EC297C1A302BF00CE5BC359C410988A968785F"
+    }
+  ],
+  "findings": [
+    "No concrete blocker in the seventeen-slot binding. The raw inverse recovers the exact accepted 0F85 source and every other source byte remains unchanged.",
+    "The observed metadata result is 1285 across63 groups, separate from1249 declared controls. Every group retains the required-name/allowed-anonymous policy and the64-entry metadata cap.",
+    "The terminal durable job retains its exact runner and launcher identities and full process-instance string; this static peer does not infer fresh process absence.",
+    "Constructor5ACE, positive BuildQuery auditor6BCB and source review20EC match the canonical paths and actual grant/prepared configuration. The helper still requires a separate exact Root configuration before its sole create-only audit-input write.",
+    "The original operator pause occurred before this checker ran. On resumption the checker, candidate and binding hashes matched; source-proof.json and peer.json were observed absent. The unchanged checker completed successfully on its first execution."
+  ],
+  "limits": [
+    "No target helper, prefix, constructor, auditor or native executable was executed.",
+    "No Main filesystem/index access or change occurred.",
+    "Rehashing the saved final seal validates that immutable file; it is not a rehash of every present source/compiler/control member.",
+    "Full independent artifact, raw-wire, current-source and original/current-process closure remains the separately reviewed positive BuildQuery auditor's task.",
+    "No helper execution configuration, native/runtime authority, source intake release or application qualification is issued by this peer."
+  ],
+  "helper_executed": false,
+  "prefix_executed": false,
+  "constructor_executed": false,
+  "auditor_executed": false,
+  "Main_accessed": false,
+  "Main_changed": false,
+  "native_executed": false,
+  "configuration_issued": false,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

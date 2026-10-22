@@ -1,0 +1,146 @@
+[
+  {
+    "phase": "new4-buildquery",
+    "originals": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\before.json",
+        "bytes": 16165225,
+        "sha256": "5AEC1D0C366EF90B9C4B5A2D0F77FB0D8C78CF523176EEB5AA206E47F10881E5"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\final.json",
+        "bytes": 16165225,
+        "sha256": "5AEC1D0C366EF90B9C4B5A2D0F77FB0D8C78CF523176EEB5AA206E47F10881E5"
+      }
+    ],
+    "target": "verification/native-v38-validation-evidence-20261021/new4-buildquery/proof/before-and-final.json.gz",
+    "projected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\projected\\verification\\native-v38-validation-evidence-20261021\\new4-buildquery\\proof\\before-and-final.json.gz",
+      "bytes": 2796067,
+      "sha256": "4CEF05BA9F5F87294D2C327CC3401492BB8C066B365B1328361C8250FF5BE407"
+    },
+    "seal_counts": {
+      "source": 15041,
+      "tree": 15054,
+      "vendor": 1489,
+      "compiler": 19546,
+      "controls": 14
+    },
+    "complete_two_source_roundtrip": true,
+    "deterministic_second_encoding_equal": true,
+    "gzip": {
+      "filename": "",
+      "mtime": 0,
+      "compresslevel": 9,
+      "header_hex": "1f8b08000000000002ff"
+    }
+  },
+  {
+    "phase": "new4-runtime",
+    "originals": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\before.json",
+        "bytes": 16170132,
+        "sha256": "1FFA9287420E5CBB51EB9D42D673D48B2FBC967F0DABAE9DC356478F36BBCBEB"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\final.json",
+        "bytes": 16170132,
+        "sha256": "1FFA9287420E5CBB51EB9D42D673D48B2FBC967F0DABAE9DC356478F36BBCBEB"
+      }
+    ],
+    "target": "verification/native-v38-validation-evidence-20261021/new4-runtime/proof/before-and-final.json.gz",
+    "projected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\projected\\verification\\native-v38-validation-evidence-20261021\\new4-runtime\\proof\\before-and-final.json.gz",
+      "bytes": 2796821,
+      "sha256": "E56558017148A192B5B082284514FDEC33029901B229F554078C2684969999FE"
+    },
+    "seal_counts": {
+      "source": 15041,
+      "tree": 15054,
+      "vendor": 1489,
+      "compiler": 19546,
+      "controls": 25
+    },
+    "complete_two_source_roundtrip": true,
+    "deterministic_second_encoding_equal": true,
+    "gzip": {
+      "filename": "",
+      "mtime": 0,
+      "compresslevel": 9,
+      "header_hex": "1f8b08000000000002ff"
+    }
+  },
+  {
+    "phase": "existing63-buildquery",
+    "originals": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\before.json",
+        "bytes": 16165285,
+        "sha256": "E0B4F23FEB76DFAA549F1B029B9AF55DEAF908CC8EF66335A17FE33E023BFE2A"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\final.json",
+        "bytes": 16165285,
+        "sha256": "E0B4F23FEB76DFAA549F1B029B9AF55DEAF908CC8EF66335A17FE33E023BFE2A"
+      }
+    ],
+    "target": "verification/native-v38-validation-evidence-20261021/existing63-buildquery/proof/before-and-final.json.gz",
+    "projected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\projected\\verification\\native-v38-validation-evidence-20261021\\existing63-buildquery\\proof\\before-and-final.json.gz",
+      "bytes": 2796079,
+      "sha256": "307C916685C7FEAA27D7EAC4DD2958C1C1B974956922C913C2FCBA26E4AF65AC"
+    },
+    "seal_counts": {
+      "source": 15041,
+      "tree": 15054,
+      "vendor": 1489,
+      "compiler": 19546,
+      "controls": 14
+    },
+    "complete_two_source_roundtrip": true,
+    "deterministic_second_encoding_equal": true,
+    "gzip": {
+      "filename": "",
+      "mtime": 0,
+      "compresslevel": 9,
+      "header_hex": "1f8b08000000000002ff"
+    }
+  },
+  {
+    "phase": "existing63-runtime",
+    "originals": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223\\before.json",
+        "bytes": 16225928,
+        "sha256": "79CC4AFBDB2F8C8E8B378AE82ACE2CBC986D2767760C2EEA0E2D23C18D7E4801"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223\\final.json",
+        "bytes": 16225928,
+        "sha256": "79CC4AFBDB2F8C8E8B378AE82ACE2CBC986D2767760C2EEA0E2D23C18D7E4801"
+      }
+    ],
+    "target": "verification/native-v38-validation-evidence-20261021/existing63-runtime/proof/before-and-final.json.gz",
+    "projected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\projected\\verification\\native-v38-validation-evidence-20261021\\existing63-runtime\\proof\\before-and-final.json.gz",
+      "bytes": 2803838,
+      "sha256": "F96811B486AE5666D6CB590DD2BE534A7075EFE3E41DCB6BE656CE1C4FAFFD46"
+    },
+    "seal_counts": {
+      "source": 15041,
+      "tree": 15054,
+      "vendor": 1489,
+      "compiler": 19546,
+      "controls": 143
+    },
+    "complete_two_source_roundtrip": true,
+    "deterministic_second_encoding_equal": true,
+    "gzip": {
+      "filename": "",
+      "mtime": 0,
+      "compresslevel": 9,
+      "header_hex": "1f8b08000000000002ff"
+    }
+  }
+]

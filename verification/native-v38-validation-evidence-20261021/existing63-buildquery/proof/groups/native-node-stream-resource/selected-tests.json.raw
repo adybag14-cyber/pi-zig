@@ -1,0 +1,21 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\b99a99bd32e9a8d6013ece1afab6bb9b\\test.exe",
+  "binary_sha256": "CEC7DA1C9AEBC4E0DA8BFF96C89D67F9DE80E3FC368B5A3BB869D62C63836372",
+  "version": "0.16.0",
+  "actual_count": 9,
+  "tests": [
+    "native_node_stream_resource_test.test.native Node stream resource initializes the actual counters and publishes the native listener chain",
+    "native_node_stream_resource_test.test.native Node stream resource removes a middle listener and clears both of its actual links",
+    "native_node_stream_resource_test.test.native Node stream resource listener destruction unlinks once without invoking OnStreamDestroy",
+    "native_node_stream_resource_test.test.native Node stream resource destruction visits the original native head order and clears each link",
+    "native_node_stream_resource_test.test.native Node stream resource callback can unlink and free its actual charged native record",
+    "native_node_stream_resource_test.test.native Node stream resource destruction observes actual removal of a later listener",
+    "native_node_stream_resource_test.test.native Node stream resource destruction visits a newly pushed head before returning to its original listener",
+    "native_node_stream_resource_test.test.native Node stream resource preserves the embedded default listener member-before-base destruction",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-stream-resource",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

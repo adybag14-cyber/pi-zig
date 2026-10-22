@@ -1,0 +1,55 @@
+{
+  "mode": "RuntimeOnly",
+  "group": "native-node-file-handle-read",
+  "compile": [
+    "build",
+    "build-native-node-file-handle-read",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-Ddiagnostic-tests=false",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--prefix",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-file-handle-read\\installed",
+    "--cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache",
+    "--global-cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\global-cache",
+    "--summary",
+    "all"
+  ],
+  "metadata": [
+    "--listen=-"
+  ],
+  "runtime": [
+    "--listen=-"
+  ],
+  "expected_names": [
+    "native_node_file_handle_read_test.test.native FileHandle read closed and closing return EOF before read admission",
+    "native_node_file_handle_read_test.test.native FileHandle zero length emits actual stream EOF without allocating a request",
+    "native_node_file_handle_read_test.test.native FileHandle first read bypasses FSReqCallback construction and retains the real ReadWrap",
+    "native_node_file_handle_read_test.test.native FileHandle repeated start and ReadStop preserve the accepted completion",
+    "native_node_file_handle_read_test.test.native FileHandle bounded offset advances by emitted bytes before inline EOF",
+    "native_node_file_handle_read_test.test.native FileHandle completion uses the live length and preserves the raw trace result",
+    "native_node_file_handle_read_test.test.native FileHandle unbounded restart recycles the same native request through actual EOF",
+    "native_node_file_handle_read_test.test.native FileHandle reentrant onread restarts before old Wrapper and event retirement",
+    "native_node_file_handle_read_test.test.native FileHandle reuse creates a fresh resource and restores the default trigger",
+    "native_node_file_handle_read_test.test.native FileHandle ignored resource Set exception continues reset and real admission",
+    "native_node_file_handle_read_test.test.native FileHandle ordinary onread reason survives restart and the actual second completion",
+    "native_node_file_handle_read_test.test.native FileHandle full freelist releases the completed local after EmitRead",
+    "native_node_file_handle_read_test.test.native FileHandle joined service drains the accepted buffer after JavaScript is disabled",
+    "native_node_file_handle_read_test.test.native FileHandle AfterClose shares the actual flags and emits EOF through StreamBase",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "expected_count": 15,
+  "named_controls": 14,
+  "source_seal_scope": "whole_batch",
+  "cache_authority": "One initially fresh private cache pair; serial exact-head group compilation; no seed lineage",
+  "compile_seconds": 1320,
+  "metadata_seconds": 30,
+  "runtime_whole_group_seconds": 120,
+  "pipe_settle_seconds": 10,
+  "installed_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-file-handle-read\\installed\\bin\\native-node-file-handle-read.exe",
+  "installed_pdb": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-file-handle-read\\installed\\bin\\test.pdb"
+}

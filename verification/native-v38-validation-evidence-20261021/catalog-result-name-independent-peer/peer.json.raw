@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_v38_catalog_result_name_successor",
+  "reviewer": "/root/module_io_port",
+  "source_only": true,
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\Prepare-FreshV38Catalog-20261021-v2.py",
+    "bytes": 80888,
+    "sha256": "5020211BDD5B229C3DAE0C744ADA4071FF03B9AB2698AFADF864EB483E437506"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\Prepare-FreshV38Catalog-20261021.py",
+    "bytes": 80847,
+    "sha256": "A112C96C5CFA58E338398948D7A8E5BF7F079B523AF7239FA5BE8F78E46118CD"
+  },
+  "sdk_declared_edits": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\declared-edits.json",
+    "bytes": 4718,
+    "sha256": "4CD4ED929018A4B13F0869532EAA5D988970F8592D449AAC98DA9A3246058F74"
+  },
+  "sdk_finite_source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\finite-source-correction.json",
+    "bytes": 16549,
+    "sha256": "9871CEB41B363BF69F225E66E748829CA46A560AC597EC1FA9CB793D90DFFEEE"
+  },
+  "sdk_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\handoff.json",
+    "bytes": 8221,
+    "sha256": "4B0963E0FCA910DB8B3E4BC93164283653ED2727BF0EF04EDD5E8888F678F29E"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-catalog-result-name-peer-20261021\\source-audit.py",
+    "bytes": 15724,
+    "sha256": "8A571681C159DB2778B12E728CAECB5C9A11A845B72E229EAFF214BFB393F1F5"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-catalog-result-name-peer-20261021\\source-audit.json",
+    "bytes": 17730,
+    "sha256": "330A7CFEB5C6C4DFD5700088D25CDA32A6A8765799DE1829DE601C1B78E29C64"
+  },
+  "original_preparation_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-initial-preparation-negative-20261021\\root-negative-acceptance.json",
+    "bytes": 3023,
+    "sha256": "14FB17F6E9497A530D999EE3D05C43521A7F830C4A185CD4505C28BE6BBB6400"
+  },
+  "original_stderr": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-initial-preparation-negative-20261021\\original-stderr-capture.bin",
+    "bytes": 356,
+    "sha256": "85F9FCD10AB6EC69908518E0E82BD2B1AD599D71A4CBD5EEC53EF4323C803794"
+  },
+  "accepted_metadata": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-metadata-acceptance.json",
+    "bytes": 14153,
+    "sha256": "6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B"
+  },
+  "accepted_runtime_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-closure.json",
+    "bytes": 22838,
+    "sha256": "321ABB743297FC9720D36E78F17B38441F8FAE3A60BEA32DE488FC248342F517"
+  },
+  "canonical_original_runtime_results": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.results.json",
+    "bytes": 2043,
+    "sha256": "9B224B5628500F9018F32B6338DF13A7BA5A6DCC067C391D5D555FFE621A8B50"
+  },
+  "source_read_scope": "Read both exact changed statements with their surrounding historical closure and metadata gates, the actual proof/exact/read helpers, the complete SDK finite correction and static checker, handoff, original preparation failure/configuration/job/stderr, and accepted metadata/closure/canonical result records. Independent raw replay and AST comparison cover all other source bytes without executing the candidate or any prefix.",
+  "decisive_checks": {
+    "exact_hunks": 2,
+    "net_bytes_added": 41,
+    "full_forward_and_raw_inverse": true,
+    "intermediate_sha256": "24140B05B66CECCBFE70487283AD74D3A01A60E6A1FE744E147E46E0CB2BF5A2",
+    "all_21_helper_bodies_byte_identical": true,
+    "all_assertions_and_imports_unchanged": true,
+    "entire_module_ast_unchanged_except_exact_metadata_relocation_and_added_name": true,
+    "complete_source_from_line_401_unchanged": true,
+    "independent_input_pins": 14,
+    "sdk_handoff_referenced_pins_rehashed": 16,
+    "exact_metadata_load_count": 1,
+    "accepted_metadata_pinned_before_name_access": true,
+    "all_observed_record_fields_retained": true,
+    "range19_and_index_flag_pass_expressions_unchanged": true,
+    "whole_record_equality_retained": true,
+    "later_metadata_identity_group_count_and_cross_receipt_gates_unchanged": true
+  },
+  "findings": [
+    "The preserved A112 preparation failed because each accepted closure result has four keys: index, flags, passed and name. Its expected records omitted name. The retained canonical runtime results independently contain the same index/flags/passed triples.",
+    "The successor moves the existing exact 6D28 metadata admission from line400 to line389 and adds only the accepted test name at the same index. It removes the displaced later load. The resulting 19 complete records exactly equal the original closure records.",
+    "All five original failures at indices5,10,11,12,16, fourteen passing records, the index18 durable-storage anonymous name and forty-two unstarted tests remain unchanged. No field is discarded and no original runtime outcome becomes a pass.",
+    "The exact two-hunk forward replay, every intermediate hash and complete byte inverse passed. All21 helpers, every assertion, all imports and all other module statements remain unchanged. The accepted metadata group/count/identity and receipt cross-bindings still execute as before after the comparison.",
+    "The consumed initial configuration, failed job observation, original stderr and Root14FB negative are preserved. A separate Root-issued catalog-only configuration is still required before any preparation retry."
+  ],
+  "historical_results": {
+    "records": 19,
+    "keys": [
+      "index",
+      "flags",
+      "passed",
+      "name"
+    ],
+    "failed_indices": [
+      5,
+      10,
+      11,
+      12,
+      16
+    ],
+    "passed": 14,
+    "unstarted": 42,
+    "anonymous_index": 18,
+    "anonymous_name": "extensions.native_durable_storage.test_0"
+  },
+  "preserved_sdk_checker_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\checker-selector-negative.json",
+    "bytes": 1892,
+    "sha256": "B5D705369E9A191C85B5B61442BA7E8563FF70C272CBE8DB5EF967692D0C6F32"
+  },
+  "concrete_blockers": [],
+  "candidate_or_prefix_executed": false,
+  "sdk_checker_executed_by_reviewer": false,
+  "only_own_static_source_audit_executed": true,
+  "Main_or_index_written": false,
+  "new_configuration_issued": false,
+  "new_preparation_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "application_qualified": false,
+  "future_actual_metadata_count": null,
+  "limits": "This receipt accepts only the finite source correction. It does not claim catalog emission, build/runtime success, a fresh process-closure check or qualification."
+}

@@ -1,0 +1,32 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\33fd4fdb397014a3d351a6fd86888375\\test.exe",
+  "binary_sha256": "6AEF91E472B5E2BC8E74BBF2ADB7CCD6F928BE5EA18C66B2E60A4660C3358279",
+  "version": "0.16.0",
+  "actual_count": 20,
+  "tests": [
+    "native_vm_property_retirement_test.test.VM property retirement publishes the owned data result before its sole receiver retires",
+    "native_vm_property_retirement_test.test.VM property retirement getter uses the original receiver and returns its selected value once",
+    "native_vm_property_retirement_test.test.VM property retirement inherited accessor keeps the actual receiver through its call",
+    "native_vm_property_retirement_test.test.VM property retirement computed string lookup consumes its key and retains the result",
+    "native_vm_property_retirement_test.test.VM property retirement own data receiver fatal stops later work catch and finally",
+    "native_vm_property_retirement_test.test.VM property retirement successful getter fatal releases its selected result exactly once",
+    "native_vm_property_retirement_test.test.VM property retirement failed field lookup selects a later actual receiver fatal",
+    "native_vm_property_retirement_test.test.VM property retirement first actual field fatal survives a second receiver fatal",
+    "native_vm_property_retirement_test.test.VM property retirement ordinary field lookup reason survives ordinary receiver cleanup",
+    "native_vm_property_retirement_test.test.VM property retirement computed lookup receiver fatal blocks the next guest statement",
+    "native_vm_property_retirement_test.test.VM property retirement computed lookup preserves its first actual fatal through receiver cleanup",
+    "native_vm_property_retirement_test.test.VM property retirement fast array receiver fatal is checked before dispatch",
+    "native_vm_property_retirement_test.test.VM property retirement fast typed array receiver fatal is checked before dispatch",
+    "native_vm_property_retirement_test.test.VM property retirement actual arguments element receiver fatal is checked before dispatch",
+    "native_vm_property_retirement_test.test.VM property retirement result cleanup fatal preempts the receiver ordinary completion",
+    "native_vm_property_retirement_test.test.VM property retirement receiver fatal survives the selected result cleanup fatal",
+    "native_vm_property_retirement_test.test.VM property retirement returned flagged Error remains successful DATA",
+    "native_vm_property_retirement_test.test.VM property retirement actual private termination skips catch and finally without DATA projection",
+    "native_vm_property_retirement_test.test.VM property retirement ordinary receiver throw enters the original guest catch once",
+    "native_vm_property_retirement_test.test.VM property retirement successful scalar read and receiver release need no allocation"
+  ],
+  "group": "native-vm-property-retirement",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

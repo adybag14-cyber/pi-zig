@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\groups.json",
+    "bytes": 1104585,
+    "sha256": "E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37"
+  },
+  "adapted": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\groups.json",
+    "bytes": 1104585,
+    "sha256": "8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03"
+  },
+  "source_pin_changes": [
+    {
+      "group": "native-node-file-handle-owner",
+      "group_index": 113,
+      "row_index": 0,
+      "path": "src/native_node_file_handle_owner_test.zig",
+      "before": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "after": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+    },
+    {
+      "group": "native-node-file-handle-owner",
+      "group_index": 113,
+      "row_index": 850,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F",
+      "after": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+    },
+    {
+      "group": "native-node-fs-before-hook-continuation",
+      "group_index": 114,
+      "row_index": 850,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F",
+      "after": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+    },
+    {
+      "group": "native-node-file-handle-transfer",
+      "group_index": 116,
+      "row_index": 851,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F",
+      "after": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+    }
+  ],
+  "whole_dependency_pin_changes": [],
+  "before_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "after_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "before_prepared_utc": "2026-10-21T09:33:38.813083+00:00",
+  "after_prepared_utc": "2026-10-21T14:43:48.086356+00:00",
+  "exact_changed_source_rows": 4,
+  "all117_group_definitions_and2013_names_preserved": true,
+  "all576_dependency_rows_unchanged": true,
+  "whole_structural_and_byte_inverse": true,
+  "current_matrix_file_versions_rehashed": 1309,
+  "external_current_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi\\packages\\coding-agent\\src\\config.ts",
+      "bytes": 23328,
+      "sha256": "B3B77644910D3FAC28A06625E90F993A8C1BC6C9458F148C723E64E0C99EB23E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi\\packages\\coding-agent\\package.json",
+      "bytes": 3762,
+      "sha256": "83C3BB7619F590C213CC96A24216EB29A819A3EF6DC548607CC037ED276E8DC5"
+    }
+  ],
+  "execution_authority": false,
+  "actual_metadata_count": null
+}

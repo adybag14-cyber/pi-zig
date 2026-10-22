@@ -1,0 +1,197 @@
+"""Unexecuted V38 positive archive/progress preparer.
+Requires a separately issued exact Root config, accepted source receipt and final
+copy plan after both original63 phases are independently closed and Root accepted.
+Creates a reviewable proposal only. No Main/index access, native invocation,
+configuration issuance, grant reuse, source intake or application qualification.
+"""
+from pathlib import Path, PurePosixPath
+import copy, datetime, gzip, hashlib, io, json, re, subprocess, sys
+
+B = Path(r"C:\Users\adyba\pi-zig")
+E = B / "evidence"
+W = B / "worktrees/sdk-owners-resume-20261018"
+PLAN_DIR = B / "worktrees/modules-io-resume-20261018/verification/v38-progress-archive-plan-sourceonly-20261021"
+HEAD = "014062f2d139254acab4b985b4ae343db637166f"
+BRANCH_REF = "refs/heads/work/pi-zig-consolidated-20261016"
+PROGRESS = "verification/port-roadmap-resume-20261018/progress.json"
+ARCHIVE = "verification/native-v38-validation-evidence-20261021"
+OUT = E / "pending-v38-progress-and-validation-archive-intake-20261021"
+MANIFEST_TARGET = ARCHIVE + "/manifest.json"
+BASIS_SHA = "BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028"
+MATRIX_SHA = "8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03"
+NEW4 = ["native-node-file-handle-owner", "native-node-fs-before-hook-continuation",
+        "native-vm-error-constructor-name", "native-node-file-handle-transfer"]
+FIXED = {
+ "inventory": (PLAN_DIR/"observed-evidence-inventory.json",338781,"CDFBB34E737011ADD26B7560E5011DC55CADA2803D749B0E1C0263E5954FADED"),
+ "plan": (PLAN_DIR/"progress-patch-plan.json",56327,"183647A8C0D250DBDD0747CD8E1220B415E9F205737092D4D13AF1DD0D730412"),
+ "handoff": (PLAN_DIR/"handoff.json",5242,"E75BE89E1B57F32B72B896C35B5106A2069BE672192FCA2623BB1BA723D95187"),
+ "policy": (E/"v37-progress-negative-archive-sourceonly-20261021/candidate/Prepare-V37ProgressAndNegativeArchive-20261021-v2.py",75644,"079CE8663FFA9C337F5AC04D41E4222E6B2EFB9B39E5B459F6F4E460F9AC790D"),
+}
+CONFIG_KEYS = {
+ "schema","status","candidate_head","preparer_sha256","source_review","final_copy_plan",
+ "recorded_utc","output_directory","archive_target_prefix","expected_output_paths",
+ "evidence_preparation_authorized","main_intake_authorized","native_execution_authorized",
+ "runtime_authority","source_mutation_hold_released","application_qualified",
+ "production_bridge_removed","published_release",
+}
+COPY_KEYS = {
+ "schema","status","candidate_head","reviewer","partial_inventory","progress_plan",
+ "rows","direct_pin_relationships","observed_phase_membership","bookend_plans","cohorts",
+}
+ROW_KEYS = {"original","roles","proposed_archive_relative_path","representation","archive_created"}
+PHASES = ("new4-buildquery","new4-runtime","existing63-buildquery","existing63-runtime")
+originals = {}
+
+def require(ok,label):
+    if not ok:
+        raise AssertionError(label)
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest().upper()
+
+def encode(value):
+    return (json.dumps(value,indent=2,ensure_ascii=False)+"\n").encode("utf-8")
+
+def decode(raw):
+    return json.loads(raw.decode("utf-8-sig"))
+
+def pin(path,raw):
+    return {"path":str(path),"bytes":len(raw),"sha256":sha(raw)}
+
+def inside(path):
+    path = Path(path)
+    require(path.is_absolute() and path.is_relative_to(B),"contained absolute input")
+    require(not path.is_relative_to(B/"main"),"Main filesystem input forbidden")
+    require(path.is_relative_to(E) or
+            (path.is_relative_to(B/"worktrees") and "verification" in path.parts),
+            "only evidence or worktree verification inputs")
+    current = path
+    while current != B:
+        require(not current.is_symlink(),"symlink input/output")
+        if hasattr(current,"is_junction"):
+            require(not current.is_junction(),"junction input/output")
+        current = current.parent
+    require(path.resolve().is_relative_to(B.resolve()),"resolved input containment")
+    return path
+
+def relative(name):
+    require(isinstance(name,str) and re.fullmatch(r"[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*",name),"unsafe target")
+    require(not PurePosixPath(name).is_absolute(),"absolute target")
+    reserved = {"CON","PRN","AUX","NUL",*[f"COM{i}" for i in range(1,10)],*[f"LPT{i}" for i in range(1,10)]}
+    for part in name.split("/"):
+        require(part not in (".","..") and not part.endswith(("."," ")),"target dot alias")
+        require(part.split(".")[0].upper() not in reserved,"target device alias")
+    return name
+
+def exact(row):
+    require(isinstance(row,dict) and set(row)=={"path","bytes","sha256"},"exact pin shape")
+    path = inside(row["path"])
+    require(type(row["bytes"]) is int and row["bytes"]>=0,"pin length")
+    require(isinstance(row["sha256"],str) and re.fullmatch(r"[0-9A-F]{64}",row["sha256"]),"pin SHA")
+    raw = path.read_bytes()
+    require(pin(path,raw)==row,"exact original input: "+str(path))
+    key = str(path).casefold()
+    require(key not in originals or originals[key][1]==raw,"input changed between reads")
+    originals[key] = (path,raw)
+    return raw
+
+def fixed(key):
+    path,size,digest = FIXED[key]
+    return {"path":str(path),"bytes":size,"sha256":digest}
+
+def get(value,path):
+    for item in path:
+        value = value[item]
+    return value
+
+def list_paths(value,path=()):
+    if isinstance(value,list):
+        yield path,value
+        for index,item in enumerate(value):
+            yield from list_paths(item,path+(index,))
+    elif isinstance(value,dict):
+        for key,item in value.items():
+            yield from list_paths(item,path+(key,))
+
+def git(*args,input=None):
+    q = subprocess.run(["git","--no-optional-locks","-c","core.fsmonitor=false","-C",str(W),*args],
+                       input=input,capture_output=True)
+    require(q.returncode==0,("read-only Git",args,q.returncode,q.stderr.decode("utf-8",errors="replace")))
+    return q.stdout
+
+def frozen_ref():
+    require(git("rev-parse",BRANCH_REF).decode().strip()==HEAD,"frozen consolidated branch ref")
+
+def flags(value,true=(),false=()):
+    for key in true:
+        require(value[key] is True,"required accepted gate: "+key)
+    for key in false:
+        require(value[key] is False,"required false scope: "+key)
+
+def gzip_bytes(raw):
+    out = io.BytesIO()
+    with gzip.GzipFile(filename="",mode="wb",fileobj=out,mtime=0,compresslevel=9) as gz:
+        gz.write(raw)
+    return out.getvalue()
+
+def names(directory,dirs=False):
+    return sorted(p.name for p in directory.iterdir() if p.is_dir() is dirs)
+
+require(len(sys.argv)==3,"exact separately issued Root config path and SHA256")
+config_path = inside(sys.argv[1])
+require(config_path.is_relative_to(E),"Root configuration in evidence")
+require(re.fullmatch(r"[0-9A-F]{64}",sys.argv[2]),"exact configuration SHA")
+config_raw = config_path.read_bytes()
+require(sha(config_raw)==sys.argv[2],"Root configuration bytes")
+cfg = decode(config_raw)
+require(set(cfg)==CONFIG_KEYS and cfg["schema"]==1,"exact Root configuration schema")
+require(cfg["status"]=="root_reviewed_specific_v38_positive_progress_archive_preparation","Root release status")
+require(cfg["candidate_head"]==HEAD,"fixed source head")
+flags(cfg,true=("evidence_preparation_authorized",),false=(
+ "main_intake_authorized","native_execution_authorized","runtime_authority",
+ "source_mutation_hold_released","application_qualified","production_bridge_removed","published_release"))
+self_path = inside(__file__)
+self_raw = self_path.read_bytes()
+require(sha(self_raw)==cfg["preparer_sha256"],"exact reviewed preparer")
+require(cfg["output_directory"]==str(OUT) and cfg["archive_target_prefix"]==ARCHIVE,"fixed staging scope")
+require(not OUT.exists(),"new create-only staging directory")
+inside(OUT)
+require(isinstance(cfg["recorded_utc"],str),"exact Root timestamp")
+moment = datetime.datetime.fromisoformat(cfg["recorded_utc"].replace("Z","+00:00"))
+require(moment.utcoffset()==datetime.timedelta(0),"UTC recording timestamp")
+now = cfg["recorded_utc"]
+inventory = decode(exact(fixed("inventory")))
+plan = decode(exact(fixed("plan")))
+handoff = decode(exact(fixed("handoff")))
+exact(fixed("policy"))
+require(inventory["candidate_head"]==plan["candidate_head"]==handoff["candidate_head"]==HEAD,"fixed partial plan basis")
+require(inventory["source_file_versions"]==len(inventory["rows"])==314,"all314 known versions")
+require(len(inventory["direct_pin_relationships"])==183,"all183 known direct relationships")
+require(inventory["proposed_distinct_archive_paths"]==312,"known two equal-pair reductions")
+require(plan["history_prefix_count"]==len(plan["nested_history_prefix_basis"])==181,"all181 historical prefixes")
+source_review = decode(exact(cfg["source_review"]))
+require(source_review["status"]=="root_accepted_bounded_v38_positive_archive_preparer" and source_review["reviewer"]=="Root","separate Root source acceptance")
+require(source_review["candidate_head"]==HEAD and source_review["preparer"]==pin(self_path,self_raw),"source acceptance exact source")
+require(source_review["partial_inventory"]==fixed("inventory") and source_review["progress_plan"]==fixed("plan"),"source acceptance fixed policy")
+flags(source_review,true=("source_accepted",),false=("execution_authority","main_intake_authorized","native_execution_authorized"))
+copy_plan = decode(exact(cfg["final_copy_plan"]))
+require(set(copy_plan)==COPY_KEYS and copy_plan["schema"]==1,"complete final copy plan schema")
+require(copy_plan["status"]=="root_reviewed_exact_final_v38_positive_archive_copy_plan" and copy_plan["reviewer"]=="Root","separate final Root copy plan")
+require(copy_plan["candidate_head"]==HEAD and copy_plan["partial_inventory"]==fixed("inventory") and copy_plan["progress_plan"]==fixed("plan"),"copy plan accepted basis")
+require(copy_plan["rows"][:314]==inventory["rows"],"known314 rows/order/representations exact")
+require(copy_plan["direct_pin_relationships"][:183]==inventory["direct_pin_relationships"],"known183 pin relationships exact")
+require(copy_plan["bookend_plans"][:2]==inventory["bookend_plans"],"known two bookend mappings exact")
+require(2<=len(copy_plan["bookend_plans"])<=4,"only observed equal bookend pairs selected for gzip")
+require(len({p["phase"] for p in copy_plan["bookend_plans"]})==len(copy_plan["bookend_plans"]) and
+        all(p["phase"] in PHASES for p in copy_plan["bookend_plans"]),"unique observed bookend phases")
+require(set(copy_plan["cohorts"])=={"new4","existing63"},"both complete cohorts required")
+
+frozen_ref()
+old_raw = git("cat-file","blob",HEAD+":"+PROGRESS)
+require(len(old_raw)==554689 and sha(old_raw)==BASIS_SHA,"exact immutable Git progress basis")
+require(hashlib.sha1(b"blob "+str(len(old_raw)).encode()+b"\0"+old_raw).hexdigest()=="ec7a71bd873c789fcb42918501816357c599d2a6","raw Git blob identity")
+old = decode(old_raw)
+require(encode(old)==old_raw,"full old progress exact JSON roundtrip")
+require(old["status"]=="active_incomplete" and old["schema"]==1,"old progress schema")
+flags(old,false=("application_qualification","production_bridge_removed","published_release"))
+r

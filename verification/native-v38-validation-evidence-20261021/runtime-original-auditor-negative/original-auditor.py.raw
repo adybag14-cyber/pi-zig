@@ -1,0 +1,301 @@
+"""Independent complete positive V38 strict runtime closure; every accepted index must retain the original positive gates. No native execution is authorized by this audit."""
+from pathlib import Path
+import collections,datetime,hashlib,json,struct,subprocess,os,sys
+base=Path(r"C:\Users\adyba\pi-zig");main=base/"main";evidence=base/"evidence"
+head="014062f2d139254acab4b985b4ae343db637166f"
+assert len(sys.argv)==3,"Exact Root-issued audit configuration path and SHA-256 required"
+input_path=Path(sys.argv[1])
+assert input_path.is_absolute() and input_path.resolve().is_relative_to(evidence.resolve())
+input_raw=input_path.read_bytes()
+assert len(sys.argv[2])==64 and all(c in "0123456789ABCDEF" for c in sys.argv[2])
+assert hashlib.sha256(input_raw).hexdigest().upper()==sys.argv[2]
+cfg=json.loads(input_raw)
+assert cfg["status"]=="root_reviewed_specific_v38_positive_strict_runtime_closure"
+assert cfg["auditor_sha256"]==hashlib.sha256(Path(__file__).read_bytes()).hexdigest().upper()
+assert cfg["candidate_head"]==head and cfg["audit_execution_authorized"] is True
+assert cfg["native_execution_authorized"] is False and cfg["source_mutation_hold_released"] is False
+assert cfg["product_qualification"] is False and cfg["diagnostic_continue"] is False
+batch=cfg["batch"];assert batch in ("new4","existing63")
+group_count,declared_count=(4,58) if batch=="new4" else (63,1249)
+assert cfg["declared_groups"]==group_count and cfg["declared_controls"]==declared_count and group_count<=64
+actual_count=cfg["actual_metadata_count"];assert type(actual_count) is int and actual_count>0
+control=Path(cfg["control"]);proof=Path(cfg["proof"])
+build_control=Path(cfg["build_control"]);build=Path(cfg["build_proof"])
+import re
+assert control.parent==proof.parent==build_control.parent==build.parent==evidence
+assert re.fullmatch("root-native-foundation-v38-"+batch+r"-runtime-control-\d{8}-\d{6}",control.name)
+assert proof.name==control.name.replace("-runtime-control-","-runtime-",1)
+assert re.fullmatch("root-native-foundation-fresh-v38-"+batch+r"-control-\d{8}-\d{6}",build_control.name)
+assert build.name==build_control.name.replace("-control-","-buildquery-",1)
+assert len({control,proof,build_control,build})==4
+prep=evidence/("combined-native-batch-v38-"+("new4" if batch=="new4" else "regression63")+"-prepared-20261021")
+assert Path(cfg["preparation"])==prep
+output=control/"independent-positive-runtime-closure.json"
+def require(ok,message):
+ if not ok:raise RuntimeError(message)
+
+def utc_ticks(value):
+ # Preserve the full seven-digit Windows timestamp, permitting only equivalent
+ # ISO spelling/offsets. Python datetime alone truncates the seventh digit.
+ import re
+ m=re.fullmatch(r"(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d)(?:\.(\d{1,7}))?(Z|[+-]\d\d:\d\d)",value)
+ require(m is not None,"Explicit bounded ISO timestamp required")
+ stamp=datetime.datetime.fromisoformat(m[1]+("+00:00" if m[3]=="Z" else m[3]))
+ delta=stamp-datetime.datetime(1970,1,1,tzinfo=datetime.timezone.utc)
+ return (delta.days*86400+delta.seconds)*10000000+int((m[2] or "").ljust(7,"0"))
+
+def read(path):return json.loads(Path(path).read_text(encoding="utf-8-sig"))
+def digest(path):
+ h=hashlib.sha256()
+ with Path(path).open("rb") as f:
+  while block:=f.read(1024*1024):h.update(block)
+ return h.hexdigest().upper()
+def pin(path):return dict(path=str(path),bytes=Path(path).stat().st_size,sha256=digest(path))
+def verify_pins(value):
+ if isinstance(value,dict):
+  if isinstance(value.get("path"),str) and isinstance(value.get("sha256"),str):
+   path=Path(value["path"]);require(path.is_absolute() and path.resolve().is_relative_to(base.resolve()),"Contained immutable provenance pin")
+   actual=pin(path);require(actual["sha256"]==value["sha256"] and ("bytes" not in value or actual["bytes"]==value["bytes"]),"Immutable provenance bytes changed: "+str(path))
+  for child in value.values():verify_pins(child)
+ elif isinstance(value,list):
+  for child in value:verify_pins(child)
+
+require(not output.exists(),"Fresh immutable independent closure required")
+r=read(proof/"result.json");before=read(proof/"before.json");final=read(proof/"final.json")
+require(digest(proof/"before.json")==cfg["runtime_before_sha256"] and digest(proof/"final.json")==cfg["runtime_final_sha256"],"Exact actual runtime source bookends")
+grant=read(control/"root-grant.json");matrix=read(prep/"groups.json")
+launch_path=control/"runtime-launch.json"
+require(digest(launch_path)==cfg["runtime_launch_sha256"],"Exact observed direct strict-runtime launch record")
+launch=read(launch_path);verify_pins(launch);verify_pins(grant)
+require(launch["candidate_head"]==head and launch["batch"]==batch and launch["control"]==str(control) and launch["proof"]==str(proof),"Actual strict-runtime launch identity")
+require(launch["grant"]==pin(control/"root-grant.json") and launch["launch"]==pin(control/"launch.ps1"),"Exact separately issued runtime grant and launcher")
+require(launch["groups"]==grant["groups"] and launch["declared_count"]==declared_count and launch["actual_metadata_count"]==actual_count,"Runtime launch actual accepted cohort")
+require(launch["diagnostic_continue"] is False and launch["compile_authority"] is False and launch["qualification"] is False,"Strict RuntimeOnly launch scope")
+require(grant.get("diagnostic_continue",False) is False and grant["receipt_directory"]==str(proof),"Original strict mode and runtime receipt directory")
+require(launch["specific_root_configuration"]==grant["specific_root_configuration"],"Actual runtime Root configuration binding")
+runtime_cfg_path=Path(launch["specific_root_configuration"]["path"])
+require(digest(runtime_cfg_path)==cfg["runtime_configuration_sha256"],"Exact Root runtime configuration")
+runtime_cfg=read(runtime_cfg_path);verify_pins(runtime_cfg)
+require(runtime_cfg["status"]=="root_reviewed_specific_v38_runtime_preparation" and runtime_cfg["candidate_head"]==head and runtime_cfg["batch"]==batch,"Reviewed actual RuntimeOnly configuration")
+require(runtime_cfg["runtime_execution_authorized"] is True and runtime_cfg["compile_execution_authorized"] is False and runtime_cfg["diagnostic_continue"] is False and runtime_cfg["qualification"] is False and runtime_cfg["source_mutation_hold_released"] is False,"Specific runtime authority and continued source hold")
+require(runtime_cfg["actual_metadata_count"]==actual_count and runtime_cfg["declared_groups"]==group_count and runtime_cfg["declared_controls"]==declared_count and runtime_cfg["selected_group_names"]==grant["groups"],"Exact actual runtime configuration cohort")
+runtime_preparer=evidence/"Prepare-ReviewedV38RuntimeGrant-20261021.py"
+require(pin(runtime_preparer)==cfg["runtime_grant_preparer"] and runtime_preparer.stat().st_size==12499 and digest(runtime_preparer)==runtime_cfg["preparer_sha256"]=="7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322","Reviewed exact RuntimeOnly grant constructor")
+require(launch["buildquery_launch"]==runtime_cfg["buildquery_launch"]==pin(prep/"buildquery-launch.json") and digest(prep/"buildquery-launch.json")==cfg["buildquery_launch_sha256"],"Exact parent BuildQuery launch")
+build_launch=read(prep/"buildquery-launch.json");verify_pins(build_launch)
+require(build_launch["candidate_head"]==head and build_launch["batch"]==batch and build_launch["control"]==str(build_control) and build_launch["proof"]==str(build),"Actual accepted parent BuildQuery identity")
+require(build_launch["grant"]==pin(build_control/"root-grant.json") and build_launch["launch"]==pin(build_control/"launch.ps1") and build_launch["preparation_review"]==pin(prep/"preparation-review.json"),"Parent BuildQuery grant, launcher and preparation pins")
+require(build_launch["groups"]==grant["groups"] and build_launch["declared_count"]==declared_count and build_launch["actual_metadata_count"] is None and build_launch["runtime_authority"] is False and build_launch["qualification"] is False,"Parent BuildQuery scope and unpredicted actual metadata")
+require(build_launch["specific_root_configuration"]==grant["build_specific_root_configuration"],"Preserved distinct BuildQuery Root configuration")
+review=read(prep/"preparation-review.json");verify_pins(review)
+require(digest(prep/"preparation-review.json")==cfg["preparation_review_sha256"],"Exact reviewed batch preparation")
+require(review["candidate_head"]==head and review["status"]=="source_only_fresh_batch_prepared" and review["selected_group_names"]==grant["groups"] and review["selected_groups"]==group_count and review["selected_declarations"]==declared_count,"Complete approved batch order and source declarations")
+require(review["catalog_groups"]==len(matrix["groups"])==117 and review["catalog_declarations"]==sum(len(g["required_named"])for g in matrix["groups"])==2013,"Complete unchanged shared source catalog")
+require(review["actual_metadata_count"] is None and review["execution_authority"] is False and review["runtime_authority"] is False and review["qualification"] is False,"Source preparation confers no actual runtime qualification")
+if batch=="new4":
+ require(grant["groups"]==["native-node-file-handle-owner","native-node-fs-before-hook-continuation","native-vm-error-constructor-name","native-node-file-handle-transfer"],"Exact four new roots")
+else:
+ old_cohort=evidence/"root-native-foundation-fresh-v34-control-20261020-202924/root-grant.json"
+ require(digest(old_cohort)=="275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15" and grant["groups"]==read(old_cohort)["groups"],"Complete original sixty-three group order retained")
+require(len(grant["groups"])==len(set(grant["groups"]))==group_count,"Disjoint unique complete selected batch")
+accept_path=build_control/"independent-metadata-acceptance.json";accept=read(accept_path)
+build_closure_path=build_control/"independent-current-seals-and-owners.json"
+for key,path,hash_key in (("build_result",build/"result.json","build_result_sha256"),("build_final",build/"final.json","build_final_sha256"),("metadata_acceptance",accept_path,"metadata_acceptance_sha256"),("independent_build_closure",build_closure_path,"independent_build_closure_sha256")):
+ require(launch[key]==pin(path) and digest(path)==cfg[hash_key],"Runtime launch exact independently accepted parent "+key)
+ cfg_key="independent_closure" if key=="independent_build_closure" else key
+ require(runtime_cfg[cfg_key]==pin(path),"Runtime Root configuration exact accepted parent "+key)
+require(grant["build_result_path"]==str(build/"result.json") and grant["build_source_seal_path"]==str(build/"final.json") and grant["metadata_acceptance_path"]==str(accept_path) and grant["independent_build_closure_path"]==str(build_closure_path),"Exact original accepted build paths")
+require(grant["metadata_acceptance_sha256"]==cfg["metadata_acceptance_sha256"] and grant["independent_build_closure_sha256"]==cfg["independent_build_closure_sha256"],"Original accepted metadata and complete BuildQuery closure hashes")
+root_accept_path=Path(runtime_cfg["root_buildquery_acceptance"]["path"])
+require(grant["root_buildquery_acceptance"]==runtime_cfg["root_buildquery_acceptance"] and digest(root_accept_path)==cfg["root_buildquery_acceptance_sha256"],"Exact Root acceptance of independently closed BuildQuery")
+root_accept=read(root_accept_path);verify_pins(root_accept)
+require(root_accept["reviewer"]=="Root" and root_accept["candidate_head"]==head and root_accept["batch"]==batch and root_accept["complete_buildquery_accepted"] is True and root_accept["runtime_execution_authorized"] is False and root_accept["qualification"] is False,"Original positive BuildQuery acceptance only")
+require(root_accept["groups"]==grant["groups"] and root_accept["actual_metadata_count"]==actual_count,"Root actual BuildQuery acceptance cohort")
+for key in ("build_result","build_final","metadata_acceptance","independent_closure"):require(root_accept[key]==runtime_cfg[key],"Root exact accepted parent "+key)
+require(isinstance(runtime_cfg["root_runtime_review"],str) and grant["root_review"]==runtime_cfg["root_runtime_review"],"Actual narrative runtime Root review preserved")
+runtime_source_review=runtime_cfg["runtime_constructor_source_review"]
+require(isinstance(runtime_source_review,dict) and isinstance(runtime_source_review.get("path"),str) and isinstance(runtime_source_review.get("sha256"),str),"Distinct pinned Root runtime constructor source review")
+verify_pins(runtime_source_review)
+require(runtime_source_review==pin(runtime_source_review["path"]) and digest(runtime_source_review["path"])==cfg["runtime_constructor_source_review_sha256"],"Exact separate runtime constructor source-acceptance receipt")
+adapt_path=control/"grant-launch-adaptation.json"
+require(digest(adapt_path)==cfg["runtime_grant_launch_adaptation_sha256"],"Exact actual runtime grant and launcher finite adaptation")
+adapt=read(adapt_path);verify_pins(adapt)
+require(adapt["original_grant"]==pin(build_control/"root-grant.json") and adapt["grant"]==pin(control/"root-grant.json") and adapt["original_launch"]==pin(build_control/"launch.ps1") and adapt["launch"]==pin(control/"launch.ps1"),"Actual finite strict-runtime provenance")
+require(adapt["complete_grant_inverse"] is True and adapt["complete_launch_byte_inverse"] is True and adapt["all_strict_gate_fields_unchanged"] is True and adapt["diagnostic_continue"] is False and adapt["qualification"] is False,"Original strict grant adaptation claims remain exact")
+original_grant=read(build_control/"root-grant.json");inverse=dict(grant)
+changed=[row["key"]for row in adapt["field_changes"]]
+require(len(changed)==len(set(changed)) and set(changed)=={"grant_id","issued_utc","mode","receipt_directory","build_result_path","build_result_sha256","build_source_seal_path","build_source_seal_sha256","metadata_acceptance_path","metadata_acceptance_sha256","actual_metadata_count","independent_build_closure_path","independent_build_closure_sha256","build_specific_root_configuration","specific_root_configuration","root_buildquery_acceptance","root_review"},"Only exact reviewed strict RuntimeOnly grant fields changed")
+for row in adapt["field_changes"]:
+ key=row["key"];require(grant[key]==row["after"] and row["old_present"] is (key in original_grant) and row["before"]==original_grant.get(key),"Exact actual grant field inverse")
+ if row["old_present"]:inverse[key]=row["before"]
+ else:del inverse[key]
+require(inverse==original_grant,"Independently replayed complete runtime grant structural inverse")
+build_launch_raw=(build_control/"launch.ps1").read_bytes();runtime_launch_raw=(control/"launch.ps1").read_bytes()
+require(adapt["launch_edit_count"]==1 and adapt["before"]=="'BuildQuery'" and adapt["after"]=="'RuntimeOnly'","One reviewed launcher mode edit")
+require(build_launch_raw.count(b"'BuildQuery'")==1 and b"'RuntimeOnly'" not in build_launch_raw and b"DiagnosticContinue" not in build_launch_raw,"Original strict BuildQuery launcher")
+require(runtime_launch_raw==build_launch_raw.replace(b"'BuildQuery'",b"'RuntimeOnly'",1) and runtime_launch_raw.replace(b"'RuntimeOnly'",b"'BuildQuery'",1)==build_launch_raw,"Actual strict launcher complete forward and byte inverse")
+old_runtime=evidence/"root-native-foundation-v34-runtime-control-20261020-210255"
+require(adapt["prior_strict_runtime_grant"]==pin(old_runtime/"root-grant.json") and digest(old_runtime/"root-grant.json")=="FA3D60CE15F2886D687F140D8DD93FD3B9F1BAADD86153505CA9026512A19303","Pinned preserved V34 strict runtime grant")
+require(adapt["prior_strict_runtime_launcher"]==pin(old_runtime/"launch.ps1") and digest(old_runtime/"launch.ps1")=="9B6B65EEF10F702596CCBE9E698AC77FB4D63F2F49FDFE1AEB5E0EF49EE4D4DC","Pinned preserved V34 strict runtime launcher")
+old_runtime_raw=(old_runtime/"launch.ps1").read_bytes();old_prep=b"evidence/combined-native-batch-v34-prepared-20261020";new_prep=prep.relative_to(base).as_posix().encode()
+require(old_runtime_raw.count(old_prep)==1 and new_prep not in old_runtime_raw and old_runtime_raw.replace(old_prep,new_prep,1)==runtime_launch_raw and runtime_launch_raw.replace(new_prep,old_prep,1)==old_runtime_raw,"Independent unchanged strict RuntimeOnly launcher path-only inverse")
+old_runtime_grant=read(old_runtime/"root-grant.json")
+for key in ("schema","status","execution_authorized","required_release_status","candidate_root","runtime_restoration_claim","dedicated_external53_controller","initial_grant_max_age_seconds","minimum_free_kib","workspace_resolver_sha256","workspace_layout_sha256","path_relocations_sha256","driver_sha256","compile_outer_seconds","metadata_outer_seconds","runtime_outer_actual_seconds","owner_settle_seconds","outer_controller_seconds","reuse_unsealed_original_compile_caches","classifier_sha256","qualification_requested","cache_mode","cache_seed_manifest_path","cache_seed_manifest_sha256","allow_seed_source_delta_paths","build_artifacts_path","build_artifacts_sha256","build_metadata_path","build_metadata_sha256"):
+ require(grant[key]==old_runtime_grant[key],"Unchanged original strict runtime grant gate: "+key)
+require(grant["cache_directory"]==str(build/"cache") and grant["global_cache_directory"]==str(build/"global-cache"),"Runtime reuses only the exact independently accepted original compile caches")
+require(digest(accept_path)==cfg["metadata_acceptance_sha256"] and accept["status"]=="independently_accepted_combined_native_batch_metadata" and accept["accepted"] is True and accept["candidate_head"]==head and accept["runtime_started"] is False and accept["runtime_qualification"] is False,"Original independent raw metadata acceptance")
+require(digest(build_closure_path)==cfg["independent_build_closure_sha256"],"Original independent BuildQuery closure")
+build_closure=read(build_closure_path)
+require(build_closure["status"]=="independently_closed_complete_fresh_build_query" and build_closure["candidate_head"]==head,"Original complete positive independent BuildQuery closure")
+for flag in ("current_actual_process_instances_absent","current_all_sealed_inputs_rehashed","current_complete_directory_inventories_verified","all_original_terminal0_owner_gates_passed","whole_bookends_unchanged","controller_environment_restored"):
+ require(build_closure[flag] is True,"Complete original independent BuildQuery gate: "+flag)
+for flag in ("source_mutation_hold_released","runtime_started","qualification","cache_seeded"):require(build_closure[flag] is False,"Original independent BuildQuery scope: "+flag)
+require(build_closure["metadata_acceptance"]==pin(accept_path) and build_closure["granted_groups"]==build_closure["attempted_groups"]==group_count and build_closure["unstarted_groups"]==0 and build_closure["native_owner_count"]==2*group_count and build_closure["actual_tests_started"]==0,"Complete actual original native BuildQuery closure")
+require([g["group"]for g in build_closure["groups"]]==grant["groups"] and build_closure["actual_metadata_count"]==sum(g["actual_metadata_count"]for g in build_closure["groups"])==actual_count,"Independently accepted actual parent cohort")
+require(digest(proof/"result.json")==cfg["runtime_result_sha256"],"Exact original complete positive runtime result")
+require(digest(control/"root-grant.json")==cfg["runtime_grant_sha256"],"Original separate runtime grant")
+require(r["status"]=="passed_selected_native_batch" and r["mode"]==grant["mode"]=="RuntimeOnly" and r["candidate_head"]==grant["candidate_head"]==head,"Original actual runtime identity")
+require(grant["status"]=="root_reviewed_combined_native_batch_release" and grant["execution_authorized"] is True and grant["actual_metadata_count"]==actual_count,"Original exact Root runtime authority")
+require(r["driver_sha256"]==grant["driver_sha256"]==digest(prep/"Run-CombinedNativeBatch.ps1")=="1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601","Unchanged strict runtime controller")
+require(r["group_manifest_sha256"]==grant["group_manifest_sha256"]==digest(prep/"groups.json")==build_launch["matrix_sha256"]==accept["group_manifest_sha256"]=="8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03","Exact runtime matrix")
+for flag in ("postseal","controller_environment_restored","qualification_requested","runtime_requested","all_groups_closed"):require(r[flag] is True,"Original complete runtime closure flag "+flag)
+for flag in ("cache_seeded","product_qualified","fresh_cache_reproduction","initial_cache_absence"):require(r[flag] is False,"Original runtime scope flag "+flag)
+require(r["cache_mode"]=="fresh_batch" and r["source_seal_scope"]=="whole_batch" and r["absence"]["native_roots"]==[],"Original runtime cache/source/absence")
+require(grant["groups"]==[g["group"]for g in accept["groups"]] and len(grant["groups"])==group_count and sum(g["actual_count"]for g in accept["groups"])==actual_count,"Complete accepted cohort retained")
+require([g["group"]for g in r["groups"]]==grant["groups"] and len(r["absence"]["owners"])==group_count and r["errors"]==[],"Every selected actual native runtime completed with no batch failure")
+require({p.name for p in (proof/"groups").iterdir()if p.is_dir()}==set(grant["groups"]),"Exactly the complete granted runtime group directories")
+require(subprocess.check_output(["git","--no-optional-locks","rev-parse","HEAD"],cwd=main,text=True).strip()==head,"Main head changed")
+require(subprocess.check_output(["git","--no-optional-locks","status","--porcelain"],cwd=main,text=True)=="","Main state changed")
+all_pins={}
+for seal in (before,final):
+ require(seal["candidate_head"]==head and seal["clean"] is True and seal["errors"]==[],"Original complete source identity")
+for role in ("source","tree","vendor","compiler","controls"):
+ require(before[role]==final[role],"Original bookend mismatch: "+role)
+ counts=collections.Counter(row["relative"] for row in final[role])
+ require({k:v for k,v in counts.items() if v>1}==({r"C:\Program Files\PowerShell\7\pwsh.exe":2} if role=="controls" else {}),"Unexpected duplicate seal role")
+ for row in final[role]:
+  path=Path(row["path"]);require(path.is_relative_to(base) or str(path) in (r"C:\Program Files\PowerShell\7\pwsh.exe",r"C:\Program Files\PowerShell\7\pwsh.dll"),"Uncontained sealed path")
+  require(str(path) not in all_pins or all_pins[str(path)]==row["sha256"],"Conflicting shared pin")
+  all_pins[str(path)]=row["sha256"]
+seal_counts=cfg["seal_counts"]
+require(set(seal_counts)=={"source","tree","vendor","compiler","controls"} and all(type(n) is int and n>0 for n in seal_counts.values()),"Exact observed whole-bookend cardinalities required")
+require(seal_counts["vendor"]==1489 and seal_counts["compiler"]==19546,"Unchanged complete vendor and pinned compiler universes")
+require(all(len(final[role])==seal_counts[role] for role in seal_counts),"Complete current source/compiler/control cardinality")
+tracked=subprocess.check_output(["git","--no-optional-locks","ls-files","-z"],cwd=main).decode("utf-8").split("\0")[:-1]
+require(set(tracked)=={row["relative"]for row in final["source"]},"Independent complete tracked source inventory")
+for role,root,excludes in (("tree",main,{".git",".zig-cache","zig-out"}),("vendor",main/"vendor",set()),("compiler",base/"toolchain/zig-x86_64-windows-0.16.0",set())):
+ current_paths=[]
+ for directory,dirs,files in os.walk(root):
+  if Path(directory)==root:dirs[:]=[name for name in dirs if name not in excludes]
+  current_paths.extend(str(Path(directory)/name)for name in files if not(Path(directory)==root and name in excludes))
+ require(set(current_paths)=={row["path"]for row in final[role]},"Independent current complete directory inventory: "+role)
+for path,expected in all_pins.items():require(digest(path)==expected,"Current sealed input changed: "+path)
+
+require(digest(build/"result.json")==grant["build_result_sha256"]==accept["build_result_sha256"]==cfg["build_result_sha256"],"Original accepted BuildQuery result")
+require(digest(build/"final.json")==grant["build_source_seal_sha256"]==accept["build_source_seal_sha256"]==cfg["build_final_sha256"],"Original accepted BuildQuery source seal")
+build_final=read(build/"final.json")
+for role in ("source","tree","vendor","compiler"):require(build_final[role]==final[role],"Exact accepted build inputs changed: "+role)
+for accepted in accept["groups"]:
+ gp=build/"groups"/accepted["group"]
+ require(digest(gp/"build-artifacts.json")==accepted["build_artifacts_sha256"] and digest(gp/"selected-tests.json")==accepted["build_metadata_sha256"] and digest(gp/"metadata.stdout.bin")==accepted["independent_wire_sha256"],"Original accepted metadata/artifact/raw-wire changed")
+ for path,sha in ((Path(accepted["cached_executable_path"]),accepted["executable_sha256"]),(Path(accepted["cached_executable_path"]).with_suffix(".pdb"),accepted["pdb_sha256"])):
+  require(path.is_relative_to(build/"cache") and digest(path)==sha,"Exact originally compiled cached artifact changed")
+ for row in read(gp/"build-artifacts.json")["installed"]:require(digest(row["path"])==row["sha256"],"Original installed artifact changed")
+runtime_bounds=[];observations=[];runtime_receipts=[]
+selected=cfg["selected"]
+require(len(selected)==group_count and [want["group"]for want in selected]==grant["groups"] and all(want["failed"]==[] for want in selected),"Positive closure covers every granted group and permits no failed index")
+for number,want in enumerate(selected):
+ g=r["groups"][number];accepted=accept["groups"][number];gp=proof/"groups"/g["group"]
+ require(g["group"]==accepted["group"]==want["group"] and accepted["actual_count"]==want["count"] and g["status"]=="passed_selected_native_controls","Original group result and whole-batch scope preserved")
+ require(g["owned_started_phases"]==g["attempted_phases"]==["runtime"] and g["runtime_owner_launch_attempted"] is True and g["actual_runtime_owner_started"] is True,"Exact actual native execution scope")
+ canonical=read(gp/"runtime.results.json")
+ require(g["native_selected_tests_started"]==canonical["expected"]==canonical["started"]==canonical["completed"]==want["count"] and canonical["version"]=="0.16.0","Original canonical complete counts and version")
+ require(canonical["binary"]==accepted["cached_executable_path"] and canonical["binary_sha256"]==accepted["executable_sha256"] and canonical["owner_receipt"]==str(gp/"runtime.json"),"Original canonical artifact and owner binding")
+ require(canonical["failed_or_skipped_or_logged_or_leaked"]==len(want["failed"]) and canonical["status"]==("failed" if want["failed"] else "passed"),"Original canonical outcome unchanged")
+ phase=g["phases"]["runtime"];owner=read(gp/"runtime.json");absent=read(gp/"runtime-absence.json")
+ require(g["errors"]==[] and phase["postchecks"]["errors"]==[],"Complete positive runtime may hide no retained group or postcheck failure")
+ require(digest(gp/"runtime.json")==want["owner_sha"],"Original bounded owner receipt")
+ require(owner["status"]=="passed" and owner["exit_code"]==0 and owner["timeout_seconds"]==120 and owner["retained_handle"]>0 and owner["pid"]==want["pid"] and owner["created_utc"]==want["created"],"Actual original terminal-zero native instance")
+ require(owner["executable"]==accepted["cached_executable_path"] and owner["executable_sha256"]==accepted["executable_sha256"] and owner["arguments"]==["--listen=-"] and owner["working_directory"]==str(main),"Exact native artifact/argv/root")
+ live=owner["live_identity"];created=utc_ticks(owner["created_utc"]);completed=utc_ticks(owner["completed_utc"])
+ require(live["pid"]==owner["pid"] and utc_ticks(live["created_utc"])==created and live["executable"]==owner["executable"] and live["command_line"]=='"'+owner["executable"]+'" --listen=-' and 0<=completed-created<=120*10000000,"Original live retained native instance and deadline")
+ admission=read(gp/"runtime-admission.json");probe=admission["probe"]
+ require(admission["status"]=="admitted" and probe["phase"]=="runtime" and probe["free_kib"]>=16777216 and probe["minimum_kib"]==16777216 and probe["native"]==[] and probe["native_roots"]==0 and 0<=created-utc_ticks(probe["utc"])<10*10000000,"Original fresh serial sixteen GiB native admission")
+ require(absent["status"]=="closed" and absent["phase"]=="runtime" and absent["global_native"]==[],"Original complete phase process absence")
+ for e in (absent["evidence"],phase["evidence"],r["absence"]["owners"][number]["evidence"]):
+  require(e["valid"] is True and e["evidence_errors"]==[] and e["owner"]["pid"]==owner["pid"] and utc_ticks(e["owner"]["created_utc"])==created and utc_ticks(e["owner"]["completed_utc"])==completed and e["owner"]["exit_code"]==owner["exit_code"] and e["current_owner_pid_present"]==0 and e["current_owned_descendants"]==[] and e["absence_error"] is None and e["canonical_results"]==canonical,"Actual phase terminal identity, canonical observation and original absence")
+  ignored=e.get("preexisting_pid_ancestry")
+  require(isinstance(ignored,list),"Explicit original process-instance ancestry evidence")
+  for item in ignored:
+   observed=item["observed_process"]
+   require(item["reason"]=="Child creation predates this parent instance" and item["parent_pid"]==owner["pid"] and observed["ParentProcessId"]==owner["pid"],"Excluded ancestry must name the actual original parent")
+   require(item["parent_created_utc_ticks"]==created+621355968000000000 and item["child_created_utc_ticks"]==utc_ticks(observed["CreationDate"])+621355968000000000,"Independent exact UTC100ns ancestry conversion")
+   require(utc_ticks(observed["CreationDate"])<created-10,"Only proven preexisting child instances may be excluded")
+ expected_error="Native test protocol did not report every selected test passing without logs/leaks" if want["failed"] else None
+ require(phase["failure"]==phase["original_execution_failure"]==expected_error,"Original native test failure retained exactly")
+ require(phase["owner_binding"]["status"]==("invalid" if want["failed"] else "passed") and phase["owner_binding"]["errors"]==(["Actual metadata/new API or ordinary retained runtime stderr must be empty"] if want["failed"] else []),"Strict original empty-stderr gate remains negative only for actual failed group")
+ for key in ("evidence_valid","source_sealed","artifacts_bound","absence_closed"):require(phase["postchecks"][key] is True,"Original complete postcheck "+key)
+ require(phase["postchecks"]["owner_bound"] is (not bool(want["failed"])),"Original owner qualification not rewritten")
+ for row in phase["evidence"]["raw_outputs"]:
+  path=Path(row["path"]);require(path.is_relative_to(gp) and path.stat().st_size==row["bytes"] and digest(path)==row["sha256"],"Original raw runtime bytes unchanged")
+ require(digest(gp/"runtime.stdout.bin")==want["stdout_sha"] and digest(gp/"runtime.stderr.log")==want["stderr_sha"],"Exact original complete wire and ordinary stderr")
+ require((gp/"runtime.stderr.log").read_bytes()==b"","Original strict successful runtime stderr must be empty")
+ raw=(gp/"runtime.stdout.bin").read_bytes();offset=0;tags=[];results=[]
+ while offset<len(raw):
+  require(len(raw)-offset>=8,"Complete raw-wire frame header")
+  tag,size=struct.unpack_from("<II",raw,offset);offset+=8
+  require(size<=1024*1024 and size<=len(raw)-offset,"Bounded raw runtime frame")
+  payload=raw[offset:offset+size];offset+=size;tags.append(tag)
+  if tag==0:require(tags==[0] and payload==b"0.16.0","Original pinned version")
+  elif tag==5:require(size==0 and len(tags)%2==0,"Actual test-start frame")
+  elif tag==4:
+   require(size==12 and len(tags)%2==1 and tags[-2]==5,"Actual result following one start")
+   index,flags=struct.unpack("<IQ",payload)
+   require(index==len(results) and flags==(1 if index in want["failed"] else 0),"Exact original sequential result flags")
+   row=dict(index=index,flags=flags,passed=flags==0)
+   require(row==canonical["results"][index],"Independent raw frame equals original canonical result")
+   results.append(dict(**row,name=accepted["tests"][index]))
+  else:raise RuntimeError("Unexpected runtime frame")
+ require(tags==[0]+[x for _ in range(want["count"])for x in (5,4)] and len(results)==len(canonical["results"])==want["count"] and offset==len(raw)==want["stdout_bytes"],"Exact complete raw-wire inventory")
+ runtime_bounds.append(dict(pid=owner["pid"],created=created,completed=completed,role="runtime",group=g["group"]))
+ observations.append(dict(group=g["group"],started=want["count"],completed=want["count"],failed=len(want["failed"]),results=results,original_group_status=g["status"],canonical=pin(gp/"runtime.results.json")))
+ runtime_receipts.extend(pin(gp/name)for name in ("runtime.json","runtime.results.json","runtime.stdout.bin","runtime.stderr.log","runtime-absence.json","result.json"))
+failed_names=[]
+require(sum(o["started"]for o in observations)==actual_count and sum(o["completed"]for o in observations)==actual_count and sum(o["failed"]for o in observations)==0,"Every accepted actual native index completed without failure flags")
+outer=read(control/"outer.json");oa=read(control/"outer-absence.json")
+require(digest(control/"outer.json")==cfg["outer_sha256"] and digest(control/"outer-absence.json")==cfg["outer_absence_sha256"],"Original outer and absence")
+require(outer["status"]=="passed" and outer["exit_code"]==0 and outer["timeout_seconds"]==1800 and outer["retained_handle"]>0 and outer["pid"]==cfg["outer_pid"],"Original bounded complete positive outer")
+require(outer["arguments"]==["-NoLogo","-NoProfile","-NonInteractive","-File",str(prep/"Run-CombinedNativeBatch.ps1"),"-RootGrant",str(control/"root-grant.json"),"-Mode","RuntimeOnly"] and outer["executable_sha256"]=="FA2C8BB1E35CDD62AD15CD06A1D8F2C5961E9725A9BFA1E7CFD2C322F49E9619" and outer["working_directory"]==str(base),"Original exact outer control")
+outer_live=outer["live_identity"]
+require(outer["executable"]==r"C:\Program Files\PowerShell\7\pwsh.exe" and outer_live["pid"]==outer["pid"] and utc_ticks(outer_live["created_utc"])==utc_ticks(outer["created_utc"]) and outer_live["executable"]==outer["executable"],"Actual original retained outer creation identity")
+require(outer_live["command_line"]=='"'+outer["executable"]+'" '+' '.join(outer["arguments"]) and outer.get("error") is None and 0<=utc_ticks(outer["completed_utc"])-utc_ticks(outer["created_utc"])<=1800*10000000,"Exact actual live outer command, native deadline and clean termination")
+require(oa["pid"]==outer["pid"] and utc_ticks(oa["created_utc"])==utc_ticks(outer["created_utc"]) and oa["currently_absent"] is True and oa["current_records"]==[],"Original outer absence")
+require(digest(control/"independent-observed-job-status.json")==cfg["job_observation_sha256"],"Exact original terminal durable runtime observation")
+job=read(control/"independent-observed-job-status.json")["data"]
+require(job==cfg["job"] and job["status"]=="succeeded" and job["exitCode"]==0 and job["runnerAlive"] is False and job["runnerPid"]>0 and job["childPid"]>0 and job["runnerProcessInstance"] and job["completedAtUtc"],"Independently captured exact actual terminal runtime job observation")
+bounds=runtime_bounds+[dict(pid=outer["pid"],created=utc_ticks(outer["created_utc"]),completed=utc_ticks(outer["completed_utc"]),role="outer")]
+bounds.append(dict(pid=job["runnerPid"],created=int(job["runnerProcessInstance"])-116444736000000000,completed=utc_ticks(job["completedAtUtc"]),role="runner"))
+bounds.append(dict(pid=job["childPid"],created=utc_ticks(job["createdAtUtc"]),completed=utc_ticks(job["completedAtUtc"]),role="launcher_job_lifetime_envelope"))
+require(len(runtime_bounds)==group_count and len({(row["pid"],row["created"])for row in runtime_bounds})==group_count and all(row["completed"]>=row["created"]for row in bounds),"All original native process instances distinct and terminal intervals ordered")
+pids=[row["pid"]for row in bounds]
+require(digest(prep/"Get-ModelsNativeCandidates.ps1")=="3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301","Original classifier")
+query=r"$ErrorActionPreference='Stop';. '"+str(prep/"Get-ModelsNativeCandidates.ps1")+r"';$taskRows=@(Get-CimInstance Win32_Process -OperationTimeoutSec 5 -ErrorAction Stop);$taskPids=@("+",".join(map(str,pids))+r");$taskLive=@($taskRows|Where-Object {$_.ProcessId -in $taskPids}|Select-Object ProcessId,ParentProcessId,ExecutablePath,CommandLine,CreationDate);$taskDirect=@($taskRows|Where-Object {$_.ParentProcessId -in $taskPids}|Select-Object ProcessId,ParentProcessId,ExecutablePath,CommandLine,CreationDate);$taskNative=@(Get-ModelsNativeCandidates -Rows $taskRows -Container 'C:\Users\adyba\pi-zig');ConvertTo-Json -InputObject ([ordered]@{owners=$taskLive;direct_children=$taskDirect;native=$taskNative;observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}) -Depth 8 -Compress"
+current=json.loads(subprocess.check_output([r"C:\Program Files\PowerShell\7\pwsh.exe","-NoLogo","-NoProfile","-NonInteractive","-Command",query],text=True,timeout=15))
+require(current["native"]==[],"Current independent global native absence")
+reconciled=[]
+for row in current["owners"]:
+ candidates=[v for v in bounds if v["pid"]==row["ProcessId"]];born=utc_ticks(row["CreationDate"])
+ require(candidates and all(born>v["completed"]for v in candidates),"Only proved later nonoverlapping PID reuse")
+ reconciled.append(dict(kind="later_process_reusing_retired_pid",current_record=row,prior_terminal_intervals=candidates))
+for row in current["direct_children"]:
+ candidates=[v for v in bounds if v["pid"]==row["ParentProcessId"]];born=utc_ticks(row["CreationDate"])
+ require(candidates and all(born<v["created"]-10 or born>v["completed"]for v in candidates),"No apparent descendant born within actual owned interval")
+ reconciled.append(dict(kind="creation_time_excludes_prior_parent_instance",current_record=row,prior_terminal_intervals=candidates))
+certificate=dict(schema=1,status="independently_closed_positive_strict_runtime",candidate_head=head,batch=batch,reviewed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),reviewer="Independent complete current inventory/hash, original artifact, raw canonical wire and actual100ns process-instance audit",
+ source_seal_scope="whole_batch",whole_bookends_unchanged=True,current_all_sealed_inputs_rehashed=True,current_complete_directory_inventories_verified=True,distinct_current_files_rehashed=len(all_pins),seal_counts=seal_counts,
+ declared_groups=group_count,declared_controls=declared_count,metadata_acceptance=pin(accept_path),independent_build_closure=pin(build_closure_path),accepted_cohort=actual_count,runtime_owner_count=group_count,actual_process_intervals=bounds,
+ observed_started=actual_count,observed_completed=actual_count,observed_failed=0,observed_groups=observations,not_started=0,current_absence=current,current_actual_process_instances_absent=True,current_process_instance_reconciliations=reconciled,
+ original_receipts=[pin(proof/"result.json"),pin(proof/"before.json"),pin(proof/"final.json"),pin(control/"outer.json"),pin(control/"outer-absence.json"),pin(control/"independent-observed-job-status.json"),pin(control/"root-grant.json"),pin(control/"launch.ps1"),pin(launch_path),pin(adapt_path),pin(runtime_cfg_path),pin(root_accept_path),pin(prep/"buildquery-launch.json"),pin(build/"result.json"),pin(build/"final.json")]+runtime_receipts,
+ audit_configuration=pin(input_path),auditor=pin(Path(__file__)),runtime_grant_preparer=pin(runtime_preparer),controller_environment_restored=True,all_original_strict_empty_stderr_and_all_tests_passing_gates_passed=True,runtime_qualification=True,product_qualification=False,source_mutation_hold_released=False)
+with output.open("xb") as f:f.write((json.dumps(certificate,indent=2)+"\n").encode("utf-8"))
+print(json.dumps(dict(status=certificate["status"],closure=str(output),sha256=digest(output),batch=batch,distinct_current_files_rehashed=len(all_pins),runtime_owners=group_count,actual_started=actual_count,actual_completed=actual_count,failed=0,not_started=0,current_instances_absent=True,source_mutation_hold_released=False,selected_native_runtime_qualification=True,product_qualification=False)))

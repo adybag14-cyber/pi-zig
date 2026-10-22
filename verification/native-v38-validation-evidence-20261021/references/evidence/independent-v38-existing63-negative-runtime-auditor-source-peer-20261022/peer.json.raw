@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "status": "independently_accepted_source_only_exact_v38_existing63_negative_runtime_auditor",
+  "reviewer": "/root/handover_review",
+  "reviewed_utc": "2026-10-22T14:12:00.481266+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "selected_candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-existing63-negative-runtime-auditor-sourceonly-20261022\\candidate\\Audit-NegativeV38Existing63Retry1StrictRuntime-v2.py",
+    "bytes": 54860,
+    "sha256": "DC14ED9842E396207F0F3447FCAC57E7D4F0C021E6AFF340F80C0FDD722C4A2D"
+  },
+  "retained_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-existing63-negative-runtime-auditor-sourceonly-20261022\\candidate\\Audit-NegativeV38Existing63Retry1StrictRuntime.py",
+    "bytes": 54572,
+    "sha256": "07A07ACE576C918EFDA2D5525A708401C8A1674C6A5AEC5FC90E5F7110D1AADA"
+  },
+  "accepted_baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\Audit-NegativeV37Retry1New4StrictRuntime.py",
+    "bytes": 47992,
+    "sha256": "77B7214537A583410F686B560FA158097087C836C5A7DD34345FE8ED5266ECC8"
+  },
+  "finite_source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-existing63-negative-runtime-auditor-sourceonly-20261022\\finite-source-adaptation-v2.json",
+    "bytes": 116003,
+    "sha256": "4A3CDC37C672E840F2A2771E8D7F03576BF179D3EF14E3D019B79B5850158F1E"
+  },
+  "inert_input_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-existing63-negative-runtime-auditor-sourceonly-20261022\\unissued-input-contract.json",
+    "bytes": 90991,
+    "sha256": "353807F65F6EB6D04319F9BBF44CF47F1397F02543A1E31E83EB37755E473348"
+  },
+  "source_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-existing63-negative-runtime-auditor-source-peer-20261022\\source-check-v2.py",
+    "bytes": 38066,
+    "sha256": "06D8835F82746E880616768F170EE25EA5D75516477AA3404FF428EEEB8732FA"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-existing63-negative-runtime-auditor-source-peer-20261022\\source-proof.json",
+    "bytes": 406002,
+    "sha256": "3DDC0297EC9E9245A11936D0806EAFDE7F27554880FD0F8B3D43C01294148D90"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-existing63-negative-runtime-auditor-sourceonly-20261022\\handoff.json",
+    "bytes": 16104,
+    "sha256": "B989694272DD134D53D8BF8A698EAC5599149961657F150BDC1F0C9A65FAB833"
+  },
+  "no_bounded_source_blocker": true,
+  "source_only": true,
+  "findings": [
+    "All 49 baseline adaptations and the exact one-hunk outer-progress correction replayed forward and backward with every intermediate hash; six helpers and fifteen complete regions retained.",
+    "The exact A73A historical source rebinding block is unchanged and both historical owner snapshots equal the raw b13 Git blob read through the authorized donor worktree.",
+    "The original full63 order, all63 metadata/artifact commitments, exact238 group files and all321 original wire results were independently checked. Sixteen partial-batch demotions and the final failed index22 remain negative.",
+    "Exact outer stdout is sixteen ordered CRLF progress lines (1629 bytes) plus the full unchanged original result. The rejected one-group equality in07A is preserved separately.",
+    "The52-field shape is inert: audit_execution_authorized remains false. Root must separately issue exact bytes and their CLI SHA, tied to DC14. Native authority, qualification and source release remain false.",
+    "Original17 native, outer, runner and launcher identities retain integer UTC100ns precision and complete nested fields. Fresh current process absence and complete live inventory/artifact verification remain work for the separately authorized auditor."
+  ],
+  "scope": {
+    "accepted_groups": 63,
+    "declared_controls": 1249,
+    "accepted_metadata": 1285,
+    "attempted_groups": 17,
+    "unstarted_groups": 46,
+    "started": 321,
+    "completed": 321,
+    "flags_zero": 320,
+    "flags_one": 1,
+    "unstarted_tests": 964,
+    "original_group_files": 238,
+    "original_process_intervals": 20,
+    "distinct_static_input_files": 546
+  },
+  "original_authoring_negatives": [
+    {
+      "kind": "pre_save_AST_authoring_negative",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-existing63-negative-runtime-auditor-sourceonly-20261022\\authoring\\indentation-check-negative-and-correction.json",
+        "bytes": 3277,
+        "sha256": "1F083413FC417160F6918FEE8C98BA0B37ABE91FE3E71A46250E34FFCE8D3AEF"
+      },
+      "scope": "Two replacement indentation widths corrected before any candidate file existed."
+    },
+    {
+      "kind": "predecessor_one_group_outer_output_assumption",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-existing63-negative-runtime-auditor-sourceonly-20261022\\outer-progress-prefix-predecessor-negative.json",
+        "bytes": 7305,
+        "sha256": "9B5516D98C14793A08C5177A1EB8A080BA14A2951154D2CD38E8B1DB3A39A1DB"
+      },
+      "scope": "07A retained unexecuted; v2 requires exactly16 original ordered CRLF progress lines plus the full original result. No stripping, rewriting, or native-output relaxation."
+    },
+    {
+      "kind": "handoff_metadata_authoring_syntax",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-existing63-negative-runtime-auditor-sourceonly-20261022\\authoring\\handoff-write-syntax-negative.json",
+        "bytes": 2398,
+        "sha256": "EDAD2E6B7FF7437CEEC4FBF0E69461E26EC8D872F271B01971623B26FAD80877"
+      },
+      "scope": "An invalid Python keyword used for a metadata key failed parsing before any read/write. Candidate and all proofs unchanged."
+    }
+  ],
+  "checker_only_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-existing63-negative-runtime-auditor-source-peer-20261022\\original-observation-schema-checker-negative.json",
+    "bytes": 4110,
+    "sha256": "CC5FD214250CFC174F327A6625291DA04CAA632C8679223F6CA3339EA2CFAC6A"
+  },
+  "candidate_executed": false,
+  "candidate_prefix_executed": false,
+  "auditor_executed": false,
+  "current_process_query_executed": false,
+  "current_seal_rehash_claimed": false,
+  "configuration_issued": false,
+  "native_execution_authorized": false,
+  "Main_or_index_accessed": false,
+  "source_mutation_hold_released": false,
+  "runtime_qualification": false,
+  "product_qualification": false
+}

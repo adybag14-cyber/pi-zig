@@ -1,0 +1,25 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\03ff5ffc7cf14c167c8e90c3e9e0cca9\\test.exe",
+  "binary_sha256": "8C01556E1DB590373AD4369245137786250D340D52222325A0D24CB2AEA01848",
+  "version": "0.16.0",
+  "actual_count": 13,
+  "tests": [
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing Reset clears the actual callback before reuse without counting admission",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing selects the real callback after retain Detach and waiting decrement",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing negative raw admission keeps callback but does not strengthen count or synthesize completion",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing accepted bad descriptor preserves the real callback negative result",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing reset and redispatch precede old Wrapper and event retirement",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing callback error after redispatch preserves the new request pointer and event",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing typed callback failure still retires the final native Wrapper pointer",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing actual ordinary callback reason survives Entry destruction",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing actual native fatal callback still completes native request retirement",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing shared shutdown drains real callbacks after JavaScript is disabled",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing stopped native service returns its real status without a callback or count",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing retained Controller rejects a retired Hub before touching Entry inputs",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-reqwrap-callback-routing",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

@@ -1,0 +1,21 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\c831062da948f423be03bfdeb04aa381\\test.exe",
+  "binary_sha256": "EBB897AE4DEDE14D57E45D5654BB59797037236E1E029C81FC441EFFA31D8985",
+  "version": "0.16.0",
+  "actual_count": 9,
+  "tests": [
+    "native_vm_private_property_test.test.VM private property creates unique hidden writable configurable own slots",
+    "native_vm_private_property_test.test.VM private property ignores an inherited setter and read only prototype slot",
+    "native_vm_private_property_test.test.VM private property extends frozen ordinary objects without changing public extensibility",
+    "native_vm_private_property_test.test.VM private property stores on the real proxy wrapper and survives revocation without traps",
+    "native_vm_private_property_test.test.VM private property replacement retires its previous actual value exactly once",
+    "native_vm_private_property_test.test.VM private property invalid receivers and keys consume values without coercion",
+    "native_vm_private_property_test.test.VM private property respects an existing own read only descriptor and keeps the old value",
+    "native_vm_private_property_test.test.VM private property own setter receives the exact receiver value and ordinary throw",
+    "native_vm_private_property_test.test.VM private property allocation failure consumes the new value and publishes no slot"
+  ],
+  "group": "native-vm-private-property",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

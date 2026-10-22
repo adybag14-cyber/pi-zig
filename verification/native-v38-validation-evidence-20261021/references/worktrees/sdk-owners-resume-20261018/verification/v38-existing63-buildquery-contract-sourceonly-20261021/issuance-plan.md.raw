@@ -1,0 +1,103 @@
+# V38 original63 BuildQuery issuance contract
+
+The existing bound constructor already supports the original63 cohort. No constructor, driver, auditor or helper source edit is needed for issuance. The companion inert-config-template.json retains all 53 provenance entries from the actual new4 configuration, changes the five cohort fields, and removes the old execution authority and live observations. It is source-only data and cannot pass the constructor's issued-status and authorization gates.
+
+## Exact evidence basis
+
+| Input | Bytes | SHA-256 |
+|---|---:|---|
+| Bound BuildQuery constructor | 10,095 | 5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B |
+| Actual new4 issued config | 20,595 | 3BE39EDAB0FAD89A5BA1FC1112AF3BF4C33CAF7AFE5CA9833F68E927B5E52C26 |
+| Original63 preparation review | 547,326 | 9362D1498B75DFEC3E452B1E2F06C8D1C526C16E615DC0F40C17C2C147816A58 |
+| Common full matrix | 1,104,585 | 8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03 |
+| Original V34 ordered63 grant | 12,270 | 275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15 |
+| Root original63 helper acceptance | 3,112 | 8933C5068CD78AF578E52F1EAD96F50E6BD8ED5A4F28773AD1FA4CB3E8EE3AF1 |
+| Accepted unresolved original63 helper | 21,109 | 0F8502D9AD3395551AFC08652795C77114EED504E13623F6D65CDE774FAEB06C |
+| Root emitted-catalog acceptance | 4,758 | 911DCC32CF09C1610CE045572546668FF470EE62E9597DFC4D3DA6919480228B |
+| Root bound execution-source review | 6,950 | 20ECFC7CF589BAB8E0090EEED59B2BE236CDE5F1F14DF4C2A68AD215C2E3013A |
+| Bound positive BuildQuery auditor | 37,254 | 6BCBE32702657CD2B5F62E8779CCF585B86D7A8CFFC04C2EB6FE25B4D6E41A9E |
+
+All input paths are outside Main:
+
+- Bound BuildQuery constructor: C:\Users\adyba\pi-zig\evidence\Prepare-ReviewedV38BuildQueryGrant-20261021.py
+- Actual new4 issued config: C:\Users\adyba\pi-zig\evidence\root-v38-new4-buildquery-issued-config-20261021.json
+- Original63 preparation review: C:\Users\adyba\pi-zig\evidence\combined-native-batch-v38-regression63-prepared-20261021\preparation-review.json
+- Common full matrix: C:\Users\adyba\pi-zig\evidence\combined-native-batch-v38-regression63-prepared-20261021\groups.json
+- Original V34 ordered63 grant: C:\Users\adyba\pi-zig\evidence\root-native-foundation-fresh-v34-control-20261020-202924\root-grant.json
+- Root original63 helper acceptance: C:\Users\adyba\pi-zig\evidence\root-v38-existing63-observed-helper-source-acceptance-20261021.json
+- Accepted unresolved original63 helper: C:\Users\adyba\pi-zig\evidence\v38-existing63-positive-input-helper-sourceonly-20261021\candidate\Prepare-ObservedV38Existing63PositiveBuildQueryAuditInputs-20261021-unresolved.py
+- Root emitted-catalog acceptance: C:\Users\adyba\pi-zig\evidence\root-v38-catalog-source-acceptance-20261021.json
+- Root bound execution-source review: C:\Users\adyba\pi-zig\evidence\root-v38-execution-bound-source-review-20261021.json
+- Bound positive BuildQuery auditor: C:\Users\adyba\pi-zig\evidence\Audit-PositiveV38CompleteBuildQuery-20261021.py
+
+The evidence binds head 014062f2d139254acab4b985b4ae343db637166f and common matrix 8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03. This inspection did not read Main or its index. The unchanged constructor checks the actual head, branch and clean status at any separately authorized issuance.
+
+## Minimal cohort adaptations
+
+The actual new4 configuration is the source baseline. These five values select original63:
+
+| Field | Actual new4 baseline | Original63 value |
+|---|---|---|
+| batch | new4 | existing63 |
+| declared_groups | 4 | 63 |
+| declared_controls | 58 | 1249 |
+| preparation_review | New4 review 35A3A1E9 | Full regression63 review pin 9362D149 above |
+| selected_group_names | Four newly integrated groups | All 63 names from the regression review, in their unchanged original order |
+
+The template contains the complete ordered list. A read-only comparison established equality with both the original V34 grant's groups and the accepted original63 helper's GROUPS literal. The list is unique and disjoint from new4. Its 1,249 declarations are counted from the same 117-group / 2,013-declaration matrix, with all 576 dependency rows retained.
+
+Use **existing63** in constructor/config/helper batch identity and control/proof directory prefixes. Use **regression63** in the prepared directory and preparation-review.batch. This distinction is intentional. Constructor lines 35-38 accept existing63 and 63/1249; lines 66-73 require the exact original order. The helper checks the existing63 launch identity at lines 167-175.
+
+## Separate future Root issuance
+
+The inert template changes 11 top-level values from the actual new4 configuration: status, execution_authorized, the five cohort fields, root_review, issued_utc, fresh_memory_observation and root_resource_ownership. Every other top-level value is retained. In the ownership object only phase, observed_free_kib, observed_utc, native_candidates and allowed_groups change.
+
+| Item | Inert template | Requirement for a separately issued configuration |
+|---|---|---|
+| status | unissued_specific_v38_existing63_buildquery_template | The existing exact constructor status root_reviewed_specific_v38_buildquery_preparation |
+| execution_authorized | false | A distinct actual Root issuance; the template is not authorization |
+| root_review | Explicit source-only narrative | Root's original63-specific review and retained strict scope |
+| issued_utc | null | Actual fresh issuance time |
+| fresh_memory_observation | Actual observation fields null; threshold/classifier retained | Fresh complete classifier and memory observation, including no competing native candidates |
+| root_resource_ownership | Observation fields null; original63 phase and all 63 allowed groups | Actual separate Root serial resource ownership and fresh observations |
+| actual_metadata_count | null | Must remain null throughout BuildQuery issuance; derive only from later independent original63 metadata |
+| runtime_authority / qualification | false / false | Remain false; RuntimeOnly requires a separate later grant |
+
+The bound constructor hash 5ACED5A1, head, common matrix, catalog acceptance 911DCC32 and independent emitted peer B69569A2 remain unchanged. Keep preserved_previous_configuration and historical_progress_rebinding as original history. Do not replace historical paths merely because equivalent bytes exist in regression63.
+
+## Exact future path contract
+
+Let E = C:\Users\adyba\pi-zig\evidence.
+
+| Role | Required path or pattern |
+|---|---|
+| Future issued configuration | E/root-v38-existing63-buildquery-issued-config-20261021.json |
+| Prepared catalog | E/combined-native-batch-v38-regression63-prepared-20261021 |
+| Constructor-created direct record | Prepared catalog/buildquery-launch.json |
+| Fresh control | E/root-native-foundation-fresh-v38-existing63-control-<constructor UTC stamp> |
+| Fresh proof | E/root-native-foundation-fresh-v38-existing63-buildquery-<same stamp> |
+| Fresh caches | Fresh proof/cache and Fresh proof/global-cache |
+| Later bound observed-input helper | E/Prepare-ObservedV38Existing63PositiveBuildQueryAuditInputs-20261021.py |
+| Later original audit inputs | Fresh control/independent-positive-buildquery-audit-inputs.json |
+
+The constructor derives the fresh stamp itself and requires the direct record and fresh control/proof paths to be absent. No stamp, job identifier, launcher/grant hash, metadata count, process identity or result is supplied in this plan. The exact future configuration basename matters: helper line 131 fixes that path. The direct record uses buildquery-launch.json with no retry1 suffix.
+
+## Provenance conclusion: retain all 53 entries
+
+No additional grant provenance key is required for the original63 helper. Preserve the complete grant_provenance_updates object from new4, including key order and every pin. The canonical object digest, using sorted-key compact JSON plus one LF, is:
+
+E1FECB03FD6C4F240958387323840A9E3F0CE28831D24730C57A6116C31A1EAB
+
+The constructor verifies all supplied pins and copies all non-reserved provenance entries at lines 77 and 107-125. It does not mandate a new helper-specific key or a 53-key count; 53 is the exact minimal retained set from the accepted current configuration.
+
+The accepted helper at lines 156-164 requires the original specific configuration and **v38_execution_bound_source_review = Root receipt 20ECFC7C**, which must identify the exact constructor 5ACED5A1 and positive auditor 6BCBE327. Do not replace that review with helper acceptance 8933C506: the receipts have different roles and schemas. Retain 8933C506 as the separate helper source-acceptance evidence in this plan and the later helper review. No helper-specific addition to the grant is necessary.
+
+The helper remains unresolved. Its 17 actual bindings and separate helper/audit-input issuance can follow only the original63 terminal BuildQuery and independent metadata observations. New4's observed counts and results do not transfer to this cohort.
+
+## Strict gates retained
+
+Keep the original driver 1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601 and classifier 3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301. The regression63 metadata auditor remains 17,704 bytes / 5B94D3BD4B6CA0E1B969394926A7F907485717FF25B75BA06D1D67D68A232682.
+
+The unchanged controls include the 64-group cap; 300-second initial grant freshness; at least 16 GiB free; one serial native owner; fresh private caches; 1,320-second compile, 30-second metadata, 120-second runtime-owner, 10-second settle and 1,800-second owned-outer deadlines; exact whole-input and artifact seals; complete original process-instance evidence; and strict metadata/empty-stderr rules. The BuildQuery grant's execution-binding slots for build results, metadata, artifacts and actual counts remain null; historical provenance stays retained. Later RuntimeOnly remains a distinct phase.
+
+Only inert data and this plan were created in the SDK worktree. No constructor, helper, candidate prefix, auditor or native workload ran; no configuration was issued; Main, its index and all accepted source/catalog files were untouched.

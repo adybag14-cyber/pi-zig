@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "previous_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "phase_pins": [
+    {
+      "phase": "fixture",
+      "manifest": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\manifest.json",
+        "bytes": 20679,
+        "sha256": "236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9"
+      },
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-20261021\\fixture-receipt.json",
+        "bytes": 6347,
+        "sha256": "5010977B7618E5E79DFFF90FC1D8EDD59E49A9CD7E5E32E6C97669C18587ABE7"
+      },
+      "release": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-release-20261021.json",
+        "bytes": 4783,
+        "sha256": "EFD306E15D960868B57C7314E09DE108F0A363CF0B972F471EB7E37E71EE7ABC"
+      },
+      "commit": "f878aa40ab4bc4629f2cf57b281fcd2e7329473b",
+      "path_count": 44
+    },
+    {
+      "phase": "progress",
+      "manifest": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\manifest.json",
+        "bytes": 134632,
+        "sha256": "345F3E3F5B71F6FA14618E402F9D7116AE841BDCD0B534D0E1BEB95933A3D878"
+      },
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-negative-intake-20261021\\progress-receipt.json",
+        "bytes": 36797,
+        "sha256": "F5DF0B66044F51CA326D8F8A3EBA4A69E953111E86C0CBB076825EE9456DD062"
+      },
+      "release": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-negative-intake-release-20261021.json",
+        "bytes": 5806,
+        "sha256": "86519BA3A3D73FFB30E2CBD8F1F45186EB3FEB9B89EC2FC32C71C8B875863C0C"
+      },
+      "commit": "014062f2d139254acab4b985b4ae343db637166f",
+      "path_count": 215
+    }
+  ],
+  "phases": [
+    {
+      "phase": "fixture",
+      "before_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+      "after_head": "f878aa40ab4bc4629f2cf57b281fcd2e7329473b",
+      "path_count": 44,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    },
+    {
+      "phase": "progress",
+      "before_head": "f878aa40ab4bc4629f2cf57b281fcd2e7329473b",
+      "after_head": "014062f2d139254acab4b985b4ae343db637166f",
+      "path_count": 215,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    }
+  ],
+  "explicit_phase_path_occurrences": 259,
+  "distinct_final_paths": 259,
+  "source_build_paths": 2,
+  "repeated_paths": [],
+  "all_donor_and_commit_bytes_exact": true,
+  "all_raw_preimages_exact": true,
+  "complete_changed_path_set_exact": true,
+  "source_union": [
+    {
+      "path": "src/native_node_file_handle_owner_test.zig",
+      "bytes": 28576,
+      "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6",
+      "last_phase": "fixture"
+    },
+    {
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "bytes": 33411,
+      "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B",
+      "last_phase": "fixture"
+    }
+  ],
+  "no_main_or_index_write": true
+}

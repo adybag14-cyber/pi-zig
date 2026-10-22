@@ -1,0 +1,65 @@
+{
+  "status": "source_only_predecessor_observer_output_assumption_rejected",
+  "candidate_executed": false,
+  "config_issued": false,
+  "checker_result": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-existing63-negative-runtime-auditor-sourceonly-20261022\\check-original-observations.py\", line 179, in <module>\r\n    assert raw(RC/\"outer.stdout.bin\")==raw(RP/\"result.json\")\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-existing63-negative-runtime-auditor-sourceonly-20261022\\check-original-observations.py\", line 179, in <module>\r\n    assert raw(RC/\"outer.stdout.bin\")==raw(RP/\"result.json\")\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "original_observation": {
+    "ok": true,
+    "summary": "Ran python directly in the Windows host devbox.",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      },
+      "output": {
+        "mode": "tail",
+        "max_chars": 7000,
+        "max_lines": 0,
+        "stdout_original_chars": 3338,
+        "stderr_original_chars": 0,
+        "stdout_capture_truncated": false,
+        "stderr_capture_truncated": false
+      }
+    },
+    "stdout": "{\r\n  \"outer_stdout\": {\r\n    \"bytes\": 252257,\r\n    \"sha256\": \"AB995C945CE94BDAF2F7D1AAD7C57728C30F7E0DCA25CA359315DC07A92F5651\",\r\n    \"head\": \"b'Group native-node-file-handle-read completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-node-fs-callback-template completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-vm-simple-stack-source completed actual RuntimeOnly phases; awaiting whole-batc'\",\r\n    \"tail\": \"b'apsed_seconds\\\": 0.2115406,\\\\r\\\\n      \\\"utc\\\": \\\"2026-10-22T13:45:28.2844709+00:00\\\"\\\\r\\\\n    }\\\\r\\\\n  ],\\\\r\\\\n  \\\"completed_utc\\\": \\\"2026-10-22T13:46:38.4623468+00:00\\\"\\\\r\\\\n}\\\\r\\\\n'\",\r\n    \"crlf\": 6311,\r\n    \"lf\": 6311,\r\n    \"parse_error\": \"JSONDecodeError('Expecting value: line 1 column 1 (char 0)')\"\r\n  },\r\n  \"result\": {\r\n    \"bytes\": 250628,\r\n    \"sha256\": \"60532D49A021587856D9B362F456D8C1ACE22A7E3FECFB6980A2FA0FF2D30F87\",\r\n    \"head\": \"b'{\\\\r\\\\n  \\\"schema\\\": 1,\\\\r\\\\n  \\\"status\\\": \\\"failed\\\",\\\\r\\\\n  \\\"mode\\\": \\\"RuntimeOnly\\\",\\\\r\\\\n  \\\"candidate_head\\\": \\\"014062f2d139254acab4b985b4ae343db637166f\\\",\\\\r\\\\n  \\\"driver_sha256\\\": \\\"1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601\\\",\\\\r\\\\n  \\\"group_manifest_sha256\\\": \\\"8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C'\",\r\n    \"tail\": \"b'apsed_seconds\\\": 0.2115406,\\\\r\\\\n      \\\"utc\\\": \\\"2026-10-22T13:45:28.2844709+00:00\\\"\\\\r\\\\n    }\\\\r\\\\n  ],\\\\r\\\\n  \\\"completed_utc\\\": \\\"2026-10-22T13:46:38.4623468+00:00\\\"\\\\r\\\\n}\\\\r\\\\n'\",\r\n    \"crlf\": 6295,\r\n    \"lf\": 6295,\r\n    \"parse_ok\": true\r\n  },\r\n  \"result_occurrences\": 1,\r\n  \"result_offset\": 1629,\r\n  \"extra_prefix\": \"b'Group native-node-file-handle-read completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-node-fs-callback-template completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-vm-simple-stack-source completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-vm-exotic-operations completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-node-diagnostic-context completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-node-native-debug completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-node-permission completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-node-fs-readwrap-reuse completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-node-reqwrap-callback-routing completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-vm-script-location completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-node-stream-read completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-node-environment-map completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-vm-backing-store-adoption completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-node-environment-paths completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-node-stream-fields completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\nGroup native-node-managed-buffers completed actual RuntimeOnly phases; awaiting whole-batch closure\\\\r\\\\n'\",\r\n  \"extra_suffix\": \"b''\"\r\n}\r\n",
+    "exitCode": 0,
+    "truncated": false
+  },
+  "driver_emission": {
+    "ok": true,
+    "summary": "Ran rg directly in the Windows host devbox.",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 1
+      },
+      "output": {
+        "mode": "tail",
+        "max_chars": 6000,
+        "max_lines": 0,
+        "stdout_original_chars": 1173,
+        "stderr_original_chars": 0,
+        "stdout_capture_truncated": false,
+        "stderr_capture_truncated": false
+      }
+    },
+    "stdout": "496-    $summary=$taskResult.phases.runtime.evidence.canonical_results\n497-    if(!$summary-or$summary.status-cne'passed'-or$summary.started-ne$selection.names.Count-or$summary.completed-ne$selection.names.Count-or$summary.failed_or_skipped_or_logged_or_leaked-ne0){throw 'All independently accepted actual indices must have flags zero'}\n498-   }\n499-   $taskResult.status='awaiting_batch_closure'\n500-  }catch{$taskResult.status='failed';$taskResult.errors+=,[string]$_;throw}finally{\n501-   $taskResult.attempted_phases=$taskAttemptedPhases.ToArray();$taskResult.owned_started_phases=$taskStartedPhases.ToArray()\n502-   Save-Json $taskResult 'result-provisional.json' 22\n503-  }\n504:  Write-Output ('Group '+$Group+' completed actual '+$Mode+' phases; awaiting whole-batch closure')\n505- }\n506- $batchResult.status='awaiting_final_seals'\n507-}catch{\n508- $batchResult.status='failed';$batchResult.errors+=,[string]$_\n509-}finally{\n510- $taskProof=$batchProof\n511- try{Restore-ObserverEnvironment $taskEnvironmentOriginal;$batchResult.controller_environment_restored=$true}catch{$batchResult.status='failed_environment_restore';$batchResult.errors+=,[string]$_}\n512- try{\n",
+    "exitCode": 0,
+    "truncated": false
+  },
+  "correction": "Require the exact ordered 16 CRLF controller progress records plus the entire original result bytes. No stripping, rewriting, or exception to strict native wire/stderr gates."
+}

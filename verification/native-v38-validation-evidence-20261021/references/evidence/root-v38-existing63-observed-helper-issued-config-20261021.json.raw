@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v38_existing63_positive_audit_input_preparation",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-22T12:56:54.134689+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "job_id": "job-op-9f95f857e533a1e39a33e74e6d2243246c37f03b6a58e5a3108736d14b28470e",
+  "preparer_sha256": "587C672FEADE88312B34CC40FBFBDF045E671C2B3BD3F3AEA4DB2C0909CFA086",
+  "helper_execution_authorized": true,
+  "audit_configuration_issuance_authorized": true,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "observed": {
+    "before": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\before.json",
+      "bytes": 16165285,
+      "sha256": "E0B4F23FEB76DFAA549F1B029B9AF55DEAF908CC8EF66335A17FE33E023BFE2A"
+    },
+    "final": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\final.json",
+      "bytes": 16165285,
+      "sha256": "E0B4F23FEB76DFAA549F1B029B9AF55DEAF908CC8EF66335A17FE33E023BFE2A"
+    },
+    "result": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\result.json",
+      "bytes": 1044504,
+      "sha256": "A80B07D02FB7393E335E093EAB945455DD23DA82AD7B15ECC4171C8F3F45DA3F"
+    },
+    "outer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\outer.json",
+      "bytes": 1551,
+      "sha256": "2F094044D3B82F2C4B4B4A314825EE9D385DD0DC17433A55E346EBB94A1DF11F"
+    },
+    "outer_absence": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\outer-absence.json",
+      "bytes": 182,
+      "sha256": "8A33037F9381486CCD948B5F51B03056D77E3BDF34544DA199781C7E8196369F"
+    },
+    "job_observation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\independent-observed-job-status.json",
+      "bytes": 1572,
+      "sha256": "AE9DA3692CC61330A425B31561E7D797A3BA6C1A98503590B9E481D7105B2824"
+    },
+    "metadata_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\independent-metadata-acceptance.json",
+      "bytes": 242533,
+      "sha256": "C219D8E0E3BC372C1A818B783F1F461A89A37B58CF5B6BF86650A50E0ADA9BAF"
+    }
+  },
+  "root_bound_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-observed-helper-binding-20261021.json",
+    "bytes": 21203,
+    "sha256": "29832FE5805866AA73C862BBA8462EF6477E13F2FB68DF3169372A19AB51DDD1"
+  },
+  "independent_bound_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-existing63-observed-helper-binding-peer-20261021\\peer.json",
+    "bytes": 7790,
+    "sha256": "10E81B16E72D491CDEAF63FCFCC2D81961D1C4FFFA333FC9B5F6EACD25861854"
+  },
+  "root_full_bound_source_and_peer_checker_read": true,
+  "resource": {
+    "program": "python",
+    "resource_class": "io-heavy",
+    "timeout_seconds": 180,
+    "one_helper_process": true,
+    "create_only_output": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\independent-positive-buildquery-audit-inputs.json"
+  },
+  "root_review": "Root accepts the exact17 observed original63 bindings after original terminal success and independent metadata acceptance. Full bound source and independent finite checker/proof read; ten helper bodies and three gate regions unchanged. All original input pins rehashed. This release permits one observed-input assembly; the separate positive auditor requires its own resource release."
+}

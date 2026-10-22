@@ -1,0 +1,177 @@
+    require(document_pin==edge["exact_referenced_pin"],"referenced raw version retained")
+
+for required in preservation["required_raw_files"]:
+    require(archived_pin(required["path"])==required and
+            row_by_path[required["path"].casefold()]["representation"]=="raw_byte_exact","all102 supplemental originals retained raw")
+for required in preservation["role_pins"].values():
+    require(required in preservation["required_raw_files"],"selected observed roles are immutable archived originals")
+
+membership = copy_plan["observed_phase_membership"]
+require([m["phase"] for m in membership]==list(PHASES),"five exact observed phase scopes")
+for index,m in enumerate(membership):
+    batch = "new4" if index<2 else "existing63"
+    is_build = m["phase"].endswith("-buildquery")
+    groups = NEW4 if index<2 else existing63[:1] if index==3 else existing63[:17] if index==4 else existing63
+    proof,control = inside(m["proof"]),inside(m["control"])
+    require(proof.parent==control.parent==E,"phase roots directly under evidence")
+    cp = "root-native-foundation-"+("fresh-" if is_build else "")+"v38-"+batch+("-control-" if is_build else "-runtime-control-")
+    require(re.fullmatch(re.escape(cp)+r"\d{8}-\d{6}",control.name),"actual phase control identity")
+    require(proof.name==control.name.replace("-control-","-buildquery-" if is_build else "-",1),"actual phase proof identity")
+    if index>=2:
+        require(control.name==cp+ORIGINAL63_SUFFIXES[index-2],"exact original63 observed phase instance")
+    require(m["proof_top_level_files"]==["before.json","final.json","result.json"]==names(proof),"whole original proof membership")
+    require(m["control_top_level_files"]==names(control) and names(control,True)==[],"whole original control membership")
+    require(set(m["group_files"])==set(groups) and names(proof/"groups",True)==sorted(groups),"all original group directories")
+    require(names(proof,True)==sorted(["groups"]+m["excluded_subdirectories"]),"explicit excluded phase directories")
+    require(set(m["excluded_subdirectories"])==({"cache","global-cache"} if is_build else set()),"only original caches excluded")
+    for group in groups:
+        gd = proof/"groups"/group
+        require(m["group_files"][group]==names(gd),"all original group receipts")
+        require(names(gd,True)==sorted(m["excluded_group_subdirectories"][group]),"all original group subdirectories")
+        require(set(m["excluded_group_subdirectories"][group])==({"installed"} if is_build else set()),"only installed binaries excluded")
+        for name in m["group_files"][group]:
+            archived_pin(gd/name)
+    for name in m["proof_top_level_files"]:
+        archived_pin(proof/name)
+    for name in m["control_top_level_files"]:
+        archived_pin(control/name)
+    if index<2:
+        prior = inventory["observed_phase_membership"][index]
+        for key in ("phase","proof","control","proof_top_level_files","excluded_subdirectories","excluded_group_subdirectories"):
+            require(m[key]==prior[key],"known phase identity")
+        require(set(prior["control_top_level_files"])<=set(m["control_top_level_files"]),"all known original controls retained")
+        for group in groups:
+            require(set(prior["group_files"][group])<=set(m["group_files"][group]),"all known group receipts retained")
+
+COMMON_TRUE = ("whole_bookends_unchanged","current_all_sealed_inputs_rehashed",
+ "current_complete_directory_inventories_verified","current_actual_process_instances_absent",
+ "controller_environment_restored")
+
+def check_positive(batch,groups,declared,index):
+    cohort = copy_plan["cohorts"][batch]
+    require(set(cohort)=={"buildquery_root_acceptance","runtime_root_acceptance"},"exact final cohort authorities")
+    bq_pin,rt_pin = cohort["buildquery_root_acceptance"],cohort["runtime_root_acceptance"]
+    if batch=="new4":
+        require(bq_pin==plan["known_new4"]["buildquery_root_acceptance"] and
+                rt_pin==plan["known_new4"]["runtime_root_acceptance"],"unchanged accepted new4 authorities")
+    bq,rt = document(bq_pin),document(rt_pin)
+    count = len(groups)
+    require(bq["status"]=="root_accepted_complete_fresh_v38_"+batch+"_buildquery","Root complete BQ only")
+    require(rt["status"]=="root_accepted_complete_strict_v38_"+batch+"_runtime","Root complete strict runtime only")
+    for value in (bq,rt):
+        require(value["reviewer"]=="Root" and value["candidate_head"]==HEAD and value["batch"]==batch,"accepted original cohort identity")
+        require(value["groups"]==groups and value["declared_groups"]==count and value["declared_controls"]==declared,"accepted complete source cohort")
+        require(type(value["actual_metadata_count"]) is int and value["actual_metadata_count"]>0,"observed positive metadata count")
+        require(len(value["actual_group_counts"])==count and all(type(n) is int and n>0 for n in value["actual_group_counts"]),"complete observed group counts")
+        require(sum(value["actual_group_counts"])==value["actual_metadata_count"],"observed metadata sum")
+        flags(value,false=("source_mutation_hold_released",))
+    actual,counts = bq["actual_metadata_count"],bq["actual_group_counts"]
+    require(rt["actual_metadata_count"]==actual and rt["actual_group_counts"]==counts,"BQ/runtime same actual cohort")
+    flags(bq,true=("complete_buildquery_accepted","complete_source_and_current_directory_seals","all_original_terminal0_owner_gates_passed"),
+          false=("runtime_started","runtime_execution_authorized","qualification"))
+    flags(rt,true=("strict_native_runtime_accepted","whole_bookends_unchanged",
+                   "complete_source_and_current_directory_seals",
+                   "all_original_strict_empty_stderr_and_all_tests_passing_gates_passed",
+                   "selected_native_runtime_qualification"),false=("product_qualification",))
+    require(bq["native_owner_count"]==2*count and bq["actual_process_intervals_closed"]==2*count+3 and bq["actual_tests_started"]==0,"complete original BQ owners")
+    require(rt["runtime_owner_count"]==count and rt["actual_process_intervals_closed"]==count+3,"complete original runtime owners")
+    require(rt["observed_started"]==rt["observed_completed"]==actual and rt["observed_failed"]==rt["not_started"]==0,"complete positive runtime counts")
+    bm,rm = membership[index],membership[index+1]
+    bp,bc,rp,rc = Path(bm["proof"]),Path(bm["control"]),Path(rm["proof"]),Path(rm["control"])
+    role_paths = {
+      "build_result":bp/"result.json","build_final":bp/"final.json",
+      "metadata_acceptance":bc/"independent-metadata-acceptance.json",
+      "independent_closure":bc/"independent-current-seals-and-owners.json",
+    }
+    for key,path in role_paths.items():
+        require(bq[key]==archived_pin(path),"Root BQ exact original "+key)
+    require(rt["runtime_result"]==archived_pin(rp/"result.json") and rt["runtime_final"]==archived_pin(rp/"final.json"),"Root exact original runtime result/seal")
+    require(rt["independent_runtime_closure"]==archived_pin(rc/"independent-positive-runtime-closure.json"),"Root positive runtime closure")
+    require(rt["root_buildquery_acceptance"]==bq_pin and rt["metadata_acceptance"]==bq["metadata_acceptance"] and
+            rt["independent_build_closure"]==bq["independent_closure"],"runtime exact accepted parent")
+    build,metadata = document(bq["independent_closure"]),document(bq["metadata_acceptance"])
+    runtime = document(rt["independent_runtime_closure"])
+    build_result,runtime_result = doc(bp/"result.json"),doc(rp/"result.json")
+    require(build["status"]=="independently_closed_complete_fresh_build_query" and build["candidate_head"]==HEAD,"accepted positive independent BQ")
+    flags(build,true=COMMON_TRUE+("all_original_terminal0_owner_gates_passed",),
+          false=("runtime_started","qualification","cache_seeded","source_mutation_hold_released"))
+    require(build["granted_groups"]==build["attempted_groups"]==count and build["unstarted_groups"]==0,"all BQ groups closed")
+    require(build["native_owner_count"]==2*count and len(build["actual_process_intervals"])==2*count+3 and build["actual_tests_started"]==0,"all actual BQ process intervals")
+    require(build["actual_metadata_count"]==actual and [g["group"] for g in build["groups"]]==groups and
+            [g["actual_metadata_count"] for g in build["groups"]]==counts,"closure actual metadata")
+    require(metadata["status"]=="independently_accepted_combined_native_batch_metadata" and metadata["accepted"] is True and metadata["candidate_head"]==HEAD,"accepted raw metadata")
+    flags(metadata,false=("runtime_started","runtime_qualification"))
+    require([g["group"] for g in metadata["groups"]]==groups and [g["actual_count"] for g in metadata["groups"]]==counts,"all accepted actual groups")
+    require(build["metadata_acceptance"]==bq["metadata_acceptance"] and
+            metadata["build_result_sha256"]==bq["build_result"]["sha256"] and
+            metadata["build_source_seal_sha256"]==bq["build_final"]["sha256"],"actual metadata/source linkage")
+    require(build_result["status"]=="passed_build_query_batch" and build_result["mode"]=="BuildQuery" and build_result["candidate_head"]==HEAD,"original BQ success")
+    require([g["group"] for g in build_result["groups"]]==groups and
+            all(g["status"]=="passed_build_query" for g in build_result["groups"]),"complete BQ results")
+    require(runtime["status"]=="independently_closed_positive_strict_runtime" and runtime["candidate_head"]==HEAD and runtime["batch"]==batch,"accepted positive independent runtime")
+    flags(runtime,true=COMMON_TRUE+("all_original_strict_empty_stderr_and_all_tests_passing_gates_passed","runtime_qualification"),
+          false=("product_qualification","source_mutation_hold_released"))
+    require(runtime["metadata_acceptance"]==bq["metadata_acceptance"] and runtime["independent_build_closure"]==bq["independent_closure"],"runtime independent parent links")
+    require(runtime["declared_groups"]==count and runtime["declared_controls"]==declared and runtime["accepted_cohort"]==actual,"complete independent runtime cohort")
+    require(runtime["observed_started"]==runtime["observed_completed"]==actual and runtime["observed_failed"]==runtime["not_started"]==0,"independent all-positive counts")
+    require(runtime["runtime_owner_count"]==count and len(runtime["actual_process_intervals"])==count+3,"all runtime intervals")
+    require([g["group"] for g in runtime["observed_groups"]]==groups,"all independent runtime groups")
+    require(runtime_result["status"]=="passed_selected_native_batch" and runtime_result["mode"]=="RuntimeOnly" and runtime_result["candidate_head"]==HEAD,"original strict runtime success")
+    require([g["group"] for g in runtime_result["groups"]]==groups and runtime_result["errors"]==[],"whole original runtime result")
+    flags(runtime_result,true=("postseal","controller_environment_restored","runtime_requested","all_groups_closed"),false=("product_qualified","cache_seeded"))
+    for number,group in enumerate(groups):
+        accepted = metadata["groups"][number]
+        observed = runtime["observed_groups"][number]
+        gp = rp/"groups"/group
+        canonical = doc(gp/"runtime.results.json")
+        require(observed["started"]==observed["completed"]==counts[number] and observed["failed"]==0,"accepted per-group runtime counts")
+        require(canonical["expected"]==canonical["started"]==canonical["completed"]==counts[number] and canonical["failed_or_skipped_or_logged_or_leaked"]==0 and canonical["status"]=="passed","canonical all-positive original counts")
+        require(canonical["results"]==[{"index":i,"flags":0,"passed":True} for i in range(counts[number])],"exact canonical zero flags")
+        require(observed["results"]==[dict(row,name=accepted["tests"][i]) for i,row in enumerate(canonical["results"])],"all actual names and original observations")
+        require(raw(gp/"runtime.stderr.log")==b"","original strict empty stderr retained")
+    require(rt["auditor"]["sha256"]=="A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102" and
+            rt["auditor_source_acceptance"]["sha256"]=="12D45623A19BB66517FF8DF2C47CD69F32A167361572A0313D651505528A8F49","accepted corrected auditor source")
+    document(rt["auditor_source_acceptance"])
+    require(archived_pin(rt["auditor"]["path"])==rt["auditor"],"exact accepted auditor retained")
+    audit_cfg = document(rt["audit_configuration"])
+    require(audit_cfg["auditor_sha256"]==rt["auditor"]["sha256"] and audit_cfg["batch"]==batch and audit_cfg["actual_metadata_count"]==actual,"actual positive audit configuration")
+    for control in (bc,rc):
+        job = doc(control/"independent-observed-job-status.json")["data"]
+        require(job["status"]=="succeeded" and job["exitCode"]==0 and job["runnerAlive"] is False and
+                type(job["runnerProcessInstance"]) is str and re.fullmatch(r"[0-9]+",job["runnerProcessInstance"]),"original successful job and exact decimal100ns identity")
+    prep = E/("combined-native-batch-v38-"+("new4" if batch=="new4" else "regression63")+"-prepared-20261021")
+    review,matrix = doc(prep/"preparation-review.json"),doc(prep/"groups.json")
+    require(review["candidate_head"]==HEAD and review["selected_group_names"]==groups and review["selected_groups"]==count and review["selected_declarations"]==declared,"accepted exact prepared cohort")
+    require(review["actual_metadata_count"] is None and archived_pin(prep/"groups.json")["sha256"]==MATRIX_SHA,"source declarations never predict metadata")
+    require(len(matrix["groups"])==117 and sum(len(g["required_named"]) for g in matrix["groups"])==2013 and len(matrix["whole_tree_dependency_pins"])==576,"complete shared catalog")
+    if batch=="new4":
+        require(counts==[19,4,24,14] and actual==61 and rt["original_runtime_rerun"] is False,"unchanged already accepted original new4 run")
+    else:
+        require(count==63 and declared==1249,"original63 source-only constants")
+        # Original63 needs no invented F846 failure or auditor-config adaptation.
+    return {
+      "batch":batch,"source_head":HEAD,"groups":groups,"declared_groups":count,"declared_controls":declared,
+      "actual_metadata_count":actual,"actual_group_counts":counts,
+      "buildquery":{"status":build["status"],"root_acceptance":bq_pin,"closure":bq["independent_closure"],
+                   "metadata_acceptance":bq["metadata_acceptance"],"result":bq["build_result"],
+                   "native_owner_count":2*count,"actual_tests_started":0,"runtime_qualification":False},
+      "runtime":{"status":runtime["status"],"root_acceptance":rt_pin,"closure":rt["independent_runtime_closure"],
+                 "result":rt["runtime_result"],"observed_started":actual,"observed_completed":actual,
+                 "observed_failed":0,"not_started":0,"native_owner_count":count,
+                 "selected_native_runtime_accepted":True,"product_qualification":False},
+      "metadata_transferred_to_another_head":False,"source_mutation_hold_released":False,
+    }
+
+
+def retained_pin(row):
+    require(archived_pin(row["path"])==row,"exact selected original retained")
+    return raw(row["path"])
+
+def selected_observed(role):
+    row = preservation["role_pins"][role]
+    retained_pin(row)
+    return row
+
+def check_existing63_buildquery():
+    cohort = copy_plan["cohorts"]["existing63"]
+    require(set(cohort)=={"buildquery_root_acceptance","prelaunch_root_neg

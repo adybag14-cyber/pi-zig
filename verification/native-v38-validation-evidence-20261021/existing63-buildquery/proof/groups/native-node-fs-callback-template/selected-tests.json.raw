@@ -1,0 +1,24 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\7401a5e3707242058b3de52905143f33\\test.exe",
+  "binary_sha256": "1F215568F86A7437151C941A04F53A98FDD17D69C188093467AFF70FC0A5157F",
+  "version": "0.16.0",
+  "actual_count": 12,
+  "tests": [
+    "native_node_fs_callback_template_test.test.native FSReqCallback no argument initializes the actual selected FSReqBase defaults",
+    "native_node_fs_callback_template_test.test.native FSReqCallback IsTrue accepts only literal true and never coerces an argument",
+    "native_node_fs_callback_template_test.test.native FSReqCallback caller local owns a weak actual request and one BindingData pointer",
+    "native_node_fs_callback_template_test.test.native FSReqCallback weak finalization removes its actual Entry and releases BindingData",
+    "native_node_fs_callback_template_test.test.native FSReqCallback stored InstanceTemplate creates a real blank brand without calling its constructor",
+    "native_node_fs_callback_template_test.test.native FSReqCallback stored brand distinguishes the actual FileHandleReadWrap native allocation",
+    "native_node_fs_callback_template_test.test.native FSReqCallback inherits actual AsyncWrap methods and constructor descriptors",
+    "native_node_fs_callback_template_test.test.native FSReqCallback subclass prototype is selected before its genuine native constructor",
+    "native_node_fs_callback_template_test.test.native FSReqCallback throwing new target prototype preserves the reason before native allocation",
+    "native_node_fs_callback_template_test.test.native FSReqCallback configuration retains the actual shared Controller once and rejects retired Hub entry",
+    "native_node_fs_callback_template_test.test.native FSReqCallback generic storage admits the actual read and retires through the real Wrapper",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-fs-callback-template",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

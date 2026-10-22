@@ -1,0 +1,15 @@
+{
+  "ok": false,
+  "summary": "File \"<string>\", line 45\r\n    source_gate_preservation=dict(all63_original_executable_PDB_installed_metadata_commitments=True,complete_live_source_tree_vendor_compiler_control_checks=True,exact_seal_counts=shape[\"seal_counts\"],raw_wire_decoder_unchanged=True,strict_empty_stderr_failure_preserved=True,original_admission_and_120_second_native_deadline=True,1800_second_outer_deadline=True,full_seven_digit_UTC100ns_identity=True,runner_process_instance_retained_as_string=True,original_17_native_plus_outer_runner_launcher_intervals=20,current_instance_aware_PID_reuse_and_descendant_checks=True,unchanged_classifier_and_driver=True,no_current_checks_were_executed_during_this_source_review=True),\r\n                                                                                                                                                                                                                                                                                                                                               ^\r\nSyntaxError: invalid decimal literal",
+  "data": {
+    "execution": {
+      "queue_wait_ms": 1,
+      "slot": 9
+    }
+  },
+  "stdout": "",
+  "stderr": "  File \"<string>\", line 45\r\n    source_gate_preservation=dict(all63_original_executable_PDB_installed_metadata_commitments=True,complete_live_source_tree_vendor_compiler_control_checks=True,exact_seal_counts=shape[\"seal_counts\"],raw_wire_decoder_unchanged=True,strict_empty_stderr_failure_preserved=True,original_admission_and_120_second_native_deadline=True,1800_second_outer_deadline=True,full_seven_digit_UTC100ns_identity=True,runner_process_instance_retained_as_string=True,original_17_native_plus_outer_runner_launcher_intervals=20,current_instance_aware_PID_reuse_and_descendant_checks=True,unchanged_classifier_and_driver=True,no_current_checks_were_executed_during_this_source_review=True),\r\n                                                                                                                                                                                                                                                                                                                                               ^\r\nSyntaxError: invalid decimal literal\r\n",
+  "exitCode": 1,
+  "truncated": false,
+  "error_code": "INVALID_ARGUMENT"
+}

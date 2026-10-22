@@ -1,0 +1,163 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v37_buildquery_preparation",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "preparer_sha256": "81FA8E7BA4DED5788F1618D393395666C82BC209791079DCCB3EEBDAEC6E9F58",
+  "execution_authorized": true,
+  "runtime_authority": false,
+  "batch": "new4",
+  "declared_groups": 4,
+  "declared_controls": 58,
+  "actual_metadata_count": null,
+  "qualification": false,
+  "preparation_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\preparation-review.json",
+    "bytes": 212519,
+    "sha256": "CC5D3FF8C0FFD05B78EC524EFB6E9F642F15A5648FECD3DA0DDEF9FA0C0B29D9"
+  },
+  "independent_catalog_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v37-catalog-source-peer-20261021\\emitted-peer.json",
+    "bytes": 16494,
+    "sha256": "858C81B1A83FCFE96980FA1C9EEB460FCDDF775095407A11DE346885C379DFE4"
+  },
+  "root_catalog_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-catalog-source-acceptance-20261021.json",
+    "bytes": 8792,
+    "sha256": "1DE26AC6A76F9B4082D95EDFA331DDB99781159400F4B23219A261C44FB556A1"
+  },
+  "selected_group_names": [
+    "native-node-file-handle-owner",
+    "native-node-fs-before-hook-continuation",
+    "native-vm-error-constructor-name",
+    "native-node-file-handle-transfer"
+  ],
+  "grant_provenance_updates": {
+    "v34_progress": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-new4-prepared-20261020\\prior-v34-progress.json",
+      "bytes": 235681,
+      "sha256": "8711EC0A199BC616F823BE25D08A380F47359284AACB37ABF497297DC32080D6"
+    },
+    "v35_current_progress": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-new4-prepared-20261020\\prior-v35-progress.json",
+      "bytes": 294251,
+      "sha256": "3BCB7BF1CE552D95FDD8B34356EB01EAE4C2C0B7E30294920B2975B9D0794F10"
+    },
+    "v35_catalog_preparer_source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-catalog-preparer-source-review-20261020.json",
+      "bytes": 2058,
+      "sha256": "69921D41E556B9F7161722000E22A77BD624D5F1800860826E56F91A694199C4"
+    },
+    "v35_catalog_configuration": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-catalog-issued-config-20261020.json",
+      "bytes": 7121,
+      "sha256": "1334A56F931EEA16E70203F460C7CA09FF23BFC656DCCF6F04C6D86B854EE138"
+    },
+    "v35_grant_constructor_source_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-buildquery-grant-constructor-source-peer-20261020\\peer.json",
+      "bytes": 9547,
+      "sha256": "BF57C2EB3D2D19FFE743020E693A8ACA4571BF43F541497E72F55C8663628A39"
+    },
+    "v35_positive_closure_auditor_source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-positive-buildquery-auditor-source-review-20261020.json",
+      "bytes": 2166,
+      "sha256": "A9EA5D3330FBDB027ACA500B910D34B100AA5B41359F88B3C2CE0D04B4DEB1A9"
+    },
+    "v36_current_progress": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\prior-v36-progress.json",
+      "bytes": 354535,
+      "sha256": "23A951AAEB578839CC84AD9548C755F63BD034E966549F5C73B93E2833073DD8"
+    },
+    "v36_catalog_preparer_source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-catalog-preparer-source-review-20261020.json",
+      "bytes": 2970,
+      "sha256": "C78362731CFAD8A83D50775C4B0583BBB632B898BBA33A2967BC25B88AD51BC1"
+    },
+    "v36_catalog_configuration": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-catalog-issued-config-20261021.json",
+      "bytes": 5000,
+      "sha256": "F787BEF7CED69C60A3B5E7F03C24C5985051A32ED800B93199E592414A59BA13"
+    },
+    "v36_execution_finite_bindings": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-execution-bound-source-20261021\\finite-bindings.json",
+      "bytes": 8489,
+      "sha256": "6405AD38C38D8B2267E3CA858F0E9F9A90084F9F68CAF9F61508C06420E51EA3"
+    },
+    "v36_progress_intake_receipt": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-progress-negative-intake-receipts-20261021\\progress-receipt.json",
+      "bytes": 7079,
+      "sha256": "C9A78181E0C1BE2212524550A22B9AD68D665F52C888293D6748025030E9604F"
+    },
+    "v36_prior_first_compile_negative_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\independent-first-compile-negative-closure.json",
+      "bytes": 46548,
+      "sha256": "07883502323A898D097E467FB9E2CE5ED1A52A8A83A0A6B1EA7F877A35657129"
+    },
+    "v36_execution_bound_source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-execution-bound-source-review-20261021.json",
+      "bytes": 5554,
+      "sha256": "5504DFAC9B9251126D8C0FCB8DE9412A8441CD53E2932DB815335450BC2044D9"
+    },
+    "v37_current_progress": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+      "bytes": 438396,
+      "sha256": "18E61B7DFE07DA5D13C64E4B933EC519312AFED1DC7B29AC4789AC0C3A5EB49F"
+    },
+    "v37_catalog_preparer_source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-catalog-preparer-source-acceptance-20261021.json",
+      "bytes": 6131,
+      "sha256": "C2C57834807501FB9B228BCBE0F7A3DF061718F9903C9B417CF57CC8A271597E"
+    },
+    "v37_catalog_configuration": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-catalog-issued-config-20261021.json",
+      "bytes": 6734,
+      "sha256": "4FAB8D007646C668139B60D5467C37F51050710DF5EFD613897AB24BA0BCFA50"
+    },
+    "v37_execution_finite_bindings": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-execution-bound-source-20261021\\finite-bindings.json",
+      "bytes": 13163,
+      "sha256": "AD70606111D66040B75AF43E53F57E61459AB4F212802FD750313511FCDBA59D"
+    },
+    "v37_fixture_intake_receipt": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-receipts-20261021\\fixture-receipt.json",
+      "bytes": 4122,
+      "sha256": "CC0A39654C92BAAD563B11AA15247403FC839189351F99DE0C41BF26C813E982"
+    },
+    "v37_progress_intake_receipt": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-progress-negative-intake-receipts-20261021\\progress-receipt.json",
+      "bytes": 27955,
+      "sha256": "E50786A89214CBA2E7E5E0A6C7E19B6A998F9CF2D46F309E0A34323488594EC9"
+    },
+    "v37_prior_new4_complete_buildquery_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944\\independent-current-seals-and-owners.json",
+      "bytes": 113188,
+      "sha256": "5569A62842A16A5F1A48022A5D6EB78F06808B73E22772FA3C4CAB7A89B2FE4A"
+    },
+    "v37_prior_new4_strict_runtime_negative_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-closure.json",
+      "bytes": 26137,
+      "sha256": "8BCCF2D351EEDC42D65C56E8605D2DD10ACFF153231552AD90F496E4668CF9AF"
+    },
+    "v37_prior_new4_strict_runtime_root_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-new4-original-negative-runtime-acceptance-20261021.json",
+      "bytes": 2496,
+      "sha256": "182883E0C8BA52A96B34E790DD65A9DF247F0DD67031D68CD73DBAB614D0DCCC"
+    },
+    "v37_execution_bound_source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-retry1-execution-bound-source-review-20261021.json",
+      "bytes": 8935,
+      "sha256": "67148BD40AA1DACA49B6575CD22853CCD56229D95517CC58E7897A89ABCA9F77"
+    }
+  },
+  "root_review": "Root specifically authorizes the exact 10109-byte 81FA8E7B Retry1 V37 BuildQuery constructor with this configuration to emit one fresh private new4 grant, launcher and separate buildquery-retry1-launch.json. Root accepts the exact 67148BD4 Retry1 source review, including constructor and positive auditor 2C89B824, before this issue. Root accepted original failed-admission closure 913E5C1A; preserve its original grant, controls and launch record. The fresh attempt is independent. Retain accepted catalog 1DE26AC6, independent 858C81B1 peer, CC5D new4 preparation and E4 matrix at clean pushed Main b13; all 23 actual provenance pins remain bound. Grant only the complete ordered FileHandle owner18, FS before-hook continuation3, Error constructor-name24 and FileHandle Transfer13 cohort:4 groups/58 source declarations, actual metadata unknown. Root authorizes the emitted1776-byte launcher only after reading its actual grant/adaptation and verifying the full raw inverse and fresh pins. Submit immediately within the unchanged300-second initial-grant gate as one bounded1900-second durable heavy job with1800-second outer controller. Fresh serial16GiB admission, pinned Zig0.16, private empty caches, unchanged1DD3 strict driver,3413 classifier, exact CI/protocol/outer owners, complete source/vendor/compiler/control bookend seals and metadata-only query remain mandatory. Historical metadata counts and outcomes never transfer. Independently close every real owner instance and current seal before any separately granted strict RuntimeOnly. This grants no runtime, source mutation, weakened diagnostic checks or application qualification.",
+  "issued_utc": "2026-10-21T13:14:15.284424+00:00",
+  "matrix_sha256": "E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37",
+  "fresh_memory_observation": {
+    "observed_utc": "2026-10-21T13:14:15.1402932Z",
+    "free_physical_kib": 24897792,
+    "required_kib": 16777216,
+    "eligible": true,
+    "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+    "process_rows": 472,
+    "native_candidates": []
+  }
+}

@@ -1,0 +1,117 @@
+sert partition["partitions"][batch]["actual_metadata_count"] is None
+ a=adaptations[(batch,"metadata-auditor-adaptation.json")];before,after=a["before"].encode(),a["after"].encode()
+ old,new=pinned(a["baseline"]),pinned(a["adapted"])
+ assert a["edit_count"]==1 and old.count(before)==new.count(after)==1
+ assert old.replace(before,after)==new and new.replace(after,before)==old
+ assert before==("evidence/combined-native-batch-v37-"+batch+"-prepared-20261021").encode()
+ assert after==("evidence/combined-native-batch-v38-"+batch+"-prepared-20261021").encode()
+ a=adaptations[(batch,"matrix-refresh-adaptation.json")]
+ assert a["source_pin_changes"]==changes and a["whole_dependency_pin_changes"]==[]
+ assert a["before_head"]==PREVIOUS and a["after_head"]==HEAD and a["before_prepared_utc"]==old_m["prepared_utc"] and a["after_prepared_utc"]==m["prepared_utc"]
+ assert a["current_matrix_file_versions_rehashed"]==1309
+ assert {key(r["path"]):r for r in a["external_current_pins"]}==external
+ a=adaptations[(batch,"source-inventory-refresh-adaptation.json")]
+ assert a["fixture_member_changes"]==member_changes and a["identity_fields_changed"]==["schema","candidate_head","prepared_utc"]
+ assert a["actual_metadata_count"] is None and a["execution_authority"] is False
+# Bind every actual committed intake byte and preimage without executing an intake.
+intake=read(dirs["new4"]/"exact-intake-source-inventory.json")
+assert admit(dirs["new4"]/"exact-intake-source-inventory.json")==admit(dirs["regression63"]/"exact-intake-source-inventory.json")
+assert intake["phase_pins"]==cfg["phase_pins"] and intake["candidate_head"]==HEAD and intake["previous_head"]==PREVIOUS
+requests=[];checks=[];phase_records=[];latest={};previous=PREVIOUS
+for phase in cfg["phase_pins"]:
+ manifest=obj(phase["manifest"]);receipt=obj(phase["receipt"]);pinned(phase["release"])
+ assert manifest["comparison_head"]==previous
+ assert receipt["status"]=="exact_source_intake_committed" and receipt["phase"]==phase["phase"]
+ assert receipt["before_head"]==previous and receipt["after_head"]==phase["commit"]
+ assert receipt["manifest_sha256"]==phase["manifest"]["sha256"] and receipt["release_sha256"]==phase["release"]["sha256"]
+ rows=manifest["rows"]+[dict(target=manifest["manifest_target"],source=phase["manifest"]["path"],bytes=phase["manifest"]["bytes"],sha256=phase["manifest"]["sha256"],before=None)]
+ assert len(rows)==phase["path_count"]==receipt["path_count"]
+ assert git("rev-parse",phase["commit"]+"^").decode().strip()==previous
+ before_tree=set(x.decode()for x in git("ls-tree","-r","--name-only","-z",previous).split(b"\0")if x)
+ changed=set(x.decode()for x in git("diff-tree","--no-commit-id","--name-only","-r","-z",phase["commit"]).split(b"\0")if x)
+ targets={r["target"].replace("\\","/")for r in rows};assert len(targets)==len(rows) and changed==targets
+ for r in rows:
+  target=r["target"].replace("\\","/");assert not Path(target).is_absolute() and ".."not in Path(target).parts and target not in latest
+  admit(r["source"],r["bytes"],r["sha256"]);admit(M/target,r["bytes"],r["sha256"])
+  requests.append(phase["commit"]+":"+target);checks.append((r["bytes"],r["sha256"]))
+  if r["before"] is not None:
+   assert target in before_tree
+   requests.append(previous+":"+target);checks.append((r["before"]["bytes"],r["before"]["sha256"]))
+  else:assert target not in before_tree
+  latest[target]=dict(bytes=r["bytes"],sha256=r["sha256"],phase=phase["phase"])
+ phase_records.append(dict(phase=phase["phase"],before_head=previous,after_head=phase["commit"],path_count=len(rows)))
+ previous=phase["commit"]
+assert previous==HEAD and len(latest)==259 and [r["path_count"]for r in phase_records]==[44,215]
+blob_output=git("cat-file","--batch",input=("\n".join(requests)+"\n").encode())
+at=0
+for request,(size,digest)in zip(requests,checks):
+ end=blob_output.index(b"\n",at);header=blob_output[at:end].split();assert len(header)==3 and header[1]==b"blob" and int(header[2])==size,request
+ at=end+1;raw=blob_output[at:at+size];assert sha(raw)==digest,request
+ at+=size;assert blob_output[at:at+1]==b"\n";at+=1
+assert at==len(blob_output)
+assert set(x.decode()for x in git("diff","--name-only","-z",PREVIOUS,HEAD).split(b"\0")if x)==set(latest)
+assert intake["explicit_phase_path_occurrences"]==intake["distinct_final_paths"]==259 and intake["source_build_paths"]==2 and intake["repeated_paths"]==[]
+assert [{k:v for k,v in r.items()if k in ("phase","before_head","after_head","path_count")}for r in intake["phases"]]==phase_records
+for r in intake["source_union"]:
+ assert r["sha256"]==expected_hashes[r["path"]][1] and latest[r["path"]]["sha256"]==r["sha256"]
+# Historical progress is an exact old Git blob; current progress binds the issued configuration.
+old_progress=git("show",PREVIOUS+":verification/port-roadmap-resume-20261018/progress.json")
+assert old_progress==admit(dirs["new4"]/"prior-v37-progress.json",438396,"18E61B7DFE07DA5D13C64E4B933EC519312AFED1DC7B29AC4789AC0C3A5EB49F")
+assert old_progress==admit(dirs["regression63"]/"prior-v37-progress.json")
+pinned(cfg["progress"])
+# Bind all emitted review fields against literal source values, actual inputs, and inherited history.
+calls=[n.value for n in ast.walk(ast.parse(candidate))if isinstance(n,ast.Assign)and any(isinstance(t,ast.Name)and t.id=="review"for t in n.targets)and isinstance(n.value,ast.Call)and isinstance(n.value.func,ast.Name)and n.value.func.id=="dict"and any(k.arg=="selected_group_names"for k in n.value.keywords)]
+assert len(calls)==1;keywords=calls[0].keywords
+literal_expected={}
+for kw in keywords:
+ try:literal_expected[kw.arg]=ast.literal_eval(kw.value)
+ except (ValueError,TypeError):pass
+common_provenance=None
+rebindings=reviews["new4"]["historical_source_rebindings"];assert len(rebindings)==2
+for r in rebindings:
+ assert r["raw_commit"]==PREVIOUS
+ original=pinned(r["immutable_snapshot"])
+ target=Path(r["original"]["path"]).relative_to(M).as_posix()
+ assert original==git("show",PREVIOUS+":"+target)
+ assert len(original)==r["original"]["bytes"] and sha(original)==r["original"]["sha256"]
+for batch,d in dirs.items():
+ r=reviews[batch];oldr=read(olds[batch]/"preparation-review.json")
+ assert set(r)=={k.arg for k in keywords}
+ for k,v in literal_expected.items():assert r[k]==v,(batch,k)
+ assert r["candidate_head"]==HEAD and r["batch"]==batch and r["prepared_utc"]==m["prepared_utc"]
+ assert r["selected_groups"]==len(selections[batch]) and r["selected_declarations"]==partition["partitions"][batch]["declared_controls"] and r["selected_group_names"]==selections[batch]
+ for k in ("source_integration_commit","uv_correction_commit","quickjs_correction_commit","exotic_correction_commit","prior_v35_intake_commits","prior_v36_intake_commits"):assert r[k]==oldr[k]
+ assert r["prior_v37_intake_commits"]==oldr["new_intake_commits"] and r["new_intake_commits"]==[p["commit"]for p in cfg["phase_pins"]]
+ for k in oldr:
+  if k.startswith(("prior_v34_","prior_v35_","prior_v36_"))and k in r:assert r[k]==oldr[k]
+ for role in ("driver","matrix","auditor","classifier","combined_build_source_peer","metadata_auditor_adaptation","matrix_refresh_adaptation","source_dependency_inventory","source_inventory_refresh_adaptation","exact_intake_inventory","complete_partition"):
+  pinned(r[role]);assert Path(r[role]["path"]).parent==d
+ assert r["source_pin_changes"]==changes and r["historical_source_rebindings"]==rebindings
+ assert r["selected_current_source_roots"]==basis["progress_contract"]["selected_current_roots"]
+ prov=r["provenance"];assert prov["progress"]==cfg["progress"] and prov["root_preparer_source_review"]==cfg["root_preparer_source_review"]
+ assert prov["prior_v37_progress"]==pin(d/"prior-v37-progress.json")
+ assert any(x==pin(cfgp)for x in prov.values())
+ for old_batch,old_dir in olds.items():
+  prior_review=read(old_dir/"preparation-review.json")
+  for name,p in prior_review["provenance"].items():
+   if name=="progress":continue
+   expected=p
+   for rebound in rebindings:
+    if rebound["batch"]==old_batch and rebound["role"]==name:assert p==rebound["original"];expected=rebound["immutable_snapshot"]
+   assert prov["v37_"+old_batch+"_"+name]==expected
+ without_progress={k:v for k,v in prov.items()if k!="prior_v37_progress"}
+ if common_provenance is None:common_provenance=without_progress
+ else:assert common_provenance==without_progress
+ assert r["prior_v37_retry1_failed_indices"]==[5,10,11,12,16]
+ assert r["prior_v37_retry1_runtime_failed"]==5 and r["prior_v37_retry1_runtime_passed"]==14 and r["prior_v37_retry1_runtime_unstarted"]==42
+# A fresh byte bookend verifies that this audit left every input and Main unchanged.
+for p in list(INPUTS.values()):
+ raw=Path(p["path"]).read_bytes();assert len(raw)==p["bytes"] and sha(raw)==p["sha256"],p["path"]
+end=state()
+proof=dict(schema=1,status="passed_independent_v38_emitted_catalog_source_audit",reviewer="/root/module_io_port",source_only=True,candidate_head=HEAD,start_state=start,end_state=end,issued_configuration=pin(cfgp),root_source_acceptance=cfg["root_preparer_source_review"],preparer=root["preparer"],source_basis_peer=pin(source_peer_path),source_basis_proof=source_peer["independent_proof"],source_basis_input_versions_rehashed=1709,successor_peer=root["independent_peer"],job_observation=pin(jobp),output_inventories=outputs,emitted_files=30,files_per_directory=15,common_matrix_sha256=MATRIX,catalog_groups=117,catalog_declarations=2013,whole_dependency_rows=576,whole_dependency_changes=0,current_matrix_files_rehashed=1309,external_current_files_rehashed=2,matrix_changes=changes,matrix_full_structural_and_raw_inverse=True,source_inventory_changes=member_changes,source_inventory_full_structural_and_raw_inverse=True,graphs=graphs,complete_partition=partition,metadata_auditor_path_only_raw_inverses=True,driver_and_classifier_unchanged=True,inherited_provenance_preserved_with_two_explicit_owner_rebindings=True,historical_source_rebindings=rebindings,provenance_entries_per_batch=1643,all_review_fields_bound=True,literal_review_field_count=len(literal_expected),two_actual_intake_commits=phase_records,all259_committed_and_current_paths_and_donors_exact=True,raw_git_blobs_checked=len(requests),prior_progress_raw_git_equal=True,issued_current_progress_exact=True,historical_failed_indices=[5,10,11,12,16],historical_passed=14,historical_unstarted=42,prior_metadata_transferred=False,actual_future_metadata_count=None,inputs=list(INPUTS.values()),distinct_input_paths=len(INPUTS),target_or_prefix_or_auditor_executed=False,Main_or_index_written=False,native_execution_authorized=False,runtime_authority=False,qualification=False,concrete_blockers=[])
+# FINAL OUTPUT PHASE:
+O.mkdir(parents=True,exist_ok=True)
+path=O/"emitted-source-proof.json";raw=encode(proof)
+with path.open("xb")as f:f.write(raw)
+assert path.read_bytes()==raw
+print(json.dumps(dict(path=str(path),bytes=len(raw),sha256=sha(raw),distinct_input_paths=len(INPUTS),emitted_files=30,matrix_files=1309,git_blobs=len(requests))))

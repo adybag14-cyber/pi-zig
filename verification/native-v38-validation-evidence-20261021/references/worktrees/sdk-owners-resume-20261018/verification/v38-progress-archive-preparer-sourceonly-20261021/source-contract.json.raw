@@ -1,0 +1,461 @@
+{
+  "schema": 1,
+  "status": "inert_source_contract_not_a_Root_configuration_or_copy_plan",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\candidate\\Prepare-V38PositiveProgressAndValidationArchive-20261021.py",
+    "bytes": 51755,
+    "sha256": "00F55DC94CC4151370B837FCDB02FFE991A07AC75C05EFE3022C66D079BD5A77"
+  },
+  "fixed_inputs": {
+    "inventory": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\observed-evidence-inventory.json",
+      "bytes": 338781,
+      "sha256": "CDFBB34E737011ADD26B7560E5011DC55CADA2803D749B0E1C0263E5954FADED"
+    },
+    "plan": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\progress-patch-plan.json",
+      "bytes": 56327,
+      "sha256": "183647A8C0D250DBDD0747CD8E1220B415E9F205737092D4D13AF1DD0D730412"
+    },
+    "handoff": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\handoff.json",
+      "bytes": 5242,
+      "sha256": "E75BE89E1B57F32B72B896C35B5106A2069BE672192FCA2623BB1BA723D95187"
+    },
+    "policy": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021-v2.py",
+      "bytes": 75644,
+      "sha256": "079CE8663FFA9C337F5AC04D41E4222E6B2EFB9B39E5B459F6F4E460F9AC790D"
+    }
+  },
+  "scope": {
+    "source_only": true,
+    "preparer_executed": false,
+    "candidate_prefix_executed": false,
+    "gzip_executed": false,
+    "archive_generated": false,
+    "progress_projected": false,
+    "configuration_issued": false,
+    "execution_authority": false,
+    "Main_or_index_accessed": false,
+    "native_execution_authorized": false,
+    "source_mutation_hold_released": false,
+    "application_qualified": false,
+    "production_bridge_removed": false,
+    "published_release": false
+  },
+  "configuration_contract": {
+    "exact_key_count": 18,
+    "extra_keys_permitted": false,
+    "source_lines": [
+      140,
+      180
+    ],
+    "invocation": "Exactly two arguments: absolute evidence configuration path and uppercase SHA-256 of its complete raw bytes. This contract is not an issued configuration.",
+    "field_rules": {
+      "schema": {
+        "type": "integer",
+        "required_value": 1
+      },
+      "status": {
+        "type": "string",
+        "required_value": "root_reviewed_specific_v38_positive_progress_archive_preparation",
+        "issuance": "Only a later exact Root release may supply this status."
+      },
+      "candidate_head": {
+        "type": "string",
+        "required_value": "014062f2d139254acab4b985b4ae343db637166f"
+      },
+      "preparer_sha256": {
+        "type": "uppercase SHA-256",
+        "required_value": "00F55DC94CC4151370B837FCDB02FFE991A07AC75C05EFE3022C66D079BD5A77"
+      },
+      "source_review": {
+        "type": "exact path/bytes/sha256 pin",
+        "actual_value": null,
+        "rule": "Separately accepted Root source receipt satisfying source_acceptance_contract."
+      },
+      "final_copy_plan": {
+        "type": "exact path/bytes/sha256 pin",
+        "actual_value": null,
+        "rule": "Separately reviewed complete final copy plan satisfying copy_plan_contract."
+      },
+      "recorded_utc": {
+        "type": "UTC ISO-8601 string",
+        "actual_value": null,
+        "rule": "Root supplies an actual recording timestamp; the parsed UTC offset must be zero."
+      },
+      "output_directory": {
+        "type": "absolute path",
+        "required_value": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-progress-and-validation-archive-intake-20261021"
+      },
+      "archive_target_prefix": {
+        "type": "relative path",
+        "required_value": "verification/native-v38-validation-evidence-20261021"
+      },
+      "expected_output_paths": {
+        "type": "sorted exact unique relative-path array",
+        "actual_value": null,
+        "rule": "Every proposed intake target including archive manifest; excludes the staging preparation-review.json. Exact membership is compared before physical writes."
+      },
+      "evidence_preparation_authorized": {
+        "type": "boolean",
+        "required_future_value": true,
+        "current_authority": false
+      },
+      "main_intake_authorized": {
+        "type": "boolean",
+        "required_value": false
+      },
+      "native_execution_authorized": {
+        "type": "boolean",
+        "required_value": false
+      },
+      "runtime_authority": {
+        "type": "boolean",
+        "required_value": false
+      },
+      "source_mutation_hold_released": {
+        "type": "boolean",
+        "required_value": false
+      },
+      "application_qualified": {
+        "type": "boolean",
+        "required_value": false
+      },
+      "production_bridge_removed": {
+        "type": "boolean",
+        "required_value": false
+      },
+      "published_release": {
+        "type": "boolean",
+        "required_value": false
+      }
+    }
+  },
+  "source_acceptance_contract": {
+    "actual_receipt": null,
+    "extra_fields_permitted": true,
+    "required_fields": {
+      "status": "root_accepted_bounded_v38_positive_archive_preparer",
+      "reviewer": "Root",
+      "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+      "preparer": "Exact path/bytes/SHA-256 of the invoked immutable candidate, including any separately copied canonical location.",
+      "partial_inventory": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\observed-evidence-inventory.json",
+        "bytes": 338781,
+        "sha256": "CDFBB34E737011ADD26B7560E5011DC55CADA2803D749B0E1C0263E5954FADED"
+      },
+      "progress_plan": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\progress-patch-plan.json",
+        "bytes": 56327,
+        "sha256": "183647A8C0D250DBDD0747CD8E1220B415E9F205737092D4D13AF1DD0D730412"
+      },
+      "source_accepted": true,
+      "execution_authority": false,
+      "main_intake_authorized": false,
+      "native_execution_authorized": false
+    },
+    "rule": "Source acceptance alone does not authorize execution; the exact separate configuration is also mandatory."
+  },
+  "copy_plan_contract": {
+    "actual_copy_plan": null,
+    "exact_key_count": 11,
+    "extra_keys_permitted": false,
+    "source_lines": [
+      177,
+      289
+    ],
+    "field_rules": {
+      "schema": {
+        "type": "integer",
+        "required_value": 1
+      },
+      "status": {
+        "type": "string",
+        "required_value": "root_reviewed_exact_final_v38_positive_archive_copy_plan"
+      },
+      "candidate_head": {
+        "type": "string",
+        "required_value": "014062f2d139254acab4b985b4ae343db637166f"
+      },
+      "reviewer": {
+        "type": "string",
+        "required_value": "Root"
+      },
+      "partial_inventory": {
+        "type": "exact pin",
+        "required_value": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\observed-evidence-inventory.json",
+          "bytes": 338781,
+          "sha256": "CDFBB34E737011ADD26B7560E5011DC55CADA2803D749B0E1C0263E5954FADED"
+        }
+      },
+      "progress_plan": {
+        "type": "exact pin",
+        "required_value": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\progress-patch-plan.json",
+          "bytes": 56327,
+          "sha256": "183647A8C0D250DBDD0747CD8E1220B415E9F205737092D4D13AF1DD0D730412"
+        }
+      },
+      "rows": {
+        "type": "complete ordered array",
+        "actual_value": null,
+        "rule": "First 314 rows must equal the sealed partial inventory structurally, including order, roles, target paths and representation. Append only exact observed original versions."
+      },
+      "direct_pin_relationships": {
+        "type": "complete ordered array",
+        "actual_value": null,
+        "rule": "First 183 edges must equal the sealed partial inventory. Each edge has exactly document/json_path/exact_referenced_pin; the document value and archived raw target must match the complete referenced pin."
+      },
+      "observed_phase_membership": {
+        "type": "four-element ordered array",
+        "actual_value": null,
+        "rule": "Exactly new4-buildquery, new4-runtime, existing63-buildquery, existing63-runtime; complete actual control/proof/group file lists."
+      },
+      "bookend_plans": {
+        "type": "ordered array of two to four mappings",
+        "actual_value": null,
+        "rule": "First two mappings equal the known new4 pairs. Each further pair needs actual before/final byte equality, unique phase and fixed gzip recipe. Non-selected pairs retain both raw files."
+      },
+      "cohorts": {
+        "type": "object",
+        "actual_value": null,
+        "rule": "Exactly new4 and existing63. Each has exactly buildquery_root_acceptance and runtime_root_acceptance pins."
+      }
+    },
+    "row_contract": {
+      "exact_keys": [
+        "original",
+        "roles",
+        "proposed_archive_relative_path",
+        "representation",
+        "archive_created"
+      ],
+      "original": "Exact absolute path/nonnegative byte count/uppercase SHA-256 pin; no additional pin keys.",
+      "roles": "Nonempty array of strings.",
+      "proposed_archive_relative_path": "Safe, alias-free Windows relative path under verification/native-v38-validation-evidence-20261021.",
+      "representation": [
+        "raw_byte_exact",
+        "proposed_lossless_gzip_identical_bookend_pair"
+      ],
+      "archive_created": false
+    },
+    "input_boundaries": [
+      "Only contained evidence or worktree verification inputs.",
+      "Main inputs, symlinks and junctions rejected.",
+      "No executable/PDB/DLL or cache/installed archive rows.",
+      "Every original source path is unique case-insensitively.",
+      "Every raw source gets a unique .raw target; duplicate target ownership is allowed only for the explicitly validated two-original gzip pair."
+    ],
+    "phase_membership_rules": [
+      "Control/proof roots directly under evidence and actual v38 cohort timestamp naming.",
+      "Proof files exactly before.json, final.json, result.json; all actual group subdirectories match the cohort.",
+      "Every control and group file must be represented in the exact copy list.",
+      "BuildQuery excludes only cache/global-cache and each group's installed directory; runtime excludes none.",
+      "Known new4 phase identity and existing file memberships are retained. Newly observed extra receipts may be appended explicitly, never silently omitted."
+    ],
+    "known_new4_authorities": {
+      "buildquery_root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-complete-buildquery-acceptance-20261021.json",
+        "bytes": 3322,
+        "sha256": "AD8E19A0F01BCE2455EFC4A670881BD085CDD3A80A748D37F2BACBDA16C7F539"
+      },
+      "runtime_root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-complete-runtime-acceptance-20261021.json",
+        "bytes": 5591,
+        "sha256": "C2BA2AD029947BBD012F2B516F8F6DA8BD5BC32CEAA93A26F725BD260AA93F70"
+      }
+    },
+    "unresolved_existing63_authorities": {
+      "buildquery_root_acceptance": null,
+      "runtime_root_acceptance": null
+    },
+    "positive_only": true,
+    "partial_or_failed_existing63_outcome_supported": false
+  },
+  "future_original63_Root_receipt_contracts": {
+    "status": "requirements_only_not_observations",
+    "source_lines": [
+      291,
+      404
+    ],
+    "extra_fields_permitted": true,
+    "common_required_fields": {
+      "schema": "Not tested by check_positive; original whole-document pin still exact.",
+      "reviewer": "Root",
+      "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+      "batch": "existing63",
+      "groups": "Exact 63-element retained63_group_order from immutable 014062 progress.",
+      "declared_groups": 63,
+      "declared_controls": 1249,
+      "actual_metadata_count": "Positive integer copied from fresh accepted original63 metadata, not source declarations.",
+      "actual_group_counts": "63 positive integers in the exact retained order, sum equals actual_metadata_count.",
+      "source_mutation_hold_released": false
+    },
+    "buildquery_required_fields": {
+      "status": "root_accepted_complete_fresh_v38_existing63_buildquery",
+      "complete_buildquery_accepted": true,
+      "complete_source_and_current_directory_seals": true,
+      "all_original_terminal0_owner_gates_passed": true,
+      "runtime_started": false,
+      "runtime_execution_authorized": false,
+      "qualification": false,
+      "native_owner_count": 126,
+      "actual_process_intervals_closed": 129,
+      "actual_tests_started": 0,
+      "build_result": "Exact phase proof/result.json pin.",
+      "build_final": "Exact phase proof/final.json pin.",
+      "metadata_acceptance": "Exact control/independent-metadata-acceptance.json pin.",
+      "independent_closure": "Exact control/independent-current-seals-and-owners.json pin."
+    },
+    "runtime_required_fields": {
+      "status": "root_accepted_complete_strict_v38_existing63_runtime",
+      "strict_native_runtime_accepted": true,
+      "whole_bookends_unchanged": true,
+      "complete_source_and_current_directory_seals": true,
+      "all_original_strict_empty_stderr_and_all_tests_passing_gates_passed": true,
+      "selected_native_runtime_qualification": true,
+      "product_qualification": false,
+      "runtime_owner_count": 63,
+      "actual_process_intervals_closed": 66,
+      "observed_started": "Exactly fresh accepted actual_metadata_count.",
+      "observed_completed": "Exactly fresh accepted actual_metadata_count.",
+      "observed_failed": 0,
+      "not_started": 0,
+      "runtime_result": "Exact original runtime proof/result.json pin.",
+      "runtime_final": "Exact original runtime proof/final.json pin.",
+      "independent_runtime_closure": "Exact control/independent-positive-runtime-closure.json pin.",
+      "root_buildquery_acceptance": "Exact future accepted original63 BQ Root receipt pin.",
+      "metadata_acceptance": "Same exact pin as that BQ receipt.",
+      "independent_build_closure": "Same exact pin as that BQ receipt.",
+      "auditor": "Exact archived A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102 source pin.",
+      "auditor_source_acceptance": "Exact archived 12D45623A19BB66517FF8DF2C47CD69F32A167361572A0313D651505528A8F49 Root source acceptance pin.",
+      "audit_configuration": "Exact original63 positive-runtime audit configuration pin; its auditor SHA, existing63 batch and actual metadata count must match."
+    },
+    "original63_F846_failure_or_configuration_adaptation_required": false,
+    "original63_runtime_rerun_field_required": false,
+    "actual_bound_values": {
+      "actual_metadata_count": null,
+      "actual_group_counts": null,
+      "buildquery_root_receipt": null,
+      "runtime_root_receipt": null
+    },
+    "observation_note": "Root has separately reported accepted original63 metadata. This source contract does not bind or infer final original63 BQ/runtime acceptance or replace their actual receipts."
+  },
+  "independent_closure_and_original_record_requirements": {
+    "source_lines": [
+      333,
+      389
+    ],
+    "buildquery": "independently_closed_complete_fresh_build_query on the fixed head; full actual cohort/order/counts; 126 native owners, 129 actual intervals and zero tests started for original63; all current seal/absence/terminal-zero gates true and runtime/qualification/cache/hold false.",
+    "metadata": "independently_accepted_combined_native_batch_metadata, accepted true, fixed head; every group's actual count and exact names; exact build result and source-seal SHA relationship; no runtime qualification.",
+    "runtime": "independently_closed_positive_strict_runtime, correct fixed head and cohort; actual accepted count, 63 owners, 66 actual intervals, all tests started/completed, none failed/unstarted, all current strict/raw/runtime gates true and product/hold false.",
+    "canonical_results": "Every group has all indices 0..actual_count-1 with flags zero and passed true; independent observations add each exact accepted metadata name. Raw original runtime stderr is empty.",
+    "jobs": "Both original terminal captures have data.status succeeded, exitCode 0, runnerAlive false and decimal-string runnerProcessInstance; raw original bytes are archived without re-encoding.",
+    "prepared_cohort": "existing63 execution uses regression63 preparation; exact original order, 63/1249 source declarations; preparation actual metadata remains null; complete shared matrix 117/2013/576 and 8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03.",
+    "integrity": "All referenced documents must occur in the exact final copy list and retain their complete raw bytes. This preparer consumes independent closures; it does not replace or rerun native auditors."
+  },
+  "history_and_representation_contract": {
+    "source_lines": [
+      189,
+      206,
+      408,
+      480,
+      482,
+      570
+    ],
+    "immutable_progress": {
+      "commit": "014062f2d139254acab4b985b4ae343db637166f",
+      "relative_path": "verification/port-roadmap-resume-20261018/progress.json",
+      "bytes": 554689,
+      "sha256": "BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028",
+      "blob_sha1": "ec7a71bd873c789fcb42918501816357c599d2a6"
+    },
+    "complete_nested_list_prefixes": 181,
+    "top_level_history_lengths": {
+      "integrated_source_units": {
+        "old": 65,
+        "proposed": 65
+      },
+      "preserved_attempts": {
+        "old": 38,
+        "proposed": 44
+      },
+      "retained_recent_native_negatives": {
+        "old": 14,
+        "proposed": 14
+      },
+      "execution_checkpoint_history": {
+        "old": 14,
+        "proposed": 15
+      }
+    },
+    "six_proposed_attempts": [
+      "Original non-native catalog preparation negative",
+      "Accepted new4 BuildQuery",
+      "Original non-native new4 auditor provenance negative",
+      "Accepted unchanged original new4 strict runtime",
+      "Accepted original63 BuildQuery",
+      "Accepted original63 strict runtime"
+    ],
+    "source_level_progress_inverse": "Remove only v38_validation_and_archive_checkpoint; restore only current_source_head_at_record, updated_utc, record_note, current_execution_checkpoint, next_native_batch, preserved_attempts, execution_checkpoint_history from immutable original. Structural equality and exact indent2 UTF-8+LF bytes must reproduce all 554689 bytes.",
+    "inverse_actually_executed": false,
+    "gzip": {
+      "known_pairs": 2,
+      "maximum_pairs": 4,
+      "required_pair_equality": "Complete before/final raw bytes",
+      "filename": "",
+      "mtime": 0,
+      "compresslevel": 9,
+      "header_hex": "1f8b08000000000002ff",
+      "future_gates": [
+        "Full decompression equals both original inputs",
+        "Second encoding byte-identical",
+        "All original pins unchanged"
+      ],
+      "actually_executed": false
+    },
+    "original_negative_policy": "Keep original A112 catalog and F846 new4 auditor failures as separate non-native attempts, including exact original inputs/source/terminal observations. Preserve all prior native-negative history unchanged.",
+    "qualification_policy": "Selected closed cohorts may be recorded as accepted only after all gates. Product/application qualification, bridge removal, publication, new native execution and source mutation release remain false."
+  },
+  "output_membership_contract": {
+    "source_lines": [
+      573,
+      708
+    ],
+    "actual_output_list": null,
+    "actual_path_count": null,
+    "staged_payload_scope": "One exact existing progress replacement plus new immutable archive paths outside Main.",
+    "intake_count_rule": "N - G + 14, where N is the complete final raw-version row count and G is the number of explicitly selected two-original gzip pairs, provided all alias/membership checks pass.",
+    "automatic_intake_paths": [
+      "verification/port-roadmap-resume-20261018/progress.json",
+      "verification/native-v38-validation-evidence-20261021/prior-progress.json.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/partial-observed-inventory.json.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/partial-progress-plan.json.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/inert-plan-handoff.json.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/prior-accepted-policy.py.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/preparer.py.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/root-issued-configuration.json.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/root-source-acceptance.json.raw",
+      "verification/native-v38-validation-evidence-20261021/preparation/root-final-copy-plan.json.raw",
+      "verification/native-v38-validation-evidence-20261021/history-preservation.json",
+      "verification/native-v38-validation-evidence-20261021/seal-archive-map.json",
+      "verification/native-v38-validation-evidence-20261021/archive-index.json",
+      "verification/native-v38-validation-evidence-20261021/manifest.json"
+    ],
+    "preparation_review": "Additional create-only staging receipt; not an intake manifest target.",
+    "write_boundary": "All source/receipt/copy/history/alias/frozen-tree-attribute gates precede OUT.mkdir at line 674. Files use xb and exact readback. Inputs and frozen branch are rechecked after staging.",
+    "collision_boundary": "Immutable committed-tree target/attribute checks run through the owned SDK worktree. Actual Main working-tree collision/intake review remains a separate Root step."
+  },
+  "unresolved_release_requirements": [
+    "Complete independent original63 BuildQuery closure and Root acceptance",
+    "Complete original63 strict runtime and independent closure plus Root acceptance",
+    "Exact final copy rows, direct relationships and complete directory membership",
+    "Exact Root source-acceptance receipt",
+    "Exact separate Root configuration, timestamp and complete sorted output membership",
+    "Independent source peer and any separate preparation release"
+  ]
+}

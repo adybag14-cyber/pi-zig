@@ -1,0 +1,178 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_v38_positive_archive_preparer",
+  "reviewer": "module_io_port",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\candidate\\Prepare-V38PositiveProgressAndValidationArchive-20261021.py",
+    "bytes": 51755,
+    "sha256": "00F55DC94CC4151370B837FCDB02FFE991A07AC75C05EFE3022C66D079BD5A77"
+  },
+  "source_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\source-contract.json",
+    "bytes": 22961,
+    "sha256": "2B8C3745D2E7F6F0D08E9FF6672B43F03DF080E053EFED56E254E039CF845C14"
+  },
+  "author_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\handoff.json",
+    "bytes": 10178,
+    "sha256": "5273E17812784D776739BCCDE5FBFF77C09835DDE5175601178E496018FDBE01"
+  },
+  "author_accounting": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-progress-archive-preparer-sourceonly-20261021\\static-accounting.json",
+    "bytes": 156837,
+    "sha256": "350E7ADE26395B1EE1E993F314DF23FDDBF693197A0CE3110C1FF691AB4BAD2D"
+  },
+  "prior_policy": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021-v2.py",
+    "bytes": 75644,
+    "sha256": "079CE8663FFA9C337F5AC04D41E4222E6B2EFB9B39E5B459F6F4E460F9AC790D"
+  },
+  "known_input_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\observed-evidence-inventory.json",
+    "bytes": 338781,
+    "sha256": "CDFBB34E737011ADD26B7560E5011DC55CADA2803D749B0E1C0263E5954FADED"
+  },
+  "progress_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-plan-sourceonly-20261021\\progress-patch-plan.json",
+    "bytes": 56327,
+    "sha256": "183647A8C0D250DBDD0747CD8E1220B415E9F205737092D4D13AF1DD0D730412"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-preparer-peer-sourceonly-20261022\\source-audit.py",
+    "bytes": 21475,
+    "sha256": "958D6D6CD2048AFC059BF94644BF695BA73E9600358BECA8D98CC06AA121E92B"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-progress-archive-preparer-peer-sourceonly-20261022\\source-proof.json",
+    "bytes": 110079,
+    "sha256": "A39513E340DFA016670055C762A55FC0DED1A03801E50A3932B3232A51BBC6FD"
+  },
+  "review_scope": [
+    "The complete 51,755-byte candidate, source contract, author checker, handoff and README were read. The candidate was treated only as bytes and AST.",
+    "The independent source/data checker recomputed all 22 full function bodies and nine disjoint regions covering every candidate byte; all agree with the frozen author accounting.",
+    "Every one of the 314 known evidence versions and all 183 direct pin relationships was independently rehashed and checked. All 319 original author-accounting input pins were checked within 324 total distinct review input paths.",
+    "Immutable 014062 progress was read through owned-worktree Git only. Its 554,689 bytes, BEB78B96 SHA, raw Git blob ec7a71bd873c789fcb42918501816357c599d2a6, exact JSON roundtrip, full old checkpoint and 181 nested history-list bases match the inert plan.",
+    "Both accepted new4 Root receipts and their actual original results, metadata, closures, canonical result rows, empty stderr, original job captures and prepared catalog were inspected as data."
+  ],
+  "findings": [
+    {
+      "topic": "Distinct source and execution authority",
+      "source_lines": [
+        140,
+        187
+      ],
+      "finding": "The exact 18-key future Root configuration must pin the candidate, a separate accepted Root source receipt and the complete final copy plan. Only evidence preparation may be authorized. All Main/native/runtime/source-hold/application/bridge/publication authority fields remain false. This peer supplies none of those future records."
+    },
+    {
+      "topic": "Complete evidence membership",
+      "source_lines": [
+        177,
+        290
+      ],
+      "finding": "The final 11-key copy plan must preserve the 314 ordered known rows, 183 relationships and two known bookend mappings as exact prefixes. Exact five-key rows require contained immutable evidence, safe targets and unique original paths. Every actual control/proof/group file in all four phases must be represented; cache/installed and native binary exclusions are explicit."
+    },
+    {
+      "topic": "Positive-only original63 admission",
+      "source_lines": [
+        291,
+        407
+      ],
+      "finding": "Both complete Root and independent BuildQuery/runtime acceptances are mandatory before progress or archive payload construction. Original63 uses execution label existing63 and prepared label regression63, with the immutable retained 63-name order and 1,249 source declarations. Its actual metadata vector comes from fresh accepted receipts and must agree throughout both phases. No historical count is substituted. Partial or failed original63 cannot pass this positive-only source."
+    },
+    {
+      "topic": "Known new4 contract",
+      "source_lines": [
+        291,
+        404
+      ],
+      "finding": "All 104 mapped literal accesses and 40 boolean gates match original accepted new4 structures. Independent data checks confirm counts 19/4/24/14, total 61, exact accepted names and all-zero result flags, empty runtime stderr, 8 BuildQuery owners/11 process intervals and 4 runtime owners/7 intervals, plus exact parent/source relationships. These are existing observations, not a new native qualification."
+    },
+    {
+      "topic": "Original negatives and corrected auditor",
+      "source_lines": [
+        405,
+        430
+      ],
+      "finding": "The A112 catalog preparation failure and original F846 runtime-auditor failure remain distinct non-native records with unchanged raw evidence. The old and corrected audit inputs retain exactly 40 keys and differ only in auditor_sha256. The accepted A73A source and 12D456 Root source receipt are required. Original63 is not required to invent an F846 failure or auditor-config adaptation."
+    },
+    {
+      "topic": "Raw bytes and deterministic compression",
+      "source_lines": [
+        432,
+        480
+      ],
+      "finding": "Non-bookend evidence is copied from retained raw bytes; parsed timestamps and decimal process identities are never serialized in place of their originals. Gzip is limited to explicitly selected complete byte-identical before/final pairs with empty filename, mtime zero, level 9, exact header, decompression equal to both originals, and identical second encoding. Uncombined pairs retain both raw files. The peer verified known pair equality and actual seal counts without executing gzip."
+    },
+    {
+      "topic": "History and full inverse",
+      "source_lines": [
+        481,
+        570
+      ],
+      "finding": "The source appends six distinct attempts and the complete old checkpoint, preserves integrated source units and all prior native-negative history, and verifies every old nested list as an unchanged prefix. Exactly seven summary/history keys may be replaced and one new key added. Removing that key and restoring the seven old values must recover all 554,689 original bytes before staging. This is source acceptance of the future inverse gate; no projected progress was constructed here."
+    },
+    {
+      "topic": "Exact output and byte-conversion boundary",
+      "source_lines": [
+        572,
+        708
+      ],
+      "finding": "The 14 automatic intake targets include the manifest; the future count is N-G+14 only after exact alias/membership checks. The Root-supplied sorted target set must match. Immutable Git target absence, raw progress blob, all five no-conversion attributes for every target including manifest, original-input rereads and branch freeze precede the first filesystem write at line 674. Staging uses create-only writes with exact readback. Main collision checks and any intake remain separate."
+    }
+  ],
+  "source_comparison": {
+    "new_constructor": true,
+    "whole_source_equivalence_to_prior_policy_claimed": false,
+    "same_named_prior_helpers_byte_identical": [
+      "sha",
+      "relative",
+      "gzip_bytes"
+    ],
+    "all_other_candidate_helpers_independently_exposed_and_read": true
+  },
+  "observed_static_results": {
+    "checker_exit_code": 0,
+    "checker_stderr_empty": true,
+    "input_paths_rehashed": 324,
+    "known_evidence_versions": 314,
+    "direct_pin_relationships": 183,
+    "known_logical_archive_paths": 312,
+    "historical_list_bases": 181,
+    "functions": 22,
+    "complete_source_regions": 9,
+    "known_new4_literal_field_rows": 104,
+    "known_new4_boolean_gates": 40,
+    "concrete_blockers": []
+  },
+  "remaining_boundaries": {
+    "original63_actual_count": null,
+    "original63_actual_group_counts": null,
+    "original63_Root_BuildQuery_acceptance": null,
+    "original63_Root_runtime_acceptance": null,
+    "complete_final_copy_plan": null,
+    "Root_source_acceptance": null,
+    "issued_configuration": null,
+    "final_output_paths": null,
+    "staged_progress_or_archive": null,
+    "partial_or_failed_original63_supported": false,
+    "separate_actual_output_and_intake_review_required": true
+  },
+  "source_only": true,
+  "source_checker_executed": true,
+  "candidate_executed": false,
+  "candidate_prefix_executed": false,
+  "candidate_helpers_evaluated": false,
+  "gzip_executed": false,
+  "projected_progress_or_inverse_executed": false,
+  "archive_or_manifest_generated": false,
+  "configuration_issued": false,
+  "execution_authority": false,
+  "Main_or_index_accessed": false,
+  "main_applied": false,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "application_qualified": false,
+  "production_bridge_removed": false,
+  "published_release": false
+}

@@ -1,0 +1,32 @@
+{
+  "status": "authoring_ast_rejection_preserved",
+  "candidate_written": false,
+  "reason": "Two replacement lines used two spaces rather than the existing one-space for-body indentation.",
+  "original_check": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"<string>\", line 3, in <module>\r\n    p=Path(sys.argv[1]);src=b''.join((p/'authoring'/('candidate-part-'+str(i)+'.txt')).read_bytes()for i in range(4));ast.parse(src)\r\n                                                                                                                      ~~~~~~~~~^^^^^\r\n  File \"C:\\Python314\\Lib\\ast.py\", line 46, in parse\r\n    return compile(source, filename, mode, flags,\r\n                   _feature_version=feature_version, optimize=optimize)\r\n  File \"<unknown>\", line 304\r\n    require((gp/\"runtime.stderr.log\").stat().st_size==(486 if want[\"failed\"] else 0) and want[\"failed\"]==([22] if number==executed_count-1 else []),\"Original empty stderr for sixteen demoted groups and exact486-byte strict rejection in final failed group\")\r\nIndentationError: unexpected indent",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"<string>\", line 3, in <module>\r\n    p=Path(sys.argv[1]);src=b''.join((p/'authoring'/('candidate-part-'+str(i)+'.txt')).read_bytes()for i in range(4));ast.parse(src)\r\n                                                                                                                      ~~~~~~~~~^^^^^\r\n  File \"C:\\Python314\\Lib\\ast.py\", line 46, in parse\r\n    return compile(source, filename, mode, flags,\r\n                   _feature_version=feature_version, optimize=optimize)\r\n  File \"<unknown>\", line 304\r\n    require((gp/\"runtime.stderr.log\").stat().st_size==(486 if want[\"failed\"] else 0) and want[\"failed\"]==([22] if number==executed_count-1 else []),\"Original empty stderr for sixteen demoted groups and exact486-byte strict rejection in final failed group\")\r\nIndentationError: unexpected indent\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "corrections": [
+    {
+      "label": "exact original stderr shape",
+      "before": "  require((gp/\"runtime.stderr.log\").stat().st_size==(486 if want[\"failed\"] else 0) and want[\"failed\"]==([22] if number==executed_count-1 else []),\"Original empty stderr for sixteen demoted groups and exact486-byte strict rejection in final failed group\")\n",
+      "after": " require((gp/\"runtime.stderr.log\").stat().st_size==(486 if want[\"failed\"] else 0) and want[\"failed\"]==([22] if number==executed_count-1 else []),\"Original empty stderr for sixteen demoted groups and exact486-byte strict rejection in final failed group\")\n"
+    },
+    {
+      "label": "all17 ordered admission probes",
+      "before": "  require(len(r[\"admission_probes\"])==executed_count and r[\"admission_probes\"][number]==probe,\"Exact original ordered runtime admission probe\")\n",
+      "after": " require(len(r[\"admission_probes\"])==executed_count and r[\"admission_probes\"][number]==probe,\"Exact original ordered runtime admission probe\")\n"
+    }
+  ]
+}

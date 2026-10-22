@@ -1,0 +1,55 @@
+{
+  "mode": "RuntimeOnly",
+  "group": "native-node-environment-paths",
+  "compile": [
+    "build",
+    "build-native-node-environment-paths",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-Ddiagnostic-tests=false",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--prefix",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-environment-paths\\installed",
+    "--cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache",
+    "--global-cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\global-cache",
+    "--summary",
+    "all"
+  ],
+  "metadata": [
+    "--listen=-"
+  ],
+  "runtime": [
+    "--listen=-"
+  ],
+  "expected_names": [
+    "native_node_environment_paths_test.test.native environment paths captures the actual executable independently of caller argv bytes",
+    "native_node_environment_paths_test.test.native environment paths reads the actual native working directory",
+    "native_node_environment_paths_test.test.native environment paths normalizes absolute dot and parent segments without trace",
+    "native_node_environment_paths_test.test.native environment paths selects the rightmost absolute tail and original drive",
+    "native_node_environment_paths_test.test.native environment paths retains real UNC device roots or POSIX backslash bytes",
+    "native_node_environment_paths_test.test.native environment paths selects live supplied drive variables only on Windows",
+    "native_node_environment_paths_test.test.native environment paths SafeGetenv distinguishes an absent value from an empty string",
+    "native_node_environment_paths_test.test.native environment paths SafeGetenv preserves the actual C string key selection",
+    "native_node_environment_paths_test.test.native environment paths copies the live Map value before native trace reentry",
+    "native_node_environment_paths_test.test.native environment paths snapshots trace options before native and JS delegation",
+    "native_node_environment_paths_test.test.native environment paths retains both SafeGetenv string copies through trace only",
+    "native_node_environment_paths_test.test.native environment paths retries a real native allocation with the original new handler",
+    "native_node_environment_paths_test.test.native environment paths preserves actual pending identity under the exhausted JS heap",
+    "native_node_environment_paths_test.test.native environment paths owns its native strings after runtime and caller retirement",
+    "native_node_environment_paths_test.test.native environment paths retains Map through trace and returns a surviving text copy"
+  ],
+  "expected_count": 15,
+  "named_controls": 15,
+  "source_seal_scope": "whole_batch",
+  "cache_authority": "One initially fresh private cache pair; serial exact-head group compilation; no seed lineage",
+  "compile_seconds": 1320,
+  "metadata_seconds": 30,
+  "runtime_whole_group_seconds": 120,
+  "pipe_settle_seconds": 10,
+  "installed_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-environment-paths\\installed\\bin\\test.exe",
+  "installed_pdb": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-environment-paths\\installed\\bin\\test.pdb"
+}

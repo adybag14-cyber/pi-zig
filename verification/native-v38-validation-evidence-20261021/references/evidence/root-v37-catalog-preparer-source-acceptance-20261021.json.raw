@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "status": "root_and_independent_peer_accepted_bounded_v37_catalog_preparer_source",
+  "reviewer": "Root",
+  "recorded_utc": "2026-10-21T09:28:03.418383+00:00",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-FreshV37Catalog-20261021.py",
+    "bytes": 54634,
+    "sha256": "BDEDEE0A5A00C895C6E2375AE67C910223D091A8286B4B85201DF8BE7A72A30F"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-FreshV36Catalog-20261020.py",
+    "bytes": 39962,
+    "sha256": "368F4F1F0F0AFD81AA58078BACDC80BCB7CA9A22307702E9DDBF47E048D691F8"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-catalog-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 59848,
+    "sha256": "B710CD16F2B3DC23184D4C631BE7F5D91F228C393667EE59E5D183B94B7FDFBF"
+  },
+  "unissued_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-catalog-sourceonly-20261021\\unissued-root-configuration.json",
+    "bytes": 4891,
+    "sha256": "D8FC9C17DA43652B7ACEABF1F72B1EA66CDCEEEF27847BCF1CFA757D47C7CB43"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-catalog-sourceonly-20261021\\handoff.json",
+    "bytes": 11864,
+    "sha256": "1C526F91445564147CC0450641E40BEAAD715422157705629E5B091074948A9A"
+  },
+  "root_static_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-catalog-preparer-static-source-review-20261021.json",
+    "bytes": 4839,
+    "sha256": "554A0AD265E8262820BD61277279D575826B336F06249AA608A8F9498CF76E56"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-catalog-preparer-source-peer-20261021\\peer.json",
+    "bytes": 9688,
+    "sha256": "871D68B2B41D3AB3A4730347F8A1027482A7CA8499DCEA20AE30139372A690D4"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-catalog-preparer-source-peer-20261021\\independent-static-peer.py",
+    "bytes": 21253,
+    "sha256": "598C2D87016060BC48215BA3A5F634465FD25757882D6BFB097B40613856C888"
+  },
+  "independent_input_verification": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-catalog-preparer-source-peer-20261021\\input-verification.json",
+    "bytes": 351614,
+    "sha256": "D4923C5273C48FEA9553830FC7E490F9FD321697B50BA15CDC984BDAF5CD0083"
+  },
+  "root_full_source_read_bytes": 54634,
+  "root_independent_finite_hunks_replayed": 36,
+  "every_intermediate_and_complete_inverse_verified": true,
+  "unchanged_helpers": 20,
+  "diagnostic_only_helper_change": "matrix_current V35 to V36 label",
+  "unchanged_regions": [
+    {
+      "name": "literal_import_embed_walker",
+      "bytes": 2326,
+      "sha256": "8E7527945E13A03E04B159DA0132C4FBC16C59B885B7E9EF9F62CD876B5F3965",
+      "byte_identical": true,
+      "baseline_byte_offset": 18727,
+      "candidate_byte_offset": 32274
+    },
+    {
+      "name": "complete_disjoint_selection_and_count_gates",
+      "bytes": 851,
+      "sha256": "96CD8AD6168E5A0B2F9594E7132D95BFCD892605CAB533793B5459190322BD3E",
+      "byte_identical": true,
+      "baseline_byte_offset": 23460,
+      "candidate_byte_offset": 37007
+    },
+    {
+      "name": "metadata_auditor_complete_path_only_inverse",
+      "bytes": 1259,
+      "sha256": "29887EF063DF2A6423FF1112CF5B1BFA48D29B84923492A857DE45CB274D9DEB",
+      "byte_identical": true,
+      "baseline_byte_offset": 28399,
+      "candidate_byte_offset": 41946
+    },
+    {
+      "name": "final_current_inputs_and_clean_head_bookend",
+      "bytes": 697,
+      "sha256": "C667231C2C2D0ACA9A72D37A789040CDA58749D066DE1F89C813ABB158B995F3",
+      "byte_identical": true,
+      "baseline_byte_offset": 39265,
+      "candidate_byte_offset": 53937
+    }
+  ],
+  "root_rehashed_all1577_peer_inputs": true,
+  "retained_root_checker_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-catalog-static-checker-span-negative-20261021.json",
+    "bytes": 1488,
+    "sha256": "7AB15878A654A72C60867D7C8E19299FF4921A542E90C4872F2BFBEB69264F02"
+  },
+  "root_findings": [
+    "Historical V36 complete BuildQuery acceptance is4 groups and61 actual metadata; original strict runtime19/18/1/42 remains negative, with original owner-invalid stderr gates and full closed-process evidence.",
+    "All original source-only V36 catalog provenance survives; old progress is frozen from raw a6 Git bytes. Prior V35 intake history is retained and prior V36[4ee30c526cd8909dfadfbbe187061fabcff9460b,a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8] is added.",
+    "Two actual parent-linked source intakes with exact donors, raw preimages, staged/committed receipts and final checkout must be supplied by a separate Root-issued configuration. Only fixture and progress are replacements.",
+    "The old SDK fixture source is read through its immutable original donor and raw a6 Git blob, not stale live Main. The three E401 edits and inverse, all unchanged root declarations and ownership authority excerpts are checked. Root source acceptance binds the exact correction peer and candidate.",
+    "Exactly three fixture source-pin substitutions and three inventory member substitutions are admitted;117 groups/2013 names,576 dependencies, four import/embed/anonymous graphs and exact disjoint4+63 order remain unchanged.",
+    "All actual successor metadata counts remain null; no V36 or V34 metadata transfers. Driver/classifier strict protocol bytes and each metadata auditor path-only inverse are preserved.",
+    "All writes are exclusive new files inside the two fixed flat preparation directories, followed by current-input and clean-head checks. No compiler, runtime, Node reference or source generator executes."
+  ],
+  "source_accepted": true,
+  "future_actual_fixture_and_progress_commits_still_require_specific_configuration": true,
+  "preparer_execution_authorized": false,
+  "constructor_execution_authorized": false,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "runtime_qualification": false,
+  "qualification": false
+}

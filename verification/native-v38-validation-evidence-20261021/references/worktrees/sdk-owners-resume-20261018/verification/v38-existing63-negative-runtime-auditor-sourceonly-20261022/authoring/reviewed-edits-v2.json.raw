@@ -1,0 +1,302 @@
+[
+  {
+    "label": "specific negative auditor description",
+    "before": "\"\"\"Independent complete original negative V37 Retry1 new4 strict runtime closure; exact failures remain nonqualifying.\"\"\"\n",
+    "after": "\"\"\"Independent complete original negative V38 existing63 retry1 strict runtime closure; exact failures and partial-batch demotions remain nonqualifying.\"\"\"\n",
+    "offset": 0
+  },
+  {
+    "label": "Root path+SHA admission",
+    "before": "if len(sys.argv)!=2:raise RuntimeError(\"Exact independently captured negative-input path required\")\ncfg_path=Path(sys.argv[1]);cfg=json.loads(cfg_path.read_text(encoding=\"utf-8-sig\"))\n",
+    "after": "if len(sys.argv)!=3:raise RuntimeError(\"Exact Root-issued negative-audit input path and SHA-256 required\")\ncfg_path=Path(sys.argv[1]);cfg_raw=cfg_path.read_bytes()\nif len(sys.argv[2])!=64 or any(c not in \"0123456789ABCDEF\" for c in sys.argv[2]):raise RuntimeError(\"Exact uppercase SHA-256 required\")\nif hashlib.sha256(cfg_raw).hexdigest().upper()!=sys.argv[2]:raise RuntimeError(\"Root-issued negative-audit input bytes changed\")\ncfg=json.loads(cfg_raw)\n",
+    "offset": 247
+  },
+  {
+    "label": "parent build proof",
+    "before": "build=base/\"evidence/root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\"\n",
+    "after": "build=base/\"evidence/root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\"\n",
+    "offset": 1042
+  },
+  {
+    "label": "parent build control",
+    "before": "build_control=base/\"evidence/root-native-foundation-fresh-v37-new4-control-20261021-131435\"\n",
+    "after": "build_control=base/\"evidence/root-native-foundation-fresh-v38-existing63-control-20261021-153711\"\n",
+    "offset": 1135
+  },
+  {
+    "label": "regression63 preparation",
+    "before": "prep=base/\"evidence/combined-native-batch-v37-new4-prepared-20261021\"\n",
+    "after": "prep=base/\"evidence/combined-native-batch-v38-regression63-prepared-20261021\"\n",
+    "offset": 1233
+  },
+  {
+    "label": "current frozen head",
+    "before": "head=\"b13be24e44cc1bbc361639eb35900a368ae60eac\"\n",
+    "after": "head=\"014062f2d139254acab4b985b4ae343db637166f\"\n",
+    "offset": 1311
+  },
+  {
+    "label": "full accepted actual cohort",
+    "before": "batch=\"new4\";group_count=4;declared_count=58;actual_count=61\n",
+    "after": "batch=\"existing63\";group_count=63;declared_count=1249;actual_count=1285;executed_count=17\n",
+    "offset": 1359
+  },
+  {
+    "label": "exact self and audit-only authority",
+    "before": "require(digest(cfg_path)==\"7B5903FF048D7545C9DE37089413BAED532EA7FFDFD7F556EF4631D287BDCD8C\",\"Exact independently captured original negative runtime inputs\")\n",
+    "after": "require(cfg[\"auditor_sha256\"]==digest(Path(__file__)) and cfg[\"audit_execution_authorized\"] is True,\"Exact reviewed auditor and separate audit-only Root authorization\")\n",
+    "offset": 3118
+  },
+  {
+    "label": "current original control and proof",
+    "before": "require(control==base/\"evidence/root-native-foundation-v37-new4-runtime-control-20261021-132912\" and proof==base/\"evidence/root-native-foundation-v37-new4-runtime-20261021-132912\",\"Exact original negative proof/control\")\n",
+    "after": "require(control==base/\"evidence/root-native-foundation-v38-existing63-runtime-control-20261022-134223\" and proof==base/\"evidence/root-native-foundation-v38-existing63-runtime-20261022-134223\",\"Exact original negative proof/control\")\n",
+    "offset": 3427
+  },
+  {
+    "label": "specific issued negative configuration",
+    "before": "require(cfg[\"status\"]==\"specific_original_v37_retry1_new4_strict_runtime_negative_inputs_for_root_review\" and cfg[\"candidate_head\"]==head and cfg[\"batch\"]==batch,\"Exact observed negative configuration identity\")\n",
+    "after": "require(cfg[\"status\"]==\"root_reviewed_specific_original_v38_existing63_retry1_strict_runtime_negative_audit\" and cfg[\"candidate_head\"]==head and cfg[\"batch\"]==batch,\"Exact observed negative configuration identity\")\n",
+    "offset": 3660
+  },
+  {
+    "label": "observed negative cutpoint",
+    "before": "require(cfg[\"observed_started\"]==cfg[\"observed_completed\"]==19 and cfg[\"observed_failed\"]==5 and cfg[\"unstarted_groups\"]==3 and cfg[\"unstarted_accepted_indices\"]==42,\"Exact observed failed cutpoint\")\n",
+    "after": "require(cfg[\"observed_started\"]==cfg[\"observed_completed\"]==321 and cfg[\"observed_failed\"]==1 and cfg[\"unstarted_groups\"]==46 and cfg[\"unstarted_accepted_indices\"]==964,\"Exact observed failed cutpoint\")\n",
+    "offset": 4084
+  },
+  {
+    "label": "current complete seal counts",
+    "before": "require(cfg[\"seal_counts\"]==dict(source=14785,tree=14798,vendor=1489,compiler=19546,controls=25),\"Exact independently captured whole seal cardinalities\")\n",
+    "after": "require(cfg[\"seal_counts\"]==dict(source=15041,tree=15054,vendor=1489,compiler=19546,controls=143),\"Exact independently captured whole seal cardinalities\")\n",
+    "offset": 4583
+  },
+  {
+    "label": "full original attempted-file membership and observation binding",
+    "before": "require({row[\"path\"]for row in cfg[\"original_attempted_group_files\"]}=={str(p)for p in (proof/\"groups/native-node-file-handle-owner\").iterdir()if p.is_file()},\"Complete original attempted-group evidence inventory\")\n",
+    "after": "observation_path=evidence/\"root-v38-existing63-partial-runtime-negative-observation-20261022.json\"\nrequire(digest(observation_path)==\"617CD84F3DCA136AEE827A9C02B2E50C1D337E364ECE956E059759C53942E7EC\",\"Exact original Root partial-runtime observation\")\nobservation=read(observation_path);verify_pins(observation)\nrequire(observation[\"candidate_head\"]==head and observation[\"batch\"]==batch and observation[\"control\"]==str(control) and observation[\"proof\"]==str(proof),\"Exact observed original negative identity\")\nrequire(observation[\"selected\"]==cfg[\"selected\"] and observation[\"seal_counts\"]==cfg[\"seal_counts\"],\"Every original selected owner/wire/count field retained\")\noriginal_group_file_names={\"commands.json\",\"final-artifacts.json\",\"result-provisional.json\",\"result.json\",\"runtime-absence.json\",\"runtime-admission.json\",\"runtime-after-artifacts.json\",\"runtime-before-artifacts.json\",\"runtime-prerequisite-artifacts.json\",\"runtime-raw-frame-observation.json\",\"runtime.json\",\"runtime.results.json\",\"runtime.stderr.log\",\"runtime.stdout.bin\"}\noriginal_group_paths={str(proof/\"groups\"/row[\"group\"]/name)for row in cfg[\"selected\"]for name in original_group_file_names}\nrequire(len(cfg[\"original_attempted_group_files\"])==len(original_group_paths)==238 and {row[\"path\"]for row in cfg[\"original_attempted_group_files\"]}==original_group_paths,\"Complete exact original 17-group evidence inventory\")\nrequire({str(p)for p in (proof/\"groups\").rglob(\"*\")if p.is_file()}==original_group_paths and {str(p)for p in (proof/\"groups\").rglob(\"*\")if p.is_dir()}=={str(proof/\"groups\"/row[\"group\"])for row in cfg[\"selected\"]},\"No unrecorded files or nested group directories\")\n",
+    "offset": 5435
+  },
+  {
+    "label": "current runtime preparation status occurrence 1",
+    "before": "root_reviewed_specific_v37_runtime_preparation",
+    "after": "root_reviewed_specific_v38_runtime_preparation",
+    "offset": 8927
+  },
+  {
+    "label": "current runtime constructor name occurrence 1",
+    "before": "Prepare-ReviewedV37RuntimeGrant-Retry1-20261021.py",
+    "after": "Prepare-ReviewedV38RuntimeGrant-20261021.py",
+    "offset": 9702
+  },
+  {
+    "label": "current runtime constructor bytes occurrence 1",
+    "before": "runtime_preparer.stat().st_size==12513",
+    "after": "runtime_preparer.stat().st_size==12499",
+    "offset": 9812
+  },
+  {
+    "label": "current runtime constructor SHA occurrence 1",
+    "before": "414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0",
+    "after": "7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322",
+    "offset": 9914
+  },
+  {
+    "label": "fresh parent launch basename occurrence 1",
+    "before": "buildquery-retry1-launch.json",
+    "after": "buildquery-launch.json",
+    "offset": 10109
+  },
+  {
+    "label": "fresh parent launch basename occurrence 2",
+    "before": "buildquery-retry1-launch.json",
+    "after": "buildquery-launch.json",
+    "offset": 10151
+  },
+  {
+    "label": "fresh parent launch basename occurrence 3",
+    "before": "buildquery-retry1-launch.json",
+    "after": "buildquery-launch.json",
+    "offset": 10267
+  },
+  {
+    "label": "fresh parent launch basename occurrence 4",
+    "before": "buildquery-retry1-launch.json",
+    "after": "buildquery-launch.json",
+    "offset": 48674
+  },
+  {
+    "label": "exact accepted A73A complete historical treatment",
+    "before": "review=read(prep/\"preparation-review.json\");verify_pins(review)\nrequire(digest(prep/\"preparation-review.json\")==cfg[\"preparation_review_sha256\"],\"Exact reviewed batch preparation\")\n",
+    "after": "review=read(prep/\"preparation-review.json\")\nrequire(digest(prep/\"preparation-review.json\")==cfg[\"preparation_review_sha256\"],\"Exact reviewed batch preparation\")\nhistorical_original=dict(path=str(main/\"src/native_node_file_handle_owner_test.zig\"),bytes=28378,sha256=\"93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422\")\nhistorical_snapshot=dict(path=str(base/\"worktrees/sdk-owners-resume-20261018/verification/v37-file-handle-runtime-fixtures-sourceonly-20261021/original/src/native_node_file_handle_owner_test.zig\"),bytes=28378,sha256=\"93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422\")\nhistorical_commit=\"b13be24e44cc1bbc361639eb35900a368ae60eac\"\nhistorical_rows=review[\"historical_source_rebindings\"]\nrequire(historical_rows==[dict(batch=b,role=\"fixture_unchanged_root_native-node-file-handle-owner\",original=historical_original,immutable_snapshot=historical_snapshot,raw_commit=historical_commit,exact_original_bytes=True)for b in (\"new4\",\"regression63\")],\"Exact complete historical preimage mappings\")\nrequire(all(review[\"provenance\"][\"v37_\"+row[\"batch\"]+\"_\"+row[\"role\"]]==historical_snapshot for row in historical_rows),\"Historical provenance is rebound to the exact immutable snapshot\")\nverify_pins(historical_snapshot)\nhistorical_raw=subprocess.check_output([\"git\",\"--no-optional-locks\",\"cat-file\",\"blob\",historical_commit+\":src/native_node_file_handle_owner_test.zig\"],cwd=main)\nrequire(len(historical_raw)==historical_original[\"bytes\"] and hashlib.sha256(historical_raw).hexdigest().upper()==historical_original[\"sha256\"] and historical_raw==Path(historical_snapshot[\"path\"]).read_bytes(),\"Historical snapshot equals the exact original raw Git blob\")\nverify_pins({key:value for key,value in review.items() if key!=\"historical_source_rebindings\"})\n",
+    "offset": 11236
+  },
+  {
+    "label": "original metadata acceptance SHA occurrence 1",
+    "before": "6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B",
+    "after": "C219D8E0E3BC372C1A818B783F1F461A89A37B58CF5B6BF86650A50E0ADA9BAF",
+    "offset": 23830
+  },
+  {
+    "label": "original accepted parent closure SHA occurrence 1",
+    "before": "7299F65541DED34F87D3671FAA895C2F0E9B2C8B9149AE4757DE466B5FD11382",
+    "after": "878FE04FB5E7D58231AC6EEEF555980FF31B68A0B463EF3102118C6212DADE82",
+    "offset": 24125
+  },
+  {
+    "label": "original negative aggregate result SHA occurrence 1",
+    "before": "66E9CE52981B6DA16C7A1F79EE596FA98754E5F69E435FDF0A36EB3AB8139165",
+    "after": "60532D49A021587856D9B362F456D8C1ACE22A7E3FECFB6980A2FA0FF2D30F87",
+    "offset": 24302
+  },
+  {
+    "label": "original negative complete final seal SHA occurrence 1",
+    "before": "DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7",
+    "after": "79CC4AFBDB2F8C8E8B378AE82ACE2CBC986D2767760C2EEA0E2D23C18D7E4801",
+    "offset": 24485
+  },
+  {
+    "label": "exact full grant actual count occurrence 1",
+    "before": "grant[\"actual_metadata_count\"]==61",
+    "after": "grant[\"actual_metadata_count\"]==actual_count",
+    "offset": 24994
+  },
+  {
+    "label": "V38 shared matrix SHA occurrence 1",
+    "before": "E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37",
+    "after": "8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03",
+    "offset": 25379
+  },
+  {
+    "label": "all63 accepted metadata retained",
+    "before": "require(grant[\"groups\"]==[g[\"group\"]for g in accept[\"groups\"]] and len(grant[\"groups\"])==4 and sum(g[\"actual_count\"]for g in accept[\"groups\"])==61,\"Complete accepted cohort retained\")\n",
+    "after": "require(grant[\"groups\"]==[g[\"group\"]for g in accept[\"groups\"]] and len(grant[\"groups\"])==group_count and sum(g[\"actual_count\"]for g in accept[\"groups\"])==actual_count,\"Complete accepted cohort retained\")\n",
+    "offset": 25987
+  },
+  {
+    "label": "actual strict17 cutpoint",
+    "before": "require([g[\"group\"]for g in r[\"groups\"]]==grant[\"groups\"][:1] and len(r[\"absence\"][\"owners\"])==1 and r[\"errors\"]==[\"Native test protocol did not report every selected test passing without logs/leaks\"],\"Exact first actual runtime and original strict negative batch failure retained\")\n",
+    "after": "require([g[\"group\"]for g in r[\"groups\"]]==grant[\"groups\"][:executed_count] and len(r[\"absence\"][\"owners\"])==executed_count and r[\"errors\"]==[\"Native test protocol did not report every selected test passing without logs/leaks\"],\"Exact actual runtime prefix and original strict negative batch failure retained\")\n",
+    "offset": 26191
+  },
+  {
+    "label": "unstarted directories absent",
+    "before": "require({p.name for p in (proof/\"groups\").iterdir()if p.is_dir()}==set(grant[\"groups\"][:1]),\"Exactly one actually started group directory; remaining three absent\")\n",
+    "after": "require({p.name for p in (proof/\"groups\").iterdir()if p.is_dir()}==set(grant[\"groups\"][:executed_count]),\"Exactly seventeen actually started group directories; remaining forty-six absent\")\n",
+    "offset": 26501
+  },
+  {
+    "label": "full current cardinalities",
+    "before": "require(len(final[\"source\"])==14785 and len(final[\"tree\"])==14798 and len(final[\"vendor\"])==1489 and len(final[\"compiler\"])==19546 and len(final[\"controls\"])==25,\"Complete current source/compiler/control cardinality\")\n",
+    "after": "require(len(final[\"source\"])==15041 and len(final[\"tree\"])==15054 and len(final[\"vendor\"])==1489 and len(final[\"compiler\"])==19546 and len(final[\"controls\"])==143,\"Complete current source/compiler/control cardinality\")\n",
+    "offset": 27830
+  },
+  {
+    "label": "full parent build result SHA occurrence 1",
+    "before": "8A86FD362D0E48FABAB9BE0F6E6902BECDDDA8F4F779AE8E73FB6492D927DBFC",
+    "after": "A80B07D02FB7393E335E093EAB945455DD23DA82AD7B15ECC4171C8F3F45DA3F",
+    "offset": 29048
+  },
+  {
+    "label": "full parent build seal SHA occurrence 1",
+    "before": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27",
+    "after": "E0B4F23FEB76DFAA549F1B029B9AF55DEAF908CC8EF66335A17FE33E023BFE2A",
+    "offset": 29261
+  },
+  {
+    "label": "complete all63 artifact pairs",
+    "before": "require(len(complete_cached)==4 and len({row[\"path\"]for row in complete_cached})==4,\"Complete original four cached executable/PDB pairs\")\n",
+    "after": "require(len(complete_cached)==group_count and len({row[\"path\"]for row in complete_cached})==group_count,\"Complete original sixty-three cached executable/PDB pairs\")\n",
+    "offset": 30575
+  },
+  {
+    "label": "derive executed and unstarted from accepted full vector",
+    "before": "require(len(selected)==1 and [want[\"group\"]for want in selected]==grant[\"groups\"][:1] and [want[\"count\"]for want in selected]==[19] and [want[\"failed\"]for want in selected]==[[5,10,11,12,16]],\"Exact actual one-group cohort and all five original failed indices retained\")\n",
+    "after": "accepted_counts=[g[\"actual_count\"]for g in accept[\"groups\"]]\nrequire(len(selected)==executed_count and [want[\"group\"]for want in selected]==grant[\"groups\"][:executed_count] and [want[\"count\"]for want in selected]==accepted_counts[:executed_count] and [want[\"failed\"]for want in selected]==[[]for _ in range(executed_count-1)]+[[22]],\"Exact actual ordered prefix and original failed index retained\")\nrequire([want[\"count\"]for want in selected]==[15,12,34,28,10,20,18,14,13,32,19,22,20,15,11,12,26] and sum(accepted_counts[:executed_count])==321 and sum(accepted_counts[executed_count:])==964 and sum(accepted_counts)==actual_count,\"Actual complete accepted vector derives the exact runtime cutpoint\")\nrequire(observation[\"not_started_groups\"]==grant[\"groups\"][executed_count:] and observation[\"not_started_tests\"]==sum(accepted_counts[executed_count:]) and len(observation[\"not_started_groups\"])==group_count-executed_count==46,\"Complete original unstarted group order and accepted test count\")\n",
+    "offset": 33074
+  },
+  {
+    "label": "exact original stderr shape",
+    "before": " require((gp/\"runtime.stderr.log\").stat().st_size==68389 and want[\"failed\"]==[5,10,11,12,16],\"Original failing ordinary stderr remains exactly68389 bytes; its strict rejection remains failed\")\n",
+    "after": " require((gp/\"runtime.stderr.log\").stat().st_size==(486 if want[\"failed\"] else 0) and want[\"failed\"]==([22] if number==executed_count-1 else []),\"Original empty stderr for sixteen demoted groups and exact486-byte strict rejection in final failed group\")\n",
+    "offset": 41470
+  },
+  {
+    "label": "all17 ordered admission probes",
+    "before": " require(r[\"admission_probes\"]==[probe],\"Exact original sole runtime admission probe\")\n",
+    "after": " require(len(r[\"admission_probes\"])==executed_count and r[\"admission_probes\"][number]==probe,\"Exact original ordered runtime admission probe\")\n",
+    "offset": 43562
+  },
+  {
+    "label": "actual failed metadata identity",
+    "before": "require(failed_names==cfg[\"failed_names\"]==[dict(group=\"native-node-file-handle-owner\",index=i,flags=1,name=accept[\"groups\"][0][\"tests\"][i])for i in [5,10,11,12,16]],\"All exact original failed indices and accepted metadata names\")\n",
+    "after": "require(failed_names==cfg[\"failed_names\"]==[dict(group=\"native-node-fs-request-owner\",index=22,flags=1,name=accept[\"groups\"][executed_count-1][\"tests\"][22])],\"Exact original failed index and accepted metadata name\")\n",
+    "offset": 44099
+  },
+  {
+    "label": "derive full original counts",
+    "before": "require(sum(o[\"started\"]for o in observations)==19 and sum(o[\"completed\"]for o in observations)==19 and sum(o[\"failed\"]for o in observations)==5 and sum(g[\"actual_count\"]for g in accept[\"groups\"][1:])==42,\"Exactly19 actual indices complete, five fail, fourteen pass, and42 never start\")\n",
+    "after": "require(sum(o[\"started\"]for o in observations)==sum(o[\"completed\"]for o in observations)==sum(accepted_counts[:executed_count])==321 and sum(o[\"failed\"]for o in observations)==1 and sum(row[\"passed\"]for o in observations for row in o[\"results\"])==320 and sum(accepted_counts[executed_count:])==964,\"Exactly321 actual indices complete, one fails,320 pass and964 never start\")\n",
+    "offset": 44315
+  },
+  {
+    "label": "original terminal job capture SHA occurrence 1",
+    "before": "F5DA6BCCFFA59A176902EE387F4DE2A130C399DEB7C584BBE73D2A3E0FFFA870",
+    "after": "2BF82DFD6E0BB85F46C513902D38783ED5CB951AB73C3F466CED476923A8D535",
+    "offset": 46442
+  },
+  {
+    "label": "full original job and string100ns identity",
+    "before": "require(job==cfg[\"job\"] and job[\"status\"]==\"failed\" and job[\"exitCode\"]==1 and job[\"runnerAlive\"] is False and job[\"runnerPid\"]>0 and job[\"childPid\"]>0 and job[\"runnerProcessInstance\"] and job[\"completedAtUtc\"],\"Independently captured exact actual terminal runtime job observation\")\n",
+    "after": "require(job==cfg[\"job\"] and job[\"id\"]==\"job-op-a17015be461f2f37aa27a1fb9d09260c7b06385213ec73ce3381b74d5007b063\" and job[\"status\"]==\"failed\" and job[\"exitCode\"]==1 and job[\"runnerAlive\"] is False and job[\"runnerPid\"]>0 and job[\"childPid\"]>0 and isinstance(job[\"runnerProcessInstance\"],str) and job[\"runnerProcessInstance\"].isdigit() and job[\"completedAtUtc\"],\"Independently captured exact actual terminal runtime job observation and string100ns creation\")\n",
+    "offset": 46780
+  },
+  {
+    "label": "all17 native and three control intervals",
+    "before": "require(len(runtime_bounds)==1 and len({(row[\"pid\"],row[\"created\"])for row in runtime_bounds})==1 and all(row[\"completed\"]>=row[\"created\"]for row in bounds),\"All original native process instances distinct and terminal intervals ordered\")\n",
+    "after": "require(len(runtime_bounds)==executed_count and len({(row[\"pid\"],row[\"created\"])for row in runtime_bounds})==executed_count and len(bounds)==executed_count+3 and all(row[\"completed\"]>=row[\"created\"]for row in bounds),\"All original native process instances distinct and terminal intervals ordered\")\n",
+    "offset": 47701
+  },
+  {
+    "label": "current classifier path occurrence 1",
+    "before": "combined-native-batch-v37-new4-prepared-20261021",
+    "after": "combined-native-batch-v38-regression63-prepared-20261021",
+    "offset": 48251
+  },
+  {
+    "label": "negative closure full cohort accounting",
+    "before": " declared_groups=group_count,declared_controls=declared_count,granted_groups=4,attempted_groups=1,unstarted_groups=3,metadata_acceptance=pin(accept_path),independent_build_closure=pin(build_closure_path),accepted_cohort=61,runtime_owner_count=1,actual_process_intervals=bounds,\n",
+    "after": "  declared_groups=group_count,declared_controls=declared_count,granted_groups=group_count,attempted_groups=executed_count,unstarted_groups=group_count-executed_count,metadata_acceptance=pin(accept_path),independent_build_closure=pin(build_closure_path),accepted_cohort=actual_count,runtime_owner_count=len(runtime_bounds),actual_process_intervals=bounds,\n",
+    "offset": 50634
+  },
+  {
+    "label": "negative closure actual outcome accounting",
+    "before": " observed_started=19,observed_completed=19,observed_failed=5,observed_passed=14,observed_failed_tests=failed_names,observed_groups=observations,not_started=42,current_absence=current,current_actual_process_instances_absent=True,current_process_instance_reconciliations=reconciled,\n",
+    "after": "  observed_started=sum(o[\"started\"]for o in observations),observed_completed=sum(o[\"completed\"]for o in observations),observed_failed=len(failed_names),observed_passed=sum(row[\"passed\"]for o in observations for row in o[\"results\"]),observed_failed_tests=failed_names,observed_groups=observations,not_started=sum(accepted_counts[executed_count:]),not_started_groups=grant[\"groups\"][executed_count:],current_absence=current,current_actual_process_instances_absent=True,current_process_instance_reconciliations=reconciled,\n",
+    "offset": 50989
+  },
+  {
+    "label": "negative closure source observation",
+    "before": " original_attempted_group_files=cfg[\"original_attempted_group_files\"],original_outer_outputs=cfg[\"original_outer_outputs\"],audit_configuration=pin(cfg_path),auditor=pin(Path(__file__)),runtime_grant_preparer=pin(runtime_preparer),negative_baseline=pin(baseline_path),accepted_baseline_closure=pin(baseline_closure),\n",
+    "after": "  original_attempted_group_files=cfg[\"original_attempted_group_files\"],original_outer_outputs=cfg[\"original_outer_outputs\"],original_root_partial_observation=pin(observation_path),audit_configuration=pin(cfg_path),auditor=pin(Path(__file__)),runtime_grant_preparer=pin(runtime_preparer),negative_baseline=pin(baseline_path),accepted_baseline_closure=pin(baseline_closure),\n",
+    "offset": 51952
+  },
+  {
+    "label": "negative terminal summary",
+    "before": "print(json.dumps(dict(status=certificate[\"status\"],closure=str(output),sha256=digest(output),distinct_current_files_rehashed=len(all_pins),runtime_owners=1,actual_started=19,actual_completed=19,failed=5,not_started=42,current_instances_absent=True,source_mutation_hold_released=False,selected_native_runtime_qualification=False,product_qualification=False)))\n",
+    "after": "print(json.dumps(dict(status=certificate[\"status\"],closure=str(output),sha256=digest(output),distinct_current_files_rehashed=len(all_pins),runtime_owners=len(runtime_bounds),actual_started=certificate[\"observed_started\"],actual_completed=certificate[\"observed_completed\"],failed=certificate[\"observed_failed\"],not_started=certificate[\"not_started\"],current_instances_absent=True,source_mutation_hold_released=False,selected_native_runtime_qualification=False,product_qualification=False)))\n",
+    "offset": 52663
+  },
+  {
+    "label": "exact52-field config and retained paths",
+    "before": "require(not output.exists(),\"Fresh immutable independent closure required\")\n",
+    "after": "require(not output.exists(),\"Fresh immutable independent closure required\")\nrequire(set(cfg)=={\"schema\",\"status\",\"control\",\"proof\",\"candidate_head\",\"batch\",\"preparation\",\"build_control\",\"build_proof\",\"declared_groups\",\"declared_controls\",\"actual_metadata_count\",\"runtime_result_sha256\",\"runtime_before_sha256\",\"runtime_final_sha256\",\"runtime_grant_sha256\",\"runtime_launch_sha256\",\"runtime_configuration_sha256\",\"runtime_grant_launch_adaptation_sha256\",\"runtime_grant_preparer\",\"runtime_constructor_source_review_sha256\",\"buildquery_launch_sha256\",\"preparation_review_sha256\",\"build_result_sha256\",\"build_final_sha256\",\"metadata_acceptance_sha256\",\"independent_build_closure_sha256\",\"root_buildquery_acceptance_sha256\",\"outer_sha256\",\"outer_absence_sha256\",\"outer_pid\",\"job_observation_sha256\",\"job\",\"selected\",\"seal_counts\",\"observed_started\",\"observed_completed\",\"observed_failed\",\"unstarted_groups\",\"unstarted_accepted_indices\",\"accepted_metadata_count\",\"failed_names\",\"original_attempted_group_files\",\"original_outer_outputs\",\"original_strict_failures_preserved\",\"runtime_qualification\",\"product_qualification\",\"source_mutation_hold_released\",\"native_execution_authorized\",\"auditor_executed\",\"auditor_sha256\",\"audit_execution_authorized\"} and cfg[\"schema\"]==1,\"Exact complete52-field negative audit configuration\")\nrequire(Path(cfg[\"preparation\"])==prep and Path(cfg[\"build_control\"])==build_control and Path(cfg[\"build_proof\"])==build,\"Exact original preparation and complete parent paths\")\n",
+    "offset": 3042
+  },
+  {
+    "label": "exact original16 progress lines plus unchanged negative result",
+    "before": "require(cfg[\"original_outer_outputs\"]==[pin(control/\"outer.stdout.bin\"),pin(control/\"outer.stderr.log\")] and (control/\"outer.stdout.bin\").read_bytes()==(proof/\"result.json\").read_bytes(),\"Original exact outer outputs remain preserved\")\n",
+    "after": "outer_progress_prefix=\"\".join(\"Group \"+row[\"group\"]+\" completed actual RuntimeOnly phases; awaiting whole-batch closure\\r\\n\"for row in cfg[\"selected\"][:-1]).encode(\"utf-8\")\nrequire(cfg[\"original_outer_outputs\"]==[pin(control/\"outer.stdout.bin\"),pin(control/\"outer.stderr.log\")] and len(outer_progress_prefix)==1629 and (control/\"outer.stdout.bin\").read_bytes()==outer_progress_prefix+(proof/\"result.json\").read_bytes(),\"Original exact16 ordered controller progress lines followed by the complete unchanged negative result\")\n",
+    "offset": 8510
+  }
+]

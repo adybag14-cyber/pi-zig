@@ -1,0 +1,83 @@
+7DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03")]:
+ matrices.append(js(E/("combined-native-batch-"+version)/"groups.json",n,h))
+keys=("name","target","artifact","source_root","required_named","historical_order","allowed_anonymous","runtime_stderr_policy")
+maps=[{g["name"]:g for g in m["groups"]}for m in matrices];selected=[];names=[]
+for name in groups:
+ values=[{k:mm[name][k]for k in keys}for mm in maps]
+ need(values[0]==values[1]==values[2],"All8 definition fields V34/V37/currentV38 "+name)
+ g=maps[2][name];ns=g["required_named"];need(len(ns)==len(set(ns)),"Unique declarations")
+ names.append([name,ns]);selected.append(dict(group=name,declared_controls=len(ns),artifact=g["artifact"],target=g["target"]))
+need(sum(x["declared_controls"]for x in selected)==1249 and max(x["declared_controls"]for x in selected)==37,"Exact source declarations")
+names_hash=sha((json.dumps(names,separators=(",",":"))+"\n").encode("ascii"))
+need(names_hash==f["selected_required_names_ordered_sha256"]==plan["cohort"]["required_names_ordered_sha256"],"Ordered1249 names")
+need(len(matrices[2]["groups"])==117 and sum(len(x["required_named"])for x in matrices[2]["groups"])==2013,"Full current catalog")
+fixed_node=assign(btree,"fixed_rows");fixed_rows={}
+for k,v in zip(fixed_node.keys,fixed_node.values):
+ need(isinstance(v,ast.Call)and isinstance(v.func,ast.Name)and v.func.id=="fixed","Literal fixed pin call")
+ fixed_rows[ast.literal_eval(k)]=dict(bytes=ast.literal_eval(v.args[1]),marker=ast.literal_eval(v.args[2]))
+slots=f["unresolved_future_bindings"];need(slots==plan["future_binding"]["slots"]and len(slots)==17,"Exact17 future binding records")
+alltokens=tokens(new,False)
+unresolved=[t for t in alltokens if t[0]=="STRING"and "UNRESOLVED"in t[1]]
+need(len(unresolved)==12 and sum(r["bytes"]==0 for r in fixed_rows.values())==5,"Independent12+5 future slots")
+for slot in slots:
+ need(slot["actual_value"]is None and new[slot["offset"]:slot["offset"]+len(slot["before"])]==slot["before"].encode(),"Unbound exactslot")
+ need(any(t[0]==slot["kind"]and t[1]==slot["before"]and t[2]==slot["offset"]for t in alltokens),"Slot at actual token boundary")
+for key in ("actual_head","actual_matrix","actual_job_id","actual_metadata_count","actual_runtime_outcome"):need(plan["future_binding"][key]is None,"No predicted actual binding")
+code=new.decode("ascii")
+gates=[
+'0<accepted["actual_count"]<=64',
+'len(accepted["tests"])==len(set(accepted["tests"]))==accepted["actual_count"]',
+'actual_count+=accepted["actual_count"]',
+'all(accepted["tests"].count(n)==1 for n in group["required_named"])',
+'all(n in group["required_named"] or n in group["allowed_anonymous"]for n in accepted["tests"])',
+'metadata["tests"]==accepted["tests"] and metadata["actual_count"]==accepted["actual_count"]',
+'review["selected_groups"]==63 and review["selected_declarations"]==1249 and review["actual_metadata_count"] is None',
+'prepared["actual_metadata_count"] is None',
+'part["owned_started_phases"]==part["attempted_phases"]==list(part["phases"])==["compile","metadata"]',
+'with OUTPUT.open("xb") as f:f.write(raw)',
+'require(len(out)==39 and out["native_phase_count"]==2*out["attempted_groups"] and actual_count>0',
+'job["status"]=="succeeded" and job["exitCode"]==0 and job["runnerAlive"] is False']
+for gate in gates:need(code.count(gate)==1,"Source-defined gate "+gate)
+countwrites=[]
+for n in ast.walk(btree):
+ if isinstance(n,ast.Assign)and any(isinstance(t,ast.Name)and t.id=="actual_count"for t in n.targets):countwrites.append(ast.dump(n.value,include_attributes=False))
+ if isinstance(n,ast.AugAssign)and isinstance(n.target,ast.Name)and n.target.id=="actual_count":countwrites.append(ast.dump(n,include_attributes=False))
+need(len(countwrites)==2 and countwrites[0]=="Constant(value=0)","Actual count only initial0 and accepted increment")
+out=assign(btree,"out");need(isinstance(out,ast.Call)and isinstance(out.func,ast.Name)and out.func.id=="dict","Literal output contract")
+outkeys=[x.arg for x in out.keywords]+[x+"_sha256"for x in ("before","final","result","outer","outer_absence","metadata_acceptance")]+["job_observation_sha256"]
+need(len(outkeys)==len(set(outkeys))==39,"Exact39 fields")
+actualnode=next(k.value for k in out.keywords if k.arg=="actual_metadata_count")
+need(isinstance(actualnode,ast.Name)and actualnode.id=="actual_count","Output actual observed sum")
+auditor=read(f["compatible_positive_auditor"]).decode("ascii")
+need('group_count,declared_count=(4,58) if batch=="new4" else (63,1249)'in auditor and '("new4" if batch=="new4" else "regression63")'in auditor,"Generic63 auditor paths/counts")
+need('sum(g["actual_metadata_count"] for g in groups)==cfg["actual_metadata_count"]==sum(g["actual_count"] for g in acceptance["groups"])'in auditor,"Auditor recomputes actual metadata total")
+cfgkeys={n.slice.value for n in ast.walk(ast.parse(auditor))if isinstance(n,ast.Subscript)and isinstance(n.value,ast.Name)and n.value.id=="cfg"and isinstance(n.slice,ast.Constant)and isinstance(n.slice.value,str)}
+need(cfgkeys<=set(outkeys),"Every literal auditor input produced")
+driver=read(f["driver"]);lines=driver.decode("utf-8-sig").splitlines()
+currentdriver=fixed(E/"combined-native-batch-v38-regression63-prepared-20261021/Run-CombinedNativeBatch.ps1",60094,"1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601")
+need(currentdriver==driver,"Current driver exact historical source")
+for r in f["driver_layout_excerpts"]:need(lines[r["line"]-1]==r["text"],"Original driver layout pin")
+need("$taskGrant.groups.Count-gt64"in lines[80]and "$names.Count-gt64"in lines[109],"Separate unchanged group/name caps")
+need("('groups/'+$Group)"in lines[429]and "Join-Path $taskProof 'installed'"in lines[432],"Per-group proof/install isolation")
+need("Save-Json $metadata 'selected-tests.json'"in lines[469]and "Save-Json $taskArtifact 'build-artifacts.json'"in lines[493],"Generic selected/artifact output")
+cor=js(D/"static-checker-correction.json",5920,"0638848843B1D9032B3E3D26A01B206BF00068D9AA7E19322B0B095FB4F36221")
+ca=read(cor["original"]);cb=read(cor["successor"]);w=ca
+for r in cor["steps"]:
+ a=r["before"].encode();b=r["after"].encode();i=r["offset"]
+ need(sha(w)==r["before_file_sha256"]and w[i:i+len(a)]==a,"Checker negative successor preimage")
+ w=w[:i]+b+w[i+len(a):];need(sha(w)==r["after_file_sha256"],"Checker successor postimage")
+need(w==cb,"Checker exact successor")
+for r in reversed(cor["steps"]):
+ a=r["before"].encode();b=r["after"].encode();i=r["offset"];w=w[:i]+a+w[i+len(b):]
+need(w==ca and cor["original_execution_negative"]["exitCode"]==1,"Checker negative retained wholeinverse")
+negative=json.loads(read(f["retained_authoring_negative"]))
+need(negative["original_tool_result"]["exitCode"]==1 and negative["corrected_inspection_outcome"]["exitCode"]==0,"Authoring negative preserved")
+for key in ("Main_accessed","candidate_executed","prefix_executed","constructor_executed","auditor_executed","helper_executed","native_executed","configuration_issued","execution_authority","runtime_authority","source_mutation_hold_released","qualification"):
+ need(plan[key]is False and f[key]is False,"Unissued source-only authority")
+for r in list(seen.values()):read(r)
+own=pin(__file__);read(own)
+proof=dict(schema=1,status="passed_independent_static_v38_existing63_positive_input_helper_peer",candidate=f["candidate"],baseline=f["baseline"],finite_adaptation=fp,plan=pp,source_audit=own,finite_edits=steps,full_forward_and_inverse_exact=True,untouched_fragments=fragments,unchanged_complete_helpers=helpers,critical_regions=critical,nonconstant_logic_outside_explicit_cohort_exact=True,ordered_selection_authority=f["ordered_selection_authority"],ordered_groups=groups,selected=selected,source_declarations=1249,maximum_declared_in_group=37,ordered_required_names_sha256=names_hash,current_v38_definitions_equal_v34_v37=True,future_bindings=slots,actual_metadata_count=None,actual_runtime_outcome=None,source_defined_group_and_metadata_caps=64,actual_count_writes=countwrites,output_fields=outkeys,generic_auditor_literal_config_fields=sorted(cfgkeys),driver_layout_excerpts=f["driver_layout_excerpts"],metadata_gates=gates,retained_checker_negative_and_successor=pin(D/"static-checker-correction.json"),retained_authoring_negative=f["retained_authoring_negative"],inputs=sorted(seen.values(),key=lambda r:r["path"].casefold()),input_versions=len(seen),blockers=[],source_only=True,Main_accessed=False,Main_written=False,target_executed=False,prefix_executed=False,constructor_executed=False,auditor_executed=False,helper_executed=False,native_executed=False,configuration_issued=False,execution_authority=False,runtime_authority=False,source_mutation_hold_released=False,qualification=False)
+outpath=O/"source-proof.json";raw=(json.dumps(proof,indent=2)+"\n").encode("ascii")
+with outpath.open("xb")as stream:stream.write(raw)
+need(outpath.read_bytes()==raw,"Own proof roundtrip")
+print(json.dumps(dict(source_audit=own,decisive_proof=pin(outpath),finite_edits=13,helpers=10,groups=63,declarations=1249,unresolved_bindings=17,input_versions=len(seen),source_only=True,target_executed=False,Main_accessed=False)))

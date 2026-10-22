@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "C:\Users\adyba\pi-zig\evidence\Audit-PositiveV38StrictRuntime-20261021.py", line 90, in <module>
+    review=read(prep/"preparation-review.json");verify_pins(review)
+                                                ~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\adyba\pi-zig\evidence\Audit-PositiveV38StrictRuntime-20261021.py", line 59, in verify_pins
+    for child in value.values():verify_pins(child)
+                                ~~~~~~~~~~~^^^^^^^
+  File "C:\Users\adyba\pi-zig\evidence\Audit-PositiveV38StrictRuntime-20261021.py", line 61, in verify_pins
+    for child in value:verify_pins(child)
+                       ~~~~~~~~~~~^^^^^^^
+  File "C:\Users\adyba\pi-zig\evidence\Audit-PositiveV38StrictRuntime-20261021.py", line 59, in verify_pins
+    for child in value.values():verify_pins(child)
+                                ~~~~~~~~~~~^^^^^^^
+  File "C:\Users\adyba\pi-zig\evidence\Audit-PositiveV38StrictRuntime-20261021.py", line 58, in verify_pins
+    actual=pin(path);require(actual["sha256"]==value["sha256"] and ("bytes" not in value or actual["bytes"]==value["bytes"]),"Immutable provenance bytes changed: "+str(path))
+                     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\adyba\pi-zig\evidence\Audit-PositiveV38StrictRuntime-20261021.py", line 35, in require
+    if not ok:raise RuntimeError(message)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Immutable provenance bytes changed: C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig

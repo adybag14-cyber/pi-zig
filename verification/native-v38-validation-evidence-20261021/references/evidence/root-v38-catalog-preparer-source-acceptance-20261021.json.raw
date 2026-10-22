@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "status": "root_and_independent_peer_accepted_bounded_v38_catalog_preparer_source",
+  "reviewer": "Root",
+  "recorded_utc": "2026-10-21T14:28:28.614085+00:00",
+  "source_accepted": true,
+  "preparer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\Prepare-FreshV38Catalog-20261021.py",
+    "bytes": 80847,
+    "sha256": "A112C96C5CFA58E338398948D7A8E5BF7F079B523AF7239FA5BE8F78E46118CD"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-FreshV37Catalog-20261021.py",
+    "bytes": 54634,
+    "sha256": "BDEDEE0A5A00C895C6E2375AE67C910223D091A8286B4B85201DF8BE7A72A30F"
+  },
+  "root_static_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-preparer-static-review-20261021.json",
+    "bytes": 1861,
+    "sha256": "D32B1BCE1E5613A81D2C32B130EC66953F5DD2BD71E0C7CCA6928FFF9D7F8688"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 137539,
+    "sha256": "F6869376B2D6B42C007589244CA25DA2C988C10EEBCFE4DA36C87DC4B5ACDF58"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-catalog-preparer-source-peer-20261021\\peer.json",
+    "bytes": 12074,
+    "sha256": "863957E490A7EBF46ED6ECAE790F41992107E440220CA66C1E1D9794D28B3468"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-catalog-preparer-source-peer-20261021\\source-check.py",
+    "bytes": 31050,
+    "sha256": "075FAE05EE27D47CF8CD3994E48584F66ABC7A15EF6FBF401D201D19DFF475DD"
+  },
+  "independent_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-catalog-preparer-source-peer-20261021\\source-proof.json",
+    "bytes": 430904,
+    "sha256": "AA04FFF8DE70624324E0CA8A17BBB34477CEB1D49E2CD8BFBB765B6CAFB3AA70"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\handoff.json",
+    "bytes": 11255,
+    "sha256": "7E340FBDEEA57D0C6401078C3115E107BD5CE06D7A773B8FFC6E2D21C4C04A08"
+  },
+  "unissued_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\unissued-root-configuration.json",
+    "bytes": 6522,
+    "sha256": "DA734EE9C0A059BFFF847754DC1AAA290454FBA47E7CEBEBA884A504A8E1F068"
+  },
+  "full_source_and_both_static_checkers_read": true,
+  "finite_steps": 38,
+  "full_forward_inverse_and_intermediate_hashes_independently_verified": true,
+  "unchanged_helpers": 20,
+  "unchanged_complete_regions": 4,
+  "root_rehashed_independent_inputs": 1709,
+  "checker_separately_rehashed": true,
+  "matrix_input_paths": 1309,
+  "catalog_groups": 117,
+  "catalog_declarations": 2013,
+  "dependency_rows": 576,
+  "changed_matrix_hashes": 4,
+  "changed_inventory_members": 4,
+  "partition_groups": [
+    4,
+    63
+  ],
+  "partition_declarations": [
+    58,
+    1249
+  ],
+  "original63_order_preserved": true,
+  "selected_current_roots_separate_from_original_history": true,
+  "observed_fixture_commit": "f878aa40ab4bc4629f2cf57b281fcd2e7329473b",
+  "fixture_paths": 44,
+  "future_progress_child_unresolved": true,
+  "final_candidate_head": null,
+  "actual_future_metadata_count": null,
+  "initial_admission_and_retry1_build_and_strict_negative_preserved": true,
+  "prior_metadata_transferred": false,
+  "preparer_or_prefix_executed": false,
+  "catalog_preparation_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "application_qualified": false,
+  "Main_written": false,
+  "source_mutation_hold_released": false,
+  "decision": "Bind the exact completed progress child and both actual intake chains in a separate Root catalog-only configuration; no native authority follows from this source acceptance."
+}

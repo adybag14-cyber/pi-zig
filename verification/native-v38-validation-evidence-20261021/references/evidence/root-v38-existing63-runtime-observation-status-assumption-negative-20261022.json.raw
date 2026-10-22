@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "status": "preserved_Root_observation_preparation_failure_before_outputs",
+  "observed_utc": "2026-10-22T13:49:28.283411+00:00",
+  "tool_result": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"<string>\", line 47, in <module>\r\n    assert bad==[]and stderr==b\"\"and canonical[\"status\"]==\"passed\"and g[\"status\"]==\"passed_selected_native_controls\"\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"<string>\", line 47, in <module>\r\n    assert bad==[]and stderr==b\"\"and canonical[\"status\"]==\"passed\"and g[\"status\"]==\"passed_selected_native_controls\"\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "original_inline_source_sha256": "BA9B1AF0BB2BFB86D397407B2B2E568BA988D23BAE43EDB7A0D7B2A13A5C8CDB",
+  "cause": "The Root observation script expected standalone passed_selected_native_controls for the earlier zero-flag groups. Original failed-batch finalization correctly demotes them to partial_batch_not_admissible. The assertion stopped before any output or original mutation.",
+  "correction": "Require the actual partial_batch_not_admissible status, retain all original bytes and report zero-flag counts separately from qualification.",
+  "native_rerun": false,
+  "original_receipt_mutated": false,
+  "qualification": false
+}

@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "summary": "Read logs for background job job-op-32701b61c52d36566ec17d4c2c17f681daf3c7d65ed68d26cad069778dcafe9d.",
+  "data": {
+    "id": "job-op-32701b61c52d36566ec17d4c2c17f681daf3c7d65ed68d26cad069778dcafe9d",
+    "status": "failed",
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py\", line 90, in <module>\r\n    review=read(prep/\"preparation-review.json\");verify_pins(review)\r\n                                                ~~~~~~~~~~~^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py\", line 59, in verify_pins\r\n    for child in value.values():verify_pins(child)\r\n                                ~~~~~~~~~~~^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py\", line 61, in verify_pins\r\n    for child in value:verify_pins(child)\r\n                       ~~~~~~~~~~~^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py\", line 59, in verify_pins\r\n    for child in value.values():verify_pins(child)\r\n                                ~~~~~~~~~~~^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py\", line 58, in verify_pins\r\n    actual=pin(path);require(actual[\"sha256\"]==value[\"sha256\"] and (\"bytes\" not in value or actual[\"bytes\"]==value[\"bytes\"]),\"Immutable provenance bytes changed: \"+str(path))\r\n                     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py\", line 35, in require\r\n    if not ok:raise RuntimeError(message)\r\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nRuntimeError: Immutable provenance bytes changed: C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig\r\n",
+    "maxChars": 6000,
+    "logs": {
+      "stdout": {
+        "totalBytes": 0,
+        "segments": [
+          {
+            "index": 0,
+            "bytes": 0
+          }
+        ],
+        "rotated": false
+      },
+      "stderr": {
+        "totalBytes": 1674,
+        "segments": [
+          {
+            "index": 0,
+            "bytes": 1674
+          }
+        ],
+        "rotated": false
+      },
+      "maxBytesPerSegment": 33554432,
+      "rotations": 2,
+      "truncated": false
+    }
+  },
+  "exitCode": null,
+  "truncated": false
+}

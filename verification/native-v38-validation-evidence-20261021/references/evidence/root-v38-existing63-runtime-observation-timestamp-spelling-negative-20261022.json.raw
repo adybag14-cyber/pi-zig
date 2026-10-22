@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "status": "preserved_Root_observation_preparation_failure_before_outputs",
+  "tool_result": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"<string>\", line 55, in <module>\r\n    assert absence[\"pid\"]==outer[\"pid\"]and absence[\"created_utc\"]==outer[\"created_utc\"]and absence[\"currently_absent\"]is True and absence[\"current_records\"]==[]\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"<string>\", line 55, in <module>\r\n    assert absence[\"pid\"]==outer[\"pid\"]and absence[\"created_utc\"]==outer[\"created_utc\"]and absence[\"currently_absent\"]is True and absence[\"current_records\"]==[]\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "cause": "The original outer creation is2026-10-22T13:42:37.3844280Z and original absence receipt spells the same100ns value as2026-10-22T13:42:37.384428Z. Exact string equality was too strict.",
+  "correction": "Compare the complete seven-fractional-digit UTC100ns value using the already-reviewed timestamp treatment; retain both original raw receipts.",
+  "original_receipt_mutated": false,
+  "native_rerun": false,
+  "qualification": false
+}

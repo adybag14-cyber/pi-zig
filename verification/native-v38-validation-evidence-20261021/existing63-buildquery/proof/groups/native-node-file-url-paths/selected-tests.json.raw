@@ -1,0 +1,32 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\c1b5d9b4c0fe0e007a1e0b70b07c026e\\test.exe",
+  "binary_sha256": "4BA1F10CDE5509EDA13E3B7A3A3DED22143AF302B520CE6422359B3E53574945",
+  "version": "0.16.0",
+  "actual_count": 20,
+  "tests": [
+    "native_node_file_url_paths_test.test.native actual file URL structural predicate preserves short circuit reads",
+    "native_node_file_url_paths_test.test.native actual file URL toPath retains non URL identity and ordinary abrupt values",
+    "native_node_file_url_paths_test.test.native actual file URL options precede path and protocol is read again",
+    "native_node_file_url_paths_test.test.native actual file URL toPath performs its separate structural gate",
+    "native_node_file_url_paths_test.test.native actual file URL nullish platform selection and truthy option do not coerce",
+    "native_node_file_url_paths_test.test.native actual file URL retains actual URL constructor and original decoder",
+    "native_node_file_url_paths_test.test.native actual file URL throws genuine argument scheme host and input-bearing path errors",
+    "native_node_file_url_paths_test.test.native actual file URL encoded separator check precedes actual URI decoding",
+    "native_node_file_url_paths_test.test.native actual file URL UNC uses genuine domain Unicode and IPv6 host parsing",
+    "native_node_file_url_paths_test.test.native actual file URL Windows replacement uses its genuine private RegExp realm",
+    "native_node_file_url_paths_test.test.native actual file URL ordinary functions admit structural primitive Symbols",
+    "native_node_file_url_paths_test.test.native actual file URL string error uses live formatter and preselected superclass",
+    "native_node_file_url_paths_test.test.native actual file URL function messages retain repeated reads and eager coercion",
+    "native_node_file_url_paths_test.test.native actual file URL completed owner shares actual error marker URL and empty object",
+    "native_node_file_url_paths_test.test.native actual file URL predicate retires before next read while windows local survives body",
+    "native_node_file_url_paths_test.test.native actual file URL predicate finalizer fatal stops later protocol and guest catch",
+    "native_node_file_url_paths_test.test.native actual file URL same getter private DATA throw remains ordinary",
+    "native_node_file_url_paths_test.test.native actual file URL successful flagged predicate value remains DATA",
+    "native_node_file_url_paths_test.test.native actual file URL new error families reuse original argument bootstrap primordials",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-file-url-paths",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

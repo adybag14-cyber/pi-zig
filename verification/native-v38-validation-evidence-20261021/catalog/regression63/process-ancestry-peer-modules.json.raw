@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "status": "finite source peer closed; no native execution or runtime qualification",
+  "reviewer": "modules_io",
+  "current_driver": {
+    "path": "C:/Users/adyba/pi-zig/evidence/combined-native-batch-v21-prepared-20261020/Run-CombinedNativeBatch.ps1",
+    "bytes": 60094,
+    "sha256": "1dd3a9d27fa7b54f9383f325792a9e5259c66c32fa6c601f21216b4dbb483601"
+  },
+  "delta": {
+    "path": "C:/Users/adyba/pi-zig/evidence/combined-native-batch-v21-prepared-20261020/process-ancestry-delta-v2.json",
+    "sha256": "add98ee7a50ef3595443adcf6baf3586a5ca562ad9f95ce4fe9cd9a6627ec988"
+  },
+  "original_driver": {
+    "path": "C:/Users/adyba/pi-zig/evidence/combined-native-batch-v18b-prepared-20261020/Run-CombinedNativeBatch.ps1",
+    "sha256": "eb2b5e5dd882eeeb7492741a6222388c28a8b299ebddf5651fd7c3ebe2104ca9"
+  },
+  "verification": {
+    "complete_reads": true,
+    "exact_reversal_equals_original": true,
+    "exact_changes": [
+      "one added pair of timestamp/descendant helper definitions",
+      "one additional retained evidence field",
+      "one replacement ancestry call line"
+    ],
+    "unchanged_gates": [
+      "owner PID presence",
+      "global native-process classifier",
+      "original owner schema, executable, arguments and terminal checks",
+      "strict compile/metadata/runtime and canonical results",
+      "source/artifact/timeout/absence failure behavior"
+    ]
+  },
+  "findings": [
+    "Every selected ancestry edge is compared with the selected parent instance birth, normalized to UTC ticks.",
+    "Only a child born strictly more than ten ticks before that parent is excluded; the original row and both timestamp values remain in preexisting_pid_ancestry.",
+    "Equal, later and submicrosecond-uncertain births remain descendants. Missing, invalid, timezone-ambiguous timestamps throw into the existing invalid-absence path.",
+    "The seen set prevents duplicate traversal; excluded old-instance branches are not admitted as descendants of the tested instance.",
+    "The original V20 metadata absence remains failed_or_unknown and is not modified by this controller successor."
+  ],
+  "recorded_controller_controls": {
+    "script": "C:/Users/adyba/pi-zig/evidence/combined-native-batch-v21-prepared-20261020/Test-ProcessInstanceAncestry.ps1",
+    "script_sha256": "06b5a888279922a11fbea8ce2319201cdd3df7ee8097eeeb07475b44c03e89cd",
+    "result": "C:/Users/adyba/pi-zig/evidence/combined-native-batch-v21-prepared-20261020/process-ancestry-controls.json",
+    "result_sha256": "45996c56151cb933154dc79fe79cadca4f5c3660b768e5b1789502f767de7d60",
+    "count": 12,
+    "all_recorded_passed": true,
+    "independently_rerun": false
+  },
+  "original_negative": {
+    "path": "C:/Users/adyba/pi-zig/evidence/root-vm-io-oauth-options-fresh-v20-buildquery-20261020-103019/groups/native-ai-oauth-radius-genuine-af/metadata-absence.json",
+    "sha256": "d9d3993da8a785ae3f65f3b8849dbcacc4d1441967043df7bf023235187128bd",
+    "owner_created_utc": "2026-10-20T10:40:27.8374894Z",
+    "older_process_ids": [
+      6540,
+      19048
+    ],
+    "older_births_utc": [
+      "2026-10-20T09:22:15.557357Z",
+      "2026-10-20T09:22:15.620108Z"
+    ]
+  },
+  "execution_authorized": false,
+  "main_mutated": false
+}

@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v38_existing63_complete_buildquery_audit_resource_release",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-22T13:30:32.584355+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38CompleteBuildQuery-20261021.py",
+    "bytes": 37254,
+    "sha256": "6BCBE32702657CD2B5F62E8779CCF585B86D7A8CFFC04C2EB6FE25B4D6E41A9E"
+  },
+  "configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\independent-positive-buildquery-audit-inputs.json",
+    "bytes": 4394,
+    "sha256": "FB74B72AAA3DDE829FF3292B7D7F7C5DE512A0ABF523DB904F1E57027009D930"
+  },
+  "source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-execution-bound-source-review-20261021.json",
+    "bytes": 6950,
+    "sha256": "20ECFC7CF589BAB8E0090EEED59B2BE236CDE5F1F14DF4C2A68AD215C2E3013A"
+  },
+  "observed_input_helper_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-observed-helper-issued-config-20261021.json",
+    "bytes": 3927,
+    "sha256": "3A493ADCBAD0A4DA40A618DDEECD10ED86C38B69F4D4B8DFE53F4E373FFF3381"
+  },
+  "observed_input_helper_terminal_job": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\observed-input-helper-job-status.json",
+    "bytes": 1574,
+    "sha256": "44FE3687C4F2037642769B798595F10B3833A3B65526C8A6D7B94204B50B72F7"
+  },
+  "metadata_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\independent-metadata-acceptance.json",
+    "bytes": 242533,
+    "sha256": "C219D8E0E3BC372C1A818B783F1F461A89A37B58CF5B6BF86650A50E0ADA9BAF"
+  },
+  "resource": {
+    "program": "python",
+    "resource_class": "io-heavy",
+    "timeout_seconds": 240,
+    "one_auditor_process": true,
+    "source_artifact_and_process_read_only": true,
+    "output": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\independent-current-seals-and-owners.json"
+  },
+  "audit_execution_authorized": true,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

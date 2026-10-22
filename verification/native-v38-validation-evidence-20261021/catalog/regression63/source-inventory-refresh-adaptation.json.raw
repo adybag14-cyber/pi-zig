@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\new-roots-source-inventory.json",
+    "bytes": 1209440,
+    "sha256": "58CD12A19C76B1350295C4F4512283E84AE11BCC7E0D518F31F44A4E69778CFF"
+  },
+  "adapted": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-regression63-prepared-20261021\\new-roots-source-inventory.json",
+    "bytes": 1209440,
+    "sha256": "712285FBB72CEB735171817DA17997D6D82FC380F20BA8CE49245EC94BCD31EB"
+  },
+  "fixture_member_changes": [
+    {
+      "root_index": 0,
+      "module_index": 673,
+      "path": "src/native_node_file_handle_owner_test.zig",
+      "before_bytes": 28378,
+      "after_bytes": 28576,
+      "before_sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "after_sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+    },
+    {
+      "root_index": 0,
+      "module_index": 674,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before_bytes": 33152,
+      "after_bytes": 33411,
+      "before_sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F",
+      "after_sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+    },
+    {
+      "root_index": 1,
+      "module_index": 673,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before_bytes": 33152,
+      "after_bytes": 33411,
+      "before_sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F",
+      "after_sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+    },
+    {
+      "root_index": 3,
+      "module_index": 674,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before_bytes": 33152,
+      "after_bytes": 33411,
+      "before_sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F",
+      "after_sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+    }
+  ],
+  "identity_fields_changed": [
+    "schema",
+    "candidate_head",
+    "prepared_utc"
+  ],
+  "all_module_embed_import_anonymous_named_control_inventories_preserved": true,
+  "whole_structural_and_byte_inverse": true,
+  "compiler_selected_reachability_claimed": false,
+  "execution_authority": false,
+  "actual_metadata_count": null
+}

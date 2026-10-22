@@ -1,0 +1,133 @@
+"""Static source/data proof for the V38 catalog result-name successor.
+Reads immutable bytes and ASTs only. Does not execute/import/evaluate the
+candidate or any prefix. --write creates only this packet's finite proof.
+"""
+from pathlib import Path
+import ast,copy,hashlib,json,sys
+P=Path(__file__).resolve().parent
+DECL={"path":"C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\declared-edits.json","bytes":4718,"sha256":"4CD4ED929018A4B13F0869532EAA5D988970F8592D449AAC98DA9A3246058F74"}
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ p=Path(p);b=p.read_bytes();return dict(path=str(p),bytes=len(b),sha256=sha(b))
+def check(r):
+ actual=pin(r["path"]);assert actual==r,(actual,r)
+ return Path(r["path"]).read_bytes()
+def read(r):return json.loads(check(r))
+def dump(n):return ast.dump(n,include_attributes=False)
+def assign(tree,name):
+ rows=[(i,n)for i,n in enumerate(tree.body)if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name) and n.targets[0].id==name]
+ assert len(rows)==1,name
+ return rows[0]
+def helpers(raw):
+ lines=raw.splitlines(keepends=True);out=[]
+ for n in ast.walk(ast.parse(raw.decode("ascii"))):
+  if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef)):
+   body=b"".join(lines[n.lineno-1:n.end_lineno]);out.append((n.name,body))
+ return out
+assert sys.argv[1:] in (["--check"],["--write"])
+d=read(DECL);assert len(d["edits"])==2
+old=check(d["baseline"]);assert check(d["original_snapshot"])==old
+new=check(d["candidate"]);previous=read(d["original_finite_proof"])
+assert previous["candidate"]["sha256"]==d["baseline"]["sha256"]
+before=old;delta=0;steps=[];fragments=[];oe=ne=0
+for i,e in enumerate(d["edits"],1):
+ a=e["baseline_offset"];x=e["before"].encode("ascii");y=e["after"].encode("ascii")
+ assert old[a:a+len(x)]==x and a>=oe
+ at=a+delta;assert before[at:at+len(x)]==x
+ assert old[oe:a]==new[ne:at]
+ fragments.append(dict(baseline_offset=oe,candidate_offset=ne,bytes=a-oe,sha256=sha(old[oe:a]),byte_identical=True))
+ initial_hash=sha(before);before=before[:at]+y+before[at+len(x):]
+ steps.append(dict(index=i,baseline_offset=a,offset_before_step=at,before=e["before"],after=e["after"],purpose=e["purpose"],before_file_sha256=initial_hash,after_file_sha256=sha(before)))
+ delta+=len(y)-len(x);oe=a+len(x);ne=at+len(y)
+assert before==new
+assert old[oe:]==new[ne:]
+fragments.append(dict(baseline_offset=oe,candidate_offset=ne,bytes=len(old)-oe,sha256=sha(old[oe:]),byte_identical=True))
+inverse=new
+for e in reversed(steps):
+ assert sha(inverse)==e["after_file_sha256"]
+ a=e["offset_before_step"];x=e["before"].encode("ascii");y=e["after"].encode("ascii")
+ assert inverse[a:a+len(y)]==y
+ inverse=inverse[:a]+x+inverse[a+len(y):]
+ assert sha(inverse)==e["before_file_sha256"]
+assert inverse==old and len(old)==80847 and len(new)==80888
+# Admit precisely one new dictionary field and relocation of one unchanged load.
+ot,nt=ast.parse(old.decode("ascii")),ast.parse(new.decode("ascii"))
+om_i,om=assign(ot,"metadata");nm_i,nm=assign(nt,"metadata")
+oe_i,oe_node=assign(ot,"expected_results");ne_i,ne_node=assign(nt,"expected_results")
+assert dump(om)==dump(nm) and om_i>oe_i and nm_i+1==ne_i
+assert isinstance(oe_node.value,ast.ListComp) and isinstance(ne_node.value,ast.ListComp)
+assert dump(oe_node.value.generators[0])==dump(ne_node.value.generators[0])
+assert len(oe_node.value.generators)==len(ne_node.value.generators)==1
+od,nd=oe_node.value.elt,ne_node.value.elt
+assert isinstance(od,ast.Dict) and isinstance(nd,ast.Dict)
+assert [ast.literal_eval(k)for k in od.keys]==["index","flags","passed"]
+assert [ast.literal_eval(k)for k in nd.keys]==["index","flags","passed","name"]
+assert [dump(v)for v in od.values]==[dump(v)for v in nd.values[:3]]
+assert dump(nd.values[3])==dump(ast.parse('metadata["groups"][0]["tests"][i]',mode="eval").body)
+clean_old=copy.deepcopy(ot);clean_new=copy.deepcopy(nt)
+clean_old.body.pop(assign(clean_old,"metadata")[0]);clean_new.body.pop(assign(clean_new,"metadata")[0])
+new_expected_i,_=assign(clean_new,"expected_results");clean_new.body[new_expected_i]=copy.deepcopy(oe_node)
+assert dump(clean_old)==dump(clean_new)
+meta_line=d["edits"][1]["before"].encode("ascii")
+assert old.count(meta_line)==new.count(meta_line)==1
+assert d["edits"][0]["after"].startswith(d["edits"][1]["before"]) and d["edits"][1]["after"]==""
+equality=b'assert observed["results"] == expected_results\n'
+assert old.count(equality)==new.count(equality)==1
+fa,fb=helpers(old),helpers(new);assert len(fa)==len(fb)==21
+unchanged=[]
+for (name,a),(name2,b)in zip(fa,fb):
+ assert name==name2 and a==b
+ unchanged.append(dict(name=name,bytes=len(a),sha256=sha(a),byte_identical=True))
+old_imports=[dump(n)for n in ot.body if isinstance(n,(ast.Import,ast.ImportFrom))]
+assert old_imports==[dump(n)for n in nt.body if isinstance(n,(ast.Import,ast.ImportFrom))]
+# Read the complete accepted original data; never run the candidate comparison.
+pins=d["authorities"];root=read(pins["root_preparation_negative"]);cfg=read(pins["failed_configuration"])
+job_envelope=read(pins["failed_job_observation"]);stderr=check(pins["failed_stderr"])
+metadata=read(pins["accepted_metadata"]);negative=read(pins["accepted_runtime_negative_closure"]);canonical=read(pins["canonical_original_runtime_results"])
+assert root["preparer"]==d["baseline"] and root["configuration"]==pins["failed_configuration"]
+assert root["job_observation"]==pins["failed_job_observation"] and root["original_stderr_capture"]==pins["failed_stderr"]
+assert root["original_negative_closure"]==pins["accepted_runtime_negative_closure"]
+assert root["terminal_exit_code"]==1 and root["failure_line"]==390
+assert root["failure_expression"]=='assert observed["results"] == expected_results'
+assert root["catalog_emitted"] is False and root["compiler_native_execution_occurred"] is False and root["new_preparation_authorized"] is False
+assert cfg["candidate_head"]==root["head"]=="014062f2d139254acab4b985b4ae343db637166f"
+assert cfg["preparer_sha256"]==d["baseline"]["sha256"] and cfg["catalog_preparation_authorized"] is True and cfg["native_execution_authorized"] is False
+assert job_envelope["ok"] is True and job_envelope["truncated"] is False
+job=job_envelope["data"];assert job["status"]=="failed" and job["exitCode"]==1 and job["runnerAlive"] is False
+assert job["logs"]["stdout"]["totalBytes"]==0 and job["logs"]["stderr"]["totalBytes"]==356
+assert b'line 390, in <module>' in stderr and equality.strip() in stderr
+assert metadata["accepted"] is True and metadata["status"]=="independently_accepted_combined_native_batch_metadata"
+assert metadata["candidate_head"]==negative["candidate_head"]=="b13be24e44cc1bbc361639eb35900a368ae60eac"
+assert negative["metadata_acceptance"]==pins["accepted_metadata"]
+assert [g["actual_count"]for g in metadata["groups"]]==[19,4,24,14]
+assert len(negative["observed_groups"])==1
+observed=negative["observed_groups"][0];group=metadata["groups"][0]
+assert group["group"]==observed["group"]=="native-node-file-handle-owner"
+assert group["actual_count"]==len(group["tests"])==len(set(group["tests"]))==19
+assert observed["canonical"]==pins["canonical_original_runtime_results"]
+assert canonical["binary_sha256"]==group["executable_sha256"] and canonical["status"]=="failed"
+assert canonical["expected"]==canonical["started"]==canonical["completed"]==19
+assert canonical["failed_or_skipped_or_logged_or_leaked"]==5
+assert [observed[k]for k in ("started","completed","failed")]==[19,19,5]
+assert [negative[k]for k in ("observed_started","observed_completed","observed_failed","observed_passed","not_started")]==[19,19,5,14,42]
+expected_three=[];expected_four=[]
+for i in range(19):
+ row=dict(index=i,flags=1 if i in (5,10,11,12,16)else 0,passed=i not in (5,10,11,12,16))
+ expected_three.append(row);expected_four.append(dict(row,name=group["tests"][i]))
+assert canonical["results"]==expected_three
+assert observed["results"]!=expected_three
+assert observed["results"]==expected_four
+assert all(set(r)=={"index","flags","passed","name"}for r in observed["results"])
+assert [r["index"]for r in expected_four if r["flags"]]==[5,10,11,12,16]
+assert sum(r["passed"]for r in expected_four)==14
+assert expected_four[18]["name"]=="extensions.native_durable_storage.test_0"
+assert root["original_result_count"]==19 and root["original_failed_indices"]==[5,10,11,12,16] and root["original_passed_count"]==14
+# Every later metadata validation and every other source byte lies in the
+# unchanged fragments; the AST check also isolates exactly the two changes.
+result=dict(schema=1,status="source_only_v38_catalog_result_name_successor_verified",checker=pin(__file__),declared_edits=DECL,baseline=d["baseline"],original_snapshot=d["original_snapshot"],candidate=d["candidate"],preserved_original_finite_proof=d["original_finite_proof"],authorities=pins,finite_hunks=2,edits=steps,all_intermediate_hashes=True,complete_raw_forward_exact=True,complete_raw_inverse_exact=True,unchanged_raw_fragments=fragments,all_other_source_bytes_unchanged=True,all_21_helpers_byte_identical=unchanged,imports_unchanged=True,metadata_proof_call_byte_identical_and_moved_once=True,metadata_move=dict(original_line=om.lineno,candidate_line=nm.lineno),result_comparison=dict(original_expected_line=oe_node.lineno,candidate_expected_line=ne_node.lineno,only_added_dictionary_key="name",exact_name_ast='metadata["groups"][0]["tests"][i]',original_range19_and_index_flag_pass_expressions_unchanged=True,whole_record_equality_unchanged=True),complete_module_ast_equal_after_only_metadata_relocation_and_name_field_normalization=True,historical_causal_data=dict(actual_original_job_id=job["id"],actual_original_failure_line=390,original_catalog_emitted=False,original_three_field_comparison_passes=False,successor_four_field_data_match=True,accepted_metadata_group=group["group"],ordered_records=expected_four,record_keys=["index","flags","passed","name"],failed_indices=[5,10,11,12,16],passed_count=14,anonymous_index18=group["tests"][18],future_metadata_or_runtime_prediction=False),fresh_configuration_required=True,original_configuration_reused=False,successor_source_only=True,successor_or_prefix_executed=False,preparer_or_generator_executed_by_this_checker=False,compiler_native_reference_or_constructor_executed=False,Main_or_index_written=False,new_execution_configuration_issued=False,actual_future_metadata_count=None,execution_authority=False,runtime_authority=False,qualification=False)
+raw=(json.dumps(result,indent=2)+"\n").encode("ascii");out=P/"finite-source-correction.json"
+if sys.argv[1]=="--write":
+ with out.open("xb")as f:f.write(raw)
+ assert out.read_bytes()==raw
+elif out.exists():assert out.read_bytes()==raw
+print(json.dumps(dict(path=str(out),bytes=len(raw),sha256=sha(raw),finite_hunks=2,unchanged_helpers=21,historical_results=19,failed=5,passed=14,successor_executed=False)))

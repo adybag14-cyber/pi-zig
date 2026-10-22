@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "status": "independent_checker_observation_schema_assumption_rejected",
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-existing63-negative-runtime-auditor-source-peer-20261022\\source-check.py",
+    "bytes": 37266,
+    "sha256": "4ED45114100B402DBC6029EFCE800E1B47054736F93DAC75B50F9E815E39AF48",
+    "AST_parse_only": true
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-existing63-negative-runtime-auditor-sourceonly-20261022\\candidate\\Audit-NegativeV38Existing63Retry1StrictRuntime-v2.py",
+    "bytes": 54860,
+    "sha256": "DC14ED9842E396207F0F3447FCAC57E7D4F0C021E6AFF340F80C0FDD722C4A2D"
+  },
+  "original_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-partial-runtime-negative-observation-20261022.json",
+    "bytes": 19641,
+    "sha256": "617CD84F3DCA136AEE827A9C02B2E50C1D337E364ECE956E059759C53942E7EC"
+  },
+  "observed_failed_test": [
+    {
+      "group": "native-node-fs-request-owner",
+      "index": 22,
+      "flags": 1,
+      "test_name": "native_node_fs_request_owner_test.test.native FS request owner physical completion preserves live Promise getter failure and still retires the request",
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223\\groups\\native-node-fs-request-owner\\runtime.stderr.log",
+        "bytes": 486,
+        "sha256": "8933D2F8ED52C54071D20E3C8A21983C7A14CCA6D8EE1198C6F6EFE965B54196"
+      },
+      "wire": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223\\groups\\native-node-fs-request-owner\\runtime.stdout.bin",
+        "bytes": 742,
+        "sha256": "16910F179BEF779C537314F442CE1A12A5A6632EAA3243FC0928500E257A5860"
+      }
+    }
+  ],
+  "result": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-existing63-negative-runtime-auditor-source-peer-20261022\\source-check.py\", line 277, in <module>\r\n    assert failed==o[\"failed_tests\"]==[dict(group=\"native-node-fs-request-owner\",index=22,flags=1,name=\"native_node_fs_request_owner_test.test.native FS request owner physical completion preserves live Promise getter failure and still retires the request\")]\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-existing63-negative-runtime-auditor-source-peer-20261022\\source-check.py\", line 277, in <module>\r\n    assert failed==o[\"failed_tests\"]==[dict(group=\"native-node-fs-request-owner\",index=22,flags=1,name=\"native_node_fs_request_owner_test.test.native FS request owner physical completion preserves live Promise getter failure and still retires the request\")]\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "cause": "The peer checker compared the richer Root observation row directly with the canonical four-field failed-result row. Root uses test_name and also records exact stderr/wire pins.",
+  "correction": "Require exact six-field Root observation schema, independently recheck both raw-output pins, and map test_name to canonical name before equality.",
+  "candidate_or_prefix_executed": false,
+  "Main_accessed": false,
+  "configuration_issued": false
+}

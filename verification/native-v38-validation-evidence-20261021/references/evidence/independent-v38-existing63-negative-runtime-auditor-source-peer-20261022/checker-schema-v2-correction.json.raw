@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "status": "independent_checker_schema_only_correction",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-existing63-negative-runtime-auditor-source-peer-20261022\\source-check.py",
+    "bytes": 37266,
+    "sha256": "4ED45114100B402DBC6029EFCE800E1B47054736F93DAC75B50F9E815E39AF48"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-existing63-negative-runtime-auditor-source-peer-20261022\\source-check-v2.py",
+    "bytes": 38066,
+    "sha256": "06D8835F82746E880616768F170EE25EA5D75516477AA3404FF428EEEB8732FA"
+  },
+  "edits": [
+    {
+      "offset": 22103,
+      "before": "assert failed==o[\"failed_tests\"]==[dict(group=\"native-node-fs-request-owner\",index=22,flags=1,name=\"native_node_fs_request_owner_test.test.native FS request owner physical completion preserves live Promise getter failure and still retires the request\")]\n",
+      "after": "assert failed==[dict(group=\"native-node-fs-request-owner\",index=22,flags=1,name=\"native_node_fs_request_owner_test.test.native FS request owner physical completion preserves live Promise getter failure and still retires the request\")]\nassert len(o[\"failed_tests\"])==1 and set(o[\"failed_tests\"][0])=={\"group\",\"index\",\"flags\",\"test_name\",\"stderr\",\"wire\"}\nroot_failed=o[\"failed_tests\"][0]\nassert {k:root_failed[k]for k in (\"group\",\"index\",\"flags\")}|{\"name\":root_failed[\"test_name\"]}==failed[0]\nassert root_failed[\"stderr\"]==PINS[str(RP/\"groups/native-node-fs-request-owner/runtime.stderr.log\")]\nassert root_failed[\"wire\"]==PINS[str(RP/\"groups/native-node-fs-request-owner/runtime.stdout.bin\")]\npcheck(root_failed[\"stderr\"]);pcheck(root_failed[\"wire\"])\nobj(D/\"original-observation-schema-checker-negative.json\",4110,\"CC5FD214250CFC174F327A6625291DA04CAA632C8679223F6CA3339EA2CFAC6A\")\n",
+      "pre_sha": "4ED45114100B402DBC6029EFCE800E1B47054736F93DAC75B50F9E815E39AF48",
+      "post_sha": "C69E7A0662BA112E116653565E187C926ACE74154C12265C888EF49FB4416A69"
+    },
+    {
+      "offset": 34824,
+      "before": "original_authoring_negatives=handoff[\"findings\"],distinct_input_files=",
+      "after": "original_authoring_negatives=handoff[\"findings\"],checker_only_negative=PINS[str(D/\"original-observation-schema-checker-negative.json\")],distinct_input_files=",
+      "pre_sha": "C69E7A0662BA112E116653565E187C926ACE74154C12265C888EF49FB4416A69",
+      "post_sha": "0697D355144ABB5A89F2721FF0BB382FF117E5EACFFD39CA943B96F43128CB63"
+    },
+    {
+      "offset": 37378,
+      "before": "original_authoring_negatives=handoff[\"findings\"],candidate_executed=",
+      "after": "original_authoring_negatives=handoff[\"findings\"],checker_only_negative=PINS[str(D/\"original-observation-schema-checker-negative.json\")],candidate_executed=",
+      "pre_sha": "0697D355144ABB5A89F2721FF0BB382FF117E5EACFFD39CA943B96F43128CB63",
+      "post_sha": "06D8835F82746E880616768F170EE25EA5D75516477AA3404FF428EEEB8732FA"
+    }
+  ],
+  "full_forward_and_inverse": true,
+  "candidate_changed": false,
+  "candidate_or_prefix_executed": false
+}

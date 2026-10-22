@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "status": "static_checker_only_exact_v37_metadata_selector_successor",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\source-correction-check.py",
+    "bytes": 10949,
+    "sha256": "B143EBBE24ADE17D2E973B1B32617C41203908E4C6E7FFD42E29CE3547DDEFBA"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\source-correction-check-v2.py",
+    "bytes": 11225,
+    "sha256": "63A4D4BC3A632942AB4F7CC2AE6045FD9FCBDBDD68DC8400572A202DE481A183"
+  },
+  "preserved_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\checker-selector-negative.json",
+    "bytes": 1892,
+    "sha256": "B5D705369E9A191C85B5B61442BA7E8563FF70C272CBE8DB5EF967692D0C6F32"
+  },
+  "before": " rows=[(i,n)for i,n in enumerate(tree.body)if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name) and n.targets[0].id==name]\n",
+  "after": " rows=[(i,n)for i,n in enumerate(tree.body)if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name) and n.targets[0].id==name]\n if name==\"metadata\":rows=[(i,n)for i,n in rows if isinstance(n.value,ast.Call) and isinstance(n.value.func,ast.Name) and n.value.func.id==\"proof\" and n.value.args and isinstance(n.value.args[0],ast.Constant) and n.value.args[0].value==\"prior_v37_retry1_metadata_acceptance\"]\n",
+  "finite_hunks": 1,
+  "full_forward_and_raw_inverse": true,
+  "all_other_checker_bytes_unchanged": true,
+  "target_source_changed": false,
+  "target_or_prefix_executed": false,
+  "Main_written": false
+}

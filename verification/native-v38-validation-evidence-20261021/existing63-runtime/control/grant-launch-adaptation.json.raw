@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "original_grant": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\root-grant.json",
+    "bytes": 26495,
+    "sha256": "809D6F66E9F2CD416709B1E91270D5DBCCDA6F3C71E5959C891EABE9C2EB7ED8"
+  },
+  "grant": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-134223\\root-grant.json",
+    "bytes": 27023,
+    "sha256": "7F3B7CE0574741302B8F07713025A42B3B94A36A1E7D745E8CA9B89172264775"
+  },
+  "field_changes": [
+    {
+      "key": "grant_id",
+      "old_present": true,
+      "before": "root-native-foundation-fresh-v38-existing63-20261021-153711",
+      "after": "root-native-foundation-v38-existing63-runtime-20261022-134223"
+    },
+    {
+      "key": "issued_utc",
+      "old_present": true,
+      "before": "2026-10-21T15:37:11.705748+00:00",
+      "after": "2026-10-22T13:42:23.525253+00:00"
+    },
+    {
+      "key": "mode",
+      "old_present": true,
+      "before": "BuildQuery",
+      "after": "RuntimeOnly"
+    },
+    {
+      "key": "receipt_directory",
+      "old_present": true,
+      "before": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711",
+      "after": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223"
+    },
+    {
+      "key": "build_result_path",
+      "old_present": true,
+      "before": null,
+      "after": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\result.json"
+    },
+    {
+      "key": "build_result_sha256",
+      "old_present": true,
+      "before": null,
+      "after": "A80B07D02FB7393E335E093EAB945455DD23DA82AD7B15ECC4171C8F3F45DA3F"
+    },
+    {
+      "key": "build_source_seal_path",
+      "old_present": true,
+      "before": null,
+      "after": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\final.json"
+    },
+    {
+      "key": "build_source_seal_sha256",
+      "old_present": true,
+      "before": null,
+      "after": "E0B4F23FEB76DFAA549F1B029B9AF55DEAF908CC8EF66335A17FE33E023BFE2A"
+    },
+    {
+      "key": "metadata_acceptance_path",
+      "old_present": true,
+      "before": null,
+      "after": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\independent-metadata-acceptance.json"
+    },
+    {
+      "key": "metadata_acceptance_sha256",
+      "old_present": true,
+      "before": null,
+      "after": "C219D8E0E3BC372C1A818B783F1F461A89A37B58CF5B6BF86650A50E0ADA9BAF"
+    },
+    {
+      "key": "actual_metadata_count",
+      "old_present": true,
+      "before": null,
+      "after": 1285
+    },
+    {
+      "key": "independent_build_closure_path",
+      "old_present": false,
+      "before": null,
+      "after": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\independent-current-seals-and-owners.json"
+    },
+    {
+      "key": "independent_build_closure_sha256",
+      "old_present": false,
+      "before": null,
+      "after": "878FE04FB5E7D58231AC6EEEF555980FF31B68A0B463EF3102118C6212DADE82"
+    },
+    {
+      "key": "build_specific_root_configuration",
+      "old_present": false,
+      "before": null,
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-buildquery-issued-config-20261021.json",
+        "bytes": 24863,
+        "sha256": "E00D37EA2826EA5E4E9F9568EF7770FEC5F9A8FCD425CA4DBA3C2E52773EF28B"
+      }
+    },
+    {
+      "key": "specific_root_configuration",
+      "old_present": true,
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-buildquery-issued-config-20261021.json",
+        "bytes": 24863,
+        "sha256": "E00D37EA2826EA5E4E9F9568EF7770FEC5F9A8FCD425CA4DBA3C2E52773EF28B"
+      },
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-runtime-retry1-issued-config-20261022.json",
+        "bytes": 5919,
+        "sha256": "D8CC394FC26AD86E83A7159C4BC97F3A1350DB7375080CC562973B065167DA8D"
+      }
+    },
+    {
+      "key": "root_buildquery_acceptance",
+      "old_present": false,
+      "before": null,
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-complete-buildquery-acceptance-20261021.json",
+        "bytes": 6281,
+        "sha256": "E6ADF28AEA05357A0C0CCFAE9BE63D27C020F17DA75F4D75E9136C62A10FDDDE"
+      }
+    },
+    {
+      "key": "root_review",
+      "old_present": true,
+      "before": "Root authorizes the exact V38 10095-byte5ACED5A1 BuildQuery constructor and this issued original63 configuration to emit one fresh private existing63 grant/launcher/buildquery-launch.json at clean pushed014062. Root reviewed the unchanged constructor and20ECFC7 source receipt, current full117/2013 catalog, exact original63 ordering and regression63 preparation9362, plus the five cohort adaptations from accepted new4 configuration3BE39. Retain all53 provenance entries with exact order/pins and historical progress rebinding; do not transfer any new4 count/result. The separate new4 runtime is accepted61/61 by C2BA2AD, while actual original63 metadata is unknown. Root will read the complete emitted grant/launcher/adaptation and check the full inverse before promptly submitting the exact1784-byte launcher as one durable heavy job, at most1900 seconds with unchanged1800-second owned outer. Enforce fresh300-second grant admission, >=16GiB free, one serial pinned Zig0.16/compiler/native owner, fresh private caches, unchanged1DD3 driver/3413 classifier, exact complete source/vendor/compiler/control seals and independent actual metadata/artifact/process-instance closure. RuntimeOnly requires a separate grant after positive build closure. Source mutation and whole application qualification remain false.",
+      "after": "Root issues one complete strict RuntimeOnly batch for the exact original63-group V38 BuildQuery independently closed on014062. All1285 actual accepted metadata indices must complete with zero original flags and empty stderr. Preserve exact17-field grant inverse, serial owned processes, fresh16GiB admission, exact source/artifact bookends,120-second per-group owner and1800-second outer. DiagnosticContinue is false. This is no application qualification or source mutation release."
+    }
+  ],
+  "complete_grant_inverse": true,
+  "original_launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\launch.ps1",
+    "bytes": 1784,
+    "sha256": "4599A9AA38872CA8B56200A1A2FA9E405F6A3111B89B510E904AF118632836C7"
+  },
+  "launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-134223\\launch.ps1",
+    "bytes": 1785,
+    "sha256": "63760E433773A87DEA6B25760DA023C3A36EB6E9B9696BBDB975023E4A29F8D6"
+  },
+  "launch_edit_count": 1,
+  "before": "'BuildQuery'",
+  "after": "'RuntimeOnly'",
+  "complete_launch_byte_inverse": true,
+  "prior_strict_runtime_grant": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-control-20261020-210255\\root-grant.json",
+    "bytes": 6351,
+    "sha256": "FA3D60CE15F2886D687F140D8DD93FD3B9F1BAADD86153505CA9026512A19303"
+  },
+  "prior_strict_runtime_launcher": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-control-20261020-210255\\launch.ps1",
+    "bytes": 1772,
+    "sha256": "9B6B65EEF10F702596CCBE9E698AC77FB4D63F2F49FDFE1AEB5E0EF49EE4D4DC"
+  },
+  "all_strict_gate_fields_unchanged": true,
+  "diagnostic_continue": false,
+  "qualification": false
+}

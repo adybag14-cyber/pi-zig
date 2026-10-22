@@ -1,0 +1,112 @@
+en replaced keys from the archived raw basis; indent2 ensure_ascii=false UTF8 plusLF reproduces all554689 original bytes.",
+ "source_build_paths":0,"native_negative_history_unchanged":True,"qualification":False,
+}
+add(ARCHIVE+"/history-preservation.json",encode(history_report),"complete_progress_inverse_and_history_proof")
+add(ARCHIVE+"/seal-archive-map.json",encode(seal_mappings),"lossless_observed_two_source_bookend_mappings")
+archive_index = {
+ "schema":1,"status":"exact_closed_v38_positive_phase_and_original_non_native_negative_archive",
+ "candidate_head":HEAD,"original_partial_inventory":fixed("inventory"),"final_copy_plan":cfg["final_copy_plan"],
+ "known_input_versions_retained":314,"all_selected_observed_input_versions":len(rows),
+ "raw_archive_files":archive_rows,"compressed_original_bookends":seal_mappings,
+ "represented_original_bookend_files":8,"compressed_bookend_pairs":len(seal_mappings),
+ "separately_archived_raw_bookend_files":8-2*len(seal_mappings),
+ "cache_files_archived":0,"native_binary_files_archived":0,
+ "raw_original100ns_bytes_and_strings_unchanged":True,
+ "original_execution_authority_is_historical_not_reusable":True,
+ "original_files_modified":False,"native_execution_authorized":False,
+ "main_intake_authorized":False,"source_mutation_hold_released":False,"qualification":False,
+}
+add(ARCHIVE+"/archive-index.json",encode(archive_index),"complete_exact_raw_and_gzip_archive_mapping")
+manifest_rows = [
+ {"target":target,"source":str(OUT/"projected"/target),"bytes":len(payloads[target]),
+  "sha256":sha(payloads[target]),"before":preimages[target],"role":roles[target]}
+ for target in sorted(payloads)
+]
+require([r["target"] for r in manifest_rows if r["before"] is not None]==[PROGRESS],"only old progress replaced")
+manifest = {
+ "schema":1,"status":"exact_v38_positive_progress_archive_intake_unissued",
+ "comparison_head":HEAD,"path_count_including_manifest":len(manifest_rows)+1,
+ "rows":manifest_rows,"manifest_target":MANIFEST_TARGET,
+ "source_build_paths":0,"existing_progress_replacements":1,
+ "all314_known_inputs_retained":True,"all181_nested_prefixes_and_full_progress_inverse_verified":True,
+ "final_copy_plan":cfg["final_copy_plan"],"source_review":cfg["source_review"],
+ "complete_original63_success_required_and_verified":True,"all_original_negatives_preserved":True,
+ "main_worktree_collision_check_deferred_to_separate_exact_intake":True,
+ "main_applied":False,"source_mutation_hold_released":False,"main_intake_authorized":False,
+ "native_execution_authorized":False,"application_qualified":False,"production_bridge_removed":False,"published_release":False,
+ "scope":"Only one exact progress replacement and new immutable evidence. No source/build/native/index/cache action. Root must independently review this complete proposal and separately release any Main intake.",
+}
+manifest_raw = encode(manifest)
+all_targets = [(r["target"],payloads[r["target"]]) for r in manifest_rows]+[(MANIFEST_TARGET,manifest_raw)]
+target_names = [n for n,_ in all_targets]
+require(isinstance(cfg["expected_output_paths"],list) and cfg["expected_output_paths"]==sorted(target_names),"Root exact final output/copy membership")
+require(len({n.casefold() for n in target_names})==len(target_names),"complete Windows target aliases")
+entries,entry_aliases = {},set()
+for item in git("ls-tree","-r","-z",HEAD).split(b"\0"):
+    if item:
+        meta,name = item.split(b"\t",1)
+        mode,kind,oid = meta.decode().split()
+        name = name.decode("utf-8")
+        require(name.casefold() not in entry_aliases,"committed Windows aliases")
+        entry_aliases.add(name.casefold())
+        entries[name] = (mode,kind,oid)
+require(not any(n.casefold()==ARCHIVE.casefold() or n.casefold().startswith(ARCHIVE.casefold()+"/") for n in entries),"new archive absent from immutable committed basis")
+old_oid = hashlib.sha1(b"blob "+str(len(old_raw)).encode()+b"\0"+old_raw).hexdigest()
+require(entries[PROGRESS] in (("100644","blob",old_oid),("100755","blob",old_oid)),"exact committed progress preimage")
+for target,_ in all_targets:
+    relative(target)
+    require(target==PROGRESS or target.casefold() not in entry_aliases,"new committed archive targets")
+# Attribute inspection reads the frozen Git tree through W; it creates no index.
+attributes = ("text","eol","filter","working-tree-encoding","ident")
+attr_raw = git("check-attr","--source="+HEAD,"-z","--stdin",*attributes,
+               input=b"\0".join(n.encode("utf-8") for n in target_names)+b"\0")
+attr_parts = attr_raw.split(b"\0")
+require(attr_parts[-1]==b"" and len(attr_parts)-1==3*len(attributes)*len(target_names),"complete frozen-tree attribute result")
+for index,target in enumerate(target_names):
+    off = index*3*len(attributes)
+    for j,attribute in enumerate(attributes):
+        name,key,value = attr_parts[off+3*j:off+3*j+3]
+        require(name==target.encode() and key==attribute.encode() and value in (b"unset",b"unspecified"),"no Git byte conversion on archive/progress targets")
+frozen_ref()
+require(not OUT.exists(),"final create-only stage gate")
+for path,value in originals.values():
+    require(path.read_bytes()==value,"original input changed before staging")
+require(config_path.read_bytes()==config_raw and self_path.read_bytes()==self_raw,"source/config unchanged")
+require(git("cat-file","blob",HEAD+":"+PROGRESS)==old_raw,"immutable progress unchanged")
+
+# The only writes start here, below every acceptance, history and exact-copy gate.
+OUT.mkdir()
+for row in manifest_rows:
+    path = inside(row["source"])
+    require(path.is_relative_to(OUT),"staged output containment")
+    path.parent.mkdir(parents=True,exist_ok=True)
+    with path.open("xb") as f:
+        f.write(payloads[row["target"]])
+    require(path.read_bytes()==payloads[row["target"]],"exact staged output")
+with (OUT/"manifest.json").open("xb") as f:
+    f.write(manifest_raw)
+require((OUT/"manifest.json").read_bytes()==manifest_raw,"exact complete manifest")
+frozen_ref()
+for path,value in originals.values():
+    require(path.read_bytes()==value,"original input changed after staging")
+require(config_path.read_bytes()==config_raw and self_path.read_bytes()==self_raw,"source/config unchanged after staging")
+review = {
+ "schema":1,"status":"source_only_exact_v38_positive_progress_archive_prepared",
+ "candidate_head":HEAD,"prepared_utc":now,"preparer":pin(self_path,self_raw),
+ "root_configuration":pin(config_path,config_raw),"source_review":cfg["source_review"],
+ "manifest":pin(OUT/"manifest.json",manifest_raw),"commit_paths":len(all_targets),
+ "projected_progress":progress_pin,"known_original_inputs":314,"observed_original_inputs":len(rows),
+ "all181_historical_prefixes_preserved":True,"complete554689_byte_progress_inverse":True,
+ "new4_actual_metadata":new4["actual_metadata_count"],"existing63_actual_metadata":original63["actual_metadata_count"],
+ "original63_both_success_acceptances_verified":True,"all_original_evidence_raw_bytes_preserved":True,
+ "compressed_bookend_pairs":len(seal_mappings),"represented_original_bookends":8,"gzip_full_roundtrips_and_second_encodings_verified":True,
+ "frozen_tree_git_attributes_sha256":sha(attr_raw),"Main_and_index_not_accessed":True,
+ "native_execution_authorized":False,"main_intake_authorized":False,
+ "source_mutation_hold_released":False,"application_qualified":False,
+ "production_bridge_removed":False,"published_release":False,
+}
+with (OUT/"preparation-review.json").open("xb") as f:
+    f.write(encode(review))
+print(json.dumps({"manifest":review["manifest"],"review":pin(OUT/"preparation-review.json",encode(review)),
+                  "commit_paths":len(all_targets),"progress":progress_pin,
+                  "Main_access":False,"native_execution":False,"configuration_issued":False}))

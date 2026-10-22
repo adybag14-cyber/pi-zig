@@ -1,0 +1,109 @@
+"""Independent source-only peer of the V38 runtime provenance successor.
+No candidate, prefix, helper or auditor execution. No Main filesystem reads.
+Only immutable evidence, raw Git objects via assigned worktree, and own proof.
+"""
+from pathlib import Path
+import ast,hashlib,json,os,subprocess
+B=Path(r"C:\Users\adyba\pi-zig");E=B/"evidence";W=B/"worktrees/modules-io-resume-20261018"
+D=B/"worktrees/sdk-owners-resume-20261018/verification/v38-positive-runtime-provenance-successor-sourceonly-20261021"
+O=W/"verification/v38-positive-runtime-provenance-successor-peer-20261021"
+HEAD="014062f2d139254acab4b985b4ae343db637166f";OLD="b13be24e44cc1bbc361639eb35900a368ae60eac"
+def need(ok,message):
+ if not ok:raise AssertionError(message)
+def sha(raw):return hashlib.sha256(raw).hexdigest().upper()
+seen={}
+def pin(p):
+ p=Path(p);need(p.is_absolute()and p.is_relative_to(B)and not p.is_relative_to(B/"main"),"Evidence only, no Main")
+ raw=p.read_bytes();return dict(path=str(p),bytes=len(raw),sha256=sha(raw))
+def read(row):
+ actual=pin(row["path"]);need(actual==row,"Exact immutable input "+row["path"])
+ need(actual["path"]not in seen or seen[actual["path"]]==actual,"One file version")
+ seen[actual["path"]]=actual;return Path(row["path"]).read_bytes()
+def fixed(p,n,h):return read(dict(path=str(p),bytes=n,sha256=h))
+pr=dict(path=str(D/"proposal.json"),bytes=4071,sha256="187566AEE2793EBE5439D9033D2F4B5E3E1198901B4E79BBFA853F85E519B3D6")
+proposal=json.loads(read(pr))
+old=read(proposal["original"]);need(old==read(proposal["canonical_predecessor"]),"Original canonical snapshot")
+new=read(proposal["candidate"])
+need(len(old)==39911 and sha(old)=="F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07","Original F846")
+need(len(new)==41516 and sha(new)=="A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102","Selected A73A")
+need(len(proposal["edits"])==1,"One finite admission block")
+edit=proposal["edits"][0];off=edit["offset"];before=edit["before"].encode();after=edit["after"].encode()
+need(off==8101 and old[off:off+len(before)]==before and old.count(before)==1,"Unique exact original block")
+need(before==b'review=read(prep/"preparation-review.json");verify_pins(review)\nrequire(digest(prep/"preparation-review.json")==cfg["preparation_review_sha256"],"Exact reviewed batch preparation")\n',"Exact failed admission gate")
+need(old[:off]+after+old[off+len(before):]==new,"Whole candidate forward")
+need(new[:off]+before+new[off+len(after):]==old,"Whole original inverse")
+need(old[:off]==new[:off] and old[off+len(before):]==new[off+len(after):],"All surrounding bytes exact")
+need(len(old[:off])==proposal["unchanged_prefix_bytes"]==8101 and len(old[off+len(before):])==proposal["unchanged_suffix_bytes"]==31629,"Exact untouched region sizes")
+need(sha(old)==edit["before_sha256"]and sha(new)==edit["after_sha256"],"Declared complete hashes")
+def functions(raw):
+ ls=raw.splitlines(keepends=True)
+ return [(n.name,n.lineno,b"".join(ls[n.lineno-1:n.end_lineno]))for n in ast.walk(ast.parse(raw))if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))]
+a,b=functions(old),functions(new);helpers=[]
+need([x[0]for x in a]==[x[0]for x in b]==["require","utc_ticks","read","digest","pin","verify_pins"],"All six helpers")
+for x,y in zip(a,b):
+ need(x[2]==y[2],"Whole helper bytes "+x[0]);helpers.append(dict(name=x[0],original_line=x[1],candidate_line=y[1],bytes=len(x[2]),sha256=sha(x[2])))
+def cfgrefs(raw):
+ return [ast.dump(n,include_attributes=False)for n in ast.walk(ast.parse(raw))if isinstance(n,ast.Subscript)and isinstance(n.value,ast.Name)and n.value.id=="cfg"]
+need(cfgrefs(old)==cfgrefs(new),"Every direct configuration access exact")
+newtext=new.decode("ascii")
+need(after.count(b'verify_pins(')==2 and b'verify_pins(historical_snapshot)'in after and b'verify_pins({key:value for key,value in review.items() if key!="historical_source_rebindings"})'in after,"Only exact historical subsection uses explicit validation")
+need(after.index(b'cfg["preparation_review_sha256"]')<after.index(b'historical_original='),"Pin entire review before historical interpretation")
+need(b'for b in ("new4","regression63")'in after and b'review["provenance"]["v37_"+row["batch"]+"_"+row["role"]]==historical_snapshot' in after,"Complete mapping and both actual provenance roles")
+need(b'["git","--no-optional-locks","cat-file","blob",historical_commit+":src/native_node_file_handle_owner_test.zig"]'in after,"Fixed read-only Git object command")
+need(b'historical_raw==Path(historical_snapshot["path"]).read_bytes()'in after,"Whole raw object equality")
+negative=json.loads(read(proposal["original_failure"]))
+need(negative["original_audit_exit_code"]==1 and negative["independent_positive_runtime_closure_emitted"]is False and negative["runtime_acceptance"]is False,"Original failed auditor remains negative")
+for key in ("auditor","configuration","audit_resource_release","job_observation","job_logs","stderr","stdout","preserved_source","preserved_configuration","preparation_review"):
+ read(negative[key])
+need(negative["auditor"]==proposal["canonical_predecessor"]and read(negative["preserved_source"])==old,"Original failing source preserved")
+cfg=json.loads(read(negative["configuration"]))
+need(len(cfg)==40 and cfg["auditor_sha256"]==sha(old)and proposal["input_contract_new_fields"]==[]and proposal["input_value_change_required"]==["auditor_sha256"],"Original40 fields; only future sourcehash change")
+need(negative["configuration"]!=negative["preserved_configuration"]and read(negative["configuration"])==read(negative["preserved_configuration"]),"Both original configuration byte copies exact")
+historical_original=dict(path=str(B/"main/src/native_node_file_handle_owner_test.zig"),bytes=28378,sha256="93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422")
+historical_snapshot=dict(path=str(B/"worktrees/sdk-owners-resume-20261018/verification/v37-file-handle-runtime-fixtures-sourceonly-20261021/original/src/native_node_file_handle_owner_test.zig"),bytes=28378,sha256=historical_original["sha256"])
+expected=[dict(batch=x,role="fixture_unchanged_root_native-node-file-handle-owner",original=historical_original,immutable_snapshot=historical_snapshot,raw_commit=OLD,exact_original_bytes=True)for x in ("new4","regression63")]
+need(negative["historical_source_rebindings"]==expected,"Exact preserved original finding")
+snapshot=read(historical_snapshot)
+env=dict(os.environ,GIT_OPTIONAL_LOCKS="0")
+def gitblob(commit,relative):
+ return subprocess.check_output(["git","--no-optional-locks","-C",str(W),"cat-file","blob",commit+":"+relative],env=env)
+historical=gitblob(OLD,"src/native_node_file_handle_owner_test.zig")
+current=gitblob(HEAD,"src/native_node_file_handle_owner_test.zig")
+need(historical==snapshot and len(historical)==28378 and sha(historical)==historical_original["sha256"],"Exact raw b13 historical bytes through assigned worktree")
+need(len(current)==28576 and sha(current)=="03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"and current!=historical,"Current014 raw object retains corrected bytes")
+need(negative["current_fixture_pin"]==dict(path=historical_original["path"],bytes=len(current),sha256=sha(current)),"Distinct current descriptor")
+review_rows=[]
+for batch,n,h in [("new4",545118,"35A3A1E94699B3413179540C2C271A59E4924FF6149DE74FD662BBF3449D1D14"),("regression63",547326,"9362D1498B75DFEC3E452B1E2F06C8D1C526C16E615DC0F40C17C2C147816A58")]:
+ p=E/("combined-native-batch-v38-"+batch+"-prepared-20261021")/"preparation-review.json"
+ r=dict(path=str(p),bytes=n,sha256=h);review=json.loads(read(r))
+ need(review["historical_source_rebindings"]==expected,"Exact full two-row historical mapping in "+batch)
+ for x in expected:need(review["provenance"]["v37_"+x["batch"]+"_"+x["role"]]==historical_snapshot,"Actual historical provenance points to snapshot")
+ need(review["candidate_head"]==HEAD and review["source_pin_changes"][0]["before"]==sha(historical)and review["source_pin_changes"][0]["after"]==sha(current),"Historical/current version distinction")
+ review_rows.append(r)
+accept=json.loads(fixed(E/"root-v38-catalog-source-acceptance-20261021.json",4758,"911DCC32CF09C1610CE045572546668FF470EE62E9597DFC4D3DA6919480228B"))
+need(accept["catalog_source_accepted"]is True and accept["preparation_reviews"]==review_rows,"Accepted exact emitted reviews")
+peer=json.loads(read(accept["independent_catalog_peer"]))
+need(peer["verification"]["historical_owner_rebindings"]==2,"Independent emitted peer retains both mappings")
+bq=fixed(E/"Audit-PositiveV38CompleteBuildQuery-20261021.py",37254,"6BCBE32702657CD2B5F62E8779CCF585B86D7A8CFFC04C2EB6FE25B4D6E41A9E").decode("ascii")
+need('for key,row in review["provenance"].items():'in bq and 'digest(prep/"preparation-review.json")==cfg["preparation_review_sha256"]'in bq,"BuildQuery pins exact review and actual provenance")
+preserved_runtime=[]
+proofroot=Path(cfg["proof"])
+for x in cfg["selected"]:
+ gp=proofroot/"groups"/x["group"]
+ for name,key in (("runtime.json","owner_sha"),("runtime.stdout.bin","stdout_sha"),("runtime.stderr.log","stderr_sha")):
+  r=pin(gp/name);need(r["sha256"]==x[key],"Original runtime artifact unchanged")
+  if name=="runtime.stdout.bin":need(r["bytes"]==x["stdout_bytes"],"Original wire extent")
+  if name=="runtime.stderr.log":need(r["bytes"]==0,"Original stderr bytes empty")
+  read(r);preserved_runtime.append(r)
+for name,key in (("result.json","runtime_result_sha256"),("before.json","runtime_before_sha256"),("final.json","runtime_final_sha256")):
+ r=pin(proofroot/name);need(r["sha256"]==cfg[key],"Original runtime envelope unchanged")
+ read(r);preserved_runtime.append(r)
+need(len(preserved_runtime)==15,"Exact original4 owner/wire/stderr plus3 aggregate/seals")
+need(not (Path(cfg["control"])/"independent-positive-runtime-closure.json").exists(),"No positive closure inferred or emitted by this peer")
+for r in list(seen.values()):read(r)
+selfpin=pin(__file__);read(selfpin)
+out=dict(schema=1,status="passed_independent_static_v38_runtime_provenance_successor",source_audit=selfpin,proposal=pr,candidate=proposal["candidate"],canonical_predecessor=proposal["canonical_predecessor"],original_snapshot=proposal["original"],one_exact_edit=edit,whole_forward_exact=True,whole_inverse_exact=True,unchanged_prefix=dict(bytes=off,sha256=sha(old[:off])),unchanged_suffix=dict(bytes=len(old)-off-len(before),sha256=sha(old[off+len(before):])),complete_unchanged_helpers=helpers,configuration_direct_AST_accesses_unchanged=True,original_configuration=negative["configuration"],configuration_fields=list(cfg),configuration_field_count=40,new_fields=[],only_future_value_change="auditor_sha256",historical_source_rebindings=expected,historical_raw_git=dict(commit=OLD,path="src/native_node_file_handle_owner_test.zig",bytes=len(historical),sha256=sha(historical)),current_raw_git=dict(commit=HEAD,path="src/native_node_file_handle_owner_test.zig",bytes=len(current),sha256=sha(current)),accepted_preparation_reviews=review_rows,original_failure=proposal["original_failure"],original_failure_exit_code=1,original_runtime_artifact_pins=preserved_runtime,later_current_seals_artifacts_wire_stderr_grant_inverse_and_UTC100ns_gates_byte_identical=True,generic_verify_pins_body_unchanged=True,complete_historical_section_explicitly_validated=True,every_other_review_field_still_recursively_validated=True,inputs=sorted(seen.values(),key=lambda x:x["path"].casefold()),input_versions=len(seen),blockers=[],source_only=True,Main_accessed=False,Main_written=False,target_executed=False,prefix_executed=False,helper_executed=False,auditor_executed=False,native_executed=False,configuration_issued=False,execution_authority=False,runtime_accepted=False,product_qualification=False,source_mutation_hold_released=False)
+p=O/"source-proof.json";raw=(json.dumps(out,indent=2)+"\n").encode("ascii")
+with p.open("xb")as f:f.write(raw)
+need(p.read_bytes()==raw,"Own proof exact")
+print(json.dumps(dict(source_audit=selfpin,decisive_proof=pin(p),finite_edits=1,unchanged_helpers=6,unchanged_input_fields=40,raw_git_blobs=2,preserved_runtime_files=15,input_versions=len(seen),target_executed=False,Main_accessed=False)))

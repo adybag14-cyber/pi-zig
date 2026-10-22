@@ -1,0 +1,133 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\cache\\o\\ffb78b44711d8efbdc745de851510340\\test.exe",
+  "binary_sha256": "E0F78495681952FFF5166F5BF667A6D7C01B63C21D92A166E947DF557F7B064C",
+  "version": "0.16.0",
+  "expected": 24,
+  "started": 24,
+  "completed": 24,
+  "results": [
+    {
+      "index": 0,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 1,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 2,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 3,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 4,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 5,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 6,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 7,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 8,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 9,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 10,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 11,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 12,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 13,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 14,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 15,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 16,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 17,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 18,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 19,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 20,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 21,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 22,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 23,
+      "flags": 0,
+      "passed": true
+    }
+  ],
+  "failed_or_skipped_or_logged_or_leaked": 0,
+  "owner_receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-vm-error-constructor-name\\runtime.json",
+  "status": "passed"
+}

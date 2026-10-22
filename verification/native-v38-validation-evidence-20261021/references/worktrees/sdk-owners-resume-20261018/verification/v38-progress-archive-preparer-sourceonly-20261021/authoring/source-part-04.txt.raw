@@ -1,0 +1,139 @@
+ counts["vendor"]==1489 and counts["compiler"]==19546,"all actual seal counts")
+    target = pair["proposed_archive_relative_path"]
+    require(target==ARCHIVE+"/"+PHASES[index]+"/proof/before-and-final.json.gz","exact gzip target")
+    same = target_owners[target.casefold()]
+    require(len(same)==2 and [r["original"] for r in same]==pair["originals"],"each gzip represents exactly the two observed originals")
+    require(all(r["representation"]=="proposed_lossless_gzip_identical_bookend_pair" and r["proposed_archive_relative_path"]==target for r in same),"only explicit pair aliases")
+    require(pair["future_parameters"]=={"filename":"","mtime":0,"compresslevel":9,"header_hex":"1f8b08000000000002ff"},"fixed accepted gzip recipe")
+    compressed = gzip_bytes(before)
+    require(compressed[:10]==bytes.fromhex("1f8b08000000000002ff"),"accepted deterministic gzip header")
+    require(gzip.decompress(compressed)==before==final and gzip_bytes(before)==compressed,"two-source roundtrip and repeated encoding exact")
+    out_pin = add(target,compressed,"lossless_identical_original_bookend_pair")
+    represented.update(r["original"]["path"].casefold() for r in same)
+    seal_mappings.append({"phase":pair["phase"],"originals":pair["originals"],"target":target,"projected":out_pin,
+                          "seal_counts":counts,"complete_two_source_roundtrip":True,
+                          "deterministic_second_encoding_equal":True,"gzip":{"filename":"","mtime":0,"compresslevel":9,"header_hex":compressed[:10].hex()}})
+require(represented=={r["original"]["path"].casefold() for r in rows if r["representation"]=="proposed_lossless_gzip_identical_bookend_pair"},"no unrepresented original input")
+
+# Any future phase not explicitly selected for equal-pair gzip retains both raw originals.
+for m in membership:
+    if m["phase"] not in {p["phase"] for p in copy_plan["bookend_plans"]}:
+        for name in ("before.json","final.json"):
+            require(row_by_path[str(Path(m["proof"])/name).casefold()]["representation"]=="raw_byte_exact","uncombined bookend retained raw")
+
+# Derive the positive checkpoint only after every original63 positive gate above.
+attempts = [
+ negative_records[0],
+ dict(name="V38 new4 complete fresh BuildQuery",source_head=HEAD,batch="new4",
+      declared_groups=4,declared_controls=58,actual_metadata_observed=new4["actual_metadata_count"],**copy.deepcopy(new4["buildquery"])),
+ negative_records[1],
+ dict(name="V38 accepted original new4 strict runtime",source_head=HEAD,batch="new4",
+      declared_groups=4,declared_controls=58,actual_metadata_observed=new4["actual_metadata_count"],**copy.deepcopy(new4["runtime"])),
+ dict(name="V38 original63 complete fresh BuildQuery",source_head=HEAD,batch="existing63",
+      declared_groups=63,declared_controls=1249,actual_metadata_observed=original63["actual_metadata_count"],**copy.deepcopy(original63["buildquery"])),
+ dict(name="V38 original63 accepted strict runtime",source_head=HEAD,batch="existing63",
+      declared_groups=63,declared_controls=1249,actual_metadata_observed=original63["actual_metadata_count"],**copy.deepcopy(original63["runtime"])),
+]
+next_plan = copy.deepcopy(old["next_native_batch"])
+require(next_plan["batch_group_counts"]==[4,63] and next_plan["batch_source_declarations"]==[58,1249],"exact completed disjoint source partitions")
+require(next_plan["total_selected_groups"]==67 and next_plan["total_selected_source_declarations"]==1307 and
+        next_plan["catalog_expected_groups"]==117 and next_plan["catalog_expected_source_declarations"]==2013 and next_plan["group_cap"]==64,"unchanged selected/catalog limits")
+next_plan.update(
+ status="v38_disjoint_selected_batches_accepted_awaiting_separate_root_next_scope",
+ actual_metadata_count=None,execution_authority=False,runtime_authority=False,qualification=False,
+ prior_metadata_transferred=False,source_mutation_hold_released=False,
+ v38_observed_metadata_by_batch={"new4":new4["actual_metadata_count"],"existing63":original63["actual_metadata_count"]},
+ v38_both_complete_buildquery_and_strict_runtime_accepted=True,
+ requirements="Both exact V38 batches have separately accepted fresh BuildQuery and strict RuntimeOnly evidence on014062. "
+              "This remains an active incomplete port. The retained planning template issues no new native or source authority; "
+              "future scope, metadata, source intake, production bridge removal and application qualification require separate Root work.")
+updated = copy.deepcopy(old)
+updated["preserved_attempts"].extend(copy.deepcopy(attempts))
+updated["execution_checkpoint_history"].append(copy.deepcopy(old["current_execution_checkpoint"]))
+checkpoint = copy.deepcopy(old["current_execution_checkpoint"])
+checkpoint.update(
+ schema=9,status="v38_disjoint_buildquery_and_strict_runtime_accepted_archive_proposed",
+ source_head=HEAD,recorded_utc=now,next_validation=copy.deepcopy(next_plan),
+ v38_new4=copy.deepcopy(new4),v38_original63=copy.deepcopy(original63),
+ v38_non_native_preparation_and_auditor_negatives=copy.deepcopy(negative_records),
+ selected_native_runtime_accepted=True,runtime_qualification=False,
+ source_mutation_hold_released=False,native_execution_authorized=False,
+ production_bridge_removed=False,application_qualification=False)
+updated["current_execution_checkpoint"] = checkpoint
+updated["next_native_batch"] = copy.deepcopy(next_plan)
+updated["current_source_head_at_record"] = HEAD
+updated["updated_utc"] = now
+updated["record_note"] = (
+ "V38 completed two separately granted disjoint selected batches on014062: four new groups and all original63 in the retained order. "
+ "Each has independently accepted fresh BuildQuery metadata and strict positive runtime with exact original evidence. "
+ "Observed metadata totals are recorded per cohort, not inferred from source declarations or transferred to another head. "
+ "The initial catalog schema failure and original new4 positive-auditor provenance failure remain separately preserved non-native attempts; "
+ "the accepted new4 runtime is the unchanged original run, not a rerun. "
+ "All prior history and the complete old checkpoint are retained. This proposal changes only progress and adds immutable evidence. "
+ "Application qualification, bridge removal, publication and new source/native authority remain false.")
+updated["v38_validation_and_archive_checkpoint"] = {
+ "schema":1,"recorded_utc":now,"source_head_at_record":HEAD,
+ "new4":copy.deepcopy(new4),"original63":copy.deepcopy(original63),
+ "non_native_negatives":copy.deepcopy(negative_records),
+ "observed_selected_groups":67,"source_declarations":1307,
+ "observed_actual_metadata_total":new4["actual_metadata_count"]+original63["actual_metadata_count"],
+ "separate_grants_preserved":True,"group_cap_unchanged":64,
+ "prior_progress_archive":ARCHIVE+"/prior-progress.json.raw","archive_prefix":ARCHIVE,
+ "full_prior_checkpoint_appended":True,"complete_historical_list_prefixes_preserved":True,
+ "selected_native_runtime_accepted_for_this_head":True,"metadata_transferred_to_another_head":False,
+ "runtime_qualification":False,"application_qualification":False,"production_bridge_removed":False,
+ "published_release":False,"source_mutation_hold_released":False,"native_execution_authorized":False,
+}
+replaced = {"current_source_head_at_record","updated_utc","record_note","current_execution_checkpoint",
+            "next_native_batch","preserved_attempts","execution_checkpoint_history"}
+added = {"v38_validation_and_archive_checkpoint"}
+require(added.isdisjoint(old) and set(updated)==set(old)|added,"one exact new progress field")
+for key in old:
+    if key not in replaced:
+        require(updated[key]==old[key],"unrelated old progress field changed")
+require(updated["integrated_source_units"]==old["integrated_source_units"],"no source/product intake")
+require(updated["retained_recent_native_negatives"]==old["retained_recent_native_negatives"],"non-native failures do not alter native-negative history")
+require(updated["execution_checkpoint_history"][-1]==old["current_execution_checkpoint"],"complete old checkpoint appended")
+increments = {"integrated_source_units":0,"preserved_attempts":6,"retained_recent_native_negatives":0,"execution_checkpoint_history":1}
+for key,length in old_lengths.items():
+    require(updated[key][:length]==old[key] and len(updated[key])==length+increments[key],"exact top-level history prefix/count")
+list_checks = []
+for path,items in list_paths(old):
+    current = get(updated,path)
+    require(isinstance(current,list) and current[:len(items)]==items,"every historical nested list prefix")
+    list_checks.append({"path":list(path),"old_length":len(items),"new_length":len(current),"unchanged_prefix_sha256":sha(encode(items))})
+require(len(list_checks)==181,"all181 nested prefixes checked")
+inverse = copy.deepcopy(updated)
+for key in added:
+    del inverse[key]
+for key in replaced:
+    inverse[key] = copy.deepcopy(old[key])
+require(inverse==old and encode(inverse)==old_raw,"complete structural and554689-byte raw inverse")
+progress_pin = add(PROGRESS,encode(updated),"only_existing_progress_replacement",{"bytes":554689,"sha256":BASIS_SHA})
+add(ARCHIVE+"/prior-progress.json.raw",old_raw,"exact_immutable_Git_progress_preimage")
+
+# These deterministic preparation records are separate from the exact observed copy list.
+auxiliary = [
+ ("partial-observed-inventory.json",fixed("inventory"),exact(fixed("inventory"))),
+ ("partial-progress-plan.json",fixed("plan"),exact(fixed("plan"))),
+ ("inert-plan-handoff.json",fixed("handoff"),exact(fixed("handoff"))),
+ ("prior-accepted-policy.py",fixed("policy"),exact(fixed("policy"))),
+ ("preparer.py",pin(self_path,self_raw),self_raw),
+ ("root-issued-configuration.json",pin(config_path,config_raw),config_raw),
+ ("root-source-acceptance.json",cfg["source_review"],exact(cfg["source_review"])),
+ ("root-final-copy-plan.json",cfg["final_copy_plan"],exact(cfg["final_copy_plan"])),
+]
+for name,source,raw_bytes in auxiliary:
+    target = ARCHIVE+"/preparation/"+name+".raw"
+    out_pin = add(target,raw_bytes,"exact_preparation_input_bytes")
+    archive_rows.append({"original":source,"target":target,"projected":out_pin})
+history_report = {
+ "schema":1,"status":"complete181_historical_prefixes_and_progress_raw_inverse_verified",
+ "basis_head":HEAD,"basis_progress":{"bytes":554689,"sha256":BASIS_SHA},
+ "prior_progress_archive":ARCHIVE+"/prior-progress.json.raw","projected_progress":progress_pin,
+ "replaced_top_level_keys":sorted(replaced),"added_top_level_keys":sorted(added),
+ "old_top_level_history_lengths":old_lengths,"new_top_level_history_lengths":{k:len(updated[k]) for k in old_lengths},
+ "nested_historical_lists_checked":181,"nested_list_checks":list_checks,
+ "complete_old_checkpoint_appended":True,"old_checkpoint_sha256":sha(encode(old["current_execution_checkpoint"])),
+ "complete_structural_inverse":True,"complete_raw_byte_inverse":True,
+ "inverse_method":"Remove only the one added key and restore only the sev

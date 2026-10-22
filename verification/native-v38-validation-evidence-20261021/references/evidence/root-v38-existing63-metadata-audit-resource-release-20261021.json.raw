@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "status": "root_released_specific_v38_existing63_independent_metadata_audit",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-21T16:02:55.383971+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "cohort": "original63",
+  "catalog_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-source-acceptance-20261021.json",
+    "bytes": 4758,
+    "sha256": "911DCC32CF09C1610CE045572546668FF470EE62E9597DFC4D3DA6919480228B"
+  },
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-regression63-prepared-20261021\\Audit-CombinedNativeBatch.py",
+    "bytes": 17704,
+    "sha256": "5B94D3BD4B6CA0E1B969394926A7F907485717FF25B75BA06D1D67D68A232682"
+  },
+  "prepared_launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-regression63-prepared-20261021\\buildquery-launch.json",
+    "bytes": 4247,
+    "sha256": "F72A83BAB44684116803678378A0BC3A911BF848C1C325DC43DFF2A0616442CC"
+  },
+  "original_job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\independent-observed-job-status.json",
+    "bytes": 1572,
+    "sha256": "AE9DA3692CC61330A425B31561E7D797A3BA6C1A98503590B9E481D7105B2824"
+  },
+  "original_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\result.json",
+    "bytes": 1044504,
+    "sha256": "A80B07D02FB7393E335E093EAB945455DD23DA82AD7B15ECC4171C8F3F45DA3F"
+  },
+  "whole_before": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\before.json",
+    "bytes": 16165285,
+    "sha256": "E0B4F23FEB76DFAA549F1B029B9AF55DEAF908CC8EF66335A17FE33E023BFE2A"
+  },
+  "whole_final": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\final.json",
+    "bytes": 16165285,
+    "sha256": "E0B4F23FEB76DFAA549F1B029B9AF55DEAF908CC8EF66335A17FE33E023BFE2A"
+  },
+  "outer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\outer.json",
+    "bytes": 1551,
+    "sha256": "2F094044D3B82F2C4B4B4A314825EE9D385DD0DC17433A55E346EBB94A1DF11F"
+  },
+  "outer_absence": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\outer-absence.json",
+    "bytes": 182,
+    "sha256": "8A33037F9381486CCD948B5F51B03056D77E3BDF34544DA199781C7E8196369F"
+  },
+  "audit_execution_authorized": true,
+  "program": "python",
+  "resource_class": "io-heavy",
+  "timeout_seconds": 240,
+  "one_auditor_process": true,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "runtime_authority": false,
+  "qualification": false,
+  "create_only_output": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-control-20261021-153711\\independent-metadata-acceptance.json",
+  "review": "Root reviewed the exact regression63 metadata auditor in the accepted catalog. Original terminal-zero fresh BuildQuery and all63 group result records are present, with unchanged whole bookends and closed outer. This release permits independent raw metadata/artifact/source/process verification only; actual metadata count remains unresolved until that succeeds. No runtime or source mutation is authorized."
+}

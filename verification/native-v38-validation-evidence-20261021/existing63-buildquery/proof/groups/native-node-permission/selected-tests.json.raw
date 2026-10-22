@@ -1,0 +1,30 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\575afd337f4e184cc2e940face91c671\\test.exe",
+  "binary_sha256": "AA592DD5372AFDF18A9BEF535940F0748CAB95CF71B28606913F739F340A9BEF",
+  "version": "0.16.0",
+  "actual_count": 18,
+  "tests": [
+    "native_node_permission_test.test.native Permission constructs actual policies and returns every native allocation at destruction",
+    "native_node_permission_test.test.native Permission enable selects initial policies and each simple Apply denies only its actual scope",
+    "native_node_permission_test.test.native Permission unknown Apply preserves the native policy map and existing decisions",
+    "native_node_permission_test.test.native Permission exact missing-file grant does not grant siblings descendants or writes",
+    "native_node_permission_test.test.native Permission resolves original dot and parent segments before radix lookup",
+    "native_node_permission_test.test.native Permission actual directory stat grants its original recursive wildcard",
+    "native_node_permission_test.test.native Permission actual regular file stat retains an exact grant",
+    "native_node_permission_test.test.native Permission standalone star returns before later grants and keeps the other direction denied",
+    "native_node_permission_test.test.native Permission aggregate filesystem grant requires both original all-direction flags",
+    "native_node_permission_test.test.native Permission real radix splits preserve exact sibling grants and duplicate insertion retains no allocation",
+    "native_node_permission_test.test.native Permission preserves the original nonterminal wildcard lookup decisions",
+    "native_node_permission_test.test.native Permission successful directory append branch releases its actual synchronous libuv path allocation",
+    "native_node_permission_test.test.native Permission filesystem-root trailing separator branch releases its actual synchronous libuv path allocation",
+    "native_node_permission_test.test.native Permission destruction recursively retires unique descendants below nonterminal wildcards",
+    "native_node_permission_test.test.native Permission actual native allocation failure retries before grant publication without a JS reason",
+    "native_node_permission_test.test.native Permission apply and query preserve actual ordinary generic and private pending under exhausted JS heap",
+    "native_node_permission_test.test.native Permission blocks and concrete shared policy destructors survive VM Environment and caller retirement",
+    "native_node_permission_test.test.native Permission repeated mixed normal and wildcard retirement restores its exact native baseline"
+  ],
+  "group": "native-node-permission",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

@@ -1,0 +1,118 @@
+           [g["actual_metadata_count"] for g in build["groups"]]==counts,"closure actual metadata")
+    require(metadata["status"]=="independently_accepted_combined_native_batch_metadata" and metadata["accepted"] is True and metadata["candidate_head"]==HEAD,"accepted raw metadata")
+    flags(metadata,false=("runtime_started","runtime_qualification"))
+    require([g["group"] for g in metadata["groups"]]==groups and [g["actual_count"] for g in metadata["groups"]]==counts,"all accepted actual groups")
+    require(build["metadata_acceptance"]==bq["metadata_acceptance"] and
+            metadata["build_result_sha256"]==bq["build_result"]["sha256"] and
+            metadata["build_source_seal_sha256"]==bq["build_final"]["sha256"],"actual metadata/source linkage")
+    require(build_result["status"]=="passed_build_query_batch" and build_result["mode"]=="BuildQuery" and build_result["candidate_head"]==HEAD,"original BQ success")
+    require([g["group"] for g in build_result["groups"]]==groups and
+            all(g["status"]=="passed_build_query" for g in build_result["groups"]),"complete BQ results")
+    require(runtime["status"]=="independently_closed_positive_strict_runtime" and runtime["candidate_head"]==HEAD and runtime["batch"]==batch,"accepted positive independent runtime")
+    flags(runtime,true=COMMON_TRUE+("all_original_strict_empty_stderr_and_all_tests_passing_gates_passed","runtime_qualification"),
+          false=("product_qualification","source_mutation_hold_released"))
+    require(runtime["metadata_acceptance"]==bq["metadata_acceptance"] and runtime["independent_build_closure"]==bq["independent_closure"],"runtime independent parent links")
+    require(runtime["declared_groups"]==count and runtime["declared_controls"]==declared and runtime["accepted_cohort"]==actual,"complete independent runtime cohort")
+    require(runtime["observed_started"]==runtime["observed_completed"]==actual and runtime["observed_failed"]==runtime["not_started"]==0,"independent all-positive counts")
+    require(runtime["runtime_owner_count"]==count and len(runtime["actual_process_intervals"])==count+3,"all runtime intervals")
+    require([g["group"] for g in runtime["observed_groups"]]==groups,"all independent runtime groups")
+    require(runtime_result["status"]=="passed_selected_native_batch" and runtime_result["mode"]=="RuntimeOnly" and runtime_result["candidate_head"]==HEAD,"original strict runtime success")
+    require([g["group"] for g in runtime_result["groups"]]==groups and runtime_result["errors"]==[],"whole original runtime result")
+    flags(runtime_result,true=("postseal","controller_environment_restored","runtime_requested","all_groups_closed"),false=("product_qualified","cache_seeded"))
+    for number,group in enumerate(groups):
+        accepted = metadata["groups"][number]
+        observed = runtime["observed_groups"][number]
+        gp = rp/"groups"/group
+        canonical = doc(gp/"runtime.results.json")
+        require(observed["started"]==observed["completed"]==counts[number] and observed["failed"]==0,"accepted per-group runtime counts")
+        require(canonical["expected"]==canonical["started"]==canonical["completed"]==counts[number] and canonical["failed_or_skipped_or_logged_or_leaked"]==0 and canonical["status"]=="passed","canonical all-positive original counts")
+        require(canonical["results"]==[{"index":i,"flags":0,"passed":True} for i in range(counts[number])],"exact canonical zero flags")
+        require(observed["results"]==[dict(row,name=accepted["tests"][i]) for i,row in enumerate(canonical["results"])],"all actual names and original observations")
+        require(raw(gp/"runtime.stderr.log")==b"","original strict empty stderr retained")
+    require(rt["auditor"]["sha256"]=="A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102" and
+            rt["auditor_source_acceptance"]["sha256"]=="12D45623A19BB66517FF8DF2C47CD69F32A167361572A0313D651505528A8F49","accepted corrected auditor source")
+    document(rt["auditor_source_acceptance"])
+    require(archived_pin(rt["auditor"]["path"])==rt["auditor"],"exact accepted auditor retained")
+    audit_cfg = document(rt["audit_configuration"])
+    require(audit_cfg["auditor_sha256"]==rt["auditor"]["sha256"] and audit_cfg["batch"]==batch and audit_cfg["actual_metadata_count"]==actual,"actual positive audit configuration")
+    for control in (bc,rc):
+        job = doc(control/"independent-observed-job-status.json")["data"]
+        require(job["status"]=="succeeded" and job["exitCode"]==0 and job["runnerAlive"] is False and
+                type(job["runnerProcessInstance"]) is str and re.fullmatch(r"[0-9]+",job["runnerProcessInstance"]),"original successful job and exact decimal100ns identity")
+    prep = E/("combined-native-batch-v38-"+("new4" if batch=="new4" else "regression63")+"-prepared-20261021")
+    review,matrix = doc(prep/"preparation-review.json"),doc(prep/"groups.json")
+    require(review["candidate_head"]==HEAD and review["selected_group_names"]==groups and review["selected_groups"]==count and review["selected_declarations"]==declared,"accepted exact prepared cohort")
+    require(review["actual_metadata_count"] is None and archived_pin(prep/"groups.json")["sha256"]==MATRIX_SHA,"source declarations never predict metadata")
+    require(len(matrix["groups"])==117 and sum(len(g["required_named"]) for g in matrix["groups"])==2013 and len(matrix["whole_tree_dependency_pins"])==576,"complete shared catalog")
+    if batch=="new4":
+        require(counts==[19,4,24,14] and actual==61 and rt["original_runtime_rerun"] is False,"unchanged already accepted original new4 run")
+    else:
+        require(count==63 and declared==1249,"original63 source-only constants")
+        # Original63 needs no invented F846 failure or auditor-config adaptation.
+    return {
+      "batch":batch,"source_head":HEAD,"groups":groups,"declared_groups":count,"declared_controls":declared,
+      "actual_metadata_count":actual,"actual_group_counts":counts,
+      "buildquery":{"status":build["status"],"root_acceptance":bq_pin,"closure":bq["independent_closure"],
+                   "metadata_acceptance":bq["metadata_acceptance"],"result":bq["build_result"],
+                   "native_owner_count":2*count,"actual_tests_started":0,"runtime_qualification":False},
+      "runtime":{"status":runtime["status"],"root_acceptance":rt_pin,"closure":rt["independent_runtime_closure"],
+                 "result":rt["runtime_result"],"observed_started":actual,"observed_completed":actual,
+                 "observed_failed":0,"not_started":0,"native_owner_count":count,
+                 "selected_native_runtime_accepted":True,"product_qualification":False},
+      "metadata_transferred_to_another_head":False,"source_mutation_hold_released":False,
+    }
+
+new4 = check_positive("new4",NEW4,58,0)
+original63 = check_positive("existing63",existing63,1249,2)
+catalog_negative_path = E/"root-v38-catalog-initial-preparation-negative-20261021/root-negative-acceptance.json"
+audit_negative_path = E/"root-v38-new4-positive-runtime-audit-original-negative-20261021/negative.json"
+require(archived_pin(catalog_negative_path)["sha256"]=="14FB17F6E9497A530D999EE3D05C43521A7F830C4A185CD4505C28BE6BBB6400","original catalog negative")
+require(archived_pin(audit_negative_path)["sha256"]=="194982710772F0E5F5E5012DFA783FC19F7D71DF327F1034A2799131C13CE2EF","original auditor negative")
+catalog_negative,audit_negative = doc(catalog_negative_path),doc(audit_negative_path)
+require(catalog_negative["terminal_exit_code"]==1 and catalog_negative["compiler_native_execution_occurred"] is False,"non-native catalog failure retained")
+require(audit_negative["original_audit_exit_code"]==1 and audit_negative["runtime_acceptance"] is False,"original failed auditor remains negative")
+require(audit_negative["auditor"]["sha256"]=="F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07","original F846 source retained")
+old_input_pin,new_input_pin = (plan["separate_non_native_negatives"][1][k] for k in ("original_input","corrected_input"))
+old_input,new_input = document(old_input_pin),document(new_input_pin)
+require(set(old_input)==set(new_input) and len(old_input)==40 and
+        [k for k in old_input if old_input[k]!=new_input[k]]==["auditor_sha256"],"only exact original auditor config correction")
+require(old_input["auditor_sha256"]==audit_negative["auditor"]["sha256"] and
+        new_input["auditor_sha256"]=="A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102","separate original and corrected audit sources")
+negative_records = [
+ {"name":"V38 initial catalog non-native preparation negative","status":catalog_negative["status"],
+  "source_head":HEAD,"root_acceptance":archived_pin(catalog_negative_path),"native_failure":False,
+  "new_native_execution_authorized":False,"original_evidence_unchanged":True},
+ {"name":"V38 original new4 positive-runtime auditor provenance negative","status":audit_negative["status"],
+  "source_head":HEAD,"root_acceptance":archived_pin(audit_negative_path),"native_failure":False,
+  "original_audit_accepted_runtime":False,"original_native_run_rerun":False,
+  "new_native_execution_authorized":False,"original_evidence_unchanged":True},
+]
+
+payloads,roles,preimages,payload_aliases = {},{},{},set()
+def add(target,value,role,before=None):
+    target = relative(target)
+    require(target==PROGRESS or target.startswith(ARCHIVE+"/"),"staged progress/archive only")
+    require(target!=MANIFEST_TARGET and target.casefold() not in payload_aliases,"unique staged target")
+    payload_aliases.add(target.casefold())
+    payloads[target],roles[target],preimages[target] = value,role,before
+    return pin(OUT/"projected"/target,value)
+
+archive_rows,seal_mappings = [],[]
+for row in rows:
+    if row["representation"]=="raw_byte_exact":
+        target = row["proposed_archive_relative_path"]
+        require(len(target_owners[target.casefold()])==1,"no raw target alias")
+        out_pin = add(target,raw(row["original"]["path"]),"immutable_original_bytes")
+        archive_rows.append({"original":row["original"],"target":target,"projected":out_pin})
+represented = set()
+for pair in copy_plan["bookend_plans"]:
+    index = PHASES.index(pair["phase"])
+    require(pair["compressed_pin"] is None and pair["compression_executed"] is False,"unexecuted exact phase gzip mapping")
+    proof = Path(membership[index]["proof"])
+    require(pair["originals"]==[archived_pin(proof/"before.json"),archived_pin(proof/"final.json")],"both original bookend pins")
+    before,final = raw(proof/"before.json"),raw(proof/"final.json")
+    require(before==final and pair["byte_identical_verified"] is True,"only byte-identical bookend pairs compressed")
+    seal = decode(before)
+    require(seal["candidate_head"]==HEAD and seal["clean"] is True and seal["errors"]==[],"original complete clean source seal")
+    counts = {k:len(seal[k]) for k in ("source","tree","vendor","compiler","controls")}
+    require(counts==pair["seal_counts"] and

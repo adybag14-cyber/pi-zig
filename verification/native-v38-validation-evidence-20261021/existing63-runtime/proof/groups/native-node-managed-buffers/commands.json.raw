@@ -1,0 +1,52 @@
+{
+  "mode": "RuntimeOnly",
+  "group": "native-node-managed-buffers",
+  "compile": [
+    "build",
+    "build-native-node-managed-buffers",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-Ddiagnostic-tests=false",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--prefix",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-managed-buffers\\installed",
+    "--cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache",
+    "--global-cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\global-cache",
+    "--summary",
+    "all"
+  ],
+  "metadata": [
+    "--listen=-"
+  ],
+  "runtime": [
+    "--listen=-"
+  ],
+  "expected_names": [
+    "native_node_managed_buffers_test.test.Node managed buffers constructs the actual empty native map without a context",
+    "native_node_managed_buffers_test.test.Node managed buffers consumes the actual token before any JS wrapper exists",
+    "native_node_managed_buffers_test.test.Node managed buffers insertion does not enter the exhausted JS heap",
+    "native_node_managed_buffers_test.test.Node managed buffers release keys on actual base and ignores the copied length",
+    "native_node_managed_buffers_test.test.Node managed buffers null base bypasses lookup while retaining other entries",
+    "native_node_managed_buffers_test.test.Node managed buffers preserves the real zero owner until map destruction",
+    "native_node_managed_buffers_test.test.Node managed buffers duplicate insertion retires only the unselected native owner",
+    "native_node_managed_buffers_test.test.Node managed buffers moves out before erase and survives native table destruction",
+    "native_node_managed_buffers_test.test.Node managed buffers release then adopts the same real backing into a later ArrayBuffer",
+    "native_node_managed_buffers_test.test.Node managed buffers native map operations preserve an actual pending reason",
+    "native_node_managed_buffers_test.test.Node managed buffers real node allocation retries through the actual native new handler",
+    "native_node_managed_buffers_test.test.Node managed buffers all native backing and table charges retire after the originating runtime"
+  ],
+  "expected_count": 12,
+  "named_controls": 12,
+  "source_seal_scope": "whole_batch",
+  "cache_authority": "One initially fresh private cache pair; serial exact-head group compilation; no seed lineage",
+  "compile_seconds": 1320,
+  "metadata_seconds": 30,
+  "runtime_whole_group_seconds": 120,
+  "pipe_settle_seconds": 10,
+  "installed_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-managed-buffers\\installed\\bin\\test.exe",
+  "installed_pdb": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-managed-buffers\\installed\\bin\\test.pdb"
+}

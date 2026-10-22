@@ -1,0 +1,74 @@
+# V38 positive archive and progress preparer — source-only handoff
+
+The selected candidate is **Prepare-V38PositiveProgressAndValidationArchive-20261021.py**, 51,755 bytes, SHA-256 **00F55DC94CC4151370B837FCDB02FFE991A07AC75C05EFE3022C66D079BD5A77**. It remains unexecuted.
+
+This unit proposes a data-driven evidence archive and progress update after both original63 phases are independently closed and Root accepted. It neither launches validation nor issues execution authority. The selected source is a new constructor with an explicit mapping to the prior accepted archive policy; it is not claimed to be a small textual adaptation or whole-source equivalent.
+
+## Saved review material
+
+- **source-contract.json** specifies all 18 configuration keys, all 11 final-copy-plan keys, the five-key copy-row shape, and future Root source/BuildQuery/runtime receipt requirements. It is inert documentation, not an issued configuration.
+- **static-accounting.py** is the standalone data/AST checker used for this packet. It never imports or executes the candidate, extracts an executable prefix, constructs projected progress, or creates gzip/archive payloads.
+- **static-accounting.json** binds all 22 candidate functions, nine disjoint regions covering every source byte, 319 distinct input pins, the 314 known source versions, 183 direct pin relationships, and all 181 immutable historical-list bases. It records 104 literal field mappings and 40 boolean gates against actual accepted new4 data.
+- **handoff.json** binds this packet and its accepted policy/input basis.
+
+Only the standalone static accounting ran. The candidate, candidate prefix, gzip operation, progress construction and full projected-progress inverse did not run. No Main filesystem/index action, configuration issuance, source intake or native workload occurred.
+
+## Required future admission
+
+The candidate takes exactly a Root configuration path and its complete raw SHA-256. That configuration must independently pin the candidate, a Root source-acceptance receipt and a complete final copy plan.
+
+Source acceptance has execution_authority=false. A later configuration may authorize only this bounded evidence preparation through evidence_preparation_authorized=true. Main intake, native execution, runtime authority, source-mutation release, application qualification, bridge removal and publication remain false.
+
+The final copy plan must retain the original 314 inventory rows, all 183 direct relationships and the two known new4 bookend mappings as exact ordered prefixes. It must add the actual original63 BuildQuery/runtime files, Root receipts, closure receipts and complete directory memberships. Every required original document must be present in that exact raw-byte copy list.
+
+Original63 metadata was separately reported by Root; this packet deliberately does not bind the partial observation as final phase acceptance. The required original63 Root receipt pins, actual group-count vector, final copy plan, exact output list and issued configuration remain unresolved here.
+
+## Positive-only original63 contract
+
+The execution cohort spelling is existing63; its prepared catalog is regression63. The source declarations remain 63 groups / 1,249 controls in the original retained order. Actual counts must come from the fresh accepted metadata and agree across both complete phases.
+
+The BuildQuery Root receipt must affirm complete_buildquery_accepted, the whole source/current directory seals and all original terminal-zero gates. It must bind 126 native owners, 129 actual process intervals, zero runtime tests and the original result, final seal, metadata and independent closure.
+
+The runtime Root receipt must affirm strict_native_runtime_accepted, all original strict empty-stderr/test gates, the same actual cohort and parent BuildQuery evidence. It must bind 63 runtime owners, 66 actual intervals, started=completed=actual, and zero failures or unstarted tests. Product qualification and source-mutation release remain false.
+
+The corrected A73A runtime auditor and its 12D456 Root source acceptance are required. Original63 starts that accepted auditor directly. No original63 F846 failure, auditor-configuration adaptation, or original_runtime_rerun field is required. The real new4 F846 failure and exact one-field corrected input remain preserved separately.
+
+A partial or failed original63 outcome cannot produce the positive checkpoint through this source. Such an outcome needs a separately reviewed negative design.
+
+## Exact field inspection
+
+The accepted new4 Root receipts AD8E19A0 and C2BA2AD0, their independent BuildQuery/metadata/runtime closures, original batch results, all four canonical runtime results, both terminal job captures and prepared source catalog were inspected as data.
+
+The candidate's 104 mapped literal accesses and 40 boolean gates match those actual structures. The data checks also verify all role-specific document links, group order/counts, original statuses, zero flags, exact metadata names, empty stderr and the actual decimal-string process-instance identities.
+
+The accounting labels loop indices and future-copy-plan accesses separately. Known group-comprehension fields, count indices and dynamic role keys were checked independently in the static checker. The remaining copy_plan/cohort/membership fields are specified in source-contract.json and intentionally await the exact final Root copy plan. No source predicate or extracted candidate function was evaluated.
+
+## Source regions and policy mapping
+
+| Candidate lines | Purpose |
+|---|---|
+| 1–139 | Fixed basis, exact pin/path handling, schema sets and helper definitions |
+| 140–207 | Separate Root admission; fixed partial plan; immutable raw Git progress and all historical bases |
+| 208–290 | Exact copy rows, direct pin relationships and complete four-phase file membership |
+| 291–404 | Positive Root/independent/original-data contracts for new4 and original63 |
+| 405–431 | Both complete cohorts and the two retained non-native negatives |
+| 432–480 | In-memory archive payloads; only explicitly equal bookend pairs may be compressed |
+| 481–571 | Positive checkpoint, exact history prefixes and complete raw progress inverse gate |
+| 572–672 | Archive mapping/manifest; exact target list, immutable-tree aliases and Git attributes |
+| 673–708 | Final create-only staging and readback, followed by original-input rechecks |
+
+All 22 helper bodies are hashed. Of same-named helpers in the prior accepted 079CE866 policy, sha, relative and gzip_bytes are byte-identical. Other helpers are changed, renamed or new and are fully exposed in the accounting; no unchanged-helper claim is made for them.
+
+The prior policy's raw-input retention, deterministic equal-pair gzip, append-only history and complete progress inverse requirements are carried into explicit gates. The proposed source uses the owned SDK worktree for immutable Git objects and attributes, avoiding Main filesystem/index access. Actual Main working-tree collision checks remain a separate exact intake responsibility.
+
+## Preservation and proposed output
+
+The immutable 014062 progress basis is exactly 554,689 bytes / BEB78B96, Git blob ec7a71bd873c789fcb42918501816357c599d2a6. Static accounting confirmed its exact raw JSON roundtrip and all 181 list bases. It did not construct updated progress.
+
+If separately executed after all positive gates, the source preserves every old list prefix, appends six attempts and the complete old checkpoint, and leaves integrated source units and native-negative history unchanged. The native-negative list stays at 14 because the two new preserved negatives are non-native preparation/auditor failures. Removing only the one added top-level key and restoring the seven explicitly replaced keys must reproduce the complete original raw bytes before staging.
+
+Every original evidence file, including raw process times, terminal observations, stderr/stdout and wire data, is copied byte-for-byte. JSON is parsed for checking but original evidence is not re-encoded. Gzip is allowed only for explicitly listed, byte-identical before/final pairs, with filename empty, mtime zero and level 9. Full two-source decompression and repeated-encoding equality are future mandatory checks; no gzip was produced here. Uncombined pairs retain both raw originals.
+
+The future intake membership is N−G+14, where N is the final original-version row count and G is the number of explicitly validated equal bookend pairs. Fourteen fixed automatic paths cover progress, its raw preimage, eight preparation records, history proof, seal map, archive index and manifest. A separate staging preparation-review.json is outside the intake target count. The exact sorted target list must be supplied by Root and match before any physical write.
+
+All physical candidate writes begin at line 674 after the complete acceptance, membership, preservation, inverse and attribute gates. Files use create-only xb writes and exact readback. This packet authorizes none of those future actions.

@@ -1,0 +1,124 @@
+"""Independent complete original negative V38 existing63 retry1 strict runtime closure; exact failures and partial-batch demotions remain nonqualifying."""
+from pathlib import Path
+import collections,datetime,hashlib,json,struct,subprocess,os,sys
+if len(sys.argv)!=3:raise RuntimeError("Exact Root-issued negative-audit input path and SHA-256 required")
+cfg_path=Path(sys.argv[1]);cfg_raw=cfg_path.read_bytes()
+if len(sys.argv[2])!=64 or any(c not in "0123456789ABCDEF" for c in sys.argv[2]):raise RuntimeError("Exact uppercase SHA-256 required")
+if hashlib.sha256(cfg_raw).hexdigest().upper()!=sys.argv[2]:raise RuntimeError("Root-issued negative-audit input bytes changed")
+cfg=json.loads(cfg_raw)
+base=Path(r"C:\Users\adyba\pi-zig");main=base/"main";evidence=base/"evidence"
+control=Path(cfg["control"])
+if not control.is_relative_to(base/"evidence"):raise RuntimeError("Runtime control must remain contained")
+proof=Path(cfg["proof"])
+if not proof.is_relative_to(base/"evidence"):raise RuntimeError("Runtime proof must remain contained")
+build=base/"evidence/root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711"
+build_control=base/"evidence/root-native-foundation-fresh-v38-existing63-control-20261021-153711"
+prep=base/"evidence/combined-native-batch-v38-regression63-prepared-20261021"
+head="014062f2d139254acab4b985b4ae343db637166f"
+batch="existing63";group_count=63;declared_count=1249;actual_count=1285;executed_count=17
+output=control/"independent-negative-runtime-closure.json"
+def require(ok,message):
+ if not ok:raise RuntimeError(message)
+
+def utc_ticks(value):
+ # Preserve the full seven-digit Windows timestamp, permitting only equivalent
+ # ISO spelling/offsets. Python datetime alone truncates the seventh digit.
+ import re
+ m=re.fullmatch(r"(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d)(?:\.(\d{1,7}))?(Z|[+-]\d\d:\d\d)",value)
+ require(m is not None,"Explicit bounded ISO timestamp required")
+ stamp=datetime.datetime.fromisoformat(m[1]+("+00:00" if m[3]=="Z" else m[3]))
+ delta=stamp-datetime.datetime(1970,1,1,tzinfo=datetime.timezone.utc)
+ return (delta.days*86400+delta.seconds)*10000000+int((m[2] or "").ljust(7,"0"))
+
+def read(path):return json.loads(Path(path).read_text(encoding="utf-8-sig"))
+def digest(path):
+ h=hashlib.sha256()
+ with Path(path).open("rb") as f:
+  while block:=f.read(1024*1024):h.update(block)
+ return h.hexdigest().upper()
+def pin(path):return dict(path=str(path),bytes=Path(path).stat().st_size,sha256=digest(path))
+
+def verify_pins(value):
+ if isinstance(value,dict):
+  if isinstance(value.get("path"),str) and isinstance(value.get("sha256"),str):
+   path=Path(value["path"]);require(path.is_absolute() and path.resolve().is_relative_to(base.resolve()),"Contained immutable provenance pin")
+   actual=pin(path);require(actual["sha256"]==value["sha256"] and ("bytes" not in value or actual["bytes"]==value["bytes"]),"Immutable provenance bytes changed: "+str(path))
+  for child in value.values():verify_pins(child)
+ elif isinstance(value,list):
+  for child in value:verify_pins(child)
+
+require(not output.exists(),"Fresh immutable independent closure required")
+require(set(cfg)=={"schema","status","control","proof","candidate_head","batch","preparation","build_control","build_proof","declared_groups","declared_controls","actual_metadata_count","runtime_result_sha256","runtime_before_sha256","runtime_final_sha256","runtime_grant_sha256","runtime_launch_sha256","runtime_configuration_sha256","runtime_grant_launch_adaptation_sha256","runtime_grant_preparer","runtime_constructor_source_review_sha256","buildquery_launch_sha256","preparation_review_sha256","build_result_sha256","build_final_sha256","metadata_acceptance_sha256","independent_build_closure_sha256","root_buildquery_acceptance_sha256","outer_sha256","outer_absence_sha256","outer_pid","job_observation_sha256","job","selected","seal_counts","observed_started","observed_completed","observed_failed","unstarted_groups","unstarted_accepted_indices","accepted_metadata_count","failed_names","original_attempted_group_files","original_outer_outputs","original_strict_failures_preserved","runtime_qualification","product_qualification","source_mutation_hold_released","native_execution_authorized","auditor_executed","auditor_sha256","audit_execution_authorized"} and cfg["schema"]==1,"Exact complete52-field negative audit configuration")
+require(Path(cfg["preparation"])==prep and Path(cfg["build_control"])==build_control and Path(cfg["build_proof"])==build,"Exact original preparation and complete parent paths")
+require(cfg["auditor_sha256"]==digest(Path(__file__)) and cfg["audit_execution_authorized"] is True,"Exact reviewed auditor and separate audit-only Root authorization")
+require(cfg_path.is_absolute() and cfg_path==control/"independent-negative-runtime-audit-inputs.json","Exact captured negative-input path")
+require(control==base/"evidence/root-native-foundation-v38-existing63-runtime-control-20261022-134223" and proof==base/"evidence/root-native-foundation-v38-existing63-runtime-20261022-134223","Exact original negative proof/control")
+require(cfg["status"]=="root_reviewed_specific_original_v38_existing63_retry1_strict_runtime_negative_audit" and cfg["candidate_head"]==head and cfg["batch"]==batch,"Exact observed negative configuration identity")
+require(cfg["declared_groups"]==group_count and cfg["declared_controls"]==declared_count and cfg["actual_metadata_count"]==cfg["accepted_metadata_count"]==actual_count,"Complete declared and accepted cohort")
+require(cfg["observed_started"]==cfg["observed_completed"]==321 and cfg["observed_failed"]==1 and cfg["unstarted_groups"]==46 and cfg["unstarted_accepted_indices"]==964,"Exact observed failed cutpoint")
+require(cfg["original_strict_failures_preserved"] is True and all(cfg[k] is False for k in ("native_execution_authorized","runtime_qualification","product_qualification","source_mutation_hold_released","auditor_executed")),"No native/source/qualification authority conferred by captured inputs")
+require(cfg["seal_counts"]==dict(source=15041,tree=15054,vendor=1489,compiler=19546,controls=143),"Exact independently captured whole seal cardinalities")
+require(digest(proof/"before.json")==cfg["runtime_before_sha256"]==cfg["runtime_final_sha256"],"Original complete before/final raw identity")
+baseline_path=base/"evidence/root-native-foundation-v34-runtime-control-20261020-210255/Audit-NegativeV34StrictRuntime.py"
+baseline_closure=baseline_path.parent/"independent-negative-runtime-closure.json"
+require(digest(baseline_path)=="79093156FAA1813AACA595BC907D18F0593C2A13028E066C31AD4FB88D0C0FD0" and digest(baseline_closure)=="038180C2284FB568EEB9368F033BC894A4E4AD8D6CCB3615B0C438AF336BCEDA","Preserved accepted negative baseline and original closure")
+verify_pins(cfg["original_attempted_group_files"]);verify_pins(cfg["original_outer_outputs"])
+observation_path=evidence/"root-v38-existing63-partial-runtime-negative-observation-20261022.json"
+require(digest(observation_path)=="617CD84F3DCA136AEE827A9C02B2E50C1D337E364ECE956E059759C53942E7EC","Exact original Root partial-runtime observation")
+observation=read(observation_path);verify_pins(observation)
+require(observation["candidate_head"]==head and observation["batch"]==batch and observation["control"]==str(control) and observation["proof"]==str(proof),"Exact observed original negative identity")
+require(observation["selected"]==cfg["selected"] and observation["seal_counts"]==cfg["seal_counts"],"Every original selected owner/wire/count field retained")
+original_group_file_names={"commands.json","final-artifacts.json","result-provisional.json","result.json","runtime-absence.json","runtime-admission.json","runtime-after-artifacts.json","runtime-before-artifacts.json","runtime-prerequisite-artifacts.json","runtime-raw-frame-observation.json","runtime.json","runtime.results.json","runtime.stderr.log","runtime.stdout.bin"}
+original_group_paths={str(proof/"groups"/row["group"]/name)for row in cfg["selected"]for name in original_group_file_names}
+require(len(cfg["original_attempted_group_files"])==len(original_group_paths)==238 and {row["path"]for row in cfg["original_attempted_group_files"]}==original_group_paths,"Complete exact original 17-group evidence inventory")
+require({str(p)for p in (proof/"groups").rglob("*")if p.is_file()}==original_group_paths and {str(p)for p in (proof/"groups").rglob("*")if p.is_dir()}=={str(proof/"groups"/row["group"])for row in cfg["selected"]},"No unrecorded files or nested group directories")
+require(cfg["original_outer_outputs"]==[pin(control/"outer.stdout.bin"),pin(control/"outer.stderr.log")] and (control/"outer.stdout.bin").read_bytes()==(proof/"result.json").read_bytes(),"Original exact outer outputs remain preserved")
+r=read(proof/"result.json");before=read(proof/"before.json");final=read(proof/"final.json")
+grant=read(control/"root-grant.json");matrix=read(prep/"groups.json")
+launch_path=control/"runtime-launch.json"
+require(digest(launch_path)==cfg["runtime_launch_sha256"],"Exact observed direct strict-runtime launch record")
+launch=read(launch_path);verify_pins(launch);verify_pins(grant)
+require(launch["candidate_head"]==head and launch["batch"]==batch and launch["control"]==str(control) and launch["proof"]==str(proof),"Actual strict-runtime launch identity")
+require(launch["grant"]==pin(control/"root-grant.json") and launch["launch"]==pin(control/"launch.ps1"),"Exact separately issued runtime grant and launcher")
+require(launch["groups"]==grant["groups"] and launch["declared_count"]==declared_count and launch["actual_metadata_count"]==actual_count,"Runtime launch actual accepted cohort")
+require(launch["diagnostic_continue"] is False and launch["compile_authority"] is False and launch["qualification"] is False,"Strict RuntimeOnly launch scope")
+require(grant.get("diagnostic_continue",False) is False and grant["receipt_directory"]==str(proof),"Original strict mode and runtime receipt directory")
+require(launch["specific_root_configuration"]==grant["specific_root_configuration"],"Actual runtime Root configuration binding")
+runtime_cfg_path=Path(launch["specific_root_configuration"]["path"])
+require(digest(runtime_cfg_path)==cfg["runtime_configuration_sha256"],"Exact Root runtime configuration")
+runtime_cfg=read(runtime_cfg_path);verify_pins(runtime_cfg)
+require(runtime_cfg["status"]=="root_reviewed_specific_v38_runtime_preparation" and runtime_cfg["candidate_head"]==head and runtime_cfg["batch"]==batch,"Reviewed actual RuntimeOnly configuration")
+require(runtime_cfg["runtime_execution_authorized"] is True and runtime_cfg["compile_execution_authorized"] is False and runtime_cfg["diagnostic_continue"] is False and runtime_cfg["qualification"] is False and runtime_cfg["source_mutation_hold_released"] is False,"Specific runtime authority and continued source hold")
+require(runtime_cfg["actual_metadata_count"]==actual_count and runtime_cfg["declared_groups"]==group_count and runtime_cfg["declared_controls"]==declared_count and runtime_cfg["selected_group_names"]==grant["groups"],"Exact actual runtime configuration cohort")
+runtime_preparer=evidence/"Prepare-ReviewedV38RuntimeGrant-20261021.py"
+require(pin(runtime_preparer)==cfg["runtime_grant_preparer"] and runtime_preparer.stat().st_size==12499 and digest(runtime_preparer)==runtime_cfg["preparer_sha256"]=="7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322","Reviewed exact RuntimeOnly grant constructor")
+require(launch["buildquery_launch"]==runtime_cfg["buildquery_launch"]==pin(prep/"buildquery-launch.json") and digest(prep/"buildquery-launch.json")==cfg["buildquery_launch_sha256"],"Exact parent BuildQuery launch")
+build_launch=read(prep/"buildquery-launch.json");verify_pins(build_launch)
+require(build_launch["candidate_head"]==head and build_launch["batch"]==batch and build_launch["control"]==str(build_control) and build_launch["proof"]==str(build),"Actual accepted parent BuildQuery identity")
+require(build_launch["grant"]==pin(build_control/"root-grant.json") and build_launch["launch"]==pin(build_control/"launch.ps1") and build_launch["preparation_review"]==pin(prep/"preparation-review.json"),"Parent BuildQuery grant, launcher and preparation pins")
+require(build_launch["groups"]==grant["groups"] and build_launch["declared_count"]==declared_count and build_launch["actual_metadata_count"] is None and build_launch["runtime_authority"] is False and build_launch["qualification"] is False,"Parent BuildQuery scope and unpredicted actual metadata")
+require(build_launch["specific_root_configuration"]==grant["build_specific_root_configuration"],"Preserved distinct BuildQuery Root configuration")
+review=read(prep/"preparation-review.json")
+require(digest(prep/"preparation-review.json")==cfg["preparation_review_sha256"],"Exact reviewed batch preparation")
+historical_original=dict(path=str(main/"src/native_node_file_handle_owner_test.zig"),bytes=28378,sha256="93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422")
+historical_snapshot=dict(path=str(base/"worktrees/sdk-owners-resume-20261018/verification/v37-file-handle-runtime-fixtures-sourceonly-20261021/original/src/native_node_file_handle_owner_test.zig"),bytes=28378,sha256="93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422")
+historical_commit="b13be24e44cc1bbc361639eb35900a368ae60eac"
+historical_rows=review["historical_source_rebindings"]
+require(historical_rows==[dict(batch=b,role="fixture_unchanged_root_native-node-file-handle-owner",original=historical_original,immutable_snapshot=historical_snapshot,raw_commit=historical_commit,exact_original_bytes=True)for b in ("new4","regression63")],"Exact complete historical preimage mappings")
+require(all(review["provenance"]["v37_"+row["batch"]+"_"+row["role"]]==historical_snapshot for row in historical_rows),"Historical provenance is rebound to the exact immutable snapshot")
+verify_pins(historical_snapshot)
+historical_raw=subprocess.check_output(["git","--no-optional-locks","cat-file","blob",historical_commit+":src/native_node_file_handle_owner_test.zig"],cwd=main)
+require(len(historical_raw)==historical_original["bytes"] and hashlib.sha256(historical_raw).hexdigest().upper()==historical_original["sha256"] and historical_raw==Path(historical_snapshot["path"]).read_bytes(),"Historical snapshot equals the exact original raw Git blob")
+verify_pins({key:value for key,value in review.items() if key!="historical_source_rebindings"})
+require(review["candidate_head"]==head and review["status"]=="source_only_fresh_batch_prepared" and review["selected_group_names"]==grant["groups"] and review["selected_groups"]==group_count and review["selected_declarations"]==declared_count,"Complete approved batch order and source declarations")
+require(review["catalog_groups"]==len(matrix["groups"])==117 and review["catalog_declarations"]==sum(len(g["required_named"])for g in matrix["groups"])==2013,"Complete unchanged shared source catalog")
+require(review["actual_metadata_count"] is None and review["execution_authority"] is False and review["runtime_authority"] is False and review["qualification"] is False,"Source preparation confers no actual runtime qualification")
+if batch=="new4":
+ require(grant["groups"]==["native-node-file-handle-owner","native-node-fs-before-hook-continuation","native-vm-error-constructor-name","native-node-file-handle-transfer"],"Exact four new roots")
+else:
+ old_cohort=evidence/"root-native-foundation-fresh-v34-control-20261020-202924/root-grant.json"
+ require(digest(old_cohort)=="275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15" and grant["groups"]==read(old_cohort)["groups"],"Complete original sixty-three group order retained")
+require(len(grant["groups"])==len(set(grant["groups"]))==group_count,"Disjoint unique complete selected batch")
+accept_path=build_control/"independent-metadata-acceptance.json";accept=read(accept_path)
+build_closure_path=build_control/"independent-current-seals-and-owners.json"
+for key,path,hash_key in (("build

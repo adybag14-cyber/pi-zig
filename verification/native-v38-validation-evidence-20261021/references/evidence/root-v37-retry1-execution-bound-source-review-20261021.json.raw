@@ -1,0 +1,178 @@
+{
+  "schema": 1,
+  "status": "root_accepted_exact_v37_retry1_execution_source_successors",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-21T13:13:14.300759+00:00",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "matrix_sha256": "E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37",
+  "source_accepted": true,
+  "runtime_constructor_source_accepted": true,
+  "original_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-execution-bound-source-review-20261021.json",
+    "bytes": 6566,
+    "sha256": "B0A86EEC807F83AC467E5B194891FC6F6BA0C551BEBCBDF7C33AFA6E689FC914"
+  },
+  "original_helper_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-positive-buildquery-input-helper-source-acceptance-20261021.json",
+    "bytes": 5243,
+    "sha256": "A5F0AE1596349E5E535530B848A4EF90D3FBC795FFB220F56EB8608BD4BC97A2"
+  },
+  "original_initial_admission_negative_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-initial-admission-negative-acceptance-20261021.json",
+    "bytes": 4271,
+    "sha256": "913E5C1AD65C42FC084C63304A766105F810C7DDCE50C4109EFA441BAE04C91A"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-retry1-execution-source-peer-20261021\\peer.json",
+    "bytes": 7551,
+    "sha256": "FA586C569F2DAA737702CCBE6D76451A349011189862F0C6FD75616E25F653DD"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-retry1-execution-source-peer-20261021\\independent-static-peer.py",
+    "bytes": 24609,
+    "sha256": "CEA20B6F69F3FBCC276282DA8A72A2904849BE75B3C7A3BC6E171D4C650080D0"
+  },
+  "independent_source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-retry1-execution-source-peer-20261021\\source-proof.json",
+    "bytes": 35441,
+    "sha256": "5A73BD663C246F72ECEEEA2F16B7F3E70E87C552394F5691C0350AE295E14D01"
+  },
+  "aggregate_finite_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 17062,
+    "sha256": "7AD9E12410967B564AA982840DF7CE427493AEFB0AD4749D024B1D6BD4BB4C7B"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\handoff.json",
+    "bytes": 13872,
+    "sha256": "323A0E716C8BB162AD7F14B4C43C82AAF9C49955F1B4EAE8C888C43E153699F9"
+  },
+  "sources": [
+    {
+      "kind": "buildquery_constructor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37BuildQueryGrant-20261021-v2.py",
+        "bytes": 10095,
+        "sha256": "21BDC9AB8EAEBEC3B9C9427E8D20A10F0EBAA0728D55A06BADCB83327A215ABC"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37BuildQueryGrant-Retry1-20261021.py",
+        "bytes": 10109,
+        "sha256": "81FA8E7BA4DED5788F1618D393395666C82BC209791079DCCB3EEBDAEC6E9F58"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\buildquery-constructor-finite.json",
+        "bytes": 4603,
+        "sha256": "3D482147579827314416D50DD38E8221E77CE5B55370CD2548347D8ACD6EEAA9"
+      },
+      "literal_edits": 2,
+      "unchanged_full_line_helpers": 7
+    },
+    {
+      "kind": "runtime_constructor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37RuntimeGrant-20261021-v2.py",
+        "bytes": 12499,
+        "sha256": "D1F3A1CBD0CB3BDD30ED8E4B1501B358E5E41C515793FDCAB034C26D416E946B"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37RuntimeGrant-Retry1-20261021.py",
+        "bytes": 12513,
+        "sha256": "414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\runtime-constructor-finite.json",
+        "bytes": 4721,
+        "sha256": "7EBB7AA0665F7BDEEB8BB4EF77564E0102CFD568AE99AA2457419AD49966B289"
+      },
+      "literal_edits": 2,
+      "unchanged_full_line_helpers": 8
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37CompleteBuildQuery-Template-20261021.py",
+        "bytes": 37257,
+        "sha256": "09E12000DE6CB46F7CEF7A685E4B8518003957E5B1DAC6724CC13742B684E188"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37CompleteBuildQuery-Retry1-20261021.py",
+        "bytes": 37268,
+        "sha256": "2C89B824BE10438684ECAB4AC72197B7A54F9218F15578F9F1A4EB6FEFDB4063"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\positive-buildquery-auditor-finite.json",
+        "bytes": 6053,
+        "sha256": "1471267DC974F94A5EF6B86DDB4A888454E8EA4CAE66AE1F8E2673974572290F"
+      },
+      "literal_edits": 4,
+      "unchanged_full_line_helpers": 6
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37StrictRuntime-20261021.py",
+        "bytes": 39914,
+        "sha256": "709D0D6F155E303B9AA527329AEDBBB39223805386C89ED956B074494C5534F2"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37StrictRuntime-Retry1-20261021.py",
+        "bytes": 39946,
+        "sha256": "049C8CFE6053CDC7632BF44B57EB64BD8F220685AFB99FB029AC844EC3A4DC40"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\positive-runtime-auditor-finite.json",
+        "bytes": 8491,
+        "sha256": "677FA9349B66E3924C406EB18C2C9B39EF5F849F435C10097E55E94534806230"
+      },
+      "literal_edits": 7,
+      "unchanged_full_line_helpers": 6
+    },
+    {
+      "kind": "positive_input_helper_unresolved",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV37New4PositiveBuildQueryAuditInputs-20261021-unresolved.py",
+        "bytes": 18951,
+        "sha256": "AE0A736D92218A09FB84D32BE916E741518D29EBE251A791FAB32E5F1A8C9B90"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV37New4PositiveBuildQueryAuditInputs-Retry1-20261021-unresolved.py",
+        "bytes": 18974,
+        "sha256": "8F0ECC3CAF504E858A29891E25BA78A0F06F258C4C4DEB1EDB87A11EF12DA344"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\positive-input-helper-finite.json",
+        "bytes": 9192,
+        "sha256": "DE17130B5AE3807F0CBC42A97971F611E6D5636710210AD0C3E2435820827E58"
+      },
+      "literal_edits": 7,
+      "unchanged_full_line_helpers": 10
+    }
+  ],
+  "root_finite_verification": {
+    "total_edits": 22,
+    "string_literals": 18,
+    "numeric_saved_size_literals": 4,
+    "all_complete_forward_and_raw_inverses": true,
+    "all_intermediate_hashes": true,
+    "all_untouched_tokens_and_fragments": true,
+    "unchanged_full_line_helpers": 37,
+    "helper_critical_regions": 3,
+    "source_crossbindings_exact": true,
+    "peer_input_pins_rehashed": 22
+  },
+  "root_review": "Root fully read both exact saved Retry1 constructors, the independent SDK checker and receipt, all finite edit records and the final handoff. Root independently replayed all 22 finite substitutions, every intermediate hash, full raw forward and inverse, unchanged token and raw-fragment inventories, and all 37 complete helper bodies. The four constructors/auditors are accepted as source only at the exact pins listed. Retry bookkeeping uses a separate buildquery-retry1-launch.json and preserves the failed initial attempt. All original validation logic, V34 baseline anchors, 300-second freshness, 16GiB admission, strict protocol, ownership, seals and deadlines remain unchanged. The helper remains an unexecuted unresolved source with all 17 actual-job bindings pending; the canonical bound helper is absent. This receipt must be pinned by the retry grant under v37_execution_bound_source_review before construction. It grants no constructor, helper, auditor or native execution by itself.",
+  "required_grant_provenance_key": "v37_execution_bound_source_review",
+  "helper_actual_bindings_pending": 17,
+  "canonical_bound_helper_absent": true,
+  "source_only": true,
+  "target_executed": false,
+  "prefix_executed": false,
+  "native_execution_authorized": false,
+  "constructor_execution_authorized": false,
+  "helper_execution_authorized": false,
+  "auditor_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "application_qualified": false
+}

@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v38_new4_positive_runtime_audit_resource_release",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-21T15:21:06.670381+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py",
+    "bytes": 39911,
+    "sha256": "F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07"
+  },
+  "configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\independent-positive-runtime-audit-inputs.json",
+    "bytes": 6496,
+    "sha256": "2636533F9B87A9FDC5737C239C0A7B230294359621EF4F8AB958B36EF457C6F7"
+  },
+  "source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-execution-bound-source-review-20261021.json",
+    "bytes": 6950,
+    "sha256": "20ECFC7CF589BAB8E0090EEED59B2BE236CDE5F1F14DF4C2A68AD215C2E3013A"
+  },
+  "original_job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\independent-observed-job-status.json",
+    "bytes": 1572,
+    "sha256": "A247E8C5FB9128F65B84FCA7CB6DC02CF5EC5E6D63AB0B7D2819D519C7F5E069"
+  },
+  "actual_group_counts": [
+    19,
+    4,
+    24,
+    14
+  ],
+  "actual_started": 61,
+  "actual_completed": 61,
+  "actual_failed": 0,
+  "original_raw_frames_independently_checked": true,
+  "all_original_stderr_empty": true,
+  "resource": {
+    "program": "python",
+    "resource_class": "io-heavy",
+    "timeout_seconds": 240,
+    "one_auditor_process": true,
+    "source_artifact_and_process_read_only": true,
+    "create_only_output": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\independent-positive-runtime-closure.json"
+  },
+  "audit_execution_authorized": true,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "product_qualification": false
+}

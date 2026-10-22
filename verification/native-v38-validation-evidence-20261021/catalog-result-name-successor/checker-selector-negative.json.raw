@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "status": "preserved_static_checker_selector_negative",
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\source-correction-check.py",
+    "bytes": 10949,
+    "sha256": "B143EBBE24ADE17D2E973B1B32617C41203908E4C6E7FFD42E29CE3547DDEFBA"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\Prepare-FreshV38Catalog-20261021-v2.py",
+    "bytes": 80888,
+    "sha256": "5020211BDD5B229C3DAE0C744ADA4071FF03B9AB2698AFADF864EB483E437506"
+  },
+  "operation": "Owned static checker --write; failed before its final proof write",
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\source-correction-check.py\", line 55, in <module>\r\n    om_i,om=assign(ot,\"metadata\");nm_i,nm=assign(nt,\"metadata\")\r\n            ~~~~~~^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\source-correction-check.py\", line 19, in assign\r\n    assert len(rows)==1,name\r\n           ^^^^^^^^^^^^\r\nAssertionError: metadata\r\n",
+  "cause": "The source retains more than one historical metadata assignment. The static checker incorrectly required a globally unique metadata variable instead of selecting the exact V37 proof call.",
+  "candidate_unchanged": true,
+  "candidate_or_prefix_executed": false,
+  "Main_written": false,
+  "proof_written": false
+}

@@ -1,0 +1,54 @@
+"""Read-only AST/data schema comparison; no candidate or prefix evaluation."""
+from pathlib import Path
+import ast,json,hashlib
+W=Path(r"C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018")
+D=W/"verification/v38-partial-negative-progress-archive-preparer-sourceonly-20261022"
+C=D/"source-contract.json";S=D/"candidate/Prepare-V38PartialNegativeProgressAndValidationArchive-20261022.py"
+cb,sb=C.read_bytes(),S.read_bytes();c=json.loads(cb);t=ast.parse(sb.decode())
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ b=p.read_bytes();return {"path":str(p),"bytes":len(b),"sha256":sha(b)}
+def value(name):
+ return next(n.value for n in t.body if isinstance(n,ast.Assign) and any(isinstance(x,ast.Name) and x.id==name for x in n.targets))
+cfg,cp=c["future_configuration_shape"],c["future_copy_plan_shape"]
+assert set(cfg)==ast.literal_eval(value("CONFIG_KEYS")) and len(cfg)==18
+assert set(cp)==ast.literal_eval(value("COPY_KEYS")) and len(cp)==11
+assert cfg["evidence_preparation_authorized"] is False and cfg["source_review"] is cfg["final_copy_plan"] is cfg["recorded_utc"] is cfg["expected_output_paths"] is None
+assert all(cfg[k] is False for k in ("main_intake_authorized","native_execution_authorized","runtime_authority","source_mutation_hold_released","application_qualified","production_bridge_removed","published_release"))
+assert cfg["preparer_sha256"]==sha(sb)==c["selected_preparer"]["sha256"]
+assert set(c["copy_plan_contract"]["row_keys"])==ast.literal_eval(value("ROW_KEYS"))
+assert c["copy_plan_contract"]["phase_order"]==list(ast.literal_eval(value("PHASES")))
+assert c["output_contract"]["manifest_keys"]==[x.value for x in value("manifest").keys]
+assert len(c["history_contract"]["replaced_top_level_keys"])==8 and set(c["history_contract"]["replaced_top_level_keys"])==ast.literal_eval(value("replaced"))
+assert set(c["history_contract"]["added_top_level_keys"])==ast.literal_eval(value("added"))
+inc=ast.literal_eval(value("increments"))
+assert all(c["history_contract"]["new_lengths_if_preparation_released"][k]==v+inc[k] for k,v in c["history_contract"]["old_lengths"].items())
+aux=[x.elts[0].value for x in value("auxiliary").elts]
+a=cfg["archive_target_prefix"]
+expected=["verification/port-roadmap-resume-20261018/progress.json",a+"/prior-progress.json.raw"]+[a+"/preparation/"+n+".raw" for n in aux]+[a+"/history-preservation.json",a+"/seal-archive-map.json",a+"/archive-index.json",a+"/manifest.json"]
+assert expected==c["output_contract"]["fixed_additional_targets"] and len(expected)==15
+assert len(set(x.casefold() for x in expected))==15
+assert cfg["output_directory"].endswith(value("OUT").right.value)
+assert set(cp["cohorts"]["new4"])=={"buildquery_root_acceptance","runtime_root_acceptance"}
+assert set(cp["cohorts"]["existing63"])=={"buildquery_root_acceptance","prelaunch_root_negative","runtime_negative_root_acceptance"}
+pins=[]
+def visit(v):
+ if isinstance(v,dict):
+  if set(v)=={"path","bytes","sha256"} and isinstance(v["path"],str) and type(v["bytes"]) is int and isinstance(v["sha256"],str):
+   p=Path(v["path"]);assert pin(p)==v;pins.append(v)
+  else:
+   for w in v.values():visit(w)
+ elif isinstance(v,list):
+  for w in v:visit(w)
+visit(c)
+out={"schema":1,"status":"exact_inert18_configuration11_copyplan_and_manifest_contract_source_match",
+"source":pin(S),"contract":pin(C),"configuration_keys":sorted(cfg),"copy_plan_keys":sorted(cp),
+"all_configuration_authority_booleans_false":True,"future_pins_and_expected_outputs_unissued":True,
+"manifest_keys_exact":True,"automatic_targets_exact":expected,"progress_replaced_keys_exact":sorted(ast.literal_eval(value("replaced"))),
+"history_delta_exact":inc,"typed_pin_references_verified":pins,"candidate_or_prefix_evaluated":False,
+"gzip_executed":False,"progress_projected":False,"Main_access":False,"native_execution_authorized":False}
+p=D/"contract-schema-accounting.json";b=(json.dumps(out,indent=2,ensure_ascii=False)+"\n").encode()
+assert not p.exists()
+with p.open("xb") as f:f.write(b)
+assert p.read_bytes()==b
+print(json.dumps({"proof":pin(p),"typed_pin_references":len(pins),"config_keys":len(cfg),"copy_keys":len(cp),"fixed_targets":len(expected)}))

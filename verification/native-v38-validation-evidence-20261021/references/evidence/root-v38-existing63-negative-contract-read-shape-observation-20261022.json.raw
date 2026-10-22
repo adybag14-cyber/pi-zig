@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "status": "root_read_only_contract_shape_inspection_corrected_before_issuance",
+  "finding": "The initial read-only inspection addressed original_attempted_group_files at the contract envelope instead of future_configuration_shape. It raised KeyError before output, mutation, configuration issuance, or candidate execution. The complete envelope and nested52-field shape were then read successfully.",
+  "failed_tool_response": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"<string>\", line 4, in <module>\r\n    print(json.dumps({'path':str(p),'keys':list(c),'fields':len(c),'rows':len(c['original_attempted_group_files'])},indent=2))\r\n                                                                              ~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nKeyError: 'original_attempted_group_files'",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"<string>\", line 4, in <module>\r\n    print(json.dumps({'path':str(p),'keys':list(c),'fields':len(c),'rows':len(c['original_attempted_group_files'])},indent=2))\r\n                                                                              ~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nKeyError: 'original_attempted_group_files'\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "candidate_executed": false,
+  "configuration_issued": false,
+  "native_executed": false,
+  "source_mutation": false
+}

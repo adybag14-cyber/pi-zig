@@ -1,0 +1,30 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\936b69067530d896a9edea6c6267d2b6\\test.exe",
+  "binary_sha256": "6E2DD9D5D755F605BE1A9BE1199EBE8DB91117ECE7B85C2F940B63817E072958",
+  "version": "0.16.0",
+  "actual_count": 18,
+  "tests": [
+    "native_vm_native_global_test.test.VM native Global strong root retains actual typed array identity through collection",
+    "native_vm_native_global_test.test.VM native Global weak transition allocates nothing and clears before target finalizer",
+    "native_vm_native_global_test.test.VM native Global Get holds only its explicit Local without kept objects",
+    "native_vm_native_global_test.test.VM native Global cells keep independent strong and weak entitlements",
+    "native_vm_native_global_test.test.VM native Global retained real property keeps a weak target live until replacement",
+    "native_vm_native_global_test.test.VM native Global strong root survives a real cycle that weak transition then collects",
+    "native_vm_native_global_test.test.VM native Global queued zero reference target cannot be resurrected by another finalizer",
+    "native_vm_native_global_test.test.VM native Global doomed cyclic target is absent before its own finalizer",
+    "native_vm_native_global_test.test.VM native Global reset coexists with actual WeakMap WeakRef and FinalizationRegistry",
+    "native_vm_native_global_test.test.VM native Global releasing a weak cell removes only its own embedded link",
+    "native_vm_native_global_test.test.VM native Global strong release publishes an empty cell before reentrant native cleanup",
+    "native_vm_native_global_test.test.VM native Global weak transition permits actual finalizer disposal of the cell",
+    "native_vm_native_global_test.test.VM native Global allocation failure borrows input and publishes no cell",
+    "native_vm_native_global_test.test.VM native Global rejects primitives and holds revoked proxies without lookup",
+    "native_vm_native_global_test.test.VM native Global creation preserves ordinary or fatal prior pending before validation",
+    "native_vm_native_global_test.test.VM native Global weak and strong releases preserve the first actual pending reason",
+    "native_vm_native_global_test.test.VM native Global flagged retained DATA and actual cleanup throw remain distinct",
+    "native_vm_native_global_test.test.VM native Global cells retire before runtime while their native probes outlive cleanup"
+  ],
+  "group": "native-vm-native-global",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

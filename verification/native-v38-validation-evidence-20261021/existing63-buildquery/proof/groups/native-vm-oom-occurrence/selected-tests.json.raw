@@ -1,0 +1,25 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\68949f09a853062f7c93b3ac6a2d9aa3\\test.exe",
+  "binary_sha256": "BE392F00DC62DB778BC5B6326D56B521D7CF1D78F312389760FDABB7B5A3CE78",
+  "version": "0.16.0",
+  "actual_count": 13,
+  "tests": [
+    "native_vm_oom_occurrence_test.test.VM OOM occurrence starts at zero and successful intrinsic allocations do not advance it",
+    "native_vm_oom_occurrence_test.test.VM OOM occurrence records explicit actual report without changing its ordinary reason",
+    "native_vm_oom_occurrence_test.test.VM OOM occurrence includes the real recursive reporting allocation failure",
+    "native_vm_oom_occurrence_test.test.VM OOM occurrence brackets an actual failed string allocation",
+    "native_vm_oom_occurrence_test.test.VM OOM occurrence brackets an actual failed intrinsic object allocation",
+    "native_vm_oom_occurrence_test.test.VM OOM occurrence array failure consumes its actual input owner exactly once",
+    "native_vm_oom_occurrence_test.test.VM OOM occurrence failed new atom uses the actual reporting path",
+    "native_vm_oom_occurrence_test.test.VM OOM occurrence shared-shape insertion failure consumes its value and leaves no property",
+    "native_vm_oom_occurrence_test.test.VM OOM occurrence raw runtime allocation failure without a report does not advance",
+    "native_vm_oom_occurrence_test.test.VM OOM occurrence actual intrinsic overlength RangeError leaves the occurrence unchanged",
+    "native_vm_oom_occurrence_test.test.VM OOM occurrence observation preserves actual ordinary and fatal pending owners without allocation",
+    "native_vm_oom_occurrence_test.test.VM OOM occurrence is runtime-wide while separate runtime histories stay independent",
+    "native_vm_oom_occurrence_test.test.VM OOM occurrence retained historical reason and private termination add no new occurrence"
+  ],
+  "group": "native-vm-oom-occurrence",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

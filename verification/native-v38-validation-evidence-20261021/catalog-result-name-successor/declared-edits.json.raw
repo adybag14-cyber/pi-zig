@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "status": "two_hunk_v38_catalog_result_name_source_successor",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\Prepare-FreshV38Catalog-20261021.py",
+    "bytes": 80847,
+    "sha256": "A112C96C5CFA58E338398948D7A8E5BF7F079B523AF7239FA5BE8F78E46118CD"
+  },
+  "original_snapshot": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\original-Prepare-FreshV38Catalog-20261021.py",
+    "bytes": 80847,
+    "sha256": "A112C96C5CFA58E338398948D7A8E5BF7F079B523AF7239FA5BE8F78E46118CD"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\result-name-successor-v2\\Prepare-FreshV38Catalog-20261021-v2.py",
+    "bytes": 80888,
+    "sha256": "5020211BDD5B229C3DAE0C744ADA4071FF03B9AB2698AFADF864EB483E437506"
+  },
+  "original_finite_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v38-catalog-preparer-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 137539,
+    "sha256": "F6869376B2D6B42C007589244CA25DA2C988C10EEBCFE4DA36C87DC4B5ACDF58"
+  },
+  "edits": [
+    {
+      "baseline_offset": 32516,
+      "before": "expected_results = [{\"index\":i,\"flags\":1 if i in (5,10,11,12,16) else 0,\"passed\":i not in (5,10,11,12,16)} for i in range(19)]\n",
+      "after": "metadata = proof(\"prior_v37_retry1_metadata_acceptance\",build_control/\"independent-metadata-acceptance.json\",\"6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B\",14153)\nexpected_results = [{\"index\":i,\"flags\":1 if i in (5,10,11,12,16) else 0,\"passed\":i not in (5,10,11,12,16),\"name\":metadata[\"groups\"][0][\"tests\"][i]} for i in range(19)]\n",
+      "purpose": "Move the unchanged exact metadata proof before result construction and include its ordered canonical name in each existing index/flag/pass row."
+    },
+    {
+      "baseline_offset": 33789,
+      "before": "metadata = proof(\"prior_v37_retry1_metadata_acceptance\",build_control/\"independent-metadata-acceptance.json\",\"6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B\",14153)\n",
+      "after": "",
+      "purpose": "Remove only the displaced duplicate load; all following metadata identity/group/count gates remain byte-identical."
+    }
+  ],
+  "authorities": {
+    "root_preparation_negative": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-initial-preparation-negative-20261021\\root-negative-acceptance.json",
+      "bytes": 3023,
+      "sha256": "14FB17F6E9497A530D999EE3D05C43521A7F830C4A185CD4505C28BE6BBB6400"
+    },
+    "failed_configuration": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-issued-configuration-20261021.json",
+      "bytes": 8747,
+      "sha256": "2E7C7CEEEE50949C7DCF401E8453D4BCA9B8129C8C431D1334306B2007E082C9"
+    },
+    "failed_job_observation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-initial-preparation-negative-20261021\\job-observation.json",
+      "bytes": 1958,
+      "sha256": "F5EC666123CF220DB6C14EF067CD5D7F43D873E93E43DC2AF195625E1849E5CB"
+    },
+    "failed_stderr": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-initial-preparation-negative-20261021\\original-stderr-capture.bin",
+      "bytes": 356,
+      "sha256": "85F9FCD10AB6EC69908518E0E82BD2B1AD599D71A4CBD5EEC53EF4323C803794"
+    },
+    "accepted_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-metadata-acceptance.json",
+      "bytes": 14153,
+      "sha256": "6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B"
+    },
+    "accepted_runtime_negative_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-closure.json",
+      "bytes": 22838,
+      "sha256": "321ABB743297FC9720D36E78F17B38441F8FAE3A60BEA32DE488FC248342F517"
+    },
+    "canonical_original_runtime_results": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.results.json",
+      "bytes": 2043,
+      "sha256": "9B224B5628500F9018F32B6338DF13A7BA5A6DCC067C391D5D555FFE621A8B50"
+    }
+  },
+  "successor_source_only": true,
+  "successor_or_prefix_executed": false,
+  "Main_written": false
+}

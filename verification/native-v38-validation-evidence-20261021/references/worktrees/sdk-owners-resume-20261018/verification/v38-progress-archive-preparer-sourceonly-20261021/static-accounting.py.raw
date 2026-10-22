@@ -1,0 +1,205 @@
+"""Static V38 archive source and known-evidence accounting only.
+Never imports, compiles, executes or extracts executable candidate code.
+Never creates progress, gzip, a copy plan, a Root configuration or Main output.
+"""
+import ast, hashlib, json, re, subprocess, sys
+from pathlib import Path
+W=Path(r"C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018")
+E=Path(r"C:\Users\adyba\pi-zig\evidence")
+D=W/"verification/v38-progress-archive-preparer-sourceonly-20261021"
+P=D/"candidate/Prepare-V38PositiveProgressAndValidationArchive-20261021.py"
+MD=Path(r"C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018\verification\v38-progress-archive-plan-sourceonly-20261021")
+POL=E/"v37-progress-negative-archive-sourceonly-20261021/candidate/Prepare-V37ProgressAndNegativeArchive-20261021-v2.py"
+HEAD="014062f2d139254acab4b985b4ae343db637166f"
+SHA="00F55DC94CC4151370B837FCDB02FFE991A07AC75C05EFE3022C66D079BD5A77"
+inputs={}
+def h(b):return hashlib.sha256(b).hexdigest().upper()
+def enc(d):return (json.dumps(d,indent=2,ensure_ascii=False)+"\n").encode()
+def read(p,n=None,s=None):
+ p=Path(p);assert p.is_absolute() and not p.is_relative_to(E.parent/"main")
+ b=p.read_bytes()
+ if n is not None:assert len(b)==n,(str(p),len(b),n)
+ if s is not None:assert h(b)==s,(str(p),h(b),s)
+ inputs[str(p).casefold()]={"path":str(p),"bytes":len(b),"sha256":h(b)}
+ return b
+def obj(p,n=None,s=None):return json.loads(read(p,n,s))
+def bypin(q):
+ assert set(q)=={"path","bytes","sha256"}
+ return obj(q["path"],q["bytes"],q["sha256"])
+def pk(p):return inputs[str(Path(p)).casefold()]
+source=read(P,51755,SHA)
+tree=ast.parse(source)
+source_lines=source.splitlines(keepends=True)
+prior=read(POL,75644,"079CE8663FFA9C337F5AC04D41E4222E6B2EFB9B39E5B459F6F4E460F9AC790D")
+prior_tree=ast.parse(prior);prior_lines=prior.splitlines(keepends=True)
+defs=[n for n in tree.body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))]
+assert len(defs)==22
+assert all(isinstance(n,ast.FunctionDef) for n in defs)
+def block(lines,n):return b"".join(lines[n.lineno-1:n.end_lineno])
+old_defs={n.name:n for n in prior_tree.body if isinstance(n,ast.FunctionDef)}
+helpers=[]
+for n in defs:
+ b=block(source_lines,n);o=old_defs.get(n.name);ob=block(prior_lines,o) if o else None
+ helpers.append({"name":n.name,"first_line":n.lineno,"last_line":n.end_lineno,"bytes":len(b),"sha256":h(b),"same_named_prior_helper":None if o is None else {"first_line":o.lineno,"last_line":o.end_lineno,"bytes":len(ob),"sha256":h(ob),"full_raw_bytes_equal":ob==b}})
+literal_names=("HEAD","BRANCH_REF","PROGRESS","ARCHIVE","MANIFEST_TARGET","BASIS_SHA","MATRIX_SHA","NEW4","CONFIG_KEYS","COPY_KEYS","ROW_KEYS","PHASES","COMMON_TRUE")
+constants={}
+for n in tree.body:
+ if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name) and n.targets[0].id in literal_names:
+  try:constants[n.targets[0].id]=ast.literal_eval(n.value)
+  except (ValueError,TypeError):pass
+assert len(constants["CONFIG_KEYS"])==18 and len(constants["COPY_KEYS"])==11 and len(constants["ROW_KEYS"])==5
+assert constants["HEAD"]==HEAD and len(constants["NEW4"])==4 and len(constants["PHASES"])==4
+known=obj(MD/"observed-evidence-inventory.json",338781,"CDFBB34E737011ADD26B7560E5011DC55CADA2803D749B0E1C0263E5954FADED")
+plan=obj(MD/"progress-patch-plan.json",56327,"183647A8C0D250DBDD0747CD8E1220B415E9F205737092D4D13AF1DD0D730412")
+handoff=obj(MD/"handoff.json",5242,"E75BE89E1B57F32B72B896C35B5106A2069BE672192FCA2623BB1BA723D95187")
+assert known["candidate_head"]==plan["candidate_head"]==handoff["candidate_head"]==HEAD
+assert known["source_file_versions"]==len(known["rows"])==314 and len(known["direct_pin_relationships"])==183
+assert plan["history_prefix_count"]==len(plan["nested_history_prefix_basis"])==181
+rows=known["rows"];index={r["original"]["path"].casefold():r["original"] for r in rows};assert len(index)==314
+for row in rows:
+ q=row["original"];read(q["path"],q["bytes"],q["sha256"])
+for edge in known["direct_pin_relationships"]:
+ d=bypin(edge["document"])
+ for item in edge["json_path"]:d=d[item]
+ expected=edge["exact_referenced_pin"]
+ assert {k:d[k] for k in ("path","bytes","sha256")}==expected
+ assert index[expected["path"].casefold()]==expected
+def known_obj(p):
+ q=index[str(Path(p)).casefold()];return bypin(q)
+def list_records(v,p=()):
+ found=[]
+ if isinstance(v,list):
+  found.append({"path":list(p),"length":len(v),"canonical_sha256":h(enc(v))})
+  for i,x in enumerate(v):found+=list_records(x,p+(i,))
+ elif isinstance(v,dict):
+  for k,x in v.items():found+=list_records(x,p+(k,))
+ return found
+q=subprocess.run(["git","--no-optional-locks","-c","core.fsmonitor=false","-C",str(W),"cat-file","blob",HEAD+":verification/port-roadmap-resume-20261018/progress.json"],capture_output=True)
+assert q.returncode==0,q.stderr
+old_raw=q.stdout;assert len(old_raw)==554689 and h(old_raw)=="BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028"
+assert hashlib.sha1(b"blob "+str(len(old_raw)).encode()+b"\0"+old_raw).hexdigest()=="ec7a71bd873c789fcb42918501816357c599d2a6"
+old=json.loads(old_raw);assert enc(old)==old_raw
+assert list_records(old)==plan["nested_history_prefix_basis"]
+assert len(list_records(old))==181
+assert {k:len(old[k]) for k in plan["preserved_top_level_history_lengths"]}==plan["preserved_top_level_history_lengths"]
+bq=bypin(plan["known_new4"]["buildquery_root_acceptance"])
+rt=bypin(plan["known_new4"]["runtime_root_acceptance"])
+build=bypin(bq["independent_closure"]);metadata=bypin(bq["metadata_acceptance"]);runtime=bypin(rt["independent_runtime_closure"])
+br=bypin(bq["build_result"]);rr=bypin(rt["runtime_result"]);ac=bypin(rt["audit_configuration"])
+groups=constants["NEW4"];counts=[19,4,24,14]
+bc=Path(bq["independent_closure"]["path"]).parent;bp=Path(bq["build_result"]["path"]).parent
+rc=Path(rt["independent_runtime_closure"]["path"]).parent;rp=Path(rt["runtime_result"]["path"]).parent
+canon=[known_obj(rp/"groups"/g/"runtime.results.json") for g in groups]
+jobs=[known_obj(p/"independent-observed-job-status.json")["data"] for p in (bc,rc)]
+prep=E/"combined-native-batch-v38-new4-prepared-20261021"
+review=known_obj(prep/"preparation-review.json");matrix=known_obj(prep/"groups.json")
+objects={"bq":[bq],"rt":[rt],"value":[bq,rt],"build":[build],"metadata":[metadata],"runtime":[runtime],"build_result":[br],"runtime_result":[rr],"audit_cfg":[ac],"accepted":metadata["groups"],"observed":runtime["observed_groups"],"canonical":canon,"job":jobs,"review":[review],"matrix":[matrix],"plan":[plan]}
+positive=next(n for n in defs if n.name=="check_positive")
+fields={};unbound=[]
+for n in ast.walk(positive):
+ if isinstance(n,ast.Subscript) and isinstance(n.value,ast.Name):
+  if isinstance(n.slice,ast.Constant) and isinstance(n.slice.value,str):
+   name,key=n.value.id,n.slice.value
+   if name in objects:fields.setdefault((name,key),[]).append(n.lineno)
+   else:unbound.append({"variable":name,"key":key,"line":n.lineno})
+  elif not isinstance(n.slice,ast.Constant):
+   unbound.append({"variable":n.value.id,"dynamic_index":ast.unparse(n.slice),"line":n.lineno})
+field_records=[]
+for (name,key),lines in sorted(fields.items()):
+ values=objects[name]
+ assert all(key in x for x in values),(name,key)
+ samples=[x[key] for x in values]
+ shape=[{"type":type(x).__name__,"value":x if isinstance(x,(str,int,float,bool,type(None))) else None,"items":len(x) if isinstance(x,(dict,list)) else None} for x in samples]
+ field_records.append({"role":name,"field":key,"source_lines":sorted(set(lines)),"selected_objects":len(values),"present_in_every_selected_object":True,"observed_shape":shape})
+flag_records=[]
+for n in ast.walk(positive):
+ if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=="flags":
+  name=n.args[0].id
+  for k in n.keywords:
+   if isinstance(k.value,ast.BinOp):
+    assert isinstance(k.value.op,ast.Add) and isinstance(k.value.left,ast.Name) and k.value.left.id=="COMMON_TRUE"
+    keys=constants["COMMON_TRUE"]+ast.literal_eval(k.value.right)
+   else:keys=ast.literal_eval(k.value)
+   expect=k.arg=="true"
+   for key in keys:
+    assert all(o[key] is expect for o in objects[name]),(name,key,expect)
+    flag_records.append({"role":name,"field":key,"source_line":n.lineno,"required_boolean":expect,"all_selected_values_equal":True})
+# Independent checks on original data; candidate predicates are never evaluated.
+for role,d,status in (("Root BQ",bq,"root_accepted_complete_fresh_v38_new4_buildquery"),("Root runtime",rt,"root_accepted_complete_strict_v38_new4_runtime")):
+ assert d["status"]==status and d["reviewer"]=="Root" and d["candidate_head"]==HEAD and d["batch"]=="new4"
+ assert d["groups"]==groups and d["declared_groups"]==4 and d["declared_controls"]==58
+ assert d["actual_metadata_count"]==61 and d["actual_group_counts"]==counts
+assert bq["native_owner_count"]==8 and bq["actual_process_intervals_closed"]==11 and bq["actual_tests_started"]==0
+assert rt["runtime_owner_count"]==4 and rt["actual_process_intervals_closed"]==7
+assert rt["observed_started"]==rt["observed_completed"]==61 and rt["observed_failed"]==rt["not_started"]==0
+assert rt["root_buildquery_acceptance"]==plan["known_new4"]["buildquery_root_acceptance"]
+assert rt["metadata_acceptance"]==bq["metadata_acceptance"]==build["metadata_acceptance"]==runtime["metadata_acceptance"]
+assert rt["independent_build_closure"]==bq["independent_closure"]==runtime["independent_build_closure"]
+for key,path in {"build_result":bp/"result.json","build_final":bp/"final.json","metadata_acceptance":bc/"independent-metadata-acceptance.json","independent_closure":bc/"independent-current-seals-and-owners.json"}.items():assert bq[key]==index[str(path).casefold()]
+assert rt["runtime_result"]==index[str(rp/"result.json").casefold()] and rt["runtime_final"]==index[str(rp/"final.json").casefold()]
+assert rt["independent_runtime_closure"]==index[str(rc/"independent-positive-runtime-closure.json").casefold()]
+assert build["status"]=="independently_closed_complete_fresh_build_query" and build["candidate_head"]==HEAD
+assert build["granted_groups"]==build["attempted_groups"]==4 and build["unstarted_groups"]==0
+assert build["native_owner_count"]==8 and len(build["actual_process_intervals"])==11 and build["actual_tests_started"]==0
+assert build["actual_metadata_count"]==61 and [g["group"] for g in build["groups"]]==groups and [g["actual_metadata_count"] for g in build["groups"]]==counts
+assert metadata["status"]=="independently_accepted_combined_native_batch_metadata" and metadata["accepted"] is True and metadata["candidate_head"]==HEAD
+assert [g["group"] for g in metadata["groups"]]==groups and [g["actual_count"] for g in metadata["groups"]]==counts
+assert metadata["build_result_sha256"]==bq["build_result"]["sha256"] and metadata["build_source_seal_sha256"]==bq["build_final"]["sha256"]
+assert br["status"]=="passed_build_query_batch" and br["mode"]=="BuildQuery" and br["candidate_head"]==HEAD
+assert [g["group"] for g in br["groups"]]==groups and all(g["status"]=="passed_build_query" for g in br["groups"])
+assert runtime["status"]=="independently_closed_positive_strict_runtime" and runtime["candidate_head"]==HEAD and runtime["batch"]=="new4"
+assert runtime["declared_groups"]==4 and runtime["declared_controls"]==58 and runtime["accepted_cohort"]==61
+assert runtime["observed_started"]==runtime["observed_completed"]==61 and runtime["observed_failed"]==runtime["not_started"]==0
+assert runtime["runtime_owner_count"]==4 and len(runtime["actual_process_intervals"])==7 and [g["group"] for g in runtime["observed_groups"]]==groups
+assert rr["status"]=="passed_selected_native_batch" and rr["mode"]=="RuntimeOnly" and rr["candidate_head"]==HEAD
+assert [g["group"] for g in rr["groups"]]==groups and rr["errors"]==[]
+for i,(a,o,c) in enumerate(zip(metadata["groups"],runtime["observed_groups"],canon)):
+ n=counts[i]
+ assert o["started"]==o["completed"]==n and o["failed"]==0
+ assert c["expected"]==c["started"]==c["completed"]==n and c["failed_or_skipped_or_logged_or_leaked"]==0 and c["status"]=="passed"
+ assert c["results"]==[{"index":j,"flags":0,"passed":True} for j in range(n)]
+ assert o["results"]==[dict(row,name=a["tests"][j]) for j,row in enumerate(c["results"])]
+ assert read(rp/"groups"/groups[i]/"runtime.stderr.log")==b""
+assert rt["auditor"]["sha256"]=="A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+assert rt["auditor_source_acceptance"]["sha256"]=="12D45623A19BB66517FF8DF2C47CD69F32A167361572A0313D651505528A8F49"
+assert index[rt["auditor"]["path"].casefold()]==rt["auditor"];bypin(rt["auditor_source_acceptance"])
+assert ac["auditor_sha256"]==rt["auditor"]["sha256"] and ac["batch"]=="new4" and ac["actual_metadata_count"]==61
+for j in jobs:
+ assert j["status"]=="succeeded" and j["exitCode"]==0 and j["runnerAlive"] is False
+ assert type(j["runnerProcessInstance"]) is str and re.fullmatch(r"[0-9]+",j["runnerProcessInstance"])
+assert review["candidate_head"]==HEAD and review["selected_group_names"]==groups and review["selected_groups"]==4 and review["selected_declarations"]==58 and review["actual_metadata_count"] is None
+assert index[str(prep/"groups.json").casefold()]["sha256"]==constants["MATRIX_SHA"]
+assert len(matrix["groups"])==117 and sum(len(g["required_named"]) for g in matrix["groups"])==2013 and len(matrix["whole_tree_dependency_pins"])==576
+assert rt["original_runtime_rerun"] is False
+starts=[1,140,208,291,405,432,481,572,673,len(source_lines)+1]
+regions=[]
+for first,last_exclusive in zip(starts,starts[1:]):
+ b=b"".join(source_lines[first-1:last_exclusive-1]);regions.append({"first_line":first,"last_line":last_exclusive-1,"bytes":len(b),"sha256":h(b)})
+assert sum(r["bytes"] for r in regions)==len(source)
+assert b"".join(source_lines)==source
+calls=[(n.lineno,ast.unparse(n.func)) for n in ast.walk(tree) if isinstance(n,ast.Call)]
+assert not any(name in ("exec","eval","compile","__import__") for _,name in calls)
+write_sites=[{"line":n.lineno,"call":ast.unparse(n)} for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr in ("open","mkdir","write","write_bytes","write_text")]
+assert all(r["line"]>=674 or r["call"]=="gz.write(raw)" for r in write_sites)
+git_calls=[{"line":n.lineno,"arguments":[ast.unparse(a) for a in n.args]} for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=="git"]
+assert len(git_calls)==5
+read(Path(__file__))
+proof={
+ "schema":1,"status":"source_only_static_AST_and_known_evidence_field_accounting",
+ "candidate":pk(P),"checker":pk(Path(__file__)) if Path(__file__).is_file() else None,
+ "prior_policy":pk(POL),"candidate_executed":False,"candidate_prefix_executed":False,
+ "known_input_inventory":pk(MD/"observed-evidence-inventory.json"),"progress_plan":pk(MD/"progress-patch-plan.json"),
+ "known_inputs_rehashed":314,"known_direct_relationships_verified":183,"known_pin_inventory_sha256":h(enc([r["original"] for r in rows])),
+ "known_direct_relationships_sha256":h(enc(known["direct_pin_relationships"])),
+ "immutable_progress_basis":{"commit":HEAD,"bytes":len(old_raw),"sha256":h(old_raw),"blob_sha1":"ec7a71bd873c789fcb42918501816357c599d2a6","all181_historical_prefix_bases_verified":True,"raw_JSON_roundtrip":True},
+ "source_accounting":{"functions":helpers,"function_count":22,"full_file_disjoint_regions":regions,"full_file_covered":True,"imports":[ast.unparse(n) for n in tree.body if isinstance(n,(ast.Import,ast.ImportFrom))],"literal_schema_sets":{k:sorted(v) if isinstance(v,set) else list(v) if isinstance(v,tuple) else v for k,v in constants.items()},"physical_write_sites":write_sites,"git_call_sites":git_calls,"all_source_writes_after_final_gate":True,"new_constructor_not_claimed_as_whole_source_equivalent_to_prior_policy":True},
+ "positive_known_new4_fields":{"literal_fields":field_records,"boolean_gates":flag_records,"dynamic_or_future_indices":unbound,"role_path_relationships_verified":True,"all_actual_selected_counts_and_name_rows_verified":True,"native_process100ns_values_preserved_as_raw_strings":True,"originals_copied_or_reencoded":False},
+ "future_original63":{"actual_metadata_count":None,"actual_group_counts":None,"root_buildquery_acceptance":None,"root_runtime_acceptance":None,"final_copy_plan":None,"root_configuration":None,"status":"not_bound_in_this_source_accounting","existing63_buildquery_or_runtime_evidence_inspected":False,"original63_F846_negative_required":False},
+ "scope":{"Main_filesystem_read_or_written":False,"index_accessed":False,"candidate_or_prefix_executed":False,"progress_projection_or_inverse_executed":False,"gzip_executed":False,"archive_generated":False,"configuration_issued":False,"native_execution":False,"qualification":False},
+ "input_pins":sorted(inputs.values(),key=lambda q:q["path"].casefold())
+}
+out=D/"static-accounting.json"
+assert not out.exists()
+with out.open("xb") as f:f.write(enc(proof))
+assert out.read_bytes()==enc(proof)
+print(json.dumps({"path":str(out),"bytes":len(enc(proof)),"sha256":h(enc(proof)),"helpers":22,"known_inputs":314,"direct_relations":183,"historical_prefixes":181,"field_rows":len(field_records),"boolean_rows":len(flag_records),"candidate_executed":False}))

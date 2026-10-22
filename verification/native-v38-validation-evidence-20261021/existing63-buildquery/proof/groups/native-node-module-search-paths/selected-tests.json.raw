@@ -1,0 +1,33 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\38b0899b6679f62d78a8da6fbd529b87\\test.exe",
+  "binary_sha256": "81E47E2B466051DDC5CC2D86DA21B1D85DB91BECC3397760FCB3422F6CFD6D1E",
+  "version": "0.16.0",
+  "actual_count": 21,
+  "tests": [
+    "native_node_module_search_paths_test.test.native actual Module search paths ordinary shapes and private binding",
+    "native_node_module_search_paths_test.test.native actual Module search paths original builtin normalizer coercion",
+    "native_node_module_search_paths_test.test.native actual Module search paths repeated parent paths and array-like prepend",
+    "native_node_module_search_paths_test.test.native actual Module search paths optional chain raw truthiness",
+    "native_node_module_search_paths_test.test.native actual Module search paths relative debug operand and dirname order",
+    "native_node_module_search_paths_test.test.native actual Module search paths relative parent short circuits",
+    "native_node_module_search_paths_test.test.native actual Module search paths ordinary getter failures retain order",
+    "native_node_module_search_paths_test.test.native actual Module search paths actual Windows lookup spelling",
+    "native_node_module_search_paths_test.test.native actual Module search paths public clone and private replacement",
+    "native_node_module_search_paths_test.test.native actual Module search paths init environment resolve filter and publication order",
+    "native_node_module_search_paths_test.test.native actual Module search paths init failure before and after private assignment",
+    "native_node_module_search_paths_test.test.native actual Module search paths retain bootstrap primordials",
+    "native_node_module_search_paths_test.test.native actual Module search paths completed linkage keeps actual Module cache and inputs",
+    "native_node_module_search_paths_test.test.native actual Module search paths predicate receiver and result retire before repeated getter",
+    "native_node_module_search_paths_test.test.native actual Module search paths predicate retirement fatal stops repeated getter and catch",
+    "native_node_module_search_paths_test.test.native actual Module search paths actual getter fatal stops later guest work",
+    "native_node_module_search_paths_test.test.native actual Module search paths same-operation private DATA remains ordinary",
+    "native_node_module_search_paths_test.test.native actual Module search paths successful flagged dirname DATA remains an array element",
+    "native_node_module_search_paths_test.test.native actual Module search paths init receiver retires while original home local survives publication",
+    "native_node_module_search_paths_test.test.native actual Module search paths init receiver retirement fatal stops next environment getter",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-module-search-paths",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

@@ -1,0 +1,365 @@
+"""Independent static peer only. Never evaluate either auditor or access Main."""
+from pathlib import Path
+import ast,copy,datetime,difflib,hashlib,json,re,struct,subprocess
+B=Path(r"C:\Users\adyba\pi-zig");E=B/"evidence";MOD=B/"worktrees/modules-io-resume-20261018";SDK=B/"worktrees/sdk-owners-resume-20261018"
+D=Path(__file__).resolve().parent
+P=SDK/"verification/v38-existing63-negative-runtime-auditor-sourceonly-20261022"
+BASE=E/"root-native-foundation-v37-new4-runtime-control-20261021-132912/Audit-NegativeV37Retry1New4StrictRuntime.py"
+MID=P/"candidate/Audit-NegativeV38Existing63Retry1StrictRuntime.py"
+CAND=P/"candidate/Audit-NegativeV38Existing63Retry1StrictRuntime-v2.py"
+AP=E/"Audit-PositiveV38StrictRuntime-Provenance-20261021.py"
+RC=E/"root-native-foundation-v38-existing63-runtime-control-20261022-134223"
+RP=E/"root-native-foundation-v38-existing63-runtime-20261022-134223"
+BC=E/"root-native-foundation-fresh-v38-existing63-control-20261021-153711"
+BP=E/"root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711"
+PREP=E/"combined-native-batch-v38-regression63-prepared-20261021"
+HEAD="014062f2d139254acab4b985b4ae343db637166f"
+PINS={};RAW={};JSONS={}
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def guard(p):
+ p=Path(p);q=str(p.resolve()).casefold()
+ assert not q.startswith(str(B/"main").casefold()+"\\") and q!=str(B/"main").casefold(),"Main access prohibited"
+ assert any(p.resolve().is_relative_to(root.resolve()) for root in (E,SDK,MOD)),str(p)
+ return p
+def raw(p,size=None,h=None):
+ p=guard(p);key=str(p)
+ if key not in RAW:
+  b=p.read_bytes();RAW[key]=b;PINS[key]=dict(path=key,bytes=len(b),sha256=sha(b))
+ b=RAW[key]
+ assert size is None or len(b)==size,(key,"size",len(b),size)
+ assert h is None or sha(b)==h.upper(),(key,"hash",sha(b),h)
+ return b
+def obj(p,size=None,h=None):
+ b=raw(p,size,h);k=str(Path(p))
+ if k not in JSONS:JSONS[k]=json.loads(b)
+ return JSONS[k]
+def pcheck(row):
+ b=raw(row["path"],row.get("bytes"),row["sha256"]);return PINS[str(Path(row["path"]))]
+def pins_in(v):
+ if isinstance(v,dict):
+  if {"path","sha256"}<=set(v) and isinstance(v["path"],str) and isinstance(v["sha256"],str):yield v
+  for w in v.values():yield from pins_in(w)
+ elif isinstance(v,list):
+  for w in v:yield from pins_in(w)
+def bodies(b):
+ lines=b.splitlines(keepends=True)
+ return {n.name:b"".join(lines[n.lineno-1:n.end_lineno]) for n in ast.parse(b).body if isinstance(n,ast.FunctionDef)}
+def ticks(text):
+ m=re.fullmatch(r"(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d)(?:\.(\d{1,7}))?(Z|[+-]\d\d:\d\d)",text)
+ assert m,text
+ whole=datetime.datetime.fromisoformat(m[1]+("+00:00" if m[3]=="Z" else m[3])).astimezone(datetime.timezone.utc)
+ delta=whole-datetime.datetime(1970,1,1,tzinfo=datetime.timezone.utc)
+ return (delta.days*86400+delta.seconds)*10000000+int((m[2] or "").ljust(7,"0"))
+def same_owner(a,b):
+ assert set(a)==set(b)
+ for k in a:
+  if k in ("created_utc","completed_utc"):assert ticks(a[k])==ticks(b[k]),k
+  elif k=="live_identity":
+   assert set(a[k])==set(b[k])
+   for z in a[k]:
+    if z=="created_utc":assert ticks(a[k][z])==ticks(b[k][z])
+    else:assert a[k][z]==b[k][z],z
+  else:assert a[k]==b[k],k
+def write_new(p,value):
+ data=(json.dumps(value,indent=2)+"\n").encode()
+ with p.open("xb")as f:f.write(data)
+ assert p.read_bytes()==data
+ return dict(path=str(p),bytes=len(data),sha256=sha(data))
+old=raw(BASE,47992,"77B7214537A583410F686B560FA158097087C836C5A7DD34345FE8ED5266ECC8")
+mid=raw(MID,54572,"07A07ACE576C918EFDA2D5525A708401C8A1674C6A5AEC5FC90E5F7110D1AADA")
+new=raw(CAND,54860,"DC14ED9842E396207F0F3447FCAC57E7D4F0C021E6AFF340F80C0FDD722C4A2D")
+a73=raw(AP,41516,"A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102")
+prior_fin=obj(P/"finite-source-adaptation.json",111223,"51AFD8AA08DA43D84DCDABF46AC8CA52BC3DF4D1976910CB11DA3F21AAB02AE3")
+fin=obj(P/"finite-source-adaptation-v2.json",116003,"4A3CDC37C672E840F2A2771E8D7F03576BF179D3EF14E3D019B79B5850158F1E")
+assert fin["edits"][:49]==prior_fin["edits"] and fin["immediate_predecessor"]==PINS[str(MID)]
+pcheck(fin["outer_progress_predecessor_negative"])
+raw(P/"check-finite-source.py",5909,"BAB098ABA02FBB4327B1F8F843FAAA3B33D44590B77DF6870A507F92D87D0DDD")
+assert len(fin["edits"])==fin["edit_count"]==50 and fin["baseline"]==PINS[str(BASE)] and fin["candidate"]==PINS[str(CAND)]
+state=old;steps=[]
+for i,e in enumerate(fin["edits"],1):
+ before=e["before"].encode();after=e["after"].encode();at=e["offset"]
+ assert e["number"]==i and len(state)==e["preimage_bytes"] and sha(state)==e["preimage_sha256"]
+ assert state[at:at+len(before)]==before
+ prior=state;state=state[:at]+after+state[at+len(before):]
+ assert len(state)==e["postimage_bytes"] and sha(state)==e["postimage_sha256"]
+ assert state[:at]+before+state[at+len(after):]==prior
+ steps.append({k:e[k]for k in ("number","label","offset","preimage_bytes","preimage_sha256","postimage_bytes","postimage_sha256")})
+assert state==new
+for e in reversed(fin["edits"]):
+ at=e["offset"];before=e["before"].encode();after=e["after"].encode()
+ assert sha(state)==e["postimage_sha256"] and state[at:at+len(after)]==after
+ state=state[:at]+before+state[at+len(after):]
+ assert len(state)==e["preimage_bytes"] and sha(state)==e["preimage_sha256"]
+assert state==old
+ob=bodies(old);nb=bodies(new)
+assert set(ob)==set(nb)=={"require","utc_ticks","read","digest","pin","verify_pins"}
+assert ob==nb
+helpers=[dict(name=k,bytes=len(v),sha256=sha(v),unchanged=True)for k,v in ob.items()]
+assert helpers==fin["unchanged_helpers"]
+regions=[];oldlines=old.splitlines(keepends=True)
+for row in fin["unchanged_regions"]:
+ lo,hi=row["baseline_lines"];b=b"".join(oldlines[lo-1:hi])
+ assert len(b)==row["bytes"] and sha(b)==row["sha256"] and old.count(b)==new.count(b)==1
+ assert new.index(b)==row["candidate_offset"];regions.append(row)
+assert len(regions)==15
+historical=b"".join(a73.splitlines(keepends=True)[89:101])
+assert new.count(historical)==1 and len(historical)==fin["exact_A73A_historical_block"]["bytes"] and sha(historical)==fin["exact_A73A_historical_block"]["sha256"]
+fragments=fin["all_other_bytes_accounted_by_unchanged_fragments"]
+for f in fragments:
+ b=old[f["baseline_offset"]:f["baseline_offset"]+f["bytes"]]
+ assert b==new[f["candidate_offset"]:f["candidate_offset"]+f["bytes"]] and sha(b)==f["sha256"]
+nt=ast.parse(new);ot=ast.parse(old)
+imports=lambda t:[ast.dump(n,include_attributes=False)for n in t.body if isinstance(n,(ast.Import,ast.ImportFrom))]
+assert imports(nt)==imports(ot)
+sets=[ast.literal_eval(n)for n in ast.walk(nt)if isinstance(n,ast.Set)and all(isinstance(e,ast.Constant)and isinstance(e.value,str)for e in n.elts)]
+keys=next(s for s in sets if "audit_execution_authorized"in s)
+oldcfg=obj(BASE.parent/"independent-negative-runtime-audit-inputs.json",11361,"7B5903FF048D7545C9DE37089413BAED532EA7FFDFD7F556EF4631D287BDCD8C")
+assert keys==set(oldcfg)|{"audit_execution_authorized","auditor_sha256"} and len(keys)==52 and sorted(keys)==fin["configuration_required_keys"]
+assert b'if len(sys.argv)!=3:'in new and b'cfg["auditor_sha256"]==digest(Path(__file__)) and cfg["audit_execution_authorized"] is True'in new
+assert b'with output.open("xb") as f:'in new
+assert b'cfg_path==control/"independent-negative-runtime-audit-inputs.json"'in new
+assert sum(isinstance(n,ast.Call)and isinstance(n.func,ast.Attribute)and n.func.attr=="check_output"for n in ast.walk(nt))==sum(isinstance(n,ast.Call)and isinstance(n.func,ast.Attribute)and n.func.attr=="check_output"for n in ast.walk(ot))+1
+negative=pcheck(fin["original_authoring_negative"])
+a73accept=obj(E/"root-v38-positive-runtime-provenance-successor-source-acceptance-20261021.json",4434,"12D45623A19BB66517FF8DF2C47CD69F32A167361572A0313D651505528A8F49")
+OBS=E/"root-v38-existing63-partial-runtime-negative-observation-20261022.json"
+o=obj(OBS,19641,"617CD84F3DCA136AEE827A9C02B2E50C1D337E364ECE956E059759C53942E7EC")
+for row in pins_in(o):pcheck(row)
+assert o["candidate_head"]==HEAD and o["batch"]=="existing63" and o["control"]==str(RC) and o["proof"]==str(RP)
+assert [o[k]for k in ("declared_groups","declared_controls","actual_metadata_count","started_group_count","completed_group_count","groups_with_all_zero_flags","native_owner_count","observed_started","observed_completed","observed_passed","observed_failed","not_started_tests")]==[63,1249,1285,17,17,16,17,321,321,320,1,964]
+for k in ("positive_group_acceptance","diagnostic_continue","independent_complete_negative_closure","native_runtime_qualified","product_qualification","source_mutation_hold_released"):assert o[k]is False,k
+r=obj(RP/"result.json");grant=obj(RC/"root-grant.json");launch=obj(RC/"runtime-launch.json")
+accept=obj(BC/"independent-metadata-acceptance.json",242533,"C219D8E0E3BC372C1A818B783F1F461A89A37B58CF5B6BF86650A50E0ADA9BAF")
+closure=obj(BC/"independent-current-seals-and-owners.json",932073,"878FE04FB5E7D58231AC6EEEF555980FF31B68A0B463EF3102118C6212DADE82")
+buildresult=obj(BP/"result.json",1044504,"A80B07D02FB7393E335E093EAB945455DD23DA82AD7B15ECC4171C8F3F45DA3F")
+rootbq=obj(E/"root-v38-existing63-complete-buildquery-acceptance-20261021.json",6281,"E6ADF28AEA05357A0C0CCFAE9BE63D27C020F17DA75F4D75E9136C62A10FDDDE")
+review=obj(PREP/"preparation-review.json",547326,"9362D1498B75DFEC3E452B1E2F06C8D1C526C16E615DC0F40C17C2C147816A58")
+matrix=obj(PREP/"groups.json",1104585,"8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03")
+cohort=obj(E/"root-native-foundation-fresh-v34-control-20261020-202924/root-grant.json",12270,"275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15")
+names=[g["group"]for g in accept["groups"]];counts=[g["actual_count"]for g in accept["groups"]]
+assert len(names)==len(set(names))==63 and names==grant["groups"]==cohort["groups"]==review["selected_group_names"]
+assert sum(counts)==1285 and counts[:17]==[15,12,34,28,10,20,18,14,13,32,19,22,20,15,11,12,26]
+assert len(matrix["groups"])==117 and sum(len(g["required_named"])for g in matrix["groups"])==2013
+assert review["candidate_head"]==HEAD and review["selected_groups"]==63 and review["selected_declarations"]==1249 and review["actual_metadata_count"]is None
+assert [g["group"]for g in r["groups"]]==names[:17] and o["not_started_groups"]==names[17:] and sum(counts[17:])==964
+assert accept["accepted"]is True and accept["runtime_started"]is False and accept["runtime_qualification"]is False
+assert rootbq["complete_buildquery_accepted"]is True and rootbq["runtime_execution_authorized"]is False and rootbq["qualification"]is False
+assert rootbq["groups"]==names and rootbq["actual_metadata_count"]==1285
+assert closure["status"]=="independently_closed_complete_fresh_build_query" and closure["candidate_head"]==HEAD
+runtimecfg=obj(launch["specific_root_configuration"]["path"]);pcheck(launch["specific_root_configuration"])
+ctor=E/"Prepare-ReviewedV38RuntimeGrant-20261021.py"
+raw(ctor,12499,"7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322")
+assert runtimecfg["preparer_sha256"]==PINS[str(ctor)]["sha256"] and runtimecfg["selected_group_names"]==names
+assert isinstance(runtimecfg["root_runtime_review"],str) and grant["root_review"]==runtimecfg["root_runtime_review"]
+pcheck(runtimecfg["runtime_constructor_source_review"])
+assert runtimecfg["runtime_constructor_source_review"]["sha256"]=="20ECFC7CF589BAB8E0090EEED59B2BE236CDE5F1F14DF4C2A68AD215C2E3013A"
+for k in ("compile_execution_authorized","diagnostic_continue","qualification","source_mutation_hold_released"):assert runtimecfg[k]is False,k
+assert runtimecfg["runtime_execution_authorized"]is True
+hist=review["historical_source_rebindings"];assert len(hist)==2
+historical_rows=[]
+for i,row in enumerate(hist):
+ assert row["batch"]==["new4","regression63"][i] and row["role"]=="fixture_unchanged_root_native-node-file-handle-owner" and row["raw_commit"]=="b13be24e44cc1bbc361639eb35900a368ae60eac" and row["exact_original_bytes"]is True
+ assert row["original"]==dict(path=str(B/"main/src/native_node_file_handle_owner_test.zig"),bytes=28378,sha256="93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422")
+ assert review["provenance"]["v37_"+row["batch"]+"_"+row["role"]]==row["immutable_snapshot"]
+ pcheck(row["immutable_snapshot"]);historical_rows.append(row)
+gitraw=subprocess.check_output(["git","--no-optional-locks","cat-file","blob","b13be24e44cc1bbc361639eb35900a368ae60eac:src/native_node_file_handle_owner_test.zig"],cwd=MOD)
+assert gitraw==raw(hist[0]["immutable_snapshot"]["path"])==raw(hist[1]["immutable_snapshot"]["path"])
+before=raw(RP/"before.json");final=raw(RP/"final.json");assert before==final
+seal=json.loads(final);buildseal=obj(BP/"final.json",16165285,"E0B4F23FEB76DFAA549F1B029B9AF55DEAF908CC8EF66335A17FE33E023BFE2A")
+assert raw(BP/"before.json")==raw(BP/"final.json")
+sealcounts={k:len(seal[k])for k in ("source","tree","vendor","compiler","controls")}
+assert sealcounts==o["seal_counts"]==dict(source=15041,tree=15054,vendor=1489,compiler=19546,controls=143)
+for k in ("source","tree","vendor","compiler"):assert seal[k]==buildseal[k],k
+assert r["status"]=="failed" and r["errors"]==["Native test protocol did not report every selected test passing without logs/leaks"]
+driver=raw(PREP/"Run-CombinedNativeBatch.ps1",None,"1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601")
+assert driver.decode().splitlines()[503]=="  Write-Output ('Group '+$Group+' completed actual '+$Mode+' phases; awaiting whole-batch closure')"
+prefix=b"".join(("Group "+g+" completed actual RuntimeOnly phases; awaiting whole-batch closure\r\n").encode()for g in names[:16])
+assert len(prefix)==1629 and sha(prefix)=="A1A53994525F557477FEFD30C91D21DBF4133FC27CD07BC236DCAF1EB68663C2"
+assert raw(RC/"outer.stdout.bin")!=raw(RP/"result.json") and raw(RC/"outer.stdout.bin")==prefix+raw(RP/"result.json")
+assert fin["edits"][49]["before"].encode()in mid and fin["edits"][49]["after"].encode()in new
+assert mid.count(fin["edits"][49]["before"].encode())==1 and mid.replace(fin["edits"][49]["before"].encode(),fin["edits"][49]["after"].encode(),1)==new
+raw(RC/"outer.stderr.log")
+for k in ("postseal","controller_environment_restored","qualification_requested","runtime_requested"):assert r[k]is True,k
+for k in ("all_groups_closed","cache_seeded","product_qualified"):assert r[k]is False,k
+
+# Full original directories and native protocol bytes; no actual test runs or current queries.
+filenames={"commands.json","final-artifacts.json","result-provisional.json","result.json","runtime-absence.json","runtime-admission.json","runtime-after-artifacts.json","runtime-before-artifacts.json","runtime-prerequisite-artifacts.json","runtime-raw-frame-observation.json","runtime.json","runtime.results.json","runtime.stderr.log","runtime.stdout.bin"}
+wantpaths={str(RP/"groups"/g/name)for g in names[:17]for name in filenames}
+assert {str(p)for p in (RP/"groups").rglob("*")if p.is_file()}==wantpaths
+assert {str(p)for p in (RP/"groups").rglob("*")if p.is_dir()}=={str(RP/"groups"/g)for g in names[:17]}
+groupfiles=[PINS.setdefault(p,dict(path=p,bytes=len(raw(p)),sha256=sha(raw(p))))for p in sorted(wantpaths)]
+assert len(groupfiles)==238
+assert len(r["absence"]["owners"])==len(r["admission_probes"])==17
+assert [x["group"]for x in o["selected"]]==names[:17]
+observed=[];failed=[];bounds=[];original_artifact_journals=[]
+for i,(selected,g,meta)in enumerate(zip(o["selected"],r["groups"],accept["groups"])):
+ group=names[i];gp=RP/"groups"/group
+ assert set(selected)=={"group","pid","created","owner_sha","stdout_sha","stderr_sha","stdout_bytes","count","failed"}
+ assert selected["count"]==counts[i] and selected["failed"]==([22]if i==16 else [])
+ assert obj(gp/"result.json")==g
+ assert g["status"]==("failed"if i==16 else"partial_batch_not_admissible")
+ assert g["candidate_head"]==HEAD and g["postseal"]is True and g["source_seal_scope"]=="whole_batch" and g["mode"]=="RuntimeOnly"
+ assert g["attempted_phases"]==g["owned_started_phases"]==["runtime"] and list(g["phases"])==["runtime"]
+ assert g["runtime_requested"]is True and g["runtime_owner_launch_attempted"]is True and g["actual_runtime_owner_started"]is True
+ expected=obj(BP/"groups"/group/"final-artifacts.json")
+ for name in ("final-artifacts.json","runtime-prerequisite-artifacts.json","runtime-before-artifacts.json","runtime-after-artifacts.json"):
+  assert obj(gp/name)==expected,(group,name)
+  original_artifact_journals.append(PINS[str(gp/name)])
+ canonical=obj(gp/"runtime.results.json")
+ assert canonical["version"]=="0.16.0" and canonical["expected"]==canonical["started"]==canonical["completed"]==g["native_selected_tests_started"]==counts[i]
+ assert canonical["binary"]==meta["cached_executable_path"] and canonical["binary_sha256"]==meta["executable_sha256"]
+ assert canonical["owner_receipt"]==str(gp/"runtime.json")
+ assert canonical["failed_or_skipped_or_logged_or_leaked"]==(1 if i==16 else 0) and canonical["status"]==("failed"if i==16 else"passed")
+ owner=obj(gp/"runtime.json");phase=g["phases"]["runtime"];absent=obj(gp/"runtime-absence.json")
+ assert PINS[str(gp/"runtime.json")]["sha256"]==selected["owner_sha"]
+ assert owner["status"]=="passed" and owner["exit_code"]==0 and owner["timeout_seconds"]==120 and owner["retained_handle"]>0
+ assert owner["pid"]==selected["pid"] and owner["created_utc"]==selected["created"]
+ assert owner["executable"]==meta["cached_executable_path"] and owner["executable_sha256"]==meta["executable_sha256"]
+ assert owner["arguments"]==["--listen=-"] and owner["working_directory"]==str(B/"main")
+ born=ticks(owner["created_utc"]);done=ticks(owner["completed_utc"]);live=owner["live_identity"]
+ assert live["pid"]==owner["pid"] and ticks(live["created_utc"])==born and live["executable"]==owner["executable"]
+ assert live["command_line"]=='"'+owner["executable"]+'" --listen=-' and 0<=done-born<=1200000000
+ assert absent["status"]=="closed" and absent["phase"]=="runtime" and absent["global_native"]==[]
+ aggregate=r["absence"]["owners"][i]
+ assert aggregate["group"]==group and aggregate["phase"]=="runtime"
+ assert absent["evidence"]==phase["evidence"]==aggregate["evidence"]
+ for evidence in (absent["evidence"],phase["evidence"],aggregate["evidence"]):
+  same_owner(evidence["owner"],owner)
+  assert evidence["valid"]is True and evidence["evidence_errors"]==[]
+  assert evidence["current_owner_pid_present"]==0 and evidence["current_owned_descendants"]==[] and evidence["absence_error"]is None
+  assert evidence["canonical_results"]==canonical
+  assert isinstance(evidence["preexisting_pid_ancestry"],list)
+  for entry in evidence["preexisting_pid_ancestry"]:
+   proc=entry["observed_process"]
+   assert entry["reason"]=="Child creation predates this parent instance" and entry["parent_pid"]==owner["pid"]==proc["ParentProcessId"]
+   assert entry["parent_created_utc_ticks"]==born+621355968000000000
+   assert entry["child_created_utc_ticks"]==ticks(proc["CreationDate"])+621355968000000000
+   assert ticks(proc["CreationDate"])<born-10
+ admission=obj(gp/"runtime-admission.json");probe=admission["probe"]
+ assert admission["status"]=="admitted" and probe["phase"]=="runtime" and probe["free_kib"]>=probe["minimum_kib"]==16777216
+ assert probe["native"]==[] and probe["native_roots"]==0 and 0<=born-ticks(probe["utc"])<100000000
+ assert r["admission_probes"][i]==probe
+ errmsg="Actual terminal owner binding failed: Actual metadata/new API or ordinary retained runtime stderr must be empty"
+ proto="Native test protocol did not report every selected test passing without logs/leaks"
+ assert g["errors"]==([errmsg,proto]if i==16 else[])
+ assert phase["postchecks"]["errors"]==([errmsg]if i==16 else[])
+ assert phase["failure"]==phase["original_execution_failure"]==(proto if i==16 else None)
+ assert phase["owner_binding"]["status"]==("invalid"if i==16 else"passed")
+ assert phase["owner_binding"]["errors"]==(["Actual metadata/new API or ordinary retained runtime stderr must be empty"]if i==16 else[])
+ assert phase["postchecks"]["owner_bound"]is(i!=16)
+ for k in ("evidence_valid","source_sealed","artifacts_bound","absence_closed"):assert phase["postchecks"][k]is True
+ for pinrow in phase["evidence"]["raw_outputs"]:
+  assert Path(pinrow["path"]).is_relative_to(gp);pcheck(pinrow)
+ wire=raw(gp/"runtime.stdout.bin");stderr=raw(gp/"runtime.stderr.log")
+ assert sha(wire)==selected["stdout_sha"] and len(wire)==selected["stdout_bytes"] and sha(stderr)==selected["stderr_sha"]
+ assert len(stderr)==(486 if i==16 else 0)
+ offset=0;tags=[];results=[]
+ while offset<len(wire):
+  assert len(wire)-offset>=8
+  tag,size=struct.unpack_from("<II",wire,offset);offset+=8
+  assert 0<=size<=1048576 and offset+size<=len(wire)
+  payload=wire[offset:offset+size];offset+=size;tags.append(tag)
+  if len(tags)==1:assert tag==0 and payload==b"0.16.0"
+  elif tag==5:assert len(tags)%2==0 and payload==b""
+  elif tag==4:
+   assert len(tags)%2==1 and tags[-2]==5 and size==12
+   index,flags=struct.unpack("<IQ",payload);assert index==len(results)
+   assert flags==(1 if i==16 and index==22 else 0)
+   row=dict(index=index,flags=flags,passed=not bool(flags))
+   assert canonical["results"][index]==row
+   row["name"]=meta["tests"][index];results.append(row)
+   if flags:failed.append(dict(group=group,index=index,flags=flags,name=row["name"]))
+  else:raise AssertionError((group,tag,size))
+ assert offset==len(wire) and tags==[0]+[v for _ in range(counts[i])for v in (5,4)]
+ assert len(results)==len(canonical["results"])==counts[i]
+ observed.append(dict(group=group,original_group_status=g["status"],native_exit_code=owner["exit_code"],canonical_status=canonical["status"],started=counts[i],completed=counts[i],passed=sum(v["passed"]for v in results),failed=[v["index"]for v in results if not v["passed"]],wire_sha256=sha(wire),stderr_bytes=len(stderr),stderr_sha256=sha(stderr),canonical_results=results,original_owner_binding=phase["owner_binding"],original_admission_free_kib=probe["free_kib"],source_seal_scope=g["source_seal_scope"]))
+ bounds.append(dict(pid=owner["pid"],created=born,completed=done,group=group,role="runtime"))
+assert sum(x["completed"]for x in observed)==321 and sum(x["passed"]for x in observed)==320 and len(failed)==1
+assert failed==o["failed_tests"]==[dict(group="native-node-fs-request-owner",index=22,flags=1,name="native_node_fs_request_owner_test.test.native FS request owner physical completion preserves live Promise getter failure and still retires the request")]
+assert b"error.ExpectedActualFSRequestCapturedReason" in raw(RP/"groups/native-node-fs-request-owner/runtime.stderr.log")
+assert len({(x["pid"],x["created"])for x in bounds})==17
+# All parent groups and cached/installed journals remain committed, including 46 never started here.
+parent_journals=[]
+for g in names:
+ journal=obj(BP/"groups"/g/"final-artifacts.json")
+ assert len(journal["cached_executables"])==63 and journal["errors"]==[]
+ parent_journals.append(PINS[str(BP/"groups"/g/"final-artifacts.json")])
+outer=obj(RC/"outer.json");oa=obj(RC/"outer-absence.json");jobenv=obj(RC/"independent-observed-job-status.json")
+assert jobenv["ok"]is True and jobenv["truncated"]is False
+job=jobenv["data"]
+assert job["id"]=="job-op-a17015be461f2f37aa27a1fb9d09260c7b06385213ec73ce3381b74d5007b063"
+assert job["status"]=="failed" and job["exitCode"]==1 and job["runnerAlive"]is False
+assert isinstance(job["runnerProcessInstance"],str) and job["runnerProcessInstance"].isdigit()
+assert job["runnerPid"]==18332 and job["runnerProcessInstance"]=="134371501570189138" and job["childPid"]==12172
+assert outer["pid"]==39888 and outer["status"]=="failed" and outer["exit_code"]==1 and outer["timeout_seconds"]==1800 and outer["retained_handle"]>0
+assert outer["arguments"]==["-NoLogo","-NoProfile","-NonInteractive","-File",str(PREP/"Run-CombinedNativeBatch.ps1"),"-RootGrant",str(RC/"root-grant.json"),"-Mode","RuntimeOnly"]
+assert outer["executable_sha256"]=="FA2C8BB1E35CDD62AD15CD06A1D8F2C5961E9725A9BFA1E7CFD2C322F49E9619" and outer["working_directory"]==str(B)
+assert outer["executable"]==r"C:\Program Files\PowerShell\7\pwsh.exe"
+assert outer["live_identity"]["pid"]==outer["pid"] and ticks(outer["live_identity"]["created_utc"])==ticks(outer["created_utc"])
+assert outer["live_identity"]["executable"]==outer["executable"] and outer["live_identity"]["command_line"]=='"'+outer["executable"]+'" '+' '.join(outer["arguments"])
+assert outer["error"]=="Owned terminal failed: C:\\Program Files\\PowerShell\\7\\pwsh.exe"
+assert 0<=ticks(outer["completed_utc"])-ticks(outer["created_utc"])<=18000000000
+assert oa["pid"]==outer["pid"] and ticks(oa["created_utc"])==ticks(outer["created_utc"]) and oa["currently_absent"]is True and oa["current_records"]==[]
+bounds.extend([dict(pid=outer["pid"],created=ticks(outer["created_utc"]),completed=ticks(outer["completed_utc"]),role="outer"),dict(pid=job["runnerPid"],created=int(job["runnerProcessInstance"])-116444736000000000,completed=ticks(job["completedAtUtc"]),role="runner"),dict(pid=job["childPid"],created=ticks(job["createdAtUtc"]),completed=ticks(job["completedAtUtc"]),role="launcher_job_lifetime_envelope")])
+assert len(bounds)==20 and all(b["completed"]>=b["created"]for b in bounds)
+# Independently verify exact strict launch/grant finite inverse without running it.
+adapt=obj(RC/"grant-launch-adaptation.json")
+buildgrant=obj(BC/"root-grant.json");inv=copy.deepcopy(grant)
+assert {row["key"]for row in adapt["field_changes"]}=={"grant_id","issued_utc","mode","receipt_directory","build_result_path","build_result_sha256","build_source_seal_path","build_source_seal_sha256","metadata_acceptance_path","metadata_acceptance_sha256","actual_metadata_count","independent_build_closure_path","independent_build_closure_sha256","build_specific_root_configuration","specific_root_configuration","root_buildquery_acceptance","root_review"}
+for row in adapt["field_changes"]:
+ k=row["key"];assert grant[k]==row["after"] and row["old_present"]is(k in buildgrant) and row["before"]==buildgrant.get(k)
+ if row["old_present"]:inv[k]=row["before"]
+ else:del inv[k]
+assert inv==buildgrant
+blaunch=raw(BC/"launch.ps1");rlaunch=raw(RC/"launch.ps1")
+assert blaunch.count(b"'BuildQuery'")==1 and rlaunch==blaunch.replace(b"'BuildQuery'",b"'RuntimeOnly'",1)
+oldlaunch=raw(E/"root-native-foundation-v34-runtime-control-20261020-210255/launch.ps1",None,"9B6B65EEF10F702596CCBE9E698AC77FB4D63F2F49FDFE1AEB5E0EF49EE4D4DC")
+assert oldlaunch.replace(b"evidence/combined-native-batch-v34-prepared-20261020",b"evidence/combined-native-batch-v38-regression63-prepared-20261021",1)==rlaunch
+
+# Final inert contract and SDK input inventory are data; neither is evaluated as a program.
+contract=obj(P/"unissued-input-contract.json",90991,"353807F65F6EB6D04319F9BBF44CF47F1397F02543A1E31E83EB37755E473348")
+inventory=obj(P/"immutable-input-inventory.json",229692,"9D1E50EDB91F1FE9E6CC621BC4BEF785358F98E8C0B92FBFBDD336AAB4F63948")
+sdkproof=obj(P/"static-observation-proof.json",117369,"A8810730373BDFB2BAC4E559B406601C5DF4FAB48FC54FAD643998EF9A38513C")
+handoff=obj(P/"handoff.json",16104,"B989694272DD134D53D8BF8A698EAC5599149961657F150BDC1F0C9A65FAB833")
+assert contract["candidate"]==handoff["selected_candidate"]==inventory["candidate"]==PINS[str(CAND)]
+for row in handoff["evidence"]+handoff["accepted_authorities"]:pcheck(row)
+for finding in handoff["findings"]:pcheck(finding["receipt"])
+for row in inventory["all_distinct_inputs"]:pcheck(row)
+assert len(inventory["all_distinct_inputs"])==528
+assert inventory["original_group_file_count"]==238 and inventory["original_group_count"]==17
+assert {x["path"]for x in inventory["complete_original_attempted_group_files"]}==wantpaths
+assert len(inventory["complete_original_control_files"])==9 and len(inventory["complete_original_proof_top_files"])==3
+for row in inventory["complete_original_control_files"]+inventory["complete_original_proof_top_files"]+inventory["complete_original_attempted_group_files"]:pcheck(row)
+assert all(inventory[k]is False for k in ("current_live_seals_rehash_claimed","current_process_absence_claimed","candidate_executed","native_executed","main_accessed"))
+assert contract["status"]=="unissued_inert_original63_negative_runtime_audit_contract" and contract["inert_data_only"]is True
+assert contract["separate_Root_issuance_required"]is True and contract["source_review_required_before_issuance"]is True
+assert contract["required_field_count"]==len(contract["required_keys"])==52 and set(contract["required_keys"])==keys
+cfg=contract["future_configuration_shape"];assert set(cfg)==keys
+assert cfg["status"]=="root_reviewed_specific_original_v38_existing63_retry1_strict_runtime_negative_audit" and cfg["schema"]==1
+assert cfg["audit_execution_authorized"]is False and cfg["auditor_sha256"]==sha(new)
+assert cfg["candidate_head"]==HEAD and cfg["batch"]=="existing63" and cfg["control"]==str(RC) and cfg["proof"]==str(RP)
+assert cfg["preparation"]==str(PREP) and cfg["build_control"]==str(BC) and cfg["build_proof"]==str(BP)
+assert contract["required_configuration_path"]==str(RC/"independent-negative-runtime-audit-inputs.json")
+assert contract["proposed_create_only_output"]==str(RC/"independent-negative-runtime-closure.json")
+assert contract["required_cli"]==["absolute exact Root-issued configuration path","uppercase SHA-256 of those exact raw configuration bytes"]
+assert cfg["job"]==job and cfg["selected"]==o["selected"] and cfg["failed_names"]==failed and cfg["seal_counts"]==sealcounts
+assert [cfg[k]for k in ("declared_groups","declared_controls","actual_metadata_count","observed_started","observed_completed","observed_failed","unstarted_groups","unstarted_accepted_indices","accepted_metadata_count","outer_pid")]==[63,1249,1285,321,321,1,46,964,1285,39888]
+assert cfg["original_strict_failures_preserved"]is True
+for k in ("runtime_qualification","product_qualification","source_mutation_hold_released","native_execution_authorized","auditor_executed"):assert cfg[k]is False,k
+assert cfg["runtime_grant_preparer"]==PINS[str(ctor)]
+assert len(cfg["original_attempted_group_files"])==238 and {v["path"]for v in cfg["original_attempted_group_files"]}==wantpaths
+for row in cfg["original_attempted_group_files"]:pcheck(row)
+assert cfg["original_outer_outputs"]==[PINS[str(RC/"outer.stdout.bin")],PINS[str(RC/"outer.stderr.log")]]
+hashfields={"runtime_result_sha256":RP/"result.json","runtime_before_sha256":RP/"before.json","runtime_final_sha256":RP/"final.json","runtime_grant_sha256":RC/"root-grant.json","runtime_launch_sha256":RC/"runtime-launch.json","runtime_configuration_sha256":Path(launch["specific_root_configuration"]["path"]),"runtime_grant_launch_adaptation_sha256":RC/"grant-launch-adaptation.json","runtime_constructor_source_review_sha256":Path(runtimecfg["runtime_constructor_source_review"]["path"]),"buildquery_launch_sha256":PREP/"buildquery-launch.json","preparation_review_sha256":PREP/"preparation-review.json","build_result_sha256":BP/"result.json","build_final_sha256":BP/"final.json","metadata_acceptance_sha256":BC/"independent-metadata-acceptance.json","independent_build_closure_sha256":BC/"independent-current-seals-and-owners.json","root_buildquery_acceptance_sha256":Path(runtimecfg["root_buildquery_acceptance"]["path"]),"outer_sha256":RC/"outer.json","outer_absence_sha256":RC/"outer-absence.json","job_observation_sha256":RC/"independent-observed-job-status.json"}
+for k,p in hashfields.items():assert cfg[k]==sha(raw(p)),k
+assert contract["mandatory_runtime_constructor_review"]==runtimecfg["runtime_constructor_source_review"]
+assert sdkproof["raw_decoder_totals"]==dict(started=321,completed=321,passed=320,failed=1,unstarted=964)
+assert sdkproof["seal_counts"]==sealcounts and sdkproof["accepted_group_order"]==names and sdkproof["accepted_group_counts"]==counts
+assert sdkproof["original_failed_names"]==failed and sdkproof["original_unstarted_groups"]==names[17:]
+assert sdkproof["all16_partial_batch_demotions_preserved"]is True and sdkproof["final_group_failed_preserved"]is True
+assert handoff["finite_edits"]==50 and handoff["unchanged_helpers"]==6 and handoff["unchanged_complete_regions"]==15
+selfpin=dict(path=str(Path(__file__)),bytes=len(Path(__file__).read_bytes()),sha256=sha(Path(__file__).read_bytes()))
+report=dict(schema=1,status="independently_verified_static_negative_runtime_auditor_source_and_original_observations",reviewer="/root/handover_review",reviewed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),checker=selfpin,selected_candidate=PINS[str(CAND)],accepted_baseline=PINS[str(BASE)],retained_predecessor=PINS[str(MID)],finite_source_proof=PINS[str(P/"finite-source-adaptation-v2.json")],contract=PINS[str(P/"unissued-input-contract.json")],handoff=PINS[str(P/"handoff.json")],full_source_read=True,finite_steps=steps,complete_forward_exact=True,complete_inverse_exact=True,unchanged_helpers=helpers,unchanged_regions=regions,historical_A73A_block=dict(bytes=len(historical),sha256=sha(historical),unchanged=True),historical_snapshot_equals_raw_b13_git=True,historical_raw_git_read_worktree=str(MOD),imports_unchanged=True,all_changes_accounted_by_50_steps=True,configuration_fields=sorted(keys),original_control_files=inventory["complete_original_control_files"],original_proof_top_files=inventory["complete_original_proof_top_files"],original_group_files=cfg["original_attempted_group_files"],source_declared_controls=1249,accepted_actual_metadata_count=1285,accepted_original_group_order=names,accepted_original_group_counts=counts,actual_original_groups=observed,failed_tests=failed,started=321,completed=321,passed_flags0=320,failed_flags1=1,unstarted_accepted_tests=964,unstarted_groups=names[17:],all16_partial_batch_demotions_retained=True,all63_parent_artifact_journals=parent_journals,all17_runtime_artifact_journals=original_artifact_journals,original_retained_process_intervals=bounds,full_UTC100ns_and_all_nested_fields_verified=True,current_process_query_executed=False,current_instance_absence_not_claimed=True,raw_bookends_equal=True,seal_counts=sealcounts,current_sealed_files_rehash_not_claimed=True,current_directory_inventory_not_claimed=True,complete_future_closure_checks_preserved=True,outer_prefix=dict(bytes=len(prefix),sha256=sha(prefix),driver_line=504,exact_full_result_suffix=True,old_direct_equality_false_preserved=True),original_authoring_negatives=handoff["findings"],distinct_input_files=len(PINS),input_pins=sorted(PINS.values(),key=lambda x:x["path"].casefold()),candidate_or_prefix_executed=False,native_executed=False,Main_accessed=False,configuration_issued=False,source_mutation_hold_released=False,runtime_qualification=False,product_qualification=False)
+proofpin=write_new(D/"source-proof.json",report)
+peer=dict(schema=1,status="independently_accepted_source_only_exact_v38_existing63_negative_runtime_auditor",reviewer="/root/handover_review",reviewed_utc=report["reviewed_utc"],candidate_head=HEAD,selected_candidate=report["selected_candidate"],retained_predecessor=report["retained_predecessor"],accepted_baseline=report["accepted_baseline"],finite_source_proof=report["finite_source_proof"],inert_input_contract=report["contract"],source_checker=selfpin,decisive_proof=proofpin,handoff=report["handoff"],no_bounded_source_blocker=True,source_only=True,findings=["All 49 baseline adaptations and the exact one-hunk outer-progress correction replayed forward and backward with every intermediate hash; six helpers and fifteen complete regions retained.","The exact A73A historical source rebinding block is unchanged and both historical owner snapshots equal the raw b13 Git blob read through the authorized donor worktree.","The original full63 order, all63 metadata/artifact commitments, exact238 group files and all321 original wire results were independently checked. Sixteen partial-batch demotions and the final failed index22 remain negative.","Exact outer stdout is sixteen ordered CRLF progress lines (1629 bytes) plus the full unchanged original result. The rejected one-group equality in07A is preserved separately.","The52-field shape is inert: audit_execution_authorized remains false. Root must separately issue exact bytes and their CLI SHA, tied to DC14. Native authority, qualification and source release remain false.","Original17 native, outer, runner and launcher identities retain integer UTC100ns precision and complete nested fields. Fresh current process absence and complete live inventory/artifact verification remain work for the separately authorized auditor."],scope=dict(accepted_groups=63,declared_controls=1249,accepted_metadata=1285,attempted_groups=17,unstarted_groups=46,started=321,completed=321,flags_zero=320,flags_one=1,unstarted_tests=964,original_group_files=238,original_process_intervals=20,distinct_static_input_files=len(PINS)),original_authoring_negatives=handoff["findings"],candidate_executed=False,candidate_prefix_executed=False,auditor_executed=False,current_process_query_executed=False,current_seal_rehash_claimed=False,configuration_issued=False,native_execution_authorized=False,Main_or_index_accessed=False,source_mutation_hold_released=False,runtime_qualification=False,product_qualification=False)
+peerpin=write_new(D/"peer.json",peer)
+print(json.dumps(dict(status="static_peer_passed",checker=selfpin,proof=proofpin,peer=peerpin,inputs=len(PINS),groups=17,completed=321,failed=1,current_checks_not_executed=True)))

@@ -1,0 +1,36 @@
+{
+  "installed": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\groups\\native-node-fs-before-hook-continuation\\installed\\bin\\native-node-fs-before-hook-continuation.exe",
+      "bytes": 48840192,
+      "sha256": "70FFC07A6083A60EDCAD19E0428909711966D03BC3C0F1631689FD716A82AFED"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\groups\\native-node-fs-before-hook-continuation\\installed\\bin\\test.pdb",
+      "bytes": 17293312,
+      "sha256": "16128AE2F5B136E238734AC952B4A170C1F189658C36F13E923DC63A6F87D068"
+    }
+  ],
+  "cached_executables": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\cache\\o\\18feadb97c45a3f2ab0e16b290a48423\\test.exe",
+      "sha256": "70FFC07A6083A60EDCAD19E0428909711966D03BC3C0F1631689FD716A82AFED",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\cache\\o\\18feadb97c45a3f2ab0e16b290a48423\\test.pdb",
+      "pdb_sha256": "16128AE2F5B136E238734AC952B4A170C1F189658C36F13E923DC63A6F87D068"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\cache\\o\\82dab934879a127f066c263cd1a66721\\test.exe",
+      "sha256": "6FD02839E55376154587E7DE1357BAEA7E064DFFD1D100A04A08772731E9CD09",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\cache\\o\\82dab934879a127f066c263cd1a66721\\test.pdb",
+      "pdb_sha256": "F5F4C999E4A541FB9EC78F1A78B9A0BC7E29D19F4B1F430B9058DF08B33DA69E"
+    }
+  ],
+  "pe": {
+    "reserved_stack_bytes": 16777216,
+    "committed_stack_bytes": 4096,
+    "Engine_guard_bytes": 1048576,
+    "guard_authority": "Frozen Engine default1MiB; no controller or source stack override",
+    "dynamic_stack_measured": false
+  },
+  "errors": []
+}

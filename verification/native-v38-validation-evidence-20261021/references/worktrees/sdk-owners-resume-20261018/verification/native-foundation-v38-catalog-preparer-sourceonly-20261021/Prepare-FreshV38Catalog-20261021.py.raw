@@ -1,0 +1,1032 @@
+"""Root-only V38 catalog refresh from the accepted complete V37 catalog.
+Writes two NEW evidence preparations only after exact Root configuration.
+No compiler, test runtime, source generator, grant, Main or index mutation.
+"""
+from pathlib import Path, PurePosixPath
+import subprocess, sys, json, hashlib, datetime, copy, re, posixpath
+
+B = Path(r"C:\Users\adyba\pi-zig")
+M = B / "main"
+E = B / "evidence"
+S = B / "worktrees/sdk-owners-resume-20261018/verification"
+OLDS = {
+    "new4": E / "combined-native-batch-v37-new4-prepared-20261021",
+    "regression63": E / "combined-native-batch-v37-regression63-prepared-20261021",
+}
+OUTS = {
+    "new4": E / "combined-native-batch-v38-new4-prepared-20261021",
+    "regression63": E / "combined-native-batch-v38-regression63-prepared-20261021",
+}
+PREVIOUS_HEAD = "b13be24e44cc1bbc361639eb35900a368ae60eac"
+DRIVER = "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+CLASSIFIER = "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+BUILD = "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55"
+PROGRESS = "verification/port-roadmap-resume-20261018/progress.json"
+OWNER = "src/native_node_file_handle_owner_test.zig"
+FIXTURE = "src/native_node_file_handle_owner_test_support.zig"
+OLD_FIXTURE = "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+NEW_FIXTURE = "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+SOURCE_IMAGES = {
+    OWNER: dict(before_bytes=28378,before_sha256="93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+                after_bytes=28576,after_sha256="03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"),
+    FIXTURE: dict(before_bytes=33152,before_sha256=OLD_FIXTURE,after_bytes=33411,after_sha256=NEW_FIXTURE),
+}
+CORRECTION = S / "v37-file-handle-runtime-fixtures-sourceonly-20261021"
+MATRIX = "E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37"
+REVIEWS = {
+    "new4": (212519,"CC5D3FF8C0FFD05B78EC524EFB6E9F642F15A5648FECD3DA0DDEF9FA0C0B29D9"),
+    "regression63": (214727,"A48963B22BFD4E005CBC4ABD7CF6D6EB42B204363BA7C4ED3CF5D1D887A87FC0"),
+}
+AUDITORS = {
+    "new4": (17696,"34D2F0302C08A89DDA3E136C0723AA575F0D0ECC22FD0AB4C50DD2A7AA45EA17"),
+    "regression63": (17704,"10CE970F6161C8DE9A3920418F38144D7A64FF2B4C227E28845714163B078EC2"),
+}
+NARROW = re.compile(r"^src/[A-Za-z0-9_./-]+\.(zig|c|mjs|json)$")
+IMPORT = re.compile(r'@import\s*\(\s*"([^"]+)"\s*\)')
+EMBED = re.compile(r'@embedFile\s*\(\s*"([^"]+)"\s*\)')
+NAMED = {"catalog_tool": "tools/catalog.zig", "native_icu_api": "src/extensions/icu/native_icu_api.zig"}
+SPECS = [
+ ("native-node-file-handle-owner","src/native_node_file_handle_owner_test.zig","native FileHandle owner",18,710),
+ ("native-node-fs-before-hook-continuation","src/native_node_fs_before_hook_continuation_test.zig","native FS before hook",3,710),
+ ("native-vm-error-constructor-name","src/native_vm_error_constructor_name_test.zig","VM native Error constructor",24,1),
+ ("native-node-file-handle-transfer","src/native_node_file_handle_transfer_test.zig","native FileHandle transfer",13,711),
+]
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest().upper()
+def h(path):
+    return sha(path.read_bytes())
+def read(path):
+    return json.loads(path.read_bytes().decode("utf-8-sig"))
+def pin(path):
+    raw = path.read_bytes()
+    return dict(path=str(path), bytes=len(raw), sha256=sha(raw))
+def exact(path, digest, size=None):
+    row = pin(path)
+    assert row["sha256"] == digest, str(path)
+    if size is not None:
+        assert row["bytes"] == size, str(path)
+    return row
+def put(path, value):
+    with path.open("xb") as f:
+        f.write((json.dumps(value, indent=2) + "\n").encode())
+def git(*args):
+    return subprocess.check_output(["git", *args], cwd=M)
+def declared(raw):
+    return re.findall(r'^test "([^"]+)"', raw.decode("utf-8"), re.M)
+def relative(name):
+    assert isinstance(name, str) and re.fullmatch(r"[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*", name), name
+    assert not PurePosixPath(name).is_absolute()
+    for part in name.split("/"):
+        assert part not in (".", "..") and not part.endswith((".", " ")), name
+        assert part.split(".")[0].upper() not in {"CON", "PRN", "AUX", "NUL", *["COM"+str(i) for i in range(1,10)], *["LPT"+str(i) for i in range(1,10)]}, name
+    return name
+def state():
+    assert git("rev-parse", "HEAD").decode().strip() == HEAD
+    assert git("branch", "--show-current").decode().strip() == "work/pi-zig-consolidated-20261016"
+    assert git("status", "--porcelain") == b""
+def blob_id(raw):
+    return hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+trees = {}
+def tree(commit):
+    if commit not in trees:
+        entries = {}
+        aliases = {}
+        for item in git("ls-tree", "-r", "-z", commit).split(b"\0"):
+            if not item:
+                continue
+            meta, raw_name = item.split(b"\t", 1)
+            mode, kind, oid = meta.decode().split()
+            name = raw_name.decode("utf-8")
+            assert name.lower() not in aliases or aliases[name.lower()] == name
+            aliases[name.lower()] = name
+            entries[name] = (mode, kind, oid)
+        trees[commit] = entries
+    return trees[commit]
+def committed(commit, name, raw):
+    assert tree(commit).get(name) in [("100644", "blob", blob_id(raw)), ("100755", "blob", blob_id(raw))], (commit, name)
+def changed(a, b):
+    return {p.decode("utf-8") for p in git("diff", "--name-only", "-z", a, b).split(b"\0") if p}
+
+
+# The exact future head, two committed intakes and accepted negative closure
+# are admitted only through a specifically reviewed, hash-bound Root config.
+assert len(sys.argv) == 3, "Root configuration path and exact SHA-256 required"
+config_path = Path(sys.argv[1])
+exact(config_path, sys.argv[2])
+cfg = read(config_path)
+assert cfg["status"] == "root_reviewed_specific_v38_catalog_preparation"
+assert cfg["catalog_preparation_authorized"] is True
+assert cfg["native_execution_authorized"] is False
+assert cfg["preparer_sha256"] == h(Path(__file__))
+HEAD = cfg["candidate_head"]
+assert re.fullmatch(r"[0-9a-f]{40}",HEAD) and HEAD != PREVIOUS_HEAD
+assert cfg["previous_head"] == PREVIOUS_HEAD
+assert cfg["partition"] == {"new4":4,"regression63":63,"declarations":[58,1249],"union_groups":67,"union_declarations":1307}
+assert cfg["preparation_directories"] == {k:str(v) for k,v in OUTS.items()}
+assert cfg["fixtures"] == SOURCE_IMAGES
+assert cfg["actual_metadata_count"] is None
+assert all(cfg[k] is False for k in ("execution_authority","runtime_authority","qualification"))
+state()
+provenance = {}
+def proof(key, path, digest, size=None):
+    provenance[key] = exact(path,digest,size)
+    return read(path)
+def configured(key, row):
+    assert set(row) == {"path","bytes","sha256"}
+    path = Path(row["path"])
+    assert path.is_absolute() and path.resolve().is_relative_to(B.resolve())
+    assert re.fullmatch(r"[0-9A-F]{64}",row["sha256"]) and isinstance(row["bytes"],int) and row["bytes"] > 0
+    return proof(key,path,row["sha256"],row["bytes"])
+provenance["root_configuration"] = pin(config_path)
+prior_reviews = {}
+historical_source_rebindings = []
+for key,old in OLDS.items():
+    size,digest = REVIEWS[key]
+    review = proof("prior_v37_"+key+"_preparation",old/"preparation-review.json",digest,size)
+    prior_reviews[key] = review
+    assert review["candidate_head"] == PREVIOUS_HEAD and review["batch"] == key
+    assert review["status"] == "source_only_fresh_batch_prepared"
+    assert all(review[k] is False for k in ("execution_authority","runtime_authority","qualification"))
+    assert review["catalog_groups"] == 117 and review["catalog_declarations"] == 2013
+    assert review["actual_metadata_count"] is None and review["prior_metadata_transferred"] is False
+    for role in ("driver","matrix","auditor","classifier","combined_build_source_peer","metadata_auditor_adaptation","source_dependency_inventory","exact_intake_inventory","complete_partition"):
+        row = review[role]
+        assert Path(row["path"]).parent.resolve() == old.resolve(),(key,role)
+        provenance["prior_v37_"+key+"_"+role] = exact(Path(row["path"]),row["sha256"],row["bytes"])
+    for name,row in review["provenance"].items():
+        if name == "progress":
+            continue
+        if Path(row["path"]).resolve() == (M/OWNER).resolve():
+            assert name == "fixture_unchanged_root_native-node-file-handle-owner"
+            before = SOURCE_IMAGES[OWNER]
+            assert row["sha256"] == before["before_sha256"] and row["bytes"] == before["before_bytes"]
+            snapshot = CORRECTION/"original"/OWNER
+            rebound = exact(snapshot,row["sha256"],row["bytes"])
+            assert snapshot.read_bytes() == git("show",PREVIOUS_HEAD+":"+OWNER)
+            provenance["v37_"+key+"_"+name] = rebound
+            historical_source_rebindings.append(dict(batch=key,role=name,original=row,immutable_snapshot=rebound,raw_commit=PREVIOUS_HEAD,exact_original_bytes=True))
+        else:
+            provenance["v37_"+key+"_"+name] = exact(Path(row["path"]),row["sha256"],row["bytes"])
+    assert review["driver"]["sha256"] == DRIVER and review["classifier"]["sha256"] == CLASSIFIER
+    assert review["matrix"]["sha256"] == MATRIX
+    assert (review["auditor"]["bytes"],review["auditor"]["sha256"]) == AUDITORS[key]
+assert (OLDS["new4"]/"groups.json").read_bytes() == (OLDS["regression63"]/"groups.json").read_bytes()
+prior = read(OLDS["new4"]/"groups.json")
+assert h(OLDS["new4"]/"groups.json") == MATRIX
+assert len(prior["groups"]) == 117 and sum(len(g["required_named"]) for g in prior["groups"]) == 2013
+assert len(prior["whole_tree_dependency_pins"]) == 576
+assert prior["source_head_at_preparation"] == PREVIOUS_HEAD
+assert prior["preparation_status"] == "source_only_fresh_batch_prepared"
+assert prior["declaration_count_is_not_actual_metadata"] is True
+catalog_acceptance = proof("prior_v37_catalog_acceptance",E/"root-v37-catalog-source-acceptance-20261021.json","1DE26AC6A76F9B4082D95EDFA331DDB99781159400F4B23219A261C44FB556A1",8792)
+catalog_peer = proof("prior_v37_catalog_peer",S/"native-foundation-v37-catalog-source-peer-20261021/emitted-peer.json","858C81B1A83FCFE96980FA1C9EEB460FCDDF775095407A11DE346885C379DFE4",16494)
+assert catalog_acceptance["candidate_head"] == PREVIOUS_HEAD and catalog_acceptance["catalog_source_accepted"] is True
+assert catalog_acceptance["matrix_sha256"] == MATRIX and catalog_acceptance["native_execution_authorized"] is False
+assert catalog_acceptance["independent_catalog_peer"] == provenance["prior_v37_catalog_peer"]
+assert catalog_acceptance["new4_and_original63_preserved"] is True
+old_progress = git("show",PREVIOUS_HEAD+":"+PROGRESS)
+old_progress_pin = prior_reviews["new4"]["provenance"]["progress"]
+assert old_progress_pin == prior_reviews["regression63"]["provenance"]["progress"]
+assert Path(old_progress_pin["path"]).resolve() == (M/PROGRESS).resolve()
+assert sha(old_progress) == old_progress_pin["sha256"] == "18E61B7DFE07DA5D13C64E4B933EC519312AFED1DC7B29AC4789AC0C3A5EB49F"
+assert len(old_progress) == old_progress_pin["bytes"] == 438396
+configured("progress",cfg["progress"])
+assert Path(cfg["progress"]["path"]).resolve() == (M/PROGRESS).resolve()
+
+V36_HEAD = "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8"
+V36_MATRIX = "2B55BD045392080556925051B7C19810C3546BB6EAACD2672A35E37622DD91DD"
+V36_OLD_FIXTURE = "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127"
+# Preserve both accepted V36 BuildQuery evidence and the original strict runtime
+# negative. These are historical inputs, never metadata or runtime transfer.
+build_control = E/"root-native-foundation-fresh-v36-new4-control-20261021-080944"
+build_proof = E/"root-native-foundation-fresh-v36-new4-buildquery-20261021-080944"
+negative_control = E/"root-native-foundation-v36-new4-runtime-control-20261021-082608"
+negative_proof = E/"root-native-foundation-v36-new4-runtime-20261021-082608"
+v36_closure_pin = prior_reviews["new4"]["provenance"]["prior_v36_strict_runtime_negative_closure"]
+negative = configured("prior_v36_strict_runtime_negative_closure",v36_closure_pin)
+assert v36_closure_pin == exact(negative_control/"independent-negative-runtime-closure.json","8BCCF2D351EEDC42D65C56E8605D2DD10ACFF153231552AD90F496E4668CF9AF",26137)
+assert negative["status"] == "independently_closed_negative_strict_runtime"
+assert negative["candidate_head"] == V36_HEAD and negative["batch"] == "new4"
+assert [negative[k] for k in ("declared_groups","declared_controls","granted_groups","attempted_groups","unstarted_groups","accepted_cohort","runtime_owner_count")] == [4,58,4,1,3,61,1]
+assert [negative[k] for k in ("observed_started","observed_completed","observed_failed","observed_passed","not_started")] == [19,19,18,1,42]
+for key in ("whole_bookends_unchanged","current_all_sealed_inputs_rehashed","current_complete_directory_inventories_verified","current_actual_process_instances_absent","original_strict_failures_preserved","controller_environment_restored"):
+    assert negative[key] is True
+for key in ("all_original_strict_empty_stderr_and_all_tests_passing_gates_passed","runtime_qualification","product_qualification","source_mutation_hold_released"):
+    assert negative[key] is False
+assert negative["distinct_current_files_rehashed"] == 34171
+assert negative["seal_counts"] == dict(source=14591,tree=14604,vendor=1489,compiler=19546,controls=25)
+assert len(negative["actual_process_intervals"]) == 4
+assert all(negative["current_absence"][k] == [] for k in ("owners","direct_children","native"))
+root_negative = proof("prior_v36_root_negative_acceptance",E/"root-v36-new4-original-negative-runtime-acceptance-20261021.json","182883E0C8BA52A96B34E790DD65A9DF247F0DD67031D68CD73DBAB614D0DCCC",2496)
+assert root_negative["status"] == "root_accepted_original_v36_new4_strict_runtime_negative_closure"
+assert root_negative["candidate_head"] == V36_HEAD and root_negative["batch"] == "new4"
+assert root_negative["independent_negative_closure"] == v36_closure_pin
+assert [root_negative[k] for k in ("actual_metadata_count","granted_groups","attempted_groups","unstarted_groups","runtime_started","runtime_completed","runtime_failed","runtime_passed","runtime_unstarted")] == [61,4,1,3,19,19,18,1,42]
+for key in ("negative_closure_accepted","complete_buildquery_accepted","whole_bookends_unchanged","all_34171_current_sealed_files_and_complete_inventories_verified","all_four_original_process_instances_and_children_closed","original_nonempty_stderr_and_failure_flags_preserved","source_intake_requires_separate_exact_root_release"):
+    assert root_negative[key] is True
+for key in ("native_execution_authorized","source_mutation_hold_released","runtime_qualification","product_qualification"):
+    assert root_negative[key] is False
+proof("prior_v36_strict_runtime_negative_inputs",negative_control/"independent-negative-runtime-audit-inputs.json","62D821EB4E6F0AD4D4F9C3278A137D355533651B5C3542BA885FADE9936AEDE4",14813)
+proof("prior_v36_strict_runtime_negative_adaptation",E/"v36-new4-negative-runtime-auditor-sourceonly-20261021/finite-adaptation.json","FF2F41C2298AD3372EDE0DD0E912FC228E03639F7DDFE62D041A345B6EE94A6C",58429)
+provenance["prior_v36_strict_runtime_negative_auditor"] = exact(negative_control/"Audit-NegativeV36New4StrictRuntime.py","5B32C5507CE78E1DB6BF0CB2AC1FE1ED8A48232E76AA6EFF3378034CF76F0DE0",47948)
+proof("prior_v36_original_runtime_job_observation",negative_control/"independent-observed-job-status.json","CD65F6E08E83A4B24E94B4AC816F415F0626C8FACE184E51F824BA6595B64CE1",1644)
+proof("prior_v36_root_negative_audit_release",negative_control/"root-negative-runtime-audit-release.json","45ECC6A0A303288F02FAA9D9AF7A164C2C175376A5E10D3EE3D4C5C1DB680D89",7208)
+proof("prior_v36_negative_audit_job_observation",negative_control/"independent-negative-audit-job-observation.json","7FB854823E9A919B4804A002E6FC0D8279AA3EE55407A6B110F56C823A4C9AD8",1281)
+for field,key in (("independent_negative_auditor","prior_v36_strict_runtime_negative_auditor"),("audit_configuration","prior_v36_strict_runtime_negative_inputs"),("root_audit_release","prior_v36_root_negative_audit_release"),("audit_job_observation","prior_v36_negative_audit_job_observation")):
+    assert root_negative[field] == provenance[key]
+negative_result = proof("prior_v36_original_runtime_result",negative_proof/"result.json","09913304EA1EFD7235477C0DA4A7B0AE705B7E5BF20DDAAA9C29C3F5C3E50461",16681)
+assert negative_result["status"] == "failed" and negative_result["candidate_head"] == V36_HEAD
+assert negative_result["mode"] == "RuntimeOnly" and negative_result["runtime_requested"] is True
+assert negative_result["product_qualified"] is False and negative_result["all_groups_closed"] is False
+assert negative_result["driver_sha256"] == DRIVER and negative_result["group_manifest_sha256"] == V36_MATRIX
+assert [g["group"] for g in negative_result["groups"]] == [SPECS[0][0]]
+assert negative_result["groups"][0]["status"] == "failed"
+assert negative_result["errors"] == ["Native test protocol did not report every selected test passing without logs/leaks"]
+assert len(negative["observed_groups"]) == 1
+observed = negative["observed_groups"][0]
+assert observed["group"] == SPECS[0][0] and observed["original_group_status"] == "failed"
+assert [observed[k] for k in ("started","completed","failed")] == [19,19,18]
+assert [(r["index"],r["flags"],r["passed"]) for r in observed["results"]] == [(i,1,False) for i in range(18)]+[(18,0,True)]
+provenance["prior_v36_original_nonempty_runtime_stderr"] = exact(negative_proof/"groups/native-node-file-handle-owner/runtime.stderr.log","E974EC5E5AA6B6EB9FC5BBFF3CC3826DFD7AF8CB3052AC10B4BF38CA8DC6ED0C",45026)
+for scope in ("original_receipts","original_attempted_group_files","original_outer_outputs"):
+    for index,row in enumerate(negative[scope]):
+        provenance["prior_v36_runtime_"+scope+"_"+str(index)] = exact(Path(row["path"]),row["sha256"],row["bytes"])
+original_seal = proof("prior_v36_original_runtime_before",negative_proof/"before.json","18F842DD770EB1B53E9931A015D544C9D631F60FC40C1C06FC9487DDCD5FC20C",15768084)
+proof("prior_v36_original_runtime_final",negative_proof/"final.json","18F842DD770EB1B53E9931A015D544C9D631F60FC40C1C06FC9487DDCD5FC20C",15768084)
+assert original_seal["candidate_head"] == V36_HEAD and original_seal["clean"] is True and original_seal["errors"] == []
+v36_sealed = {r["relative"]:r["sha256"] for r in original_seal["source"]}
+assert v36_sealed[FIXTURE] == V36_OLD_FIXTURE
+metadata = proof("prior_v36_metadata_acceptance",build_control/"independent-metadata-acceptance.json","84B8758A2C6ABD2E1FF34AFC4E2714B68A3922BE4857C19ADB1143B6DABD0F48",14149)
+build_closure = proof("prior_v36_complete_buildquery_closure",build_control/"independent-current-seals-and-owners.json","5569A62842A16A5F1A48022A5D6EB78F06808B73E22772FA3C4CAB7A89B2FE4A",113188)
+root_build = proof("prior_v36_root_buildquery_acceptance",E/"root-v36-new4-complete-buildquery-acceptance-20261021.json","B54DAE7F3999880FFCA7FDC7D7C73A47B3003BFE9A4776E978C7413D4455268E",2692)
+assert metadata["status"] == "independently_accepted_combined_native_batch_metadata" and metadata["accepted"] is True
+assert metadata["candidate_head"] == V36_HEAD and metadata["driver_sha256"] == DRIVER and metadata["group_manifest_sha256"] == V36_MATRIX
+assert [g["group"] for g in metadata["groups"]] == [s[0] for s in SPECS]
+assert [g["actual_count"] for g in metadata["groups"]] == [19,4,24,14]
+assert metadata["runtime_started"] is False and metadata["runtime_qualification"] is False
+assert metadata["independent_current_original_process_instances_absent"] is True
+assert build_closure["status"] == "independently_closed_complete_fresh_build_query" and build_closure["candidate_head"] == V36_HEAD
+assert [build_closure[k] for k in ("granted_groups","attempted_groups","unstarted_groups","actual_metadata_count","actual_tests_started","native_owner_count")] == [4,4,0,61,0,8]
+for key in ("whole_bookends_unchanged","current_all_sealed_inputs_rehashed","current_complete_directory_inventories_verified","current_actual_process_instances_absent","all_original_terminal0_owner_gates_passed","controller_environment_restored"):
+    assert build_closure[key] is True
+for key in ("cache_seeded","runtime_started","qualification","source_mutation_hold_released"):
+    assert build_closure[key] is False
+assert build_closure["distinct_current_files_rehashed"] == 34160 and len(build_closure["actual_process_intervals"]) == 11
+assert build_closure["metadata_acceptance"] == provenance["prior_v36_metadata_acceptance"] == negative["metadata_acceptance"]
+assert negative["independent_build_closure"] == provenance["prior_v36_complete_buildquery_closure"]
+assert root_build["status"] == "root_accepted_complete_v36_new4_buildquery" and root_build["candidate_head"] == V36_HEAD
+assert root_build["complete_buildquery_accepted"] is True and root_build["actual_metadata_count"] == 61
+assert root_build["metadata_acceptance"] == provenance["prior_v36_metadata_acceptance"]
+assert root_build["independent_closure"] == provenance["prior_v36_complete_buildquery_closure"]
+assert root_build["runtime_execution_authorized"] is False and root_build["qualification"] is False and root_build["source_mutation_hold_released"] is False
+for index,row in enumerate(build_closure["original_receipts"]):
+    provenance["prior_v36_buildquery_original_receipt_"+str(index)] = exact(Path(row["path"]),row["sha256"],row["bytes"])
+build_result = proof("prior_v36_original_buildquery_result",build_proof/"result.json","311113328569FB8BBD39AC5F8F19D90EEBEA8A3B7E0415731DFA4682BA9D0DA8",67212)
+assert build_result["status"] == "passed_build_query_batch" and build_result["candidate_head"] == V36_HEAD
+assert build_result["mode"] == "BuildQuery" and build_result["runtime_requested"] is False and build_result["product_qualified"] is False
+build_seal = proof("prior_v36_original_buildquery_before",build_proof/"before.json","BC2672711FDE7526D8A94EAE376F3DC458C6A0DE3E7025303035FC9B89416428",15763177)
+proof("prior_v36_original_buildquery_final",build_proof/"final.json","BC2672711FDE7526D8A94EAE376F3DC458C6A0DE3E7025303035FC9B89416428",15763177)
+assert build_seal["candidate_head"] == V36_HEAD and build_seal["clean"] is True and build_seal["errors"] == []
+assert {r["relative"]:r["sha256"] for r in build_seal["source"]} == v36_sealed
+assert root_build["build_result"] == provenance["prior_v36_original_buildquery_result"]
+assert root_build["build_final"] == provenance["prior_v36_original_buildquery_final"]
+assert metadata["build_result_sha256"] == provenance["prior_v36_original_buildquery_result"]["sha256"]
+assert metadata["build_source_seal_sha256"] == provenance["prior_v36_original_buildquery_final"]["sha256"]
+
+# Preserve the initial V37 freshness rejection separately from fresh Retry1.
+# Only historical observations are read; no previous acceptance transfers.
+initial_control = E/"root-native-foundation-fresh-v37-new4-control-20261021-094837"
+initial_proof = E/"root-native-foundation-fresh-v37-new4-buildquery-20261021-094837"
+initial_root = proof("prior_v37_initial_admission_root",E/"root-v37-new4-initial-admission-negative-acceptance-20261021.json","913E5C1AD65C42FC084C63304A766105F810C7DDCE50C4109EFA441BAE04C91A",4271)
+initial_peer = configured("prior_v37_initial_admission_peer",initial_root["independent_peer"])
+assert initial_root["independent_peer"] == exact(B/"worktrees/modules-io-resume-20261018/verification/v37-new4-admission-negative-independent-20261021/peer.json","97CA02ED14001C8AC9D1043647660D112052580B99BB478EBE069BDE939EFA67",8119)
+assert initial_root["status"] == "root_accepted_original_v37_new4_initial_admission_negative"
+assert initial_peer["status"] == "independently_closed_initial_admission_negative_before_proof_creation"
+for record in (initial_root,initial_peer):
+    assert record["candidate_head"] == PREVIOUS_HEAD
+    assert record["original_job_id"] == "job-op-91a26b7a9a5f34e0321f75a4566081f085bb28ec0b26bc25b7c89cccbd7e381c"
+    assert record["original_control"] == str(initial_control) and record["original_proof"] == str(initial_proof)
+    assert record["failure"]["reason"] == "Initial grant must be within300seconds before first child launch"
+    assert [record["failure"][k] for k in ("source_line","first_call_line","maximum_seconds")] == [44,45,300]
+    assert record["failure"]["driver_sha256"] == DRIVER
+    assert record["failure"]["terminal_job_status"] == record["failure"]["terminal_outer_status"] == "failed"
+    assert record["failure"]["terminal_job_exit_code"] == record["failure"]["terminal_outer_exit_code"] == 1
+    assert all(record[k] is False for k in ("full_source_vendor_compiler_seal_claim","build_acceptance","runtime_authority","native_execution_authorized","application_qualified"))
+assert initial_root["negative_accepted"] is True and initial_root["proof_absent"] is True and initial_root["all_groups_unattempted"] is True
+assert initial_root["actual_metadata_count"] is None and [initial_root[k] for k in ("declared_groups","declared_controls")] == [4,58]
+assert initial_root["source_mutation_hold_released"] is False and initial_peer["retry_authorized"] is False
+assert initial_root["failure"] == initial_peer["failure"]
+assert not initial_proof.exists()
+assert initial_root["original_control_exact_names"] == initial_peer["original_control_members"] == sorted(p.name for p in initial_control.iterdir())
+assert initial_peer["process_observation"]["original_pids_present"] == initial_peer["process_observation"]["original_direct_children_present"] == initial_peer["process_observation"]["native_candidates"] == []
+assert initial_peer["process_observation"]["all_five_classifier_conditions_and_pattern_equal"] is True
+assert initial_peer["process_observation"]["runner_instance_preserved_as_string"] is True
+assert [g["group"] for g in initial_peer["groups"]] == [s[0] for s in SPECS]
+assert [g["declared_controls"] for g in initial_peer["groups"]] == [18,3,24,13]
+assert all(g["actual_metadata_count"] is None and all(g[k] is False for k in ("compile_attempted","metadata_attempted","runtime_attempted")) for g in initial_peer["groups"])
+for role in ("independent_proof","independent_checker","original_prepared_launch","full_job_tool_observation","process_observation"):
+    row = initial_root[role]
+    provenance["prior_v37_initial_"+role] = exact(Path(row["path"]),row["sha256"],row["bytes"])
+for role in ("fresh_process_query","process_query_tool_metadata"):
+    row = initial_peer[role]
+    provenance["prior_v37_initial_"+role] = exact(Path(row["path"]),row["sha256"],row["bytes"])
+initial_proof_record = read(Path(initial_root["independent_proof"]["path"]))
+assert initial_proof_record["candidate_head"] == PREVIOUS_HEAD and initial_proof_record["original_job_id"] == initial_root["original_job_id"]
+initial_control_rows = [r for r in initial_proof_record["current_file_pins"] if Path(r["path"]).parent.resolve() == initial_control.resolve()]
+assert sorted(Path(r["path"]).name for r in initial_control_rows) == initial_root["original_control_exact_names"]
+for index,row in enumerate(initial_control_rows):
+    provenance["prior_v37_initial_original_control_"+str(index)] = exact(Path(row["path"]),row["sha256"],row["bytes"])
+# The accepted independent proof binds every original control byte; it remains
+# immutable even after the separately named Retry1 records were created.
+assert initial_root["original_prepared_launch"] == initial_peer["original_prepared_launch"]
+assert (initial_control/"outer.stdout.bin").read_bytes() == b""
+assert b"Initial grant must be within300seconds before first child launch" in (initial_control/"outer.stderr.log").read_bytes()
+
+# Accepted V37 Retry1 BuildQuery and its separate strict-runtime negative.
+build_control = E/"root-native-foundation-fresh-v37-new4-control-20261021-131435"
+build_proof = E/"root-native-foundation-fresh-v37-new4-buildquery-20261021-131435"
+negative_control = E/"root-native-foundation-v37-new4-runtime-control-20261021-132912"
+negative_proof = E/"root-native-foundation-v37-new4-runtime-20261021-132912"
+negative = configured("prior_v37_retry1_strict_runtime_negative_closure",cfg["prior_negative_closure"])
+assert cfg["prior_negative_closure"] == exact(negative_control/"independent-negative-runtime-closure.json","321ABB743297FC9720D36E78F17B38441F8FAE3A60BEA32DE488FC248342F517",22838)
+assert negative["status"] == "independently_closed_negative_strict_runtime" and negative["candidate_head"] == PREVIOUS_HEAD and negative["batch"] == "new4"
+assert [negative[k] for k in ("declared_groups","declared_controls","granted_groups","attempted_groups","unstarted_groups","accepted_cohort","runtime_owner_count")] == [4,58,4,1,3,61,1]
+assert [negative[k] for k in ("observed_started","observed_completed","observed_failed","observed_passed","not_started")] == [19,19,5,14,42]
+for key in ("whole_bookends_unchanged","current_all_sealed_inputs_rehashed","current_complete_directory_inventories_verified","current_actual_process_instances_absent","original_strict_failures_preserved","controller_environment_restored"):
+    assert negative[key] is True
+for key in ("all_original_strict_empty_stderr_and_all_tests_passing_gates_passed","runtime_qualification","product_qualification","source_mutation_hold_released"):
+    assert negative[key] is False
+assert negative["distinct_current_files_rehashed"] == 34365
+assert negative["seal_counts"] == dict(source=14785,tree=14798,vendor=1489,compiler=19546,controls=25)
+assert len(negative["actual_process_intervals"]) == 4
+assert all(negative["current_absence"][k] == [] for k in ("owners","direct_children","native"))
+root_negative = proof("prior_v37_retry1_root_negative_acceptance",E/"root-v37-new4-retry1-original-negative-runtime-acceptance-20261021.json","D305B2B2E462CA38BCC4D0E8B44F51E8F997DA902ABBD323E1F9283B51BC6557",3131)
+assert root_negative["status"] == "root_accepted_original_v37_retry1_new4_strict_runtime_negative_closure"
+assert root_negative["candidate_head"] == PREVIOUS_HEAD and root_negative["batch"] == "new4"
+assert root_negative["independent_negative_closure"] == cfg["prior_negative_closure"]
+assert [root_negative[k] for k in ("actual_metadata_count","granted_groups","attempted_groups","unstarted_groups","runtime_started","runtime_completed","runtime_failed","runtime_passed","runtime_unstarted")] == [61,4,1,3,19,19,5,14,42]
+assert root_negative["failed_indices"] == [5,10,11,12,16]
+for key in ("negative_closure_accepted","complete_buildquery_accepted","whole_bookends_unchanged","all_34365_current_sealed_files_and_complete_inventories_verified","all_four_original_process_instances_and_children_closed","original_nonempty_stderr_and_failure_flags_preserved","source_intake_requires_separate_exact_root_release"):
+    assert root_negative[key] is True
+for key in ("native_execution_authorized","source_mutation_hold_released","runtime_qualification","product_qualification"):
+    assert root_negative[key] is False
+for role in ("independent_negative_auditor","audit_configuration","root_audit_release","audit_job_observation","root_source_review","independent_source_peer"):
+    row = root_negative[role]
+    provenance["prior_v37_retry1_negative_"+role] = exact(Path(row["path"]),row["sha256"],row["bytes"])
+assert root_negative["independent_negative_auditor"] == negative["auditor"]
+assert root_negative["audit_configuration"] == negative["audit_configuration"]
+negative_result = proof("prior_v37_retry1_original_runtime_result",negative_proof/"result.json","66E9CE52981B6DA16C7A1F79EE596FA98754E5F69E435FDF0A36EB3AB8139165",16657)
+assert negative_result["status"] == "failed" and negative_result["candidate_head"] == PREVIOUS_HEAD
+assert negative_result["mode"] == "RuntimeOnly" and negative_result["runtime_requested"] is True
+assert negative_result["product_qualified"] is False and negative_result["all_groups_closed"] is False
+assert negative_result["driver_sha256"] == DRIVER and negative_result["group_manifest_sha256"] == MATRIX
+assert [g["group"] for g in negative_result["groups"]] == [SPECS[0][0]] and negative_result["groups"][0]["status"] == "failed"
+assert negative_result["errors"] == ["Native test protocol did not report every selected test passing without logs/leaks"]
+assert len(negative["observed_groups"]) == 1
+observed = negative["observed_groups"][0]
+assert observed["group"] == SPECS[0][0] and observed["original_group_status"] == "failed"
+assert [observed[k] for k in ("started","completed","failed")] == [19,19,5]
+expected_results = [{"index":i,"flags":1 if i in (5,10,11,12,16) else 0,"passed":i not in (5,10,11,12,16)} for i in range(19)]
+assert observed["results"] == expected_results
+provenance["prior_v37_retry1_original_nonempty_runtime_stderr"] = exact(negative_proof/"groups/native-node-file-handle-owner/runtime.stderr.log","1BB42117F374DECBF5C91100686DF7DA7D686A285ECF9F874423D5799AF945ED",68389)
+for scope in ("original_receipts","original_attempted_group_files","original_outer_outputs"):
+    for index,row in enumerate(negative[scope]):
+        provenance["prior_v37_retry1_runtime_"+scope+"_"+str(index)] = exact(Path(row["path"]),row["sha256"],row["bytes"])
+original_seal = proof("prior_v37_retry1_original_runtime_before",negative_proof/"before.json","DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7",15938792)
+proof("prior_v37_retry1_original_runtime_final",negative_proof/"final.json","DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7",15938792)
+assert original_seal["candidate_head"] == PREVIOUS_HEAD and original_seal["clean"] is True and original_seal["errors"] == []
+old_sealed = {r["relative"]:r["sha256"] for r in original_seal["source"]}
+assert all(old_sealed[name] == row["before_sha256"] for name,row in SOURCE_IMAGES.items())
+metadata = proof("prior_v37_retry1_metadata_acceptance",build_control/"independent-metadata-acceptance.json","6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B",14153)
+build_closure = proof("prior_v37_retry1_complete_buildquery_closure",build_control/"independent-current-seals-and-owners.json","7299F65541DED34F87D3671FAA895C2F0E9B2C8B9149AE4757DE466B5FD11382",224405)
+root_build = proof("prior_v37_retry1_root_buildquery_acceptance",E/"root-v37-new4-retry1-complete-buildquery-acceptance-20261021.json","30CF28F108FCA7C9210237E23A1253AA7B6F93E534DA099E1E9738AF2D71877B",3420)
+assert metadata["status"] == "independently_accepted_combined_native_batch_metadata" and metadata["accepted"] is True
+assert metadata["candidate_head"] == PREVIOUS_HEAD and metadata["driver_sha256"] == DRIVER and metadata["group_manifest_sha256"] == MATRIX
+assert [g["group"] for g in metadata["groups"]] == [s[0] for s in SPECS]
+assert [g["actual_count"] for g in metadata["groups"]] == [19,4,24,14]
+assert metadata["runtime_started"] is False and metadata["runtime_qualification"] is False
+assert metadata["independent_current_original_process_instances_absent"] is True
+assert build_closure["status"] == "independently_closed_complete_fresh_build_query" and build_closure["candidate_head"] == PREVIOUS_HEAD
+assert [build_closure[k] for k in ("granted_groups","attempted_groups","unstarted_groups","actual_metadata_count","actual_tests_started","native_owner_count")] == [4,4,0,61,0,8]
+for key in ("whole_bookends_unchanged","current_all_sealed_inputs_rehashed","current_complete_directory_inventories_verified","current_actual_process_instances_absent","all_original_terminal0_owner_gates_passed","controller_environment_restored"):
+    assert build_closure[key] is True
+for key in ("cache_seeded","runtime_started","qualification","source_mutation_hold_released"):
+    assert build_closure[key] is False
+assert build_closure["distinct_current_files_rehashed"] == 34354 and len(build_closure["actual_process_intervals"]) == 11
+assert build_closure["seal_counts"] == dict(source=14785,tree=14798,vendor=1489,compiler=19546,controls=14)
+assert all(build_closure["current_absence"][k] == [] for k in ("owners","direct_children","native"))
+assert build_closure["metadata_acceptance"] == provenance["prior_v37_retry1_metadata_acceptance"] == negative["metadata_acceptance"]
+assert negative["independent_build_closure"] == provenance["prior_v37_retry1_complete_buildquery_closure"]
+assert root_build["status"] == "root_accepted_complete_v37_new4_retry1_buildquery" and root_build["candidate_head"] == PREVIOUS_HEAD
+assert root_build["complete_buildquery_accepted"] is True and root_build["actual_metadata_count"] == 61
+assert root_build["metadata_acceptance"] == provenance["prior_v37_retry1_metadata_acceptance"]
+assert root_build["independent_closure"] == provenance["prior_v37_retry1_complete_buildquery_closure"]
+assert root_build["runtime_execution_authorized"] is False and root_build["qualification"] is False and root_build["source_mutation_hold_released"] is False
+for index,row in enumerate(build_closure["original_receipts"]):
+    provenance["prior_v37_retry1_buildquery_original_receipt_"+str(index)] = exact(Path(row["path"]),row["sha256"],row["bytes"])
+build_result = proof("prior_v37_retry1_original_buildquery_result",build_proof/"result.json","8A86FD362D0E48FABAB9BE0F6E6902BECDDDA8F4F779AE8E73FB6492D927DBFC",67229)
+assert build_result["status"] == "passed_build_query_batch" and build_result["candidate_head"] == PREVIOUS_HEAD
+assert build_result["mode"] == "BuildQuery" and build_result["runtime_requested"] is False and build_result["product_qualified"] is False
+assert [g["group"] for g in build_result["groups"]] == [s[0] for s in SPECS]
+assert all(g["status"] == "passed_build_query" for g in build_result["groups"])
+build_seal = proof("prior_v37_retry1_original_buildquery_before",build_proof/"before.json","14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27",15933885)
+proof("prior_v37_retry1_original_buildquery_final",build_proof/"final.json","14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27",15933885)
+assert build_seal["candidate_head"] == PREVIOUS_HEAD and build_seal["clean"] is True and build_seal["errors"] == []
+assert {r["relative"]:r["sha256"] for r in build_seal["source"]} == old_sealed
+assert root_build["build_result"] == provenance["prior_v37_retry1_original_buildquery_result"]
+assert root_build["build_final"] == provenance["prior_v37_retry1_original_buildquery_final"]
+assert metadata["build_result_sha256"] == provenance["prior_v37_retry1_original_buildquery_result"]["sha256"]
+assert metadata["build_source_seal_sha256"] == provenance["prior_v37_retry1_original_buildquery_final"]["sha256"]
+
+# A complete exact two-commit chain admits two test/support sources and archival evidence.
+# Every donor, raw predecessor, committed blob and final checkout is verified.
+assert len(cfg["phase_pins"]) == 2
+phase_reports,latest,aliases,overlaps = [],{},{},[]
+previous = PREVIOUS_HEAD
+for phase_index,item in enumerate(cfg["phase_pins"]):
+    assert set(item) == {"phase","manifest","receipt","release","commit","path_count"}
+    phase,commit,path_count = item["phase"],item["commit"],item["path_count"]
+    assert re.fullmatch(r"[0-9a-f]{40}",commit) and isinstance(path_count,int) and path_count > 1
+    manifest = configured(phase+"_manifest",item["manifest"])
+    receipt = configured(phase+"_receipt",item["receipt"])
+    release = configured(phase+"_release",item["release"])
+    manifest_path = Path(item["manifest"]["path"])
+    assert receipt["status"] == "exact_source_intake_committed" and receipt["phase"] == phase
+    assert receipt["before_head"] == previous and receipt["after_head"] == commit
+    assert Path(receipt["manifest"]).resolve() == manifest_path.resolve()
+    assert receipt["manifest_sha256"] == item["manifest"]["sha256"] and receipt["release_sha256"] == item["release"]["sha256"]
+    assert receipt["path_count"] == path_count
+    assert receipt["staged_and_committed_bytes_match"] is True and receipt["clean_worktree"] is True
+    assert receipt["native_execution_authorized"] is False and receipt["application_qualified"] is False
+    assert release["native_execution_authorized"] is False
+    assert git("rev-parse",commit+"^").decode().strip() == previous
+    target_manifest = relative(manifest.get("target_manifest",manifest.get("manifest_target")))
+    rows = copy.deepcopy(manifest["rows"])
+    assert len(rows)+1 == path_count
+    rows.append(dict(target=target_manifest,source=str(manifest_path),bytes=item["manifest"]["bytes"],sha256=item["manifest"]["sha256"],before=None,role="exact_manifest"))
+    targets = set()
+    for row in rows:
+        target = relative(row["target"])
+        assert target not in targets
+        targets.add(target)
+        assert target.lower() not in aliases or aliases[target.lower()] == target,target
+        aliases[target.lower()] = target
+        assert target in SOURCE_IMAGES or target.startswith("verification/"),target
+        source = Path(row["source"]).resolve()
+        assert source.is_relative_to(B.resolve())
+        raw = source.read_bytes()
+        assert sha(raw) == row["sha256"] and len(raw) == row["bytes"],str(source)
+        committed(commit,target,raw)
+        before = row["before"]
+        if before is None:
+            assert target not in tree(previous),(phase,target,"new target existed")
+        else:
+            assert target in tree(previous),(phase,target,"missing predecessor")
+            previous_raw = git("cat-file","blob",tree(previous)[target][2])
+            assert len(previous_raw) == before["bytes"] and sha(previous_raw) == before["sha256"],(phase,target)
+        if target in latest:
+            assert target == PROGRESS
+            assert before is not None and before["sha256"] == latest[target]["sha256"] and before["bytes"] == latest[target]["bytes"]
+            overlaps.append(dict(phase=phase,path=target,before=before["sha256"],after=row["sha256"]))
+        latest[target] = dict(row,phase=phase)
+    assert changed(previous,commit) == targets,phase
+    if phase_index == 0:
+        assert phase == "fixture"
+        assert {n for n in targets if not n.startswith("verification/")} == set(SOURCE_IMAGES)
+        assert PROGRESS not in targets
+        for name,image in SOURCE_IMAGES.items():
+            assert latest[name]["before"] == dict(bytes=image["before_bytes"],sha256=image["before_sha256"])
+            assert latest[name]["sha256"] == image["after_sha256"] and latest[name]["bytes"] == image["after_bytes"]
+        assert {n for n in targets if n in tree(previous)} == set(SOURCE_IMAGES)
+    else:
+        assert phase == "progress"
+        assert all(n.startswith("verification/") for n in targets) and PROGRESS in targets
+        assert {n for n in targets if n in tree(previous)} == {PROGRESS}
+        assert latest[PROGRESS]["sha256"] == cfg["progress"]["sha256"] and latest[PROGRESS]["bytes"] == cfg["progress"]["bytes"]
+    phase_reports.append(dict(phase=phase,before_head=previous,after_head=commit,path_count=path_count,all_donor_and_commit_bytes_exact=True,all_raw_preimages_exact=True))
+    previous = commit
+assert previous == HEAD and not overlaps
+assert changed(PREVIOUS_HEAD,HEAD) == set(latest)
+for target,row in latest.items():
+    exact(M/target,row["sha256"],row["bytes"])
+    committed(HEAD,target,(M/target).read_bytes())
+source_union = {n:r for n,r in latest.items() if not n.startswith("verification/")}
+assert set(source_union) == set(SOURCE_IMAGES)
+for name,image in SOURCE_IMAGES.items():
+    exact(M/name,image["after_sha256"],image["after_bytes"])
+exact(M/"build.zig",BUILD,509023)
+exact(M/"src/extensions/native_node_async_wrap.zig","7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0",19741)
+exact(M/"src/extensions/native_node_async_wrap_make_callback.zig","972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2",3361)
+# Revalidate the accepted eight-hunk correction from immutable source snapshots.
+# Old source pins never rehash a later checkout at a historical path.
+fixture_proposal = proof("fixture_runtime_correction",CORRECTION/"proposal.json","2933A7AB4CCC196984FC27419B3E4A64DCCEB99B0834734AA7B357EE1280C7FC",21669)
+causal_proof = proof("fixture_runtime_causal_proof",CORRECTION/"causal-proof.json","39DF95F9780D1A663A6CAC9542B1F7656AAD5EE6CDCCD4761219142295E81C5D",83979)
+authority = proof("fixture_selected_authority",CORRECTION/"authority-inputs-v2.json","B97468E1DD34137C80A6199BABE6E227FEBDB5BD3FD0654B31EA3F05CF8C123F",16810)
+proof("fixture_preserved_authority_predecessor",CORRECTION/"authority-inputs.json","940ED7F295FDE2A6D4F2F7770B7041E15F810B2A3D6C8FF8CCA8B5079A1B7727",16810)
+assert cfg["source_proposal"] == provenance["fixture_runtime_correction"]
+assert cfg["causal_source_proof"] == provenance["fixture_runtime_causal_proof"]
+assert fixture_proposal["main_basis"] == causal_proof["main_basis"] == PREVIOUS_HEAD
+assert fixture_proposal["finite_edits"] == 8 and fixture_proposal["declared_controls"] == 58
+assert fixture_proposal["actual_metadata_prediction"] is None
+assert all(fixture_proposal[k] is False for k in ("native_execution","compiler_execution","Main_written","candidate_execution"))
+assert [r["relative_path"] for r in fixture_proposal["files"]] == list(SOURCE_IMAGES)
+fixture_bytes = {}
+selected_files = []
+hunk_count = 0
+for row in fixture_proposal["files"]:
+    name = row["relative_path"]
+    image = SOURCE_IMAGES[name]
+    for role in ("original","candidate"):
+        source = row[role]
+        provenance["fixture_"+role+"_"+Path(name).stem] = exact(Path(source["path"]),source["sha256"],source["bytes"])
+    before = Path(row["original"]["path"]).read_bytes()
+    after = Path(row["candidate"]["path"]).read_bytes()
+    assert row["current"] == dict(path=str(M/name),bytes=image["before_bytes"],sha256=image["before_sha256"])
+    assert row["original"]["bytes"] == image["before_bytes"] and row["original"]["sha256"] == image["before_sha256"]
+    assert row["candidate"]["bytes"] == image["after_bytes"] and row["candidate"]["sha256"] == image["after_sha256"]
+    assert before == git("show",PREVIOUS_HEAD+":"+name) and after == (M/name).read_bytes()
+    work = before
+    for edit in row["edits"]:
+        old,new = edit["old"].encode(),edit["new"].encode()
+        offset = edit["offset"]
+        assert sha(work) == edit["before_sha256"] and work[offset:offset+len(old)] == old
+        work = work[:offset]+new+work[offset+len(old):]
+        assert sha(work) == edit["after_sha256"]
+    assert work == after
+    for edit in reversed(row["edits"]):
+        old,new = edit["old"].encode(),edit["new"].encode()
+        offset = edit["offset"]
+        assert work[offset:offset+len(new)] == new
+        work = work[:offset]+old+work[offset+len(new):]
+    assert work == before and row["full_inverse_exact"] is True
+    assert declared(before) == declared(after) == row["named_controls_exact"]
+    for token in ("import","embedFile","cInclude","cDefine","cUndef"):
+        pattern = rb"@"+token.encode()+rb"\s*\(([^)]*)\)"
+        assert re.findall(pattern,before) == re.findall(pattern,after)
+        assert before.count(b"@"+token.encode()) == after.count(b"@"+token.encode())
+    fixture_bytes[name] = dict(original=before,candidate=after)
+    hunk_count += len(row["edits"])
+    selected_files.append(dict(relative_path=name,original=row["original"],candidate=row["candidate"],finite_edits=len(row["edits"])))
+assert hunk_count == 8 and [r["finite_edits"] for r in selected_files] == [6,2]
+assert fixture_proposal["selected_catalog"]["sha256"] == MATRIX
+assert [r["name"] for r in fixture_proposal["cohort"]] == [s[0] for s in SPECS]
+for row,spec in zip(fixture_proposal["cohort"],SPECS):
+    name = spec[1]
+    assert Path(row["source"]["path"]).resolve() == (M/name).resolve()
+    current_raw = (M/name).read_bytes()
+    historical_raw = fixture_bytes[name]["original"] if name in fixture_bytes else current_raw
+    assert sha(historical_raw) == row["source"]["sha256"] and len(historical_raw) == row["source"]["bytes"]
+    assert declared(historical_raw) == declared(current_raw) and len(declared(current_raw)) == spec[3]
+    assert row["named"] == [Path(name).stem+".test."+v for v in declared(current_raw)]
+    assert IMPORT.findall(historical_raw.decode()) == IMPORT.findall(current_raw.decode()) == row["imports"]
+    provenance["fixture_selected_root_"+row["name"]] = pin(M/name)
+assert causal_proof["proposal"] == provenance["fixture_runtime_correction"]
+assert causal_proof["selected_authority_inputs"] == provenance["fixture_selected_authority"]
+assert causal_proof["preserved_authority_inputs"] == provenance["fixture_preserved_authority_predecessor"]
+assert causal_proof["declared_control_count"] == 58 and causal_proof["literal_import_topology_unchanged"] is True
+assert causal_proof["frame_errdefer_finishImmediate_and_selected_hook_policy_byte_identical"] is True
+assert causal_proof["production_files_changed"] is False and causal_proof["compiler_selected_reachability_claimed"] is False
+assert causal_proof["initial_proposal_pending_authority_resolved_for_source_review_only"] is True
+assert causal_proof["observed_negative"]["flagged_indices"] == [5,10,11,12,16]
+assert causal_proof["qualification"]["actual_future_metadata_count"] is None
+assert all(causal_proof["qualification"][k] is False for k in ("candidate_or_preparer_executed","compiler_native_Node_reference_executed","Main_or_index_written","runtime_accepted"))
+authority_by_key = {r["key"]:r for r in authority["sources"]}
+assert len(authority_by_key) == len(authority["sources"]) == len(causal_proof["input_pins"]) == 31
+authority_bytes = {}
+for row in causal_proof["input_pins"]:
+    key = row["key"]
+    src = authority_by_key[key]
+    assert all(row[k] == src[k] for k in ("path","bytes","sha256"))
+    # The three original installed SDK paths are provenance labels. Their
+    # byte-identical contained snapshots are the stable review authority.
+    path = CORRECTION/"authority"/src["snapshot"] if src["snapshot"] else Path(src["path"])
+    assert path.resolve().is_relative_to(B.resolve())
+    provenance["fixture_causal_"+key] = exact(path,row["sha256"],row["bytes"])
+    authority_bytes[key] = path.read_bytes()
+assert len(causal_proof["installed_SDK_authority_snapshots"]) == 3
+for row in causal_proof["installed_SDK_authority_snapshots"]:
+    original,snapshot = row["installed_original"],row["immutable_snapshot"]
+    assert original["bytes"] == snapshot["bytes"] and original["sha256"] == snapshot["sha256"]
+    assert provenance["fixture_causal_"+row["key"]] == snapshot
+assert len(causal_proof["exact_excerpts"]) == 41
+for row in causal_proof["exact_excerpts"]:
+    excerpt = b"".join(authority_bytes[row["source_key"]].splitlines(keepends=True)[row["first_line"]-1:row["last_line"]])
+    assert len(excerpt) == row["bytes"] and sha(excerpt) == row["sha256"] and excerpt.decode() == row["text"]
+fixture_peer = configured("fixture_independent_peer",cfg["fixture_independent_peer"])
+assert cfg["fixture_independent_peer"] == exact(B/"worktrees/modules-io-resume-20261018/verification/v37-file-handle-runtime-fixtures-peer-20261021/peer.json","9CB321CDEC59D5FE1A616B13FBCB4EB07D14D663F8CF445462F1E4A9A2C5B703",9273)
+assert fixture_peer["status"] == "accepted_bounded_source_only_v37_filehandle_runtime_fixture_correction"
+assert fixture_peer["candidate_proposal"] == provenance["fixture_runtime_correction"] and fixture_peer["concrete_blockers"] == []
+assert fixture_peer["selected_files"] == selected_files
+fixture_acceptance = configured("fixture_root_source_review",cfg["fixture_root_source_review"])
+assert cfg["fixture_root_source_review"] == exact(E/"root-v37-filehandle-runtime-fixture-source-acceptance-20261021.json","9896A0FDAE942CF2F579555E602EB23CD4E07BBFD8FFEAAF50787A21A9FBAD85",5656)
+assert fixture_acceptance["status"] == "root_and_independent_peer_accepted_bounded_filehandle_runtime_fixture_corrections"
+assert fixture_acceptance["candidate_head"] == PREVIOUS_HEAD and fixture_acceptance["selected_files"] == selected_files
+assert fixture_acceptance["source_accepted"] is True and fixture_acceptance["source_corrections_accepted"] is True and fixture_acceptance["finite_hunks"] == 8
+assert fixture_acceptance["all58_declared_controls_and4_root_import_topologies_unchanged"] is True and fixture_acceptance["production_source_unchanged"] is True
+assert fixture_acceptance["source_proposal"] == provenance["fixture_runtime_correction"]
+assert fixture_acceptance["causal_source_proof"] == provenance["fixture_runtime_causal_proof"]
+assert fixture_acceptance["selected_authority_inputs"] == provenance["fixture_selected_authority"]
+assert fixture_acceptance["independent_source_peer"] == cfg["fixture_independent_peer"]
+assert fixture_acceptance["original_negative_acceptance"] == provenance["prior_v37_retry1_root_negative_acceptance"]
+for key in ("source_intake_authorized","native_execution_authorized","runtime_qualification","application_qualified"):
+    assert fixture_acceptance[key] is False
+
+# The current progress records history and separately selects current source
+# roots. Its old new_source_roots list retains the original historical pins.
+progress = read(M/PROGRESS)
+old_progress_json = json.loads(old_progress)
+assert progress["schema"] == old_progress_json["schema"] == 1 and progress["status"] == "active_incomplete"
+assert progress["current_source_head_at_record"] == phase_reports[0]["after_head"]
+for key in ("application_qualification","production_bridge_removed","published_release","source_mutation_hold_released"):
+    assert progress[key] is False
+for key,old_count,added in (("integrated_source_units",64,1),("preserved_attempts",35,3),("retained_recent_native_negatives",12,2),("execution_checkpoint_history",13,1)):
+    assert len(old_progress_json[key]) == old_count and len(progress[key]) == old_count+added
+    assert progress[key][:old_count] == old_progress_json[key]
+assert progress["execution_checkpoint_history"][-1] == old_progress_json["current_execution_checkpoint"]
+checkpoint = progress["current_execution_checkpoint"]
+assert checkpoint["schema"] == 8
+assert checkpoint["status"] == "v37_initial_admission_negative_retry1_buildquery_accepted_strict_runtime_negative_closed_fixtures_committed_v38_pending"
+assert checkpoint["source_head"] == phase_reports[0]["after_head"]
+plan = progress["next_native_batch"]
+assert checkpoint["next_validation"] == plan
+assert plan["status"] == "preparing_fresh_v38_complete_disjoint_batches"
+assert plan["mode"] == "BuildQuery" and plan["cache_mode"] == "fresh_private"
+assert plan["batch_group_counts"] == [4,63] and plan["batch_source_declarations"] == [58,1249]
+assert [plan[k] for k in ("total_selected_groups","total_selected_source_declarations","catalog_expected_groups","catalog_expected_source_declarations","group_cap")] == [67,1307,117,2013,64]
+assert plan["retained63_group_order"] == prior_reviews["regression63"]["selected_group_names"]
+assert plan["new_source_roots"] == old_progress_json["next_native_batch"]["new_source_roots"]
+assert plan["new_source_roots_are_original_historical_pins"] is True
+selected_roots = copy.deepcopy(plan["new_source_roots"])
+assert [r["source_root"] for r in selected_roots] == [s[1] for s in SPECS]
+assert [r["declared_controls"] for r in selected_roots] == [18,3,24,13]
+for row in selected_roots:
+    name = row["source_root"]
+    if name in SOURCE_IMAGES:
+        assert name == OWNER and row["sha256"] == SOURCE_IMAGES[name]["before_sha256"]
+        row["sha256"] = SOURCE_IMAGES[name]["after_sha256"]
+    assert row["actual_metadata_count"] is None and sha((M/name).read_bytes()) == row["sha256"]
+assert plan["selected_current_source_roots"] == selected_roots
+for key in ("prior_v35_negative_closed","prior_v36_buildquery_closed","prior_v36_strict_runtime_negative_closed","prior_v37_initial_admission_negative_closed","prior_v37_retry1_buildquery_closed","prior_v37_retry1_strict_runtime_negative_closed"):
+    assert plan[key] is True
+for key in ("prior_metadata_transferred","source_mutation_hold_released","qualification","runtime_authority","execution_authority"):
+    assert plan[key] is False
+assert plan["actual_metadata_count"] is None
+configured("root_preparer_source_review",cfg["root_preparer_source_review"])
+
+# The literal import/embed walker is unchanged from reviewed V35 CECC6473.
+current_bytes = {}
+def current(name):
+    relative(name)
+    if name not in current_bytes:
+        current_bytes[name] = (M/name).read_bytes()
+    return current_bytes[name]
+def expected_pin(name, digest):
+    raw = current(name)
+    actual = sha(raw)
+    if actual != digest:
+        assert name in source_union and actual == source_union[name]["sha256"], (name,digest,actual)
+    return dict(path=name,sha256=actual)
+def closure(root):
+    modules, embeds, includes, anonymous = {},{},set(),[]
+    todo = [root]
+    while todo:
+        name = todo.pop()
+        if name in modules:
+            continue
+        raw = current(name)
+        text = raw.decode("utf-8")
+        hits = []
+        for imported in IMPORT.findall(text):
+            if imported in ("std","builtin"):
+                continue
+            if imported in NAMED:
+                target = NAMED[imported]
+            elif imported.endswith(".zig"):
+                target = posixpath.normpath(posixpath.join(posixpath.dirname(name),imported))
+            else:
+                raise AssertionError(("unmapped named import",name,imported))
+            relative(target)
+            hits.append(target)
+            todo.append(target)
+        for operand in re.findall(r"@import\s*\(([^)]*)\)",text):
+            assert re.fullmatch(r'\s*"[^"]+"\s*',operand), ("dynamic import operand",name,operand)
+        for embedded in EMBED.findall(text):
+            target = posixpath.normpath(posixpath.join(posixpath.dirname(name),embedded))
+            raw_embed = current(target)
+            embeds[target] = dict(relative_path=target,bytes=len(raw_embed),sha256=sha(raw_embed))
+        includes.update(re.findall(r'@cInclude\s*\(\s*"([^"]+)"\s*\)',text))
+        for line_no,line in enumerate(text.splitlines(),1):
+            if re.match(r"\s*test\s*\{",line):
+                anonymous.append(dict(relative_path=name,line=line_no))
+        modules[name] = dict(relative_path=name,bytes=len(raw),sha256=sha(raw),literal_imports=sorted(set(hits)))
+    return modules,embeds,sorted(includes),sorted(anonymous,key=lambda r:(r["relative_path"],r["line"]))
+def anonymous_names(rows):
+    assert len({r["relative_path"] for r in rows}) == len(rows)
+    return {r["relative_path"].removeprefix("src/").removesuffix(".zig").replace("/",".")+".test_0" for r in rows}
+
+# Every prior source/dependency row must match the original V37 checkout seal.
+# Rehash all current rows, admitting only the four selected test/support rows.
+matrix = copy.deepcopy(prior)
+source_changes,dependency_changes = [],[]
+pin_aliases = {}
+external_current_pins = []
+def matrix_current(name, expected):
+    relative(name)
+    assert name.lower() not in pin_aliases or pin_aliases[name.lower()] == name,name
+    pin_aliases[name.lower()] = name
+    assert old_sealed[name] == expected,("original V37 seal differs",name)
+    actual = sha(current(name))
+    assert actual == (SOURCE_IMAGES[name]["after_sha256"] if name in SOURCE_IMAGES else expected),(name,expected,actual)
+    return actual
+for gi,group in enumerate(matrix["groups"]):
+    assert len({r["path"] for r in group["source_pins"]}) == len(group["source_pins"])
+    for ri,row in enumerate(group["source_pins"]):
+        assert NARROW.fullmatch(row["path"]),row["path"]
+        actual = matrix_current(row["path"],row["sha256"])
+        if actual != row["sha256"]:
+            assert row["path"] in SOURCE_IMAGES and row["sha256"] == SOURCE_IMAGES[row["path"]]["before_sha256"]
+            source_changes.append(dict(group=group["name"],group_index=gi,row_index=ri,path=row["path"],before=row["sha256"],after=actual))
+            row["sha256"] = actual
+    for row in group["external_pins"]:
+        path = Path(row["path"])
+        assert path.is_absolute() and path.resolve().is_relative_to(B.resolve())
+        assert h(path) == row["sha256"],str(path)
+        external_current_pins.append(pin(path))
+for ri,row in enumerate(matrix["whole_tree_dependency_pins"]):
+    assert row["path"] not in SOURCE_IMAGES
+    assert matrix_current(row["path"],row["sha256"]) == row["sha256"]
+assert [(r["group_index"],r["row_index"],r["group"],r["path"]) for r in source_changes] == [
+ (113,0,"native-node-file-handle-owner",OWNER),
+ (113,850,"native-node-file-handle-owner",FIXTURE),
+ (114,850,"native-node-fs-before-hook-continuation",FIXTURE),
+ (116,851,"native-node-file-handle-transfer",FIXTURE)]
+assert len(source_changes) == 4 and not dependency_changes
+assert matrix["whole_tree_dependency_pins"] == prior["whole_tree_dependency_pins"]
+inverse = copy.deepcopy(matrix)
+for row in source_changes:
+    target = inverse["groups"][row["group_index"]]["source_pins"][row["row_index"]]
+    assert target["path"] == row["path"] and target["sha256"] == row["after"]
+    target["sha256"] = row["before"]
+assert inverse == prior
+assert (json.dumps(inverse,indent=2)+"\n").encode() == (OLDS["new4"]/"groups.json").read_bytes()
+by_name = {g["name"]:g for g in matrix["groups"]}
+assert len(by_name) == 117
+selected_groups = {k:prior_reviews[k]["selected_group_names"].copy() for k in OUTS}
+assert selected_groups["new4"] == [s[0] for s in SPECS]
+assert len(selected_groups["new4"]) == len(set(selected_groups["new4"])) == 4
+assert len(selected_groups["regression63"]) == len(set(selected_groups["regression63"])) == 63
+assert set(selected_groups["new4"]).isdisjoint(selected_groups["regression63"])
+assert set(selected_groups["new4"]) | set(selected_groups["regression63"]) <= set(by_name)
+for key,count,decl in (("new4",4,58),("regression63",63,1249)):
+    assert prior_reviews[key]["selected_groups"] == count and prior_reviews[key]["selected_declarations"] == decl
+    assert sum(len(by_name[n]["required_named"]) for n in selected_groups[key]) == decl
+    assert count <= 64
+
+# Re-derive the same complete conservative four-root import/embed inventories.
+# Only the owner root and the shared fixture's three member rows refresh bytes/hash.
+old_inventory_path = Path(prior_reviews["new4"]["source_dependency_inventory"]["path"])
+old_inventory = read(old_inventory_path)
+assert old_inventory_path.read_bytes() == Path(prior_reviews["regression63"]["source_dependency_inventory"]["path"]).read_bytes()
+assert old_inventory["candidate_head"] == PREVIOUS_HEAD and old_inventory["named_controls"] == 58
+assert old_inventory["actual_metadata_count"] is None and old_inventory["source_only"] is True
+assert old_inventory["native_execution"] is False and old_inventory["qualification"] is False
+closure_inventory = copy.deepcopy(old_inventory)
+assert [r["name"] for r in closure_inventory["roots"]] == selected_groups["new4"]
+fixture_member_changes = []
+for index,(name,root,filter_text,count,module_count) in enumerate(SPECS):
+    expected = closure_inventory["roots"][index]
+    assert (expected["name"],expected["source_root"],expected["filter"],expected["source_declared_controls"]) == (name,root,filter_text,count)
+    modules,embeds,includes,anonymous = closure(root)
+    source_names = declared(current(root))
+    assert len(source_names) == len(set(source_names)) == count
+    assert source_names == expected["named_declarations"] and all(filter_text in n for n in source_names)
+    assert by_name[name]["source_root"] == root
+    assert by_name[name]["required_named"] == [Path(root).stem+".test."+n for n in source_names]
+    assert by_name[name]["target"] == "build-"+name and by_name[name]["artifact"] == name
+    assert by_name[name]["historical_order"] is None and by_name[name]["runtime_stderr_policy"] == "empty"
+    assert expected["actual_metadata_count"] is None and expected["compiler_selected_reachability_claimed"] is False
+    assert expected["compiler_executed"] is False and expected["native_executed"] is False
+    assert len(modules) == expected["conservative_module_count"] == module_count
+    assert len(embeds) == expected["conservative_embed_count"] == (0 if module_count==1 else 243)
+    assert expected["named_import_owners"] == ({} if module_count==1 else NAMED)
+    assert includes == expected["c_include_names"]
+    assert anonymous == expected["anonymous_source_blocks"]
+    assert anonymous_names(anonymous) == set(expected["allowed_anonymous"]) == set(by_name[name]["allowed_anonymous"])
+    assert set(modules) == {r["relative_path"] for r in expected["modules"]}
+    assert set(embeds) == {r["relative_path"] for r in expected["embeds"]}
+    for mi,row in enumerate(expected["modules"]):
+        path = row["relative_path"]
+        if path in SOURCE_IMAGES:
+            image = SOURCE_IMAGES[path]
+            assert row["sha256"] == image["before_sha256"] and row["bytes"] == image["before_bytes"]
+            assert modules[path]["sha256"] == image["after_sha256"] and modules[path]["bytes"] == image["after_bytes"]
+            assert row["literal_imports"] == modules[path]["literal_imports"]
+            fixture_member_changes.append(dict(root_index=index,module_index=mi,path=path,before_bytes=row["bytes"],after_bytes=image["after_bytes"],before_sha256=row["sha256"],after_sha256=image["after_sha256"]))
+            row["sha256"],row["bytes"] = image["after_sha256"],image["after_bytes"]
+        assert row == modules[path],(name,path)
+    assert expected["modules"] == [modules[p] for p in sorted(modules)]
+    assert expected["embeds"] == [embeds[p] for p in sorted(embeds)]
+    assert expected["source_pins"] == len(by_name[name]["source_pins"])
+    assert expected["additional_dependency_rows"] == sum(r["group"]==name for r in matrix["whole_tree_dependency_pins"])
+assert len(fixture_member_changes) == 4
+assert [(r["root_index"],r["module_index"],r["path"]) for r in fixture_member_changes] == [
+ (0,673,OWNER),(0,674,FIXTURE),(1,673,FIXTURE),(3,674,FIXTURE)]
+inventory_inverse = copy.deepcopy(closure_inventory)
+for row in fixture_member_changes:
+    target = inventory_inverse["roots"][row["root_index"]]["modules"][row["module_index"]]
+    assert target["relative_path"] == row["path"] and target["sha256"] == row["after_sha256"]
+    target["sha256"],target["bytes"] = row["before_sha256"],row["before_bytes"]
+assert inventory_inverse == old_inventory
+assert (json.dumps(inventory_inverse,indent=2)+"\n").encode() == old_inventory_path.read_bytes()
+
+# Only one preparation-path literal changes in each accepted metadata auditor.
+copies = [
+ ("Run-CombinedNativeBatch.ps1",DRIVER),
+ ("Get-ModelsNativeCandidates.ps1",CLASSIFIER),
+ ("process-ancestry-peer-modules.json","F16CA88D4FB3E66B1B2A907526740FE038CBAA43C1FF70288E4680B7F0D55531"),
+ ("combined-build-source-peer.json","BEAA36175DB36CE596DB8F01C908935C6B7DBDFBA54EE07A90B7874D0423A5E4"),
+ ("uv-namespace-source-peer.json","6EDDB24D85B7F876BCBA2802D166DE71702E21AF8CFD3B53E5F3E47B8C4329E5"),
+]
+for name,digest in copies:
+    for old in OLDS.values():
+        exact(old/name,digest)
+    assert (OLDS["new4"]/name).read_bytes() == (OLDS["regression63"]/name).read_bytes()
+auditors = {}
+for key,out in OUTS.items():
+    old = OLDS[key]
+    auditor_path = old/"Audit-CombinedNativeBatch.py"
+    size,digest = AUDITORS[key]
+    exact(auditor_path,digest,size)
+    original = auditor_path.read_bytes()
+    old_literal = old.relative_to(B).as_posix().encode()
+    literal = out.relative_to(B).as_posix().encode()
+    assert original.count(old_literal) == 1 and literal not in original
+    raw = original.replace(old_literal,literal)
+    assert raw.count(literal) == 1 and raw.replace(literal,old_literal) == original
+    auditors[key] = (raw,old_literal,literal)
+assert all(not out.exists() for out in OUTS.values())
+state()
+now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+matrix["source_head_at_preparation"],matrix["prepared_utc"] = HEAD,now
+matrix_bytes = (json.dumps(matrix,indent=2)+"\n").encode()
+whole_inverse = copy.deepcopy(matrix)
+whole_inverse["source_head_at_preparation"] = prior["source_head_at_preparation"]
+whole_inverse["prepared_utc"] = prior["prepared_utc"]
+for row in source_changes:
+    whole_inverse["groups"][row["group_index"]]["source_pins"][row["row_index"]]["sha256"] = row["before"]
+assert whole_inverse == prior
+assert (json.dumps(whole_inverse,indent=2)+"\n").encode() == (OLDS["new4"]/"groups.json").read_bytes()
+closure_inventory.update(schema="pi-zig.v38-new-root-conservative-source-inventories.v1",candidate_head=HEAD,prepared_utc=now)
+whole_inventory_inverse = copy.deepcopy(closure_inventory)
+for key in ("schema","candidate_head","prepared_utc"):
+    whole_inventory_inverse[key] = old_inventory[key]
+for row in fixture_member_changes:
+    target = whole_inventory_inverse["roots"][row["root_index"]]["modules"][row["module_index"]]
+    target["sha256"],target["bytes"] = row["before_sha256"],row["before_bytes"]
+assert whole_inventory_inverse == old_inventory
+assert (json.dumps(whole_inventory_inverse,indent=2)+"\n").encode() == old_inventory_path.read_bytes()
+partition = {
+ key:dict(preparation=str(OUTS[key]),groups=selected_groups[key],declared_controls=(58 if key=="new4" else 1249),actual_metadata_count=None)
+ for key in OUTS}
+intake_inventory = dict(schema=1,candidate_head=HEAD,previous_head=PREVIOUS_HEAD,
+    phase_pins=cfg["phase_pins"],phases=phase_reports,
+    explicit_phase_path_occurrences=sum(r["path_count"] for r in phase_reports),
+    distinct_final_paths=len(latest),source_build_paths=2,repeated_paths=overlaps,
+    all_donor_and_commit_bytes_exact=True,all_raw_preimages_exact=True,
+    complete_changed_path_set_exact=True,
+    source_union=[dict(path=name,bytes=row["after_bytes"],sha256=row["after_sha256"],last_phase=latest[name]["phase"]) for name,row in SOURCE_IMAGES.items()],
+    no_main_or_index_write=True)
+for key,out in OUTS.items():
+    out.mkdir()
+    old = OLDS[key]
+    for name,digest in copies:
+        with (out/name).open("xb") as f:
+            f.write((old/name).read_bytes())
+        exact(out/name,digest)
+    with (out/"prior-v37-progress.json").open("xb") as f:
+        f.write(old_progress)
+    raw,old_literal,literal = auditors[key]
+    with (out/"Audit-CombinedNativeBatch.py").open("xb") as f:
+        f.write(raw)
+    put(out/"metadata-auditor-adaptation.json",dict(
+        schema=1,baseline=pin(old/"Audit-CombinedNativeBatch.py"),adapted=pin(out/"Audit-CombinedNativeBatch.py"),
+        edit_count=1,before=old_literal.decode(),after=literal.decode(),
+        full_byte_inverse=True,process_instance_reconciliation_unchanged=True,
+        nested_live_identity_utc100ns_gate_unchanged=True,
+        all_metadata_artifact_gates_unchanged=True,original_pid_rejection_preserved=True))
+    with (out/"groups.json").open("xb") as f:
+        f.write(matrix_bytes)
+    put(out/"matrix-refresh-adaptation.json",dict(
+        schema=1,baseline=pin(old/"groups.json"),adapted=pin(out/"groups.json"),
+        source_pin_changes=source_changes,whole_dependency_pin_changes=[],
+        before_head=PREVIOUS_HEAD,after_head=HEAD,before_prepared_utc=prior["prepared_utc"],after_prepared_utc=now,
+        exact_changed_source_rows=4,all117_group_definitions_and2013_names_preserved=True,
+        all576_dependency_rows_unchanged=True,whole_structural_and_byte_inverse=True,
+        current_matrix_file_versions_rehashed=len(current_bytes),external_current_pins=external_current_pins,
+        execution_authority=False,actual_metadata_count=None))
+    put(out/"new-roots-source-inventory.json",closure_inventory)
+    put(out/"source-inventory-refresh-adaptation.json",dict(
+        schema=1,baseline=pin(old_inventory_path),adapted=pin(out/"new-roots-source-inventory.json"),
+        fixture_member_changes=fixture_member_changes,
+        identity_fields_changed=["schema","candidate_head","prepared_utc"],
+        all_module_embed_import_anonymous_named_control_inventories_preserved=True,
+        whole_structural_and_byte_inverse=True,compiler_selected_reachability_claimed=False,
+        execution_authority=False,actual_metadata_count=None))
+    put(out/"exact-intake-source-inventory.json",intake_inventory)
+    put(out/"complete-batch-partition.json",dict(
+        schema=1,candidate_head=HEAD,catalog_groups=117,catalog_declarations=2013,
+        partitions=partition,disjoint=True,union_groups=67,union_declarations=1307,
+        original63_order_preserved=True,per_batch_cap=64,
+        actual_metadata_count=None,execution_authority=False))
+assert (OUTS["new4"]/"groups.json").read_bytes() == (OUTS["regression63"]/"groups.json").read_bytes() == matrix_bytes
+results = []
+for key,out in OUTS.items():
+    prior_review = prior_reviews[key]
+    batch_provenance = copy.deepcopy(provenance)
+    batch_provenance["prior_v37_progress"] = pin(out/"prior-v37-progress.json")
+    selected = selected_groups[key]
+    review = dict(
+        schema=3,status="source_only_fresh_batch_prepared",candidate_head=HEAD,batch=key,
+        source_integration_commit=prior_review["source_integration_commit"],
+        uv_correction_commit=prior_review["uv_correction_commit"],
+        quickjs_correction_commit=prior_review["quickjs_correction_commit"],
+        exotic_correction_commit=prior_review["exotic_correction_commit"],
+        prior_v35_intake_commits=prior_review["prior_v35_intake_commits"],
+        prior_v36_intake_commits=prior_review["prior_v36_intake_commits"],
+        prior_v37_intake_commits=prior_review["new_intake_commits"],
+        new_intake_commits=[r["after_head"] for r in phase_reports],
+        prepared_utc=now,driver=pin(out/"Run-CombinedNativeBatch.ps1"),
+        matrix=pin(out/"groups.json"),auditor=pin(out/"Audit-CombinedNativeBatch.py"),
+        classifier=pin(out/"Get-ModelsNativeCandidates.ps1"),
+        combined_build_source_peer=pin(out/"combined-build-source-peer.json"),
+        metadata_auditor_adaptation=pin(out/"metadata-auditor-adaptation.json"),
+        matrix_refresh_adaptation=pin(out/"matrix-refresh-adaptation.json"),
+        source_dependency_inventory=pin(out/"new-roots-source-inventory.json"),
+        source_inventory_refresh_adaptation=pin(out/"source-inventory-refresh-adaptation.json"),
+        exact_intake_inventory=pin(out/"exact-intake-source-inventory.json"),
+        complete_partition=pin(out/"complete-batch-partition.json"),
+        provenance=batch_provenance,source_pin_changes=source_changes,
+        historical_source_rebindings=historical_source_rebindings,
+        selected_current_source_roots=selected_roots,new_source_roots_are_original_historical_pins=True,
+        prior_v37_initial_admission_granted_groups=4,prior_v37_initial_admission_attempted_groups=0,
+        prior_v37_initial_admission_unstarted_groups=4,prior_v37_initial_admission_actual_metadata_count=None,
+        prior_v37_initial_freshness_rejection_preserved=True,
+        prior_v37_retry1_buildquery_granted_groups=4,prior_v37_retry1_buildquery_completed_groups=4,
+        prior_v37_retry1_accepted_actual_metadata_count=61,prior_v37_retry1_metadata_counts=[19,4,24,14],
+        prior_v37_retry1_buildquery_runtime_tests_started=0,
+        prior_v37_retry1_runtime_granted_groups=4,prior_v37_retry1_runtime_attempted_groups=1,prior_v37_retry1_runtime_unstarted_groups=3,
+        prior_v37_retry1_runtime_started=19,prior_v37_retry1_runtime_completed=19,
+        prior_v37_retry1_runtime_failed=5,prior_v37_retry1_runtime_passed=14,prior_v37_retry1_runtime_unstarted=42,
+        prior_v37_retry1_failed_indices=[5,10,11,12,16],
+        prior_v37_initial_admission_retry1_buildquery_and_strict_negative_preserved=True,
+        prior_v37_retry1_original_runtime_qualification=False,prior_v37_retry1_original_product_qualification=False,
+        prior_v37_retry1_original_strict_empty_stderr_and_all_tests_passing_gates_passed=False,
+        whole_dependency_pin_changes=[],old_dependency_rows_retained=576,new_dependency_rows=0,
+        new_groups=[],preserved_groups=117,preserved_declarations=2013,
+        catalog_groups=117,catalog_declarations=2013,selected_groups=len(selected),
+        selected_declarations=partition[key]["declared_controls"],selected_group_names=selected,
+        partition_union_groups=67,partition_union_declarations=1307,
+        prior_v36_buildquery_granted_groups=4,prior_v36_buildquery_completed_groups=4,
+        prior_v36_accepted_actual_metadata_count=61,prior_v36_metadata_counts=[19,4,24,14],
+        prior_v36_buildquery_runtime_tests_started=0,
+        prior_v36_runtime_granted_groups=4,prior_v36_runtime_attempted_groups=1,prior_v36_runtime_unstarted_groups=3,
+        prior_v36_runtime_started=19,prior_v36_runtime_completed=19,
+        prior_v36_runtime_failed=18,prior_v36_runtime_passed=1,prior_v36_runtime_unstarted=42,
+        prior_v36_complete_buildquery_and_original_strict_runtime_negative_preserved=True,
+        prior_v36_original_runtime_qualification=False,prior_v36_original_product_qualification=False,
+        prior_v36_original_strict_empty_stderr_and_all_tests_passing_gates_passed=False,
+        prior_v35_granted_groups=4,prior_v35_attempted_groups=1,prior_v35_unstarted_groups=3,
+        prior_v35_actual_partial_metadata_count=0,prior_v35_actual_tests_started=0,
+        prior_v35_original_first_compile_negative_preserved=True,
+        prior_v34_accepted_actual_metadata_count=1285,
+        prior_v34_strict_started=164,prior_v34_strict_flagged=1,prior_v34_strict_unstarted=1121,
+        prior_v34_diagnostic_started=312,prior_v34_diagnostic_completed=311,
+        prior_v34_diagnostic_passed=310,prior_v34_diagnostic_flagged=1,
+        prior_v34_diagnostic_incomplete=1,prior_v34_diagnostic_unstarted=973,
+        actual_metadata_count=None,prior_metadata_transferred=False,
+        old_catalog_complete_structural_and_byte_inverse=True,
+        old_group_objects_except_reviewed_source_pin_hashes_exact=True,
+        old_dependency_prefix_except_reviewed_hashes_exact=True,
+        existing_named_control_lists_and_selected63_order_exact=True,
+        all_driver_classifier_and_strict_gates_unchanged=True,
+        selected_order_note="The same four complete newly integrated source roots first; the separate complete regression63 batch retains the exact prior order. The selections are disjoint and each remains below the unchanged64 cap.",
+        auditor_change="Only each single V37 preparation-path literal changes independently for its batch; complete raw-byte inverse, exact UTC100ns instance reconciliation and every metadata/artifact gate retained.",
+        runtime_authority=False,execution_authority=False,qualification=False,
+        review="Preserve the complete117-group/2013-declaration V37 catalog and all576 dependency rows. Refresh only four reviewed source-pin hashes: one owner test root and the shared fixture in three groups, plus preparation head/time, with complete matrix and source-inventory inverses. Verify both committed intakes, every archival donor/preimage/committed byte, every current matrix input and the same four conservative import/embed/anonymous inventories. The old new_source_roots list remains historical; selected_current_source_roots binds the current owner root. Preserve all earlier V34-V36 evidence. V37 initial admission was rejected before proof creation or any native phase; separate fresh Retry1 produced61 accepted metadata records, then strict runtime completed19 tests with5 failed and14 passed, leaving42 tests and3 groups unstarted. Every original strict stderr/failure flag remains a negative, and no prior metadata or runtime acceptance transfers to this successor. Both new4 and regression63 still require fresh private BuildQuery evidence, independent raw metadata/artifact acceptance and complete current source/compiler/control/process closure before any separately granted strict runtime.")
+    put(out/"preparation-review.json",review)
+    results.append(dict(batch=key,preparation=str(out),matrix=review["matrix"],
+        review=pin(out/"preparation-review.json"),driver=review["driver"],auditor=review["auditor"],
+        classifier=review["classifier"],selected_groups=len(selected),
+        selected_declarations=partition[key]["declared_controls"],actual_metadata_count=None))
+# Read-only final bookend after creating reviewable evidence.
+for path,raw in current_bytes.items():
+    assert (M/path).read_bytes() == raw,path
+for row in external_current_pins:
+    exact(Path(row["path"]),row["sha256"],row["bytes"])
+for target,row in latest.items():
+    exact(M/target,row["sha256"],row["bytes"])
+state()
+print(json.dumps(dict(candidate_head=HEAD,catalog_groups=117,catalog_declarations=2013,
+    preparations=results,partition_disjoint=True,union_groups=67,union_declarations=1307,
+    source_pin_changes=4,old_dependency_pin_changes=0,old_dependency_rows_retained=576,
+    new_dependency_rows=0,actual_metadata_count=None,execution_authorized=False,native_execution=False)))
