@@ -1,0 +1,98 @@
+{
+  "schema": "root_exact_v38_archive_intake_acceptance_v1",
+  "utc": "2026-10-22T15:04:44.376420+00:00",
+  "status": "accepted_exact_archive_intake_committed",
+  "semantic_phase": "v38_partial_negative_evidence_and_progress_archive",
+  "before_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "after_head": "e65c636b8600d351920cff88aa31c9f804d5f0b9",
+  "complete_commit_parents": [
+    "014062f2d139254acab4b985b4ae343db637166f"
+  ],
+  "branch": "work/pi-zig-consolidated-20261016",
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-bound-20261022\\manifest.json",
+    "bytes": 2376374,
+    "sha256": "5BB0608FA530405D87A99000A9A305DBD7A6E3049AF592A0D2DF0C8489A9479C"
+  },
+  "executor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-bound-20261022\\Apply-ExactV38PartialNegativeArchiveIntake-20261022.py",
+    "bytes": 23653,
+    "sha256": "A492D0C5F151E87F2A2538C2E570D1EC2C2FF905442FA3B87E89A59A277E7C09"
+  },
+  "release": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-control-20261022\\root-release.json",
+    "bytes": 1356696,
+    "sha256": "FE57E859542C550D90A7F252C4DEE4465607093207B26219595CBF5FF132EFF8"
+  },
+  "receipt": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-control-20261022\\fixture-receipt.json",
+    "bytes": 1783479,
+    "sha256": "64FBA8893AF3396D0AA482C9BFC6DB794D8856782958212CAD08D753F8484096"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-progress-validation-archive-intake-peer-20261022\\peer.json",
+    "bytes": 9563,
+    "sha256": "4D47AEAEB5C6F2B670B611C8176AC3444EAF35A8C02F7C02E0B3EC25B44C97D6"
+  },
+  "job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-control-20261022\\root-job-observation.json",
+    "bytes": 3011,
+    "sha256": "B45B36982797A5BC859BB1BFE2F23B1C5868A7D1B6A360A6B40B2732818E7479"
+  },
+  "control_receipts": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-control-20261022\\fixture-commit-message.txt",
+      "bytes": 167,
+      "sha256": "B7286BF668A9705FEB23CF7FEB1F2E82A787422206C714423A8F1524D6814037"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-control-20261022\\fixture-paths.nul",
+      "bytes": 275227,
+      "sha256": "CA6E150FAD810931BBDD6E333EA25577096FF34F2CFAFB0D6B742815B47E7241"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-control-20261022\\fixture-post-copy.json",
+      "bytes": 219,
+      "sha256": "2577B98FFB75A2B92646890134001DDCA3291346A986D92714A74BD8790ACFED"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-control-20261022\\fixture-preflight.json",
+      "bytes": 5773824,
+      "sha256": "1088B20089887DA58AE298A6A25321829A8C2344944CCCE4B40F3C718C61C2EE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-control-20261022\\fixture-receipt.json",
+      "bytes": 1783479,
+      "sha256": "64FBA8893AF3396D0AA482C9BFC6DB794D8856782958212CAD08D753F8484096"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-control-20261022\\fixture-staged.json",
+      "bytes": 729714,
+      "sha256": "192014F10DAB572B925DF53B2F3CACC92B23B4BA8CD4CF0A1804C5401DF0B12B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-control-20261022\\root-release.json",
+      "bytes": 1356696,
+      "sha256": "FE57E859542C550D90A7F252C4DEE4465607093207B26219595CBF5FF132EFF8"
+    }
+  ],
+  "path_count": 1931,
+  "logical_alias_count": 1930,
+  "source_build_paths": 0,
+  "all1931_complete_committed_blobs_and_live_donors_and_worktree_bytes_equal": true,
+  "all1931_independently_computed_raw_Git_oids_and100644_modes_equal": true,
+  "all1931_staged_and_committed_receipt_rows_verified": true,
+  "complete_committed_rows_digest": "0DA35E64491988332624B13C7808FCDDE61316013483524D3DB18A38A9D45E7F",
+  "total_committed_bytes": 88572860,
+  "progress": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+    "bytes": 678718,
+    "sha256": "4FF79AE87F671BB8F16283E38D282CB58444A1A0FA42659B0F3CED505EE04343"
+  },
+  "clean_worktree": true,
+  "actual_remote_head_verification_pending": true,
+  "original_native_outcomes_unchanged": true,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "production_bridge_removed": false
+}

@@ -1,0 +1,414 @@
+{
+  "schema": 1,
+  "status": "source_only_shutdown_shared_projection",
+  "basis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\basis.json",
+    "bytes": 3672,
+    "sha256": "E55445514F46981AF3B8559B9A23D3A4ACCCC664B5B057B92ED46DA064548003"
+  },
+  "selected_quickjs_basis": "Accepted constructor successor C 5C746837 / H 7FBD8411, not current Main or an altered accepted packet",
+  "path_count": 7,
+  "edit_count": 37,
+  "files": [
+    {
+      "relative_path": "src/extensions/native_node_async_wrap_state.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_async_wrap_state.zig",
+        "bytes": 28133,
+        "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_async_wrap_state.zig",
+        "bytes": 34046,
+        "sha256": "1530C4043859CFF37D7F157F5557E4597E68972C1F1A1B82D208978F47E3D67A"
+      },
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_async_wrap.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_async_wrap.zig",
+        "bytes": 19741,
+        "sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_async_wrap.zig",
+        "bytes": 20655,
+        "sha256": "F2BEC62AC7817F16EE57E50B80D903ECCB0F8D60AFCB8B61FED920245918CC27"
+      },
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_stream_resource.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_stream_resource.zig",
+        "bytes": 5762,
+        "sha256": "6CA4CF5CD5E71EAD8C9E6F4FCF0D0075190C853E26978B497389F7D29EBE0AC6"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_stream_resource.zig",
+        "bytes": 6847,
+        "sha256": "39255A86BA9631F95E9CBD13B85AE7264A30A015EF4454F10B2D64BD643F2D8A"
+      },
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_stream_base.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_stream_base.zig",
+        "bytes": 10864,
+        "sha256": "0A3F4EB5133BC9543D5AD77DC33F4753ABEC866EB721BCE0A8F08C16BECD5ABF"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_stream_base.zig",
+        "bytes": 12321,
+        "sha256": "F85721695F41998E3676C196B4791D295EA62C8DE89FD83159F05BACDEF7716E"
+      },
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_owner.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 17650,
+        "sha256": "F2672292FBEBEEF74B35C32C38203E3D1E1D259052E7AB5AFB34DA29840B544D"
+      },
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.c",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403712,
+        "sha256": "2AEE7EA130CCF08282928A9FDA056B444CF0905E8C53F1EFD520E8243F9C37B4"
+      },
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.h",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114656,
+        "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114822,
+        "sha256": "4728F93F8CC0D51FB6066E31502BE87920FE7B395BB57DED6D4E80BD1543222C"
+      },
+      "whole_inverse_exact": true
+    }
+  ],
+  "edits": [
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "const callable = @import(\"native_node_module_callable.zig\");",
+      "after": "const callable = @import(\"native_node_module_callable.zig\");\nconst check_failure = @import(\"native_node_check_failure.zig\");",
+      "reason": "Actual StreamReq attachment CHECK owner.",
+      "before_sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1",
+      "after_sha256": "F972D8DEEF5BFA2F462F8B7F1CCF1E346D00C66ADB74A1834E6EA37A55DF86F0"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "pub const Kind = enum { async_wrap, fsreqpromise, filehandleclosereq, filehandle, fsreqcallback };",
+      "after": "pub const Kind = enum { async_wrap, fsreqpromise, filehandleclosereq, filehandle, fsreqcallback, shutdownwrap };",
+      "reason": "Append actual ShutdownWrap template brand.",
+      "before_sha256": "F972D8DEEF5BFA2F462F8B7F1CCF1E346D00C66ADB74A1834E6EA37A55DF86F0",
+      "after_sha256": "1B0D8BEDEFBFCAE2290E2F6C1E1A365BFBD5E2F9BBF51998182D03EB69A8C02A"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "    pub const fsreqpromise: u32 = 9;\n",
+      "after": "    pub const fsreqpromise: u32 = 9;\n    pub const shutdownwrap: u32 = 35;\n",
+      "reason": "Pinned non-crypto provider macro index.",
+      "before_sha256": "1B0D8BEDEFBFCAE2290E2F6C1E1A365BFBD5E2F9BBF51998182D03EB69A8C02A",
+      "after_sha256": "6C84BDDC5946BA74D1BB2E2559897FFEFDE5CAC38A3A7BA374E5EBA5490929F0"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "/// Independently retained native owner. One realm cleanup registration covers",
+      "after": "/// StreamReq's two native pointer slots are independent. FromObject reads the\n/// request slot without requiring a live BaseObject pointer. Neither pointer is\n/// a JS graph edge; only the wrapper allocation retains this registry metadata.\nconst RequestFields = struct {\n    registry: *Registry,\n    state: ?*State = null,\n    request: ?*anyopaque = null,\n};\n\n/// Independently retained native owner. One realm cleanup registration covers",
+      "reason": "Actual StreamReq internal field ownership.",
+      "before_sha256": "6C84BDDC5946BA74D1BB2E2559897FFEFDE5CAC38A3A7BA374E5EBA5490929F0",
+      "after_sha256": "D3D77EBA98A5383C04A5B948B32086EB1089991B64A03753A4518DF90A837C7D"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "    class_ids: [5]c.JSClassID = .{ 0, 0, 0, 0, 0 },",
+      "after": "    class_ids: [6]c.JSClassID = .{ 0, 0, 0, 0, 0, 0 },",
+      "reason": "Reserve actual appended template class.",
+      "before_sha256": "D3D77EBA98A5383C04A5B948B32086EB1089991B64A03753A4518DF90A837C7D",
+      "after_sha256": "1C85FB8EF2A7C9E33032B202CC08D4BAA42095EB67DDBD15D1F88FB0619EA4A6"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "inline for (.{ \"AsyncWrap\", \"FSReqPromise\", \"FileHandleCloseReq\", \"FileHandle\", \"FSReqCallback\" }, 0..)",
+      "after": "inline for (.{ \"AsyncWrap\", \"FSReqPromise\", \"FileHandleCloseReq\", \"FileHandle\", \"FSReqCallback\", \"ShutdownWrap\" }, 0..)",
+      "reason": "Original ShutdownWrap class name.",
+      "before_sha256": "1C85FB8EF2A7C9E33032B202CC08D4BAA42095EB67DDBD15D1F88FB0619EA4A6",
+      "after_sha256": "A06393EB2B51D3AC7A6178A16555FA42BD73DE8FED24FEF7ABA55127E7572CDD"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "                .finalizer = if (index == @intFromEnum(Kind.filehandle)) streamWrapperFinalizer else wrapperFinalizer,\n                .gc_mark = if (index == @intFromEnum(Kind.filehandle)) streamWrapperMark else wrapperMark,",
+      "after": "                .finalizer = if (index == @intFromEnum(Kind.filehandle)) streamWrapperFinalizer\n                    else if (index == @intFromEnum(Kind.shutdownwrap)) requestWrapperFinalizer else wrapperFinalizer,\n                .gc_mark = if (index == @intFromEnum(Kind.filehandle)) streamWrapperMark\n                    else if (index == @intFromEnum(Kind.shutdownwrap)) requestWrapperMark else wrapperMark,",
+      "reason": "Separate request field finalizer and mark owner.",
+      "before_sha256": "A06393EB2B51D3AC7A6178A16555FA42BD73DE8FED24FEF7ABA55127E7572CDD",
+      "after_sha256": "801D3DF2F8A76BDDD6EB7B38BFDD931705DF3109A15899986B4BC818E377503B"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "        const raw = c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return null;\n        const state: *State = @ptrCast(@alignCast(raw));",
+      "after": "        if (c.JS_GetClassID(value) == self.classId(.shutdownwrap)) {\n            const fields = self.requestFields(value) orelse return null;\n            return fields.state;\n        }\n        const raw = c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return null;\n        const state: *State = @ptrCast(@alignCast(raw));",
+      "reason": "Unwrap BaseObject slot of actual ShutdownWrap.",
+      "before_sha256": "801D3DF2F8A76BDDD6EB7B38BFDD931705DF3109A15899986B4BC818E377503B",
+      "after_sha256": "FA35ADEC27A62B441BA1D9FD5E22AE3ACE2D93A9E17A44E9F1B684063860137E"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "    fn nativePointerIsEmpty(self: *const Registry, wrapper: c.JSValue) bool {",
+      "after": "    fn requestFields(self: *const Registry, wrapper: c.JSValue) ?*RequestFields {\n        if (c.JS_GetClassID(wrapper) != self.classId(.shutdownwrap)) return null;\n        const raw = c.JS_GetOpaque(wrapper, self.classId(.shutdownwrap)) orelse return null;\n        const fields: *RequestFields = @ptrCast(@alignCast(raw));\n        return if (fields.registry == self) fields else null;\n    }\n    /// StreamReq::ResetObject is used only at its genuine fresh-instance sites.\n    /// It clears both slots, including the BaseObject slot, in Source order.\n    pub fn resetRequestObject(self: *Registry, wrapper: c.JSValue) !void {\n        const fields = self.requestFields(wrapper) orelse return self.check(.invalid_wrap_brand);\n        fields.state = null;\n        fields.request = null;\n    }\n    pub fn attachRequestPointer(self: *Registry, wrapper: c.JSValue, request: *anyopaque) !void {\n        const fields = self.requestFields(wrapper) orelse return self.check(.invalid_wrap_brand);\n        if (fields.request != null) check_failure.assertion(self.environment.engine, .{\n            .file_line = \"src/stream_base-inl.h:21\",\n            .message = \"(req_wrap_obj->GetAlignedPointerFromInternalField( StreamReq::kStreamReqField)) == (nullptr)\",\n            .function = \"node::StreamReq::AttachToObject\",\n        });\n        fields.request = request;\n    }\n    pub fn requestPointer(self: *const Registry, wrapper: c.JSValue) ?*anyopaque {\n        const fields = self.requestFields(wrapper) orelse return null;\n        return fields.request;\n    }\n    pub fn clearRequestPointer(self: *Registry, wrapper: c.JSValue) !void {\n        const fields = self.requestFields(wrapper) orelse return self.check(.invalid_wrap_brand);\n        fields.request = null;\n    }\n    fn nativePointerIsEmpty(self: *const Registry, wrapper: c.JSValue) bool {",
+      "reason": "Original ResetObject, AttachToObject, FromObject and Dispose slot operations.",
+      "before_sha256": "FA35ADEC27A62B441BA1D9FD5E22AE3ACE2D93A9E17A44E9F1B684063860137E",
+      "after_sha256": "E8BD65D0D9139DE29003368848E3420441FA8E2370FC6CA8BB7ED3A4132E1C0A"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "        return c.JS_GetOpaque(wrapper, c.JS_GetClassID(wrapper)) == null;\n    }\n    fn attachNativePointer",
+      "after": "        if (c.JS_GetClassID(wrapper) == self.classId(.shutdownwrap)) {\n            const fields = self.requestFields(wrapper) orelse return false;\n            return fields.state == null;\n        }\n        return c.JS_GetOpaque(wrapper, c.JS_GetClassID(wrapper)) == null;\n    }\n    fn attachNativePointer",
+      "reason": "Admit StreamReq attachment before AsyncWrap construction.",
+      "before_sha256": "E8BD65D0D9139DE29003368848E3420441FA8E2370FC6CA8BB7ED3A4132E1C0A",
+      "after_sha256": "F2F152F166D8FD147C9789384A23336E109707EED941F5BE571B555081D7240A"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "            fields.state = state;\n        } else {\n            _ = c.JS_SetOpaque(wrapper, state);",
+      "after": "            fields.state = state;\n        } else if (c.JS_GetClassID(wrapper) == self.classId(.shutdownwrap)) {\n            const fields = self.requestFields(wrapper).?;\n            std.debug.assert(fields.state == null);\n            fields.state = state;\n        } else {\n            _ = c.JS_SetOpaque(wrapper, state);",
+      "reason": "Attach actual BaseObject independently of StreamReq.",
+      "before_sha256": "F2F152F166D8FD147C9789384A23336E109707EED941F5BE571B555081D7240A",
+      "after_sha256": "C080BE992073AA08F1778F4EE670F062FD0939D74E1AE57ED229E3295293CDBE"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "            fields.state = null;\n        } else {\n            _ = c.JS_SetOpaque(wrapper, null);",
+      "after": "            fields.state = null;\n        } else if (c.JS_GetClassID(wrapper) == self.classId(.shutdownwrap)) {\n            const fields = self.requestFields(wrapper).?;\n            std.debug.assert(fields.state == state);\n            fields.state = null;\n        } else {\n            _ = c.JS_SetOpaque(wrapper, null);",
+      "reason": "Native BaseObject deletion does not clear StreamReq slot.",
+      "before_sha256": "C080BE992073AA08F1778F4EE670F062FD0939D74E1AE57ED229E3295293CDBE",
+      "after_sha256": "133B5988B949F4DFF18CC9E87DFB4579CEFC1D35D3EA7855E507238B360545A7"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "        const result = c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind));\n        if (!c.JS_IsException(result)) if (fields) |attached| {\n            _ = c.JS_SetOpaque(result, attached);\n            fields = null;\n        };\n        return s.checkedAllocation(result, generation);",
+      "after": "        var request_fields: ?*RequestFields = null;\n        if (kind == .shutdownwrap) {\n            const created = try self.environment.allocator().create(RequestFields);\n            created.* = .{ .registry = self.retain() };\n            request_fields = created;\n        }\n        errdefer if (request_fields) |unattached| {\n            self.environment.allocator().destroy(unattached);\n            self.release();\n        };\n        const result = c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind));\n        if (!c.JS_IsException(result)) {\n            if (fields) |attached| {\n                _ = c.JS_SetOpaque(result, attached);\n                fields = null;\n            }\n            if (request_fields) |attached| {\n                _ = c.JS_SetOpaque(result, attached);\n                request_fields = null;\n            }\n        }\n        const object = try s.checkedAllocation(result, generation);\n        if (kind == .shutdownwrap) {\n            // StreamWrap::Initialize configures these own InstanceTemplate\n            // fields in this order, with default (C/W/E) attributes. Defining\n            // fresh data fields must not invoke a prototype's setter.\n            inline for (.{ \"oncomplete\", \"callback\", \"handle\" }) |key|\n                try s.define(object, key, c.pi_js_null(), c.JS_PROP_C_W_E);\n        }\n        return object;",
+      "reason": "Allocate actual request fields and original own template properties.",
+      "before_sha256": "133B5988B949F4DFF18CC9E87DFB4579CEFC1D35D3EA7855E507238B360545A7",
+      "after_sha256": "AD01FE804AAC55AD53D6929F5B47DCF514A30C360637F9453044F562E30965E1"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "fn wrapperFinalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {",
+      "after": "fn requestWrapperFinalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {\n    const fields: *RequestFields = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));\n    const registry = fields.registry;\n    if (registry.environment.engine) |engine| {\n        var scope = LocalScope.init(engine);\n        var failure: ?anyerror = null;\n        if (fields.state) |state| state.retire(true) catch |err| {\n            scope.boundary.escaping();\n            failure = err;\n        };\n        std.debug.assert(fields.state == null);\n        _ = c.JS_SetOpaque(value, null);\n        registry.environment.allocator().destroy(fields);\n        defer registry.release();\n        const ignored = scope.finish(if (failure) |err| @as(anyerror!c.JSValue, err) else c.pi_js_undefined()) catch |err| {\n            _ = callable.failure(engine, err, 0);\n            return;\n        };\n        engine.freeValue(ignored);\n    } else {\n        // The actual realm cleanup already retired native request states.\n        // The two native slots carry no JS references to release here.\n        std.debug.assert(fields.state == null);\n        _ = c.JS_SetOpaque(value, null);\n        registry.environment.allocator().destroy(fields);\n        registry.release();\n    }\n}\nfn requestWrapperMark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {\n    const fields: *RequestFields = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));\n    if (fields.state) |state| state.mark(runtime, marker);\n}\n\nfn wrapperFinalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {",
+      "reason": "Actual finalizer retires request before releasing wrapper field metadata.",
+      "before_sha256": "AD01FE804AAC55AD53D6929F5B47DCF514A30C360637F9453044F562E30965E1",
+      "after_sha256": "1530C4043859CFF37D7F157F5557E4597E68972C1F1A1B82D208978F47E3D67A"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "constructors: [5]?c.JSValue = .{ null, null, null, null, null }",
+      "after": "constructors: [6]?c.JSValue = .{ null, null, null, null, null, null }",
+      "reason": "Append actual ShutdownWrap constructor cache.",
+      "before_sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0",
+      "after_sha256": "67D44FA52641068FFCF57BCF5C980A985BFE71DAC828E7B1E475CF7DF634D3C9"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "cached_instances: [5]?c.JSValue = .{ null, null, null, null, null }",
+      "after": "cached_instances: [6]?c.JSValue = .{ null, null, null, null, null, null }",
+      "reason": "Append actual ShutdownWrap instance-template cache.",
+      "before_sha256": "67D44FA52641068FFCF57BCF5C980A985BFE71DAC828E7B1E475CF7DF634D3C9",
+      "after_sha256": "7974BB62AB9A654CE5BC807A68A05BEEE86DDAFA067A0E20597DE82788468E07"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "                receiver, use_bigint);\n        }\n        return a.duplicate(s.engine, receiver);",
+      "after": "                receiver, use_bigint);\n        } else if (self.kind == .shutdownwrap) {\n            // IsConstructCallCallback has no return assignment; constructor\n            // invocation returns its actual receiver after ResetObject.\n            try owner.registry.resetRequestObject(receiver);\n        }\n        return a.duplicate(s.engine, receiver);",
+      "reason": "Invoke the genuine present ShutdownWrap constructor body.",
+      "before_sha256": "7974BB62AB9A654CE5BC807A68A05BEEE86DDAFA067A0E20597DE82788468E07",
+      "after_sha256": "F83CAD108AD5FBFE3390AEB456B29CC10B6C6883892836C0200467EFFB50D3D1"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "    // V8's no-handler FunctionTemplate returns its actual converted receiver.",
+      "after": "    if (self.kind == .shutdownwrap)\n        check.assertion(s.engine, .{\n            .file_line = \"src/stream_wrap.cc:62\",\n            .message = \"args.IsConstructCall()\",\n            .function = \"node::IsConstructCallCallback\",\n        });\n    // V8's no-handler FunctionTemplate returns its actual converted receiver.",
+      "reason": "Original native construct-call CHECK after receiver conversion.",
+      "before_sha256": "F83CAD108AD5FBFE3390AEB456B29CC10B6C6883892836C0200467EFFB50D3D1",
+      "after_sha256": "8D9AF8F16D28068C5E44EE49A8169CDBA0C6786CC39156EFBEC62DDB7EDFB3AD"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "        .fsreqcallback => \"FSReqCallback\",",
+      "after": "        .fsreqcallback => \"FSReqCallback\",\n        .shutdownwrap => \"ShutdownWrap\",",
+      "reason": "Original public constructor name.",
+      "before_sha256": "8D9AF8F16D28068C5E44EE49A8169CDBA0C6786CC39156EFBEC62DDB7EDFB3AD",
+      "after_sha256": "AEF83FE6267D9F2EB25205BC4C85DFEFCB5C6B76EA4B9B0B768EC3AEDC38161E"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "    // These selected instance templates have only zeroed internal native\n    // fields, with no own JS properties/interceptors. CacheTemplateInstantiation\n    // retains the first actual object, then CopyJSObject returns another with\n    // that same prototype and blank internal fields.",
+      "after": "    // CacheTemplateInstantiation retains the first actual object, then\n    // CopyJSObject returns another with the same prototype and blank native\n    // slots. ShutdownWrap also copies its three original null data fields;\n    // Registry.newInstance installs those same attributes on every path.",
+      "reason": "Retain exact instance-property semantics across native cache and subclass paths.",
+      "before_sha256": "AEF83FE6267D9F2EB25205BC4C85DFEFCB5C6B76EA4B9B0B768EC3AEDC38161E",
+      "after_sha256": "72E1D636344EFAC98684EF06B6CBF3CA8C986520578155824A946C487AE8092E"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "pub fn newFSReqCallbackInstance(s: *Scope, known_owner: c.JSValue) !c.JSValue {\n    return instantiate(s, try bundleOf(s.engine, known_owner),\n        known_owner, .fsreqcallback, null);\n}",
+      "after": "pub fn newFSReqCallbackInstance(s: *Scope, known_owner: c.JSValue) !c.JSValue {\n    return instantiate(s, try bundleOf(s.engine, known_owner),\n        known_owner, .fsreqcallback, null);\n}\n\n/// env->shutdown_wrap_template() stores the real ShutdownWrap InstanceTemplate.\n/// StreamBase::Shutdown invokes ResetObject itself after this bypass operation.\npub fn newShutdownWrapInstance(s: *Scope, known_owner: c.JSValue) !c.JSValue {\n    return instantiate(s, try bundleOf(s.engine, known_owner),\n        known_owner, .shutdownwrap, null);\n}",
+      "reason": "Expose exact stored InstanceTemplate operation without present callback.",
+      "before_sha256": "72E1D636344EFAC98684EF06B6CBF3CA8C986520578155824A946C487AE8092E",
+      "after_sha256": "F2BEC62AC7817F16EE57E50B80D903ECCB0F8D60AFCB8B61FED920245918CC27"
+    },
+    {
+      "path": "src/extensions/native_node_stream_resource.zig",
+      "before": "const std = @import(\"std\");",
+      "after": "const std = @import(\"std\");\nconst requests = @import(\"native_node_stream_request.zig\");",
+      "reason": "Typed actual ShutdownWrap virtual completion.",
+      "before_sha256": "6CA4CF5CD5E71EAD8C9E6F4FCF0D0075190C853E26978B497389F7D29EBE0AC6",
+      "after_sha256": "179E5FA296A7FFDD997AD2AE66E05E4D845C5CD0035B3903F081204AD1427558"
+    },
+    {
+      "path": "src/extensions/native_node_stream_resource.zig",
+      "before": "    read_methods: ?*const ReadMethods = null,",
+      "after": "    read_methods: ?*const ReadMethods = null,\n    after_shutdown: *const fn (*Listener, *requests.Shutdown, c_int) anyerror!void = forwardAfterShutdown,",
+      "reason": "Actual virtual shutdown completion.",
+      "before_sha256": "179E5FA296A7FFDD997AD2AE66E05E4D845C5CD0035B3903F081204AD1427558",
+      "after_sha256": "8BA3F0678F3C351DB839E7458D7091A21B2648ECD2F7DBDDB14CB950420AC360"
+    },
+    {
+      "path": "src/extensions/native_node_stream_resource.zig",
+      "before": "    // The original virtual default OnStreamDestroy() has an empty body.",
+      "after": "    fn forwardAfterShutdown(self: *Listener, request: *requests.Shutdown,\n        status: c_int) anyerror!void\n    {\n        const previous = self.previous_listener orelse check.assertion(\n            if (self.stream) |stream| stream.engine else null, .{\n                .file_line = \"src/stream_base.cc:808\",\n                .message = \"(previous_listener_) != nullptr\",\n                .function = \"node::StreamListener::OnStreamAfterShutdown\",\n            });\n        return previous.after_shutdown(previous, request, status);\n    }\n\n    // The original virtual default OnStreamDestroy() has an empty body.",
+      "reason": "Original default listener forwards through live predecessor with native CHECK.",
+      "before_sha256": "8BA3F0678F3C351DB839E7458D7091A21B2648ECD2F7DBDDB14CB950420AC360",
+      "after_sha256": "2129CED3D002936B120012C869FDCE007CBC28F42BB48142C5F6C79C30542D01"
+    },
+    {
+      "path": "src/extensions/native_node_stream_resource.zig",
+      "before": "    /// Actual StreamResource::~StreamResource. OnStreamDestroy may unlink and",
+      "after": "    /// StreamResource::EmitAfterShutdown selects the live native head. The\n    /// callback may destroy this resource; no self access follows it.\n    pub fn emitAfterShutdown(self: *Resource, request: *requests.Shutdown,\n        status: c_int) anyerror!void\n    {\n        const selected = self.listener.?;\n        return selected.after_shutdown(selected, request, status);\n    }\n\n    /// Actual StreamResource::~StreamResource. OnStreamDestroy may unlink and",
+      "reason": "Original live-head completion selection.",
+      "before_sha256": "2129CED3D002936B120012C869FDCE007CBC28F42BB48142C5F6C79C30542D01",
+      "after_sha256": "39255A86BA9631F95E9CBD13B85AE7264A30A015EF4454F10B2D64BD643F2D8A"
+    },
+    {
+      "path": "src/extensions/native_node_stream_base.zig",
+      "before": "const check = @import(\"native_node_check_failure.zig\");",
+      "after": "const check = @import(\"native_node_check_failure.zig\");\nconst requests = @import(\"native_node_stream_request.zig\");\nconst shutdown = @import(\"native_node_stream_shutdown.zig\");",
+      "reason": "Concrete shutdown dependency owners.",
+      "before_sha256": "0A3F4EB5133BC9543D5AD77DC33F4753ABEC866EB721BCE0A8F08C16BECD5ABF",
+      "after_sha256": "77096BAC0EF1E5F403FD8C3B17A59DADC27CB200EBAF7CC9CC6BFE39775C0518"
+    },
+    {
+      "path": "src/extensions/native_node_stream_base.zig",
+      "before": "pub const Operations = struct {",
+      "after": "/// Borrowed actual Environment template/key roots. Their embedding owner must\n/// retain them through every native stream/request completion; this record is\n/// not an installation hook or a substitute template/key allocator.\npub const ShutdownBindings = struct {\n    template_owner: c.JSValue,\n    error_string: c.JSValue,\n    oncomplete_string: c.JSValue,\n};\n\npub const Operations = struct {",
+      "reason": "Actual stored template and cached names required, not fabricated.",
+      "before_sha256": "77096BAC0EF1E5F403FD8C3B17A59DADC27CB200EBAF7CC9CC6BFE39775C0518",
+      "after_sha256": "6F3B025462527E08A502FE550DB76CDD771D5836C3FA5C7065CE9F4E2B8C3204"
+    },
+    {
+      "path": "src/extensions/native_node_stream_base.zig",
+      "before": "    heap_diagnostics: ?*const check.Diagnostics,\n};",
+      "after": "    heap_diagnostics: ?*const check.Diagnostics,\n    shutdown: ?ShutdownBindings = null,\n};",
+      "reason": "Read-only assemblies remain separate until genuine shutdown bindings supplied.",
+      "before_sha256": "6F3B025462527E08A502FE550DB76CDD771D5836C3FA5C7065CE9F4E2B8C3204",
+      "after_sha256": "F4312A826B194819EB6A977FE40C2C5F5BCAD483102D2D95896AFC83104B2C91"
+    },
+    {
+      "path": "src/extensions/native_node_stream_base.zig",
+      "before": "pub const Virtuals = struct {\n    get_async_wrap: *const fn (*Base) ?*wraps.State,\n};",
+      "after": "pub const Virtuals = struct {\n    get_async_wrap: *const fn (*Base) ?*wraps.State,\n    get_object: *const fn (*Base) ?c.JSValue = defaultGetObject,\n    error_string: *const fn (*Base) ?[*:0]const u8 = defaultError,\n    clear_error: *const fn (*Base) void = defaultClearError,\n    create_shutdown: *const fn (*Base, *a.Scope, c.JSValue) anyerror!?*requests.Shutdown = shutdown.createDefault,\n    do_shutdown: ?*const fn (*Base, *a.Scope, ?*requests.Shutdown) anyerror!c_int = null,\n};\nfn defaultGetObject(stream: *Base) ?c.JSValue {\n    const wrap = stream.virtuals.get_async_wrap(stream) orelse return null;\n    return wrap.object();\n}\n// These are the original StreamResource virtual default bodies.\nfn defaultError(_: *Base) ?[*:0]const u8 { return null; }\nfn defaultClearError(_: *Base) void {}",
+      "reason": "Original GetObject/Error/ClearError/CreateShutdown defaults; actual DoShutdown required.",
+      "before_sha256": "F4312A826B194819EB6A977FE40C2C5F5BCAD483102D2D95896AFC83104B2C91",
+      "after_sha256": "F431CC67470CDDFCB646940F476C2D2C610F984B3D55272482A74802337A7132"
+    },
+    {
+      "path": "src/extensions/native_node_stream_base.zig",
+      "before": "            .default_listener = .{ .read_methods = &default_read_methods },",
+      "after": "            .default_listener = .{ .read_methods = &default_read_methods,\n                .after_shutdown = shutdown.reportAfterShutdown },",
+      "reason": "EmitToJSStreamListener inherits genuine ReportWrites completion.",
+      "before_sha256": "F431CC67470CDDFCB646940F476C2D2C610F984B3D55272482A74802337A7132",
+      "after_sha256": "5916DE6F6B77D182F09C8A74862BCF8B5633BB93AA682257123FAE7178E6C909"
+    },
+    {
+      "path": "src/extensions/native_node_stream_base.zig",
+      "before": "    /// No new HandleScope: the Source Local result and selected onread remain",
+      "after": "    pub fn shutdownRequest(self: *Base, s: *a.Scope,\n        wrapper: ?c.JSValue) anyerror!c_int\n    {\n        return shutdown.run(s, self, wrapper);\n    }\n\n    /// No new HandleScope: the Source Local result and selected onread remain",
+      "reason": "Expose actual native StreamBase::Shutdown operation.",
+      "before_sha256": "5916DE6F6B77D182F09C8A74862BCF8B5633BB93AA682257123FAE7178E6C909",
+      "after_sha256": "F85721695F41998E3676C196B4791D295EA62C8DE89FD83159F05BACDEF7716E"
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_owner.zig",
+      "before": "const gc_close = @import(\"native_node_file_handle_gc_close.zig\");",
+      "after": "const gc_close = @import(\"native_node_file_handle_gc_close.zig\");\nconst stream_requests = @import(\"native_node_stream_request.zig\");\nconst shutdown_request = @import(\"native_node_file_handle_shutdown.zig\");",
+      "reason": "Actual FileHandleCloseWrap owner.",
+      "before_sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D",
+      "after_sha256": "7448BB70E5C44C0EE62499DE4364CA73EA32AB7541B9A6D169EE195A6C84AF52"
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_owner.zig",
+      "before": "    pub const CloseReq = close_request.Type(@This());",
+      "after": "    pub const CloseReq = close_request.Type(@This());\n    pub const ShutdownReq = shutdown_request.Type(@This());",
+      "reason": "Concrete SimpleShutdownWrap<ReqWrap<uv_fs_t>> specialization.",
+      "before_sha256": "7448BB70E5C44C0EE62499DE4364CA73EA32AB7541B9A6D169EE195A6C84AF52",
+      "after_sha256": "CD9FDE30B286B7ED8BB1F9F4201BF67D1DB75A6189416736CF4D2B75A9096E99"
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_owner.zig",
+      "before": "    pub fn fromObject(registry: *native.Registry, wrapper: c.JSValue) !*Handle {",
+      "after": "    fn createShutdown(base: *stream_base.Base, s: *Scope,\n        wrapper: c.JSValue) anyerror!?*stream_requests.Shutdown\n    {\n        const self: *Handle = @fieldParentPtr(\"stream\", base);\n        return &((try ShutdownReq.create(s, self, wrapper)).shutdown);\n    }\n    fn doShutdown(base: *stream_base.Base, s: *Scope,\n        request: ?*stream_requests.Shutdown) anyerror!c_int\n    {\n        const self: *Handle = @fieldParentPtr(\"stream\", base);\n        return ShutdownReq.dispatch(s, self, request orelse\n            return error.ActualFileHandleShutdownRequestRequired);\n    }\n    pub fn shutdown(self: *Handle, s: *Scope, wrapper: ?c.JSValue) anyerror!c_int {\n        return self.stream.shutdownRequest(s, wrapper);\n    }\n    pub fn fromObject(registry: *native.Registry, wrapper: c.JSValue) !*Handle {",
+      "reason": "Native CreateShutdownWrap/DoShutdown overrides and actual call surface.",
+      "before_sha256": "CD9FDE30B286B7ED8BB1F9F4201BF67D1DB75A6189416736CF4D2B75A9096E99",
+      "after_sha256": "53B36B39536BB1617B8DB918D4B013E45BCED89EE0F7EA68C9E067CF51BA4DAB"
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_owner.zig",
+      "before": "            .{ .get_async_wrap = streamWrap }, self.stream_operations);",
+      "after": "            .{ .get_async_wrap = streamWrap,\n                .create_shutdown = createShutdown, .do_shutdown = doShutdown },\n            self.stream_operations);",
+      "reason": "Select real concrete FileHandle shutdown virtuals.",
+      "before_sha256": "53B36B39536BB1617B8DB918D4B013E45BCED89EE0F7EA68C9E067CF51BA4DAB",
+      "after_sha256": "F2672292FBEBEEF74B35C32C38203E3D1E1D259052E7AB5AFB34DA29840B544D"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "/* create a string from a UTF-8 buffer */\nJSValue JS_NewStringLen(JSContext *ctx, const char *buf, size_t buf_len)\n",
+      "after": "/* Raw one-byte string construction for native Node OneByteString callers.\n   Every byte denotes the same Latin-1 code unit, including embedded NUL.\n   Signed length selection and Node/V8 fatal policy belong to that caller. */\nJSValue JS_PiNewStringLatin1(JSContext *ctx, const uint8_t *buf, size_t len)\n{\n    if (len == 0)\n        return js_empty_string(ctx);\n    if (len > JS_STRING_LEN_MAX)\n        return JS_ThrowRangeError(ctx, \"string too long\");\n    return js_new_string8_len(ctx, buf, (int)len);\n}\n\n/* create a string from a UTF-8 buffer */\nJSValue JS_NewStringLen(JSContext *ctx, const char *buf, size_t buf_len)\n",
+      "reason": "Raw actual VM Latin-1 allocation, no UTF-8 decoding or synthesized JS string.",
+      "before_sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464",
+      "after_sha256": "2AEE7EA130CCF08282928A9FDA056B444CF0905E8C53F1EFD520E8243F9C37B4"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "JS_EXTERN JSValue JS_NewStringLen(JSContext *ctx, const char *str1, size_t len1);",
+      "after": "/* Raw Latin-1 code units; caller owns Node/V8 signed-length/fatal policy. */\nJS_EXTERN JSValue JS_PiNewStringLatin1(JSContext *ctx, const uint8_t *buf, size_t len);\nJS_EXTERN JSValue JS_NewStringLen(JSContext *ctx, const char *str1, size_t len1);",
+      "reason": "Declare the actual VM one-byte string producer.",
+      "before_sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952",
+      "after_sha256": "4728F93F8CC0D51FB6066E31502BE87920FE7B395BB57DED6D4E80BD1543222C"
+    }
+  ],
+  "live_shared_sources_mutated": false,
+  "main_mutated": false,
+  "native_execution": false,
+  "qualification": false
+}

@@ -1,0 +1,176 @@
+{
+  "schema": 1,
+  "status": "passed_static_v2_source_accounting",
+  "inputs": {
+    "baseline": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+      "bytes": 9719,
+      "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+    },
+    "original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py",
+      "bytes": 23554,
+      "sha256": "1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010",
+      "lines": 373,
+      "complete": true,
+      "AST_parse_only": true,
+      "candidate_executed": false
+    },
+    "selected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py",
+      "bytes": 23634,
+      "sha256": "8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985"
+    },
+    "prior_finite": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\finite-source-adaptation.json",
+      "bytes": 56895,
+      "sha256": "2E657192C7DF2B8216D128E82C7AB47E57ECD0AB43FCDD2327E8F83C32A69A69"
+    },
+    "prior_proof": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\static-source-proof.json",
+      "bytes": 9915,
+      "sha256": "7B4C2D3F56451498C790AD655C8864FCE0CB582676E857F430E0FEF3FCB53804"
+    },
+    "prior_handoff": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\handoff.json",
+      "bytes": 9923,
+      "sha256": "45623F0F2BDA1E5333DE7FB9F7005F971D13FC1F9FBAF903D147020684CD9B53"
+    }
+  },
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\check-planned-parent-alias-v2.py",
+    "bytes": 7137,
+    "sha256": "3101EBE1CD0130762B9DBBAD36C7AE59D440D4A508487CCBB07035EB1B3F825B"
+  },
+  "finding": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\original-planned-parent-alias-source-finding.json",
+    "bytes": 996,
+    "sha256": "1D336DEF267175CBA6FB0A82FF59549F8D4CE6DA24E7BB8612B52D7709C49025"
+  },
+  "adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\planned-parent-alias-v2-finite-adaptation.json",
+    "bytes": 3114,
+    "sha256": "6079473C24AA9496D5CFC41F89830A643740B9DB99D80ACEA573C7093EEAE123"
+  },
+  "prior20_steps_replayed": true,
+  "one_v2_step_replayed": true,
+  "complete_raw_inverse_to_56DE": true,
+  "all22_helpers_equal": [
+    {
+      "name": "sha",
+      "bytes": 57,
+      "sha256": "4FC52FB70BB0793D472938E4324857597433C1E7DDBB15063EE372297676A588"
+    },
+    {
+      "name": "raw",
+      "bytes": 40,
+      "sha256": "0674AD6317F2AE8EB96A5F56EFBC878FF39C90C68C99C8F4C9978F7A23316A26"
+    },
+    {
+      "name": "pinned",
+      "bytes": 73,
+      "sha256": "5DF7EDACFCE2ED39EB6DC75D1A5F85E312FDDFB88E50861484072351D188F54B"
+    },
+    {
+      "name": "git",
+      "bytes": 260,
+      "sha256": "FC6515AF1843269E597434A172257CA17ABBD50C611145B8D12A50030C9D6F91"
+    },
+    {
+      "name": "gout",
+      "bytes": 66,
+      "sha256": "D4BED77E98D7E0410BF8A6950089ECF30E6E537B8ADFE7B2A7249DF93CD6FEB1"
+    },
+    {
+      "name": "inside",
+      "bytes": 134,
+      "sha256": "BC7F1D1F13B1AC08CB47D2ECC8EEC9D015E9D5509C90D7E82AE778A30CFDA777"
+    },
+    {
+      "name": "new_file",
+      "bytes": 140,
+      "sha256": "A4CF95E3648B13330AAA4B9D1CCA39CB3EDA7D34C70738A6801D61E9F950D66A"
+    },
+    {
+      "name": "new_json",
+      "bytes": 96,
+      "sha256": "72B0BE02D4C073A234A09E2AEDF42D5451679590CC88BBCD1588A719F16DAA9C"
+    },
+    {
+      "name": "blob_many",
+      "bytes": 541,
+      "sha256": "5C5894AA029CC5F735A97EF61E00D8759C94D09386C65454A06F66CCE87E4F9B"
+    },
+    {
+      "name": "tree_paths",
+      "bytes": 139,
+      "sha256": "C33D511D519C1F80C2CC3EF6D508C6A113624CBC9C08A10BE63A825AC26C0C23"
+    },
+    {
+      "name": "no_hooks",
+      "bytes": 339,
+      "sha256": "7D17240FF95A97C6347339D55C052EE66A7744D034501DD353282E1B6476A115"
+    },
+    {
+      "name": "fail_record",
+      "bytes": 877,
+      "sha256": "8D9903227B543181EA39869C56B2946611F89D24A986064AA9FE89BC8120178C"
+    },
+    {
+      "name": "target_name",
+      "bytes": 672,
+      "sha256": "F6E592E1B4A2C10DB0ACE6F1D381BA41642428F110A2E962E6E0355F0BE9ED0B"
+    },
+    {
+      "name": "no_reparse_target",
+      "bytes": 482,
+      "sha256": "7BF75934A960EA16B26E1A6983C830136FECC5C4B7EC7B373498EFC50738E1E6"
+    },
+    {
+      "name": "oid_text",
+      "bytes": 197,
+      "sha256": "0DE20E55D9E7EC75C56D24D1B0A06F60A63E1F8462A377854BBA13C1C9B2D0FA"
+    },
+    {
+      "name": "raw_oid",
+      "bytes": 122,
+      "sha256": "14E181976C8F4485693E4571F8D89C885D7E389B1E7AD41D1191970F993F52FE"
+    },
+    {
+      "name": "repository_identity",
+      "bytes": 1256,
+      "sha256": "476632466793E9CCF0AA521E7F5A91BE5C2D1CB574C2DF8B7293EE908C882C99"
+    },
+    {
+      "name": "conversion_provenance",
+      "bytes": 1913,
+      "sha256": "6195D3D9B8D408105C44D59BD0E181A2092C04FD2E7958AB51A9F86B9E704FA5"
+    },
+    {
+      "name": "effective_attributes",
+      "bytes": 772,
+      "sha256": "6A8DFC0BA9A2E4A920DE2C23F173B65ACE51A2F3E4D86598B3166B8A9DB7D910"
+    },
+    {
+      "name": "tree_entries",
+      "bytes": 345,
+      "sha256": "D7BCF41144C4AD65A278310BC74FECB70156CADB4E334D526ECC7221D0C0A75B"
+    },
+    {
+      "name": "index_entries",
+      "bytes": 378,
+      "sha256": "C7120E02C9199E6627B73C7190B25DF583DEF3E23EA15F62BCC430E972C01B4F"
+    },
+    {
+      "name": "assert_conversion_unchanged",
+      "bytes": 537,
+      "sha256": "C2C9E280CD635354190BCE6935B6EC2C4F0B70DDA0D56B309258019D34E4628F"
+    }
+  ],
+  "new_gate": "All existing and planned target-prefix spellings must agree before donor/attribute preflight completes; original existing-only absence inventory is unchanged.",
+  "no_candidate_evaluation": true,
+  "Main_accessed": false,
+  "index_accessed": false,
+  "native_executed": false,
+  "unresolved_future_release_bindings_retained": true
+}

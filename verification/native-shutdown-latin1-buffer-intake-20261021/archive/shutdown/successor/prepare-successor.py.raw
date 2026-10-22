@@ -1,0 +1,38 @@
+import pathlib,hashlib,json
+P=pathlib.Path(r'C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018\verification\native-node-shutdown-wrap-sourceonly-20261020')
+source=P/'shared/projected/vendor/quickjs/quickjs.c'
+b=source.read_bytes()
+assert hashlib.sha256(b).hexdigest().upper()=='2AEE7EA130CCF08282928A9FDA056B444CF0905E8C53F1EFD520E8243F9C37B4'
+def sha(x):return hashlib.sha256(x).hexdigest().upper()
+def pin(p):
+ x=p.read_bytes();return {'path':str(p),'bytes':len(x),'sha256':sha(x)}
+edits=[
+ {'before':'    if (len == 0)\n        return js_empty_string(ctx);\n',
+  'after':'    if (len == 0)\n        return js_empty_string(ctx->rt);\n',
+  'reason':'Original helper accepts JSRuntime*, not JSContext*. Existing original JS_NewStringLen uses ctx->rt.'},
+ {'before':'    return js_new_string8_len(ctx, buf, (int)len);\n',
+  'after':'    return js_new_string8_len(ctx, (const char *)buf, (int)len);\n',
+  'reason':'uint8_t* is unsigned-char pointer, distinct from original const char* parameter; explicit cast preserves original bytes. Existing int length cast is already bounded by JS_STRING_LEN_MAX.'}]
+out=b;steps=[]
+for e in edits:
+ a=e['before'].encode();z=e['after'].encode();assert out.count(a)==1
+ prev=out;offset=out.index(a);out=out.replace(a,z,1)
+ steps.append(dict(e,offset=offset,input_sha256=sha(prev),output_sha256=sha(out)))
+reverse=out
+for e in reversed(edits):
+ a=e['after'].encode();z=e['before'].encode();assert reverse.count(a)==1;reverse=reverse.replace(a,z,1)
+assert reverse==b
+target=P/'successor/projected/vendor/quickjs/quickjs.c'
+target.parent.mkdir(parents=True,exist_ok=True);assert not target.exists();target.write_bytes(out)
+m={'schema':'pi-zig.shutdown-latin1-c-argument-successor.v1',
+ 'source_only':True,'parent_projection':pin(P/'shared/proposal.json'),
+ 'relative_path':'vendor/quickjs/quickjs.c','original':pin(source),'projected':pin(target),
+ 'edits':steps,'whole_forward_exact':True,'whole_inverse_exact':True,
+ 'original_private_signatures':['static inline JSValue js_empty_string(JSRuntime *rt)',
+ 'static JSValue js_new_string8_len(JSContext *ctx, const char *buf, int len)'],
+ 'selection':'This successor replaces only the selected QuickJS C snapshot; the other six shared outputs and all original 37 edits remain unchanged. Complete original C58D3183 packet and closure are preserved.',
+ 'controls_changed':False,'control_names_changed':False,'build_changed':False,
+ 'native_or_compiler_executed':False,'Main_changed':False,
+ 'review_finding':'SDK independent source review identified both concrete parameter mismatches before any native execution or Main intake.'}
+p=P/'successor/proposal.json';assert not p.exists();p.write_bytes((json.dumps(m,indent=2)+'\n').encode())
+print(json.dumps({'proposal':pin(p),'selected_c':pin(target)},indent=2))

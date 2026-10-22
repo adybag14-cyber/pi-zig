@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "status": "preserved_source_checker_wall_timeout_no_proof",
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-linkage-build-successor-sourceonly-20261022\\source-audit.py",
+    "bytes": 18945,
+    "sha256": "784BE7E185F8D3EE8B5651B6C0FC126275A9518A9A7735BEC250F90945D01B29"
+  },
+  "original_tool_observation": {
+    "ok": false,
+    "summary": "Command timed out after 30000 ms.",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "proof_readback": {
+    "ok": true,
+    "summary": "Ran python directly in the Windows host devbox.",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      },
+      "output": {
+        "mode": "tail",
+        "max_chars": 3000,
+        "max_lines": 0,
+        "stdout_original_chars": 1086,
+        "stderr_original_chars": 0,
+        "stdout_capture_truncated": false,
+        "stderr_capture_truncated": false
+      }
+    },
+    "stdout": "{\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018\\\\verification\\\\native-node-shutdown-linkage-build-successor-sourceonly-20261022\\\\source-proof.json\", \"exists\": false, \"bytes\": null, \"sha256\": null}\r\n{\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018\\\\verification\\\\native-node-shutdown-linkage-build-successor-sourceonly-20261022\\\\source-audit.py\", \"exists\": true, \"bytes\": 18945, \"sha256\": \"784BE7E185F8D3EE8B5651B6C0FC126275A9518A9A7735BEC250F90945D01B29\"}\r\n{\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018\\\\verification\\\\native-node-shutdown-linkage-build-successor-sourceonly-20261022\\\\build-proposal.json\", \"exists\": true, \"bytes\": 19578, \"sha256\": \"66015D20AF046807E1F22E2FFBB0E08EB81CD6070F5781E9ACE61EA6249FC9DB\"}\r\n{\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018\\\\verification\\\\native-node-shutdown-linkage-build-successor-sourceonly-20261022\\\\projected\\\\build.zig\", \"exists\": true, \"bytes\": 514105, \"sha256\": \"594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF\"}\r\n",
+    "exitCode": 0,
+    "truncated": false
+  },
+  "exact_checker_process_query": {
+    "ok": true,
+    "summary": "Ran pwsh directly in the Windows host devbox.",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 4,
+        "slot": 9
+      },
+      "output": {
+        "mode": "tail",
+        "max_chars": 4000,
+        "max_lines": 0,
+        "stdout_original_chars": 0,
+        "stderr_original_chars": 0,
+        "stdout_capture_truncated": false,
+        "stderr_capture_truncated": false
+      }
+    },
+    "exitCode": 0,
+    "truncated": false
+  },
+  "source_only": true,
+  "Main_accessed": false,
+  "candidate_build_executed": false
+}

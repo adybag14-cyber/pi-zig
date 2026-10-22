@@ -1,0 +1,36 @@
+# Borrowed ArrayBufferView address dependency
+
+This is a finite source proposal for `JS_PiArrayBufferViewData`, the missing address operation needed by later native user-buffer handling. It adds two exact C/H insertions, one 12-control root, and one install-only build insertion. It does not publish FileHandle methods or install a CustomBuffer listener.
+
+## Contract and original-source boundary
+
+The function reads the actual initialized QuickJS TypedArray/DataView, its backing ArrayBuffer, and its stored byte offset. It returns the current backing address plus that offset. Invalid or incomplete native brands and detached views return NULL. A live resizable view can be out of bounds while retaining a nonzero offset; the usable length must be obtained separately before any dereference.
+
+This is a synchronous borrow on the VM owner thread. The function acquires no JavaScript root or native backing reference, performs no allocation or getter call, and changes no pending completion. The caller owns the view/storage lifetime. Detachment, transfer, collection, external reallocation and owner retirement can invalidate an earlier address. It is not an asynchronous or cross-thread lease.
+
+The exact original Node and V8 sources are pinned. Node Buffer::Data performs its own CHECK that the argument is an ArrayBufferView; the raw intrinsic's NULL result does not implement that policy. V8 TypedArray::GetBuffer returns existing off-heap storage, but can allocate/copy/materialize on-heap elements and fatal on allocation failure. That complete V8 policy is not implemented here. Current QuickJS view constructors already create or retain actual backing storage. The source map records both the selected lower-level operation and the remaining original caller obligations.
+
+## Selected source and composition
+
+- `vm/proposal.json` (8F6E77DD) contains the two raw C/H edits on accepted Error constructor C5C746837/H7FBD8411, with exact originals and complete inverses.
+- `controls/binding.json` pins the live/frozen 12-control source (5F31607F). All controls use the actual C VM and physical storage.
+- `build/proposal.json` (AD344119) adds `build-native-vm-array-buffer-view-data`, artifact basename `native-vm-array-buffer-view-data`, without a run step.
+- `vm/latin1-successor-composition.json` (F992DA49) composes the raw primitive with Module's corrected Latin-1 successor11FA3C23/BC772BEE. Either order produces C091E5BE0/H05AA4DF2; both complete inverses pass.
+- The original Latin-1 C58/2DF7 composition remains immutable negative predecessor evidence. Its C argument issues are corrected only by the selected additive successor.
+- `build/shutdown-composition.json` (EFE32C9D) preserves fixed Owner -> Error -> Transfer -> Shutdown source order. The Buffer insertion commutes with that fixed set. Transfer and Shutdown use the same insertion anchor, so their mutual ordering is not claimed byte-commutative.
+
+The raw API does not require Shutdown's Zig/native diagnostic owners. The corrected combined VM snapshots are provided for future shared-file integration. Complete Shutdown has its own independently reviewed packet.
+
+## Controls and verification
+
+The 12 controls exercise actual typed-array widths and DataView byte offsets, physical writes, live empty end pointers, getter/proxy brand boundaries, detach, fixed/tracking RAB lengths, shared aliases across two real runtimes, actual memory limits, real pending ordinary/uncatchable/private-termination events, physical backing reference retirement, unmanaged external storage and real transfer. Private termination is checked with the dedicated predicate and unchanged event generation.
+
+The source audit reproduces the complete dependency inventory and closure. It pins one repository Zig root, 25 quoted-C reachable files and 33 include edges; all quoted includes resolve. The new C/H insertion introduces no include dependency. Standard/toolchain angle headers and existing ICU/YAML/SQLite/photon/network/package library graphs remain inherited common-build dependencies, not newly qualified compiler closure.
+
+All 40 prior SDK source files retained in the TransferData proof remain byte-identical. Existing Main, accepted packets and prior negative evidence are unchanged. A metadata-inspector variable-shadowing error stopped a read-only preflight before output; the original script and its negative record are retained, and the corrected inspector is separate.
+
+The complete read-only prefix of `prepare-closure.py` reproduces `dependency-inventory.json` and `closure-and-preservation.json`. The read-only prefix of `source-audit.py` reproduces `source-only-checks.json`. These scripts inspect source bytes and metadata only.
+
+## Remaining work
+
+The real CustomBuffer listener, actual ReportWrites inheritance, full StreamBase/FileHandle method publication, FunctionTemplate receiver signature, liveness/argument admission, template/bootstrap ownership and production trace/policy owners remain separate work. Native compilation, target behavior and runtime qualification require a separate authorized validation phase. The 12 source declarations do not predict accepted runtime metadata.

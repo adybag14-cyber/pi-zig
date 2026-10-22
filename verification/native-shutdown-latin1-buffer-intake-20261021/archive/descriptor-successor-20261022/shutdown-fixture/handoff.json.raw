@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "status": "sealed_source_only_shutdown_invalid_descriptor_fixture_successor",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\proposal.json",
+    "bytes": 26590,
+    "sha256": "331C9A44BA5543C9676324CCB30EC04E79E6DD1A36D23103C59331DEDE851C10"
+  },
+  "source_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\source-audit.py",
+    "bytes": 12234,
+    "sha256": "69612CEEAC78BFE456918FA9F876084F3063BF6A6216845C16C5F06B82C6F617"
+  },
+  "source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\source-proof.json",
+    "bytes": 56676,
+    "sha256": "3D3E8B670F048A7A07AEDABF8ECCF897694855CD4149646E861E3FE35DBD8757"
+  },
+  "original_donor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test.zig",
+    "bytes": 17019,
+    "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+  },
+  "selected_candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+    "bytes": 17039,
+    "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+  },
+  "static_discovery": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\static-discovery.json",
+    "bytes": 1375,
+    "sha256": "65AE7506A49E9849AF6BB83B7B878E46B4E429FA7C1F95E0A9229AF6B4FFF82D"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\README.md",
+    "bytes": 3428,
+    "sha256": "99AF4CECD80E643006FBCCBBDF84B134E194A148A747A463396ACCB3CF1257B5"
+  },
+  "previous_copy_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 530121,
+    "sha256": "B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC"
+  },
+  "previous_accepted_CRT_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-source-acceptance-20261021.json",
+    "bytes": 5656,
+    "sha256": "9896A0FDAE942CF2F579555E602EB23CD4E07BBFD8FFEAAF50787A21A9FBAD85"
+  },
+  "finite": {
+    "edits": 1,
+    "old_expression": "-2",
+    "new_expression": "std.math.maxInt(c_int)",
+    "full_raw_inverse": true,
+    "unchanged_declarations": 18,
+    "new3_declarations": 38,
+    "all_assertions_helpers_imports_other_bytes_exact": true,
+    "other20_source_donors_exact": true
+  },
+  "static_proof": {
+    "current_input_versions": 42,
+    "raw_git_inputs": 5,
+    "exact_source_excerpts": 24,
+    "remaining_new3_census_complete_for_descriptor_selection": true,
+    "initial_static_checker_passed": true,
+    "checker_successor_needed": false
+  },
+  "packet_inventory": [
+    {
+      "relative_path": "fixture.patch",
+      "bytes": 576,
+      "sha256": "2A2F3A84492565B89780C5FBF0947A45974B90EB05C6E7E04FA2BECE81309C87"
+    },
+    {
+      "relative_path": "original/src/native_node_stream_shutdown_test.zig",
+      "bytes": 17019,
+      "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+    },
+    {
+      "relative_path": "projected/src/native_node_stream_shutdown_test.zig",
+      "bytes": 17039,
+      "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+    },
+    {
+      "relative_path": "proposal.json",
+      "bytes": 26590,
+      "sha256": "331C9A44BA5543C9676324CCB30EC04E79E6DD1A36D23103C59331DEDE851C10"
+    },
+    {
+      "relative_path": "README.md",
+      "bytes": 3428,
+      "sha256": "99AF4CECD80E643006FBCCBBDF84B134E194A148A747A463396ACCB3CF1257B5"
+    },
+    {
+      "relative_path": "source-audit.py",
+      "bytes": 12234,
+      "sha256": "69612CEEAC78BFE456918FA9F876084F3063BF6A6216845C16C5F06B82C6F617"
+    },
+    {
+      "relative_path": "source-proof.json",
+      "bytes": 56676,
+      "sha256": "3D3E8B670F048A7A07AEDABF8ECCF897694855CD4149646E861E3FE35DBD8757"
+    },
+    {
+      "relative_path": "static-discovery.json",
+      "bytes": 1375,
+      "sha256": "65AE7506A49E9849AF6BB83B7B878E46B4E429FA7C1F95E0A9229AF6B4FFF82D"
+    }
+  ],
+  "packet_inventory_sha256": "253C2B26FAEC26CECCAE3602D216324F37D5312359FCE0F3A892B03C8C43E41E",
+  "packet_inventory_serialization": "json.dumps(rows,sort_keys=True,separators=(',',':')).encode(); no trailing LF; sorted relative-path rows exclude this handoff",
+  "authoring_observation": {
+    "kind": "orchestration_parse_rejection_before_host_submission",
+    "message": "Unexpected identifier fs__close from unescaped README Markdown backtick",
+    "host_submitted": false,
+    "files_written": false,
+    "candidate_or_checker_changed": false
+  },
+  "future_source_peer": null,
+  "future_Root_source_acceptance": null,
+  "future21_copy_plan_successor": null,
+  "actual_future_metadata": null,
+  "actual_future_runtime_outcome": null,
+  "source_only": true,
+  "candidate_or_prefix_executed": false,
+  "native_execution_authorized": false,
+  "Main_accessed": false,
+  "intake_authorized": false,
+  "application_qualified": false
+}

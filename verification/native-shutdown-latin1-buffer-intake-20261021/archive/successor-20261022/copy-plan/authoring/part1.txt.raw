@@ -1,0 +1,161 @@
+"""Author an inert copy-plan successor from immutable source evidence only.
+No Main access, index action, adapter/candidate evaluation, configuration or native execution.
+"""
+from pathlib import Path
+import copy,hashlib,json,re,subprocess
+W=Path(r'C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018')
+S=Path(r'C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018')
+E=Path(r'C:\Users\adyba\pi-zig\evidence')
+D=W/'verification/unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022'
+H='014062f2d139254acab4b985b4ae343db637166f'
+B=E/'unissued-shutdown-latin1-buffer-union014-intake-plan-20261021'
+L=W/'verification/native-node-shutdown-linkage-build-successor-sourceonly-20261022'
+F=W/'verification/v38-fs-request-pump-escrow-sourceonly-20261022'
+A=E/'unissued-pending20-strengthened-intake-adapter-sourceonly-20261022'
+inputs={};raws={};ops=[]
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def norm(p):return str(p).replace('/','\\').casefold()
+def pin(p,expected=None):
+ p=Path(p);b=p.read_bytes();r={'path':str(p),'bytes':len(b),'sha256':sha(b)}
+ if expected:assert (len(b),sha(b))==expected,(r,expected)
+ k=norm(p)
+ if k in inputs:assert (inputs[k]['bytes'],inputs[k]['sha256'])==(len(b),sha(b)) and raws[k]==b
+ else:inputs[k]=r
+ raws[k]=b;return r
+def verify(r):
+ q=pin(r['path'],(r['bytes'],r['sha256']))
+ return q
+def read(p,expected=None):r=pin(p,expected);return json.loads(raws[norm(p)])
+def wire(x):return (json.dumps(x,indent=2)+'\n').encode()
+def put(p,b):
+ p.parent.mkdir(parents=True,exist_ok=True)
+ with p.open('xb') as f:f.write(b)
+ assert p.read_bytes()==b
+ return {'path':str(p),'bytes':len(b),'sha256':sha(b)}
+baseline=read(B/'copy-manifest-plan.json',(378545,'E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74'))
+base_raw=raws[norm(B/'copy-manifest-plan.json')]
+assert wire(baseline)==base_raw,'baseline serialization must reverse byte-exactly'
+assert len(baseline['source_rows'])==20 and len(baseline['archive_rows'])==223
+assert sum(len(x['logical_donors']) for x in baseline['archive_rows'])==248
+plan=copy.deepcopy(baseline)
+def parent(tree,path):
+ for k in path[:-1]:tree=tree[k]
+ return tree,path[-1]
+def setv(path,value):
+ p,k=parent(plan,path);exists=(k<len(p) if isinstance(p,list) else k in p)
+ before=copy.deepcopy(p[k]) if exists else None
+ ops.append({'op':'replace' if exists else 'add','path':path,'before':before,'after':copy.deepcopy(value)})
+ p[k]=copy.deepcopy(value)
+def append(path,value):
+ p=plan
+ for k in path:p=p[k]
+ ops.append({'op':'append','path':path,'index':len(p),'after':copy.deepcopy(value)})
+ p.append(copy.deepcopy(value))
+linkroot=read(E/'root-pending20-shutdown-linkage-build-successor-source-acceptance-20261022.json',(16990,'2FCDC2953B9D8C980D66D5F10D760DBB31C63E58A6B666888128B05E7FC32D17'))
+adapterroot=read(E/'root-pending20-strengthened-intake-adapter-v2-source-acceptance-20261022.json',(6683,'039E21F5F5A82E7AFEC2AD549DF8E27BDF7729BF8D1E8E4015B4E9C06B99B738'))
+copyroot=read(E/'root-shutdown-latin1-buffer-unissued-copy-plan-acceptance-20261021.json',(7059,'4B97947A3A185D0D6E9ED282B2FC4E19621BD792AED4F18F4A0D7E594A682788'))
+fixture=read(F/'handoff.json',(9374,'B0C5A47DB2C0C48BF60433BEEE7E02F4300B23A9192D752ED3F3FDE400DC4A2E'))
+assert linkroot['source_accepted'] and adapterroot['source_accepted']
+newbuild=verify(linkroot['selected_build']);verify(linkroot['accepted_original_build'])
+assert newbuild['sha256']=='594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF'
+buildindex=[i for i,r in enumerate(plan['source_rows']) if r['relative_path']=='build.zig']
+assert len(buildindex)==1
+oldbuild=plan['source_rows'][buildindex[0]]['donor']
+assert oldbuild==linkroot['accepted_original_build']
+setv(['source_rows',buildindex[0],'donor'],newbuild)
+fixturedonor=verify(fixture['selected_source']);fixturebefore=verify(fixture['original_source'])
+assert fixturedonor['sha256']=='FD337AA09700EA151943ED06A86CE5623C37210FA57637B892DCB6AB797C02D6'
+append(['source_rows'],{'relative_path':'src/native_node_fs_request_owner_test.zig','kind':'source_replacement','donor':fixturedonor,'preimage':fixturebefore,'reviewed_immutable_head':H,'actual_future_preimage_and_absence_check_required':True})
+# Preserve existing physical destinations and every original logical record.
+for r in baseline['source_rows']:verify(r['donor'])
+for r in baseline['archive_rows']:
+ verify(r['donor'])
+ for a in r['logical_donors']:
+  verify(a['donor']);assert raws[norm(a['donor']['path'])]==raws[norm(r['donor']['path'])]
+setv(['status'],'unissued_inert_shutdown_latin1_buffer_fs_fixture_21_path_copy_manifest_plan')
+setv(['author'],'/root/module_io_port')
+setv(['created_utc_date'],'2026-10-22')
+setv(['predecessor_plan'],inputs[norm(B/'copy-manifest-plan.json')])
+setv(['predecessor_plan_handoff'],pin(B/'handoff.json',(8845,'5B673525420F88F9DAEAF811F478A2E596ABFB10CAD48B4863A050AA97DEBE5F')))
+setv(['selected_linkage_Root_acceptance'],inputs[norm(E/'root-pending20-shutdown-linkage-build-successor-source-acceptance-20261022.json')])
+setv(['selected_intake_adapter_Root_acceptance'],inputs[norm(E/'root-pending20-strengthened-intake-adapter-v2-source-acceptance-20261022.json')])
+setv(['fixture_correction_handoff'],inputs[norm(F/'handoff.json')])
+setv(['fixture_independent_peer'],None)
+setv(['fixture_Root_source_acceptance'],None)
+setv(['source_order_and_scope','selected_build_sha256'],newbuild['sha256'])
+setv(['source_order_and_scope','selected_build_successor'],verify(linkroot['finite_proposal']))
+setv(['source_order_and_scope','fixture_correction'],{'source':fixturedonor,'proposal':verify(fixture['selected_proposal']),'production_changes':0,'all_25_controls_and_assertions_unchanged':True})
+setv(['source_order_and_scope','explicitly_excluded'],copy.deepcopy(baseline['source_order_and_scope']['explicitly_excluded'])+[
+ 'any other fixture or production change beyond the exact FS request pumpPending proposal',
+ 'future V38 negative archive, actual archive commit head, release, configuration and native outcomes'])
+# Read and enumerate the bounded, already sealed new packets. No script is evaluated.
+groups=[
+ ('predecessor-plan',B),
+ ('predecessor-plan-peer',W/'verification/pending20-copy-plan-independent-peer-20261021'),
+ ('linkage',L),
+ ('linkage-peer',E/'independent-shutdown-linkage-build-successor-source-peer-20261022'),
+ ('adapter',A),
+ ('adapter-peer',S/'verification/pending20-strengthened-intake-adapter-peer-20261022'),
+ ('fs-fixture',F),
+]
+entries=[];group_inventories=[]
+prefix=plan['archive_prefix']+'/archive/successor-20261022/'
+for label,directory in groups:
+ rows=[]
+ for p in sorted(q for q in directory.rglob('*') if q.is_file()):
+  rel=p.relative_to(directory).as_posix();pr=pin(p);rows.append({'relative_path':rel,**pr})
+  entries.append((prefix+label+'/'+rel+'.raw',pr,{'from':str(directory),'ref':'complete sealed packet membership'}))
+ group_inventories.append({'label':label,'directory':str(directory),'rows':rows})
+extra=[
+ ('root-copy-plan-acceptance.json',E/'root-shutdown-latin1-buffer-unissued-copy-plan-acceptance-20261021.json'),
+ ('root-linkage-acceptance.json',E/'root-pending20-shutdown-linkage-build-successor-source-acceptance-20261022.json'),
+ ('root-adapter-acceptance.json',E/'root-pending20-strengthened-intake-adapter-v2-source-acceptance-20261022.json'),
+ ('adapter-accepted-baseline.py',Path(adapterroot['baseline']['path'])),
+ ('observed-original63-buildquery-acceptance.json',Path(linkroot['compiler_authority']['path'])),
+]
+contract=read(A/'unissued-binding-and-schema-contract.json',(10902,'ACF23FA22E0C380BF744923B5CA8A8B55D30B83B0D655AAFF6FF2EE80790136D'))
+for key in ['gap_map','historical_git_capability']:
+ if isinstance(contract.get(key),dict) and {'path','bytes','sha256'}<=set(contract[key]):
+  verify(contract[key]);extra.append(('adapter-'+key+'.json',Path(contract[key]['path'])))
+for label,p in extra:entries.append((prefix+'authorities/'+label+'.raw',pin(p),{'from':'selected Root/adapter authority','ref':label}))
+# Compiler APIs are copied into this new evidence packet as immutable snapshots;
+# the original contained-toolchain paths remain explicit historical aliases.
+compiler_snapshots=[]
+for i,r in enumerate(linkroot['pinned_compiler_API_files']):
+ verify(r);name=('Build.zig' if i==0 else 'Module.zig')
+ data=raws[norm(r['path'])]
+ snapshot=D/'authority'/('zig-'+name)
+ snap={'path':str(snapshot),'bytes':len(data),'sha256':sha(data)}
+ compiler_snapshots.append((snapshot,data,snap,r))
+ entries.append((prefix+'authority/zig-'+name+'.raw',snap,{'from':str(E/'root-pending20-shutdown-linkage-build-successor-source-acceptance-20261022.json'),'ref':'pinned_compiler_API_files['+str(i)+']','historical_original':r}))
+ rawkey=norm(snapshot);raws[rawkey]=data
+# Archive membership is exact: old donor identities retain their old logical targets.
+known={}
+for i,r in enumerate(plan['archive_rows']):
+ for a in r['logical_donors']:
+  d=a['donor'];known[(norm(d['path']),d['bytes'],d['sha256'])]=(i,a)
+dedup_added=0;already_covered=[];added_logicals=[]
+for logical_target,donor,site in sorted(entries,key=lambda x:(x[0].casefold(),x[0])):
+ identity=(norm(donor['path']),donor['bytes'],donor['sha256'])
+ if identity in known:
+  already_covered.append({'donor':donor,'covered_target':plan['archive_rows'][known[identity][0]]['relative_path'],'new_reference_site':site})
+  continue
+ alias={'donor':donor,'logical_archive_relative_path':logical_target,'reference_sites':[site],'historical_reference_aliases':[]}
+ if 'historical_original' in site:alias['historical_reference_aliases']=[{'historical_pin':site['historical_original'],'immutable_snapshot':donor,'exact_original_bytes':True}]
+ equal=[]
+ for i,r in enumerate(plan['archive_rows']):
+  d=r['donor']
+  if (d['bytes'],d['sha256'])==(donor['bytes'],donor['sha256']):
+   assert raws[norm(d['path'])]==raws[norm(donor['path'])]
+   equal.append(i)
+ if equal:
+  i=equal[0];append(['archive_rows',i,'logical_donors'],alias);dedup_added+=1
+ else:
+  i=len(plan['archive_rows']);append(['archive_rows'],{'relative_path':logical_target,'kind':'immutable_evidence_archive','donor':donor,'preimage':None,'logical_donors':[alias]})
+ known[identity]=(i,alias);added_logicals.append(alias)
+setv(['deduplication','canonical_archive_target'],'Retain every predecessor physical destination. For new immutable contents, choose the first new logical target under ascending (casefolded target, exact target) order. Equal full bytes attach a logical alias to the existing physical row; no original alias or destination is replaced.')
+setv(['coverage','new_sealed_packet_inventories'],group_inventories)
+setv(['coverage','new_Root_source_acceptance_count'],2)
+setv(['coverage','fixture_independent_review_pending'],True)
+setv(['coverage','all_new_authoring_and_checker_negatives_retained'],True)
+setv(['coverage','new_reference_sites_already_covered'],already_covered)

@@ -1,0 +1,283 @@
+"""Create an inert, finite data-plan successor; no candidate or Main execution."""
+from pathlib import Path
+import copy,hashlib,json,re,subprocess
+W=Path(r'C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018')
+S=Path(r'C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018')
+E=Path(r'C:\Users\adyba\pi-zig\evidence')
+D=W/'verification/pending21-shutdown-descriptor-copy-plan-successor-sourceonly-20261022'
+B=W/'verification/unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022'
+F=W/'verification/native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022'
+H='014062f2d139254acab4b985b4ae343db637166f'
+inputs={};raws={};ops=[]
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def norm(p):return str(p).replace('/','\\').casefold()
+def wire(x):return (json.dumps(x,indent=2)+'\n').encode()
+def pin(p,expected=None):
+ p=Path(p);n=norm(p)
+ assert any(n.startswith(norm(q)+'\\') for q in (W.parent,E)),('outside assigned evidence',str(p))
+ b=p.read_bytes();r={'path':str(p),'bytes':len(b),'sha256':sha(b)}
+ if expected:assert (r['bytes'],r['sha256'])==expected,(r,expected)
+ if n in raws:assert raws[n]==b
+ inputs[n]=r;raws[n]=b;return r
+def verify(r):return pin(r['path'],(r['bytes'],r['sha256']))
+def read(p,expected=None):r=pin(p,expected);return json.loads(raws[norm(p)])
+def put(p,b):
+ p.parent.mkdir(parents=True,exist_ok=True)
+ with p.open('xb') as f:f.write(b)
+ assert p.read_bytes()==b
+ return {'path':str(p),'bytes':len(b),'sha256':sha(b)}
+base=read(B/'copy-manifest-plan.json',(530121,'B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC'))
+base_raw=raws[norm(B/'copy-manifest-plan.json')]
+bh=read(B/'handoff.json',(20300,'922C5187B64C7F9B9E565B532D8879DF7155C0B686CBEBBCA36570D12545984A'))
+br=read(E/'root-pending21-copy-plan-source-acceptance-20261022.json',(19222,'213E78C874B52119218F70CD162F1C90BAA1B792B86CB3E3E2A6C56EBFA06F28'))
+fr=read(E/'root-shutdown-invalid-descriptor-fixture-source-acceptance-20261022.json',(20948,'0B59166DB17DE39B2CB8B5A975885E5AEADCDF0900C40E8CECB80387BD6053F7'))
+fh=read(F/'handoff.json',(5769,'9E3CCC745B51917D2BEA16761D853563BFAD875D72093EC5E902EF2E5CE5F951'))
+assert wire(base)==base_raw and len(base['source_rows'])==21 and len(base['archive_rows'])==302
+assert sum(len(r['logical_donors']) for r in base['archive_rows'])==329
+assert br['source_plan_accepted'] and fr['source_accepted'] and fr['copy_plan_successor_source_authoring_authorized']
+assert not fr['source_intake_authorized'] and not fr['native_execution_authorized']
+assert br['selected_plan']==inputs[norm(B/'copy-manifest-plan.json')]
+assert br['author_handoff']==inputs[norm(B/'handoff.json')]
+assert br['current_supplemental_rows']==bh['explicit_supplemental_archive_rows']
+plan=copy.deepcopy(base)
+def parent(tree,path):
+ for k in path[:-1]:tree=tree[k]
+ return tree,path[-1]
+def change(path,after):
+ p,k=parent(plan,path);exists=(k<len(p) if isinstance(p,list) else k in p)
+ before=copy.deepcopy(p[k]) if exists else None
+ ops.append({'op':'replace' if exists else 'add','path':path,'before':before,'after':copy.deepcopy(after)})
+ p[k]=copy.deepcopy(after)
+def append(path,after):
+ p=plan
+ for k in path:p=p[k]
+ ops.append({'op':'append','path':path,'index':len(p),'after':copy.deepcopy(after)})
+ p.append(copy.deepcopy(after))
+idx=[i for i,r in enumerate(plan['source_rows']) if r['relative_path']=='src/native_node_stream_shutdown_test.zig']
+assert len(idx)==1;idx=idx[0]
+old=plan['source_rows'][idx]['donor'];new=verify(fr['candidate'])
+assert old==fr['retained_original']
+verify(old)
+ob=raws[norm(old['path'])];nb=raws[norm(new['path'])]
+assert old['sha256']=='11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85'
+assert new['sha256']=='CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F'
+assert ob[5720:5722]==b'-2' and nb==ob[:5720]+b'std.math.maxInt(c_int)'+ob[5722:]
+assert nb[:5720]+b'-2'+nb[5742:]==ob
+assert len(re.findall(rb'(?m)^test "([^"]+)"',ob))==18
+assert re.findall(rb'(?m)^test "([^"]+)"',ob)==re.findall(rb'(?m)^test "([^"]+)"',nb)
+change(['source_rows',idx,'donor'],new)
+# Old sealed physical rows/aliases and all seven separately sealed handoff rows survive.
+for r in base['source_rows']:verify(r['donor'])
+for r in base['archive_rows']:
+ verify(r['donor'])
+ for a in r['logical_donors']:
+  verify(a['donor']);assert raws[norm(a['donor']['path'])]==raws[norm(r['donor']['path'])]
+assert len(bh['explicit_supplemental_archive_rows'])==7
+for r in bh['explicit_supplemental_archive_rows']:
+ verify(r['donor'])
+ for a in r['logical_donors']:
+  verify(a['donor']);assert raws[norm(a['donor']['path'])]==raws[norm(r['donor']['path'])]
+ append(['archive_rows'],r)
+carried=copy.deepcopy(plan['archive_rows'])
+assert len(carried)==309 and sum(len(r['logical_donors']) for r in carried)==336
+prefix=base['archive_prefix']+'/archive/descriptor-successor-20261022/'
+groups=[
+ ('shutdown-fixture',F,9),
+ ('shutdown-fixture-peer',S/'verification/native-node-shutdown-invalid-descriptor-independent-peer-20261022',3),
+ ('prior21-plan-peer',E/'independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022',4),
+ ('fs-fixture-peer',E/'independent-v38-fs-request-pump-escrow-source-peer-20261022',3),
+]
+entries=[];members=[]
+for label,directory,count in groups:
+ files=sorted(q for q in directory.rglob('*') if q.is_file());assert len(files)==count,(label,len(files),count)
+ rows=[]
+ for p in files:
+  rel=p.relative_to(directory).as_posix();pr=pin(p);rows.append({'relative_path':rel,**pr})
+  entries.append((prefix+label+'/'+rel+'.raw',pr,{'from':str(directory),'ref':'complete immutable packet membership'}))
+ members.append({'label':label,'directory':str(directory),'files':rows})
+for r in (fr['independent_peer'],fr['independent_checker'],fr['independent_proof'],br['independent_peer'],br['independent_checker'],br['independent_proof'],br['fixture_independent_peer']):
+ verify(r)
+extras=[
+ ('prior21-handoff.json',B/'handoff.json'),
+ ('root-prior21-plan-acceptance.json',E/'root-pending21-copy-plan-source-acceptance-20261022.json'),
+ ('root-shutdown-fixture-acceptance.json',E/'root-shutdown-invalid-descriptor-fixture-source-acceptance-20261022.json'),
+ ('root-fs-fixture-acceptance.json',Path(br['fixture_Root_source_acceptance']['path'])),
+ ('root-prior21-inventory-serialization-observation.json',Path(br['preserved_inspection_negatives'][0]['path'])),
+ ('initial-readout-key-negative.json',D/'initial-readout-key-negative.json'),
+]
+verify(br['fixture_Root_source_acceptance'])
+for r in br['preserved_inspection_negatives']:verify(r)
+for label,p in extras:entries.append((prefix+'authorities/'+label+'.raw',pin(p),{'from':'explicit Root-requested supplemental preservation','ref':label}))
+known={}
+for i,r in enumerate(plan['archive_rows']):
+ for a in r['logical_donors']:
+  q=a['donor'];k=(norm(q['path']),q['bytes'],q['sha256'])
+  assert k not in known;known[k]=(i,a)
+dedup=[];already=[];added=[]
+for target,donor,site in sorted(entries,key=lambda x:(x[0].casefold(),x[0])):
+ key=(norm(donor['path']),donor['bytes'],donor['sha256'])
+ if key in known:
+  already.append({'donor':donor,'existing_physical_target':plan['archive_rows'][known[key][0]]['relative_path'],'new_site':site});continue
+ alias={'donor':donor,'logical_archive_relative_path':target,'reference_sites':[site],'historical_reference_aliases':[]}
+ equal=[]
+ for i,r in enumerate(plan['archive_rows']):
+  q=r['donor']
+  if (q['bytes'],q['sha256'])==(donor['bytes'],donor['sha256']):
+   assert raws[norm(q['path'])]==raws[norm(donor['path'])];equal.append(i)
+ if equal:
+  i=equal[0];append(['archive_rows',i,'logical_donors'],alias)
+  dedup.append({'logical':alias,'physical_target':plan['archive_rows'][i]['relative_path'],'full_bytes_equal':True})
+ else:
+  i=len(plan['archive_rows'])
+  append(['archive_rows'],{'relative_path':target,'kind':'immutable_evidence_archive','donor':donor,'preimage':None,'logical_donors':[alias]})
+ known[key]=(i,alias);added.append(alias)
+change(['status'],'unissued_inert_shutdown_latin1_buffer_fs_fixture21_descriptor_successor_copy_plan')
+change(['shutdown_descriptor_successor'],{
+ 'predecessor_plan':inputs[norm(B/'copy-manifest-plan.json')],
+ 'predecessor_handoff':inputs[norm(B/'handoff.json')],
+ 'predecessor_Root_source_acceptance':inputs[norm(E/'root-pending21-copy-plan-source-acceptance-20261022.json')],
+ 'proposal':verify(fr['proposal']),'handoff':inputs[norm(F/'handoff.json')],
+ 'independent_peer':verify(fr['independent_peer']),
+ 'Root_source_acceptance':inputs[norm(E/'root-shutdown-invalid-descriptor-fixture-source-acceptance-20261022.json')],
+ 'source_row_index':idx,'relative_path':plan['source_rows'][idx]['relative_path'],
+ 'original_donor':old,'selected_donor':new,'exact_expression_offset':5720,
+ 'before':'-2','after':'std.math.maxInt(c_int)','unchanged_other20_source_rows':True,
+ 'unchanged18_declarations_assertions_helpers_imports':True,'source_path_count':21,
+ 'static_discovery_only':True,'native_attempt_added':False})
+scope=copy.deepcopy(plan['source_order_and_scope']['explicitly_excluded'])
+old_scope='any other fixture or production change beyond the exact FS request pumpPending proposal'
+assert scope.count(old_scope)==1
+scope[scope.index(old_scope)]='any fixture or production change outside the exact accepted FS request pumpPending and Shutdown invalid-descriptor proposals'
+change(['source_order_and_scope','explicitly_excluded'],scope)
+change(['source_order_and_scope','shutdown_descriptor_correction'],{
+ 'proposal':verify(fr['proposal']),'source':new,'production_changes':0,
+ 'all18_declarations_and_assertions_unchanged':True,'actual_future_runtime':None})
+change(['coverage','descriptor_successor_packet_memberships'],members)
+change(['coverage','descriptor_successor_already_archived_reference_sites'],already)
+change(['coverage','descriptor_successor_source_review_authorities'],{
+ 'prior21_peer':verify(br['independent_peer']),
+ 'prior21_Root_acceptance':inputs[norm(E/'root-pending21-copy-plan-source-acceptance-20261022.json')],
+ 'FS_fixture_peer':verify(br['fixture_independent_peer']),
+ 'FS_fixture_Root_acceptance':verify(br['fixture_Root_source_acceptance']),
+ 'Shutdown_fixture_peer':verify(fr['independent_peer']),
+ 'Shutdown_fixture_Root_acceptance':inputs[norm(E/'root-shutdown-invalid-descriptor-fixture-source-acceptance-20261022.json')],
+ 'prior_core_null_slots_are_preserved_historical_fields':True,
+ 'future_archive_commit_release_and_final_manifest_remain_unknown':True})
+change(['coverage','descriptor_successor_static_observations'],{
+ 'shutdown_static_discovery':verify(fr['preserved_static_discovery']),
+ 'prior_plan_Root_readonly_serialization_observation':verify(br['preserved_inspection_negatives'][0]),
+ 'prior_plan_peer_readout_negative':verify(br['preserved_inspection_negatives'][1]),
+ 'this_plan_readout_negative':pin(D/'initial-readout-key-negative.json'),
+ 'no_separate_raw_receipts_exist_for_shutdown_lookup_display_observations':True,
+ 'no_native_attempt_created':True})
+archives=plan['archive_rows'];sources=plan['source_rows']
+logical=sum(len(r['logical_donors']) for r in archives)
+before_bytes=sum(a['donor']['bytes'] for r in archives for a in r['logical_donors'])
+after_bytes=sum(r['donor']['bytes'] for r in archives)
+counts=copy.deepcopy(base['counts'])
+counts.update({'immutable_archive_donors':logical,'archive_copy_paths':len(archives),
+ 'core_copy_rows':21+len(archives),'core_plus_final_manifest_paths':22+len(archives),
+ 'archive_bytes_before_content_dedup':before_bytes,'archive_bytes_to_copy':after_bytes,
+ 'duplicate_archive_copies_removed':logical-len(archives),'archive_bytes_saved':before_bytes-after_bytes,
+ 'physical_rows_added_after_old243':21+len(archives)-243,'logical_records_after_old268':21+logical-268,
+ 'old_B490_core_rows':323,'carried_922C_supplemental_rows':7,'previous_total_including_manifest':331})
+change(['counts'],counts)
+change(['preserved_descriptor_predecessor_accounting'],{
+ 'old_B490_source_rows':21,'old_B490_archive_rows':302,'old_B490_archive_logical_donors':329,
+ 'all7_exact_922C_supplemental_rows_carried':True,'carried_archive_rows':309,
+ 'carried_archive_logical_donors':336,'source_paths_added':0,'source_donor_replacements':1,
+ 'all_other20_source_rows_exact':True,'all_carried_physical_rows_and_logical_prefixes_exact':True,
+ 'original11AA_donor_still_archived':True,'all_original_negatives_retained':True,
+ 'inherited_future_unknowns_and_byte_preflight_unchanged':True})
+# Complete finite forward/intermediate and reverse reconstruction; no target eval.
+forward=copy.deepcopy(base);steps=[]
+for i,o in enumerate(ops):
+ before=wire(forward)
+ if o['op']=='append':
+  p=forward
+  for k in o['path']:p=p[k]
+  assert len(p)==o['index'];p.append(copy.deepcopy(o['after']))
+ else:
+  p,k=parent(forward,o['path'])
+  if o['op']=='replace':assert p[k]==o['before']
+  else:assert k not in p
+  p[k]=copy.deepcopy(o['after'])
+ after=wire(forward);steps.append({'index':i,'before_bytes':len(before),'before_sha256':sha(before),'after_bytes':len(after),'after_sha256':sha(after)})
+assert forward==plan
+back=copy.deepcopy(plan)
+for i,o in reversed(list(enumerate(ops))):
+ assert sha(wire(back))==steps[i]['after_sha256']
+ if o['op']=='append':
+  p=back
+  for k in o['path']:p=p[k]
+  assert len(p)==o['index']+1 and p[-1]==o['after'];p.pop()
+ else:
+  p,k=parent(back,o['path']);assert p[k]==o['after']
+  if o['op']=='replace':p[k]=copy.deepcopy(o['before'])
+  else:del p[k]
+ assert sha(wire(back))==steps[i]['before_sha256']
+assert wire(back)==base_raw
+for i,r in enumerate(base['source_rows']):
+ if i!=idx:assert sources[i]==r
+ else:assert {k:v for k,v in sources[i].items() if k!='donor'}=={k:v for k,v in r.items() if k!='donor'}
+for i,r in enumerate(carried):
+ assert {k:v for k,v in archives[i].items() if k!='logical_donors'}=={k:v for k,v in r.items() if k!='logical_donors'}
+ assert archives[i]['logical_donors'][:len(r['logical_donors'])]==r['logical_donors']
+assert any(a['donor']==old for r in archives for a in r['logical_donors'])
+assert plan['future_admission_requirements']==base['future_admission_requirements']
+assert plan['git_byte_preflight']==base['git_byte_preflight'] and plan['authority']==base['authority']
+assert plan['actual_released_head'] is None and not any(plan['authority'].values())
+paths=[r['relative_path'] for r in sources+archives]+[plan['manifest_target']]
+seen={};prefixes={}
+for p in paths:
+ assert p.isascii() and not p.startswith(('/','\\')) and '\\' not in p and ':' not in p
+ parts=p.split('/')
+ for x in parts:
+  assert x not in ('','.','..') and not x.endswith(('.',' ')) and x.casefold() not in ('.git','.gitattributes')
+  assert not re.fullmatch(r'(?i)(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?',x)
+ assert p.casefold() not in seen;seen[p.casefold()]=p
+ for i in range(1,len(parts)+1):
+  q='/'.join(parts[:i]);key=q.casefold();assert key not in prefixes or prefixes[key]==q;prefixes[key]=q
+assert not any('/'.join(p.split('/')[:i]).casefold() in seen for p in paths for i in range(1,len(p.split('/'))))
+assert all(r['relative_path'].endswith('.raw') for r in archives)
+tree=subprocess.check_output(['git','--no-optional-locks','-C',str(W),'ls-tree','-rz',H]);tracked={}
+for item in tree.split(b'\0'):
+ if not item:continue
+ lhs,rp=item.split(b'\t',1);mode,typ,oid=lhs.decode().split();tracked[rp.decode()]={'mode':mode,'type':typ,'oid':oid}
+preimages=[];absences=[]
+for r in sources:
+ verify(r['donor']);p=r['relative_path']
+ if r['preimage']:
+  verify(r['preimage']);obj=subprocess.check_output(['git','--no-optional-locks','-C',str(W),'cat-file','blob',H+':'+p])
+  assert obj==raws[norm(r['preimage']['path'])] and tracked[p]['mode']=='100644'
+  preimages.append({'relative_path':p,'head':H,**tracked[p],'bytes':len(obj),'sha256':sha(obj)})
+ else:assert p not in tracked;absences.append(p)
+for r in archives:
+ assert r['relative_path'] not in tracked;absences.append(r['relative_path'])
+assert plan['manifest_target'] not in tracked;absences.append(plan['manifest_target'])
+assert len(preimages)==9 and len(absences)==len(paths)-9
+# Complete bounded source-evidence outputs, created only after every check above.
+plan_pin=put(D/'copy-manifest-plan.json',wire(plan))
+adapt={'schema':1,'baseline':inputs[norm(B/'copy-manifest-plan.json')],'selected':plan_pin,
+ 'operations':ops,'intermediate_states':steps,'whole_forward_and_raw_inverse':True,
+ 'original_raw_bytes_recovered':len(base_raw),'original_raw_sha256':sha(base_raw)}
+adapt_pin=put(D/'finite-plan-adaptation.json',wire(adapt))
+proof={'schema':1,'status':'passed_inert_descriptor_copy_plan_successor_checks','source_only':True,
+ 'selected_plan':plan_pin,'finite_adaptation':adapt_pin,'source_author':pin(Path(__file__)),
+ 'baseline':inputs[norm(B/'copy-manifest-plan.json')],'predecessor_handoff':inputs[norm(B/'handoff.json')],
+ 'finite_operations':len(ops),'all_intermediate_states_and_raw_inverse_verified':True,
+ 'source_selection':plan['shutdown_descriptor_successor'],'counts':counts,
+ 'unchanged_source_paths':20,'unchanged_18_control_names':True,
+ 'carried_physical_and_logical_prefixes':plan['preserved_descriptor_predecessor_accounting'],
+ 'added_packet_memberships':members,'added_logical_records':len(added),'new_full_byte_dedup':dedup,
+ 'existing_donor_references':already,'all_donors_and_aliases_rehashed':True,
+ 'path_count_including_manifest':len(paths),'canonical_paths_prefixes_checked':True,
+ 'immutable_preimages':preimages,'immutable_absences':absences,'input_pins':list(inputs.values()),
+ 'future_byte_conversion_and_mode_gates_unchanged':True,'actual_Git_byte_conversion_preflight':False,
+ 'all_prior_negatives_preserved':True,'future_archive_commit':None,'future_source_head':None,
+ 'final_manifest_issued':False,'adapter_or_candidate_prefix_executed':False,'Main_accessed':False,
+ 'index_accessed':False,'native_execution_authorized':False,'application_qualified':False}
+proof_pin=put(D/'source-proof.json',wire(proof))
+print(json.dumps({'plan':plan_pin,'finite_adaptation':adapt_pin,'proof':proof_pin,'counts':counts,
+ 'operations':len(ops),'inputs':len(inputs),'carried':len(carried),'added_logicals':len(added),
+ 'full_byte_dedup_added':len(dedup),'immutable_preimages':len(preimages),'immutable_absences':len(absences)}))

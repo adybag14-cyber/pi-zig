@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "status": "independently_accepted_bounded_pending20_shutdown_linkage_build_successor_source",
+  "reviewer": "/root/handover_review",
+  "reviewed_utc_date": "2026-10-22",
+  "basis_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "candidate_manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-linkage-build-successor-sourceonly-20261022\\manifest.json",
+    "bytes": 22441,
+    "sha256": "8364BCC21A30411D343F36EBE34DBC2C767DD1BC30C569220F5C2C79DC9C6F69"
+  },
+  "candidate_build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-linkage-build-successor-sourceonly-20261022\\projected\\build.zig",
+    "bytes": 514105,
+    "sha256": "594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF"
+  },
+  "finite_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-linkage-build-successor-sourceonly-20261022\\build-proposal.json",
+    "bytes": 19578,
+    "sha256": "66015D20AF046807E1F22E2FFBB0E08EB81CD6070F5781E9ACE61EA6249FC9DB"
+  },
+  "selected_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v4.py",
+    "bytes": 32079,
+    "sha256": "73BE391FA46F457D88555234A001FB95F105073E038D01B6648A40EF88817483"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-proof.json",
+    "bytes": 204501,
+    "sha256": "B5351B54499C12010BEAA4976B758F1774A2D9F60D7689EB5D1D13A7C43F3167"
+  },
+  "full_candidate_and_all_nine_edits_read": true,
+  "no_bounded_source_blocker": true,
+  "checks": {
+    "finite_edits": 9,
+    "full_forward_inverse_and_untouched_fragments": true,
+    "other_selected_donors_unchanged": 19,
+    "independently_reconstructed_raw_Git_Zig_files": 2841,
+    "independently_derived_build_root_fields": 545,
+    "literal_fields": 537,
+    "finite_root_loop_families": 8,
+    "unique_build_and_helper_roots": 543,
+    "full_named_import_resolution": true,
+    "conservative_feature_variants": [
+      "sqlite_disabled",
+      "sqlite_enabled"
+    ],
+    "isolated_preexisting_missing_imports": 2,
+    "missing_imports_unreachable_from_all543_roots": true,
+    "OneByte_import_closures": 9,
+    "selected_static_library_TUs": 3,
+    "selected_consumer_artifacts": 8,
+    "proven_call_roots": 7,
+    "conservative_FS_before_hook_root": 1,
+    "compiler_API_files_bound_to_accepted_inventory": 2,
+    "full_current_pin_count": 42,
+    "root_filter_install_target_import_and_LLVM_lines_unchanged": true
+  },
+  "findings": [
+    {
+      "topic": "Shared native library",
+      "finding": "The one static library contains diagnostic-context C, the accepted V8 fatal C++, and OneByte diagnostics C++. Eight existing network-conditional artifacts link it once; Transfer's direct transfer C++ source remains exact. The old direct TLS/trio duplicates are removed only from the reviewed consumers."
+    },
+    {
+      "topic": "Actual call paths",
+      "finding": "StreamRead calls Base.init; Read and FS callback-template controls call their actual fixture that initializes Base. FileHandleOwner and Transfer construct the actual Handle. Shutdown composes that owner and Request/reporter operations. OneByte controls call the API directly. These are seven proven caller roots."
+    },
+    {
+      "topic": "Conservative consumer",
+      "finding": "FS-before-hook imports the shared owner fixture but its current controls do not call fixture.create/createArgs. The additional link is explicitly conservative; no Handle construction or runtime call is asserted."
+    },
+    {
+      "topic": "Resource and library exclusions",
+      "finding": "The complete Resource control body selects Resource.init and a default forwarding listener, not Base.init, Request.done or the reporter. Default main/root closures lack a OneByte path. Network and memory helpers have native C/C++-only roots and no duplicate trio membership. The complete standalone diagnostic-context recipe is byte-identical and retains its direct TLS definition."
+    },
+    {
+      "topic": "Pinned Zig API",
+      "finding": "Build.addLibrary, Module.CreateOptions with null root_source_file, addCSourceFile(s), addIncludePath and linkLibrary match the candidate syntax. Their exact Build.zig/Module.zig bytes were rehashed and matched the accepted original63 compiler seal, avoiding an ambient-version assumption."
+    },
+    {
+      "topic": "Independent root derivation",
+      "finding": "The checker derived every root_source_file expression and each enclosing literal loop from lexical tokens. It additionally resolves the immutable vm_control_specs table from its complete constant declaration, and independently rebuilt every source import edge from raw Git bytes plus the exact accepted source overlay."
+    }
+  ],
+  "compiler_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-complete-buildquery-acceptance-20261021.json",
+    "bytes": 6281,
+    "sha256": "E6ADF28AEA05357A0C0CCFAE9BE63D27C020F17DA75F4D75E9136C62A10FDDDE"
+  },
+  "compiler_seal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\final.json",
+    "bytes": 16165285,
+    "sha256": "E0B4F23FEB76DFAA549F1B029B9AF55DEAF908CC8EF66335A17FE33E023BFE2A"
+  },
+  "preserved_checker_history": {
+    "original_checker": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check.py",
+      "bytes": 30694,
+      "sha256": "C780D860D773C05510B350373870621E906E2070295D4C9FF40B12D915702091"
+    },
+    "named_literal_table_negative": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\original-root-table-selector-negative.json",
+      "bytes": 2566,
+      "sha256": "8B1609E9479121A8A4158EE6B5E52D262CACBC6BAF5972AF111012D26059DD6D"
+    },
+    "named_table_finite_successor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\root-table-selector-v2-correction.json",
+      "bytes": 3243,
+      "sha256": "0218F8B447DE08E425E1AC53610B5097BCAEBF339D73A59CE1B7107E4669E819"
+    },
+    "rootless_loop_negative": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\rootless-loop-selector-negative.json",
+      "bytes": 2754,
+      "sha256": "EF2E598F5301B14CBBB76A020D5FA8B25D5910E6F88E8A1142B5E7E9850E93BD"
+    },
+    "rootless_loop_finite_successor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\rootless-loop-selector-v3-correction.json",
+      "bytes": 1271,
+      "sha256": "26278BA6E21A779C8D275C392BB810A37AF17DAF3E978ADC55AC1E35ABCCACF4"
+    },
+    "standalone_variable_negative": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\standalone-artifact-selector-negative.json",
+      "bytes": 2713,
+      "sha256": "F531A55D23AA2ACA733068366F7525FDFD7EB9C235919F2D9DA7FE08CE6B66F6"
+    },
+    "standalone_variable_finite_successor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\standalone-artifact-selector-v4-correction.json",
+      "bytes": 2271,
+      "sha256": "4DBF077C20E1D19FABD33D467275874A01C1566524ABA7B8111719133EF15145"
+    },
+    "explanation": "Three source-checker selector limitations are retained: named literal table resolution, unrelated rootless loop selection, and a shorthand standalone artifact variable. Successors adjust only this independent checker; no proposed source was changed or evaluated."
+  },
+  "candidate_unchanged": true,
+  "source_only": true,
+  "Main_accessed": false,
+  "candidate_or_prefix_executed": false,
+  "compiler_build_or_native_executed": false,
+  "configuration_issued": false,
+  "intake_authorized": false,
+  "application_qualified": false,
+  "limits": [
+    "This accepts source composition and recipe membership only. Actual compiler instantiation, archive extraction, platform linking and runtime behavior require separate fresh validation.",
+    "The original20-path copy plan still selects old build868F. A separate exact manifest successor must explicitly replace only that donor with594A and archive this successor/peer/Root acceptance before any intake.",
+    "Post-intake source/dependency inventory must be regenerated from the actual committed source and every required cohort retained. No V38 build/runtime outcome is transferred to this source.",
+    "The latest original63 strict runtime negative is independent of this source review and remains a negative; no complete runtime qualification is claimed.",
+    "Runtime-template identity and the full CustomBuffer listener remain outside this source scope."
+  ]
+}

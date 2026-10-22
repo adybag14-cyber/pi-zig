@@ -1,0 +1,980 @@
+{
+  "schema": 1,
+  "status": "unissued_finite_strengthened_pending20_adapter_source",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+    "bytes": 9719,
+    "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py",
+    "bytes": 23554,
+    "sha256": "1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010"
+  },
+  "declared_edits": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\authoring\\declared-edits.json",
+    "bytes": 27011,
+    "sha256": "3205A1A6B4B5E7171E6232358152F843E5D7D352EE5677D6C9C51435B14DFF42"
+  },
+  "step_count": 20,
+  "steps": [
+    {
+      "step": 1,
+      "label": "description",
+      "current_offset_bytes": 0,
+      "before_utf8": "\"\"\"Exact V37 fixture Main source intake; no compiler, runtime, generator or push.\"\"\"",
+      "after_utf8": "\"\"\"Unissued pending20 exact source intake with complete Git byte provenance; no native execution.\"\"\"",
+      "before_bytes": 84,
+      "after_bytes": 100,
+      "before_sha256": "EE3DC1B31CFAD1C43AAB60B1DA09C1251EE650EB1C5D8C84A2B2D0097C56F239",
+      "after_sha256": "271341F6D5A5D95077A08C451C7293F7EBAE634BAA203B2061568C16F685C8E1",
+      "intermediate_before_bytes": 9719,
+      "intermediate_before_sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4",
+      "intermediate_after_bytes": 9735,
+      "intermediate_after_sha256": "C7BD3A41F528FB4A0C08B1756773BBA7A5FF703D5CE10A66387585F9E18BC0EC",
+      "untouched_prefix": {
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "untouched_suffix": {
+        "bytes": 9635,
+        "sha256": "BF26B10E4BC5A875787434555D57CB9B8505EE859A4565E45E634DD42D22E8ED"
+      }
+    },
+    {
+      "step": 2,
+      "label": "imports_and_assertion_mode",
+      "current_offset_bytes": 141,
+      "before_utf8": "import datetime, hashlib, json, os, subprocess, sys\n",
+      "after_utf8": "import base64, datetime, hashlib, json, os, re, stat, subprocess, sys, traceback\nif not __debug__: raise RuntimeError(\"This reviewed intake requires Python assertions enabled\")\n",
+      "before_bytes": 52,
+      "after_bytes": 177,
+      "before_sha256": "9434A1EC9262D1778E4235C1ADB3B3B1FCF8AF032589F33E986493ABFBF1BCDC",
+      "after_sha256": "0767B852472294E47BC3F69BEAE7A4263EEC52AE9E521A7ED2614B94E2DAB617",
+      "intermediate_before_bytes": 9735,
+      "intermediate_before_sha256": "C7BD3A41F528FB4A0C08B1756773BBA7A5FF703D5CE10A66387585F9E18BC0EC",
+      "intermediate_after_bytes": 9860,
+      "intermediate_after_sha256": "69863319E86BC4B554C6DC9B5A63EA10D78BEF0BDDBBC4872E9649303CEAD67B",
+      "untouched_prefix": {
+        "bytes": 141,
+        "sha256": "45E3C0BCC7038C2CD1FB7D7042A41B244B5E112E8BEEB033B748FDC3A69DC945"
+      },
+      "untouched_suffix": {
+        "bytes": 9542,
+        "sha256": "4E0488E29489399A5894B93416C059F096A5F281946C9D8EACB0DD7BFC4A7678"
+      }
+    },
+    {
+      "step": 3,
+      "label": "unresolved_future_head",
+      "current_offset_bytes": 371,
+      "before_utf8": "BASIS=\"b13be24e44cc1bbc361639eb35900a368ae60eac\"",
+      "after_utf8": "BASIS=\"UNRESOLVED_PENDING20_RELEASED_HEAD______\"",
+      "before_bytes": 48,
+      "after_bytes": 48,
+      "before_sha256": "D82279141420F3DB0B6925E5AACCB2CB331EDF6260084CE00F2464A7214950E6",
+      "after_sha256": "9E74B9EF0A5486B5FF6568D51DA57FDF39E7AB49BB4DA91350AC7FAB4DE8433F",
+      "intermediate_before_bytes": 9860,
+      "intermediate_before_sha256": "69863319E86BC4B554C6DC9B5A63EA10D78BEF0BDDBBC4872E9649303CEAD67B",
+      "intermediate_after_bytes": 9860,
+      "intermediate_after_sha256": "B859A1A2DF1F3CFC975621ED9EEFE43E4BBFA617E5767E08D63E5B6887E5D6D0",
+      "untouched_prefix": {
+        "bytes": 371,
+        "sha256": "8D075B03EF0AF1B8D0331D54A78A4F41510E456ABEEB440EECE040271F381C8A"
+      },
+      "untouched_suffix": {
+        "bytes": 9441,
+        "sha256": "1296FE37369395B7F2CA40D517B078DE23E032B9A7F3CEE382183107F7BB2E48"
+      }
+    },
+    {
+      "step": 4,
+      "label": "unresolved_manifest_identity",
+      "current_offset_bytes": 475,
+      "before_utf8": " \"fixture\":(\"evidence/pending-v37-filehandle-runtime-fixtures-main-intake-20261021/manifest.json\",\"236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9\",44,\"Correct FileHandle callback resource and invalid descriptor fixtures\"),",
+      "after_utf8": " \"fixture\":(\"evidence/UNRESOLVED-PENDING20-FINAL-MANIFEST/manifest.json\",\"UNRESOLVED_PENDING20_FINAL_MANIFEST_SHA256______________________\",0,\"Integrate independently reviewed Shutdown Latin1 and Buffer source\"),",
+      "before_bytes": 240,
+      "after_bytes": 212,
+      "before_sha256": "F4E14185A14E8B96B894DEB22ED130A8AC400C2EED00BECAC1D18240F0E033E3",
+      "after_sha256": "49715307CF732F6F52DDAA270143792E7956E6D02709A8F0E9DD263CF09B1791",
+      "intermediate_before_bytes": 9860,
+      "intermediate_before_sha256": "B859A1A2DF1F3CFC975621ED9EEFE43E4BBFA617E5767E08D63E5B6887E5D6D0",
+      "intermediate_after_bytes": 9832,
+      "intermediate_after_sha256": "0C9F9A004AFF2AA8D14AE5F219156FE9AC37783BAD9408EB3DB440D282D2F02C",
+      "untouched_prefix": {
+        "bytes": 475,
+        "sha256": "547B8A1FA62C11124A20CB735AE2969DDFB4A99FFAC35C47A3BAFA5A54E155EE"
+      },
+      "untouched_suffix": {
+        "bytes": 9145,
+        "sha256": "8FC6594B66C05363BCAF8C92AB4E68B606C6F15B6A03689AF25A362ECB8ABA42"
+      }
+    },
+    {
+      "step": 5,
+      "label": "new_strict_byte_contract_helpers",
+      "current_offset_bytes": 2575,
+      "before_utf8": "assert len(sys.argv)==4,\"phase release-path release-sha256\"\n",
+      "after_utf8": "\n# These guards strengthen byte preservation without changing the11 inherited helpers.\nBYTE_CONTRACT=\"pending20_exact_git_bytes_attributes_aliases_modes_v1\"\nATTR_NAMES=(\"text\",\"eol\",\"filter\",\"working-tree-encoding\",\"ident\")\nFAILURE_STATE={\"stage\":\"release_admission\",\"Main_or_index_writes_started\":False}\ndef fail_record(exc_type,exc,tb):\n try:\n  stamp=datetime.datetime.now(datetime.timezone.utc).strftime(\"%Y%m%dT%H%M%S%fZ\")\n  name=phase+\"-negative-\"+stamp+\"-\"+os.urandom(6).hex()+\".json\"\n  value={\"status\":\"preserved_exact_intake_failure\",\"utc\":datetime.datetime.now(datetime.timezone.utc).isoformat(),\n   \"phase\":phase,\"release_path\":str(release_path),\"release_sha256\":release_sha,\n   \"executor_sha256\":self_sha,\"state\":dict(FAILURE_STATE),\n   \"exception_type\":exc_type.__name__,\"exception\":str(exc),\n   \"traceback\":\"\".join(traceback.format_exception(exc_type,exc,tb)),\n   \"native_execution_authorized\":False,\"application_qualified\":False,\"rollback_or_cleanup_performed\":False}\n  new_json(proof/name,value)\n except BaseException as capture_error:\n  print(\"Immutable failure receipt could not be saved: \"+repr(capture_error),file=sys.stderr)\n sys.__excepthook__(exc_type,exc,tb)\ndef target_name(rel):\n assert isinstance(rel,str) and rel and str(PurePosixPath(rel))==rel,rel\n assert not PurePosixPath(rel).is_absolute() and \"\\\\\" not in rel and \":\" not in rel,rel\n assert not any(ord(c)<32 or ord(c)==127 or c in '<>\"|?*' for c in rel),rel\n for part in rel.split(\"/\"):\n  assert part not in (\"\",\".\",\"..\") and part[-1] not in \". \",rel\n  lower=part.casefold()\n  assert lower not in (\".git\",\".gitattributes\"),rel\n  stem=lower.split(\".\",1)[0]\n  assert not re.fullmatch(r\"(con|prn|aux|nul|clock\\$|conin\\$|conout\\$|com[1-9¹²³]|lpt[1-9¹²³])\",stem),rel\n assert rel==\"build.zig\" or rel.startswith((\"src/\",\"vendor/quickjs/\",\"verification/\")),rel\n return rel\ndef no_reparse_target(rel):\n current=MAIN\n assert current.is_dir() and not current.is_symlink(),str(current)\n for part in [None,*PurePosixPath(rel).parts]:\n  if part is not None: current=current/part\n  if os.path.lexists(current):\n   info=current.lstat()\n   assert not current.is_symlink() and not (getattr(info,\"st_file_attributes\",0)&0x400),str(current)\n   assert stat.S_ISDIR(info.st_mode) if current!=MAIN/rel else stat.S_ISREG(info.st_mode),str(current)\n inside(MAIN/rel,MAIN)\ndef oid_text(output,object_format):\n value=output.decode(\"ascii\").strip()\n length={\"sha1\":40,\"sha256\":64}[object_format]\n assert re.fullmatch(\"[0-9a-f]{\"+str(length)+\"}\",value),value\n return value\ndef raw_oid(b,object_format):\n return hashlib.new(object_format,b\"blob \"+str(len(b)).encode(\"ascii\")+b\"\\0\"+b).hexdigest()\ndef repository_identity():\n unsafe={\"GIT_DIR\",\"GIT_WORK_TREE\",\"GIT_COMMON_DIR\",\"GIT_INDEX_FILE\",\"GIT_OBJECT_DIRECTORY\",\n  \"GIT_ALTERNATE_OBJECT_DIRECTORIES\",\"GIT_NAMESPACE\",\"GIT_ATTR_NOSYSTEM\",\"GIT_ATTR_SOURCE\",\"GIT_CONFIG\",\n  \"GIT_LITERAL_PATHSPECS\",\"GIT_GLOB_PATHSPECS\",\"GIT_NOGLOB_PATHSPECS\",\"GIT_ICASE_PATHSPECS\"}\n present=sorted(k for k in os.environ if k in unsafe or k.startswith(\"GIT_CONFIG_\"))\n assert not present,(\"unreviewed_git_environment_override_names\",present)\n top=Path(gout(\"rev-parse\",\"--show-toplevel\")).resolve()\n assert top==MAIN.resolve() and top==MAIN.absolute(),(\"canonical_repository_root\",str(top))\n assert gout(\"rev-parse\",\"--is-bare-repository\")==\"false\"\n assert gout(\"rev-parse\",\"--is-inside-work-tree\")==\"true\"\n object_format=gout(\"rev-parse\",\"--show-object-format\")\n assert object_format in (\"sha1\",\"sha256\") and object_format==release[\"expected_git_object_format\"]\n assert re.fullmatch(\"[0-9a-f]{\"+str({\"sha1\":40,\"sha256\":64}[object_format])+\"}\",BASIS)\n return {\"canonical_root\":str(top),\"git_dir\":gout(\"rev-parse\",\"--absolute-git-dir\"),\n  \"common_dir\":gout(\"rev-parse\",\"--path-format=absolute\",\"--git-common-dir\"),\n  \"object_format\":object_format,\"git_version\":gout(\"--version\"),\"rejected_override_names_present\":present}\ndef conversion_provenance(names):\n # Only conversion/attribute configuration and origins are captured.\n pattern=r\"^(core\\.(autocrlf|eol|safecrlf|attributesfile|checkroundtripencoding|filemode|ignorecase|symlinks|protectntfs|protecthfs)|extensions\\.objectformat)$\"\n args=(\"config\",\"--includes\",\"--show-origin\",\"--show-scope\",\"--null\",\"--get-regexp\",pattern)\n config=git(*args,check=False);assert config.returncode in (0,1)\n sources={}\n def add(path,role):\n  p=Path(path)\n  if not p.is_absolute(): p=MAIN/p\n  k=str(p.absolute()).casefold()\n  if k not in sources: sources[k]={\"path\":str(p.absolute()),\"roles\":[]}\n  if role not in sources[k][\"roles\"]: sources[k][\"roles\"].append(role)\n for variable in (\"GIT_ATTR_SYSTEM\",\"GIT_ATTR_GLOBAL\"):\n  value=gout(\"var\",variable);assert value and \"\\n\" not in value and \"\\r\" not in value,variable\n  add(value,variable)\n add(gout(\"rev-parse\",\"--path-format=absolute\",\"--git-path\",\"info/attributes\"),\"repository_info_attributes\")\n add(MAIN/\".gitattributes\",\"root_attributes\")\n for rel in names:\n  parts=PurePosixPath(rel).parts\n  for depth in range(1,len(parts)):\n   add(MAIN.joinpath(*parts[:depth])/\".gitattributes\",\"target_ancestor_attributes\")\n files=[]\n for source in sorted(sources.values(),key=lambda x:x[\"path\"].casefold()):\n  path=Path(source[\"path\"]);present=os.path.lexists(path)\n  record={**source,\"exists\":present,\"resolved_path\":str(path.resolve())}\n  if present:\n   assert path.is_file(),str(path)\n   b=raw(path);record.update(bytes=len(b),sha256=sha(b),raw_base64=base64.b64encode(b).decode(\"ascii\"),\n    is_symlink=path.is_symlink())\n  files.append(record)\n return {\"repository\":repository_identity(),\"configuration\":{\"argv\":list(args),\"exit_code\":config.returncode,\n  \"stdout_base64\":base64.b64encode(config.stdout).decode(\"ascii\"),\"stdout_sha256\":sha(config.stdout),\n  \"stderr_base64\":base64.b64encode(config.stderr).decode(\"ascii\")},\"attribute_sources\":files}\ndef effective_attributes(names):\n request=b\"\\0\".join(rel.encode(\"utf-8\") for rel in names)+b\"\\0\"\n output=git(\"check-attr\",\"-z\",\"--stdin\",*ATTR_NAMES,input=request).stdout\n assert output.endswith(b\"\\0\")\n fields=output.split(b\"\\0\")[:-1];assert len(fields)==len(names)*len(ATTR_NAMES)*3\n result={rel:{} for rel in names}\n for i in range(0,len(fields),3):\n  rel,key,value=(v.decode(\"utf-8\") for v in fields[i:i+3])\n  assert rel in result and key in ATTR_NAMES and key not in result[rel],(rel,key)\n  result[rel][key]=value\n for rel,values in result.items():\n  assert set(values)==set(ATTR_NAMES),rel\n  for key in (\"filter\",\"working-tree-encoding\",\"ident\"):\n   assert values[key] in (\"unset\",\"unspecified\"),(\"disallowed_conversion_attribute\",rel,key,values[key])\n return result\ndef tree_entries(revision):\n result={}\n for line in git(\"ls-tree\",\"-r\",\"--full-tree\",\"-z\",revision).stdout.split(b\"\\0\"):\n  if not line: continue\n  header,path=line.split(b\"\\t\",1);mode,kind,oid=header.decode(\"ascii\").split()\n  rel=path.decode(\"utf-8\");assert rel not in result,rel\n  result[rel]={\"mode\":mode,\"type\":kind,\"oid\":oid}\n return result\ndef index_entries():\n result={}\n for line in git(\"ls-files\",\"--stage\",\"-z\").stdout.split(b\"\\0\"):\n  if not line: continue\n  header,path=line.split(b\"\\t\",1);mode,oid,stage=header.decode(\"ascii\").split()\n  rel=path.decode(\"utf-8\");assert stage==\"0\" and rel not in result,(\"nonzero_or_duplicate_index_stage\",rel,stage)\n  result[rel]={\"mode\":mode,\"oid\":oid,\"stage\":0}\n return result\ndef assert_conversion_unchanged(names,attributes,provenance,label):\n actual_attributes=effective_attributes(names)\n actual_provenance=conversion_provenance(names)\n assert actual_attributes==attributes,(label,\"effective_attributes_changed\")\n assert actual_provenance==provenance,(label,\"configuration_or_attribute_sources_changed\")\n return {\"stage\":label,\"effective_attributes_unchanged\":True,\"conversion_provenance_unchanged\":True,\n  \"provenance_sha256\":sha((json.dumps(provenance,sort_keys=True,separators=(\",\",\":\"))).encode(\"utf-8\"))}\n\nassert re.fullmatch(r\"[0-9a-f]{40}\",BASIS),\"Future released source head is unresolved\"\nassert all(re.fullmatch(r\"[0-9A-F]{64}\",value[1]) and value[2]>0 for value in MANIFESTS.values()),\"Future manifest bindings are unresolved\"\nassert len(sys.argv)==4,\"phase release-path release-sha256\"\n",
+      "before_bytes": 60,
+      "after_bytes": 8144,
+      "before_sha256": "A8CAC09BB3AD0BB82FD94B88EA1A9F7BB878BC35EB1E2D3B577D593D63041FAA",
+      "after_sha256": "5FA1E1808E0EB6E4B91B97F0F14FEBA09E2E934D01CC274E8E01C3D8B9F602A4",
+      "intermediate_before_bytes": 9832,
+      "intermediate_before_sha256": "0C9F9A004AFF2AA8D14AE5F219156FE9AC37783BAD9408EB3DB440D282D2F02C",
+      "intermediate_after_bytes": 17916,
+      "intermediate_after_sha256": "C700157503DEFE8619EADBFD02744F675CDF814684E14E038F1D9836DD7E4EAE",
+      "untouched_prefix": {
+        "bytes": 2575,
+        "sha256": "F21111C8A8E459563B69C3291857B4B7DACF0B69A42CA9C79FE620B43882A758"
+      },
+      "untouched_suffix": {
+        "bytes": 7197,
+        "sha256": "238A4BB42CD3A427C31F36DFD5A806903F87C8A03E701533B7139CFF05C32D69"
+      }
+    },
+    {
+      "step": 6,
+      "label": "explicit_contract_and_failure_observation",
+      "current_offset_bytes": 11464,
+      "before_utf8": "assert not receipt_path.exists()\nassert gout(\"branch\",\"--show-current\")==BRANCH\n",
+      "after_utf8": "assert not receipt_path.exists()\nassert release[\"git_byte_preflight_contract\"]==BYTE_CONTRACT\nsys.excepthook=fail_record\nFAILURE_STATE[\"stage\"]=\"repository_admission\"\nrepository=repository_identity()\nobject_format=repository[\"object_format\"]\nassert gout(\"branch\",\"--show-current\")==BRANCH\n",
+      "before_bytes": 80,
+      "after_bytes": 289,
+      "before_sha256": "70EA57645FA0CB3D64CBB0DA474356A5A7D40E4D4C9E179271AC0011D27270D5",
+      "after_sha256": "B2AB95FEE5C3639AB922DE1F0C7BBCC3F692937236B69A96CF3EAA4BCA3CA5CB",
+      "intermediate_before_bytes": 17916,
+      "intermediate_before_sha256": "C700157503DEFE8619EADBFD02744F675CDF814684E14E038F1D9836DD7E4EAE",
+      "intermediate_after_bytes": 18125,
+      "intermediate_after_sha256": "55DB23BFED9FB8C30FEECA138FCEEB39CB940F42C8A7B25A7BD8E24DC6C467F7",
+      "untouched_prefix": {
+        "bytes": 11464,
+        "sha256": "15DAEB47D71F482E65EF5F1A5917F98A3A2883A14298C4ADE33DA10E94295D6F"
+      },
+      "untouched_suffix": {
+        "bytes": 6372,
+        "sha256": "E32D9676E22BD1F320CD6573C85B2262CDF4DB3B94C50E7F2A6398EB253B1F3E"
+      }
+    },
+    {
+      "step": 7,
+      "label": "manifest_containment",
+      "current_offset_bytes": 11895,
+      "before_utf8": "manifest_path=ROOT/manifest_rel; manifest_raw=pinned(manifest_path,manifest_sha)",
+      "after_utf8": "manifest_path=inside(ROOT/manifest_rel,ROOT/\"evidence\"); manifest_raw=pinned(manifest_path,manifest_sha)",
+      "before_bytes": 80,
+      "after_bytes": 104,
+      "before_sha256": "7F921E70401A469A2DE030EEFB2CF8B66F2B50210CD351E884B7B14CACD4FF6C",
+      "after_sha256": "7E46068607457402C94153667241E654AD5C31E44031BAF7830E379AB26C4C9C",
+      "intermediate_before_bytes": 18125,
+      "intermediate_before_sha256": "55DB23BFED9FB8C30FEECA138FCEEB39CB940F42C8A7B25A7BD8E24DC6C467F7",
+      "intermediate_after_bytes": 18149,
+      "intermediate_after_sha256": "8C13144D2BDE5CF87286B2F7F6040BCA46A65EB527FEBE2FDA0F396770FB287D",
+      "untouched_prefix": {
+        "bytes": 11895,
+        "sha256": "D7FE8082C119A93AF10275B48FB52108B4A416C769E334D12907E6FDBC6F6A74"
+      },
+      "untouched_suffix": {
+        "bytes": 6150,
+        "sha256": "DEBD8B6072A3680AA7CBC8C6A82E284C18A41066C84DBF2D1C979C74A33CDB48"
+      }
+    },
+    {
+      "step": 8,
+      "label": "explicit_synthetic_manifest_mode",
+      "current_offset_bytes": 12377,
+      "before_utf8": "allrows=[*rows,{\"target\":target_manifest,\"source\":str(manifest_path),\"bytes\":len(manifest_raw),\"sha256\":manifest_sha,\"before\":None,\"role\":\"exact_intake_manifest\"}]",
+      "after_utf8": "allrows=[*rows,{\"target\":target_manifest,\"source\":str(manifest_path),\"bytes\":len(manifest_raw),\"sha256\":manifest_sha,\"before\":None,\"role\":\"exact_intake_manifest\",\"mode\":\"100644\"}]",
+      "before_bytes": 163,
+      "after_bytes": 179,
+      "before_sha256": "90B2C797275D85516D3FB560FFB03D94903696492CA4941233468261D3F24034",
+      "after_sha256": "49A057FB8F1856EAD249FAE63EDC8CFF9A433EE98BB4BAED2263250A20B2DE72",
+      "intermediate_before_bytes": 18149,
+      "intermediate_before_sha256": "8C13144D2BDE5CF87286B2F7F6040BCA46A65EB527FEBE2FDA0F396770FB287D",
+      "intermediate_after_bytes": 18165,
+      "intermediate_after_sha256": "1209F439DAB1612D1165B8C068A0AA756BBA9D38791B421388724807A2D6B35F",
+      "untouched_prefix": {
+        "bytes": 12377,
+        "sha256": "534834FD0DABCB7E5D941B628AE4B4FB6C456C3049A44E30830C64B76B863CD1"
+      },
+      "untouched_suffix": {
+        "bytes": 5609,
+        "sha256": "8713A31B544328FB33AC9D2C8AC92276CDE3E25B77AF7C444F42192DE0C7A8FD"
+      }
+    },
+    {
+      "step": 9,
+      "label": "canonical_paths_modes_and_complete_alias_inventory",
+      "current_offset_bytes": 12584,
+      "before_utf8": "names=[]; contents=[]; preimages=[]; basis_paths=tree_paths(BASIS); head_paths=tree_paths(head)\nfor row in allrows:\n rel=row[\"target\"]; pp=PurePosixPath(rel)\n assert not pp.is_absolute() and \"\\\\\" not in rel and \":\" not in rel and all(x not in (\"..\",\".\") for x in pp.parts),rel\n assert rel==\"build.zig\" or rel.startswith((\"src/\",\"vendor/quickjs/\",\"verification/\")),rel\n target=inside(MAIN/rel,MAIN); donor=inside(row[\"source\"],ROOT)\n b=pinned(donor,row[\"sha256\"]); assert len(b)==row[\"bytes\"]\n names.append(rel); contents.append(b)\n before=row[\"before\"]\n if before is None:\n  assert not target.exists() and rel not in basis_paths and rel not in head_paths,rel\n else:\n  old=pinned(target,before[\"sha256\"]); assert len(old)==before[\"bytes\"]\n  assert rel in basis_paths and rel in head_paths,rel\n  preimages.append((row,old))\nassert len(set(x.casefold() for x in names))==count\n",
+      "after_utf8": "FAILURE_STATE.update(stage=\"complete_donor_path_and_preimage_admission\",before_head=head)\nnames=[]; contents=[]; preimages=[]; basis_paths=tree_paths(BASIS); head_paths=tree_paths(head)\nprior_entries=tree_entries(head);assert set(prior_entries)==head_paths==basis_paths\nexisting_spelling={}\nfor rel in head_paths:\n parts=rel.split(\"/\")\n for depth in range(1,len(parts)+1):\n  value=\"/\".join(parts[:depth]);key=value.casefold()\n  assert key not in existing_spelling or existing_spelling[key]==value,(\"existing_case_alias\",value)\n  existing_spelling[key]=value\nfor row in allrows:\n rel=target_name(row[\"target\"]);no_reparse_target(rel)\n assert row[\"mode\"] in (\"100644\",\"100755\"),(rel,row[\"mode\"])\n parts=rel.split(\"/\")\n for depth in range(1,len(parts)+1):\n  value=\"/\".join(parts[:depth]);key=value.casefold()\n  assert key not in existing_spelling or existing_spelling[key]==value,(\"target_existing_case_alias\",value)\n target=inside(MAIN/rel,MAIN); donor=inside(row[\"source\"],ROOT)\n assert MAIN.resolve() not in donor.parents and donor!=MAIN.resolve(),(\"donor_must_be_outside_Main\",str(donor))\n b=pinned(donor,row[\"sha256\"]); assert len(b)==row[\"bytes\"]\n names.append(rel); contents.append(b)\n before=row[\"before\"]\n if before is None:\n  assert row[\"mode\"]==\"100644\",(\"new_regular_source_or_archive_mode\",rel)\n  assert not os.path.lexists(target) and rel.casefold() not in existing_spelling,rel\n  assert rel not in basis_paths and rel not in head_paths,rel\n else:\n  assert before[\"mode\"]==row[\"mode\"],(\"source_intake_does_not_change_existing_mode\",rel)\n  assert prior_entries[rel][\"type\"]==\"blob\" and prior_entries[rel][\"mode\"]==before[\"mode\"],rel\n  old=pinned(target,before[\"sha256\"]); assert len(old)==before[\"bytes\"]\n  assert rel in basis_paths and rel in head_paths,rel\n  assert prior_entries[rel][\"oid\"]==raw_oid(old,object_format),(\"preimage_object_id\",rel)\n  preimages.append((row,old))\nassert len(set(x.casefold() for x in names))==count\nfolded_names={x.casefold() for x in names}\nfor rel in names:\n parts=rel.split(\"/\")\n assert not any(\"/\".join(parts[:depth]).casefold() in folded_names for depth in range(1,len(parts))),(\"file_directory_target_collision\",rel)\nlogical_aliases=manifest[\"logical_donor_aliases\"]\nassert len(logical_aliases)==release[\"authorized_phases\"][phase][\"logical_donor_alias_count\"]\nphysical={row[\"target\"]:(row,b) for row,b in zip(allrows,contents)}\nalias_records=[];alias_keys=set()\nfor alias in logical_aliases:\n rel=alias[\"target\"];assert rel in physical and rel!=target_manifest,rel\n row,b=physical[rel];donor=inside(alias[\"source\"],ROOT)\n assert MAIN.resolve() not in donor.parents and donor!=MAIN.resolve(),str(donor)\n alias_bytes=pinned(donor,alias[\"sha256\"])\n assert len(alias_bytes)==alias[\"bytes\"] and alias_bytes==b,(\"logical_donor_alias_bytes\",rel,str(donor))\n key=(rel,str(donor).casefold(),alias[\"bytes\"],alias[\"sha256\"])\n assert key not in alias_keys,(\"duplicate_logical_donor_identity\",key)\n alias_keys.add(key)\n alias_records.append({**alias,\"canonical_donor\":str(donor),\"same_physical_bytes\":True})\nfor row in rows:\n key=(row[\"target\"],str(inside(row[\"source\"],ROOT)).casefold(),row[\"bytes\"],row[\"sha256\"])\n assert key in alias_keys,(\"physical_donor_missing_from_logical_inventory\",row[\"target\"])\nalias_records.append({\"target\":target_manifest,\"source\":str(manifest_path),\"bytes\":len(manifest_raw),\n \"sha256\":manifest_sha,\"canonical_donor\":str(manifest_path),\"same_physical_bytes\":True,\"synthetic_manifest\":True})\n",
+      "before_bytes": 874,
+      "after_bytes": 3459,
+      "before_sha256": "49D27F158FD4D4C671D228806788EA42613B51BF6DFA85A895F5CAFF2F1793B4",
+      "after_sha256": "97CB986D856C71D4F186D0171605AF25687B17A8D9498C6BBF84353BE49B1EAF",
+      "intermediate_before_bytes": 18165,
+      "intermediate_before_sha256": "1209F439DAB1612D1165B8C068A0AA756BBA9D38791B421388724807A2D6B35F",
+      "intermediate_after_bytes": 20750,
+      "intermediate_after_sha256": "2C039E40FC6CC29A7A175C071244EB07945ECF5B7B6167181F57B609AA6DAC91",
+      "untouched_prefix": {
+        "bytes": 12584,
+        "sha256": "19FC04604E4CB2FCD67F360A5C8A2D9DEDFCABBCFF047864D1D19BDBFC087294"
+      },
+      "untouched_suffix": {
+        "bytes": 4707,
+        "sha256": "CC6B6EDA66F39611D05C8E5D0A8ADEAA251EDBCB15BB8C94BADBF3AA5686B5F3"
+      }
+    },
+    {
+      "step": 10,
+      "label": "both_git_ids_and_complete_conversion_provenance",
+      "current_offset_bytes": 16377,
+      "before_utf8": "attribute_output=git(\"check-attr\",\"-z\",\"--stdin\",\"filter\",\"working-tree-encoding\",\"ident\",input=b\"\\0\".join(x.encode(\"utf-8\") for x in names)+b\"\\0\").stdout.split(b\"\\0\")[:-1]\nassert len(attribute_output)==9*count\nfor index in range(0,len(attribute_output),3):\n assert attribute_output[index].decode(\"utf-8\") in names\n assert attribute_output[index+1].decode(\"utf-8\") in (\"filter\",\"working-tree-encoding\",\"ident\")\n assert attribute_output[index+2] in (b\"unspecified\",b\"unset\"),attribute_output[index:index+3]\nfor rel,b in zip(names,contents):\n expected_blob=hashlib.sha1(b\"blob \"+str(len(b)).encode(\"ascii\")+b\"\\0\"+b).hexdigest()\n actual_blob=git(\"hash-object\",\"--path=\"+rel,\"--stdin\",input=b).stdout.decode(\"ascii\").strip()\n assert actual_blob==expected_blob,(\"git_filter_would_change_exact_bytes\",rel,expected_blob,actual_blob)\nfor rel in names:\n parts=PurePosixPath(rel).parts\n for depth in range(1,len(parts)):\n  parent=MAIN.joinpath(*parts[:depth])\n  assert not parent.is_symlink(),str(parent)\nassert gout(\"rev-parse\",\"HEAD\")==head and git(\"status\",\"--porcelain=v1\",\"--untracked-files=all\").stdout==b\"\"\n",
+      "after_utf8": "FAILURE_STATE[\"stage\"]=\"complete_attribute_and_git_object_preflight\"\nattributes=effective_attributes(names)\nprovenance=conversion_provenance(names)\nassert provenance[\"repository\"]==repository\nbyte_rows=[];expected_ids={}\nfor row,b in zip(allrows,contents):\n rel=row[\"target\"];expected_blob=raw_oid(b,object_format)\n raw_git=oid_text(git(\"hash-object\",\"--no-filters\",\"--stdin\",input=b).stdout,object_format)\n assert raw_git==expected_blob,(\"raw_git_object_disagrees_with_independent_digest\",rel,expected_blob,raw_git)\n # Disallowed attributes were rejected for every path before this first filter-capable call.\n path_git=oid_text(git(\"hash-object\",\"--path=\"+rel,\"--stdin\",input=b).stdout,object_format)\n assert path_git==raw_git,(\"git_conversion_would_change_exact_bytes\",rel,raw_git,path_git)\n expected_ids[rel]=raw_git\n byte_rows.append({\"target\":rel,\"donor\":row[\"source\"],\"bytes\":len(b),\"sha256\":sha(b),\n  \"expected_mode\":row[\"mode\"],\"object_format\":object_format,\"computed_raw_blob\":expected_blob,\n  \"git_raw_blob\":raw_git,\"git_path_blob\":path_git,\"effective_attributes\":attributes[rel]})\nfor rel in names: no_reparse_target(rel)\nbefore_copy_revalidation=assert_conversion_unchanged(names,attributes,provenance,\"all_hashes_complete_before_copy\")\nassert gout(\"rev-parse\",\"HEAD\")==head and git(\"status\",\"--porcelain=v1\",\"--untracked-files=all\").stdout==b\"\"\nno_hooks()\n",
+      "before_bytes": 1104,
+      "after_bytes": 1369,
+      "before_sha256": "1C78B636D6FEC9FCE1672A037DA8518F7BABD31859A2B6E941687319F5F4BB42",
+      "after_sha256": "E1FBB60F48678426E1A4D1BF01AACF146911794B0EC366C8BCF9BE9BE786E889",
+      "intermediate_before_bytes": 20750,
+      "intermediate_before_sha256": "2C039E40FC6CC29A7A175C071244EB07945ECF5B7B6167181F57B609AA6DAC91",
+      "intermediate_after_bytes": 21015,
+      "intermediate_after_sha256": "B3A3A5FF4599163C713C01FC316D888D97FC08DCA569A1E7AD074D7837186482",
+      "untouched_prefix": {
+        "bytes": 16377,
+        "sha256": "96336E3C9B891BF3429AE829C645C165F8C686CC2AB52C82344959DC89DDF54B"
+      },
+      "untouched_suffix": {
+        "bytes": 3269,
+        "sha256": "4EC83C405BED8EFEA771E4EC87EBFC45B571DCCD8577914264CF683B1A2A007B"
+      }
+    },
+    {
+      "step": 11,
+      "label": "expanded_preflight_receipt",
+      "current_offset_bytes": 17786,
+      "before_utf8": "preflight={\"phase\":phase,\"utc\":datetime.datetime.now(datetime.timezone.utc).isoformat(),\"before_head\":head,\"basis_head\":BASIS,\"release\":str(release_path),\"release_sha256\":release_sha,\"executor_sha256\":self_sha,\"manifest\":str(manifest_path),\"manifest_sha256\":manifest_sha,\"path_count\":count,\"all_donors_live_preimages_and_committed_basis_verified\":True,\"rows\":[{k:r[k] for k in (\"target\",\"role\",\"bytes\",\"sha256\",\"before\")} for r in allrows],\"native_execution_authorized\":False,\"qualification\":False}",
+      "after_utf8": "preflight={\"phase\":phase,\"utc\":datetime.datetime.now(datetime.timezone.utc).isoformat(),\n \"before_head\":head,\"basis_head\":BASIS,\"release\":str(release_path),\"release_sha256\":release_sha,\n \"executor_sha256\":self_sha,\"manifest\":str(manifest_path),\"manifest_sha256\":manifest_sha,\n \"path_count\":count,\"git_byte_preflight_contract\":BYTE_CONTRACT,\"repository\":repository,\n \"all_donors_live_preimages_and_committed_basis_verified\":True,\n \"rows\":[{k:r[k] for k in (\"target\",\"source\",\"role\",\"bytes\",\"sha256\",\"before\",\"mode\")} for r in allrows],\n \"logical_donor_aliases\":alias_records,\"logical_alias_count_excluding_manifest\":len(logical_aliases),\n \"byte_rows\":byte_rows,\"effective_attributes\":attributes,\"conversion_provenance\":provenance,\n \"before_copy_revalidation\":before_copy_revalidation,\"native_execution_authorized\":False,\"qualification\":False}",
+      "before_bytes": 498,
+      "after_bytes": 841,
+      "before_sha256": "19DDE00EB89D8D87CD9E68CA78A0CA4BE4F1FFEB8E439FF8F06B36E93358D31A",
+      "after_sha256": "7D259BC836B1223C3BCB2F06E58FCEEFB6B014556FCF8362CBF0012CA7E2B99E",
+      "intermediate_before_bytes": 21015,
+      "intermediate_before_sha256": "B3A3A5FF4599163C713C01FC316D888D97FC08DCA569A1E7AD074D7837186482",
+      "intermediate_after_bytes": 21358,
+      "intermediate_after_sha256": "92CFD864B943A004D9C37D0811DD3F173384A99DD757069E22B6154FC128A8C4",
+      "untouched_prefix": {
+        "bytes": 17786,
+        "sha256": "3C8DDC721D4CEC374CFAE5BAFC957D5AF7373D4264099E90C5D2030DC122C6B4"
+      },
+      "untouched_suffix": {
+        "bytes": 2731,
+        "sha256": "ACF5C7850E96348C7FAE9559B10819530FF9EE052F3C9AFF4B79E13609DE7D8A"
+      }
+    },
+    {
+      "step": 12,
+      "label": "accurate_source_commit_narrative",
+      "current_offset_bytes": 18863,
+      "before_utf8": "Source-reviewed intake only. Native runtime and full application qualification remain pending.",
+      "after_utf8": "Source-reviewed intake only. This commit grants no native execution or full application qualification.",
+      "before_bytes": 94,
+      "after_bytes": 102,
+      "before_sha256": "834FDDB3A28FE087B5989F749986CFFB07A8D0B3145AE79B8722E672DD2142AD",
+      "after_sha256": "4DB7F2110BC4E06FF24DE9D3CAA89EF4ACABF3FCAABA8DF8D39538ECB5FB8AC9",
+      "intermediate_before_bytes": 21358,
+      "intermediate_before_sha256": "92CFD864B943A004D9C37D0811DD3F173384A99DD757069E22B6154FC128A8C4",
+      "intermediate_after_bytes": 21366,
+      "intermediate_after_sha256": "15D7FF86B612C80D2F5C626557C05443D2261ABC680A802A0E2A5C5B2A01C34D",
+      "untouched_prefix": {
+        "bytes": 18863,
+        "sha256": "A7D6BDC675FA56A86845BB98DC9AA204E387175C2F0623EC5AC26C8560310A28"
+      },
+      "untouched_suffix": {
+        "bytes": 2401,
+        "sha256": "B5AEA18E5D91D4A01AFD545831B1C3FCBAFF409E7D3D98B8F85C74B6754F7F5E"
+      }
+    },
+    {
+      "step": 13,
+      "label": "copy_stage_failure_boundary_and_path_recheck",
+      "current_offset_bytes": 18987,
+      "before_utf8": "for index,(row,b) in enumerate(zip(allrows,contents)):\n target=MAIN/row[\"target\"]; before=row[\"before\"]\n",
+      "after_utf8": "FAILURE_STATE.update(stage=\"copying_exact_reviewed_rows\",Main_or_index_writes_started=True)\nfor index,(row,b) in enumerate(zip(allrows,contents)):\n FAILURE_STATE[\"current_target\"]=row[\"target\"]\n no_reparse_target(row[\"target\"])\n target=MAIN/row[\"target\"]; before=row[\"before\"]\n",
+      "before_bytes": 104,
+      "after_bytes": 277,
+      "before_sha256": "932C4783A953CB7B43DF3CD4799E2A493F9A798507C63E9EBD8E0AB5F1A87854",
+      "after_sha256": "34B3BDA3777DC2DAB605AD91E30A92505C23F21012D988F8752AF018AB723796",
+      "intermediate_before_bytes": 21366,
+      "intermediate_before_sha256": "15D7FF86B612C80D2F5C626557C05443D2261ABC680A802A0E2A5C5B2A01C34D",
+      "intermediate_after_bytes": 21539,
+      "intermediate_after_sha256": "A58F03E68CA632EFFDB71568C39F9B612F7C8B5BA0307EE50C5C3E5F48A28F14",
+      "untouched_prefix": {
+        "bytes": 18987,
+        "sha256": "EA07FE312C22E1983C30B18A721E1DDED1981BF7DD903848ACB2C4794CF3A647"
+      },
+      "untouched_suffix": {
+        "bytes": 2275,
+        "sha256": "F0DD69B74D6D120120897F48C8574331121D42035CC0A57551D3D83DDB10582B"
+      }
+    },
+    {
+      "step": 14,
+      "label": "post_copy_before_literal_staging",
+      "current_offset_bytes": 19491,
+      "before_utf8": "git(\"add\",\"--pathspec-from-file=\"+str(pathspec),\"--pathspec-file-nul\")",
+      "after_utf8": "FAILURE_STATE[\"stage\"]=\"post_copy_pre_staging_revalidation\"\npost_copy_revalidation=assert_conversion_unchanged(names,attributes,provenance,\"after_copy_before_staging\")\nfor rel,b in zip(names,contents):\n no_reparse_target(rel);assert raw(MAIN/rel)==b,(\"post_copy_exact_bytes\",rel)\nassert gout(\"rev-parse\",\"HEAD\")==head\nnew_json(proof/(phase+\"-post-copy.json\"),post_copy_revalidation)\nFAILURE_STATE[\"stage\"]=\"staging_exact_literal_path_list\"\ngit(\"--literal-pathspecs\",\"add\",\"--pathspec-from-file=\"+str(pathspec),\"--pathspec-file-nul\")",
+      "before_bytes": 70,
+      "after_bytes": 532,
+      "before_sha256": "793A279CDD708F82DD85012896DACAAFA43F0CE4B76AF96492037B90C1B83CC0",
+      "after_sha256": "6CE5B233B57F82F62591F2B1A4A2B8F5146F960092862A0C8D5594481BA68EA9",
+      "intermediate_before_bytes": 21539,
+      "intermediate_before_sha256": "A58F03E68CA632EFFDB71568C39F9B612F7C8B5BA0307EE50C5C3E5F48A28F14",
+      "intermediate_after_bytes": 22001,
+      "intermediate_after_sha256": "7BCC57BDA01499FC1BF74CFAEF063783612C9A0534BACA681D67254454F6AD2C",
+      "untouched_prefix": {
+        "bytes": 19491,
+        "sha256": "CFC2BF1905C6D1E46D272A16F6E75E50A48FE0EFD26FDABA598EE16A84040AFF"
+      },
+      "untouched_suffix": {
+        "bytes": 1978,
+        "sha256": "EC9BB39FC22EDEE25C91372BEF89D74757273E9B71E8FC48087392E01BAFC9FB"
+      }
+    },
+    {
+      "step": 15,
+      "label": "explicit_index_modes_and_ids",
+      "current_offset_bytes": 20303,
+      "before_utf8": "for rel,b,blob in zip(names,contents,blob_many([\":\"+rel for rel in names])):\n assert b==blob,(\"index\",rel)\n",
+      "after_utf8": "index=index_entries();staged_rows=[]\nfor row,b,blob in zip(allrows,contents,blob_many([\":\"+rel for rel in names])):\n rel=row[\"target\"];entry=index[rel]\n assert b==blob,(\"index\",rel)\n assert entry[\"mode\"]==row[\"mode\"] and entry[\"oid\"]==expected_ids[rel] and entry[\"stage\"]==0,(\"exact_index_mode_oid\",rel,entry)\n staged_rows.append({\"target\":rel,**entry,\"bytes\":len(b),\"sha256\":sha(b)})\n",
+      "before_bytes": 107,
+      "after_bytes": 385,
+      "before_sha256": "D4DC3A0D6DF824E1ABF44CF3706E9D55BBB9562C44DDD9DC97DE4D01D5894F2A",
+      "after_sha256": "CA0C569E16EF247D89B6B7C07104E3C38E35A2909DEF0E54EC6DAF7DBDA4ED1D",
+      "intermediate_before_bytes": 22001,
+      "intermediate_before_sha256": "7BCC57BDA01499FC1BF74CFAEF063783612C9A0534BACA681D67254454F6AD2C",
+      "intermediate_after_bytes": 22279,
+      "intermediate_after_sha256": "42CA20600DF03318214273A73461251547436124A634F2638829A6F9D27A9FDC",
+      "untouched_prefix": {
+        "bytes": 20303,
+        "sha256": "345DBB72ABAD5164EDE58F1B653E50439AEFF17371C35F0E34018E1525B3A57A"
+      },
+      "untouched_suffix": {
+        "bytes": 1591,
+        "sha256": "163032C140B25F88025C6B3666057A7491320C7EF623990068A51F36A3266407"
+      }
+    },
+    {
+      "step": 16,
+      "label": "staged_receipt_and_pre_commit_revalidation",
+      "current_offset_bytes": 20726,
+      "before_utf8": "new_json(proof/(phase+\"-staged.json\"),{\"before_head\":head,\"path_count\":count,\"exact_index_blob_bytes_verified\":True,\"manifest_sha256\":manifest_sha,\"executor_sha256\":self_sha,\"release_sha256\":release_sha})\ncommit=git(\"commit\",\"--file=\"+str(message))",
+      "after_utf8": "pre_commit_revalidation=assert_conversion_unchanged(names,attributes,provenance,\"after_staging_before_commit\")\nno_hooks()\nnew_json(proof/(phase+\"-staged.json\"),{\"before_head\":head,\"path_count\":count,\"exact_index_blob_bytes_verified\":True,\"exact_modes_and_preflight_ids_verified\":True,\"rows\":staged_rows,\"pre_commit_revalidation\":pre_commit_revalidation,\"manifest_sha256\":manifest_sha,\"executor_sha256\":self_sha,\"release_sha256\":release_sha})\nFAILURE_STATE[\"stage\"]=\"committing_exact_reviewed_index\"\ncommit=git(\"commit\",\"--file=\"+str(message))",
+      "before_bytes": 248,
+      "after_bytes": 542,
+      "before_sha256": "C04E18D90F747425940FF875C578C00A267A0EB36307C37D861A9CB91F80F224",
+      "after_sha256": "674F5412EDB9F6A5366A992D148E2AC5E9D7DA334C746CA3E8307AC61D371F83",
+      "intermediate_before_bytes": 22279,
+      "intermediate_before_sha256": "42CA20600DF03318214273A73461251547436124A634F2638829A6F9D27A9FDC",
+      "intermediate_after_bytes": 22573,
+      "intermediate_after_sha256": "3C92046CDF98F3453CE20962975D75AE4F0BF7475D8D62CCA184F80292ADEC91",
+      "untouched_prefix": {
+        "bytes": 20726,
+        "sha256": "1775EB08B24BCB1971DBBF6A139B94CC49DA75635563B89A5025C22FFE87940E"
+      },
+      "untouched_suffix": {
+        "bytes": 1305,
+        "sha256": "09CECAE1038B298A3DFEB80CB1C8A464A2D123B0EE22521D356DACBF441345CF"
+      }
+    },
+    {
+      "step": 17,
+      "label": "complete_parent_list",
+      "current_offset_bytes": 21300,
+      "before_utf8": "assert after!=head and gout(\"rev-parse\",after+\"^\")==head",
+      "after_utf8": "parents=gout(\"show\",\"-s\",\"--format=%P\",after).split()\nassert after!=head and parents==[head],(\"complete_single_parent_relation\",after,parents,head)\nFAILURE_STATE.update(stage=\"committed_blob_and_mode_verification\",after_head=after)",
+      "before_bytes": 56,
+      "after_bytes": 231,
+      "before_sha256": "ED4D7479F23780DA22AD4287C9A2F1F158871458A40DB2A9EA0D72E372E31E7D",
+      "after_sha256": "E2E52F67A5C72E25E478BFC8964B4EEFB12CF25BFB23D608252632745A42D5D6",
+      "intermediate_before_bytes": 22573,
+      "intermediate_before_sha256": "3C92046CDF98F3453CE20962975D75AE4F0BF7475D8D62CCA184F80292ADEC91",
+      "intermediate_after_bytes": 22748,
+      "intermediate_after_sha256": "30622269CF22685692EC6F885942A3B6BA7B31870B631B3B32FB09001CEA59DC",
+      "untouched_prefix": {
+        "bytes": 21300,
+        "sha256": "B9201A11526D991C39E667DC312096ABA34D0933E9313387359B00C88FE886B6"
+      },
+      "untouched_suffix": {
+        "bytes": 1217,
+        "sha256": "38CA0FA80D31B74048B4110C0C72509C9C1222E3845C0A8F4F12C254CFF876B4"
+      }
+    },
+    {
+      "step": 18,
+      "label": "committed_modes_ids_and_final_provenance",
+      "current_offset_bytes": 21714,
+      "before_utf8": "for rel,b,blob in zip(names,contents,blob_many([after+\":\"+rel for rel in names])):\n assert b==blob and raw(MAIN/rel)==b,(\"committed\",rel)\n",
+      "after_utf8": "committed=tree_entries(after);committed_rows=[]\nfor row,b,blob in zip(allrows,contents,blob_many([after+\":\"+rel for rel in names])):\n rel=row[\"target\"];entry=committed[rel]\n assert b==blob and raw(MAIN/rel)==b,(\"committed\",rel)\n assert entry[\"type\"]==\"blob\" and entry[\"mode\"]==row[\"mode\"] and entry[\"oid\"]==expected_ids[rel],(\"committed_mode_oid\",rel,entry)\n committed_rows.append({\"target\":rel,**entry,\"bytes\":len(b),\"sha256\":sha(b)})\nfinal_revalidation=assert_conversion_unchanged(names,attributes,provenance,\"after_commit\")\n",
+      "before_bytes": 138,
+      "after_bytes": 527,
+      "before_sha256": "095A897C240AA69CAD2D0CB66AE47CED8E230E2152692921DADC8526DEE058F9",
+      "after_sha256": "DD8022BC5233922F3D64DE2936647D6E34BC73EB9DAD0D34CBC151F4ECA3D8AF",
+      "intermediate_before_bytes": 22748,
+      "intermediate_before_sha256": "30622269CF22685692EC6F885942A3B6BA7B31870B631B3B32FB09001CEA59DC",
+      "intermediate_after_bytes": 23137,
+      "intermediate_after_sha256": "F5EDDE1B7D70671F04285C40E8EA096448CE687D0B07F2E7E3CFD64F9D8FCDC1",
+      "untouched_prefix": {
+        "bytes": 21714,
+        "sha256": "2E0ACC1390AE98F2C7F4633A1E6413776A0B53ABA255DFC4FA9110113488CDAA"
+      },
+      "untouched_suffix": {
+        "bytes": 896,
+        "sha256": "C605D106C033173345D4A829A55A7F9BCA5BE26EF59F7A03F6699D4A458D8DC7"
+      }
+    },
+    {
+      "step": 19,
+      "label": "expanded_final_receipt",
+      "current_offset_bytes": 22637,
+      "before_utf8": "\"path_count\":count,\"staged_and_committed_bytes_match\":True,\"clean_worktree\":True,",
+      "after_utf8": "\"path_count\":count,\"staged_and_committed_bytes_match\":True,\"git_byte_preflight_contract\":BYTE_CONTRACT,\"repository\":repository,\"complete_commit_parents\":parents,\"staged_rows\":staged_rows,\"committed_rows\":committed_rows,\"logical_alias_count_excluding_manifest\":len(logical_aliases),\"all_raw_and_path_git_ids_equal\":True,\"all_expected_modes_verified\":True,\"final_conversion_revalidation\":final_revalidation,\"clean_worktree\":True,",
+      "before_bytes": 81,
+      "after_bytes": 427,
+      "before_sha256": "8F49DBEF187CDA8D5F9839A863DBBECE38963A6DEF7A8DA07EC8ED451364F8D4",
+      "after_sha256": "076B1A70C26CEF9EE82D24F22684DA18EC990D3EC391D6F24FCA87EFA695AC36",
+      "intermediate_before_bytes": 23137,
+      "intermediate_before_sha256": "F5EDDE1B7D70671F04285C40E8EA096448CE687D0B07F2E7E3CFD64F9D8FCDC1",
+      "intermediate_after_bytes": 23483,
+      "intermediate_after_sha256": "0B608E7285ABB1AFF388080EA1D54383C52EB1AC38BA47263F694AA140B8DB6E",
+      "untouched_prefix": {
+        "bytes": 22637,
+        "sha256": "906828DD7976ECA83318EAED346CB055389F7051CE0D3EC059D8224C8E4F1E92"
+      },
+      "untouched_suffix": {
+        "bytes": 419,
+        "sha256": "1302F674AE79760D51B32EACE989614E97E16DC2803A6CE886B7F0C919F64F02"
+      }
+    },
+    {
+      "step": 20,
+      "label": "completion_state_before_success_print",
+      "current_offset_bytes": 23257,
+      "before_utf8": "new_json(receipt_path,receipt)\nprint(json.dumps(",
+      "after_utf8": "new_json(receipt_path,receipt)\nFAILURE_STATE.update(stage=\"completed\",receipt_path=str(receipt_path))\nprint(json.dumps(",
+      "before_bytes": 48,
+      "after_bytes": 119,
+      "before_sha256": "4E7B32C8A2CA6F7DC8B6AB632C42E0F260E5ADC00511D20D5ABD7B5A772832BE",
+      "after_sha256": "4E4D26DC1C242FD23C38C8177FABFB6E2164BAD34A032D6D99337F5FCD163BF7",
+      "intermediate_before_bytes": 23483,
+      "intermediate_before_sha256": "0B608E7285ABB1AFF388080EA1D54383C52EB1AC38BA47263F694AA140B8DB6E",
+      "intermediate_after_bytes": 23554,
+      "intermediate_after_sha256": "1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010",
+      "untouched_prefix": {
+        "bytes": 23257,
+        "sha256": "C5E31B3C190E4ECC850AC65EF5EF9546ADAC5EA2D31E982FE4E3C87BDA356A33"
+      },
+      "untouched_suffix": {
+        "bytes": 178,
+        "sha256": "0CE0FED0854EF80EFBA201E53D1FCFFD8C146D116A5CCD36DB12B39A98B0B880"
+      }
+    }
+  ],
+  "whole_forward_exact": true,
+  "whole_inverse_exact": true,
+  "complete_untouched_fragments": [
+    {
+      "baseline_start": 84,
+      "candidate_start": 100,
+      "bytes": 41,
+      "sha256": "3A59E540634D2F7BFD618119103247305F390F4CA25E61F52491FF24BDADBAA1"
+    },
+    {
+      "baseline_start": 177,
+      "candidate_start": 318,
+      "bytes": 53,
+      "sha256": "1DCFDC30004713463ED443319E5BA108AF409AF7700ECAE70EE0FA63545156B9"
+    },
+    {
+      "baseline_start": 278,
+      "candidate_start": 419,
+      "bytes": 56,
+      "sha256": "B188909D2CB97C955B9D6D4F816D9FC79D6DE772ECCB2AEACA988BAC360E1B06"
+    },
+    {
+      "baseline_start": 574,
+      "candidate_start": 687,
+      "bytes": 1888,
+      "sha256": "F8BCC0FF025D42591DF2D037650F5741B9E289520228DA41E8E7AE9BC2E49694"
+    },
+    {
+      "baseline_start": 2522,
+      "candidate_start": 10719,
+      "bytes": 745,
+      "sha256": "BBABE111C39A561D7A49D7D98FD9BB05AC161F71E3F5B8B86EC48C3A3D4B729D"
+    },
+    {
+      "baseline_start": 3347,
+      "candidate_start": 11753,
+      "bytes": 142,
+      "sha256": "1F91F88602C3E3D90FF24841169353104D4B6DB1CA86CC1E2CCE5B4A247357BA"
+    },
+    {
+      "baseline_start": 3569,
+      "candidate_start": 11999,
+      "bytes": 378,
+      "sha256": "E9EC60F38EC23714DFD8051E901C8BC465E588A346003870863F5F7AB8AC13BB"
+    },
+    {
+      "baseline_start": 4110,
+      "candidate_start": 12556,
+      "bytes": 28,
+      "sha256": "9F18EAB07C5984D9A55EAE0E1E8A9A96F2B3DF83A8AEC6B8575F4D4D5C9F2E22"
+    },
+    {
+      "baseline_start": 5012,
+      "candidate_start": 16043,
+      "bytes": 334,
+      "sha256": "5FCEA0C76AB23651EE0673AD2607F06635052878E9A0C7FB5613DCEA7B4967D6"
+    },
+    {
+      "baseline_start": 6450,
+      "candidate_start": 17746,
+      "bytes": 40,
+      "sha256": "62ABFB197A942168E0C1602C7F4F84FE08E451DCC36C11467F49B356F7941FB0"
+    },
+    {
+      "baseline_start": 6988,
+      "candidate_start": 18627,
+      "bytes": 236,
+      "sha256": "A4631AA6D92E90B9D51786FE88B2D8BEF57B2CE01420F5BEF2C0171A1C987CA6"
+    },
+    {
+      "baseline_start": 7318,
+      "candidate_start": 18965,
+      "bytes": 22,
+      "sha256": "D2F9415BC4E84152FFA1EF0C9E64E2A2B9B502EC0062EB8CAD19C721EAAF44AA"
+    },
+    {
+      "baseline_start": 7444,
+      "candidate_start": 19264,
+      "bytes": 227,
+      "sha256": "A345D94D0361AE576284134C9B51C20C568AF757098B5A79A6F045CDFA401E85"
+    },
+    {
+      "baseline_start": 7741,
+      "candidate_start": 20023,
+      "bytes": 280,
+      "sha256": "CAE1EB864ED330839A0F416074F1F770F9B791AF75FC0869EDC829C08BEF47AD"
+    },
+    {
+      "baseline_start": 8128,
+      "candidate_start": 20688,
+      "bytes": 38,
+      "sha256": "5FAF2D502AE4616C5200AE382AA5FA2424D1680B504F661E3651EE8A6DD245D0"
+    },
+    {
+      "baseline_start": 8414,
+      "candidate_start": 21268,
+      "bytes": 32,
+      "sha256": "4A73314E70341246A6F1D95B4D43F42B9AC34D013A71084755BFB9501DC86ADF"
+    },
+    {
+      "baseline_start": 8502,
+      "candidate_start": 21531,
+      "bytes": 183,
+      "sha256": "159BAD741780313859CA5CA4D4008DBE0DE21DABE10E5DFE02BB0CEC148D36A1"
+    },
+    {
+      "baseline_start": 8823,
+      "candidate_start": 22241,
+      "bytes": 396,
+      "sha256": "021F0D228CED6AF186EAA59FAD076FE8EFBC1887DAA54DD6C49BDC8BE948D9E9"
+    },
+    {
+      "baseline_start": 9300,
+      "candidate_start": 23064,
+      "bytes": 193,
+      "sha256": "73F921F8413F2C8B0D823450DB98643F2A86A291212EF5C87984C249D7ADBCF8"
+    },
+    {
+      "baseline_start": 9541,
+      "candidate_start": 23376,
+      "bytes": 178,
+      "sha256": "0CE0FED0854EF80EFBA201E53D1FCFFD8C146D116A5CCD36DB12B39A98B0B880"
+    }
+  ],
+  "baseline_replaced_ranges": [
+    {
+      "baseline_start": 0,
+      "bytes": 84,
+      "sha256": "EE3DC1B31CFAD1C43AAB60B1DA09C1251EE650EB1C5D8C84A2B2D0097C56F239"
+    },
+    {
+      "baseline_start": 125,
+      "bytes": 52,
+      "sha256": "9434A1EC9262D1778E4235C1ADB3B3B1FCF8AF032589F33E986493ABFBF1BCDC"
+    },
+    {
+      "baseline_start": 230,
+      "bytes": 48,
+      "sha256": "D82279141420F3DB0B6925E5AACCB2CB331EDF6260084CE00F2464A7214950E6"
+    },
+    {
+      "baseline_start": 334,
+      "bytes": 240,
+      "sha256": "F4E14185A14E8B96B894DEB22ED130A8AC400C2EED00BECAC1D18240F0E033E3"
+    },
+    {
+      "baseline_start": 2462,
+      "bytes": 60,
+      "sha256": "A8CAC09BB3AD0BB82FD94B88EA1A9F7BB878BC35EB1E2D3B577D593D63041FAA"
+    },
+    {
+      "baseline_start": 3267,
+      "bytes": 80,
+      "sha256": "70EA57645FA0CB3D64CBB0DA474356A5A7D40E4D4C9E179271AC0011D27270D5"
+    },
+    {
+      "baseline_start": 3489,
+      "bytes": 80,
+      "sha256": "7F921E70401A469A2DE030EEFB2CF8B66F2B50210CD351E884B7B14CACD4FF6C"
+    },
+    {
+      "baseline_start": 3947,
+      "bytes": 163,
+      "sha256": "90B2C797275D85516D3FB560FFB03D94903696492CA4941233468261D3F24034"
+    },
+    {
+      "baseline_start": 4138,
+      "bytes": 874,
+      "sha256": "49D27F158FD4D4C671D228806788EA42613B51BF6DFA85A895F5CAFF2F1793B4"
+    },
+    {
+      "baseline_start": 5346,
+      "bytes": 1104,
+      "sha256": "1C78B636D6FEC9FCE1672A037DA8518F7BABD31859A2B6E941687319F5F4BB42"
+    },
+    {
+      "baseline_start": 6490,
+      "bytes": 498,
+      "sha256": "19DDE00EB89D8D87CD9E68CA78A0CA4BE4F1FFEB8E439FF8F06B36E93358D31A"
+    },
+    {
+      "baseline_start": 7224,
+      "bytes": 94,
+      "sha256": "834FDDB3A28FE087B5989F749986CFFB07A8D0B3145AE79B8722E672DD2142AD"
+    },
+    {
+      "baseline_start": 7340,
+      "bytes": 104,
+      "sha256": "932C4783A953CB7B43DF3CD4799E2A493F9A798507C63E9EBD8E0AB5F1A87854"
+    },
+    {
+      "baseline_start": 7671,
+      "bytes": 70,
+      "sha256": "793A279CDD708F82DD85012896DACAAFA43F0CE4B76AF96492037B90C1B83CC0"
+    },
+    {
+      "baseline_start": 8021,
+      "bytes": 107,
+      "sha256": "D4DC3A0D6DF824E1ABF44CF3706E9D55BBB9562C44DDD9DC97DE4D01D5894F2A"
+    },
+    {
+      "baseline_start": 8166,
+      "bytes": 248,
+      "sha256": "C04E18D90F747425940FF875C578C00A267A0EB36307C37D861A9CB91F80F224"
+    },
+    {
+      "baseline_start": 8446,
+      "bytes": 56,
+      "sha256": "ED4D7479F23780DA22AD4287C9A2F1F158871458A40DB2A9EA0D72E372E31E7D"
+    },
+    {
+      "baseline_start": 8685,
+      "bytes": 138,
+      "sha256": "095A897C240AA69CAD2D0CB66AE47CED8E230E2152692921DADC8526DEE058F9"
+    },
+    {
+      "baseline_start": 9219,
+      "bytes": 81,
+      "sha256": "8F49DBEF187CDA8D5F9839A863DBBECE38963A6DEF7A8DA07EC8ED451364F8D4"
+    },
+    {
+      "baseline_start": 9493,
+      "bytes": 48,
+      "sha256": "4E7B32C8A2CA6F7DC8B6AB632C42E0F260E5ADC00511D20D5ABD7B5A772832BE"
+    }
+  ],
+  "all_baseline_bytes_accounted": true,
+  "baseline_tail_accounting": {
+    "baseline_start": 3822,
+    "bytes": 5897,
+    "sha256": "E8CAF87944A614D7BAC12EF745B79D83314DD7CFAF94F06B99231E4D008A2F8E",
+    "retained_outside_declared_replacements_bytes": 2312,
+    "inside_declared_replaced_spans_bytes": 3585,
+    "all_5897_bytes_accounted": true,
+    "entire_tail_unchanged": false
+  },
+  "unchanged_inherited_helpers": [
+    {
+      "name": "sha",
+      "bytes": 57,
+      "sha256": "4FC52FB70BB0793D472938E4324857597433C1E7DDBB15063EE372297676A588",
+      "baseline_lines": [
+        11,
+        11
+      ],
+      "candidate_lines": [
+        12,
+        12
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "raw",
+      "bytes": 40,
+      "sha256": "0674AD6317F2AE8EB96A5F56EFBC878FF39C90C68C99C8F4C9978F7A23316A26",
+      "baseline_lines": [
+        12,
+        12
+      ],
+      "candidate_lines": [
+        13,
+        13
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "pinned",
+      "bytes": 73,
+      "sha256": "5DF7EDACFCE2ED39EB6DC75D1A5F85E312FDDFB88E50861484072351D188F54B",
+      "baseline_lines": [
+        13,
+        14
+      ],
+      "candidate_lines": [
+        14,
+        15
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "git",
+      "bytes": 260,
+      "sha256": "FC6515AF1843269E597434A172257CA17ABBD50C611145B8D12A50030C9D6F91",
+      "baseline_lines": [
+        15,
+        18
+      ],
+      "candidate_lines": [
+        16,
+        19
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "gout",
+      "bytes": 66,
+      "sha256": "D4BED77E98D7E0410BF8A6950089ECF30E6E537B8ADFE7B2A7249DF93CD6FEB1",
+      "baseline_lines": [
+        19,
+        19
+      ],
+      "candidate_lines": [
+        20,
+        20
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "inside",
+      "bytes": 134,
+      "sha256": "BC7F1D1F13B1AC08CB47D2ECC8EEC9D015E9D5509C90D7E82AE778A30CFDA777",
+      "baseline_lines": [
+        20,
+        23
+      ],
+      "candidate_lines": [
+        21,
+        24
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "new_file",
+      "bytes": 140,
+      "sha256": "A4CF95E3648B13330AAA4B9D1CCA39CB3EDA7D34C70738A6801D61E9F950D66A",
+      "baseline_lines": [
+        24,
+        27
+      ],
+      "candidate_lines": [
+        25,
+        28
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "new_json",
+      "bytes": 96,
+      "sha256": "72B0BE02D4C073A234A09E2AEDF42D5451679590CC88BBCD1588A719F16DAA9C",
+      "baseline_lines": [
+        28,
+        28
+      ],
+      "candidate_lines": [
+        29,
+        29
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "blob_many",
+      "bytes": 541,
+      "sha256": "5C5894AA029CC5F735A97EF61E00D8759C94D09386C65454A06F66CCE87E4F9B",
+      "baseline_lines": [
+        29,
+        40
+      ],
+      "candidate_lines": [
+        30,
+        41
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "tree_paths",
+      "bytes": 139,
+      "sha256": "C33D511D519C1F80C2CC3EF6D508C6A113624CBC9C08A10BE63A825AC26C0C23",
+      "baseline_lines": [
+        41,
+        42
+      ],
+      "candidate_lines": [
+        42,
+        43
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "no_hooks",
+      "bytes": 339,
+      "sha256": "7D17240FF95A97C6347339D55C052EE66A7744D034501DD353282E1B6476A115",
+      "baseline_lines": [
+        43,
+        48
+      ],
+      "candidate_lines": [
+        44,
+        49
+      ],
+      "complete_full_line_bytes_equal": true
+    }
+  ],
+  "new_helper_bodies": [
+    {
+      "name": "fail_record",
+      "bytes": 877,
+      "sha256": "8D9903227B543181EA39869C56B2946611F89D24A986064AA9FE89BC8120178C",
+      "lines": [
+        55,
+        68
+      ]
+    },
+    {
+      "name": "target_name",
+      "bytes": 672,
+      "sha256": "F6E592E1B4A2C10DB0ACE6F1D381BA41642428F110A2E962E6E0355F0BE9ED0B",
+      "lines": [
+        69,
+        80
+      ]
+    },
+    {
+      "name": "no_reparse_target",
+      "bytes": 482,
+      "sha256": "7BF75934A960EA16B26E1A6983C830136FECC5C4B7EC7B373498EFC50738E1E6",
+      "lines": [
+        81,
+        90
+      ]
+    },
+    {
+      "name": "oid_text",
+      "bytes": 197,
+      "sha256": "0DE20E55D9E7EC75C56D24D1B0A06F60A63E1F8462A377854BBA13C1C9B2D0FA",
+      "lines": [
+        91,
+        95
+      ]
+    },
+    {
+      "name": "raw_oid",
+      "bytes": 122,
+      "sha256": "14E181976C8F4485693E4571F8D89C885D7E389B1E7AD41D1191970F993F52FE",
+      "lines": [
+        96,
+        97
+      ]
+    },
+    {
+      "name": "repository_identity",
+      "bytes": 1256,
+      "sha256": "476632466793E9CCF0AA521E7F5A91BE5C2D1CB574C2DF8B7293EE908C882C99",
+      "lines": [
+        98,
+        113
+      ]
+    },
+    {
+      "name": "conversion_provenance",
+      "bytes": 1913,
+      "sha256": "6195D3D9B8D408105C44D59BD0E181A2092C04FD2E7958AB51A9F86B9E704FA5",
+      "lines": [
+        114,
+        146
+      ]
+    },
+    {
+      "name": "effective_attributes",
+      "bytes": 772,
+      "sha256": "6A8DFC0BA9A2E4A920DE2C23F173B65ACE51A2F3E4D86598B3166B8A9DB7D910",
+      "lines": [
+        147,
+        161
+      ]
+    },
+    {
+      "name": "tree_entries",
+      "bytes": 345,
+      "sha256": "D7BCF41144C4AD65A278310BC74FECB70156CADB4E334D526ECC7221D0C0A75B",
+      "lines": [
+        162,
+        169
+      ]
+    },
+    {
+      "name": "index_entries",
+      "bytes": 378,
+      "sha256": "C7120E02C9199E6627B73C7190B25DF583DEF3E23EA15F62BCC430E972C01B4F",
+      "lines": [
+        170,
+        177
+      ]
+    },
+    {
+      "name": "assert_conversion_unchanged",
+      "bytes": 537,
+      "sha256": "C2C9E280CD635354190BCE6935B6EC2C4F0B70DDA0D56B309258019D34E4628F",
+      "lines": [
+        178,
+        184
+      ]
+    }
+  ],
+  "source_only": true,
+  "candidate_or_prefix_executed": false,
+  "Main_accessed": false,
+  "configuration_issued": false,
+  "native_execution_authorized": false
+}

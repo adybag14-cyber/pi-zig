@@ -1,0 +1,75 @@
+import pathlib,json,hashlib
+P=pathlib.Path(r'C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018\verification\native-node-shutdown-wrap-sourceonly-20261020')
+ROOT=pathlib.Path(r'C:\Users\adyba\pi-zig')
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ p=pathlib.Path(p);b=p.read_bytes();return {'path':str(p),'bytes':len(b),'sha256':sha(b)}
+def j(p):return json.loads(pathlib.Path(p).read_text(encoding='utf-8'))
+def checked(x):
+ b=pathlib.Path(x['path']).read_bytes();assert len(b)==x['bytes'] and sha(b)==x['sha256'];return b
+shared=j(P/'shared/proposal.json');successor=j(P/'successor/proposal.json')
+build=j(P/'build/proposal.json');source_map=j(P/'source-map.json')
+inventory=j(P/'successor/dependency-inventory.json');closure=j(P/'successor/closure-and-preservation.json')
+proof=j(P/'source-proof.json');extra=j(P/'source-map-successor.json')
+assert proof['declared_control_total']==26 and proof['selected_sources_pinned']==16
+for x in extra['bindings']:
+ raw=checked(x['file']);excerpt=b''.join(raw.splitlines(keepends=True)[x['start_line']-1:x['end_line']])
+ assert len(excerpt)==x['bytes'] and sha(excerpt)==x['sha256'] and excerpt.decode('utf-8')==x['text']
+source_paths=[]
+for row in shared['files']:
+ selected=successor['projected'] if row['relative_path']==successor['relative_path'] else row['projected']
+ checked(row['original']);checked(selected)
+ source_paths.append({'relative_path':row['relative_path'],'kind':'replace after selected predecessor intake',
+ 'selected_preimage':row['original'],'selected':selected,
+ 'finite_delta':pin(P/'shared/proposal.json'),
+ 'additive_delta':pin(P/'successor/proposal.json') if selected==successor['projected'] else None})
+for sub,role in [('production','new production'),('controls','new control/support')]:
+ for q in sorted((P/sub).rglob('*')):
+  if q.is_file():
+   source_paths.append({'relative_path':q.relative_to(P/sub).as_posix(),'kind':role,'selected_preimage':None,'selected':pin(q)})
+source_paths.append({'relative_path':'build.zig','kind':'replace after selected predecessor intake',
+ 'selected_preimage':build['original'],'selected':build['projected'],'finite_delta':pin(P/'build/proposal.json')})
+assert len(source_paths)==17 and len({x['relative_path'] for x in source_paths})==17
+# All evidence rows are relative to this packet, excluding only the manifest
+# that is about to be written. Original negatives and predecessor outputs remain.
+entries=[]
+for q in sorted(x for x in P.rglob('*') if x.is_file()):
+ b=q.read_bytes();entries.append({'relative_path':q.relative_to(P).as_posix(),'bytes':len(b),'sha256':sha(b)})
+assert not (P/'production-proposal.json').exists()
+digest=sha(json.dumps(entries,sort_keys=True,separators=(',',':')).encode())
+fatal=ROOT/'worktrees/provider-af-resume-20261018/verification/native-v8-fatal-tracing-sourceonly-20261020/manifest.json'
+m={
+ 'schema':'pi-zig.shutdown-latin1-finite-production-proposal.v1',
+ 'status':'Source-only proposed intake; independent SDK source peer in progress; no Main/build/native authorization.',
+ 'comparison_main_commit':'c764130caf2f2c7c63728bec0f6d1e16ac5c59a4',
+ 'new_production_files':6,'new_control_support_files':3,'shared_files':7,'source_build_paths':source_paths,
+ 'source_build_path_count':17,'shared_edit_count':37,'additive_c_expression_edits':2,
+ 'selected_shared_proposal':pin(P/'shared/proposal.json'),'selected_c_successor':pin(P/'successor/proposal.json'),
+ 'selected_build_proposal':pin(P/'build/proposal.json'),
+ 'source_map':pin(P/'source-map.json'),'source_map_successor':pin(P/'source-map-successor.json'),
+ 'source_audit':pin(P/'source-audit.py'),'source_proof':pin(P/'source-proof.json'),
+ 'dependency_inventory':pin(P/'successor/dependency-inventory.json'),
+ 'closure_and_preservation':pin(P/'successor/closure-and-preservation.json'),
+ 'readme':pin(P/'README.md'),'successor_readme':pin(P/'successor/README.md'),
+ 'required_predecessors':{
+  'owner_error_combined':pin(ROOT/'evidence/pending-file-handle-and-error-intake-20261020/projection.json'),
+  'fs_observer':pin(ROOT/'worktrees/sdk-owners-resume-20261018/verification/v34-fs-request-init-observer-correction-sourceonly-20261020/proposal.json'),
+  'v8_fatal_source_only_commit':'5059d6a','v8_fatal_owner_manifest':pin(fatal),
+  'fatal_exact_required_source_paths':['src/extensions/native_v8_base_fatal.h','src/extensions/native_v8_base_fatal.cpp'],
+  'tls_owner':'Existing accepted diagnostic-context C/H/HPP sources copied unchanged under dependencies; per-target C ownership explicitly proposed.',
+  'callback_correction_unchanged':closure['callback_return_try_dependency_unchanged']},
+ 'new_roots':build['new_roots'],'declared_named_control_count':26,'future_actual_metadata_count':None,
+ 'conservative_closure_summary':[{'root':g['root'],'modules':g['conservative_literal_modules'],'embeds':g['conservative_literal_embeds'],'anonymous_literal_blocks':g['anonymous_count']} for g in inventory['graphs']],
+ 'inventory':entries,'inventory_entries':len(entries),'inventory_sha256':digest,
+ 'inventory_recipe':'sorted rglob files, relative_path/bytes/uppercase sha256 rows; sha256(json.dumps(rows,sort_keys=True,separators=(comma,colon)).encode()). Manifest excludes itself.',
+ 'findings_preserved':[
+ 'Initial closure script missing native_node_memory.h preflight stopped before output writes; corrected actual build-native memory owner in v2.',
+ 'SDK filename provenance warning was retracted: native_node_async_wrap and native_node_async_wrap_make_callback are different; actual unchanged callback 972B9D09 is preserved.',
+ 'Initial Latin1 C passed ctx rather than ctx->rt and uint8_t* without char* cast; immutable two-expression successor11FA3C23 corrects both. Initial full projection/map/closure remain intact.'],
+ 'remaining_assembly':source_map['limits'],
+ 'source_only':True,'Main_changed':False,'live_production_changed':False,
+ 'compiler_native_reference_generator_execution':False,'runtime_platform_qualified':False,
+ 'source_publication_or_commit_granted':False
+}
+target=P/'production-proposal.json';target.write_bytes((json.dumps(m,indent=2)+'\n').encode())
+print(json.dumps({'manifest':pin(target),'inventory_entries':len(entries),'inventory_sha256':digest,'source_build_paths':17},indent=2))

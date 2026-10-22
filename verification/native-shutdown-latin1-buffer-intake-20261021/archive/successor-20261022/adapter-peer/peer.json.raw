@@ -1,0 +1,176 @@
+{
+  "schema": 1,
+  "status": "independent_source_peer_accepted_selected_v2_after_preserved_predecessor_finding",
+  "reviewer": "/root/sdk_environment_port",
+  "date": "2026-10-22",
+  "scope": "Independent source and immutable-data review of the unissued strengthened pending20 intake adapter. The selected v2 resolves the concrete planned-parent spelling gap found in the preserved predecessor.",
+  "selected_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py",
+    "bytes": 23634,
+    "sha256": "8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985"
+  },
+  "preserved_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py",
+    "bytes": 23554,
+    "sha256": "1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+    "bytes": 9719,
+    "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+  },
+  "baseline_finite": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\finite-source-adaptation.json",
+    "bytes": 56895,
+    "sha256": "2E657192C7DF2B8216D128E82C7AB47E57ECD0AB43FCDD2327E8F83C32A69A69"
+  },
+  "selected_finite": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\planned-parent-alias-v2-finite-adaptation.json",
+    "bytes": 3114,
+    "sha256": "6079473C24AA9496D5CFC41F89830A643740B9DB99D80ACEA573C7093EEAE123"
+  },
+  "selected_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\v2-handoff.json",
+    "bytes": 3920,
+    "sha256": "D770F0657EFA7D5B47576889DFB1610ACB6AE33435A20105D935F656AB8AFA2A"
+  },
+  "unchanged_semantic_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\unissued-binding-and-schema-contract.json",
+    "bytes": 10902,
+    "sha256": "ACF23FA22E0C380BF744923B5CA8A8B55D30B83B0D655AAFF6FF2EE80790136D"
+  },
+  "original_semantic_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\handoff.json",
+    "bytes": 9923,
+    "sha256": "45623F0F2BDA1E5333DE7FB9F7005F971D13FC1F9FBAF903D147020684CD9B53"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\pending20-strengthened-intake-adapter-peer-20261022\\source-audit.py",
+    "bytes": 28577,
+    "sha256": "31DFC8E3DA2DF8E13FDACCD925837D0403DF53B7F71A3BAFE33BBE423A3BD1FC"
+  },
+  "independent_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\pending20-strengthened-intake-adapter-peer-20261022\\static-proof.json",
+    "bytes": 450793,
+    "sha256": "0210928AD499C711E04D87F9FA28A6715D259E97016F2F6FDEC7161B880F2401"
+  },
+  "independent_preserved_finding": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\pending20-strengthened-intake-adapter-peer-20261022\\predecessor-finding.json",
+    "bytes": 1153,
+    "sha256": "DD16F8E8BA2F4A2F318BCDDEE4C219B89781F459870F25609184A0AD75612396"
+  },
+  "author_preserved_finding": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\original-planned-parent-alias-source-finding.json",
+    "bytes": 996,
+    "sha256": "1D336DEF267175CBA6FB0A82FF59549F8D4CE6DA24E7BB8612B52D7709C49025"
+  },
+  "actual_copy_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-manifest-plan.json",
+    "bytes": 378545,
+    "sha256": "E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"
+  },
+  "root_copy_plan_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-buffer-unissued-copy-plan-acceptance-20261021.json",
+    "bytes": 7059,
+    "sha256": "4B97947A3A185D0D6E9ED282B2FC4E19621BD792AED4F18F4A0D7E594A682788"
+  },
+  "source_read": {
+    "predecessor": "Complete 23,554-byte source, including all eleven new helpers and complete mutation/receipt body.",
+    "selected": "Complete 23,634-byte v2; one 420-byte to 500-byte main-body replacement and every other byte unchanged.",
+    "baseline": "Complete 9,719-byte accepted adapter.",
+    "author_evidence": "All twenty declared edits, both finite proofs, both static checkers/proofs, both handoffs, semantic contract, gap map and actual E2B copy contract read as data. Neither author checker nor candidate was executed."
+  },
+  "exact_static_accounting": {
+    "baseline_edits": 20,
+    "v2_edits": 1,
+    "all_intermediate_hashes_and_utf8_byte_spans_verified": true,
+    "whole_forward_and_complete_raw_inverse_to_baseline": true,
+    "inherited_helpers_unchanged": 11,
+    "all_predecessor_helper_bodies_unchanged_in_v2": 22,
+    "new_helpers_read": 11,
+    "baseline_bytes_accounted": 9719,
+    "baseline_tail_bytes": 5897,
+    "tail_retained_outside_replacements": 2312,
+    "tail_inside_declared_replacements": 3585,
+    "tail_claimed_unchanged": false,
+    "complete_untouched_and_replaced_ranges_in_proof": true,
+    "current_unique_input_pins_rehashed": 267,
+    "source_paths": 20,
+    "immutable_source_preimages": 8,
+    "physical_archive_rows": 223,
+    "core_physical_rows": 243,
+    "core_rows_including_manifest": 244,
+    "source_primary_aliases": 20,
+    "archive_logical_aliases": 248,
+    "core_logical_aliases": 268,
+    "all_aliases_byte_equal_to_selected_physical_donors": true,
+    "actual_E2B_core_targets_and_all_prefix_spellings_valid": true,
+    "future_manifest_and_source_count_issued": false
+  },
+  "concrete_finding": {
+    "status": "Corrected in selected v2; predecessor and finding retained unchanged.",
+    "counterexample": [
+      "verification/Foo/a.raw",
+      "verification/foo/b.raw"
+    ],
+    "old_behavior": "When their shared parent was absent from the committed tree, the predecessor compared each prefix only with existing_spelling and did not remember newly planned prefixes. Whole target uniqueness and file/ancestor checks did not reject the conflicting new parent spellings before copying.",
+    "selected_correction": "A separate planned_spelling copy admits and records each existing/planned parent and full target prefix before any source/index write. existing_spelling is unchanged and remains the authority for new-target absence checks.",
+    "actual_copy_plan": "The immutable E2B plan has no conflicting prefix spellings among its 244 core targets including the manifest; this source defect concerns the generic future-manifest gate.",
+    "verification": "The exact one-hunk forward/full inverse and all other bytes are verified. Independent prefix comparisons use inert path data only; the adapter was not evaluated."
+  },
+  "semantic_findings": [
+    {
+      "area": "Future release and schema",
+      "assessment": "The four unresolved bindings are still the released head, final manifest path, raw manifest SHA-256 and positive complete path count. Disabled assertions and unresolved bindings are rejected before CLI/repository admission. A later Root release must pin the actual bound adapter and manifest, branch/head, required current acceptance pins and exact object format; source review is not that release."
+    },
+    {
+      "area": "Canonical targets and ownership of bytes",
+      "assessment": "Every physical row including the synthetic manifest passes canonical Windows path, prefix spelling, file/directory collision, reparse, mode, containment, donor and preimage/absence gates. Existing modes are preserved; additions require 100644. Both BASIS and current-head raw blobs must equal the actual replacement preimage."
+    },
+    {
+      "area": "All donor aliases",
+      "assessment": "Every explicit alias is pinned and compared byte-for-byte with its physical row. Primary membership and duplicate target/canonical-donor/size/hash identities are enforced; the synthetic manifest gets its own alias record and participates in the complete byte contract. The semantic completeness of the later final manifest and its historical reference records remains a separate manifest-peer/Root responsibility."
+    },
+    {
+      "area": "Attributes and conversion provenance",
+      "assessment": "The full target list receives text, eol, filter, working-tree-encoding and ident checks. Disallowed filter/encoding/ident values are rejected before the first path-aware hash. Relevant Git configuration is captured with includes, origin and scope; system/global/info/root/target-ancestor attribute files retain exact bytes or absence and path identities. No donor normalization or attribute editing is performed."
+    },
+    {
+      "area": "Both Git object IDs",
+      "assessment": "The repository object format selects the independent raw blob header/content digest. Each exact binary donor must match both Git --no-filters and Git --path identities, without -w. This applies to source, archive, extra final rows and the manifest. SHA-1/SHA-256 raw helper support does not widen the project's exact forty-hex BASIS contract."
+    },
+    {
+      "area": "Ordering before Main/index writes",
+      "assessment": "All donor/preimage/alias/path/attribute/object checks complete for the whole manifest before copying. Repository/provenance/head/clean/no-hook checks are repeated and immutable preflight is saved first. No helper invocation from the candidate was used to infer this ordering."
+    },
+    {
+      "area": "Copy, stage and commit",
+      "assessment": "Copied bytes are reread and conversion provenance revalidated before literal NUL-list staging. Complete staged names, stage zero, modes, expected object IDs and raw blobs must match. Before commit the same provenance/head/no-hook gates remain. The committed complete parent list must equal exactly [prior_head], with exact changed paths, modes, raw IDs/blobs and checkout bytes, followed by final provenance and clean-worktree checks."
+    },
+    {
+      "area": "Failure record",
+      "assessment": "After release and receipt-namespace admission, the failure hook preserves a unique immutable negative containing stage, error/traceback and write-start state; no rollback or cleanup occurs. Earlier unresolved/release/namespace failures precede the hook and require Root preservation of the original tool/job result, as stated in the contract."
+    }
+  ],
+  "result": {
+    "selected_bounded_source_accepted": true,
+    "additional_concrete_selected_source_blocker_found": false,
+    "predecessor_generic_contract_accepted": false,
+    "actual_git_conversion_modes_commit_or_intake_behavior_tested": false,
+    "future_release_and_complete_manifest_peer_required": true,
+    "separate_retained_target_linkage_and_final_source_union_acceptance_required": true,
+    "contract_candidate_identity": "The immutable ACF23 contract names historical 1DD560CF. D770F v2 handoff explicitly selects 8A676496 with unchanged field/binding semantics; no historical packet was rewritten."
+  },
+  "authority": {
+    "independent_static_checker_only_executed": true,
+    "candidate_or_prefix_executed": false,
+    "author_checker_executed": false,
+    "Git_command_executed": false,
+    "Main_read": false,
+    "Main_written": false,
+    "index_accessed": false,
+    "intake_or_config_issued": false,
+    "generator_compiler_reference_or_native_executed": false,
+    "application_qualified": false
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "schema": "native-array-buffer-view-data-install-only-build-v1",
+  "basis_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "source_only": true,
+  "path": "build.zig",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\build\\original.zig",
+    "bytes": 503440,
+    "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\build\\projected.zig",
+    "bytes": 504188,
+    "sha256": "2D046B3325B617146658B82B2BC12F58A8A811EC50403F91F9135553849C1DAE"
+  },
+  "block": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\build\\install-only-block.zig.txt",
+    "bytes": 748,
+    "sha256": "FB4A10A7214C73651AA6681E48092C8E63A04E49337A03EF81E11FD3F8ECB6D7"
+  },
+  "edit": {
+    "old_text": "    if (target.result.os.tag == .windows or target.result.os.tag == .linux) {\n        const native_backing_store_tests = b.addTest(.{\n",
+    "new_text": "    if (target.result.os.tag == .windows or target.result.os.tag == .linux) {\n        const vm_array_buffer_view_data_tests = b.addTest(.{\n            .name = \"native-vm-array-buffer-view-data\",\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_array_buffer_view_data_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"VM view data\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, vm_array_buffer_view_data_tests.root_module, quickjs, sqlite_lib_dir);\n        b.step(\"build-native-vm-array-buffer-view-data\", \"Install actual borrowed ArrayBufferView address controls without execution\").dependOn(&b.addInstallArtifact(vm_array_buffer_view_data_tests, .{}).step);\n    }\n    if (target.result.os.tag == .windows or target.result.os.tag == .linux) {\n        const native_backing_store_tests = b.addTest(.{\n",
+    "offset_in_predecessor": 195034
+  },
+  "whole_file_forward_exact": true,
+  "whole_file_inverse_exact": true,
+  "added_steps": 1,
+  "run_steps_added": 0,
+  "target": {
+    "build_step": "build-native-vm-array-buffer-view-data",
+    "installed_artifact_basename": "native-vm-array-buffer-view-data",
+    "root_source": "src/native_vm_array_buffer_view_data_test.zig",
+    "filter": "VM view data",
+    "declared_named_controls": 12,
+    "future_accepted_metadata_count": null
+  },
+  "common_build_owner": "Existing linkQuickJs and actual pi-quickjs library are reused. No new native translation unit, library, compiler option, assertion option, emulator or runner is introduced.",
+  "optional_source_composition": {
+    "predecessor_packets_in_order": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\build\\proposal.json",
+        "bytes": 4451,
+        "sha256": "8DFCA25C7674D319464CE7E411BF6834E516F75418B2381AFF8026D4F13A16D3"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\build\\proposal.json",
+        "bytes": 2212,
+        "sha256": "54760A19321B0DC5C2B3C036B7942EF2F8F212565C0A1B691E324E94D6F7CD8A"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\build\\proposal.json",
+        "bytes": 4151,
+        "sha256": "D662D5DF7D2C21CD8376666E120CAEEA8BB46E0518C5B3560E6A97522D6BB212"
+      }
+    ],
+    "combined": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\build\\combined-after-owner-constructor-transfer.zig",
+      "bytes": 509703,
+      "sha256": "3C45C39BF0B223A35C33F790FCAE34192AB321CC30C06CABEF3689C24D9239BC"
+    },
+    "buffer_edit_before_or_after_all_three_packets_identical": true,
+    "both_whole_inverse_orders_exact": true,
+    "prior_three_packet_order_preserved": true,
+    "not_a_build_or_runtime_grant": true
+  },
+  "compiler_native_execution": false
+}

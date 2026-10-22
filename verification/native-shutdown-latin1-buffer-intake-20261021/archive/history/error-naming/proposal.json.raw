@@ -1,0 +1,198 @@
+{
+  "schema": 1,
+  "status": "source_only_exact_error_build_artifact_naming_correction_unissued",
+  "created_utc": "2026-10-20T21:48:31.455663+00:00",
+  "basis_main_head": "160b4e0562f0eb1139bf2e4e9c00f4c10ab6aa64",
+  "relative_path": "build.zig",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\original\\build.zig",
+    "bytes": 508955,
+    "sha256": "DB9BEE3C8B7C8FF817F1FB2AE761F7A7400EA3250CDD7AF7AFBAA4118FD13909"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\projected\\build.zig",
+    "bytes": 509023,
+    "sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55"
+  },
+  "edits": [
+    {
+      "label": "use_canonical_default_test_cache_name",
+      "before": "        .name = \"native-vm-error-constructor-name\",\n",
+      "after": "",
+      "byte_offset": 196443,
+      "before_sha256": "DB9BEE3C8B7C8FF817F1FB2AE761F7A7400EA3250CDD7AF7AFBAA4118FD13909",
+      "after_sha256": "833BAFA1EF25D53D14F7ECCBE4AFA5BDFA1BAA1331521C78334C5FF2B7A4995C",
+      "occurrences_before": 1,
+      "after_bytes": 0
+    },
+    {
+      "label": "preserve_public_installed_executable_basename",
+      "before": "    b.step(\"build-native-vm-error-constructor-name\", \"Install actual native Error constructor provenance controls without execution\").dependOn(&b.addInstallArtifact(native_error_constructor_name_tests, .{}).step);\n",
+      "after": "    b.step(\"build-native-vm-error-constructor-name\", \"Install actual native Error constructor provenance controls without execution\").dependOn(&b.addInstallArtifact(native_error_constructor_name_tests, .{ .dest_sub_path = b.fmt(\"native-vm-error-constructor-name{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n",
+      "byte_offset": 196782,
+      "before_sha256": "833BAFA1EF25D53D14F7ECCBE4AFA5BDFA1BAA1331521C78334C5FF2B7A4995C",
+      "after_sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55",
+      "occurrences_before": 1,
+      "after_bytes": 334
+    }
+  ],
+  "finite_edits": 2,
+  "whole_forward_exact": true,
+  "whole_inverse_exact": true,
+  "original_main_and_raw_git_basis_equal": true,
+  "production_sources_modified": 0,
+  "test_sources_modified": 0,
+  "build_paths_modified": 1,
+  "problem": "The reviewed Error addTest custom name derives cached native-vm-error-constructor-name.exe and .pdb, while unchanged strict driver1DD3 and metadata auditor1436211C require test.exe/test.pdb. Installed executable remains native-vm-error-constructor-name.exe.",
+  "intended_behavior": {
+    "cached_executable": "test.exe",
+    "cached_pdb": "test.pdb",
+    "installed_executable": "native-vm-error-constructor-name.exe",
+    "installed_pdb": "test.pdb",
+    "non_windows_installed_executable": "native-vm-error-constructor-name",
+    "build_step": "build-native-vm-error-constructor-name",
+    "filter": "VM native Error constructor",
+    "source_root": "src/native_vm_error_constructor_name_test.zig",
+    "source_declarations": 24,
+    "actual_metadata_count": null
+  },
+  "authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\zig-naming-authority.json",
+    "bytes": 11751,
+    "sha256": "F972718987A310E725142A598637E08FDC688639B6EA5AA53B0E3F1E97F13CDD"
+  },
+  "unchanged_driver": {
+    "original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v34-prepared-20261020\\Run-CombinedNativeBatch.ps1",
+      "bytes": 60094,
+      "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+    },
+    "copy": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\original\\Run-CombinedNativeBatch.ps1",
+      "bytes": 60094,
+      "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+    }
+  },
+  "unchanged_metadata_auditor": {
+    "original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v34-prepared-20261020\\Audit-CombinedNativeBatch.py",
+      "bytes": 17691,
+      "sha256": "1436211CABD8D2D2C0A31DB4005C05BA3451E50E381F7EC3AFF8ACC094CAE98B"
+    },
+    "copy": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\original\\Audit-CombinedNativeBatch.py",
+      "bytes": 17691,
+      "sha256": "1436211CABD8D2D2C0A31DB4005C05BA3451E50E381F7EC3AFF8ACC094CAE98B"
+    }
+  },
+  "protected_test_source": {
+    "original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\successor\\source\\src\\native_vm_error_constructor_name_test.zig",
+      "bytes": 28931,
+      "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+    },
+    "copy": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\control\\src\\native_vm_error_constructor_name_test.zig",
+      "bytes": 28931,
+      "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+    },
+    "named_declarations": [
+      "VM native Error constructor intrinsic families retain their native initial names",
+      "VM native Error constructor direct native creation and throws record real origins",
+      "VM native Error constructor real VM stack exhaustion retains RangeError provenance",
+      "VM native Error constructor public function and Error names do not replace provenance",
+      "VM native Error constructor public replacement cannot redirect native intrinsic factories",
+      "VM native Error constructor changing an Error prototype preserves base provenance",
+      "VM native Error constructor new inheritors suppress fast provenance with real prototype admission",
+      "VM native Error constructor explicit prototype admission uses the same original fallback",
+      "VM native Error constructor inherited data tag precedes constructor at the same level",
+      "VM native Error constructor receiver constructor and accessor tag are never invoked",
+      "VM native Error constructor prototype accessors and mutable builtin name are skipped",
+      "VM native Error constructor actual intrinsic Object is skipped without its public name",
+      "VM native Error constructor final native class fallback remains Error",
+      "VM native Error constructor bound and Proxy constructors are skipped without traps",
+      "VM native Error constructor missing general DebugName is explicit without function name Get",
+      "VM native Error constructor Proxy prototype storage stays unsupported without traps",
+      "VM native Error constructor native exotic descriptors remain uncalled and unsupported",
+      "VM native Error constructor different new target is an explicit remaining dependency",
+      "VM native Error constructor unrecorded physical Error allocation cannot invent provenance",
+      "VM native Error constructor ordinary lookalikes never acquire the actual native class",
+      "VM native Error constructor query preserves actual ordinary and uncatchable pending owners",
+      "VM native Error constructor active and cancelled native termination state is unchanged",
+      "VM native Error constructor all selected query branches allocate no VM storage",
+      "VM native Error constructor actual native origin survives released foreign realm and retires with Error"
+    ],
+    "complete_bytes_unchanged": true,
+    "default_engine_guard_unchanged": true
+  },
+  "transfer_composition": {
+    "proposal": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\build\\proposal.json",
+      "bytes": 4151,
+      "sha256": "D662D5DF7D2C21CD8376666E120CAEEA8BB46E0518C5B3560E6A97522D6BB212"
+    },
+    "retained_copy": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\original\\transfer-build-proposal.json",
+      "bytes": 4151,
+      "sha256": "D662D5DF7D2C21CD8376666E120CAEEA8BB46E0518C5B3560E6A97522D6BB212"
+    },
+    "before_transfer_original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\original\\before-transfer-build.zig",
+      "bytes": 506940,
+      "sha256": "399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52"
+    },
+    "before_transfer_projected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\projected\\before-transfer-build.zig",
+      "bytes": 507008,
+      "sha256": "309EB4B389F77A6C8C665AD4D366F4764CFE7D44C6D7DADB56AD15632E926A7D"
+    },
+    "before_transfer_edits": [
+      {
+        "label": "use_canonical_default_test_cache_name",
+        "before": "        .name = \"native-vm-error-constructor-name\",\n",
+        "after": "",
+        "byte_offset": 196443,
+        "before_sha256": "399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52",
+        "after_sha256": "FAE299979E81C82CF1EF4D24F0C55A8C4BB33E2A2E424D41AA483505DD23A45B",
+        "occurrences_before": 1,
+        "after_bytes": 0
+      },
+      {
+        "label": "preserve_public_installed_executable_basename",
+        "before": "    b.step(\"build-native-vm-error-constructor-name\", \"Install actual native Error constructor provenance controls without execution\").dependOn(&b.addInstallArtifact(native_error_constructor_name_tests, .{}).step);\n",
+        "after": "    b.step(\"build-native-vm-error-constructor-name\", \"Install actual native Error constructor provenance controls without execution\").dependOn(&b.addInstallArtifact(native_error_constructor_name_tests, .{ .dest_sub_path = b.fmt(\"native-vm-error-constructor-name{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n",
+        "byte_offset": 196782,
+        "before_sha256": "FAE299979E81C82CF1EF4D24F0C55A8C4BB33E2A2E424D41AA483505DD23A45B",
+        "after_sha256": "309EB4B389F77A6C8C665AD4D366F4764CFE7D44C6D7DADB56AD15632E926A7D",
+        "occurrences_before": 1,
+        "after_bytes": 334
+      }
+    ],
+    "transfer_then_naming_result": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\projected\\build.zig",
+      "bytes": 509023,
+      "sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55"
+    },
+    "naming_then_transfer_result_sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55",
+    "both_orders_byte_equal": true,
+    "naming_whole_inverse_after_transfer": true,
+    "naming_whole_inverse_before_transfer": true,
+    "transfer_whole_inverse_before_naming": true,
+    "transfer_whole_inverse_after_naming": true,
+    "original_transfer_block_preserved": true
+  },
+  "exact_build_scope": {
+    "old_error_block": "    const native_error_constructor_name_tests = b.addTest(.{\n        .name = \"native-vm-error-constructor-name\",\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_error_constructor_name_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM native Error constructor\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, native_error_constructor_name_tests.root_module, quickjs, sqlite_lib_dir);\n    b.step(\"build-native-vm-error-constructor-name\", \"Install actual native Error constructor provenance controls without execution\").dependOn(&b.addInstallArtifact(native_error_constructor_name_tests, .{}).step);\n",
+    "new_error_block": "    const native_error_constructor_name_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_error_constructor_name_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM native Error constructor\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, native_error_constructor_name_tests.root_module, quickjs, sqlite_lib_dir);\n    b.step(\"build-native-vm-error-constructor-name\", \"Install actual native Error constructor provenance controls without execution\").dependOn(&b.addInstallArtifact(native_error_constructor_name_tests, .{ .dest_sub_path = b.fmt(\"native-vm-error-constructor-name{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n",
+    "all_bytes_outside_error_block_unchanged": true,
+    "root_target_filter_link_recipe_unchanged": true,
+    "run_steps_added": 0,
+    "all_other_owner_error_transfer_intakes_preserved": true
+  },
+  "source_only": true,
+  "main_mutated": false,
+  "compiler_executed": false,
+  "native_executed": false,
+  "source_execution_authorized": false,
+  "qualification": false
+}

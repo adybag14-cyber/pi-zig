@@ -1,0 +1,111 @@
+setv(['coverage','new_toolchain_snapshot_bindings'],[{'snapshot':a[2],'historical_pin':a[3],'exact_original_bytes':True} for a in compiler_snapshots])
+setv(['coverage','external_references_addendum'],[
+ {'scope':'Source dependency and immutable Git censuses in the new linkage and FS fixture proofs','policy':'The complete JSON proofs are archived. The entire historical source tree is not recopied; exact immutable Git bases remain external authority.'},
+ {'scope':'Original V38 native phase artifacts, full compiler/source seals and actual process intervals referenced by Root receipts','policy':'The separate V38 validation archive and its future Root acceptance/commit are not authored or predicted by this source-copy plan. Original paths and raw reference pins remain unchanged.'},
+ {'scope':'Selected fixture source references','policy':'The source proof preserves exact authority/source pins. Existing immutable Node authority files remain referenced externally unless already included by the old bounded union; this plan does not claim a self-contained original-source tree.'}
+])
+future=copy.deepcopy(plan['future_admission_requirements'])
+future.update({
+ 'required_actual_original63_buildquery_closure':verify(linkroot['compiler_authority']),
+ 'required_actual_original63_strict_runtime_closure':None,
+ 'required_current_V38_all_original_process_closure':None,
+ 'required_actual_V38_archive_commit':None,
+ 'required_actual_V38_archive_Root_acceptance':None,
+ 'required_fixture_independent_peer':None,
+ 'required_fixture_Root_source_acceptance':None,
+ 'required_finite_intake_adapter':verify(adapterroot['selected_source']),
+ 'required_bound_intake_adapter_and_source_peer':None,
+ 'required_independent_adapter_manifest_peer':None,
+ 'all_execution_authorities_unissued':True,
+ 'source_head_policy':'Use the exact later Root-released head after the actual V38 terminal-negative history and all original process intervals are independently closed and its separate archive is committed. This inert plan proves immutable014 source preimages only. The eventual nine replacement preimages, all additions, manifest and source-mode/conversion checks must be refreshed without guessing the future commit. Any changed source preimage requires a distinct reviewed successor.',
+ 'receipt_policy':'The original63 BQ acceptance is observed. Original63 runtime retry1 failed; no runtime-positive acceptance is claimed. Its negative closure/Root acceptance, V38 archive and actual commit, exact final manifest, fixture peer, bound adapter and source release remain distinct future records.',
+ 'plan_record_policy':'The sealed successor plan, finite adaptation, author/checker proof and handoff may be explicitly appended as immutable supplemental .raw rows after their hashes exist. The final manifest is separate, externally pinned and undergoes every adapter byte/path/mode gate. No self-hash cycle is introduced.'
+})
+future.pop('all_requirements_unissued',None)
+setv(['future_admission_requirements'],future)
+setv(['git_byte_preflight','scope'],'Every future copied path: all twenty-one source/build rows, every physical archive row, all separately enumerated final peer/plan rows, and the final manifest itself. No extension, small-file or .raw exception.')
+preconditions=copy.deepcopy(plan['git_byte_preflight']['preconditions'])
+preconditions[0]='The exact Root source release and reviewed bound adapter/final-manifest pins exist; actual V38 terminal histories and original process intervals have independently closed and its separately reviewed archive is committed.'
+preconditions[2]='Rehash every donor and full-byte alias. Check all nine raw checkout and raw committed-Git replacement preimages and every new target absence before any source/index write.'
+setv(['git_byte_preflight','preconditions'],preconditions)
+setv(['selected_adapter_contract'],{'source':verify(adapterroot['selected_source']),'contract':inputs[norm(A/'unissued-binding-and-schema-contract.json')],'schema':'rows + logical_donor_aliases + separate synthetic manifest; every row has exact source/target/bytes/sha256/role/mode/before','future_bound_fields':['BASIS','MANIFESTS.fixture.path','MANIFESTS.fixture.sha256','MANIFESTS.fixture.count'],'requires_manifest_in_all_Git_byte_mode_stage_commit_gates':True,'candidate_or_prefix_executed':False})
+archives=plan['archive_rows'];sources=plan['source_rows']
+logical_count=sum(len(r['logical_donors']) for r in archives)
+before_bytes=sum(a['donor']['bytes'] for r in archives for a in r['logical_donors'])
+after_bytes=sum(r['donor']['bytes'] for r in archives)
+counts={'source_paths':21,'source_replacements':9,'source_additions':12,'immutable_archive_donors':logical_count,'archive_copy_paths':len(archives),'core_copy_rows':len(sources)+len(archives),'core_plus_final_manifest_paths':len(sources)+len(archives)+1,'archive_bytes_before_content_dedup':before_bytes,'archive_bytes_to_copy':after_bytes,'duplicate_archive_copies_removed':logical_count-len(archives),'archive_bytes_saved':before_bytes-after_bytes,'physical_rows_added_after_old243':len(sources)+len(archives)-243,'logical_records_after_old268':len(sources)+logical_count-268,'future_plan_review_receipt_paths_not_yet_in_core_count':True}
+setv(['counts'],counts)
+setv(['preserved_predecessor_accounting'],{'old_core_physical_rows':243,'old_source_rows':20,'old_archive_physical_rows':223,'old_total_logical_source_and_archive_records':268,'old_archive_logical_donors':248,'source_row_replacements':1,'source_rows_appended':1,'all_other19_source_rows_exact':True,'all_old_archive_physical_targets_and_donors_exact':True,'all_248_old_archive_logical_rows_exact_prefixes':True,'build868F_remains_immutable_archived_history':True,'no_original_negative_removed':True})
+# Replay/invert every finite JSON operation and exact original serialization.
+forward=copy.deepcopy(baseline)
+for o in ops:
+ if o['op']=='append':
+  a=forward
+  for k in o['path']:a=a[k]
+  assert len(a)==o['index'];a.append(copy.deepcopy(o['after']))
+ else:
+  a,k=parent(forward,o['path'])
+  if o['op']=='replace':assert a[k]==o['before']
+  else:assert k not in a
+  a[k]=copy.deepcopy(o['after'])
+assert forward==plan
+back=copy.deepcopy(plan)
+for o in reversed(ops):
+ if o['op']=='append':
+  a=back
+  for k in o['path']:a=a[k]
+  assert len(a)==o['index']+1 and a[-1]==o['after'];a.pop()
+ else:
+  a,k=parent(back,o['path']);assert a[k]==o['after']
+  if o['op']=='replace':a[k]=copy.deepcopy(o['before'])
+  else:del a[k]
+assert wire(back)==base_raw
+assert plan['source_rows'][:buildindex[0]]==baseline['source_rows'][:buildindex[0]]
+for i,r in enumerate(baseline['source_rows']):
+ if i!=buildindex[0]:assert plan['source_rows'][i]==r
+for i,r in enumerate(baseline['archive_rows']):
+ now=archives[i]
+ assert {k:v for k,v in now.items() if k!='logical_donors'}=={k:v for k,v in r.items() if k!='logical_donors'}
+ assert now['logical_donors'][:len(r['logical_donors'])]==r['logical_donors']
+assert plan['actual_released_head'] is None and not any(plan['authority'].values())
+# Canonical path/prefix checks are static only; actual release-time filesystem,
+# attribute, clean-conversion, stage and commit gates remain mandatory.
+paths=[r['relative_path'] for r in sources+archives]+[plan['manifest_target']]
+seen={};prefixes={}
+for p in paths:
+ assert p.isascii() and not p.startswith(('/','\\')) and '\\' not in p and ':' not in p
+ parts=p.split('/')
+ for x in parts:
+  assert x not in ('','.','..') and not x.endswith(('.',' ')) and x.casefold() not in ('.git','.gitattributes')
+  assert not re.fullmatch(r'(?i)(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?',x)
+ assert p.casefold() not in seen;seen[p.casefold()]=p
+ for i in range(1,len(parts)+1):
+  q='/'.join(parts[:i]);key=q.casefold();assert key not in prefixes or prefixes[key]==q;prefixes[key]=q
+assert not any('/'.join(p.split('/')[:i]).casefold() in seen for p in paths for i in range(1,len(p.split('/'))))
+for r in archives:assert r['relative_path'].endswith('.raw')
+tree=subprocess.check_output(['git','--no-optional-locks','-C',str(W),'ls-tree','-rz',H])
+tracked={}
+for item in tree.split(b'\0'):
+ if not item:continue
+ lhs,rp=item.split(b'\t',1);mode,typ,oid=lhs.decode().split();tracked[rp.decode()]={'mode':mode,'type':typ,'oid':oid}
+preimages=[];absences=[]
+for r in sources:
+ p=r['relative_path']
+ if r['preimage']:
+  pre=verify(r['preimage']);obj=subprocess.check_output(['git','--no-optional-locks','-C',str(W),'cat-file','blob',H+':'+p])
+  assert len(obj)==pre['bytes'] and sha(obj)==pre['sha256'] and tracked[p]['mode']=='100644'
+  preimages.append({'relative_path':p,'head':H,**tracked[p],'bytes':len(obj),'sha256':sha(obj)})
+ else:assert p not in tracked;absences.append(p)
+for r in archives:
+ assert r['relative_path'] not in tracked;absences.append(r['relative_path'])
+assert plan['manifest_target'] not in tracked;absences.append(plan['manifest_target'])
+# Future unknowns remain explicit. The fixture peer may arrive later.
+proof={'status':'passed_inert_source_copy_plan_checks','source_only':True,'basis_head':H,'baseline':inputs[norm(B/'copy-manifest-plan.json')],'finite_operation_count':len(ops),'full_forward_and_raw_inverse':True,'predecessor_counts':baseline['counts'],'selected_counts':counts,'old268_accounting':plan['preserved_predecessor_accounting'],'new_packet_membership':group_inventories,'added_logical_archive_records':len(added_logicals),'new_full_byte_dedup_aliases':dedup_added,'already_covered_new_reference_sites':already_covered,'physical_target_count_including_manifest':len(paths),'nine_immutable_preimages':preimages,'immutable_target_absence_count':len(absences),'immutable_absences':absences,'all_paths_prefix_checked_including_manifest':True,'all_donors_and_aliases_rehashed':True,'all_duplicate_content_compared_full_bytes':True,'input_pins':list(inputs.values()),'toolchain_snapshot_authoring':[{'snapshot':x[2],'original':x[3]} for x in compiler_snapshots],'candidate_or_prefix_executed':False,'Main_accessed':False,'index_accessed':False,'actual_Git_conversion_preflight':False,'configuration_issued':False,'final_manifest_issued':False,'native_execution_authorized':False,'future_commit_head':None,'fixture_independent_peer':None,'fully_self_contained_archive_claim':False}
+# FINAL CREATE-ONLY SOURCE EVIDENCE OUTPUTS
+for p,b,pr,old in compiler_snapshots:assert put(p,b)==pr
+plan_pin=put(D/'copy-manifest-plan.json',wire(plan))
+adapt={'schema':1,'baseline':inputs[norm(B/'copy-manifest-plan.json')],'selected':plan_pin,'operations':ops,'whole_forward_inverse':True,'original_raw_bytes_recovered':len(base_raw),'original_raw_sha256':sha(base_raw)}
+adapt_pin=put(D/'finite-plan-adaptation.json',wire(adapt))
+proof['selected_plan']=plan_pin;proof['finite_adaptation']=adapt_pin;proof['source_author']=pin(Path(__file__))
+proof_pin=put(D/'source-proof.json',wire(proof))
+print(json.dumps({'plan':plan_pin,'adaptation':adapt_pin,'proof':proof_pin,'counts':counts,'inputs':len(inputs),'nine_preimages':len(preimages),'static_absences':len(absences),'finite_operations':len(ops)}))

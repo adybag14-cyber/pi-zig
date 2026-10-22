@@ -1,0 +1,78 @@
+from pathlib import Path,PurePosixPath
+import hashlib,json,os,posixpath,re,subprocess
+B=Path(r"C:\Users\adyba\pi-zig");W=B/"worktrees/modules-io-resume-20261018";HEAD="014062f2d139254acab4b985b4ae343db637166f"
+D=W/"verification/native-node-shutdown-linkage-build-successor-sourceonly-20261022"
+OUT=D/"source-import-inventory.json"
+assert not OUT.exists(),str(OUT)
+def git(*args,input=None):
+ q=subprocess.run(["git","--no-optional-locks","-C",str(W),*args],input=input,capture_output=True,env={**os.environ,"GIT_OPTIONAL_LOCKS":"0"})
+ assert q.returncode==0,q.stderr;return q.stdout
+sha=lambda b:hashlib.sha256(b).hexdigest().upper()
+tree={}
+for rec in git("ls-tree","-r","-z",HEAD).split(b"\0"):
+ if not rec:continue
+ meta,path=rec.split(b"\t",1);mode,kind,oid=meta.split()
+ if kind==b"blob":tree[path.decode()]={"git_blob":oid.decode(),"mode":mode.decode()}
+paths=sorted(p for p in tree if p.endswith(".zig") and p.startswith(("src/","tools/")))
+data=git("cat-file","--batch",input=("\n".join(tree[p]["git_blob"] for p in paths)+"\n").encode())
+sources={};pins=[];at=0
+for p in paths:
+ end=data.index(b"\n",at);oid,kind,n=data[at:end].split();n=int(n);start=end+1
+ raw=data[start:start+n];assert kind==b"blob" and data[start+n:start+n+1]==b"\n" and oid.decode()==tree[p]["git_blob"]
+ sources[p]=raw;pins.append({"relative_path":p,"bytes":n,"sha256":sha(raw),**tree[p],"basis":"raw_git_"+HEAD});at=start+n+1
+assert at==len(data)
+plan_p=B/"evidence/unissued-shutdown-latin1-buffer-union014-intake-plan-20261021/copy-manifest-plan.json"
+plan_raw=plan_p.read_bytes();assert sha(plan_raw)=="E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"
+plan=json.loads(plan_raw);overlay=[]
+for row in plan["source_rows"]:
+ r=row["donor"];raw=Path(r["path"]).read_bytes();assert len(raw)==r["bytes"] and sha(raw)==r["sha256"]
+ overlay.append({"relative_path":row["relative_path"],"donor":r})
+ if row["relative_path"].endswith(".zig"):sources[row["relative_path"]]=raw
+build=sources["build.zig"].decode("utf-8")
+assert sha(sources["build.zig"])=="868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+rx=re.compile(r'(?P<comment>//[^\n]*)|(?P<multiline>\\\\[^\n]*)|(?P<string>"(?:\\.|[^"\\])*")|(?P<char>\'(?:\\.|[^\'\\])*\')|(?P<word>@?[A-Za-z_][A-Za-z_0-9]*)|(?P<punct>\S)')
+def lex(s):return [(m.group(),m.start(),m.end(),m.lastgroup)for m in rx.finditer(s)if m.lastgroup not in ("comment","multiline")]
+named={"catalog_tool":"tools/catalog.zig","native_icu_api":"src/extensions/icu/native_icu_api.zig","native_photon_link":"src/ai/photon_session.zig","pi_zig":"src/root.zig"}
+edges={};nonliteral=[];named_sites={};missing=[];base_importers=[];owner_importers=[]
+for p,raw in sources.items():
+ s=raw.decode("utf-8");ts=lex(s);out=[]
+ for i,t in enumerate(ts):
+  if t[0]!="@import":continue
+  if i+3>=len(ts) or ts[i+1][0]!="(" or ts[i+2][3]!="string" or ts[i+3][0]!=")":
+   nonliteral.append({"source":p,"line":s.count("\n",0,t[1])+1});continue
+  text=json.loads(ts[i+2][0]);line=s.count("\n",0,t[1])+1
+  dest=None
+  if text.endswith(".zig"):dest=posixpath.normpath(posixpath.join(posixpath.dirname(p),text))
+  elif text in named:dest=named[text]
+  else:named_sites.setdefault(text,[]).append({"source":p,"line":line})
+  if dest is not None:
+   if dest not in sources:missing.append({"source":p,"import":text,"destination":dest,"line":line})
+   else:out.append({"target":dest,"literal":text,"line":line})
+   if dest=="src/extensions/native_node_stream_base.zig":base_importers.append({"source":p,"line":line,"text":s.splitlines()[line-1]})
+   if dest=="src/extensions/native_node_file_handle_owner.zig":owner_importers.append({"source":p,"line":line})
+ edges[p]=out
+# All literal Zig paths appearing in executable build tokens are a bounded
+# over-approximation of direct roots and literal loop-table root families.
+roots=sorted({json.loads(t[0])for t in lex(build)if t[3]=="string" and re.fullmatch(r'"(?:src|tools)/[^"]+\.zig"',t[0]) and json.loads(t[0]) in sources})
+seeds=["src/extensions/native_node_file_handle_owner.zig","src/native_node_file_handle_read_test_support.zig","src/native_node_stream_read_test.zig","src/native_node_one_byte_string_test.zig","src/native_node_stream_shutdown_test.zig"]
+def path_to(root,target):
+ todo=[root];parent={root:None}
+ for p in todo:
+  if p==target:
+   out=[]
+   while p is not None:out.append(p);p=parent[p]
+   return out[::-1]
+  for e in edges.get(p,[]):
+   q=e["target"]
+   if q not in parent:parent[q]=p;todo.append(q)
+ return None
+root_seeds=[]
+for root in roots:
+ hits={seed:path_to(root,seed)for seed in seeds};hits={k:v for k,v in hits.items()if v}
+ if hits:root_seeds.append({"root":root,"paths":hits})
+scope_imports=[{"name":k,"count":len(v),"sites":v}for k,v in sorted(named_sites.items())if k not in ("std","builtin","root")]
+inv={"schema":1,"status":"source_only_conservative_literal_import_inventory","head":HEAD,"copy_plan":{"path":str(plan_p),"bytes":len(plan_raw),"sha256":sha(plan_raw)},"git_source_pins":pins,"selected_overlay":overlay,"literal_import_edges":edges,"nonliteral_import_sites":nonliteral,"unresolved_relative_imports":missing,"named_imports":scope_imports,"build_literal_root_candidates":roots,"potential_consumer_paths":root_seeds,"direct_Base_importers":base_importers,"direct_owner_importers":owner_importers,"limits":"Source closure is conservative. This inventory is not compiler instantiation or native qualification. Build artifact calls, filters, and actual Base.init/OneByte call paths are assessed separately.","Main_accessed":False,"candidate_or_native_executed":False}
+raw=(json.dumps(inv,indent=2)+"\n").encode();D.mkdir(parents=True,exist_ok=True)
+with OUT.open("xb")as f:f.write(raw)
+assert OUT.read_bytes()==raw
+print(json.dumps({"output":{"path":str(OUT),"bytes":len(raw),"sha256":sha(raw)},"git_zig_files":len(pins),"overlay":len(overlay),"build_literal_roots":len(roots),"potential_consumer_paths":root_seeds,"direct_Base_importers":base_importers,"direct_owner_importers":owner_importers,"nonliteral_imports":nonliteral,"unresolved_relative":missing,"named_imports":[{"name":x["name"],"count":x["count"]}for x in scope_imports]}))

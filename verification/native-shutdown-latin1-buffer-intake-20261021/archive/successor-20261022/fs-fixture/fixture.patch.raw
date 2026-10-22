@@ -1,0 +1,38 @@
+--- a/src/native_node_fs_request_owner_test.zig
++++ b/src/native_node_fs_request_owner_test.zig
+@@ -270,10 +270,25 @@
+     fn pumpPending(self: *Fixture) !void {
+         var outer_scope: callbacks.Scope = undefined;
+         try self.outer(&outer_scope, self.target);
+-        defer if (!outer_scope.deinitialized) {
++        // Keep the actual pump outcome owned before outer callback cleanup.
++        // Start at this stable address before any nested native producer.
++        var handles = a.Scope.init(self.engine);
++        handles.boundary.start();
++        var failure: ?anyerror = null;
++        self.pumpPendingBody() catch |err| {
++            handles.boundary.escaping();
++            failure = err;
+             outer_scope.markFailed();
+-            outer_scope.deinit() catch {};
+         };
++        outer_scope.deinit() catch |err| {
++            handles.boundary.escaping();
++            if (failure == null) failure = err;
++        };
++        const ignored = try handles.finish(if (failure) |err|
++            @as(anyerror!c.JSValue, err) else c.pi_js_undefined());
++        self.engine.freeValue(ignored);
++    }
++    fn pumpPendingBody(self: *Fixture) !void {
+         const until = physical.uv_hrtime() + 10 * std.time.ns_per_s;
+         while (self.env().requests.waiting != 0) {
+             // This control explicitly selects nested callback settlement, not
+@@ -286,7 +301,6 @@
+             if (physical.uv_hrtime() >= until) return error.ActualFSReadCompletionTimeout;
+             physical.uv_sleep(1);
+         }
+-        try outer_scope.deinit();
+     }
+     fn waitQueued(self: *Fixture, count: usize) !void {
+         const service = self.controller.?.service;

@@ -1,0 +1,17 @@
+{
+  "schema": "pi-zig.raw-view-data-manifest-inspector-negative.v1",
+  "source_only": true,
+  "preserved_inspector": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\manifest-preflight-v1.py",
+    "bytes": 7684,
+    "sha256": "24D7E2034E096725ADFF619AED0E6E2DBC0723B38F90F5C25F096E14A5EC986E"
+  },
+  "failed_check": "Manually entered expected packet file count 71 disagreed with the actual 70 immutable files",
+  "observed_file_count": 70,
+  "incorrect_expected_file_count": 71,
+  "failure_before_manifest_output": true,
+  "production_controls_map_closure_and_proof_unchanged": true,
+  "correction": "Use the observed complete inventory plus these two explicitly preserved inspector-evidence files, for 72 evidence rows before the manifest itself.",
+  "compiler_native_reference_generator_execution": false,
+  "Main_changes": false
+}

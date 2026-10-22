@@ -1,0 +1,253 @@
+"""Static validation of an inert copy plan; never executes a reviewed target."""
+import hashlib
+import json
+import pathlib
+import re
+
+B = pathlib.Path(r"C:\Users\adyba\pi-zig")
+HERE = B / "evidence" / "unissued-shutdown-latin1-buffer-union014-intake-plan-20261021"
+PLAN = HERE / "copy-manifest-plan.json"
+OUT = HERE / "copy-plan-static-proof.json"
+PLAN_PIN = {"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-manifest-plan.json","bytes":378545,"sha256":"E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"}
+PREFIX = "verification/native-shutdown-latin1-buffer-intake-20261021"
+HEAD = "014062f2d139254acab4b985b4ae343db637166f"
+SHA = re.compile(r"[0-9A-F]{64}")
+CACHE = {}
+INPUTS = {}
+def require(value, message):
+    if not value:
+        raise AssertionError(message)
+
+def key(path):
+    return str(path).replace("/", "\\").casefold()
+
+def digest(data):
+    return hashlib.sha256(data).hexdigest().upper()
+
+def pin_read(pin):
+    require(set(("path", "bytes", "sha256")) <= set(pin), "Incomplete pin")
+    require(isinstance(pin["bytes"], int) and pin["bytes"] >= 0, "Invalid byte count")
+    require(SHA.fullmatch(pin["sha256"]) is not None, "Invalid hash")
+    p = pathlib.Path(pin["path"])
+    k = key(p)
+    require(p.is_absolute() and ".." not in p.parts, "Nonabsolute donor")
+    require("\\main\\" not in k and not k.endswith("\\main"), "Main read forbidden")
+    require(k.startswith(key(B / "evidence") + "\\") or
+            re.search(r"\\worktrees\\[^\\]+\\verification\\", k) is not None,
+            "Only immutable evidence or verification donors admitted")
+    identity = (pin["bytes"], pin["sha256"])
+    if k in INPUTS:
+        require((INPUTS[k]["bytes"], INPUTS[k]["sha256"]) == identity, "Conflicting donor version")
+    if k not in CACHE:
+        require(p.is_file(), "Missing donor: " + str(p))
+        CACHE[k] = p.read_bytes()
+    data = CACHE[k]
+    require(len(data) == pin["bytes"] and digest(data) == pin["sha256"], "Donor pin mismatch: " + str(p))
+    INPUTS[k] = dict(path=str(p), bytes=len(data), sha256=digest(data))
+    return data
+
+def relative(path):
+    require(isinstance(path, str) and path.isascii() and path, "ASCII relative target required")
+    require("\\" not in path and ":" not in path and "\x00" not in path, "Target separator/ADS")
+    require(not path.startswith("/") and not pathlib.PureWindowsPath(path).is_absolute(), "Absolute target")
+    parts = path.split("/")
+    require(all(p and p not in (".", "..") and p == p.rstrip(" .") for p in parts), "Target alias")
+    require(all(p.casefold() != ".git" for p in parts), "Git metadata target")
+    require(all(re.fullmatch(r"(?:con|prn|aux|nul|com[1-9]|lpt[1-9])", p.split(".")[0], re.I) is None
+                for p in parts), "Windows device target")
+    return path.casefold()
+
+def compact(data):
+    return json.dumps(data, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+
+require(not OUT.exists(), "Create-only proof already exists")
+raw_plan = pin_read(PLAN_PIN)
+plan = json.loads(raw_plan)
+require(plan["schema"] == 1 and plan["status"] == "unissued_inert_shutdown_latin1_buffer_20_path_copy_manifest_plan", "Plan schema")
+require(plan["source_only"] is True and plan["actual_released_head"] is None, "Unissued authority")
+require(plan["reviewed_immutable_head"] == HEAD, "014 basis")
+require(plan["archive_prefix"] == PREFIX and plan["manifest_target"] == PREFIX + "/manifest.json", "Manifest path")
+require(all(v is False for v in plan["authority"].values()), "Any authority or execution claim")
+require(all(v is None for k, v in plan["future_admission_requirements"].items() if k.startswith("required_")), "Future admission fabricated")
+require(plan["future_admission_requirements"]["all_requirements_unissued"] is True, "Admission status")
+
+paused = json.loads(pin_read(plan["paused_record"]))
+source_peer = json.loads(pin_read(plan["source_peer"]))
+source_proof = json.loads(pin_read(plan["source_replay"]))
+root = json.loads(pin_read(plan["source_acceptance"]))
+require(root["source_composition_accepted"] is True and root["intake_manifest_issued"] is False
+        and root["source_mutation_hold_released"] is False, "Root source-only acceptance")
+require(root["reviewed_immutable_head"] == HEAD and source_peer["reviewed_immutable_head"] == HEAD, "Accepted source basis")
+require(source_proof["source_path_count"] == 20 and source_proof["replay_sequences"] == 36, "Accepted replay")
+require(source_proof["all_eight_preimages_equal_raw014"] is True and source_proof["all_twelve_new_paths_absent_at014"] is True, "Accepted immutable preimages")
+
+sources = plan["source_rows"]
+archives = plan["archive_rows"]
+require(len(sources) == 20 and len(archives) == 223, "Exact row counts")
+require(len(paused["source_paths"]) == 20, "Paused source count")
+source_mapping = {r["relative_path"].replace("\\", "/"): r for r in paused["source_paths"]}
+all_targets = [relative(r["relative_path"]) for r in sources + archives]
+all_targets.append(relative(plan["manifest_target"]))
+require(len(set(all_targets)) == 244, "Physical path or manifest collision")
+for target in all_targets:
+    require(not any(target.startswith(other + "/") for other in all_targets if other != target), "File/directory collision")
+require(sum(r["kind"] == "source_replacement" for r in sources) == 8, "Eight replacements")
+require(sum(r["kind"] == "source_addition" for r in sources) == 12, "Twelve additions")
+for r in sources:
+    prior = source_mapping[r["relative_path"]]
+    require(r["donor"] == prior["selected"] and r["preimage"] == prior["current_preimage"], "Exact selected source/preimage")
+    require(r["reviewed_immutable_head"] == HEAD and r["actual_future_preimage_and_absence_check_required"] is True, "Future current check")
+    pin_read(r["donor"])
+    if r["preimage"] is not None:
+        pin_read(r["preimage"])
+
+logical = {}
+historical = {}
+content_keys = set()
+equal_aliases = []
+raw_total = 0
+copy_total = 0
+for r in archives:
+    require(r["kind"] == "immutable_evidence_archive" and r["preimage"] is None, "Archive is a future addition")
+    target = r["relative_path"]
+    require(target.startswith(PREFIX + "/archive/") and target.endswith(".raw"), "Raw archive path")
+    first = pin_read(r["donor"])
+    content_key = (len(first), digest(first))
+    require(content_key not in content_keys, "Duplicate physical archive content")
+    content_keys.add(content_key)
+    copy_total += len(first)
+    donors = r["logical_donors"]
+    require(donors, "Empty alias group")
+    ordered = sorted(donors, key=lambda d: (d["logical_archive_relative_path"].casefold(), d["logical_archive_relative_path"]))
+    require(donors == ordered and ordered[0]["logical_archive_relative_path"] == target
+            and ordered[0]["donor"] == r["donor"], "Canonical alias target")
+    for d in donors:
+        relative(d["logical_archive_relative_path"])
+        require(d["logical_archive_relative_path"].startswith(PREFIX + "/archive/")
+                and d["logical_archive_relative_path"].endswith(".raw"), "Logical archive path")
+        p = d["donor"]
+        k = key(p["path"])
+        require(k not in logical, "Repeated logical donor")
+        data = pin_read(p)
+        require(data == first, "SHA/size equality without full byte equality")
+        logical[k] = (p, target, d["logical_archive_relative_path"])
+        raw_total += len(data)
+        if k != key(r["donor"]["path"]):
+            equal_aliases.append(dict(donor=p, canonical_donor=r["donor"], archive_relative_path=target))
+        for h in d["historical_reference_aliases"]:
+            old = h["reference"]
+            require(old["bytes"] == p["bytes"] and old["sha256"] == p["sha256"], "Historical snapshot pin mismatch")
+            require(key(old["path"]) not in historical, "Duplicate historical alias")
+            historical[key(old["path"])] = (old, p, target)
+require(len(logical) == 248 and len(equal_aliases) == 25, "Logical/dedup counts")
+require(len(set(v[2].casefold() for v in logical.values())) == 248, "Logical target collision")
+require(raw_total == 39416075 and copy_total == 30537022, "Exact archive bytes")
+require(raw_total - copy_total == 8879053, "Dedup savings")
+
+def covered(pin):
+    k = key(pin["path"])
+    if k in logical:
+        candidate = logical[k][0]
+    elif k in historical:
+        candidate = historical[k][0]
+    else:
+        return False
+    return candidate["bytes"] == pin["bytes"] and candidate["sha256"] == pin["sha256"]
+
+require(len(source_proof["inputs"]) == 202 and all(covered(p) for p in source_proof["inputs"]), "Complete accepted proof inputs")
+shutdown_pin = plan["coverage"]["shutdown_frozen_inventory"]["selected_packet"]
+buffer_pin = plan["coverage"]["buffer_frozen_inventory"]["selected_packet"]
+shutdown = json.loads(pin_read(shutdown_pin))
+buffer = json.loads(pin_read(buffer_pin))
+shutdown_dir = pathlib.Path(shutdown_pin["path"]).parent
+require(len(shutdown["inventory"]) == 90, "Shutdown inventory count")
+for r in shutdown["inventory"]:
+    p = dict(path=str(shutdown_dir / pathlib.PurePosixPath(r["relative_path"].replace("\\", "/"))), bytes=r["bytes"], sha256=r["sha256"])
+    require(covered(p), "Shutdown inventory not mapped")
+require(len(buffer["frozen_packet_inventory"]) == 72 and all(covered(p) for p in buffer["frozen_packet_inventory"]), "Buffer complete inventory")
+
+root_pins = source_peer["root_accepted_references"] + [plan["source_acceptance"]]
+require(len(root_pins) == 6 and all(covered(p) for p in root_pins), "Six Root authorities")
+for n in plan["retained_negative_and_rejected_versions"]:
+    require(any(a["relative_path"] == n["archive_relative_path"] and a["donor"]["sha256"] == n["sha256"]
+                and a["donor"]["bytes"] == n["bytes"] for a in archives), "Original negative absent")
+require(len(plan["retained_negative_and_rejected_versions"]) == 12, "Explicit negative count")
+ext = plan["coverage"]["historical_nonselected_external_references"]
+require(len(ext) == 2 and {pathlib.PureWindowsPath(r["pin"]["path"]).name for r in ext}
+        == {"native_node_tracing_clock.cpp", "native_node_tracing_clock.hpp"}, "Only two external clock history references")
+require(not any(key(r["pin"]["path"]) in logical for r in ext), "Live clock read/copy admitted")
+scope = plan["source_order_and_scope"]
+require(scope["Transfer_must_precede_Shutdown"] is True and scope["Transfer_Shutdown_commutation_claimed"] is False, "Required source order")
+require(scope["Buffer_Shutdown_both_orders_equal"] is True and scope["corrected_Latin1_Buffer_C_H_both_orders_equal"] is True, "Composition authority")
+require(scope["declared_new_controls"] == 38 and scope["actual_future_metadata_count"] is None, "No predicted metadata")
+require(scope["new_roots"] == source_peer["new_roots"], "Exact source control declarations")
+require(scope["selected_build_sha256"] == source_mapping["build.zig"]["selected"]["sha256"], "Selected build")
+require(scope["protected_make_callback_sha256"] == "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2", "Protected MakeCallback")
+require("pending runtime template identity" in scope["explicitly_excluded"]
+        and "full CustomBuffer listener" in scope["explicitly_excluded"], "Scope exclusions")
+
+git = plan["git_byte_preflight"]
+require(git["status"] == "required_future_Root_action_not_run", "No Git preflight claim")
+require(git["attributes_argv"][-5:] == ["text", "eol", "filter", "working-tree-encoding", "ident"], "All relevant attributes")
+require(git["raw_blob_argv"][-3:] == ["hash-object", "--no-filters", "--stdin"], "Raw hash command")
+require(git["path_aware_blob_argv"][-3:] == ["hash-object", "--path=<one-exact-relative-target>", "--stdin"], "Path-aware hash command")
+require(all("-w" not in git[k] for k in ("raw_blob_argv", "path_aware_blob_argv")), "No object write preflight")
+require("manifest" in git["scope"] and "before" in git["before_writes"], "Whole-set preflight including manifest")
+
+rows_digest = digest(compact(sources + archives))
+mapping_digest = digest(compact(sorted(
+    [dict(donor=p, archive_relative_path=t, logical_archive_relative_path=l) for p, t, l in logical.values()],
+    key=lambda r: key(r["donor"]["path"]))))
+checker_raw = pathlib.Path(__file__).read_bytes()
+proof = dict(
+    schema=1,
+    status="accepted_static_inert_20_path_copy_plan_and_exact_archive_mapping",
+    reviewer="/root/handover_review",
+    source_only=True,
+    plan=PLAN_PIN,
+    checker=dict(path=str(pathlib.Path(__file__)), bytes=len(checker_raw), sha256=digest(checker_raw)),
+    reviewed_immutable_head=HEAD,
+    source_rows=20,
+    exact_replacement_preimages=8,
+    exact_source_additions=12,
+    archive_copy_rows=223,
+    logical_archive_donors=248,
+    complete_Shutdown_inventory_rows=90,
+    complete_Buffer_inventory_rows=72,
+    accepted_source_proof_input_versions=202,
+    root_authority_receipts=6,
+    original_negative_and_rejected_versions=12,
+    immutable_historical_snapshot_aliases=len(historical),
+    two_nonselected_clock_history_references_not_read=True,
+    all_physical_and_logical_Windows_paths_unique=True,
+    all_current_immutable_donor_hashes_exact=True,
+    all_content_dedup_full_raw_bytes_equal=True,
+    duplicate_archive_copies_removed=25,
+    archive_bytes_before_dedup=raw_total,
+    archive_bytes_to_copy=copy_total,
+    archive_bytes_saved=raw_total-copy_total,
+    core_copy_rows=243,
+    core_plus_future_manifest_paths=244,
+    exact_rows_canonical_sha256=rows_digest,
+    logical_relocation_map_canonical_sha256=mapping_digest,
+    canonical_serialization="UTF-8 json.dumps(sort_keys=True,separators=(',', ':'),ensure_ascii=False), without final newline",
+    preserved_rejected_versions=plan["retained_negative_and_rejected_versions"],
+    dedup_aliases=equal_aliases,
+    current_inputs_read=len(INPUTS),
+    input_pin_list_canonical_sha256=digest(compact(sorted(INPUTS.values(),key=lambda p:key(p["path"])))),
+    future_head_releases_adapter_manifest_and_original63_outcomes_unresolved=True,
+    Git_attribute_or_conversion_commands_executed=False,
+    final_manifest_issued=False,
+    Main_accessed=False,
+    Main_written=False,
+    index_accessed=False,
+    candidate_or_prefix_executed=False,
+    generator_or_native_executed=False,
+    existing_artifact_mutated=False,
+    source_release=False,
+    runtime_qualified=False,
+    application_qualified=False)
+raw = (json.dumps(proof, indent=2) + "\n").encode("utf-8")
+with OUT.open("xb") as f:
+    f.write(raw)
+print(json.dumps(dict(path=str(OUT), bytes=len(raw), sha256=digest(raw), current_inputs_read=len(INPUTS), core_copy_rows=243, archive_copy_rows=223)))

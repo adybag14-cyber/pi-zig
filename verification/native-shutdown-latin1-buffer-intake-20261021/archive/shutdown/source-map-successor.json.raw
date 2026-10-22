@@ -1,0 +1,86 @@
+{
+  "schema": "pi-zig.shutdown-latin1-c-helper-source-map-successor.v1",
+  "original_source_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\source-map.json",
+    "bytes": 88169,
+    "sha256": "2B78DFAA1C4CF44784AEE4F837B76F9B09ABAB265E79F053AF342B5B27D3A448"
+  },
+  "successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\proposal.json",
+    "bytes": 2900,
+    "sha256": "11FA3C2397945908756CB487FE2F22E8762B56AF7187CD87AF8275678905F9F1"
+  },
+  "selected_c": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\projected\\vendor\\quickjs\\quickjs.c",
+    "bytes": 2403730,
+    "sha256": "BC772BEE8794ADBD59385DA98F037310730704DFB9D251EA258862B1C887E454"
+  },
+  "unchanged_other_shared_files": 6,
+  "new_owners_controls_build_unchanged": true,
+  "private_vm_authority": "Accepted constructor/Error QuickJS C5C746837, not an invented generic bridge. Private helpers are byte-identical in selected C.",
+  "bindings": [
+    {
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 5195,
+      "end_line": 5199,
+      "bytes": 164,
+      "sha256": "92035334616F4900942E230308B57069E80C2BF871D955C3EDA6F470D7FD2109",
+      "text": "static inline JSValue js_empty_string(JSRuntime *rt)\n{\n    JSAtomStruct *p = rt->atom_array[JS_ATOM_empty_string];\n    return js_dup(JS_MKPTR(JS_TAG_STRING, p));\n}\n"
+    },
+    {
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 5203,
+      "end_line": 5216,
+      "bytes": 469,
+      "sha256": "0E016A9EE3822CDDF3CFAF484E69D809A9BE143D067FB0D3008913CCA73F6DA5",
+      "text": "static JSValue js_new_string8_len(JSContext *ctx, const char *buf, int len)\n{\n    JSString *str;\n    str = js_alloc_string(ctx, len, 0);\n    if (!str)\n        return JS_EXCEPTION;\n    memcpy(str8(str), buf, len);\n    str8(str)[len] = '\\0';\n    return JS_MKPTR(JS_TAG_STRING, str);\n}\n\n// XXX: `buf` contains raw 8-bit data, no UTF-8 decoding is performed\n// XXX: no special case for the empty string\nstatic inline JSValue js_new_string8(JSContext *ctx, const char *str)\n"
+    },
+    {
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 222,
+      "end_line": 222,
+      "bytes": 42,
+      "sha256": "A7BFC764E39259033DDCA706B5CB6ED3AF019E9A65725C7E041B59C02B54B6E0",
+      "text": "#define JS_STRING_LEN_MAX ((1 << 30) - 1)\n"
+    },
+    {
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403730,
+        "sha256": "BC772BEE8794ADBD59385DA98F037310730704DFB9D251EA258862B1C887E454"
+      },
+      "start_line": 5672,
+      "end_line": 5680,
+      "bytes": 298,
+      "sha256": "075D237EBFD710BA992B90FCE6654F398E33AE7883F024EA622481E24D74D8F2",
+      "text": "JSValue JS_PiNewStringLatin1(JSContext *ctx, const uint8_t *buf, size_t len)\n{\n    if (len == 0)\n        return js_empty_string(ctx->rt);\n    if (len > JS_STRING_LEN_MAX)\n        return JS_ThrowRangeError(ctx, \"string too long\");\n    return js_new_string8_len(ctx, (const char *)buf, (int)len);\n}\n\n"
+    }
+  ],
+  "findings_closed": [
+    {
+      "original": "js_empty_string(ctx)",
+      "selected": "js_empty_string(ctx->rt)",
+      "reason": "Actual helper parameter is JSRuntime*. Uses the same runtime selection as original JS_NewStringLen."
+    },
+    {
+      "original": "js_new_string8_len(ctx, buf, (int)len)",
+      "selected": "js_new_string8_len(ctx, (const char *)buf, (int)len)",
+      "reason": "Explicit byte-pointer interpretation required by private const char* signature. Guarded int cast unchanged; helper copies original bytes."
+    }
+  ],
+  "qualification": false,
+  "compiler_native_execution": false,
+  "Main_changed": false
+}

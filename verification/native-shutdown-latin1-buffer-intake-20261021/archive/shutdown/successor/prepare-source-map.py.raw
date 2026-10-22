@@ -1,0 +1,27 @@
+import pathlib,json,hashlib
+P=pathlib.Path(r'C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018\verification\native-node-shutdown-wrap-sourceonly-20261020')
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ b=p.read_bytes();return {'path':str(p),'bytes':len(b),'sha256':sha(b)}
+def excerpt(path,needle,span):
+ raw=path.read_bytes();lines=raw.splitlines(keepends=True)
+ indices=[i for i,l in enumerate(lines) if needle.encode() in l]
+ assert len(indices)==1,(needle,indices)
+ lo=indices[0];out=b''.join(lines[lo:lo+span])
+ return {'file':pin(path),'start_line':lo+1,'end_line':lo+span,'bytes':len(out),'sha256':sha(out),'text':out.decode('utf-8')}
+original=P/'shared/original/vendor/quickjs/quickjs.c'
+selected=P/'successor/projected/vendor/quickjs/quickjs.c'
+m={'schema':'pi-zig.shutdown-latin1-c-helper-source-map-successor.v1',
+ 'original_source_map':pin(P/'source-map.json'),'successor':pin(P/'successor/proposal.json'),
+ 'selected_c':pin(selected),'unchanged_other_shared_files':6,'new_owners_controls_build_unchanged':True,
+ 'private_vm_authority':'Accepted constructor/Error QuickJS C5C746837, not an invented generic bridge. Private helpers are byte-identical in selected C.',
+ 'bindings':[
+ excerpt(original,'static inline JSValue js_empty_string(JSRuntime *rt)',5),
+ excerpt(original,'static JSValue js_new_string8_len(JSContext *ctx, const char *buf, int len)\n',14),
+ excerpt(original,'#define JS_STRING_LEN_MAX ((1 << 30) - 1)',1),
+ excerpt(selected,'JSValue JS_PiNewStringLatin1(JSContext *ctx, const uint8_t *buf, size_t len)',9)],
+ 'findings_closed':[
+ {'original':'js_empty_string(ctx)','selected':'js_empty_string(ctx->rt)','reason':'Actual helper parameter is JSRuntime*. Uses the same runtime selection as original JS_NewStringLen.'},
+ {'original':'js_new_string8_len(ctx, buf, (int)len)','selected':'js_new_string8_len(ctx, (const char *)buf, (int)len)','reason':'Explicit byte-pointer interpretation required by private const char* signature. Guarded int cast unchanged; helper copies original bytes.'}],
+ 'qualification':False,'compiler_native_execution':False,'Main_changed':False}
+p=P/'source-map-successor.json';assert not p.exists();p.write_bytes((json.dumps(m,indent=2)+'\n').encode());print(json.dumps(pin(p)))

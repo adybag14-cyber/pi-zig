@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "status": "root_accepted_source_only_v38_fs_request_fixture_pump_completion_ownership",
+  "reviewer": "/root",
+  "reviewed_utc": "2026-10-22T14:20:13.875309+00:00",
+  "basis_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "branch": "work/pi-zig-consolidated-20261016",
+  "source_accepted": true,
+  "selected_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\successor-v2\\projected\\src\\native_node_fs_request_owner_test.zig",
+    "bytes": 57891,
+    "sha256": "FD337AA09700EA151943ED06A86CE5623C37210FA57637B892DCB6AB797C02D6"
+  },
+  "original_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\original\\src\\native_node_fs_request_owner_test.zig",
+    "bytes": 57263,
+    "sha256": "402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81"
+  },
+  "selected_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\successor-v2\\proposal.json",
+    "bytes": 6844,
+    "sha256": "B24664CA4DADD2B96EA581710A244050EB6F963C3AC0DD11F4BD5D04DBF83106"
+  },
+  "author_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\handoff.json",
+    "bytes": 9374,
+    "sha256": "B0C5A47DB2C0C48BF60433BEEE7E02F4300B23A9192D752ED3F3FDE400DC4A2E"
+  },
+  "author_source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\source-proof.json",
+    "bytes": 130180,
+    "sha256": "11851D8D9B92BDD123EB0D515B4F117FF48ECB79A932DDDF3393A662013503ED"
+  },
+  "author_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\static-source-check-v2.py",
+    "bytes": 16444,
+    "sha256": "D86F14112C229D8FF1B2EFFDFC3885F9E9139499D9A59E795751247E658608C8"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\peer.json",
+    "bytes": 6574,
+    "sha256": "C55A1B8277B69A6107B6A994F9A69F2C347E4A735E75B835A0F158D6A04A40F4"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\source-check.py",
+    "bytes": 17415,
+    "sha256": "FBC21ADEB0E14D394771D761787069D3DB13F1A9A6C624BDD62075BBCDE826E7"
+  },
+  "independent_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\source-proof.json",
+    "bytes": 109273,
+    "sha256": "DFD7004CF0AF84BCA64B51A1A3E720850ADF212B14AC5FB7E52DDFA90AFFC751"
+  },
+  "root_original_negative_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-retry1-original-negative-runtime-acceptance-20261022.json",
+    "bytes": 5667,
+    "sha256": "2F26F9A1CD8FB66B1AC2330F7D2BBD6E5B30F5E842346B21BC8FFAD683D361E4"
+  },
+  "independent_original_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-134223\\independent-negative-runtime-closure.json",
+    "bytes": 232840,
+    "sha256": "C1BA83DB4C8A70DDF1C9170458D44E0CADCAF1F10C85E9898B55736D31663CB9"
+  },
+  "root_review": {
+    "complete_selected_hunk_and_author_checker_read": true,
+    "complete_independent_checker_and_peer_read": true,
+    "complete_owned_scope_boundary_and_completion_sources_read": true,
+    "callback_cleanup_and_actual_FSReq_pump_Node_authority_chain_read": true,
+    "actual_call_chain_excerpts": 31,
+    "whole_file_forward_and_inverse_replayed": true,
+    "original_immutable_Git_inputs_independently_rehashed": 76,
+    "original_author_evidence_inputs_independently_rehashed": 20,
+    "independent_peer_inputs_currently_rehashed": 28,
+    "all_test_and_assertion_bytes_unchanged": true,
+    "named_test_controls_unchanged": 25,
+    "source_import_graph_unchanged": true,
+    "unchanged_loop_bytes": 721,
+    "unchanged_waitQueued_bytes": 392,
+    "production_files_changed": 0,
+    "current_Main_source_preimage_exact": true,
+    "current_Main_clean": true
+  },
+  "ownership_decision": "The existing production request path preserves the actual getter failure. The fixture must retain the explicitly failing pump completion across outer callback cleanup. The selected owned boundary starts at a stable address before the pump, escrows the actual captured reason on the failure path, closes the outer callback scope exactly once, and finishes/restores the selected outcome through the unchanged ownership implementation. No assertion, request retirement, poll body, deadline or production code is changed.",
+  "limitations": [
+    "Source acceptance supplies no runtime result for this successor.",
+    "All321 original completed tests, the one original native failure, sixteen demoted partial groups and964 unstarted tests retain their original negative status.",
+    "The unchanged analogous settle helper and unrelated incoming diagnostic history are outside this bounded repair.",
+    "Actual source intake requires a distinct exact Root manifest/adapter release after the V38 archive/progress commit; fresh validation must use the actual committed successor head."
+  ],
+  "preserved_authoring_negatives": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\source-authoring-negative.json",
+      "bytes": 1121,
+      "sha256": "D6F273FC834D16CEE2BEED1B3C9111F6C5323D8FBC08535EFD348A4968F93192"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\static-checker-range-negative.json",
+      "bytes": 2182,
+      "sha256": "FFB7005BD1337CEAB11C74A24F558A56A3764B73EB355D48EDE1107A21574EDF"
+    }
+  ],
+  "source_only": true,
+  "candidate_executed": false,
+  "compiler_or_native_executed": false,
+  "source_intake_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "application_qualified": false
+}

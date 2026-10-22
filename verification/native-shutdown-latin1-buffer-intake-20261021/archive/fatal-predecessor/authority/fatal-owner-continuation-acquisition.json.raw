@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "execution": false,
+  "source_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "retrieved_utc": "2026-10-20T18:06:11.621392+00:00",
+  "files": [
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/base/abort-mode.cc",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__abort-mode.cc",
+      "bytes": 322,
+      "sha256": "BFDB1CF3DCCAC62D5EC0023B4987F3EEB84D9ED4E89E4329FD3A9417E3050325"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/include/v8config.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__include__v8config.h",
+      "bytes": 35211,
+      "sha256": "7454D35A34B52B23A50F9EF2742DC0C57025CD9EB1F85C27B7618FE2B269BACF"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/base/build_config.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__build_config.h",
+      "bytes": 3770,
+      "sha256": "9D8E16FB6A11064851500CC89592B91397F42B14CC15A9B496B1C2F4FDE420F6"
+    }
+  ]
+}

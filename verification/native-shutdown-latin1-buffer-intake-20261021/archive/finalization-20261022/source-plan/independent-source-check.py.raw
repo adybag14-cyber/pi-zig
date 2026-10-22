@@ -1,0 +1,289 @@
+"""Independent source-only CC33 copy-plan review. No donor script evaluation or Main access."""
+from pathlib import Path, PurePosixPath
+import ast, copy, hashlib, json, re, subprocess
+B=Path(r"C:\Users\adyba\pi-zig")
+E=B/"evidence";W=B/"worktrees/modules-io-resume-20261018";S=B/"worktrees/sdk-owners-resume-20261018"
+D=W/"verification/pending21-shutdown-descriptor-copy-plan-successor-sourceonly-20261022"
+OLD=W/"verification/unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022"
+O=E/"independent-pending21-shutdown-descriptor-copy-plan-peer-20261022"
+H="014062f2d139254acab4b985b4ae343db637166f"
+PINS={
+ "plan":(D/"copy-manifest-plan.json",590893,"836BC121159347F7BC68DBF71E97787B59F532D10A95D18DE318370B5F94AFD6"),
+ "finite":(D/"finite-plan-adaptation.json",83341,"05EA1D8E91B9CAC2232B9AA1BFF73C7744B10C4CB8DE63ADE3E6483AA5476896"),
+ "author":(D/"source-plan-author.py",18208,"85D17DD79F423F413487254911429D2A05A04F18A3C4A3B5C986C734DCF4BDB1"),
+ "proof":(D/"source-proof.json",168421,"36F24952B6875FB30BC81F9BDCE8302764B1372F61C46937C09E812A2BD60EA4"),
+ "handoff":(D/"handoff.json",26290,"C0F22344BFD5AC5D9146243D44E815433E5F66D275CA09E49945D1D393131727"),
+ "readme":(D/"README.md",4314,"8A1DC0F2672FFFD77322DCABEC901F0076D20F58BE7B8319699AC323AB4E7575"),
+ "negative":(D/"initial-readout-key-negative.json",2846,"6D6F10472BD39D688CAC080D37F846D9AC308E653BAE744D91DAB3AB28E3286A"),
+ "base":(OLD/"copy-manifest-plan.json",530121,"B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC"),
+ "base_handoff":(OLD/"handoff.json",20300,"922C5187B64C7F9B9E565B532D8879DF7155C0B686CBEBBCA36570D12545984A"),
+ "base_root":(E/"root-pending21-copy-plan-source-acceptance-20261022.json",19222,"213E78C874B52119218F70CD162F1C90BAA1B792B86CB3E3E2A6C56EBFA06F28"),
+ "fixture_root":(E/"root-shutdown-invalid-descriptor-fixture-source-acceptance-20261022.json",20948,"0B59166DB17DE39B2CB8B5A975885E5AEADCDF0900C40E8CECB80387BD6053F7"),
+}
+seen={};cache={}
+def need(x,m):
+ if not x:raise AssertionError(m)
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def norm(p):return str(p).replace("/","\\").casefold()
+def wire(x):return (json.dumps(x,indent=2)+"\n").encode()
+def pin(p,b):return {"path":str(p),"bytes":len(b),"sha256":sha(b)}
+def allowed(p):
+ p=Path(p);parts=p.relative_to(B).parts
+ need(p.is_absolute() and ".." not in p.parts and not p.is_symlink(),"canonical evidence path")
+ need(parts[0].casefold()=="evidence" or len(parts)>=4 and parts[0].casefold()=="worktrees" and parts[2].casefold()=="verification","no Main or live source read")
+ return p
+def raw(p):
+ p=allowed(p);k=norm(p)
+ if k not in cache:cache[k]=p.read_bytes();seen[k]=pin(p,cache[k])
+ return cache[k]
+def exact(r):
+ b=raw(r["path"]);need(len(b)==r["bytes"] and sha(b)==r["sha256"],"actual pinned bytes "+r["path"]);return b
+def document(r):return json.loads(exact(r))
+def pp(k):
+ p,n,h=PINS[k];return {"path":str(p),"bytes":n,"sha256":h}
+def doc(k):return document(pp(k))
+def at(x,path):
+ for p in path:x=x[p]
+ return x
+def parent(x,path):return at(x,path[:-1]),path[-1]
+def identity(r):return norm(r["path"]),r["bytes"],r["sha256"]
+def allpins(x):
+ if isinstance(x,dict) and {"path","bytes","sha256"}<=set(x):yield {k:x[k] for k in ("path","bytes","sha256")}
+ elif isinstance(x,dict):
+  for v in x.values():yield from allpins(v)
+ elif isinstance(x,list):
+  for v in x:yield from allpins(v)
+need(Path(__file__).resolve()==O/"source-check.py","own checker identity")
+p,f,q,h,b,bh,br,fr=[doc(k) for k in ("plan","finite","proof","handoff","base","base_handoff","base_root","fixture_root")]
+exact(pp("readme"));exact(pp("negative"));ast.parse(exact(pp("author")))
+need(h["selected_plan"]==pp("plan") and h["finite_adaptation"]==pp("finite") and h["source_proof"]==pp("proof") and h["source_author_and_checker"]==pp("author"),"exact handoff controls")
+need(h["predecessor_plan"]==pp("base") and h["predecessor_handoff"]==pp("base_handoff") and h["predecessor_Root_acceptance"]==pp("base_root"),"original accepted B490 chain")
+need(br["selected_plan"]==pp("base") and br["author_handoff"]==pp("base_handoff") and br["source_plan_accepted"] is True,"actual Root accepted baseline")
+basepeer=document(br["independent_peer"]);baseproof=document(br["independent_proof"]);exact(br["independent_checker"])
+need(basepeer["selected_plan"]==pp("base") and basepeer["no_bounded_source_blocker"] is True,"prior independent peer binds baseline")
+need(f["baseline"]==pp("base") and f["selected"]==pp("plan") and wire(b)==exact(pp("base")) and wire(p)==exact(pp("plan")),"canonical complete source plans")
+need(len(f["operations"])==len(f["intermediate_states"])==43,"43 explicit operations")
+expected_nonarchive=[
+ ["source_rows",14,"donor"],["status"],["shutdown_descriptor_successor"],
+ ["source_order_and_scope","explicitly_excluded"],["source_order_and_scope","shutdown_descriptor_correction"],
+ ["coverage","descriptor_successor_packet_memberships"],["coverage","descriptor_successor_already_archived_reference_sites"],
+ ["coverage","descriptor_successor_source_review_authorities"],["coverage","descriptor_successor_static_observations"],
+ ["counts"],["preserved_descriptor_predecessor_accounting"]]
+need([x["path"] for x in f["operations"] if x["path"][0]!="archive_rows"]==expected_nonarchive,"complete bounded semantic operation set")
+need(sum(x["path"][0]=="archive_rows" for x in f["operations"])==32,"32 archive append operations")
+state=copy.deepcopy(b);steps=[]
+for i,op in enumerate(f["operations"]):
+ before=wire(state)
+ if op["op"]=="append":
+  a=at(state,op["path"]);need(isinstance(a,list) and len(a)==op["index"],"append exact old length")
+  a.append(copy.deepcopy(op["after"]))
+ else:
+  a,k=parent(state,op["path"])
+  if op["op"]=="replace":need(a[k]==op["before"],"whole exact replacement before")
+  else:need(op["op"]=="add" and k not in a and op["before"] is None,"exact previously absent field")
+  a[k]=copy.deepcopy(op["after"])
+ after=wire(state);step={"index":i,"before_bytes":len(before),"before_sha256":sha(before),"after_bytes":len(after),"after_sha256":sha(after)}
+ need(step==f["intermediate_states"][i],"independent whole intermediate bytes/hash")
+ steps.append(step)
+need(state==p and wire(state)==exact(pp("plan")),"full raw forward")
+for op,step in reversed(list(zip(f["operations"],steps))):
+ need(sha(wire(state))==step["after_sha256"],"inverse before state")
+ if op["op"]=="append":
+  a=at(state,op["path"]);need(len(a)==op["index"]+1 and a[-1]==op["after"],"inverse appended exact value");a.pop()
+ else:
+  a,k=parent(state,op["path"]);need(a[k]==op["after"],"inverse exact after")
+  if op["op"]=="replace":a[k]=copy.deepcopy(op["before"])
+  else:del a[k]
+ need(sha(wire(state))==step["before_sha256"],"inverse old state")
+need(wire(state)==exact(pp("base")) and f["original_raw_bytes_recovered"]==530121 and f["original_raw_sha256"]==pp("base")["sha256"],"entire530121-byte raw inverse")
+# The single selected source delta is independently reconstructed as bytes.
+need(len(p["source_rows"])==len(b["source_rows"])==21,"same source paths/order")
+for i,(old,new) in enumerate(zip(b["source_rows"],p["source_rows"])):
+ if i==14:need({k:v for k,v in old.items() if k!="donor"}=={k:v for k,v in new.items() if k!="donor"},"all non-donor source row fields exact")
+ else:need(new==old,"other20 complete source rows exact")
+d=p["shutdown_descriptor_successor"]
+need(d["source_row_index"]==14 and d["relative_path"]=="src/native_node_stream_shutdown_test.zig","exact selected source")
+need(d["original_donor"]==b["source_rows"][14]["donor"]==fr["retained_original"]==h["original_shutdown_descriptor_donor"],"original11AA identity")
+need(d["selected_donor"]==p["source_rows"][14]["donor"]==fr["candidate"]==h["selected_shutdown_descriptor_donor"],"selectedCC33 identity")
+ob=exact(d["original_donor"]);nb=exact(d["selected_donor"])
+need(sha(ob)=="11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85" and sha(nb)=="CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F","accepted source versions")
+need(ob[5720:5722]==b"-2" and nb==ob[:5720]+b"std.math.maxInt(c_int)"+ob[5722:],"exact one expression forward")
+need(nb[:5720]+b"-2"+nb[5742:]==ob,"entire source inverse")
+tests=re.findall(rb'(?m)^test "([^"]+)"',ob)
+need(len(tests)==18 and re.findall(rb'(?m)^test "([^"]+)"',nb)==tests,"18 names and untouched assertion/helper/import bytes")
+need(fr["source_accepted"] is True and fr["copy_plan_successor_source_authoring_authorized"] is True and fr["source_intake_authorized"] is False and fr["native_execution_authorized"] is False,"source-only actual Root acceptance")
+need(d["Root_source_acceptance"]==h["shutdown_fixture_Root_acceptance"]==pp("fixture_root") and d["predecessor_Root_source_acceptance"]==pp("base_root"),"actual distinct Root chains")
+fpeer=document(fr["independent_peer"]);exact(fr["independent_checker"]);exact(fr["independent_proof"])
+for v in allpins({k:v for k,v in fr.items() if k!="input_versions"}):
+ # Preserve authorities without recursively reading their referenced compiler/source trees.
+ exact(v)
+need(fr["previous_copy_plan"]==pp("base") and fr["finite_review"]["complete_raw_forward_and_inverse"] is True,"accepted narrow source provenance")
+need(h["selected_build_donor"]==p["source_rows"][16]["donor"]==b["source_rows"][16]["donor"] and h["selected_build_donor"]["sha256"].startswith("594A048C"),"linkage build exact")
+need(h["selected_FS_fixture_donor"]==p["source_rows"][-1]["donor"]==b["source_rows"][-1]["donor"] and h["selected_FS_fixture_donor"]["sha256"].startswith("FD337AA0"),"FS fixture exact")
+# All previous archive rows and all logical prefixes, including seven old handoff rows.
+carried=copy.deepcopy(b["archive_rows"])+copy.deepcopy(bh["explicit_supplemental_archive_rows"])
+need(len(b["archive_rows"])==302 and len(carried)==309 and sum(len(r["logical_donors"]) for r in carried)==336,"old complete331 plan composition")
+need(br["current_supplemental_rows"]==bh["explicit_supplemental_archive_rows"],"Root accepted seven supplements")
+for old,new in zip(carried,p["archive_rows"]):
+ need({k:v for k,v in old.items() if k!="logical_donors"}=={k:v for k,v in new.items() if k!="logical_donors"},"complete old physical rows exact")
+ need(new["logical_donors"][:len(old["logical_donors"])]==old["logical_donors"],"all old336 logical prefixes exact")
+need(p["retained_negative_and_rejected_versions"]==b["retained_negative_and_rejected_versions"],"all previous rejected/negative records retained")
+supp=h["explicit_supplemental_archive_rows"]
+need(len(p["archive_rows"])==333 and sum(len(r["logical_donors"]) for r in p["archive_rows"])==361 and len(supp)==5,"core and self proof counts")
+archives=p["archive_rows"]+supp;logical={};physical={};duplicates=[];historical=[]
+for row in archives:
+ need(row["kind"]=="immutable_evidence_archive" and row["preimage"] is None and row["relative_path"].endswith(".raw"),"only raw immutable archive rows")
+ body=exact(row["donor"]);key=(len(body),sha(body))
+ need(key not in physical,"no duplicate physical archive content")
+ physical[key]=row["relative_path"]
+ for a in row["logical_donors"]:
+  need(exact(a["donor"])==body,"all logical aliases whole-byte equal")
+  ident=identity(a["donor"]);need(ident not in logical,"no duplicate logical donor")
+  logical[ident]=(row,a)
+  need(a["logical_archive_relative_path"].startswith(p["archive_prefix"]+"/archive/"),"logical archive scope")
+  if norm(a["donor"]["path"])!=norm(row["donor"]["path"]):duplicates.append({"physical":row["relative_path"],"alias":a["donor"]})
+  for z in a["historical_reference_aliases"]:
+   ref=z.get("reference",z.get("historical_pin"));need((ref["bytes"],ref["sha256"])==key,"historical alias version exact")
+   historical.append({"target":row["relative_path"],"reference":ref,"retained_donor":a["donor"]})
+need(len(archives)==338 and len(logical)==366 and len(duplicates)==28,"all final physical/logical aliases")
+need(identity(d["original_donor"]) in logical,"original11AA remains in archive")
+# Independently enumerate the four exact added packets and replay deterministic physical dedup.
+groups=p["coverage"]["descriptor_successor_packet_memberships"]
+need([(g["label"],len(g["files"])) for g in groups]==[("shutdown-fixture",9),("shutdown-fixture-peer",3),("prior21-plan-peer",4),("fs-fixture-peer",3)],"four complete bounded packets")
+prefix=p["archive_prefix"]+"/archive/descriptor-successor-20261022/"
+entries=[];members=[]
+for g in groups:
+ directory=allowed(Path(g["directory"])/"x").parent
+ actual=sorted(x.relative_to(directory).as_posix() for x in directory.rglob("*") if x.is_file())
+ need(actual==sorted(r["relative_path"] for r in g["files"]),"complete actual packet membership")
+ for r in g["files"]:
+  need(Path(r["path"])==directory/r["relative_path"],"exact member filename")
+  z={k:r[k] for k in ("path","bytes","sha256")};exact(z)
+  entries.append((prefix+g["label"]+"/"+r["relative_path"]+".raw",z))
+ members.append({"label":g["label"],"files":g["files"]})
+extras=[
+ ("prior21-handoff.json",pp("base_handoff")),
+ ("root-prior21-plan-acceptance.json",pp("base_root")),
+ ("root-shutdown-fixture-acceptance.json",pp("fixture_root")),
+ ("root-fs-fixture-acceptance.json",br["fixture_Root_source_acceptance"]),
+ ("root-prior21-inventory-serialization-observation.json",br["preserved_inspection_negatives"][0]),
+ ("initial-readout-key-negative.json",pp("negative")),
+]
+for name,r in extras:exact(r);entries.append((prefix+"authorities/"+name+".raw",r))
+need(len(entries)==25 and p["coverage"]["descriptor_successor_already_archived_reference_sites"]==[],"exact25 new unique logicals")
+oldids={identity(a["donor"]) for r in carried for a in r["logical_donors"]}
+newids={identity(a["donor"]) for r in p["archive_rows"] for a in r["logical_donors"]}-oldids
+need(newids=={identity(z) for _,z in entries} and len(newids)==25,"no omitted or extra new logical record")
+sim=copy.deepcopy(carried)
+for target,z in sorted(entries,key=lambda x:(x[0].casefold(),x[0])):
+ row,a=logical[identity(z)]
+ need(a["logical_archive_relative_path"]==target,"declared logical target")
+ matches=[r for r in sim if exact(r["donor"])==exact(z)]
+ if matches:need(row["relative_path"]==matches[0]["relative_path"],"earliest full-byte duplicate preserved")
+ else:
+  need(row["relative_path"]==target,"unique physical target")
+  sim.append({"relative_path":target,"donor":z})
+need([(r["relative_path"],r["donor"]) for r in sim]==[(r["relative_path"],r["donor"]) for r in p["archive_rows"]],"independent full physical dedup layout")
+# Self proof packet, count and no self-hash cycle.
+inventory=h["packet_inventory_excluding_this_handoff"]
+actual=sorted(x.relative_to(D).as_posix() for x in D.rglob("*") if x.is_file() and x.name!="handoff.json")
+need(len(inventory)==6 and actual==sorted(r["relative_path"] for r in inventory),"whole six-file self inventory")
+for r in inventory:exact({"path":str(D/r["relative_path"]),"bytes":r["bytes"],"sha256":r["sha256"]})
+need(sha(json.dumps(inventory,sort_keys=True,separators=(",",":")).encode())==h["packet_inventory_sha256"]=="167E216FE256B11E2BB54FBF3753A8379A51615C5D813B734C3E2032DC981C7D","compact no-LF inventory digest")
+need({Path(r["donor"]["path"]).relative_to(D).as_posix() for r in supp}==set(actual)-{"initial-readout-key-negative.json"},"exact five self proof supplements")
+need(all(r["donor"]["path"]!=pp("handoff")["path"] for r in supp),"no self-handoff hash cycle")
+# Source authorities match real pinned peers; historical unknown slots stay immutable.
+auth=p["coverage"]["descriptor_successor_source_review_authorities"]
+need(auth["prior21_peer"]==br["independent_peer"]==h["prior21_plan_independent_peer"] and auth["prior21_Root_acceptance"]==pp("base_root"),"prior plan authority")
+need(auth["FS_fixture_peer"]==br["fixture_independent_peer"]==h["FS_fixture_independent_peer"] and auth["FS_fixture_Root_acceptance"]==br["fixture_Root_source_acceptance"]==h["FS_fixture_Root_acceptance"],"FS authority")
+need(auth["Shutdown_fixture_peer"]==fr["independent_peer"]==h["shutdown_fixture_independent_peer"] and auth["Shutdown_fixture_Root_acceptance"]==pp("fixture_root"),"Shutdown authority")
+for r in allpins(auth):exact(r);need(identity(r) in logical,"all direct authority receipts archived")
+fsroot=document(h["FS_fixture_Root_acceptance"]);fspeer=document(h["FS_fixture_independent_peer"])
+need(fsroot["selected_source"]==h["selected_FS_fixture_donor"] and fspeer["selected_source"]==h["selected_FS_fixture_donor"] and fsroot["source_accepted"] and fspeer["no_bounded_source_blocker"],"exact accepted FS fixture")
+for k in ("future_admission_requirements","git_byte_preflight","selected_adapter_contract","authority","actual_released_head","fixture_independent_peer","fixture_Root_source_acceptance","preserved_predecessor_accounting"):
+ need(p[k]==b[k],"historical gates/unknowns and old accounting exact")
+need(p["actual_released_head"] is None and not any(p["authority"].values()) and all(v is None for v in h["unresolved_final_bindings"].values()),"future head/manifest/release unissued")
+for k,v in b["source_order_and_scope"].items():
+ if k!="explicitly_excluded":need(p["source_order_and_scope"][k]==v,"all prior source order/count exclusions exact")
+oldex=copy.deepcopy(b["source_order_and_scope"]["explicitly_excluded"])
+oldex[oldex.index("any other fixture or production change beyond the exact FS request pumpPending proposal")]="any fixture or production change outside the exact accepted FS request pumpPending and Shutdown invalid-descriptor proposals"
+need(p["source_order_and_scope"]["explicitly_excluded"]==oldex,"sole bounded exclusion wording")
+need(p["source_order_and_scope"]["Transfer_must_precede_Shutdown"] is True and p["source_order_and_scope"]["Transfer_Shutdown_commutation_claimed"] is False and p["source_order_and_scope"]["actual_future_metadata_count"] is None,"Transfer order/unknown future metadata")
+need(p["source_order_and_scope"]["declared_new_controls"]==38 and sum(r["declared_controls"] for r in p["source_order_and_scope"]["new_roots"])==38,"new3 source declaration count unchanged")
+for r in p["source_rows"]:
+ exact(r["donor"])
+ if r["preimage"] is not None:exact(r["preimage"])
+need(len(q["input_pins"])==362 and q["finite_operations"]==43 and q["selected_plan"]==pp("plan") and q["finite_adaptation"]==pp("finite"),"author exact proof contract")
+for r in q["input_pins"]:exact(r)
+# Independent immutable tree inspection through donor worktree only; no index/current Main.
+tree=subprocess.check_output(["git","--no-optional-locks","-C",str(W),"ls-tree","-rz",H]);tracked={}
+for item in tree.split(b"\0"):
+ if item:
+  header,name=item.split(b"\t",1);mode,kind,oid=header.decode().split()
+  tracked[name.decode()]={"mode":mode,"type":kind,"oid":oid}
+paths=[r["relative_path"] for r in p["source_rows"]+archives]+[p["manifest_target"]]
+need(len(paths)==360 and len(set(x.casefold() for x in paths))==360,"all360 target paths")
+prefixes={};folded={x.casefold() for x in paths}
+for rel in tracked:
+ ps=rel.split("/")
+ for depth in range(1,len(ps)+1):
+  val="/".join(ps[:depth]);key=val.casefold();need(key not in prefixes or prefixes[key]==val,"immutable parent spelling");prefixes[key]=val
+for rel in paths:
+ need(rel.isascii() and not rel.startswith(("/","\\")) and "\\" not in rel and ":" not in rel and PurePosixPath(rel).as_posix()==rel,"canonical relative path")
+ ps=rel.split("/")
+ for part in ps:
+  need(part not in ("",".","..") and part[-1:] not in ("."," ") and part.casefold() not in (".git",".gitattributes") and not re.fullmatch(r"(?i)(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?",part),"no Windows path alias")
+ for depth in range(1,len(ps)+1):
+  val="/".join(ps[:depth]);key=val.casefold();need(key not in prefixes or prefixes[key]==val,"complete planned parent spelling");prefixes[key]=val
+ for depth in range(1,len(ps)):
+  val="/".join(ps[:depth]);need(val.casefold() not in folded and val not in tracked,"no file/directory overlap")
+replacements=[r for r in p["source_rows"] if r["preimage"] is not None]
+need(len(replacements)==9,"same nine replacements")
+requests="".join(H+":"+r["relative_path"]+"\n" for r in replacements).encode()
+blobdata=subprocess.check_output(["git","--no-optional-locks","-C",str(W),"cat-file","--batch"],input=requests)
+offset=0;preimages=[]
+for r in replacements:
+ end=blobdata.index(b"\n",offset);oid,kind,n=blobdata[offset:end].decode().split();n=int(n);offset=end+1
+ body=blobdata[offset:offset+n];offset+=n;need(blobdata[offset:offset+1]==b"\n","Git byte delimiter");offset+=1
+ need(body==exact(r["preimage"]) and kind=="blob" and tracked[r["relative_path"]]=={"mode":"100644","type":"blob","oid":oid},"whole immutable preimage/mode")
+ need(hashlib.sha1(("blob "+str(n)+"\0").encode()+body).hexdigest()==oid,"independent immutable raw Git ID")
+ preimages.append({"relative_path":r["relative_path"],"head":H,"mode":"100644","type":"blob","oid":oid,"bytes":n,"sha256":sha(body)})
+need(offset==len(blobdata) and preimages==q["immutable_preimages"],"all nine original preimages identical")
+repl={r["relative_path"] for r in replacements};absent=[r for r in paths if r not in repl]
+need(len(absent)==351 and all(r not in tracked for r in absent),"all351 immutable014 additions absent")
+need([{k:v for k,v in row.items() if k!="head"} for row in preimages]==baseproof["immutable_Git_preimages"],"exact accepted preimage lineage")
+counts=h["complete_current_planned_counts"]
+need(counts=={"source_paths":21,"source_replacements":9,"source_additions":12,"archive_physical_paths":338,"archive_logical_donors":366,"physical_copy_rows_excluding_manifest":359,"total_with_separate_manifest":360,"new_paths_including_manifest":351,"duplicate_archive_copies_removed":28},"final full count")
+need(p["counts"]==q["counts"]==h["core_counts"],"all exact core count maps")
+logical_bytes=sum(a["donor"]["bytes"] for r in p["archive_rows"] for a in r["logical_donors"]);physical_bytes=sum(r["donor"]["bytes"] for r in p["archive_rows"])
+need((logical_bytes,physical_bytes,logical_bytes-physical_bytes)==(48583865,39070795,9513070),"actual core byte-dedup accounting")
+# The original negative remains negative; the corrected source asserts no runtime outcome.
+ext=h["observed_external_original_negative"];neg=document(ext["Root_acceptance"]);closure=document(ext["actual_negative_closure"])
+need(neg["independent_negative_closure"]==ext["actual_negative_closure"] and neg["negative_closure_accepted"] is True,"actual external negative closure")
+need((neg["attempted_groups"],neg["runtime_completed"],neg["runtime_passed"],neg["runtime_failed"],neg["runtime_unstarted"])==(17,321,320,1,964),"unchanged exact original negative")
+need(neg["runtime_qualification"] is False and neg["source_mutation_hold_released"] is False,"no promotion/source release")
+for k in ("candidate_or_prefix_executed","adapter_executed","Main_accessed","Main_or_index_mutated","source_mutation_hold_released","configuration_issued","final_manifest_issued","compiler_or_native_executed","native_execution_authorized","application_qualified"):
+ need(h[k] is False,"handoff unissued authority "+k)
+for r in list(seen.values()):need(pin(Path(r["path"]),allowed(r["path"]).read_bytes())==r,"unchanged current inputs at completion")
+selfpin=pin(Path(__file__),raw(__file__))
+proof={"schema":1,"status":"independent_pending21_CC33_copy_plan_static_review_passed","reviewer":"/root/handover_review",
+ "selected_plan":pp("plan"),"handoff":pp("handoff"),"finite":pp("finite"),"checker":selfpin,
+ "baseline":pp("base"),"baseline_Root_acceptance":pp("base_root"),"Shutdown_Root_acceptance":pp("fixture_root"),
+ "finite_steps":steps,"complete530121_byte_inverse":True,"sole_source_change":d,
+ "other20_source_rows_unchanged":True,"all302_old_physical_and329_logical_prefixes_exact":True,
+ "all7_old_handoff_supplements_carried":True,"complete309_carried_physical_and336_logical_prefixes_exact":True,
+ "all_source_and_archive_donors_rehashed":True,"new_logical_records":25,"new_physical_records":24,
+ "full_byte_duplicate_aliases":duplicates,"historical_reference_aliases":historical,
+ "all_four_new_packet_memberships":members,"all_five_self_proof_supplements":supp,
+ "core_counts":p["counts"],"complete_counts":counts,"immutable014_preimages":preimages,"immutable014_absences":absent,
+ "all360_current_paths_and_prefix_spellings_checked":True,"old_rejected_versions_preserved":True,
+ "prior_source_order_fields_and_future_admission_preserved":True,"manifest_contract":h["manifest_contract"],
+ "future_bindings":h["unresolved_final_bindings"],"external_negative":ext,
+ "preserved_readout_negative":pp("negative"),"all_input_pins":list(seen.values()),"input_versions":len(seen),
+ "scope":{"source_only":True,"candidate_or_prefix_executed":False,"Main_or_index_accessed":False,
+ "actual_Git_byte_conversion_preflight":False,"source_intake_authorized":False,"native_execution_authorized":False,"application_qualified":False}}
+target=O/"source-proof.json";need(not target.exists(),"create-only own proof")
+data=wire(proof)
+with target.open("xb") as out:need(out.write(data)==len(data),"whole proof")
+need(target.read_bytes()==data,"proof readback")
+print(json.dumps({"proof":pin(target,data),"checker":selfpin,"input_versions":len(seen),"operations":43,"paths":360,"logical_archive_donors":366},separators=(",",":")))

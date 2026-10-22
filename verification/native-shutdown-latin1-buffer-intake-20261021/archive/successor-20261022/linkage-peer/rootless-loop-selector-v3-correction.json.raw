@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "status": "independent_checker_only_scope_correction",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v2.py",
+    "bytes": 31510,
+    "sha256": "C715E169C5FF1C05BA054DB7F2C1956C4EF8C0EDF42A02B6B48B980298ACD358"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v3.py",
+    "bytes": 31599,
+    "sha256": "1D887833BDB8E9F7E32C1972339E46D00358EC855B2550CC5BC8CDF3A090BC37"
+  },
+  "preserved_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\rootless-loop-selector-negative.json",
+    "bytes": 2754,
+    "sha256": "EF2E598F5301B14CBBB76A020D5FA8B25D5910E6F88E8A1142B5E7E9850E93BD"
+  },
+  "edit": {
+    "offset": 9897,
+    "before_utf8": "        capture=[x[0]for x in ts[j+1:k]if x[3]==\"word\"]\n",
+    "after_utf8": "        if not any(ts[q][0]==\"root_source_file\" for q in range(k+2,pairs[k+1])):continue\n        capture=[x[0]for x in ts[j+1:k]if x[3]==\"word\"]\n"
+  },
+  "full_inverse_exact": true,
+  "candidate_changed": false,
+  "candidate_or_prefix_executed": false
+}

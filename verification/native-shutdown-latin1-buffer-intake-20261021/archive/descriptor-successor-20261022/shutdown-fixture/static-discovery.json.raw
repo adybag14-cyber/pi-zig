@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "kind": "static_pending_control_input_defect",
+  "original_control": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test.zig",
+    "bytes": 17019,
+    "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+  },
+  "observed_line": 105,
+  "original_expression": "f.create(-2)",
+  "retained_expectations": {
+    "line110": "UV_EBADF",
+    "line112": "callback status <0"
+  },
+  "prior_actual_native_outcomes": "Unchanged V37 evidence remains historical; no Shutdown target was executed for this discovery.",
+  "prior_accepted_source_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-source-acceptance-20261021.json",
+    "bytes": 5656,
+    "sha256": "9896A0FDAE942CF2F579555E602EB23CD4E07BBFD8FFEAAF50787A21A9FBAD85"
+  },
+  "new_native_attempt": false,
+  "compiler_executed": false,
+  "source_production_modified": false,
+  "inspection_note": "One read-only lookup used a guessed packet src/ path and returned ENOENT; the exact production/ donor was then resolved from immutable B490. A bounded authority display tail omitted initial macro lines, which were subsequently reread. No source or proof was changed by either display/lookup observation."
+}

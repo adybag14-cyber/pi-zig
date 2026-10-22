@@ -1,0 +1,27 @@
+[
+  {
+    "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__logging.h",
+    "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-logging.h",
+    "bytes": 21624,
+    "sha256": "0FA464788992D2AB04B14F9A9B9B808E29759D111E867BABD69EAED03D931405"
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\Node-MIT-LICENSE-excerpt.txt",
+    "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\Node-MIT-LICENSE-excerpt.txt",
+    "bytes": 2337,
+    "sha256": "EC62DC96DA0099B87F4511736C87309335527FB7031639493E06C95728DC8C54"
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\V8-LICENSE.txt",
+    "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\V8-LICENSE.txt",
+    "bytes": 3093,
+    "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509"
+  },
+  {
+    "source_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/util.h",
+    "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\util.h",
+    "bytes": 39726,
+    "sha256": "29BD133B9FB9000B2A624ABDDFB42FBD538CFA33D3BB00377AD8F1122C74AF52",
+    "native_transport_hash_matched": true
+  }
+]

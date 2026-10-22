@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "status": "root_accepted_unissued_strengthened_pending20_intake_adapter_v2_source",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-22T13:46:04.427282+00:00",
+  "source_accepted": true,
+  "selected_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py",
+    "bytes": 23634,
+    "sha256": "8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985"
+  },
+  "preserved_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py",
+    "bytes": 23554,
+    "sha256": "1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+    "bytes": 9719,
+    "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+  },
+  "finite20": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\finite-source-adaptation.json",
+    "bytes": 56895,
+    "sha256": "2E657192C7DF2B8216D128E82C7AB47E57ECD0AB43FCDD2327E8F83C32A69A69"
+  },
+  "finite_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\planned-parent-alias-v2-finite-adaptation.json",
+    "bytes": 3114,
+    "sha256": "6079473C24AA9496D5CFC41F89830A643740B9DB99D80ACEA573C7093EEAE123"
+  },
+  "selected_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\v2-handoff.json",
+    "bytes": 3920,
+    "sha256": "D770F0657EFA7D5B47576889DFB1610ACB6AE33435A20105D935F656AB8AFA2A"
+  },
+  "binding_and_schema_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\unissued-binding-and-schema-contract.json",
+    "bytes": 10902,
+    "sha256": "ACF23FA22E0C380BF744923B5CA8A8B55D30B83B0D655AAFF6FF2EE80790136D"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\pending20-strengthened-intake-adapter-peer-20261022\\peer.json",
+    "bytes": 11856,
+    "sha256": "46915023978B798DCBB5FE43018BE8F618BB4C17C5441E414C980DEB51E6930F"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\pending20-strengthened-intake-adapter-peer-20261022\\source-audit.py",
+    "bytes": 28577,
+    "sha256": "31DFC8E3DA2DF8E13FDACCD925837D0403DF53B7F71A3BAFE33BBE423A3BD1FC"
+  },
+  "independent_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\pending20-strengthened-intake-adapter-peer-20261022\\static-proof.json",
+    "bytes": 450793,
+    "sha256": "0210928AD499C711E04D87F9FA28A6715D259E97016F2F6FDEC7161B880F2401"
+  },
+  "independent_predecessor_finding": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\pending20-strengthened-intake-adapter-peer-20261022\\predecessor-finding.json",
+    "bytes": 1153,
+    "sha256": "DD16F8E8BA2F4A2F318BCDDEE4C219B89781F459870F25609184A0AD75612396"
+  },
+  "author_predecessor_finding": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\original-planned-parent-alias-source-finding.json",
+    "bytes": 996,
+    "sha256": "1D336DEF267175CBA6FB0A82FF59549F8D4CE6DA24E7BB8612B52D7709C49025"
+  },
+  "actual_copy_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-manifest-plan.json",
+    "bytes": 378545,
+    "sha256": "E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"
+  },
+  "root_copy_plan_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-buffer-unissued-copy-plan-acceptance-20261021.json",
+    "bytes": 7059,
+    "sha256": "4B97947A3A185D0D6E9ED282B2FC4E19621BD792AED4F18F4A0D7E594A682788"
+  },
+  "Root_full_selected_and_baseline_sources_and_independent_checker_read": true,
+  "Root_rehashed_unique_peer_inputs": 267,
+  "Root_replayed_sequential_source_edits": 21,
+  "Root_complete_raw_inverse_to_baseline": true,
+  "inherited_helper_bodies_unchanged": 11,
+  "all_predecessor_helper_bodies_unchanged_in_v2": 22,
+  "actual_E2B_physical_rows": 243,
+  "actual_E2B_rows_including_manifest": 244,
+  "actual_E2B_logical_aliases": 268,
+  "actual_E2B_immutable_preimages": 8,
+  "all_current_E2B_prefix_spellings_consistent": true,
+  "future_literal_bindings": [
+    {
+      "name": "BASIS",
+      "current_literal": "UNRESOLVED_PENDING20_RELEASED_HEAD______",
+      "future_value": null,
+      "requirement": "Exact later Root-released forty-hex SHA-1 commit; the draft rejects the unresolved marker before CLI admission."
+    },
+    {
+      "name": "MANIFESTS.fixture.path",
+      "current_literal": "evidence/UNRESOLVED-PENDING20-FINAL-MANIFEST/manifest.json",
+      "future_value": null,
+      "requirement": "Exact reviewed final manifest path inside project evidence; a separately reviewed binding must preserve all validation bodies."
+    },
+    {
+      "name": "MANIFESTS.fixture.sha256",
+      "current_literal": "UNRESOLVED_PENDING20_FINAL_MANIFEST_SHA256______________________",
+      "future_value": null,
+      "requirement": "Actual uppercase 64-hex raw manifest SHA-256, externally pinned without self-hashing the manifest."
+    },
+    {
+      "name": "MANIFESTS.fixture.count",
+      "current_literal": 0,
+      "future_value": null,
+      "requirement": "Actual complete physical rows plus one manifest self-row; all final peer/authority additions must be enumerated."
+    }
+  ],
+  "scope": "Source acceptance only. All physical and logical donors, synthetic manifest, canonical Windows paths, complete target prefix map, exact Git attributes/configuration provenance and raw/path object IDs are gated before copying. Complete stage-zero modes/raw IDs/bytes, one-parent commit relation and final provenance remain mandatory. The E2B inventory is a historical input contract; final build donor, archive rows, actual released head/count/manifest and separate Root release still require review.",
+  "candidate_or_prefix_executed": false,
+  "Main_or_index_mutated": false,
+  "configuration_issued": false,
+  "execution_authority": false,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "production_bridge_removed": false
+}

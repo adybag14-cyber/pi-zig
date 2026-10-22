@@ -1,0 +1,157 @@
+"""Independent finite Buffer address source peer; no product, compiler or native execution."""
+from pathlib import Path
+import hashlib, json, re
+
+P = Path(r"C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018\verification\native-node-custom-buffer-sourceonly-20261020")
+OUT = Path(r"C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018\verification\native-vm-view-data-independent-peer-20261020")
+def sha(b): return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+    p = Path(p); b = p.read_bytes()
+    return dict(path=str(p), bytes=len(b), sha256=sha(b))
+def checked(row):
+    raw = Path(row["path"]).read_bytes()
+    assert len(raw) == row["bytes"] and sha(raw) == row["sha256"].upper(), row["path"]
+    return raw
+def read(p): return json.loads(Path(p).read_bytes().decode("utf-8-sig"))
+def serialized(v): return (json.dumps(v, indent=2) + "\n").encode("utf-8")
+
+manifest_pin = dict(path=str(P/"production-proposal.json"), bytes=43670, sha256="978981A96D6CDD2791FF6B90DDBC575235A83E9C3B678CD3961389AB6866AF12")
+manifest = json.loads(checked(manifest_pin))
+rows = manifest["frozen_packet_inventory"]
+assert len(rows) == manifest["frozen_packet_inventory_count"] == 72
+assert len({r["relative_path"] for r in rows}) == 72
+for row in rows:
+    assert Path(row["path"]) == P/row["relative_path"]
+    checked(row)
+inventory_digest = sha((json.dumps(rows, sort_keys=True, separators=(",", ":")) + "\n").encode())
+assert inventory_digest == manifest["inventory_serialization_sha256"]
+inspectors = {
+    "source-audit-successor.py": "78B60FE0C924819731B0C3AC75D52EB60328EABF3B5AFE6390EF599C3CD9D796",
+    "prepare-closure.py": "4B6A9EBEDFB06C1A1339396EDF0B5E561E3F88D680F9CAEA759236BF808101F2",
+}
+for name, expected in inspectors.items(): assert pin(P/name)["sha256"] == expected
+selected_inspector = P/"source-audit-successor.py"
+source = selected_inspector.read_text(encoding="utf-8")
+marker = "# FINAL PROOF OUTPUT: new immutable metadata only."
+assert source.count(marker) == 1
+# Both the complete inspector and its complete nested closure inspector were
+# source-read. Only their prefixes preceding explicit output markers run here.
+ns = {}
+exec(compile(source.split(marker)[0], str(selected_inspector)+" [independent read-only replay]", "exec"), ns)
+proof_bytes = serialized(ns["proof"])
+expected_proof = manifest["source_proof"]
+assert proof_bytes == checked(expected_proof)
+assert ns["proof"]["verified_unique_file_versions"] == 113
+assert len(ns["proof"]["all_34_original_host_and_selected_excerpts_exact"]) == 34
+assert len(ns["proof"]["all_12_control_body_bindings_exact"]) == 12
+
+# Independently replay each of the two new shared edits at its exact byte offset,
+# bind declared intermediate pins and require the full before-image inverse.
+vm = read(P/"vm/proposal.json")
+vm_results = []
+assert vm["edit_count"] == len(vm["edits"]) == 2
+for f in vm["files"]:
+    before = checked(f["original"])
+    assert before == checked(f["basis"])
+    current = before
+    edits = [e for e in vm["edits"] if e["path"] == f["path"]]
+    assert len(edits) == 1
+    for e in edits:
+        old = e["old_text"].encode(); new = e["new_text"].encode()
+        assert sha(current) == e["before_sha256"]
+        assert current.count(old) == 1 and current.index(old) == e["offset_in_predecessor"]
+        current = current.replace(old, new, 1)
+        assert sha(current) == e["after_sha256"]
+    assert current == checked(f["projected"])
+    inverse = current
+    for e in reversed(edits):
+        old = e["old_text"].encode(); new = e["new_text"].encode()
+        assert inverse.count(new) == 1
+        inverse = inverse.replace(new, old, 1)
+    assert inverse == before
+    vm_results.append(dict(path=f["path"], original=f["original"], projected=f["projected"], exact_offset=True, exact_intermediate_pins=True, full_inverse=True))
+
+m = read(P/"source-map.json")
+control = read(P/"controls/binding.json")
+raw_controls = checked(control["snapshot"])
+assert raw_controls == checked(control["live"])
+names = re.findall(rb'^\s*test\s+"([^"]+)"', raw_controls, re.M)
+assert [n.decode() for n in names] == manifest["declared_control_names"] == control["names"]
+assert len(names) == 12
+assert not re.findall(rb'^\s*test\s*\{', raw_controls, re.M)
+assert re.findall(rb'@import\(\s*"([^"]+)"\s*\)', raw_controls) == [b"std"]
+craw = checked(m["sources"]["vm_projected"])
+hraw = checked(m["sources"]["vm_header"])
+assert re.findall(rb'\bJS_PiArrayBufferViewData\s*\(', craw).count(b"JS_PiArrayBufferViewData(") == 1
+assert hraw.count(b"JS_EXTERN uint8_t *JS_PiArrayBufferViewData(JSValueConst view);") == 1
+body = next(e["text"] for e in m["excerpts"] if e["id"] == "selected_raw_address_body")
+assert body.index("abuf->detached") < body.index("(uintptr_t)abuf->data")
+assert "return (uint8_t *)((uintptr_t)abuf->data + (uintptr_t)ta->offset);" in body
+assert set(re.findall(r"\b([A-Za-z_]\w*)\s*\(", body)) == {"JS_PiArrayBufferViewData","if","return","JS_VALUE_GET_TAG","JS_VALUE_GET_OBJ","is_typed_array"}
+assert not re.search(r"\b(?:JSContext|JS_DupValue|JS_FreeValue|JS_Throw|JS_GetException|JS_PiAcquireArrayBufferView|js_malloc|js_realloc)\b", body)
+
+extra = []
+extra_ranges = {
+    "vm_projected": [
+        ("object_pointer_macro",239,244),
+        ("actual_private_termination_value",1549,1568),
+        ("actual_vm_allocation_limit_checks",2311,2357),
+        ("actual_vm_memory_limit_setter",2793,2796),
+        ("actual_termination_request_generation_and_cancel",2863,2929),
+        ("actual_throw_and_pending_take",9266,9308),
+        ("actual_uncatchable_flag_setter",14008,14016),
+    ],
+    "vm_header": [
+        ("checked_value_tag_pointer_macros",223,236),
+        ("nan_boxed_value_tag_pointer_macros",251,262),
+        ("tagged_union_value_tag_pointer_macros",317,336),
+    ],
+}
+for key, ranges in extra_ranges.items():
+    row = m["sources"][key]
+    raw = checked(row)
+    lines = raw.splitlines(keepends=True)
+    for name, lo, hi in ranges:
+        excerpt = b"".join(lines[lo-1:hi])
+        extra.append(dict(id=name, source=row, start_line=lo, end_line=hi, bytes=len(excerpt), sha256=sha(excerpt), text=excerpt.decode("utf-8")))
+
+# Retain original build evidence without treating it as intake-admissible.
+build = read(P/"build/proposal.json")
+block = checked(build["block"])
+assert b'.name = "native-vm-array-buffer-view-data",' in block
+assert b'addInstallArtifact(vm_array_buffer_view_data_tests, .{})' in block
+assert b"addRunArtifact" not in block and b"addSystemCommand" not in block
+
+result = dict(
+    schema=1, status="independent_finite_source_checks_passed_build_acceptance_excluded",
+    reviewer="/root/module_io_port", manifest=manifest_pin,
+    frozen_packet_rows_rehashed=72, inventory_serialization_sha256=inventory_digest,
+    inspector_pins=[pin(P/n) for n in inspectors],
+    exact_reproduced_sdk_proof=expected_proof, proof_byte_equal=True,
+    reproduced_sdk_inventory=manifest["dependency_inventory"],
+    reproduced_sdk_closure=manifest["closure_and_preservation"],
+    source_file_versions_rechecked=113, original_host_selected_excerpts_bound=34,
+    fixture_and_control_bodies_bound=12, prior_sdk_source_files_preserved=40,
+    direct_vm_edits=vm_results, extra_source_excerpts=extra,
+    declared_names=control["names"], actual_future_metadata=None,
+    one_repository_zig_root=True, literal_anonymous_root_blocks=0,
+    quoted_c_reachable_files=25, quoted_c_include_edges=33, dependency_inventory_entries=31,
+    raw_abi="uint8_t *JS_PiArrayBufferViewData(JSValueConst)",
+    full_new_c_body_read=True, full_new_header_declaration_read=True,
+    full_control_fixture_and_12_bodies_read=True, all_34_source_map_excerpts_read=True,
+    optional_corrected_latin1_both_orders_and_full_inverses=True,
+    pending_current_state_changed_by_new_body=False,
+    new_ownership_or_allocation_operation_in_new_body=False,
+    original_build=dict(proposal=manifest["install_only_build"], byte_composition_reproduced=True,
+        source_intake_approved=False, reason="Original addTest .name changes the cached artifact basename; strict validation requires canonical cached test.exe/test.pdb. SDK is preparing a separate finite naming successor. No successor is included in this receipt."),
+    limitations=[
+        "Actual already-backed views only, held alive by the caller on their VM owner thread.",
+        "A returned address is a synchronous borrow; current ByteLength is required before any dereference. OOB addresses are observed, not dereferenced.",
+        "Node caller CHECK, V8 GetBuffer on-heap materialization/allocation policy, full listener/public entry/template and bootstrap are separate.",
+        "No Main or SDK source file was changed; only this new independent evidence output is written.",
+        "No compiler, preprocessor, product, native test, reference, generator, metadata query or runtime was run."
+    ],
+)
+# Sole write: new peer evidence. Every frozen packet and source remains untouched.
+with (OUT/"source-audit.json").open("xb") as f: f.write(serialized(result))
+print(json.dumps(pin(OUT/"source-audit.json")))

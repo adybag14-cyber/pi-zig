@@ -1,0 +1,10 @@
+{
+  "schema": "raw-view-data-closure-inspector-preflight-negative-v1",
+  "phase": "read-only prefix before output phase",
+  "reason": "A local raw edit list used the identifier re and shadowed the imported regex module. The first name scan stopped with AttributeError list has no attribute findall.",
+  "production_source_affected": false,
+  "Main_changed": false,
+  "native_product_executed": false,
+  "packet_outputs_written_by_failed_prefix": false,
+  "successor": "prepare-closure.py renames only that metadata local to buffer_edits. It does not modify any source/control/proposal bytes."
+}

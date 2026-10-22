@@ -1,0 +1,174 @@
+"""Finite source-only verification of a pending Shutdown descriptor fixture.
+Reads immutable donor/evidence files and raw Git objects through the owned
+worktree; never evaluates Zig, a candidate, or any preparation/validation tool.
+The sole output is a create-only JSON source proof in this packet.
+"""
+from pathlib import Path
+import hashlib,json,re,subprocess
+W=Path(r"C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018")
+S=Path(r"C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018")
+E=Path(r"C:\Users\adyba\pi-zig\evidence")
+D=W/"verification/native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022"
+H="014062f2d139254acab4b985b4ae343db637166f"
+inputs={}
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def read(p):
+ p=Path(p)
+ assert "\\main\\" not in str(p).lower(),str(p)
+ b=p.read_bytes()
+ inputs[str(p)]={"path":str(p),"bytes":len(b),"sha256":sha(b)}
+ return b
+def pin(p):read(p);return inputs[str(Path(p))]
+def exact(ref):
+ b=read(ref["path"]);assert len(b)==ref["bytes"] and sha(b)==ref["sha256"],ref
+ return b
+def fixed(p,size,digest):
+ b=read(p);assert len(b)==size and sha(b)==digest,(str(p),len(b),sha(b))
+ return b
+def git(*args):
+ return subprocess.run(["git","--no-optional-locks","-C",str(W),*args],check=True,capture_output=True).stdout
+def names(b):return re.findall(rb'^test "([^"\r\n]+)"',b,re.M)
+def imports(b):return re.findall(rb'@(import|cInclude|embedFile)\("([^"]+)"\)',b)
+def excerpt(label,b,first,last):
+ lines=b.splitlines(keepends=True);assert 1<=first<=last<=len(lines)
+ raw=b"".join(lines[first-1:last])
+ return {"source":label,"first_line":first,"last_line":last,"bytes":len(raw),"sha256":sha(raw),"text":raw.decode()}
+def span(label,b,start,end):
+ assert b.count(start)==1 and b.count(end)==1,(label,start,end)
+ a=b.index(start);z=b.index(end,a)+len(end)
+ return excerpt(label,b,b[:a].count(b"\n")+1,b[:z].count(b"\n")+1)
+p=json.loads(fixed(D/"proposal.json",26590,"331C9A44BA5543C9676324CCB30EC04E79E6DD1A36D23103C59331DEDE851C10"))
+a=exact(p["original_donor"]);assert exact(p["original_snapshot"])==a
+b=exact(p["candidate"]);ed=p["finite_edit"];i=ed["offset_bytes"];old=ed["before"].encode();new=ed["after"].encode()
+assert old==b"-2" and new==b"std.math.maxInt(c_int)" and len(b)==len(a)+20
+assert a[:i]+new+a[i+len(old):]==b
+assert b[:i]+old+b[i+len(new):]==a
+assert a[i:i+2]==old and a.count(b"f.create(-2)")==1
+assert a[:i]==b[:i] and a[i+2:]==b[i+len(new):]
+assert sha(a[:i])==ed["unchanged_prefix_sha256"] and sha(a[i+2:])==ed["unchanged_suffix_sha256"]
+assert names(a)==names(b) and len(names(a))==18 and imports(a)==imports(b)
+assert a.split(b'\ntest "',1)[0]==b.split(b'\ntest "',1)[0]
+assert p["declarations_unchanged"]==[x.decode() for x in names(a)]
+assert [list(map(bytes.decode,x)) for x in imports(b)]==p["literal_imports_unchanged"]
+assert b'const std = @import("std");' in a
+root_plan=json.loads(exact(p["predecessor_copy_plan"]));rows={x["relative_path"]:x for x in root_plan["source_rows"]}
+assert len(rows)==21 and p["changed_relative_path"] in rows
+assert rows[p["changed_relative_path"]]["donor"]==p["original_donor"]
+assert len(p["remaining20_source_donors"])==20
+for r in p["remaining20_source_donors"]:
+ assert rows[r["relative_path"]]["donor"]==r["donor"];exact(r["donor"])
+old_accept=json.loads(exact(p["accepted_prior_source_review"]))
+assert old_accept["source_accepted"] is True and old_accept["native_execution_authorized"] is False
+assert old_accept["source_proposal"]["sha256"]=="2933A7AB4CCC196984FC27419B3E4A64DCCEB99B0834734AA7B357EE1280C7FC"
+spelling=exact(p["accepted_spelling"])
+assert b"const invalid_descriptor: c_int = std.math.maxInt(c_int);" in spelling
+authority=json.loads(exact(p["accepted_prior_authority_inputs"]));authorities={x["key"]:x for x in authority["sources"]}
+causal=json.loads(exact(p["accepted_prior_causal_proof"]))
+prior_peer=json.loads(exact(old_accept["independent_source_peer"]))
+assert prior_peer["source_only"] is True
+# Historical accepted proof pins are retained without rerunning any proof target.
+exact(old_accept["independent_source_proof"])
+exact(old_accept["root_causal_review"])
+for key in ("doc_setmaxstdio","doc_close","doc_acquisition","mingw_header"):
+ exact(authorities[key])
+snapshots=[]
+for x in causal["installed_SDK_authority_snapshots"]:
+ raw=exact(x["immutable_snapshot"])
+ assert len(raw)==x["installed_original"]["bytes"] and sha(raw)==x["installed_original"]["sha256"]
+ snapshots.append(x)
+rawgit=[];excerpts=[]
+for key,rel in (
+ ("uv_fs","vendor/node-v24.13.0/uv/src/win/fs.c"),
+ ("uv_core","vendor/node-v24.13.0/uv/src/win/core.c"),
+ ("uv_service","src/extensions/native_uv_tcp.c"),
+ ("network_build","tools/build_native_node_network.zig")):
+ ref=authorities[key];raw=git("cat-file","blob",H+":"+rel)
+ assert len(raw)==ref["bytes"] and sha(raw)==ref["sha256"],key
+ entry=git("ls-tree",H,"--",rel).decode().strip()
+ mode,typ,tail=entry.split(" ",2);blob,path=tail.split("\t",1)
+ assert mode=="100644" and typ=="blob" and path==rel
+ rawgit.append({"relative_path":rel,"head":H,"mode":mode,"blob":blob,"bytes":len(raw),"sha256":sha(raw),"historical_location_not_read":ref["path"]})
+ for rng in ref["ranges"]:excerpts.append(excerpt(H+":"+rel,raw,rng["first_line"],rng["last_line"]))
+ if key=="uv_fs":
+  assert b"if (fd > 2)\n    result = _close(fd);\n  else\n    result = 0;" in raw
+  assert b"if (fd == -1)" in raw and b"SET_REQ_UV_ERROR(req, UV_EBADF, ERROR_INVALID_HANDLE);" in raw
+  assert b"uv__once_init();" in raw and b"INIT(UV_FS_CLOSE);" in raw
+ if key=="uv_core":
+  assert b"_set_invalid_parameter_handler(uv__crt_invalid_parameter_handler);" in raw
+  assert b"__MSVCRT_VERSION__ >= 0x800" in raw
+ if key=="network_build":
+  assert b'"src/win/core.c"' in raw and b'"src/win/fs.c"' in raw
+  assert b"-D__MSVCRT_VERSION__" not in raw and b"-D__CRTDLL__" not in raw
+for x in snapshots:
+ key=x["key"];raw=exact(x["immutable_snapshot"])
+ for rng in authorities[key]["ranges"]:excerpts.append(excerpt(str(x["immutable_snapshot"]["path"]),raw,rng["first_line"],rng["last_line"]))
+mingw=exact(authorities["mingw_header"])
+for rng in authorities["mingw_header"]["ranges"]:excerpts.append(excerpt(authorities["mingw_header"]["path"],mingw,rng["first_line"],rng["last_line"]))
+assert b"#  define __MSVCRT_VERSION__ 0xE00" in mingw and b"#define _UCRT" in mingw
+assert causal["descriptor_source_inference"]["selected_C_int_max"]==2147483647
+assert causal["descriptor_source_inference"]["UCRT_lowio_table_entries"]==8192
+# Exact selected call chain: source-only new Shutdown recipe and real owner.
+support_ref=rows["src/native_node_stream_shutdown_test_support.zig"]["donor"];support=exact(support_ref)
+handle_ref=rows["src/extensions/native_node_file_handle_shutdown.zig"]["donor"];handle=exact(handle_ref)
+owner_ref=rows["src/extensions/native_node_file_handle_owner.zig"]["donor"];owner=exact(owner_ref)
+excerpts += [excerpt(p["original_donor"]["path"],a,33,40),excerpt(p["original_donor"]["path"],a,103,114),
+ excerpt(p["candidate"]["path"],b,103,114),excerpt(support_ref["path"],support,56,75)]
+assert b"self.base.create(descriptor, null, null)" in support
+assert b"const handle = try self.create(-1);" in support and b"try self.base.releaseDescriptor()" in support
+assert b"(try f.base.handle()).shutdown(s, request_input)" in support
+assert b"if (state.closing or state.closed)" in handle and b"request.request.done(0, null)" in handle
+assert b"if (state.fd == -1)" in handle and b"&self.entry, self.actual.?, state.fd, completed)" in handle
+excerpts.append(span(handle_ref["path"],handle,b"        pub fn dispatch(",b"        fn completed("))
+# Pin released fixture source through immutable Git, never its live Main path.
+r="src/native_node_file_handle_owner_test_support.zig";base=git("cat-file","blob",H+":"+r)
+assert sha(base)=="DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+rawgit.append({"relative_path":r,"head":H,"bytes":len(base),"sha256":sha(base),"blob":git("rev-parse",H+":"+r).decode().strip()})
+for label,raw,needle in ((H+":"+r,base,b"pub fn releaseDescriptor"),(owner_ref["path"],owner,b"pub fn releaseFD")):
+ if needle not in raw:
+  # Require the exact source spelling below, rather than a guessed helper name.
+  assert label==owner_ref["path"] and b"pub fn releaseDescriptor" in raw
+  needle=b"pub fn releaseDescriptor"
+ start=raw.index(needle);line=raw[:start].count(b"\n")+1
+ excerpts.append(excerpt(label,raw,line,min(line+18,len(raw.splitlines()))))
+assert b"afterClose" in owner
+census=[]
+for rec in p["remaining_new3_descriptor_census"]["files"]:
+ raw=exact(rec["source"])
+ observed=[{"line":n+1,"text":line} for n,line in enumerate(raw.decode().splitlines()) if any(q in line for q in ("create(","createClosed","descriptor","take()","-2","UV_EBADF","maxInt"))]
+ assert observed==rec["descriptor_related_lines"]
+ assert [x.decode() for x in names(raw)]==rec["declaration_names"]
+ census.append(rec)
+assert [len(x["declaration_names"]) for x in census]==[18,8,12,0]
+one=exact(rows["src/native_node_one_byte_string_test.zig"]["donor"])
+assert b"fn create(engine: *Engine, bytes: [*c]const u8, length: c_int)" in one
+assert b"try latin1.fromOneByte(s, data, count, null)" in one and b"create(engine, &bytes, -2)" in one
+buf=exact(rows["src/native_vm_array_buffer_view_data_test.zig"]["donor"])
+assert b"uv_fs_close" not in buf and b"descriptor" not in buf and b"File.open" not in buf
+assert b"try std.testing.expect(file.descriptor > 2);" in a and b"return f.create(file.take());" in a
+assert b"f.create(-2)" not in b
+for term in (b"_set_invalid_parameter_handler",b"_set_thread_local_invalid_parameter_handler"):
+ assert term not in a and term not in support and term not in handle
+patch=read(D/"fixture.patch");discovery=json.loads(read(D/"static-discovery.json"))
+assert discovery["new_native_attempt"] is False and discovery["original_control"]==p["original_donor"]
+result={"schema":1,"status":"exact_source_only_one_descriptor_successor_passed",
+ "proposal":pin(D/"proposal.json"),"original":p["original_donor"],"candidate":p["candidate"],
+ "raw_forward_and_entire_inverse_exact":True,"sole_changed_expression":{"line":105,"offset":i,"old":old.decode(),"new":new.decode()},
+ "unchanged_prefix":{"bytes":i,"sha256":sha(a[:i])},"unchanged_suffix":{"bytes":len(a)-i-2,"sha256":sha(a[i+2:])},
+ "all18_declarations_assertions_helpers_and_imports_unchanged":True,"new3_declared_controls":38,
+ "remaining20_donor_pins_unchanged":True,"predecessor_plan_unchanged":p["predecessor_copy_plan"],
+ "selected_call_chain":["Shutdown fixture.create forwards c_int unchanged","actual Handle.shutdown selects real ShutdownReq.dispatch",
+ "closed/closing returns done(0) before fd CHECK or uv submission","open dispatch CHECK excludes only -1 then dispatchRawClose uses state.fd",
+ "Windows uv INIT initializes once; fs__close sees INT_MAX>2 and calls selected CRT _close",
+ "pinned UCRT finite lowio range rejects INT_MAX; installed original uv invalid-parameter handler returns, allowing EBADF",
+ "actual completion/trace/AfterClose/Done and all negative-status assertions remain unchanged"],
+ "authority_scope":"Reuses accepted V37 CRT/PE/source review and independently rebinds current immutable source plus selected donors. SDK source is not a DLL-byte or new runtime observation.",
+ "raw_git_authorities":rawgit,"immutable_SDK_snapshots":snapshots,"source_excerpts":excerpts,
+ "remaining_new3_descriptor_census":census,"census_conclusion":p["remaining_new3_descriptor_census"]["findings"],
+ "static_discovery":pin(D/"static-discovery.json"),"source_checker":pin(Path(__file__)),
+ "current_input_pins":sorted(inputs.values(),key=lambda x:x["path"]),"candidate_or_prefix_executed":False,
+ "Main_accessed":False,"native_execution_authorized":False,"source_intake_authorized":False,"application_qualified":False}
+out=D/"source-proof.json";raw=(json.dumps(result,indent=2,ensure_ascii=False)+"\n").encode()
+assert not out.exists()
+with out.open("xb") as f:f.write(raw)
+assert out.read_bytes()==raw
+print(json.dumps({"proof":{"path":str(out),"bytes":len(raw),"sha256":sha(raw)},"current_input_versions":len(inputs),"raw_git_inputs":len(rawgit),"excerpts":len(excerpts),"one_edit":True,"new3_declarations":38,"candidate_executed":False}))

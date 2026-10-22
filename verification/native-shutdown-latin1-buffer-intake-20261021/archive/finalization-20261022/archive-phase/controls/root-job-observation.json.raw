@@ -1,0 +1,95 @@
+{
+  "status": {
+    "ok": true,
+    "summary": "Background job job-op-16b7165878afbc44fe5e8f479f1093ccfa316d35e9283a6c9850231e8cbc9190 is succeeded.",
+    "data": {
+      "id": "job-op-16b7165878afbc44fe5e8f479f1093ccfa316d35e9283a6c9850231e8cbc9190",
+      "status": "succeeded",
+      "mode": "program",
+      "createdAtUtc": "2026-10-22T15:00:51.680Z",
+      "startedAtUtc": "2026-10-22T15:00:51.762Z",
+      "completedAtUtc": "2026-10-22T15:03:07.857Z",
+      "runnerPid": 8736,
+      "exitCode": 0,
+      "readOnly": false,
+      "resourceClass": "io-heavy",
+      "runtimeMode": "host",
+      "queuedAtUtc": "2026-10-22T15:00:51.737Z",
+      "runnerProcessInstance": "134371548517110155",
+      "queueWaitMs": 10,
+      "executionSlot": 1,
+      "executionSlots": [
+        1,
+        0
+      ],
+      "executionPool": "execution",
+      "executionWeight": 2,
+      "childPid": 43920,
+      "logs": {
+        "stdout": {
+          "maxBytes": 33554432,
+          "rotations": 2,
+          "rotationsPerformed": 0,
+          "totalBytes": 356,
+          "currentBytes": 356,
+          "truncated": false,
+          "failed": false,
+          "error": null
+        },
+        "stderr": {
+          "maxBytes": 33554432,
+          "rotations": 2,
+          "rotationsPerformed": 0,
+          "totalBytes": 0,
+          "currentBytes": 0,
+          "truncated": false,
+          "failed": false,
+          "error": null
+        },
+        "truncated": false
+      },
+      "runnerAlive": false,
+      "jobDir": "C:\\Users\\adyba\\docker-chatgpt-devbox\\run\\jobs\\job-op-16b7165878afbc44fe5e8f479f1093ccfa316d35e9283a6c9850231e8cbc9190"
+    },
+    "exitCode": null,
+    "truncated": false
+  },
+  "logs": {
+    "ok": true,
+    "summary": "Read logs for background job job-op-16b7165878afbc44fe5e8f479f1093ccfa316d35e9283a6c9850231e8cbc9190.",
+    "data": {
+      "id": "job-op-16b7165878afbc44fe5e8f479f1093ccfa316d35e9283a6c9850231e8cbc9190",
+      "status": "succeeded",
+      "stdout": "{\"receipt\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\evidence\\\\root-v38-partial-negative-archive-intake-control-20261022\\\\fixture-receipt.json\", \"bytes\": 1783479, \"sha256\": \"64FBA8893AF3396D0AA482C9BFC6DB794D8856782958212CAD08D753F8484096\", \"phase\": \"fixture\", \"commit\": \"e65c636b8600d351920cff88aa31c9f804d5f0b9\", \"paths\": 1931, \"clean\": true, \"qualification\": false}\r\n",
+      "stderr": "",
+      "maxChars": 5000,
+      "logs": {
+        "stdout": {
+          "totalBytes": 356,
+          "segments": [
+            {
+              "index": 0,
+              "bytes": 356
+            }
+          ],
+          "rotated": false
+        },
+        "stderr": {
+          "totalBytes": 0,
+          "segments": [
+            {
+              "index": 0,
+              "bytes": 0
+            }
+          ],
+          "rotated": false
+        },
+        "maxBytesPerSegment": 33554432,
+        "rotations": 2,
+        "truncated": false
+      }
+    },
+    "exitCode": null,
+    "truncated": false
+  }
+}

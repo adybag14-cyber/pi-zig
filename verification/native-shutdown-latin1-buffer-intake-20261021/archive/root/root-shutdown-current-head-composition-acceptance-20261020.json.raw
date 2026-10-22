@@ -1,0 +1,43 @@
+{
+  "schema": "pi-zig.root-shutdown-current-head-composition-acceptance.v1",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-20T22:02:28.839670+00:00",
+  "candidate_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "prior_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-source-review-20261020.json",
+    "bytes": 6030,
+    "sha256": "77DBEF1F44375E4E8A4F940DE59AC090D07DC161D16633D6A72488104FBC927F"
+  },
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-current-head-composition-20261020\\manifest.json",
+    "bytes": 2311,
+    "sha256": "FC336DF8621E56CC2FFB053A5F6BFC1AF2D01A9348A28099DE82A2D9A741776D"
+  },
+  "projection": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-current-head-composition-20261020\\projection.json",
+    "bytes": 26005,
+    "sha256": "B0919FB27FB4825C57CAC6FCE0BE074DD58945ED42DA3D7781B8241FAAFFF92D"
+  },
+  "full_read_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-current-head-composition-20261020\\prepare-projection.py",
+    "bytes": 10246,
+    "sha256": "09A27B07F03FB177A67F0A2AB056E5B29737B66460C91342AD7736351D47F885"
+  },
+  "entire_projection_reproduced_exact": true,
+  "all4_forward_edits_intermediate_hashes_and_whole_inverses": true,
+  "original399BD2_plus_Transfer_and_naming_equals_current4746": true,
+  "selected_projected_build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-current-head-composition-20261020\\projected\\build.zig",
+    "bytes": 513195,
+    "sha256": "ED75E6415A6BA63B4E4F51D7620818D7CAB494971D373F8C2CF3DB8F2E4E026E"
+  },
+  "all7_preimages_exact_and9_new_paths_absent": true,
+  "TLS_sources_present_exact": 3,
+  "fatal_sources_absent": 2,
+  "fatal_donors_equal_raw5059": true,
+  "source_block_order": "Transfer then Shutdown/Latin1; same anchor insertions do not byte commute. Both exact blocks and all surrounding bytes preserved.",
+  "source_only": true,
+  "Main_intake_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_or_application_qualified": false
+}

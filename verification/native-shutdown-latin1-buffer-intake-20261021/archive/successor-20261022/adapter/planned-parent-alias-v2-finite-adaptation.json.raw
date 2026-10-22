@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "status": "source_only_one_hunk_strengthening",
+  "finding": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\original-planned-parent-alias-source-finding.json",
+    "bytes": 996,
+    "sha256": "1D336DEF267175CBA6FB0A82FF59549F8D4CE6DA24E7BB8612B52D7709C49025"
+  },
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py",
+    "bytes": 23554,
+    "sha256": "1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010",
+    "lines": 373,
+    "complete": true,
+    "AST_parse_only": true,
+    "candidate_executed": false
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py",
+    "bytes": 23634,
+    "sha256": "8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985"
+  },
+  "prior_finite": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\finite-source-adaptation.json",
+    "bytes": 56895,
+    "sha256": "2E657192C7DF2B8216D128E82C7AB47E57ECD0AB43FCDD2327E8F83C32A69A69"
+  },
+  "step_count": 1,
+  "steps": [
+    {
+      "offset_bytes": 13142,
+      "before_utf8": "for row in allrows:\n rel=target_name(row[\"target\"]);no_reparse_target(rel)\n assert row[\"mode\"] in (\"100644\",\"100755\"),(rel,row[\"mode\"])\n parts=rel.split(\"/\")\n for depth in range(1,len(parts)+1):\n  value=\"/\".join(parts[:depth]);key=value.casefold()\n  assert key not in existing_spelling or existing_spelling[key]==value,(\"target_existing_case_alias\",value)\n target=inside(MAIN/rel,MAIN); donor=inside(row[\"source\"],ROOT)\n",
+      "after_utf8": "planned_spelling=dict(existing_spelling)\nfor row in allrows:\n rel=target_name(row[\"target\"]);no_reparse_target(rel)\n assert row[\"mode\"] in (\"100644\",\"100755\"),(rel,row[\"mode\"])\n parts=rel.split(\"/\")\n for depth in range(1,len(parts)+1):\n  value=\"/\".join(parts[:depth]);key=value.casefold()\n  assert key not in planned_spelling or planned_spelling[key]==value,(\"target_existing_or_planned_case_alias\",value)\n  planned_spelling[key]=value\n target=inside(MAIN/rel,MAIN); donor=inside(row[\"source\"],ROOT)\n",
+      "before_bytes": 420,
+      "after_bytes": 500,
+      "input_sha256": "1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010",
+      "output_sha256": "8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985",
+      "untouched_prefix_sha256": "2A0CA88A74C323B118E2311D31F8CD57D9A2FACBD85D8A686E179CE58FD8534E",
+      "untouched_suffix_sha256": "D2D25466CA4BC56A5725770FFB0EA1FBBEEFB85A5221131A03E5FBC2E8F099CB"
+    }
+  ],
+  "whole_forward_exact": true,
+  "whole_inverse_exact": true,
+  "complete_inverse_to_56DE": true,
+  "all22_helper_bodies_unchanged": true,
+  "committed_spelling_absence_gate_preserved": true,
+  "candidate_or_prefix_executed": false
+}

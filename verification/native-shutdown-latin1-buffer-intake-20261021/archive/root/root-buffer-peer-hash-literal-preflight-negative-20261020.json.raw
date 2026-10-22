@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "reason": "Root typed one extra B in the expected peer hash; hash assertion stopped before any output creation.",
+  "original_observation": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"<string>\", line 9, in <module>\r\n    r=pin(B/rel);assert r['sha256']==h,(rel,r);rows.append(r)\r\n                        ^^^^^^^^^^^^^^\r\nAssertionError: ('worktrees/modules-io-resume-20261018/verification/native-vm-view-data-independent-peer-20261020/peer.json', {'path': 'C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018\\\\verification\\\\native-vm-view-data-independent-peer-20261020\\\\peer.json', 'bytes': 21621, 'sha256': '19D4C7FCAFC0525907856AF400F7232752F8EE8A2BBBEBF93A2B3D0164A68BE6'})",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"<string>\", line 9, in <module>\r\n    r=pin(B/rel);assert r['sha256']==h,(rel,r);rows.append(r)\r\n                        ^^^^^^^^^^^^^^\r\nAssertionError: ('worktrees/modules-io-resume-20261018/verification/native-vm-view-data-independent-peer-20261020/peer.json', {'path': 'C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018\\\\verification\\\\native-vm-view-data-independent-peer-20261020\\\\peer.json', 'bytes': 21621, 'sha256': '19D4C7FCAFC0525907856AF400F7232752F8EE8A2BBBEBF93A2B3D0164A68BE6'})\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "correct_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-vm-view-data-independent-peer-20261020\\peer.json",
+    "bytes": 21621,
+    "sha256": "19D4C7FCAFC0525907856AF400F7232752F8EE8A2BBBEBF93A2B3D0164A68BE6"
+  },
+  "source_or_native_execution": false
+}

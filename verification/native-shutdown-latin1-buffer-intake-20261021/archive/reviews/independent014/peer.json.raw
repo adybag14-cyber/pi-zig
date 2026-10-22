@@ -1,0 +1,183 @@
+{
+  "schema": 1,
+  "status": "accepted_independent_20_path_shutdown_latin1_buffer_source_replay_on_014",
+  "reviewer": "/root/handover_review",
+  "source_only": true,
+  "source_composition_accepted": true,
+  "paused_record": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-source-intake-20261020\\paused-resolved-inputs.json",
+    "bytes": 14121,
+    "sha256": "83F392D93DB3E4EC59721BD728275B0A9312EF97261E30939FB2E43EDC95C48E"
+  },
+  "original_paused_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "reviewed_immutable_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "Git_read_worktree": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018",
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-union014-source-peer-20261021\\source-check.py",
+    "bytes": 23490,
+    "sha256": "EF781D4B1F189F686DC3C283F19B38D7E0EAF291E773A0628A1563C548BCB7B3"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-union014-source-peer-20261021\\source-proof.json",
+    "bytes": 242053,
+    "sha256": "10E00AB52375D9CE323860CCA2A571E8AFAF18E701219920C06E91A7C23107BF"
+  },
+  "checker_exit_code": 0,
+  "root_accepted_references": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-source-review-20261020.json",
+      "bytes": 6030,
+      "sha256": "77DBEF1F44375E4E8A4F940DE59AC090D07DC161D16633D6A72488104FBC927F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-current-head-composition-acceptance-20261020.json",
+      "bytes": 2278,
+      "sha256": "62B6827BCE020C20E43A53375CA8F486B9C7219348923FEF3A851E3B574652FF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-buffer-address-source-review-20261020.json",
+      "bytes": 3388,
+      "sha256": "528D22E46B8A6CC0C5CE9B2A4523C3ED277B73E23B9865FF619F892665C93E3B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-buffer-build-naming-source-review-20261020.json",
+      "bytes": 1582,
+      "sha256": "22E9F7646E633104550458352AA5BE26628B8C02548469CC6AFAC910D1325567"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-buffer-address-and-build-peer-acceptance-20261020.json",
+      "bytes": 3728,
+      "sha256": "039A2C66937952360B243CC4129993C9C9DEFF5667CE28F24C06B00EE76A8490"
+    }
+  ],
+  "source_paths": 20,
+  "existing_replacements": 8,
+  "new_paths": 12,
+  "immutable_input_versions": 202,
+  "immutable_Git_blob_reads": 16,
+  "verified": {
+    "all_20_selected_donors_exact": true,
+    "all_eight_preimages_equal_raw_014": true,
+    "all_twelve_new_paths_absent_at_014": true,
+    "unique_canonical_Windows_target_paths": true,
+    "original_shared_edits": 37,
+    "selected_Latin1_argument_corrections": 2,
+    "Buffer_VM_insertions": 2,
+    "complete_replay_sequences": 36,
+    "all_declared_offsets_intermediate_hashes_and_complete_inverses": true,
+    "corrected_Latin1_Buffer_C_and_H_both_orders_identical": true,
+    "Buffer_and_selected_Shutdown_build_both_orders_identical": true,
+    "Transfer_before_Shutdown_order_preserved": true,
+    "Transfer_Shutdown_commutation_claimed": false,
+    "all_current_build_bytes_outside_two_additions_unchanged": true,
+    "canonical_Error_and_Buffer_cached_artifact_names_retained": true,
+    "explicit_installed_names_and_no_run_steps": true,
+    "immutable_Shutdown_packet_inventory_rows": 90,
+    "immutable_Buffer_packet_inventory_rows": 72,
+    "twelve_pinned_Zig_naming_excerpts": true,
+    "protected_make_callback_972B_unchanged": true,
+    "all_original_source_and_checker_negatives_retained": true
+  },
+  "selected_combined": [
+    {
+      "relative_path": "vendor/quickjs/quickjs.c",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\combined-with-latin1-successor\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404878,
+        "sha256": "091E5BE0C22F35CE2029852DEA8D8B017B3784013ED93EDB9F1545A49D8D275F"
+      },
+      "preimage": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.h",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\combined-with-latin1-successor\\vendor\\quickjs\\quickjs.h",
+        "bytes": 115346,
+        "sha256": "05AA4DF250CB642536077C5DF80C08C92C1C40BAA347C18140AFB577B583B0EB"
+      },
+      "preimage": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114656,
+        "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+      }
+    },
+    {
+      "relative_path": "build.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\current79-with-shutdown-and-buffer.zig",
+        "bytes": 514007,
+        "sha256": "868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+      },
+      "preimage": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\current79-build.zig",
+        "bytes": 509023,
+        "sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55"
+      }
+    }
+  ],
+  "prerequisites": {
+    "fatal_source_commit": "5059d6a04a29232fa3a39614d7e73e3690472c4f",
+    "two_fatal_sources_explicitly_in_new_path_union": true,
+    "raw_fatal_commit_bytes_equal_selected_donors": true,
+    "three_TLS_sources_already_exact_in_014": true,
+    "selected_network_and_memory_recipes_equal_raw_014": true,
+    "each_new_Shutdown_Latin1_artifact_has_one_direct_TLS_C_fatal_CPP_and_OneByte_diagnostics_CPP": true,
+    "no_duplicate_translation_unit_in_network_or_memory": true
+  },
+  "new_roots": [
+    {
+      "source": "src/native_node_stream_shutdown_test.zig",
+      "target": "build-native-node-stream-shutdown",
+      "declared_controls": 18,
+      "actual_metadata_count": null
+    },
+    {
+      "source": "src/native_node_one_byte_string_test.zig",
+      "target": "build-native-node-one-byte-string",
+      "declared_controls": 8,
+      "actual_metadata_count": null
+    },
+    {
+      "source": "src/native_vm_array_buffer_view_data_test.zig",
+      "target": "build-native-vm-array-buffer-view-data",
+      "declared_controls": 12,
+      "actual_metadata_count": null
+    }
+  ],
+  "total_new_declared_controls": 38,
+  "actual_future_metadata_count": null,
+  "finding": "No concrete source composition blocker or required rebase was found for the selected twenty source paths against immutable 014062. The original accepted semantic scope and its assembly limits remain unchanged.",
+  "remaining_finite_intake_work": [
+    "Seal a distinct final source/evidence manifest for the actual Root-released head, with the eight exact replacement preimages and twelve required absences.",
+    "Choose and deduplicate immutable proof and authority archive destinations, preserving rejected predecessors and using raw suffixes wherever Git conversion could alter their bytes.",
+    "Review the exact finite intake adapter and perform the Git attribute/filter/encoding byte preflight for every final donor, including the manifest, before source or index writes.",
+    "After current V38 validation closure, Root must separately authorize and perform the exact intake.",
+    "Refresh complete source/dependency/catalog bindings for the three new roots and perform separately authorized fresh native validation; all future actual metadata remains unknown."
+  ],
+  "scope_limits": [
+    "This review independently replays the finite raw source changes, compositions, immutable preimages and required local prerequisites from already accepted packets.",
+    "Full StreamBase/FileHandle publication, production tracing/hook bootstrap and inherited platform/library qualification remain separately scoped work.",
+    "Current V38 native results do not qualify this pending union."
+  ],
+  "explicitly_excluded": [
+    "pending runtime template identity",
+    "full CustomBuffer listener"
+  ],
+  "Main_accessed": false,
+  "index_changed": false,
+  "existing_packet_changed": false,
+  "candidate_executed": false,
+  "prefix_executed": false,
+  "source_generator_executed": false,
+  "compiler_executed": false,
+  "native_executed": false,
+  "intake_manifest_issued": false,
+  "configuration_issued": false,
+  "source_release": false,
+  "runtime_qualified": false,
+  "application_qualified": false
+}

@@ -1207,6 +1207,8 @@ JS_EXTERN int JS_ToBigUint64(JSContext *ctx, uint64_t *pres, JSValueConst val);
 /* same as JS_ToInt64() but allow BigInt */
 JS_EXTERN int JS_ToInt64Ext(JSContext *ctx, int64_t *pres, JSValueConst val);
 
+/* Raw Latin-1 code units; caller owns Node/V8 signed-length/fatal policy. */
+JS_EXTERN JSValue JS_PiNewStringLatin1(JSContext *ctx, const uint8_t *buf, size_t len);
 JS_EXTERN JSValue JS_NewStringLen(JSContext *ctx, const char *str1, size_t len1);
 static inline JSValue JS_NewString(JSContext *ctx, const char *str) {
     return JS_NewStringLen(ctx, str, strlen(str));
@@ -1481,6 +1483,13 @@ JS_EXTERN JSValue JS_NewUint8Array(JSContext *ctx, uint8_t *buf, size_t len,
    guest operation, storage entitlement, or pending-exception change occurs.
    This is a VM-owner-thread operation, including for shared backing storage. */
 JS_EXTERN size_t JS_PiArrayBufferViewByteLength(JSValueConst view);
+/* Borrow an actual TypedArray/DataView's backing address plus stored byte
+   offset. Detached views and invalid brands return NULL. Live RAB OOB views
+   retain their offset; consult ByteLength before any dereference. No JS root,
+   native backing entitlement, allocation, guest operation, or pending-state
+   change occurs. The caller supplies the actual view/storage lifetime; this
+   VM-owner-thread borrow is not an asynchronous or cross-thread lease. */
+JS_EXTERN uint8_t *JS_PiArrayBufferViewData(JSValueConst view);
 JS_EXTERN JSValue JS_PiGetArrayBufferViewBuffer(JSContext *ctx, JSValueConst obj,
                                                 size_t *pbyte_offset,
                                                 size_t *pbyte_length,

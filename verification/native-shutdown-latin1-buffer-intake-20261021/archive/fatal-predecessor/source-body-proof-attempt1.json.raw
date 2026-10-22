@@ -1,0 +1,546 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "checks": [
+    {
+      "check": "fatal complete body after build-selected signature",
+      "match": true,
+      "original_tokens": 131,
+      "production_tokens": 131
+    },
+    {
+      "check": "Dcheck dispatch/ignored mode",
+      "match": true,
+      "original_tokens": 30,
+      "production_tokens": 30
+    },
+    {
+      "check": "DefaultDcheck handler",
+      "match": true,
+      "original_tokens": 25,
+      "production_tokens": 25
+    },
+    {
+      "check": "print-stack setter",
+      "match": true,
+      "original_tokens": 4,
+      "production_tokens": 4
+    },
+    {
+      "check": "Dcheck setter",
+      "match": true,
+      "original_tokens": 9,
+      "production_tokens": 9
+    },
+    {
+      "check": "fatal setter",
+      "match": true,
+      "original_tokens": 4,
+      "production_tokens": 4
+    },
+    {
+      "check": "FatalOOM",
+      "match": true,
+      "original_tokens": 52,
+      "production_tokens": 52
+    },
+    {
+      "check": "Windows HasConsole",
+      "match": true,
+      "original_tokens": 46,
+      "production_tokens": 46
+    },
+    {
+      "check": "Windows VPrintHelper",
+      "match": true,
+      "original_tokens": 60,
+      "production_tokens": 60
+    },
+    {
+      "check": "Windows and POSIX PrintError",
+      "match": true,
+      "original_tokens": 27,
+      "production_tokens": 27
+    },
+    {
+      "check": "POSIX PrintError agrees with Windows",
+      "match": true,
+      "original_tokens": 27,
+      "production_tokens": 27
+    },
+    {
+      "check": "Windows OS Abort",
+      "match": true,
+      "original_tokens": 62,
+      "production_tokens": 62
+    },
+    {
+      "check": "POSIX OS Abort",
+      "match": true,
+      "original_tokens": 39,
+      "production_tokens": 39
+    },
+    {
+      "check": "integral MakeCheckOpString",
+      "match": true,
+      "original_tokens": 110,
+      "production_tokens": 110
+    },
+    {
+      "check": "Windows VSNPrintF complete selected body",
+      "match": true,
+      "original_tokens": 55,
+      "production_tokens": 55
+    },
+    {
+      "check": "POSIX VSNPrintF complete selected body",
+      "match": true,
+      "original_tokens": 53,
+      "production_tokens": 53
+    },
+    {
+      "check": "Windows debugger break",
+      "match": false,
+      "original_tokens": 20,
+      "production_tokens": 20,
+      "differences": [
+        {
+          "original": [
+            "DebugBreakNative"
+          ],
+          "production": [
+            "DebugBreak"
+          ]
+        }
+      ]
+    },
+    {
+      "check": "ControlledCrashesAreHarmless",
+      "match": true,
+      "original_tokens": 12,
+      "production_tokens": 12
+    },
+    {
+      "check": "DcheckFailuresAreIgnored",
+      "match": true,
+      "original_tokens": 12,
+      "production_tokens": 12
+    },
+    {
+      "check": "FailureMessage complete marker/buffer class",
+      "match": true,
+      "original_tokens": 85,
+      "production_tokens": 85
+    },
+    {
+      "check": "Windows VPrintError selected body",
+      "match": true,
+      "original_tokens": 9,
+      "production_tokens": 9
+    },
+    {
+      "check": "POSIX VPrintError including Android guard",
+      "match": true,
+      "original_tokens": 37,
+      "production_tokens": 37
+    },
+    {
+      "check": "complete immediate-crash macro body with v8config native compiler/host predicate projection",
+      "match": true,
+      "original_tokens": 449,
+      "production_tokens": 449,
+      "mapping": {
+        "V8_CC_GNU": "defined(__GNUC__)",
+        "V8_CC_MSVC": "defined(_MSC_VER)",
+        "V8_HOST_ARCH_X64": "defined(_M_X64) || defined(__x86_64__)",
+        "V8_HOST_ARCH_IA32": "defined(_M_IX86) || defined(__i386__)",
+        "V8_HOST_ARCH_ARM": "defined(__ARMEL__)",
+        "V8_HOST_ARCH_ARM64": "defined(__AARCH64EL__) || defined(_M_ARM64)",
+        "V8_HOST_ARCH_PPC64": "defined(__PPC64__) || defined(_ARCH_PPC64)",
+        "V8_HOST_ARCH_S390X": "defined(__s390x__)",
+        "V8_OS_DARWIN": "defined(__APPLE__)",
+        "V8_OS_AIX": "defined(_AIX)",
+        "V8_OS_ZOS": "defined(__MVS__)",
+        "TRAP_SEQUENCE1_": "PI_V8_BASE_TRAP_SEQUENCE1_",
+        "TRAP_SEQUENCE2_": "PI_V8_BASE_TRAP_SEQUENCE2_",
+        "TRAP_SEQUENCE_": "PI_V8_BASE_TRAP_SEQUENCE_",
+        "WRAPPED_TRAP_SEQUENCE_": "PI_V8_BASE_WRAPPED_TRAP_SEQUENCE_",
+        "IMMEDIATE_CRASH": "PI_V8_BASE_IMMEDIATE_CRASH"
+      }
+    },
+    {
+      "check": "all 10 selected FATAL/GRACEFUL/CHECK_FAILED macro definitions in original order",
+      "match": false,
+      "original_definitions": 9,
+      "production_definitions": 11,
+      "mapping": {
+        "FATAL": "PI_V8_BASE_FATAL",
+        "FATAL_HELPER": "PI_V8_BASE_FATAL_HELPER_",
+        "FATAL_DISCARD_ARG": "PI_V8_BASE_FATAL_DISCARD_ARG_",
+        "GRACEFUL_FATAL": "PI_V8_BASE_GRACEFUL_FATAL",
+        "CHECK_FAILED_HANDLER": "PI_V8_BASE_CHECK_FAILED_HANDLER",
+        "V8_Fatal": "pi_v8_base_fatal",
+        "IMMEDIATE_CRASH": "PI_V8_BASE_IMMEDIATE_CRASH"
+      },
+      "different_definitions": [
+        {
+          "original": [
+            "#",
+            "define",
+            "PI_V8_BASE_FATAL",
+            "(",
+            ".",
+            ".",
+            ".",
+            ")",
+            "pi_v8_base_fatal",
+            "(",
+            "__FILE__",
+            ",",
+            "__LINE__",
+            ",",
+            "__VA_ARGS__",
+            ")"
+          ],
+          "production": [
+            "#",
+            "define",
+            "PI_V8_BASE_IMMEDIATE_CRASH",
+            "(",
+            ")",
+            "(",
+            "{",
+            "PI_V8_BASE_WRAPPED_TRAP_SEQUENCE_",
+            "(",
+            ")",
+            ";",
+            "__builtin_unreachable",
+            "(",
+            ")",
+            ";",
+            "}",
+            ")"
+          ]
+        },
+        {
+          "original": [
+            "#",
+            "define",
+            "PI_V8_BASE_GRACEFUL_FATAL",
+            "(",
+            ".",
+            ".",
+            ".",
+            ")",
+            "PI_V8_BASE_FATAL",
+            "(",
+            "__VA_ARGS__",
+            ")"
+          ],
+          "production": [
+            "#",
+            "define",
+            "PI_V8_BASE_IMMEDIATE_CRASH",
+            "(",
+            ")",
+            "PI_V8_BASE_WRAPPED_TRAP_SEQUENCE_",
+            "(",
+            ")"
+          ]
+        },
+        {
+          "original": [
+            "#",
+            "define",
+            "PI_V8_BASE_GRACEFUL_FATAL",
+            "(",
+            ".",
+            ".",
+            ".",
+            ")",
+            "pi_v8_base_fatal",
+            "(",
+            "__VA_ARGS__",
+            ")"
+          ],
+          "production": [
+            "#",
+            "define",
+            "PI_V8_BASE_FATAL",
+            "(",
+            ".",
+            ".",
+            ".",
+            ")",
+            "pi_v8_base_fatal",
+            "(",
+            "__FILE__",
+            ",",
+            "__LINE__",
+            ",",
+            "__VA_ARGS__",
+            ")"
+          ]
+        },
+        {
+          "original": [
+            "#",
+            "define",
+            "PI_V8_BASE_FATAL",
+            "(",
+            ".",
+            ".",
+            ".",
+            ")",
+            "pi_v8_base_fatal",
+            "(",
+            "__VA_ARGS__",
+            ")"
+          ],
+          "production": [
+            "#",
+            "define",
+            "PI_V8_BASE_GRACEFUL_FATAL",
+            "(",
+            ".",
+            ".",
+            ".",
+            ")",
+            "PI_V8_BASE_FATAL",
+            "(",
+            "__VA_ARGS__",
+            ")"
+          ]
+        },
+        {
+          "original": [
+            "#",
+            "define",
+            "PI_V8_BASE_FATAL_HELPER_",
+            "(",
+            "_7",
+            ",",
+            "_6",
+            ",",
+            "_5",
+            ",",
+            "_4",
+            ",",
+            "_3",
+            ",",
+            "_2",
+            ",",
+            "_1",
+            ",",
+            "_0",
+            ",",
+            ".",
+            ".",
+            ".",
+            ")",
+            "_0"
+          ],
+          "production": [
+            "#",
+            "define",
+            "PI_V8_BASE_GRACEFUL_FATAL",
+            "(",
+            ".",
+            ".",
+            ".",
+            ")",
+            "pi_v8_base_fatal",
+            "(",
+            "__VA_ARGS__",
+            ")"
+          ]
+        },
+        {
+          "original": [
+            "#",
+            "define",
+            "PI_V8_BASE_FATAL_DISCARD_ARG_",
+            "(",
+            "arg",
+            ")",
+            "PI_V8_BASE_IMMEDIATE_CRASH",
+            "(",
+            ")"
+          ],
+          "production": [
+            "#",
+            "define",
+            "PI_V8_BASE_FATAL",
+            "(",
+            ".",
+            ".",
+            ".",
+            ")",
+            "pi_v8_base_fatal",
+            "(",
+            "__VA_ARGS__",
+            ")"
+          ]
+        },
+        {
+          "original": [
+            "#",
+            "define",
+            "PI_V8_BASE_FATAL",
+            "(",
+            ".",
+            ".",
+            ".",
+            ")",
+            "PI_V8_BASE_FATAL_HELPER_",
+            "(",
+            "__VA_ARGS__",
+            ",",
+            "pi_v8_base_fatal",
+            ",",
+            "pi_v8_base_fatal",
+            ",",
+            "pi_v8_base_fatal",
+            ",",
+            "pi_v8_base_fatal",
+            ",",
+            "pi_v8_base_fatal",
+            ",",
+            "pi_v8_base_fatal",
+            ",",
+            "PI_V8_BASE_FATAL_DISCARD_ARG_",
+            ")",
+            "(",
+            "__VA_ARGS__",
+            ")"
+          ],
+          "production": [
+            "#",
+            "define",
+            "PI_V8_BASE_FATAL_HELPER_",
+            "(",
+            "_7",
+            ",",
+            "_6",
+            ",",
+            "_5",
+            ",",
+            "_4",
+            ",",
+            "_3",
+            ",",
+            "_2",
+            ",",
+            "_1",
+            ",",
+            "_0",
+            ",",
+            ".",
+            ".",
+            ".",
+            ")",
+            "_0"
+          ]
+        },
+        {
+          "original": [
+            "#",
+            "define",
+            "PI_V8_BASE_CHECK_FAILED_HANDLER",
+            "(",
+            "message",
+            ")",
+            "PI_V8_BASE_FATAL",
+            "(",
+            "\"ignored\"",
+            ")"
+          ],
+          "production": [
+            "#",
+            "define",
+            "PI_V8_BASE_FATAL_DISCARD_ARG_",
+            "(",
+            "arg",
+            ")",
+            "PI_V8_BASE_IMMEDIATE_CRASH",
+            "(",
+            ")"
+          ]
+        },
+        {
+          "original": [
+            "#",
+            "define",
+            "PI_V8_BASE_CHECK_FAILED_HANDLER",
+            "(",
+            "message",
+            ")",
+            "PI_V8_BASE_FATAL",
+            "(",
+            "\"Check failed: %s.\"",
+            ",",
+            "message",
+            ")"
+          ],
+          "production": [
+            "#",
+            "define",
+            "PI_V8_BASE_FATAL",
+            "(",
+            ".",
+            ".",
+            ".",
+            ")",
+            "PI_V8_BASE_FATAL_HELPER_",
+            "(",
+            "__VA_ARGS__",
+            ",",
+            "pi_v8_base_fatal",
+            ",",
+            "pi_v8_base_fatal",
+            ",",
+            "pi_v8_base_fatal",
+            ",",
+            "pi_v8_base_fatal",
+            ",",
+            "pi_v8_base_fatal",
+            ",",
+            "pi_v8_base_fatal",
+            ",",
+            "PI_V8_BASE_FATAL_DISCARD_ARG_",
+            ")",
+            "(",
+            "__VA_ARGS__",
+            ")"
+          ]
+        }
+      ]
+    },
+    {
+      "check": "seven direct C owner declaration/definition names",
+      "match": true,
+      "declarations": [
+        "pi_v8_base_abort",
+        "pi_v8_base_dcheck",
+        "pi_v8_base_fatal",
+        "pi_v8_base_fatal_oom",
+        "pi_v8_base_set_dcheck_function",
+        "pi_v8_base_set_fatal_function",
+        "pi_v8_base_set_print_stack_trace"
+      ],
+      "definitions": [
+        "pi_v8_base_abort",
+        "pi_v8_base_dcheck",
+        "pi_v8_base_fatal",
+        "pi_v8_base_fatal_oom",
+        "pi_v8_base_set_dcheck_function",
+        "pi_v8_base_set_fatal_function",
+        "pi_v8_base_set_print_stack_trace"
+      ]
+    }
+  ],
+  "count": 25,
+  "all_source_matches": false,
+  "native_or_compiler_executed": false,
+  "negative_scope": "Auditor selector included two IMMEDIATE_CRASH definitions while selecting the FATAL-only set; original has nine selected FATAL/GRACEFUL/CHECK_FAILED definitions. Production untouched. Corrected selector will select only those five owner macro names."
+}

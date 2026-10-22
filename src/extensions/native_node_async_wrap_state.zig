@@ -5,18 +5,20 @@ const std = @import("std");
 const a = @import("native_node_argument_values.zig");
 const callbacks = @import("native_node_callback_scope.zig");
 const callable = @import("native_node_module_callable.zig");
+const check_failure = @import("native_node_check_failure.zig");
 const c = a.c;
 pub const Engine = a.v.em.Engine;
 pub const LocalScope = a.Scope;
 pub const Environment = callbacks.Environment;
 
-pub const Kind = enum { async_wrap, fsreqpromise, filehandleclosereq, filehandle, fsreqcallback };
+pub const Kind = enum { async_wrap, fsreqpromise, filehandleclosereq, filehandle, fsreqcallback, shutdownwrap };
 pub const Provider = struct {
     pub const none: u32 = 0;
     pub const filehandle: u32 = 4;
     pub const filehandleclosereq: u32 = 5;
     pub const fsreqcallback: u32 = 8;
     pub const fsreqpromise: u32 = 9;
+    pub const shutdownwrap: u32 = 35;
 };
 /// Native CHECK sites belong to the shared Environment's actual terminal owner.
 pub const Check = callbacks.Check;
@@ -61,13 +63,22 @@ const StreamFields = struct {
     closing_promise: c.JSValue,
 };
 
+/// StreamReq's two native pointer slots are independent. FromObject reads the
+/// request slot without requiring a live BaseObject pointer. Neither pointer is
+/// a JS graph edge; only the wrapper allocation retains this registry metadata.
+const RequestFields = struct {
+    registry: *Registry,
+    state: ?*State = null,
+    request: ?*anyopaque = null,
+};
+
 /// Independently retained native owner. One realm cleanup registration covers
 /// the real intrusive list, and every attached State retains this allocation.
 /// Clearing a JS wrapper does not depend on the order of other GC finalizers.
 pub const Registry = struct {
     environment: *Environment,
     references: usize = 1,
-    class_ids: [5]c.JSClassID = .{ 0, 0, 0, 0, 0 },
+    class_ids: [6]c.JSClassID = .{ 0, 0, 0, 0, 0, 0 },
     head: ?*BaseEntry = null,
     tail: ?*BaseEntry = null,
     fs_binding_data: ?WeakBindingSlot = null,
@@ -96,14 +107,16 @@ pub const Registry = struct {
             environment.allocator().destroy(self);
             environment.release();
         }
-        inline for (.{ "AsyncWrap", "FSReqPromise", "FileHandleCloseReq", "FileHandle", "FSReqCallback" }, 0..) |name, index| {
+        inline for (.{ "AsyncWrap", "FSReqPromise", "FileHandleCloseReq", "FileHandle", "FSReqCallback", "ShutdownWrap" }, 0..) |name, index| {
             const generation = try s.beforeAllocation();
             if (c.JS_NewClassID(s.engine.runtime, &self.class_ids[index]) == 0)
                 return error.OutOfMemory;
             const definition: c.JSClassDef = .{
                 .class_name = name,
-                .finalizer = if (index == @intFromEnum(Kind.filehandle)) streamWrapperFinalizer else wrapperFinalizer,
-                .gc_mark = if (index == @intFromEnum(Kind.filehandle)) streamWrapperMark else wrapperMark,
+                .finalizer = if (index == @intFromEnum(Kind.filehandle)) streamWrapperFinalizer
+                    else if (index == @intFromEnum(Kind.shutdownwrap)) requestWrapperFinalizer else wrapperFinalizer,
+                .gc_mark = if (index == @intFromEnum(Kind.filehandle)) streamWrapperMark
+                    else if (index == @intFromEnum(Kind.shutdownwrap)) requestWrapperMark else wrapperMark,
             };
             const status = c.JS_NewClass(s.engine.runtime, self.class_ids[index], &definition);
             try s.boundary.checkPendingSince(generation);
@@ -155,6 +168,10 @@ pub const Registry = struct {
             const fields = self.streamFields(value) orelse return null;
             return fields.state;
         }
+        if (c.JS_GetClassID(value) == self.classId(.shutdownwrap)) {
+            const fields = self.requestFields(value) orelse return null;
+            return fields.state;
+        }
         const raw = c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return null;
         const state: *State = @ptrCast(@alignCast(raw));
         return if (state.registry == self) state else null;
@@ -165,9 +182,43 @@ pub const Registry = struct {
         const fields: *StreamFields = @ptrCast(@alignCast(raw));
         return if (fields.registry == self) fields else null;
     }
+    fn requestFields(self: *const Registry, wrapper: c.JSValue) ?*RequestFields {
+        if (c.JS_GetClassID(wrapper) != self.classId(.shutdownwrap)) return null;
+        const raw = c.JS_GetOpaque(wrapper, self.classId(.shutdownwrap)) orelse return null;
+        const fields: *RequestFields = @ptrCast(@alignCast(raw));
+        return if (fields.registry == self) fields else null;
+    }
+    /// StreamReq::ResetObject is used only at its genuine fresh-instance sites.
+    /// It clears both slots, including the BaseObject slot, in Source order.
+    pub fn resetRequestObject(self: *Registry, wrapper: c.JSValue) !void {
+        const fields = self.requestFields(wrapper) orelse return self.check(.invalid_wrap_brand);
+        fields.state = null;
+        fields.request = null;
+    }
+    pub fn attachRequestPointer(self: *Registry, wrapper: c.JSValue, request: *anyopaque) !void {
+        const fields = self.requestFields(wrapper) orelse return self.check(.invalid_wrap_brand);
+        if (fields.request != null) check_failure.assertion(self.environment.engine, .{
+            .file_line = "src/stream_base-inl.h:21",
+            .message = "(req_wrap_obj->GetAlignedPointerFromInternalField( StreamReq::kStreamReqField)) == (nullptr)",
+            .function = "node::StreamReq::AttachToObject",
+        });
+        fields.request = request;
+    }
+    pub fn requestPointer(self: *const Registry, wrapper: c.JSValue) ?*anyopaque {
+        const fields = self.requestFields(wrapper) orelse return null;
+        return fields.request;
+    }
+    pub fn clearRequestPointer(self: *Registry, wrapper: c.JSValue) !void {
+        const fields = self.requestFields(wrapper) orelse return self.check(.invalid_wrap_brand);
+        fields.request = null;
+    }
     fn nativePointerIsEmpty(self: *const Registry, wrapper: c.JSValue) bool {
         if (c.JS_GetClassID(wrapper) == self.classId(.filehandle)) {
             const fields = self.streamFields(wrapper) orelse return false;
+            return fields.state == null;
+        }
+        if (c.JS_GetClassID(wrapper) == self.classId(.shutdownwrap)) {
+            const fields = self.requestFields(wrapper) orelse return false;
             return fields.state == null;
         }
         return c.JS_GetOpaque(wrapper, c.JS_GetClassID(wrapper)) == null;
@@ -177,6 +228,10 @@ pub const Registry = struct {
             const fields = self.streamFields(wrapper).?;
             std.debug.assert(fields.state == null);
             fields.state = state;
+        } else if (c.JS_GetClassID(wrapper) == self.classId(.shutdownwrap)) {
+            const fields = self.requestFields(wrapper).?;
+            std.debug.assert(fields.state == null);
+            fields.state = state;
         } else {
             _ = c.JS_SetOpaque(wrapper, state);
         }
@@ -184,6 +239,10 @@ pub const Registry = struct {
     fn clearNativePointer(self: *Registry, wrapper: c.JSValue, state: *State) void {
         if (c.JS_GetClassID(wrapper) == self.classId(.filehandle)) {
             const fields = self.streamFields(wrapper).?;
+            std.debug.assert(fields.state == state);
+            fields.state = null;
+        } else if (c.JS_GetClassID(wrapper) == self.classId(.shutdownwrap)) {
+            const fields = self.requestFields(wrapper).?;
             std.debug.assert(fields.state == state);
             fields.state = null;
         } else {
@@ -254,12 +313,36 @@ pub const Registry = struct {
             self.environment.allocator().destroy(unattached);
             self.release();
         };
-        const result = c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind));
-        if (!c.JS_IsException(result)) if (fields) |attached| {
-            _ = c.JS_SetOpaque(result, attached);
-            fields = null;
+        var request_fields: ?*RequestFields = null;
+        if (kind == .shutdownwrap) {
+            const created = try self.environment.allocator().create(RequestFields);
+            created.* = .{ .registry = self.retain() };
+            request_fields = created;
+        }
+        errdefer if (request_fields) |unattached| {
+            self.environment.allocator().destroy(unattached);
+            self.release();
         };
-        return s.checkedAllocation(result, generation);
+        const result = c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind));
+        if (!c.JS_IsException(result)) {
+            if (fields) |attached| {
+                _ = c.JS_SetOpaque(result, attached);
+                fields = null;
+            }
+            if (request_fields) |attached| {
+                _ = c.JS_SetOpaque(result, attached);
+                request_fields = null;
+            }
+        }
+        const object = try s.checkedAllocation(result, generation);
+        if (kind == .shutdownwrap) {
+            // StreamWrap::Initialize configures these own InstanceTemplate
+            // fields in this order, with default (C/W/E) attributes. Defining
+            // fresh data fields must not invoke a prototype's setter.
+            inline for (.{ "oncomplete", "callback", "handle" }) |key|
+                try s.define(object, key, c.pi_js_null(), c.JS_PROP_C_W_E);
+        }
+        return object;
     }
     pub fn append(self: *Registry, state: *BaseEntry) void {
         std.debug.assert(!state.linked and state.previous == null and state.next == null);
@@ -546,6 +629,39 @@ fn streamWrapperMark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c
     const fields: *StreamFields = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
     c.JS_MarkValue(runtime, fields.onread, marker);
     c.JS_MarkValue(runtime, fields.closing_promise, marker);
+    if (fields.state) |state| state.mark(runtime, marker);
+}
+
+fn requestWrapperFinalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
+    const fields: *RequestFields = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
+    const registry = fields.registry;
+    if (registry.environment.engine) |engine| {
+        var scope = LocalScope.init(engine);
+        var failure: ?anyerror = null;
+        if (fields.state) |state| state.retire(true) catch |err| {
+            scope.boundary.escaping();
+            failure = err;
+        };
+        std.debug.assert(fields.state == null);
+        _ = c.JS_SetOpaque(value, null);
+        registry.environment.allocator().destroy(fields);
+        defer registry.release();
+        const ignored = scope.finish(if (failure) |err| @as(anyerror!c.JSValue, err) else c.pi_js_undefined()) catch |err| {
+            _ = callable.failure(engine, err, 0);
+            return;
+        };
+        engine.freeValue(ignored);
+    } else {
+        // The actual realm cleanup already retired native request states.
+        // The two native slots carry no JS references to release here.
+        std.debug.assert(fields.state == null);
+        _ = c.JS_SetOpaque(value, null);
+        registry.environment.allocator().destroy(fields);
+        registry.release();
+    }
+}
+fn requestWrapperMark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
+    const fields: *RequestFields = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
     if (fields.state) |state| state.mark(runtime, marker);
 }
 

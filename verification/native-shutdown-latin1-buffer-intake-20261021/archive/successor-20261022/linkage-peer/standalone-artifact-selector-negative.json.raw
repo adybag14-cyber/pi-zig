@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "status": "preserved_independent_static_checker_artifact_selector_negative",
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v3.py",
+    "bytes": 31599,
+    "sha256": "1D887833BDB8E9F7E32C1972339E46D00358EC855B2550CC5BC8CDF3A090BC37"
+  },
+  "observation": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v3.py\", line 278, in <module>\r\n    _,_,ob=artifact_block(old,var);_,_,nb=artifact_block(new,var)\r\n           ~~~~~~~~~~~~~~^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v3.py\", line 238, in artifact_block\r\n    need(raw.count(needle)==1,(\"unique artifact\",var))\r\n    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v3.py\", line 10, in need\r\n    if not ok: raise AssertionError(what)\r\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: ('unique artifact', 'node_diagnostic_context')",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 2,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v3.py\", line 278, in <module>\r\n    _,_,ob=artifact_block(old,var);_,_,nb=artifact_block(new,var)\r\n           ~~~~~~~~~~~~~~^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v3.py\", line 238, in artifact_block\r\n    need(raw.count(needle)==1,(\"unique artifact\",var))\r\n    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v3.py\", line 10, in need\r\n    if not ok: raise AssertionError(what)\r\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: ('unique artifact', 'node_diagnostic_context')\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "reason": "Checker used a shorthand node_diagnostic_context variable; actual immutable build variable is native_diagnostic_context_tests and the complete final recipe ends at the build function boundary. Candidate unchanged.",
+  "candidate_or_prefix_executed": false,
+  "Main_accessed": false
+}

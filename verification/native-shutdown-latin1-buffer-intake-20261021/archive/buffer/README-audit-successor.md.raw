@@ -1,0 +1,5 @@
+# Additive source-audit clarification
+
+The original `source-audit.py` is preserved as a metadata-inspector negative. Its regular expression also matches the C keyword in `return (uint8_t *)`; the original exact set omitted `return`, so the inspector stopped before writing `source-only-checks.json`. No production, control, source-map, dependency inventory, or closure file changed.
+
+Use `source-audit-successor.py` for the final read-only verification prefix and immutable proof output. It checks the complete exact identifier set, then separately classifies the function declaration, C keywords, and the three source-reviewed helper/macro invocations. This is a finite lexical cross-check, not a general C effect proof. The selected `source-only-checks.json` will bind this successor and the retained negative. All source-only and runtime limitations in `README.md` remain applicable.

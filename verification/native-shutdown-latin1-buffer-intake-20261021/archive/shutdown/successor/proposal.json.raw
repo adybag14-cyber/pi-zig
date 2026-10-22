@@ -1,0 +1,51 @@
+{
+  "schema": "pi-zig.shutdown-latin1-c-argument-successor.v1",
+  "source_only": true,
+  "parent_projection": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\proposal.json",
+    "bytes": 38226,
+    "sha256": "C58D31835CCE099D8C99BF7432CE4B0B2FAA83186857EA46EDFC55CEB3542A41"
+  },
+  "relative_path": "vendor/quickjs/quickjs.c",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\vendor\\quickjs\\quickjs.c",
+    "bytes": 2403712,
+    "sha256": "2AEE7EA130CCF08282928A9FDA056B444CF0905E8C53F1EFD520E8243F9C37B4"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\projected\\vendor\\quickjs\\quickjs.c",
+    "bytes": 2403730,
+    "sha256": "BC772BEE8794ADBD59385DA98F037310730704DFB9D251EA258862B1C887E454"
+  },
+  "edits": [
+    {
+      "before": "    if (len == 0)\n        return js_empty_string(ctx);\n",
+      "after": "    if (len == 0)\n        return js_empty_string(ctx->rt);\n",
+      "reason": "Original helper accepts JSRuntime*, not JSContext*. Existing original JS_NewStringLen uses ctx->rt.",
+      "offset": 196869,
+      "input_sha256": "2AEE7EA130CCF08282928A9FDA056B444CF0905E8C53F1EFD520E8243F9C37B4",
+      "output_sha256": "9B4785062C4391A9742691D58089CBF2963E4D89699E57EE74179A86F32E7DE0"
+    },
+    {
+      "before": "    return js_new_string8_len(ctx, buf, (int)len);\n",
+      "after": "    return js_new_string8_len(ctx, (const char *)buf, (int)len);\n",
+      "reason": "uint8_t* is unsigned-char pointer, distinct from original const char* parameter; explicit cast preserves original bytes. Existing int length cast is already bounded by JS_STRING_LEN_MAX.",
+      "offset": 197020,
+      "input_sha256": "9B4785062C4391A9742691D58089CBF2963E4D89699E57EE74179A86F32E7DE0",
+      "output_sha256": "BC772BEE8794ADBD59385DA98F037310730704DFB9D251EA258862B1C887E454"
+    }
+  ],
+  "whole_forward_exact": true,
+  "whole_inverse_exact": true,
+  "original_private_signatures": [
+    "static inline JSValue js_empty_string(JSRuntime *rt)",
+    "static JSValue js_new_string8_len(JSContext *ctx, const char *buf, int len)"
+  ],
+  "selection": "This successor replaces only the selected QuickJS C snapshot; the other six shared outputs and all original 37 edits remain unchanged. Complete original C58D3183 packet and closure are preserved.",
+  "controls_changed": false,
+  "control_names_changed": false,
+  "build_changed": false,
+  "native_or_compiler_executed": false,
+  "Main_changed": false,
+  "review_finding": "SDK independent source review identified both concrete parameter mismatches before any native execution or Main intake."
+}

@@ -1,0 +1,121 @@
+from pathlib import Path
+import hashlib,json,subprocess,re
+OWN=Path(r'C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018');SDK=Path(r'C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018')
+OUT=Path(r'C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018\verification\native-node-shutdown-current-head-composition-20261020');PACKET=Path(r'C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018\verification\native-node-shutdown-wrap-sourceonly-20261020')
+MAIN=Path(r'C:\Users\adyba\pi-zig\main')
+HEAD='79c19fc30c886e85b71aca75d1a025397db04fec'
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ b=p.read_bytes();return {'path':str(p),'bytes':len(b),'sha256':sha(b)}
+def git(*args):return subprocess.run(['git','-C',str(OWN),*args],capture_output=True,check=True).stdout
+def blob(p):return git('show',HEAD+':'+p)
+def verified(p,h):
+ b=p.read_bytes();assert sha(b)==h;return json.loads(b)
+def edit(b,e,records,label):
+ a=e['before'].encode();z=e['after'].encode();assert b.count(a)==1
+ off=b.index(a);n=b[:off]+z+b[off+len(a):]
+ records.append({'label':label,'byte_offset':off,'before':e['before'],'after':e['after'],'before_sha256':sha(b),'after_sha256':sha(n)})
+ return n
+def invert(b,records):
+ for e in reversed(records):
+  a=e['before'].encode();z=e['after'].encode();off=e['byte_offset']
+  assert sha(b)==e['after_sha256'] and b[off:off+len(z)]==z
+  b=b[:off]+a+b[off+len(z):];assert sha(b)==e['before_sha256']
+ return b
+manifest_path=PACKET/'production-proposal.json'
+m=verified(manifest_path,'C75EDD403EA03303A55CF64C903F2193EA74CBFAE843196DA7096C8AC3A7CAA0')
+build_path=PACKET/'build/proposal.json'
+b=verified(build_path,'2B7888AFCD7DB29A98FB2329D0668ADA6ECA15F818E29B15F834C1C006D17F86')
+transfer_path=SDK/'verification/native-file-handle-transfer-sourceonly-20261020/build/proposal.json'
+t=verified(transfer_path,'D662D5DF7D2C21CD8376666E120CAEEA8BB46E0518C5B3560E6A97522D6BB212')
+naming_path=Path(r'C:\Users\adyba\pi-zig\evidence\native-error-build-artifact-naming-sourceonly-20261020\proposal.json')
+n=verified(naming_path,'262AFAA489DC7620FECE7D077FCB1C7A4904E6B65BC420A8A697B6C2341A158A')
+assert subprocess.run(['git','-C',str(MAIN),'rev-parse','HEAD'],capture_output=True,check=True).stdout.decode().strip()==HEAD
+old=Path(b['original']['path']).read_bytes()
+assert sha(old)==b['original']['sha256']=='399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52'
+cur=blob('build.zig')
+assert sha(cur)=='4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55'
+assert (MAIN/'build.zig').read_bytes()==cur
+base_edits=[];x=old
+for e in t['edits']:x=edit(x,e,base_edits,'accepted TransferData insertion D662D5DF')
+assert sha(x)==n['original']['sha256']
+for e in n['edits']:x=edit(x,e,base_edits,'accepted Error naming '+e['label'])
+assert x==cur and invert(x,base_edits)==old
+current_edits=[];projected=cur
+for e in b['edits']:projected=edit(projected,e,current_edits,'unchanged Shutdown/Latin1 insertion 2B7888AF')
+assert invert(projected,current_edits)==cur
+old_edits=[];old_projected=old
+for e in b['edits']:old_projected=edit(old_projected,e,old_edits,'unchanged original Shutdown insertion')
+assert old_projected==Path(b['projected']['path']).read_bytes()
+alt_edits=[];alternative=old_projected
+for e in t['edits']:alternative=edit(alternative,e,alt_edits,'Transfer after old Shutdown')
+for e in n['edits']:alternative=edit(alternative,e,alt_edits,'Error naming after old Shutdown')
+# Both original insertions select the same one-occurrence owner-test anchor.
+# Their source blocks therefore have different byte order when replayed in reverse.
+assert alternative!=projected
+assert invert(alternative,alt_edits)==old_projected
+shutdown_block=Path(b['block']['path']).read_bytes();transfer_block=Path(t['block']['path']).read_bytes()
+assert sha(shutdown_block)==b['block']['sha256'] and sha(transfer_block)==t['block']['sha256']
+assert projected.count(shutdown_block)==projected.count(transfer_block)==1
+assert alternative.count(shutdown_block)==alternative.count(transfer_block)==1
+assert projected.replace(shutdown_block,b'').replace(transfer_block,b'')==alternative.replace(shutdown_block,b'').replace(transfer_block,b'')
+paths=set(git('ls-tree','-r','--name-only',HEAD).decode().splitlines())
+source_admission=[]
+for row in m['source_build_paths']:
+ rel=row['relative_path']
+ if rel=='build.zig':continue
+ selected=Path(row['selected']['path']).read_bytes()
+ assert sha(selected)==row['selected']['sha256'] and len(selected)==row['selected']['bytes']
+ if row.get('selected_preimage') is not None:
+  expected=row['selected_preimage'];current=blob(rel)
+  assert sha(current)==expected['sha256'] and len(current)==expected['bytes']
+  assert (MAIN/rel).read_bytes()==current
+  source_admission.append({'relative_path':rel,'current_status':'present; exact accepted preimage','current_bytes':len(current),'current_sha256':sha(current),'selected_candidate':row['selected']})
+ else:
+  assert rel not in paths and not (MAIN/rel).exists()
+  source_admission.append({'relative_path':rel,'current_status':'absent; new path in immutable C75 proposal','selected_candidate':row['selected']})
+prerequisites=[]
+for name in ['native_v8_base_fatal.h','native_v8_base_fatal.cpp','native_node_diagnostic_context.c','native_node_diagnostic_context.h','native_node_diagnostic_context.hpp']:
+ rel='src/extensions/'+name;donor=PACKET/'dependencies'/rel;raw=donor.read_bytes()
+ found=rel in paths
+ if found:
+  actual=blob(rel);assert actual==raw and (MAIN/rel).read_bytes()==actual
+ else:assert not (MAIN/rel).exists()
+ if name.startswith('native_v8_base_fatal'):
+  committed=git('show','5059d6a:'+rel);assert committed==raw
+ prerequisites.append({'relative_path':rel,'current_status':'present; bytes equal selected dependency' if found else 'absent; separate reviewed fatal source intake still required','required':pin(donor),'raw_5059d6a_equal':name.startswith('native_v8_base_fatal')})
+network=blob('tools/build_native_node_network.zig');memory=blob('tools/build_native_node_memory.zig')
+assert sha(network)=='59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369'
+for rel in b['native_translation_unit_ownership']['per_root']:
+ assert rel.encode() not in network and rel.encode() not in memory
+assert b'-DDEBUG' not in shutdown_block and b'-DOFFICIAL_BUILD' not in shutdown_block
+link_start=cur.index(b'fn linkQuickJs(');link_end=cur.index(b'\n}',link_start)+2
+assert b'link_libcpp = true' in cur[link_start:link_end]
+for row in m['inventory']:
+ raw=(PACKET/row['relative_path']).read_bytes();assert sha(raw)==row['sha256'] and len(raw)==row['bytes']
+assert len([x for x in source_admission if x['current_status'].startswith('present')])==7
+assert len([x for x in source_admission if x['current_status'].startswith('absent')])==9
+report={
+ 'schema':'pi-zig.shutdown-current-head-build-composition.v1','source_only':True,'basis_main_head':HEAD,
+ 'immutable_shutdown_manifest':pin(manifest_path),'immutable_shutdown_build':pin(build_path),'accepted_transfer_build':pin(transfer_path),'accepted_error_naming':pin(naming_path),
+ 'old_build':b['original'],'current_build':{'path':str(OUT/'original/build.zig'),'bytes':len(cur),'sha256':sha(cur),'raw_git_blob':HEAD+':build.zig','live_main_equal':True},
+ 'projected_build':{'path':str(OUT/'projected/build.zig'),'bytes':len(projected),'sha256':sha(projected)},
+ 'old_to_current_exact_edits':base_edits,'old_to_current_whole_inverse':True,'current_shutdown_edits':current_edits,'current_shutdown_whole_inverse':True,
+ 'exact_original_shutdown_edit_reused':True,'source_admission':source_admission,'source_prerequisites':prerequisites,
+ 'translation_unit_recipe':{'network_raw_blob':{'path':str(OUT/'original/tools/build_native_node_network.zig'),'bytes':len(network),'sha256':sha(network)},'native_memory_raw_blob':{'path':str(OUT/'original/tools/build_native_node_memory.zig'),'bytes':len(memory),'sha256':sha(memory)},'per_new_executable':b['native_translation_unit_ownership']['per_root'],'none_in_network_or_memory':True,'tls_is_direct_per_artifact_not_global':True,'fatal_source_present_in_main':False,'linkQuickJs_libcpp_true':True,'DEBUG_defined':False,'OFFICIAL_BUILD_defined':False,'admitted_network_targets':['windows','linux']},
+ 'source_block_order':{'selected':'Existing Transfer block, then new Shutdown/Latin1 block, then original FS request-owner anchor.','same_anchor':True,'naive_reverse_insertions_byte_commute':False,'reverse_order_sha256':sha(alternative),'reverse_order_bytes':len(alternative),'whole_reverse_order_inverse':True,'removing_both_exact_blocks_leaves_identical_bytes':True,'note':'No rewrite of either predecessor. Current-head replay is authoritative; do not claim both original insertion orders produce equal bytes.'},
+ 'new_roots':b['new_roots'],'declared_new_controls':26,'future_actual_metadata_count':None,'run_steps_added':0,
+ 'preservation':{'sealed_C75_inventory_rows_rehashed':len(m['inventory']),'sealed_C75_bytes_unchanged':True,'live_Main_files_read_not_changed':True,'no_git_mutation':True},
+ 'execution':{'compiler':False,'native':False,'Node_reference':False,'generator':False},
+ 'limits':['This supplement is an exact source/build projection, not a build, linkage, target or runtime result.','Fatal H/CPP 5059d6a must be admitted separately before these targets are buildable.','Native bootstrap hook installation, full public FileHandle/StreamBase template and process trace remain separate.','No Main intake or source-publication authority is implied.']
+}
+# The complete prefix above is read-only; only the following finite OUT writes occur.
+def put(p,raw):
+ assert p.is_relative_to(OUT)
+ if p.exists():assert p.read_bytes()==raw
+ else:p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(raw)
+put(OUT/'original/build.zig',cur);put(OUT/'projected/build.zig',projected)
+put(OUT/'original/tools/build_native_node_network.zig',network)
+put(OUT/'original/tools/build_native_node_memory.zig',memory)
+put(OUT/'projection.json',(json.dumps(report,indent=2)+'\n').encode())
+print(json.dumps({'projection':pin(OUT/'projection.json'),'projected_build':report['projected_build'],'source_status_counts':{'matching_preimages':7,'new_absent':9},'fatal_files_absent':2,'TLS_files_present_exact':3}))

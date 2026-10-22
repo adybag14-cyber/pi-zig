@@ -22,8 +22,8 @@ const cache_key = "\x00native.node.AsyncWrap.actual-templates.v24.13";
 const Bundle = struct {
     engine: *Engine,
     registry: *Registry,
-    constructors: [5]?c.JSValue = .{ null, null, null, null, null },
-    cached_instances: [5]?c.JSValue = .{ null, null, null, null, null },
+    constructors: [6]?c.JSValue = .{ null, null, null, null, null, null },
+    cached_instances: [6]?c.JSValue = .{ null, null, null, null, null, null },
     fs_callback_controller: ?*fs_io.Controller = null,
     constructor_class: c.JSClassID = 0,
 };
@@ -105,6 +105,10 @@ fn constructorBody(s: *Scope, self: *Constructor, function: c.JSValue,
                 c.JS_ToBool(s.engine.context, first_argument) == 1;
             try fs_callback.Request.construct(s, owner.registry, controller,
                 receiver, use_bigint);
+        } else if (self.kind == .shutdownwrap) {
+            // IsConstructCallCallback has no return assignment; constructor
+            // invocation returns its actual receiver after ResetObject.
+            try owner.registry.resetRequestObject(receiver);
         }
         return a.duplicate(s.engine, receiver);
     }
@@ -116,6 +120,12 @@ fn constructorBody(s: *Scope, self: *Constructor, function: c.JSValue,
             .file_line = "src/node_file.cc:727",
             .message = "args.IsConstructCall()",
             .function = "node::fs::NewFSReqCallback",
+        });
+    if (self.kind == .shutdownwrap)
+        check.assertion(s.engine, .{
+            .file_line = "src/stream_wrap.cc:62",
+            .message = "args.IsConstructCall()",
+            .function = "node::IsConstructCallCallback",
         });
     // V8's no-handler FunctionTemplate returns its actual converted receiver.
     // It is not the separate present-callback/empty-return-handle case.
@@ -137,6 +147,7 @@ fn name(kind: Kind) [:0]const u8 {
         .filehandleclosereq => "FileHandleCloseReq",
         .filehandle => "FileHandle",
         .fsreqcallback => "FSReqCallback",
+        .shutdownwrap => "ShutdownWrap",
     };
 }
 fn requireTemplate(owner: *Bundle, kind: Kind) !void {
@@ -269,10 +280,10 @@ fn instantiate(s: *Scope, owner: *Bundle, owner_value: c.JSValue,
     }
     const constructor_value = try ensureConstructor(s, owner, owner_value, kind);
     const prototype = try s.checked(c.JS_PiGetObjectPrototypeFromConstructor(s.engine.context, constructor_value));
-    // These selected instance templates have only zeroed internal native
-    // fields, with no own JS properties/interceptors. CacheTemplateInstantiation
-    // retains the first actual object, then CopyJSObject returns another with
-    // that same prototype and blank internal fields.
+    // CacheTemplateInstantiation retains the first actual object, then
+    // CopyJSObject returns another with the same prototype and blank native
+    // slots. ShutdownWrap also copies its three original null data fields;
+    // Registry.newInstance installs those same attributes on every path.
     const first = try owner.registry.newInstance(s, kind, prototype);
     owner.cached_instances[@intFromEnum(kind)] = a.duplicate(s.engine, first);
     return owner.registry.newInstance(s, kind, prototype);
@@ -367,4 +378,11 @@ pub fn configureFSReqCallback(engine: *Engine, known_owner: c.JSValue,
 pub fn newFSReqCallbackInstance(s: *Scope, known_owner: c.JSValue) !c.JSValue {
     return instantiate(s, try bundleOf(s.engine, known_owner),
         known_owner, .fsreqcallback, null);
+}
+
+/// env->shutdown_wrap_template() stores the real ShutdownWrap InstanceTemplate.
+/// StreamBase::Shutdown invokes ResetObject itself after this bypass operation.
+pub fn newShutdownWrapInstance(s: *Scope, known_owner: c.JSValue) !c.JSValue {
+    return instantiate(s, try bundleOf(s.engine, known_owner),
+        known_owner, .shutdownwrap, null);
 }

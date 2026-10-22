@@ -10,6 +10,7 @@
 const em = @import("engine.zig");
 const check = @import("native_node_check_failure.zig");
 const std = @import("std");
+const requests = @import("native_node_stream_request.zig");
 pub const uv = @import("native_node_managed_buffers.zig").uv;
 
 /// Original pure virtual read operations. A listener used by EmitAlloc/EmitRead
@@ -25,6 +26,19 @@ pub const Listener = struct {
     previous_listener: ?*Listener = null,
     on_destroy: *const fn (*Listener) void = defaultOnDestroy,
     read_methods: ?*const ReadMethods = null,
+    after_shutdown: *const fn (*Listener, *requests.Shutdown, c_int) anyerror!void = forwardAfterShutdown,
+
+    fn forwardAfterShutdown(self: *Listener, request: *requests.Shutdown,
+        status: c_int) anyerror!void
+    {
+        const previous = self.previous_listener orelse check.assertion(
+            if (self.stream) |stream| stream.engine else null, .{
+                .file_line = "src/stream_base.cc:808",
+                .message = "(previous_listener_) != nullptr",
+                .function = "node::StreamListener::OnStreamAfterShutdown",
+            });
+        return previous.after_shutdown(previous, request, status);
+    }
 
     // The original virtual default OnStreamDestroy() has an empty body.
     fn defaultOnDestroy(_: *Listener) void {}
@@ -112,6 +126,15 @@ pub const Resource = struct {
         const selected = self.listener.?;
         std.debug.assert(selected.read_methods != null);
         return selected.read_methods.?.read(selected, nread, buffer);
+    }
+
+    /// StreamResource::EmitAfterShutdown selects the live native head. The
+    /// callback may destroy this resource; no self access follows it.
+    pub fn emitAfterShutdown(self: *Resource, request: *requests.Shutdown,
+        status: c_int) anyerror!void
+    {
+        const selected = self.listener.?;
+        return selected.after_shutdown(selected, request, status);
     }
 
     /// Actual StreamResource::~StreamResource. OnStreamDestroy may unlink and

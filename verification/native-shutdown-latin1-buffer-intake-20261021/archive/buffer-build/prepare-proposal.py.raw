@@ -1,0 +1,126 @@
+"""Source-only exact Buffer build naming successor; no product execution."""
+from pathlib import Path
+import json,hashlib,subprocess,re
+B=Path(r'C:\Users\adyba\pi-zig');M=B/'main';W=B/'worktrees/sdk-owners-resume-20261018'
+P=W/'verification/native-node-custom-buffer-build-successor-20261020'
+OLD=W/'verification/native-node-custom-buffer-sourceonly-20261020'
+SHUT=B/'worktrees/modules-io-resume-20261018/verification/native-node-shutdown-current-head-composition-20261020'
+HEAD='79c19fc30c886e85b71aca75d1a025397db04fec'
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ p=Path(p);b=p.read_bytes();return {'path':str(p),'bytes':len(b),'sha256':sha(b)}
+def exact(p,d):
+ r=pin(p);assert r['sha256']==d,str(p);return r
+def read(p):return json.loads(Path(p).read_text(encoding='utf-8-sig'))
+def checked(r):
+ b=Path(r['path']).read_bytes();assert len(b)==r['bytes'] and sha(b)==r['sha256'];return b
+def future(rel,b):return {'path':str(P/rel),'bytes':len(b),'sha256':sha(b)}
+def apply(b,before,after,label):
+ before=before.encode() if isinstance(before,str) else before;after=after.encode() if isinstance(after,str) else after
+ assert before and b.count(before)==1,label
+ at=b.index(before);new=b[:at]+after+b[at+len(before):]
+ row={'label':label,'before':before.decode(),'after':after.decode(),'byte_offset':at,'before_sha256':sha(b),'after_sha256':sha(new)}
+ return new,row
+def inverse(b,rows):
+ for e in reversed(rows):
+  assert sha(b)==e['after_sha256'];at=e['byte_offset'];a=e['after'].encode();old=e['before'].encode()
+  assert b[at:at+len(a)]==a
+  b=b[:at]+old+b[at+len(a):];assert sha(b)==e['before_sha256']
+ return b
+assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=M).decode().strip()==HEAD
+assert subprocess.check_output(['git','status','--porcelain'],cwd=M)==b''
+manifest_pin=exact(OLD/'production-proposal.json','978981A96D6CDD2791FF6B90DDBC575235A83E9C3B678CD3961389AB6866AF12')
+manifest=read(OLD/'production-proposal.json');assert len(manifest['frozen_packet_inventory'])==72
+for row in manifest['frozen_packet_inventory']:checked(row)
+old_proposal=read(OLD/'build/proposal.json');old_block=checked(old_proposal['block'])
+basis=checked(old_proposal['original']);old_projected=checked(old_proposal['projected'])
+name_before=b'            .name = "native-vm-array-buffer-view-data",\n'
+install_before=b'        b.step("build-native-vm-array-buffer-view-data", "Install actual borrowed ArrayBufferView address controls without execution").dependOn(&b.addInstallArtifact(vm_array_buffer_view_data_tests, .{}).step);\n'
+install_after=b'        b.step("build-native-vm-array-buffer-view-data", "Install actual borrowed ArrayBufferView address controls without execution").dependOn(&b.addInstallArtifact(vm_array_buffer_view_data_tests, .{ .dest_sub_path = b.fmt("native-vm-array-buffer-view-data{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);\n'
+block1,be1=apply(old_block,name_before,b'','canonical default test cache name')
+new_block,be2=apply(block1,install_before,install_after,'exact public installed executable basename')
+assert inverse(new_block,[be1,be2])==old_block and b'.name =' not in new_block
+step1,e1=apply(old_projected,name_before,b'','canonical default test cache name')
+corrected_old,e2=apply(step1,install_before,install_after,'exact public installed executable basename')
+assert inverse(corrected_old,[e1,e2])==old_projected
+assert old_projected.replace(old_block,b'')==basis and corrected_old.replace(new_block,b'')==basis
+anchor=old_proposal['edit']['old_text'].encode();assert old_proposal['edit']['new_text'].encode()==old_block+anchor
+assert basis.replace(anchor,new_block+anchor)==corrected_old
+current=subprocess.check_output(['git','show',HEAD+':build.zig'],cwd=M)
+assert current==(M/'build.zig').read_bytes() and sha(current)=='4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55'
+projected_current,current_edit=apply(current,anchor,new_block+anchor,'corrected Buffer install-only insertion on frozen79c19')
+assert inverse(projected_current,[current_edit])==current
+shutdown_pin=exact(SHUT/'projection.json','B0919FB27FB4825C57CAC6FCE0BE074DD58945ED42DA3D7781B8241FAAFFF92D')
+shutdown=read(SHUT/'projection.json');assert shutdown['basis_main_head']==HEAD and checked(shutdown['current_build'])==current
+assert len(shutdown['current_shutdown_edits'])==1
+se=shutdown['current_shutdown_edits'][0]
+with_shutdown,shutdown_edit=apply(current,se['before'],se['after'],'unchanged selected Shutdown insertion after existing Transfer')
+assert with_shutdown==checked(shutdown['projected_build']) and shutdown_edit['after_sha256']==se['after_sha256']
+combined,buffer_after_shutdown=apply(with_shutdown,anchor,new_block+anchor,'corrected Buffer insertion after selected Shutdown')
+other_order,shutdown_after_buffer=apply(projected_current,se['before'],se['after'],'unchanged selected Shutdown insertion after Buffer')
+assert other_order==combined
+assert inverse(inverse(combined,[buffer_after_shutdown]),[shutdown_edit])==current
+assert inverse(inverse(other_order,[shutdown_after_buffer]),[current_edit])==current
+assert combined.index(b'const node_file_handle_transfer =')<combined.index(b'const node_stream_shutdown =')<combined.index(b'const native_node_fs_request_owner_tests =')
+error_proposal_path=B/'evidence/native-error-build-artifact-naming-sourceonly-20261020/proposal.json'
+error_pin=exact(error_proposal_path,'262AFAA489DC7620FECE7D077FCB1C7A4904E6B65BC420A8A697B6C2341A158A')
+error_proposal=read(error_proposal_path);error_block=error_proposal['exact_build_scope']['new_error_block'].encode()
+for candidate in [current,projected_current,with_shutdown,combined]:
+ assert candidate.count(error_block)==1 and b'.name = "native-vm-error-constructor-name"' not in candidate
+authority_path=Path(error_proposal['authority']['path']);checked(error_proposal['authority']);authority=read(authority_path);excerpts=[]
+for row in authority['files']:
+ raw=checked(row['original']);assert checked(row['snapshot'])==raw
+ for e in row['excerpts']:
+  selected=b''.join(raw.splitlines(keepends=True)[e['first_line']-1:e['last_line']])
+  assert len(selected)==e['bytes'] and sha(selected)==e['sha256'] and selected.decode()==e['text']
+  excerpts.append({'source':row['original'],'first_line':e['first_line'],'last_line':e['last_line'],'sha256':sha(selected)})
+assert len(excerpts)==12
+driver=error_proposal['unchanged_driver']['original'];auditor=error_proposal['unchanged_metadata_auditor']['original'];checked(driver);checked(auditor)
+assert b'-Filter test.exe' in checked(driver) and b"'bin/test.pdb'" in checked(driver)
+control=read(OLD/'controls/binding.json')
+assert checked(control['live'])==checked(control['snapshot'])
+assert re.findall(r'^test "([^"]+)"',checked(control['snapshot']).decode(),re.M)==control['names'] and len(control['names'])==12
+for forbidden in [b'addRunArtifact',b'addSystemCommand',b'.stack_size',b'.stack_limit']:
+ assert forbidden not in new_block
+copies=[
+ ('original/install-only-block.zig.txt',old_block),
+ ('projected/install-only-block.zig.txt',new_block),
+ ('original/c764-with-original-buffer.zig',old_projected),
+ ('projected/c764-with-corrected-buffer.zig',corrected_old),
+ ('original/current79-build.zig',current),
+ ('projected/current79-with-buffer.zig',projected_current),
+ ('original/current79-with-shutdown.zig',with_shutdown),
+ ('projected/current79-with-shutdown-and-buffer.zig',combined)]
+outputs={rel:future(rel,b) for rel,b in copies}
+proof={
+ 'schema':'pi-zig.raw-view-data-build-naming-successor.v1','status':'finite_source_only_successor_unissued',
+ 'source_only':True,'basis_main_head':HEAD,'relative_path':'build.zig',
+ 'preserved_original_manifest':manifest_pin,'preserved_original_inventory_rows':72,
+ 'preserved_original_build_proposal':pin(OLD/'build/proposal.json'),'original_build_naming_is_not_selected_for_future_intake':True,
+ 'causal_finding':'The original custom addTest.name changes both cached executable and PDB names, incompatible with unchanged strict driver test.exe/test.pdb. Omit only that .name and select the public executable destination explicitly.',
+ 'original_block':outputs['original/install-only-block.zig.txt'],'corrected_block':outputs['projected/install-only-block.zig.txt'],'exact_two_block_edits':[be1,be2],
+ 'original_projected_comparison':outputs['original/c764-with-original-buffer.zig'],'corrected_projected_comparison':outputs['projected/c764-with-corrected-buffer.zig'],'exact_two_whole_file_edits':[e1,e2],
+ 'two_edit_whole_inverse_exact':True,'all_bytes_outside_the_original_Buffer_block_unchanged':True,
+ 'current_head_projection':{'original':outputs['original/current79-build.zig'],'projected':outputs['projected/current79-with-buffer.zig'],'edit':current_edit,'whole_forward_inverse_exact':True,'raw_git_and_current_checkout_equal':True},
+ 'selected_shutdown_composition':{'accepted_projection':shutdown_pin,'original':outputs['original/current79-with-shutdown.zig'],'projected':outputs['projected/current79-with-shutdown-and-buffer.zig'],'buffer_after_shutdown_edit':buffer_after_shutdown,'shutdown_after_buffer_edit':shutdown_after_buffer,'original_shutdown_edit':shutdown_edit,'Buffer_before_or_after_selected_Shutdown_byte_equal':True,'both_whole_inverse_orders_exact':True,'Transfer_then_Shutdown_order_preserved':True,'Transfer_and_Shutdown_mutual_order_is_not_claimed_commutative':True},
+ 'accepted_Error_naming_preserved':error_pin,'canonical_Error_block_preserved_exact':True,
+ 'target':{'build_step':'build-native-vm-array-buffer-view-data','root_source':'src/native_vm_array_buffer_view_data_test.zig','filter':'VM view data','cached_executable_windows':'test.exe','cached_pdb_windows':'test.pdb','installed_executable_windows':'native-vm-array-buffer-view-data.exe','installed_pdb_windows':'test.pdb','installed_executable_non_windows':'native-vm-array-buffer-view-data','declared_named_controls':12,'actual_future_metadata':None},
+ 'naming_authority':pin(authority_path),'verified_authority_excerpts':excerpts,'unchanged_driver':driver,'unchanged_metadata_auditor':auditor,
+ 'control_snapshot_unchanged':control['snapshot'],'control_live_unchanged':control['live'],'all12_names_and_assertions_unchanged':True,
+ 'source_compile_link_filter_guard_scope_unchanged':True,'run_steps_added':0,'production_or_control_changes':0,
+ 'own_VM_and_corrected_Latin1_composition_unchanged':manifest['optional_corrected_latin1_composition']['proposal'],
+ 'limits':['Only a build proposal; no Main intake or execution authority.','All original Buffer raw borrow, brand CHECK, V8 materialization and future listener/bootstrap limitations remain.','Optional Shutdown keeps its full independent source/fatal/TLS prerequisites; this build composition does not close them.'],
+ 'compiler_native_reference_generator_execution':False,'Main_changed':False,'runtime_qualified':False,
+ 'output_snapshots':[outputs[rel] for rel,b in copies],
+ 'builder':pin(P/'prepare-proposal.py')
+}
+assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=M).decode().strip()==HEAD
+assert subprocess.check_output(['git','status','--porcelain'],cwd=M)==b''
+# FINAL OUTPUT PHASE: new immutable source-review artifacts only.
+for rel,b in copies:
+ q=P/rel;q.parent.mkdir(parents=True,exist_ok=True)
+ with q.open('xb') as f:f.write(b)
+q=P/'proposal.json'
+with q.open('xb') as f:f.write((json.dumps(proof,indent=2)+'\n').encode())
+print(json.dumps(pin(q)))
+print(json.dumps({'corrected_block':outputs['projected/install-only-block.zig.txt'],'current_buffer':outputs['projected/current79-with-buffer.zig'],'combined':outputs['projected/current79-with-shutdown-and-buffer.zig']}))

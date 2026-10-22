@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_inert_source_only_pending20_copy_manifest_plan",
+  "reviewer": "/root/module_io_port",
+  "recorded_utc": "2026-10-21T15:53:04.555892+00:00",
+  "candidate_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-manifest-plan.json",
+    "bytes": 378545,
+    "sha256": "E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"
+  },
+  "candidate_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\handoff.json",
+    "bytes": 8845,
+    "sha256": "5B673525420F88F9DAEAF811F478A2E596ABFB10CAD48B4863A050AA97DEBE5F"
+  },
+  "source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-buffer-union014-source-peer-acceptance-20261021.json",
+    "bytes": 4491,
+    "sha256": "DCD89661CDA72A4B4003DD4FDF80D443FB166407767D73F07F698473D52C7BAA"
+  },
+  "paused_record": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-source-intake-20261020\\paused-resolved-inputs.json",
+    "bytes": 14121,
+    "sha256": "83F392D93DB3E4EC59721BD728275B0A9312EF97261E30939FB2E43EDC95C48E"
+  },
+  "prior_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-union014-source-peer-20261021\\peer.json",
+    "bytes": 9106,
+    "sha256": "19603E22021A2CFC8B980A63BEDD3B9DD8924458C6038577B0BC0A686EF32688"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\source-audit-v3.py",
+    "bytes": 18845,
+    "sha256": "6E421DD5F6B9BBA85BBAAB2E21F8DA3B83B6BDBF9326033CE14F8910BD24AB38"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\source-proof.json",
+    "bytes": 393757,
+    "sha256": "DFD3407C50A595DC2A70F1C3BDA264DAB5953027E6B693B5238E9C0F36714920"
+  },
+  "checker_exit_code": 0,
+  "source_only": true,
+  "finding": "No concrete blocker in the exact inert source/evidence copy plan or its three supplemental planning rows. Accepted as a bounded source-only plan; final manifest, released head, whole-set Git conversion preflight and Root intake release remain separate.",
+  "decisive_checks": {
+    "twenty_selected_source_rows_equal_paused83F_and_accepted014_scope": true,
+    "source_replacements": 8,
+    "source_additions": 12,
+    "immutable014_raw_git_preimages_rehashed": 8,
+    "immutable014_new_source_absences": 12,
+    "physical_raw_archive_targets": 223,
+    "logical_immutable_archive_donors_rehashed": 248,
+    "content_equal_deduplicated_copies": 25,
+    "bytes_before_content_dedup": 39416075,
+    "physical_archive_bytes": 30537022,
+    "bytes_saved": 8879053,
+    "all_content_dedup_groups_verified_by_complete_raw_equality": true,
+    "all_donor_paths_and_logical_archive_names_retained": true,
+    "canonical_dedup_destination_is_first_sorted_logical_target": true,
+    "source_destinations_never_coalesced_with_archives": true,
+    "shutdown_packet_members": 90,
+    "buffer_packet_members": 72,
+    "all202_prior_replay_inputs_covered": true,
+    "prior_input_direct_representations": 197,
+    "prior_input_exact_historical_Zig_snapshot_representations": 5,
+    "historical_snapshot_aliases_total": 9,
+    "all140_explicit_JSON_reference_sites_exact": true,
+    "Root_authorities": 6,
+    "negative_or_rejected_predecessor_versions": 12,
+    "current_inputs_rehashed": 252,
+    "all20_source_plus223_archives_plus_manifest_paths_canonical_unique": true,
+    "three_supplemental_plan_checker_proof_rows_rehashed": true,
+    "current_planned_paths_with_supplements_and_manifest": 247,
+    "current_planned_replacements": 8,
+    "current_planned_additions_including_manifest": 239,
+    "no_file_directory_ancestor_or_casefold_collision": true
+  },
+  "future_conversion_contract_review": {
+    "manifest_in_all_preflight_copy_staging_commit_checks": true,
+    "all_targets_effective_text_eol_filter_working_tree_encoding_ident_checked": true,
+    "configured_filters_encoding_ident_disallowed_before_hashing": true,
+    "raw_and_path_aware_hash_object_without_w_and_binary_stdin": true,
+    "entire_manifest_preflight_before_first_write": true,
+    "raw_donor_preimage_absence_and_actual_released_head_required": true,
+    "postcopy_staged_and_committed_raw_bytes_must_equal_donors": true,
+    "distinct_negative_and_reviewed_successor_on_mismatch": true,
+    "actual_conversion_preflight_run": false
+  },
+  "scope_preserved": {
+    "Transfer_before_Shutdown": true,
+    "Transfer_Shutdown_commutation_claim": false,
+    "corrected_Latin1_Buffer_and_selected_Shutdown_Buffer_compositions_retained": true,
+    "Error_naming_and_protected972B_MakeCallback_preserved": true,
+    "two_selected_fatal_sources_only": true,
+    "three_new_roots_declared_controls": 38,
+    "actual_future_metadata_count": null,
+    "excluded": [
+      "pending runtime template identity",
+      "full CustomBuffer listener",
+      "any additional production tracing/clock source not in the exact twenty source rows"
+    ]
+  },
+  "external_reference_boundary": {
+    "fully_self_contained_archive_claim": false,
+    "historical_clock_references": [
+      {
+        "pin": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.hpp",
+          "bytes": 1236,
+          "sha256": "F7AE55D36E54D64AC7FA36CF6F64D06A631889213EE0E43998F8701004338E98"
+        },
+        "refs": [
+          {
+            "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\manifest.json",
+            "ref": "$.unchanged_clock_dependencies[0]"
+          }
+        ],
+        "reason": "Historical clock implementation referenced by the broader fatal/tracing predecessor; not required by the selected fatal C/H or any of the twenty source targets. No production clock source is copied or read."
+      },
+      {
+        "pin": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.cpp",
+          "bytes": 13664,
+          "sha256": "E0408BD2D94D728FACD1E2B36C7DD831BEF49E12BF53C52FE60D602D001B0064"
+        },
+        "refs": [
+          {
+            "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\manifest.json",
+            "ref": "$.unchanged_clock_dependencies[1]"
+          }
+        ],
+        "reason": "Historical clock implementation referenced by the broader fatal/tracing predecessor; not required by the selected fatal C/H or any of the twenty source targets. No production clock source is copied or read."
+      }
+    ],
+    "historical_live_toolchain_or_source_locations_read": false,
+    "repository_wide_source_tree_not_recopied": true,
+    "dependency_inventory_JSON_retained_complete": true,
+    "new_complete_source_dependency_catalog_required_after_actual_intake": true,
+    "original_absolute_references_preserved_in_raw_documents": true
+  },
+  "preserved_checker_negatives": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\checker-alias-selector-negative.json",
+      "bytes": 6985,
+      "sha256": "A2068E7A737FB099B0BEA14207F7711C5F17D4204FE2DCC8EF18BA4AF1839447"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\checker-document-selector-negative.json",
+      "bytes": 8394,
+      "sha256": "982E2BFB0C4F359D103CBA8FAFB4295BB21623CC77E946D55BCB89777AFA4ABB"
+    }
+  ],
+  "checker_negative_scope": "The first independent checker incorrectly required historical Zig paths as direct donors; the next incorrectly equated a Root/peer document label with the separate six-Root-authority list. Their immutable successors bind explicit historical snapshots and exact accepted peer companion fields. Both failures stopped before proof output; original checker versions, negative receipts and complete raw inverses are retained. Candidate plan and handoff were never changed.",
+  "remaining": [
+    "Observe required original63 BuildQuery and strict runtime closures, exact original process closure and a distinct applicable Root source release.",
+    "Serialize and pin an exact final manifest for the actual released head. This247-path count includes only the current core, three announced planning artifacts and manifest; any additional future peer/intake records need explicit additional rows.",
+    "Independently review the exact adapter/final manifest, then perform every current preimage/absence, effective-attribute and raw/path-aware byte-conversion check before any write.",
+    "Refresh complete catalog/source/dependency inventories and separately authorize native validation after eventual intake."
+  ],
+  "Main_accessed": false,
+  "Main_changed": false,
+  "index_changed": false,
+  "existing_artifacts_changed": false,
+  "candidate_or_prefix_executed": false,
+  "intake_or_archive_executed": false,
+  "manifest_issued": false,
+  "configuration_issued": false,
+  "native_execution_authorized": false,
+  "source_intake_authorized": false,
+  "application_qualified": false
+}

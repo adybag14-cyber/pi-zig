@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "status": "independent_checker_only_finite_successor",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check.py",
+    "bytes": 30694,
+    "sha256": "C780D860D773C05510B350373870621E906E2070295D4C9FF40B12D915702091"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v2.py",
+    "bytes": 31510,
+    "sha256": "C715E169C5FF1C05BA054DB7F2C1956C4EF8C0EDF42A02B6B48B980298ACD358"
+  },
+  "preserved_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\original-root-table-selector-negative.json",
+    "bytes": 2566,
+    "sha256": "8B1609E9479121A8A4158EE6B5E52D262CACBC6BAF5972AF111012D26059DD6D"
+  },
+  "steps": [
+    {
+      "label": "Resolve an identifier-bound immutable literal loop table before deriving roots",
+      "offset": 9953,
+      "before_utf8": "        vals=[json.loads(x[0])for x in ts[i+2:e]if x[3]==\"string\"]\n        loops.append(dict(start=i,body=k+1,end=pairs[k+1],capture=capture,values=vals,header_start=ts[i][1],header_end=ts[k+1][2]))",
+      "after_utf8": "        iterable=ts[i+2:e]\n        vals=[json.loads(x[0])for x in iterable if x[3]==\"string\"]\n        binding=None\n        if not vals and len(iterable)==1 and iterable[0][3]==\"word\":\n            name=iterable[0][0]\n            declarations=[n for n in range(i-2)if [x[0]for x in ts[n:n+3]]==[\"const\",name,\"=\"]]\n            need(len(declarations)==1,(\"unique preceding constant loop table\",name))\n            n=declarations[0];a=n+3;z=a\n            while z<i and ts[z][0]!=\";\":\n                z=pairs[z]+1 if z in pairs else z+1\n            need(z<i and ts[z][0]==\";\",(\"complete constant loop table\",name))\n            vals=[json.loads(x[0])for x in ts[a:z]if x[3]==\"string\"]\n            table=s[ts[n][1]:ts[z][2]].encode()\n            binding=dict(name=name,bytes=len(table),sha256=sha(table),utf8=table.decode())\n        loops.append(dict(start=i,body=k+1,end=pairs[k+1],capture=capture,values=vals,table_binding=binding,header_start=ts[i][1],header_end=ts[k+1][2]))",
+      "input_sha256": "C780D860D773C05510B350373870621E906E2070295D4C9FF40B12D915702091",
+      "output_sha256": "B58A1AC774E9FBC4DBF2BC49EB286B67E35EAAEEE822A9740D337291C2AC7D39"
+    },
+    {
+      "label": "Pin the complete named table in the independent loop proof",
+      "offset": 12059,
+      "before_utf8": "dynamic.append(dict(**row,loop_capture=loop[\"capture\"],header_bytes=len(hdr),header_sha256=sha(hdr),header_utf8=hdr.decode()))",
+      "after_utf8": "dynamic.append(dict(**row,loop_capture=loop[\"capture\"],constant_table_binding=loop[\"table_binding\"],header_bytes=len(hdr),header_sha256=sha(hdr),header_utf8=hdr.decode()))",
+      "input_sha256": "B58A1AC774E9FBC4DBF2BC49EB286B67E35EAAEEE822A9740D337291C2AC7D39",
+      "output_sha256": "C715E169C5FF1C05BA054DB7F2C1956C4EF8C0EDF42A02B6B48B980298ACD358"
+    }
+  ],
+  "whole_forward_inverse_exact": true,
+  "candidate_changed": false,
+  "candidate_or_prefix_executed": false,
+  "Main_accessed": false
+}

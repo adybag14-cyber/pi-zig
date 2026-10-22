@@ -1,0 +1,228 @@
+{
+  "schema": 1,
+  "status": "accepted_independent_v38_emitted_archive_and_exact_strengthened_intake_binding",
+  "reviewer": "/root/handover_review",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "source_only": true,
+  "main_applied": false,
+  "adapter_executed": false,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "production_bridge_removed": false,
+  "source_mutation_hold_released": false,
+  "candidate_manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-bound-20261022\\manifest.json",
+    "bytes": 2376374,
+    "sha256": "5BB0608FA530405D87A99000A9A305DBD7A6E3049AF592A0D2DF0C8489A9479C"
+  },
+  "candidate_executor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-bound-20261022\\Apply-ExactV38PartialNegativeArchiveIntake-20261022.py",
+    "bytes": 23653,
+    "sha256": "A492D0C5F151E87F2A2538C2E570D1EC2C2FF905442FA3B87E89A59A277E7C09"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-bound-20261022\\binding-and-output-proof.json",
+    "bytes": 10470,
+    "sha256": "B0F81C9196A9AFBA761094FD4C62A8EE6B6AB1E0F90374AE51723DFD15FE762F"
+  },
+  "emitted_original_manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\manifest.json",
+    "bytes": 1226916,
+    "sha256": "6D6A2436B3D741070997901B0630F04F0306C85F21D9D347D52CE91A0A3EB85D"
+  },
+  "projected_progress": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\projected\\verification\\port-roadmap-resume-20261018\\progress.json",
+    "bytes": 678718,
+    "sha256": "4FF79AE87F671BB8F16283E38D282CB58444A1A0FA42659B0F3CED505EE04343"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-progress-validation-archive-intake-peer-20261022\\check-normalized-binding.py",
+    "bytes": 15514,
+    "sha256": "E0FABDB4814086BFBAA425A681577380B715DED3265E1B1102983E3C2EA2D297"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-progress-validation-archive-intake-peer-20261022\\normalized-binding-proof.json",
+    "bytes": 13416,
+    "sha256": "2818270244BEC1B2813DFB17E6C0ADC6CDC54F58B7D9A090E42451B534E4BCFD"
+  },
+  "emitted_output_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-progress-validation-archive-intake-peer-20261022\\check-emitted.py",
+    "bytes": 23798,
+    "sha256": "8DC82B2668712BD6ACB9FDB56F8E12646085F7FE0305A705E107FC8B7D63E7F3"
+  },
+  "emitted_output_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-progress-validation-archive-intake-peer-20261022\\emitted-proof.json",
+    "bytes": 1360063,
+    "sha256": "A512D461EB1E9E4A8D06695D3FE4022BF371CAA92B9DC6DBB2F543542452F93E"
+  },
+  "historical_preparation_job": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-issued-v38-partial-negative-archive-preparation-20261022\\preparation-job-observation.json",
+    "bytes": 3192,
+    "sha256": "8BC55198BC5E0D908A63C806B421056DFCAD7A21D6530260283616DF7E50BB52"
+  },
+  "accepted_adapter_template": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py",
+    "bytes": 23634,
+    "sha256": "8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985"
+  },
+  "adapter_template_root_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending20-strengthened-intake-adapter-v2-source-acceptance-20261022.json",
+    "bytes": 6683,
+    "sha256": "039E21F5F5A82E7AFEC2AD549DF8E27BDF7729BF8D1E8E4015B4E9C06B99B738"
+  },
+  "findings": {
+    "emitted_output": {
+      "paths": 1930,
+      "physical_rows": 1929,
+      "original_observed_copy_rows": 1919,
+      "raw_original_rows": 1911,
+      "auxiliary_raw_records": 9,
+      "current_original_and_projected_file_versions_rehashed": 3856,
+      "complete_five_phase_file_counts": [
+        90,
+        73,
+        1214,
+        19,
+        253
+      ],
+      "direct_pin_edges": 1040,
+      "prior314_row_183_edge_2_pair_prefixes_exact": true,
+      "complete_projected_directory_membership": true,
+      "all_raw_original_and_projected_bytes_equal": true
+    },
+    "history": {
+      "prior_progress_bytes": 554689,
+      "prior_progress_sha256": "BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028",
+      "complete_raw_inverse": true,
+      "nested_list_prefixes": 181,
+      "full_old_checkpoint_appended": true,
+      "source_units": [
+        65,
+        65
+      ],
+      "attempts": [
+        38,
+        45
+      ],
+      "native_negatives": [
+        14,
+        15
+      ],
+      "checkpoints": [
+        14,
+        15
+      ],
+      "replaced_top_level_fields": 8,
+      "added_top_level_fields": 1,
+      "unrelated_fields_exact": true
+    },
+    "compressed_seals": {
+      "pairs": 4,
+      "original_bookends": 8,
+      "both_originals_complete_equal": true,
+      "complete_decompression_inverse": true,
+      "independent_encoding_byte_equal": true,
+      "recipe": {
+        "filename": "",
+        "mtime": 0,
+        "compresslevel": 9,
+        "header_hex": "1f8b08000000000002ff"
+      },
+      "prelaunch_bookends_retained_raw": 2,
+      "original_files_unchanged": true
+    },
+    "outcome_separation": {
+      "new4": {
+        "groups": 4,
+        "source_declarations": 58,
+        "metadata": 61,
+        "strict_runtime_completed": 61,
+        "strict_runtime_failed": 0,
+        "accepted_original_runtime": true
+      },
+      "original63": {
+        "groups": 63,
+        "source_declarations": 1249,
+        "metadata": 1285,
+        "complete_buildquery_accepted": true,
+        "prelaunch_native_owners": 0,
+        "prelaunch_raw_native_test_count": null,
+        "attempted_runtime_groups": 17,
+        "unstarted_runtime_groups": 46,
+        "runtime_completed": 321,
+        "runtime_passed": 320,
+        "runtime_failed": 1,
+        "unstarted_tests": 964,
+        "original_demoted_group_statuses": 16,
+        "positive_group_acceptance": false
+      },
+      "appended_validation_attempts": 7,
+      "appended_native_negative_records": 1,
+      "preserved_non_native_negatives": 3,
+      "no_application_or_bridge_qualification": true,
+      "no_metadata_transfer_to_future_source": true
+    },
+    "normalization": {
+      "original_rows_preserved_in_order": 1929,
+      "only_original_row_changes": "mode='100644' and before.mode='100644' for the one existing progress row",
+      "extra_raw_row": "verification/native-v38-validation-evidence-20261021/preparation/original-preparer-manifest.json.raw",
+      "original_manifest_preserved": true,
+      "entire1226916_byte_manifest_inverse": true,
+      "normalized_rows": 1930,
+      "physical_donor_aliases": 1930,
+      "synthetic_manifest": 1,
+      "total_commit_paths": 1931,
+      "all_donor_bytes_and_aliases_verified": true,
+      "all_planned_target_and_parent_spellings_unique": true,
+      "only_existing_replacement": "verification/port-roadmap-resume-20261018/progress.json",
+      "source_build_paths": 0
+    },
+    "binding": {
+      "literal_edits": 5,
+      "fields": [
+        "BASIS",
+        "manifest relative path",
+        "manifest SHA-256",
+        "total commit paths",
+        "commit subject"
+      ],
+      "subject": "Record V38 accepted builds and partial runtime failure closure",
+      "phase": "fixture",
+      "independently_AST_derived_current_offsets": true,
+      "every_intermediate_hash_verified": true,
+      "entire23634_byte_template_inverse": true,
+      "all_untouched_fragments_exact": true,
+      "unchanged_nonconstant_tokens": true,
+      "unchanged_full_function_bodies": 22,
+      "all_existing_Git_preflight_stage_commit_gates_retained": true
+    },
+    "future_execution": {
+      "separate_exact_Root_release_required": true,
+      "actual_Main_preimages_and_absences_not_queried_by_peer": true,
+      "actual_Git_byte_and_attribute_preflight_not_run_by_peer": true,
+      "required_before_Main_writes": [
+        "exact repository, branch, head, object format and clean index/worktree",
+        "all physical and alias donor bytes including synthetic manifest",
+        "existing and planned full path/prefix spellings and modes",
+        "five effective attributes plus relevant conversion/config origins",
+        "independent raw OID equals Git --no-filters OID equals path-aware OID",
+        "unchanged source hashes and conversion provenance before copy"
+      ],
+      "required_after_copy": [
+        "all exact bytes/modes/OIDs in index",
+        "post-copy and pre-commit attribute/config revalidation",
+        "complete single-parent relation and exact committed path list",
+        "all committed bytes/modes/OIDs and final attributes/config",
+        "clean index/worktree"
+      ],
+      "candidate_and_prefix_not_evaluated": true
+    }
+  },
+  "concrete_blockers": [],
+  "own_checker_outcomes": {
+    "emitted": "passed first run",
+    "normalization_binding": "passed first run"
+  },
+  "scope_note": "This peer accepts the exact emitted data and bounded source binding only. It does not execute the adapter, inspect Main, authorize intake, or change any native result. All historical preparation/admission/auditor negatives remain immutable.",
+  "reviewed_utc": "2026-10-22T14:55:13.304839+00:00"
+}

@@ -1,0 +1,63 @@
+from pathlib import Path
+import json,hashlib
+P=Path(r'C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018\verification\native-node-custom-buffer-sourceonly-20261020')
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ p=Path(p);b=p.read_bytes();return {'path':str(p),'bytes':len(b),'sha256':sha(b)}
+def read(n):return json.loads((P/n).read_text(encoding='utf-8'))
+def checked(x):
+ p=Path(x['path']);b=p.read_bytes();assert len(b)==x['bytes'] and sha(b)==x['sha256'];return b
+vm=read('vm/proposal.json');control=read('controls/binding.json');build=read('build/proposal.json');latin=read('vm/latin1-successor-composition.json');bc=read('build/shutdown-composition.json');proof=read('source-only-checks.json');closure=read('closure-and-preservation.json')
+assert pin(P/'source-only-checks.json')['sha256']=='F59FD3FD1A5BD0BE2A59145156C9E0E052F44BB210494C9A4FC12DE4F5D3B6E4'
+assert control['declared_controls']==12 and len(control['names'])==12
+assert closure['preserved_prior_sdk_source_count']==40
+for x in proof['verified_files']:checked(x)
+assert checked(control['live'])==checked(control['snapshot'])
+rows=[]
+for q in sorted(P.rglob('*'),key=lambda x:x.relative_to(P).as_posix()):
+ if q.is_file():
+  r=pin(q);r['relative_path']=q.relative_to(P).as_posix();rows.append(r)
+assert len(rows)==71
+selected=[{'relative_path':x['path'],'role':'finite shared VM insertion','required_predecessor':x['original'],'selected_projected':x['projected']} for x in vm['files']]
+selected += [{'relative_path':'src/native_vm_array_buffer_view_data_test.zig','role':'new actual VM controls','selected_projected':control['snapshot']},{'relative_path':'build.zig','role':'one install-only insertion; c764 comparison snapshot plus finite compositions','required_predecessor':build['original'],'selected_projected':build['projected'],'finite_proposal':pin(P/'build/proposal.json')}]
+manifest={
+ 'schema':'pi-zig.raw-array-buffer-view-data-production-proposal.v1',
+ 'status':'frozen_finite_source_only_proposal_awaiting_independent_peer',
+ 'scope':'Borrowed actual ArrayBufferView backing-address operation for future native CustomBuffer handling',
+ 'comparison_main_head':'c764130caf2f2c7c63728bec0f6d1e16ac5c59a4',
+ 'upstream_node_commit':'def0bdf8abee441cfcbf793a8dc24a6f3b899573',
+ 'source_only':True,'Main_changed':False,'compiler_native_reference_generator_execution':False,'runtime_qualified':False,
+ 'proposed_source_path_count':len(selected),'proposed_source_paths':selected,
+ 'finite_changes':{'C_body_insertions':1,'header_declaration_insertions':1,'new_control_roots':1,'declared_control_names':12,'build_insertions':1,'run_steps_added':0},
+ 'required_predecessor':vm['required_predecessor'],
+ 'selected_vm_proposal':pin(P/'vm/proposal.json'),'selected_controls_binding':pin(P/'controls/binding.json'),
+ 'install_only_build':pin(P/'build/proposal.json'),'target':build['target'],
+ 'build_snapshot_integration_boundary':'The exact c764 and explicitly composed build snapshots are comparison evidence, not permission to replace a newer Main build.zig. Apply only the reviewed finite insertion to an independently pinned current build basis, preserving all intervening accepted source changes.',
+ 'optional_corrected_latin1_composition':{'proposal':pin(P/'vm/latin1-successor-composition.json'),'module_final_manifest':latin['module_final_manifest'],'module_c_successor':latin['module_c_successor'],'selected_combined_files':[{'relative_path':x['relative_path'],'combined':x['combined']} for x in latin['files']],'both_orders_and_whole_inverses_exact':True},
+ 'optional_fixed_order_build_composition':{'proposal':pin(P/'build/shutdown-composition.json'),'combined':bc['combined'],'fixed_predecessor_order':bc['fixed_predecessor_order'],'ordering_limit':bc['ordering_limit']},
+ 'source_map':pin(P/'source-map.json'),'dependency_inventory':pin(P/'dependency-inventory.json'),'closure_and_preservation':pin(P/'closure-and-preservation.json'),'source_proof':pin(P/'source-only-checks.json'),
+ 'review_tools':{'closure_inspector':pin(P/'prepare-closure.py'),'selected_audit_inspector':pin(P/'source-audit-successor.py'),'README':pin(P/'README.md'),'README_additive_audit_clarification':pin(P/'README-audit-successor.md')},
+ 'reproduction':'Read complete scripts before executing only the prefix preceding each explicit FINAL OUTPUT marker. Compare serialized inventory, closure and proof to the frozen bytes; never repeat the exclusive output phases.',
+ 'independent_source_checks':{'verified_file_versions':proof['verified_unique_file_versions'],'exact_original_host_selected_excerpts':len(proof['all_34_original_host_and_selected_excerpts_exact']),'exact_control_body_bindings':len(proof['all_12_control_body_bindings_exact']),'prior_SDK_source_files_preserved':40,'repository_Zig_root_count':1,'quoted_C_files':25,'quoted_C_include_edges':33,'dependency_inventory_entries':31},
+ 'declared_control_names':control['names'],'future_accepted_actual_metadata':None,'runtime_cohort_selected':False,
+ 'contract':{'actual_brand':'initialized native TypedArray or DataView; no Proxy or forged properties','result':'current backing address plus stored byte offset; detached/invalid/incomplete views return NULL','borrow':'synchronous VM owner-thread borrow; caller retains actual view/storage lifetime','length':'usable length is separate; nonzero stored offset can remain when a resizable view is out of bounds','no_entitlement':'no new JS root/native reference/lease, no allocation, no getter, no current completion change','invalidations':'detach, transfer, collection, owner retirement or external resize/reallocation can invalidate a previous borrow; never dereference outside independently checked extent'},
+ 'remaining_original_policy_and_assembly':[
+  'Node Buffer::Data performs the actual ArrayBufferView brand CHECK before the address operation; raw NULL is not that fatal policy.',
+  'V8 JSTypedArray::GetBuffer can allocate, copy and attach backing storage for on-heap elements and fatal on allocation failure; this lower-level primitive does not implement that complete policy. Actual QuickJS view constructors already create or retain real backing.',
+  'Actual CustomBufferJSListener ownership, ReportWrites inheritance, StreamBase/FileHandle method publication, FunctionTemplate identity/receiver signature, liveness and argument admission remain separate work.',
+  'Complete FileHandle template/bootstrap, production trace/hook policy, worker assembly and native qualification remain open.',
+  'Inherited standard/toolchain angle headers and shared ICU/YAML/SQLite/photon/network/package build graphs are not newly qualified by this bounded quoted-include inventory.'
+ ],
+ 'retained_negative_evidence':[
+  {'role':'unselected original Latin1 argument predecessor composition','file':pin(P/'vm/latin1-composition.json')},
+  {'role':'AsyncWrap filenames scope clarification, no source change','file':pin(P/'vm/async-wrap-scope-clarification.json')},
+  {'role':'metadata closure-inspector local-variable shadowing preflight negative','file':pin(P/'closure-inspector-preflight-negative.json')},
+  {'role':'metadata lexical token-classification preflight negative','file':pin(P/'source-audit-preflight-negative.json')}
+ ],
+ 'frozen_packet_inventory_count':len(rows),'frozen_packet_inventory':rows,
+ 'inventory_serialization_sha256':sha((json.dumps(rows,sort_keys=True,separators=(',',':'))+'\n').encode()),
+ 'independent_peer_pending':True
+}
+target=P/'production-proposal.json'
+with target.open('xb') as f:f.write((json.dumps(manifest,indent=2)+'\n').encode())
+print(json.dumps(pin(target)));print(json.dumps({'files':len(rows),'source_paths':len(selected),'controls':12}))

@@ -1,0 +1,253 @@
+"""Independent static peer of the inert pending20 copy plan. No Main or target execution."""
+from pathlib import Path, PurePosixPath
+import collections, datetime, hashlib, json, os, re, subprocess
+R=Path(r"C:\Users\adyba\pi-zig")
+W=R/"worktrees/modules-io-resume-20261018"
+D=R/"evidence/unissued-shutdown-latin1-buffer-union014-intake-plan-20261021"
+OUT=W/"verification/pending20-copy-plan-independent-peer-20261021"
+PLAN=D/"copy-manifest-plan.json"
+HEAD="014062f2d139254acab4b985b4ae343db637166f"
+def norm(s):return str(s).replace("/","\\").casefold()
+def sha(raw):return hashlib.sha256(raw).hexdigest().upper()
+def encode(v):return (json.dumps(v,indent=2,ensure_ascii=False)+"\n").encode()
+def pin(p,raw):return {"path":str(p),"bytes":len(raw),"sha256":sha(raw)}
+cache={}
+pins={}
+def readp(row):
+    p=Path(row["path"]);key=norm(p)
+    assert p.is_absolute() and key.startswith(norm(R)+"\\")
+    assert not key.startswith(norm(R/"main")+"\\")
+    raw=p.read_bytes()
+    assert len(raw)==row["bytes"] and sha(raw)==row["sha256"],row
+    if key in cache:assert cache[key]==raw
+    cache[key]=raw;pins[key]=pin(p,raw)
+    return raw
+def ident(row):return (norm(row["path"]),row["bytes"],row["sha256"])
+plan_pin={"path":str(PLAN),"bytes":378545,"sha256":"E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"}
+plan=json.loads(readp(plan_pin))
+assert plan["status"]=="unissued_inert_shutdown_latin1_buffer_20_path_copy_manifest_plan"
+assert plan["reviewed_immutable_head"]==HEAD and plan["actual_released_head"] is None
+assert plan["source_only"] is True and all(x is False for x in plan["authority"].values())
+root=json.loads(readp(plan["source_acceptance"]))
+assert plan["source_acceptance"]["sha256"]=="DCD89661CDA72A4B4003DD4FDF80D443FB166407767D73F07F698473D52C7BAA"
+paused=json.loads(readp(plan["paused_record"]))
+peer=json.loads(readp(plan["source_peer"]))
+prior=json.loads(readp(plan["source_replay"]))
+assert plan["paused_record"]["sha256"]=="83F392D93DB3E4EC59721BD728275B0A9312EF97261E30939FB2E43EDC95C48E"
+assert root["peer"]==plan["source_peer"] and root["decisive_proof"]==plan["source_replay"] and root["original_paused_record"]==plan["paused_record"]
+assert root["reviewed_immutable_head"]==peer["reviewed_immutable_head"]==prior["reviewed_immutable_head"]==HEAD
+assert root["source_paths"]==20 and root["replacements"]==8 and root["new_paths"]==12
+assert root["intake_manifest_issued"] is False and root["source_mutation_hold_released"] is False
+sr=plan["source_rows"];ar=plan["archive_rows"]
+assert len(sr)==20 and len(ar)==223
+assert [x["relative_path"] for x in sr]==[x["relative_path"] for x in paused["source_paths"]]
+source_checks=[]
+for row,old in zip(sr,paused["source_paths"]):
+    assert row["donor"]==old["selected"] and row["preimage"]==old["current_preimage"]
+    assert row["reviewed_immutable_head"]==HEAD and row["actual_future_preimage_and_absence_check_required"] is True
+    selected=readp(row["donor"])
+    if row["preimage"] is None:assert row["kind"]=="source_addition"
+    else:assert row["kind"]=="source_replacement";readp(row["preimage"])
+    source_checks.append({"relative_path":row["relative_path"],"kind":row["kind"],"selected":row["donor"],"preimage":row["preimage"],"exact_paused_row":True})
+assert sum(r["preimage"] is not None for r in sr)==8
+logical={}
+physical_contents={}
+historical_aliases=[]
+reference_sites=[]
+before_bytes=0
+after_bytes=0
+dedup_groups=[]
+for row in ar:
+    assert row["kind"]=="immutable_evidence_archive" and row["preimage"] is None
+    assert row["relative_path"].startswith(plan["archive_prefix"]+"/archive/") and row["relative_path"].endswith(".raw")
+    actual=readp(row["donor"])
+    ds=row["logical_donors"]
+    assert ds
+    ordered=sorted(ds,key=lambda x:(x["logical_archive_relative_path"].casefold(),x["logical_archive_relative_path"]))
+    assert row["relative_path"]==ordered[0]["logical_archive_relative_path"] and row["donor"]==ordered[0]["donor"]
+    ckey=(len(actual),sha(actual))
+    assert ckey not in physical_contents
+    physical_contents[ckey]=row["relative_path"]
+    after_bytes+=len(actual)
+    group=[]
+    for d in ds:
+        key=ident(d["donor"])
+        assert key not in logical
+        assert readp(d["donor"])==actual
+        logical[key]=(row,d)
+        before_bytes+=d["donor"]["bytes"]
+        group.append(d["donor"])
+        for a in d["historical_reference_aliases"]:
+            ref=a["reference"]
+            assert ref["bytes"]==d["donor"]["bytes"] and ref["sha256"]==d["donor"]["sha256"]
+            assert a["reason"]
+            historical_aliases.append({"reference":ref,"immutable_donor":d["donor"],"physical_target":row["relative_path"],"historical_location_read":False})
+        for site in d["reference_sites"]:reference_sites.append((row,d,site))
+    if len(ds)>1:dedup_groups.append({"physical_target":row["relative_path"],"equal_raw_donors":group,"all_raw_bytes_equal":True})
+assert len(logical)==248 and len(historical_aliases)==9
+assert len(set(x[1]["logical_archive_relative_path"].casefold() for x in logical.values()))==248
+assert before_bytes==39416075 and after_bytes==30537022
+counts=plan["counts"]
+assert counts["source_paths"]==20 and counts["source_replacements"]==8 and counts["source_additions"]==12
+assert counts["immutable_archive_donors"]==248 and counts["archive_copy_paths"]==223
+assert counts["core_copy_rows"]==243 and counts["core_plus_final_manifest_paths"]==244
+assert counts["archive_bytes_before_content_dedup"]==before_bytes and counts["archive_bytes_to_copy"]==after_bytes
+assert counts["duplicate_archive_copies_removed"]==25 and counts["archive_bytes_saved"]==8879053
+assert counts["future_plan_review_receipt_paths_not_yet_in_core_count"] is True
+def target_ok(name):
+    assert isinstance(name,str) and name.isascii() and re.fullmatch(r"[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*",name)
+    assert not PurePosixPath(name).is_absolute()
+    reserved={"CON","PRN","AUX","NUL",*[f"COM{i}" for i in range(1,10)],*[f"LPT{i}" for i in range(1,10)]}
+    for part in name.split("/"):
+        assert part not in (".","..") and part.casefold()!=".git" and not part.endswith(("."," "))
+        assert part.split(".")[0].upper() not in reserved
+    return name.casefold()
+targets=[r["relative_path"] for r in sr+ar]+[plan["manifest_target"]]
+assert plan["manifest_target"]==plan["archive_prefix"]+"/manifest.json"
+keys=[target_ok(p) for p in targets]
+assert len(keys)==len(set(keys))==244
+keyset=set(keys)
+for key in keys:
+    parts=key.split("/")
+    assert not any("/".join(parts[:i]) in keyset for i in range(1,len(parts)))
+root_authorities=paused["root_accepted_references"]+[plan["source_acceptance"]]
+assert len(root_authorities)==6
+for row in root_authorities:assert ident(row) in logical;readp(row)
+assert root["original_Root_acceptances"]==paused["root_accepted_references"]
+assert len(prior["inputs"])==202
+resolved_identities={key:value[1]["donor"] for key,value in logical.items()}
+for alias in historical_aliases:
+    key=ident(alias["reference"]);selected=alias["immutable_donor"]
+    if key in resolved_identities:assert ident(resolved_identities[key])==ident(selected)
+    resolved_identities[key]=selected
+prior_input_resolution=[]
+for row in prior["inputs"]:
+    assert ident(row) in resolved_identities
+    selected=resolved_identities[ident(row)];readp(selected)
+    prior_input_resolution.append({"historical_reference":row,"immutable_archived_donor":selected,"historical_location_read":ident(row)==ident(selected)})
+assert sum(ident(x["historical_reference"])!=ident(x["immutable_archived_donor"]) for x in prior_input_resolution)==5
+coverage=[]
+for key,count,inventory_key in (("shutdown_frozen_inventory",90,"inventory"),("buffer_frozen_inventory",72,"frozen_packet_inventory")):
+    pr=plan["coverage"][key]["selected_packet"];packet=json.loads(readp(pr))
+    entries=packet[inventory_key];assert len(entries)==count
+    for item in entries:
+        row={"path":str(Path(pr["path"]).parent/item["relative_path"]),"bytes":item["bytes"],"sha256":item["sha256"]}
+        assert ident(row) in logical;readp(row)
+    coverage.append({"packet":pr,"inventory_rows":count,"all_exact_archived":True})
+for neg in plan["retained_negative_and_rejected_versions"]:
+    matches=[r for r in ar if r["relative_path"]==neg["archive_relative_path"]]
+    assert len(matches)==1
+    assert matches[0]["donor"]["bytes"]==neg["bytes"] and matches[0]["donor"]["sha256"]==neg["sha256"]
+assert len(plan["retained_negative_and_rejected_versions"])==12
+def getref(obj,path):
+    assert path.startswith("$");pos=1
+    while pos<len(path):
+        m=re.match(r"\.([A-Za-z0-9_-]+)|\[(\d+)\]",path[pos:])
+        assert m,(path,pos)
+        obj=obj[m.group(1)] if m.group(1) is not None else obj[int(m.group(2))]
+        pos+=len(m.group(0))
+    return obj
+json_sites=[]
+special_counts=collections.Counter()
+docs={}
+prior_input_ids={ident(resolved_identities[ident(r)]) for r in prior["inputs"]}
+root_ids={ident(r) for r in root_authorities}
+for physical,d,site in reference_sites:
+    if not site["from"].startswith("C:"):
+        special_counts[site["from"]]+=1
+        if site["from"]=="accepted independent014 source-proof.inputs":assert site["ref"]=="input" and ident(d["donor"]) in prior_input_ids
+        elif site["from"]=="Root/peer accepted document":assert site["ref"]=="document" and ident(d["donor"]) in root_ids
+        elif site["from"]=="Shutdown required fatal-owner provenance":
+            assert site["ref"]=="manifest"
+            fatal_manifest=json.loads(cache[norm(d["donor"]["path"])])
+            shutdown_path=plan["coverage"]["shutdown_frozen_inventory"]["selected_packet"]["path"]
+            shutdown=json.loads(cache[norm(shutdown_path)])
+            assert shutdown["required_predecessors"]["v8_fatal_owner_manifest"]==d["donor"]
+        else:raise AssertionError(site)
+        continue
+    key=norm(site["from"])
+    assert key in cache,"Reference source must itself be retained as exact bounded donor"
+    if key not in docs:docs[key]=json.loads(cache[key])
+    value=getref(docs[key],site["ref"])
+    allowed=[d["donor"]]+[a["reference"] for a in d["historical_reference_aliases"]]
+    assert any(ident(value)==ident(a) for a in allowed)
+    json_sites.append({"source":pins[key],"reference":site["ref"],"resolved_pin":{k:value[k] for k in ("path","bytes","sha256")},"physical_target":physical["relative_path"]})
+assert len(json_sites)==140
+assert dict(special_counts)=={"accepted independent014 source-proof.inputs":202,"Shutdown required fatal-owner provenance":1,"Root/peer accepted document":6}
+external=plan["coverage"]["historical_nonselected_external_references"]
+assert len(external)==2
+for entry in external:
+    assert ident(entry["pin"]) not in logical and norm(entry["pin"]["path"]) not in cache
+    for site in entry["refs"]:
+        assert ident(getref(json.loads(cache[norm(site["from"])]),site["ref"]))==ident(entry["pin"])
+    assert entry["reason"]
+scope=plan["source_order_and_scope"]
+assert scope["selected_build_sha256"]==next(x for x in sr if x["relative_path"]=="build.zig")["donor"]["sha256"]
+assert scope["Transfer_must_precede_Shutdown"] is True and scope["Transfer_Shutdown_commutation_claimed"] is False
+assert scope["new_roots"]==peer["new_roots"] and scope["declared_new_controls"]==38 and scope["actual_future_metadata_count"] is None
+assert scope["explicitly_excluded"][:2]==root["explicitly_excluded"]
+assert not any("template_identity" in x["relative_path"] or "custom_buffer_listener" in x["relative_path"] or "tracing_clock" in x["relative_path"] for x in sr)
+assert plan["deduplication"]["no_source_archive_coalescing"] is True
+assert "not independently recopied as an entire source tree" in plan["coverage"]["graph_boundary"]
+pre=plan["git_byte_preflight"];req=plan["future_admission_requirements"]
+for key,value in req.items():
+    if key.startswith("required_"):assert value is None
+assert req["all_requirements_unissued"] is True
+assert pre["status"]=="required_future_Root_action_not_run"
+assert "eventual manifest itself" in pre["scope"] and "including manifest" in pre["attributes_stdin"] and "including manifest" in pre["staging"]
+assert pre["attributes_argv"][3:]==["check-attr","-z","--stdin","text","eol","filter","working-tree-encoding","ident"]
+assert pre["raw_blob_argv"][3:]==["hash-object","--no-filters","--stdin"]
+assert pre["path_aware_blob_argv"][3:]==["hash-object","--path=<one-exact-relative-target>","--stdin"]
+assert "without -w" in pre["hash_stdin"] and "binary stdin" in pre["hash_stdin"]
+assert "before the first Main or index mutation" in pre["before_writes"]
+assert "including the manifest" in plan["manifest_self_reference_rule"] or "every identical path-aware Git byte preflight" in plan["manifest_self_reference_rule"]
+assert all(token in pre["disallowed_attributes"] for token in ("filter","working-tree-encoding","ident","unset or unspecified"))
+assert all(token in pre["required_equality"] for token in ("raw Git object ID","path-aware clean-conversion object ID","repository object format"))
+assert "read every committed raw blob" in pre["after_commit"]
+env=dict(os.environ,GIT_OPTIONAL_LOCKS="0")
+def git(*args):
+ q=subprocess.run(["git","--no-optional-locks","-C",str(W),*args],capture_output=True,check=True,env=env)
+ return q.stdout
+tree_raw=git("ls-tree","-r","-z",HEAD,"--",*[r["relative_path"] for r in sr])
+entries={}
+for item in tree_raw.split(b"\0"):
+ if item:
+    info,path=item.split(b"\t",1);mode,kind,oid=info.decode().split();entries[path.decode()]=(mode,kind,oid)
+assert len(entries)==8
+git_reads=[]
+for row in sr:
+    name=row["relative_path"]
+    if row["preimage"] is None:assert name not in entries;continue
+    raw=git("cat-file","blob",HEAD+":"+name)
+    assert raw==cache[norm(row["preimage"]["path"])]
+    git_reads.append({"commit":HEAD,"relative_path":name,"bytes":len(raw),"sha256":sha(raw),"git_blob":entries[name][2]})
+assert len(git_reads)==8
+handoff_pin={"path":str(D/"handoff.json"),"bytes":8845,"sha256":"5B673525420F88F9DAEAF811F478A2E596ABFB10CAD48B4863A050AA97DEBE5F"}
+handoff=json.loads(readp(handoff_pin))
+assert handoff["plan"]==plan_pin and handoff["source_acceptance"]==plan["source_acceptance"]
+supplemental=handoff["supplemental_current_plan_archive_rows"]
+assert len(supplemental)==3
+supp_ids=[]
+for row in supplemental:
+    assert row["kind"]=="immutable_evidence_archive" and row["preimage"] is None
+    assert row["relative_path"].startswith(plan["archive_prefix"]+"/archive/planning/") and row["relative_path"].endswith(".raw")
+    readp(row["donor"]);supp_ids.append(ident(row["donor"]))
+assert supp_ids==[ident(handoff[k]) for k in ("plan","static_checker","static_proof")]
+all_final_keys=keys+[target_ok(r["relative_path"]) for r in supplemental]
+assert len(all_final_keys)==len(set(all_final_keys))==247
+all_final_set=set(all_final_keys)
+for key in all_final_keys:
+    parts=key.split("/")
+    assert not any("/".join(parts[:i]) in all_final_set for i in range(1,len(parts)))
+assert handoff["complete_current_plan_path_count_including_manifest"]==247
+assert handoff["complete_current_plan_replacements"]==8 and handoff["complete_current_plan_new_paths_including_manifest"]==239
+assert handoff["manifest_issued"] is False and handoff["source_release"] is False
+
+# Every selected immutable input remains byte-identical at the end of this read-only observation.
+for key,row in list(pins.items()):assert pin(Path(row["path"]),Path(row["path"]).read_bytes())==row
+result={"schema":1,"status":"passed_independent_inert_pending20_copy_plan_checks","recorded_utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),"plan":plan_pin,"source_acceptance":plan["source_acceptance"],"paused_record":plan["paused_record"],"accepted_source_peer":plan["source_peer"],"accepted_source_replay":plan["source_replay"],"source_rows":source_checks,"all20_paused_selections_equal":True,"immutable_git_preimages":git_reads,"all12_additions_absent_in_immutable014":True,"physical_archive_paths":223,"logical_immutable_donors":248,"logical_donor_raw_rehashes_passed":248,"full_byte_deduplicated_alias_count":25,"archive_bytes_before_dedup":before_bytes,"archive_bytes_to_copy":after_bytes,"archive_bytes_saved":before_bytes-after_bytes,"dedup_groups":dedup_groups,"historical_snapshot_aliases":historical_aliases,"historical_alias_locations_not_read":True,"all_90_and_72_frozen_packet_members":coverage,"all202_accepted_source_replay_inputs_preserved":True,"prior_input_resolution":prior_input_resolution,"six_root_authorities":root_authorities,"retained12_negative_predecessor_versions":plan["retained_negative_and_rejected_versions"],"explicit_json_reference_sites_verified":json_sites,"special_reference_site_counts":dict(special_counts),"all244_core_plus_manifest_paths_canonical_unique_and_no_ancestor_collision":True,"plan_handoff":handoff_pin,"supplemental_plan_rows":supplemental,"current_planned_paths_including_three_supplements_and_manifest":247,"all247_paths_canonical_unique_and_no_ancestor_collision":True,"future_final_path_count":None,"future_review_receipts_excluded_from_core_count":True,"external_historical_references":external,"closure_boundary":plan["coverage"]["graph_boundary"],"fully_self_contained_archive_claim":False,"source_order_and_scope":scope,"future_full_git_byte_preflight_contract":pre,"current_git_conversion_preflight_performed":False,"future_requirements":req,"exact_inputs_rehashed":sorted(pins.values(),key=lambda x:norm(x["path"])),"input_versions":len(pins),"Main_accessed":False,"existing_artifacts_changed":False,"candidate_or_prefix_executed":False,"intake_or_archive_executed":False,"manifest_issued":False,"configuration_issued":False,"source_release":False,"native_executed":False,"application_qualified":False}
+raw=encode(result);target=OUT/"source-proof.json";assert not target.exists()
+with target.open("xb") as f:f.write(raw)
+assert target.read_bytes()==raw
+print(json.dumps(pin(target,raw)))
+print(json.dumps({"inputs":len(pins),"source_paths":20,"archives":223,"logical_donors":248,"historical_aliases":9,"deduplicated_copies":25,"json_sites":140,"immutable_git_reads":8,"future_manifest_included":True,"Main_accessed":False,"target_execution":False}))

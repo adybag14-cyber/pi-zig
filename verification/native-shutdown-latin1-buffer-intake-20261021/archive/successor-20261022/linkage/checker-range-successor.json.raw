@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "status": "source_checker_excerpt_bound_correction",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-linkage-build-successor-sourceonly-20261022\\source-audit.py",
+    "bytes": 18945,
+    "sha256": "784BE7E185F8D3EE8B5651B6C0FC126275A9518A9A7735BEC250F90945D01B29"
+  },
+  "successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-linkage-build-successor-sourceonly-20261022\\source-audit-v2.py",
+    "bytes": 18945,
+    "sha256": "C13384FAFC23D4404547231EC46F61DB49B10BB0E060B9CADC33229B176A6D35"
+  },
+  "before_utf8": "\"src/extensions/native_node_one_byte_string.zig\":[(1,67)]",
+  "after_utf8": "\"src/extensions/native_node_one_byte_string.zig\":[(1,52)]",
+  "offset": 15108,
+  "entire_inverse_exact": true,
+  "reason": "The selected OneByteString source contains52lines. Correct its solely documentary excerpt endpoint67to52; original30second timeout had no proof output. No production/build change.",
+  "source_only": true,
+  "candidate_executed": false
+}

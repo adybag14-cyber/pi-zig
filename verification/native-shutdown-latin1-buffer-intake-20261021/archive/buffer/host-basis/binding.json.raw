@@ -1,0 +1,22 @@
+{
+  "schema": "raw-view-data-host-basis-v1",
+  "source_only": true,
+  "rows": [
+    {
+      "relative_path": "src/extensions/engine_abi.c",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\host-basis\\src\\extensions\\engine_abi.c",
+      "bytes": 18016,
+      "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+    },
+    {
+      "relative_path": "src/extensions/engine_abi.h",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\host-basis\\src\\extensions\\engine_abi.h",
+      "bytes": 2003,
+      "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5"
+    }
+  ]
+}

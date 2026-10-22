@@ -1,0 +1,74 @@
+import pathlib,hashlib,json
+P=pathlib.Path(r'C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018\verification\native-node-shutdown-wrap-sourceonly-20261020')
+ROOT=pathlib.Path(r'C:\Users\adyba\pi-zig')
+basis=ROOT/'evidence/pending-file-handle-and-error-intake-20261020/projected/build.zig'
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ b=p.read_bytes();return {'path':str(p),'bytes':len(b),'sha256':sha(b)}
+def write_new(p,b):
+ p.parent.mkdir(parents=True,exist_ok=True)
+ assert not p.exists(),str(p)
+ p.write_bytes(b)
+before=basis.read_bytes()
+assert len(before)==506940 and sha(before)=='399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52'
+rows=[
+ ('node_stream_shutdown','src/native_node_stream_shutdown_test.zig',['native Stream shutdown','native StreamReq Done'],'native-node-stream-shutdown',18),
+ ('node_one_byte_string','src/native_node_one_byte_string_test.zig',['native OneByteString'],'native-node-one-byte-string',8)]
+block=''
+for var,source,filters,artifact,count in rows:
+ block+=f'''        const {var} = b.addTest(.{{
+            .root_module = b.createModule(.{{ .root_source_file = b.path("{source}"), .target = target, .optimize = optimize }}),
+            .filters = &.{{{', '.join(json.dumps(x) for x in filters)}}}, .use_llvm = use_llvm,
+        }});
+        linkQuickJs(b, {var}.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, {var}.root_module, typescript_parser);
+        linkSqlite({var}.root_module, sqlite_lib_dir, sqlite_library);
+        {var}.root_module.addImport("catalog_tool", catalog_tool);
+        {var}.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        {var}.root_module.addIncludePath(b.path("src/extensions"));
+        {var}.root_module.linkLibrary(network);
+        // This target owns one TLS implementation and one V8 fatal owner.
+        // The selected network library contains neither translation unit.
+        {var}.root_module.addCSourceFile(.{{
+            .file = b.path("src/extensions/native_node_diagnostic_context.c"),
+            .flags = &.{{"-std=gnu11"}},
+        }});
+        {var}.root_module.addCSourceFiles(.{{
+            .files = &.{{
+                "src/extensions/native_v8_base_fatal.cpp",
+                "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+            }},
+            .flags = &.{{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" }},
+        }});
+        if (target.result.os.tag == .windows) {{
+            {var}.root_module.linkSystemLibrary("advapi32", .{{}});
+            {var}.root_module.linkSystemLibrary("userenv", .{{}});
+        }}
+        b.step("build-{artifact}", "Install {count} concrete source controls without execution").dependOn(&b.addInstallArtifact({var}, .{{ .dest_sub_path = b.fmt("{artifact}{{s}}", .{{if (target.result.os.tag == .windows) ".exe" else ""}}) }}).step);
+'''
+anchor=b'        const native_node_fs_request_owner_tests = b.addTest(.{\n'
+replacement=block.encode()+anchor
+assert before.count(anchor)==1
+after=before.replace(anchor,replacement,1)
+assert after.count(replacement)==1 and after.replace(replacement,anchor,1)==before
+for path,raw in [('original-build.zig',before),('projected-build.zig',after),('install-only-block.zig.txt',block.encode())]:
+ write_new(P/'build'/path,raw)
+manifest={
+ 'schema':'pi-zig.shutdown-latin1-install-only-build-proposal.v1',
+ 'basis_combined_projection':pin(ROOT/'evidence/pending-file-handle-and-error-intake-20261020/projection.json'),
+ 'original':pin(P/'build/original-build.zig'),'projected':pin(P/'build/projected-build.zig'),'block':pin(P/'build/install-only-block.zig.txt'),
+ 'edits':[{'before':anchor.decode(),'after':replacement.decode(),'occurrences_before':1,'occurrences_after':1}],
+ 'whole_forward_exact':True,'whole_inverse_exact':True,
+ 'new_roots':[{'root_source':s,'filters':fs,'target':'build-'+artifact,'artifact_basename':artifact,'declared_source_controls':n} for _,s,fs,artifact,n in rows],
+ 'declared_source_controls':26,'future_actual_metadata_count':None,'install_only':True,'run_steps_added':0,
+ 'native_translation_unit_ownership':{'per_root':[
+ 'src/extensions/native_node_diagnostic_context.c','src/extensions/native_v8_base_fatal.cpp','src/extensions/native_node_one_byte_string_diagnostics.cpp'],
+ 'selected_network_contains_none_of_these':True,
+ 'fatal_source_intake_prerequisite':'5059d6a reviewed source-only owner; not silently added to Main by this packet',
+ 'tls_source_intake':'existing accepted source; selected network does not compile it',
+ 'link_libcpp':'linkQuickJs sets true; genuine std::string/stringstream DEBUG path retained',
+ 'compile_mode':'Neither DEBUG nor OFFICIAL_BUILD is defined by this selected recipe, including Zig Debug. Native Debug/official parity and bootstrap hook installation are not claimed.',
+ 'admitted_network_targets':['windows','linux']},
+ 'main_changed':False,'compiler_native_execution':False}
+write_new(P/'build/proposal.json',(json.dumps(manifest,indent=2)+'\n').encode())
+print(json.dumps({'proposal':pin(P/'build/proposal.json'),'projected':manifest['projected']},indent=2))

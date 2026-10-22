@@ -1,0 +1,224 @@
+[
+  {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "before": "const callable = @import(\"native_node_module_callable.zig\");",
+    "after": "const callable = @import(\"native_node_module_callable.zig\");\nconst check_failure = @import(\"native_node_check_failure.zig\");",
+    "reason": "Actual StreamReq attachment CHECK owner."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "before": "pub const Kind = enum { async_wrap, fsreqpromise, filehandleclosereq, filehandle, fsreqcallback };",
+    "after": "pub const Kind = enum { async_wrap, fsreqpromise, filehandleclosereq, filehandle, fsreqcallback, shutdownwrap };",
+    "reason": "Append actual ShutdownWrap template brand."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "before": "    pub const fsreqpromise: u32 = 9;\n",
+    "after": "    pub const fsreqpromise: u32 = 9;\n    pub const shutdownwrap: u32 = 35;\n",
+    "reason": "Pinned non-crypto provider macro index."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "before": "/// Independently retained native owner. One realm cleanup registration covers",
+    "after": "/// StreamReq's two native pointer slots are independent. FromObject reads the\n/// request slot without requiring a live BaseObject pointer. Neither pointer is\n/// a JS graph edge; only the wrapper allocation retains this registry metadata.\nconst RequestFields = struct {\n    registry: *Registry,\n    state: ?*State = null,\n    request: ?*anyopaque = null,\n};\n\n/// Independently retained native owner. One realm cleanup registration covers",
+    "reason": "Actual StreamReq internal field ownership."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "before": "    class_ids: [5]c.JSClassID = .{ 0, 0, 0, 0, 0 },",
+    "after": "    class_ids: [6]c.JSClassID = .{ 0, 0, 0, 0, 0, 0 },",
+    "reason": "Reserve actual appended template class."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "before": "inline for (.{ \"AsyncWrap\", \"FSReqPromise\", \"FileHandleCloseReq\", \"FileHandle\", \"FSReqCallback\" }, 0..)",
+    "after": "inline for (.{ \"AsyncWrap\", \"FSReqPromise\", \"FileHandleCloseReq\", \"FileHandle\", \"FSReqCallback\", \"ShutdownWrap\" }, 0..)",
+    "reason": "Original ShutdownWrap class name."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "before": "                .finalizer = if (index == @intFromEnum(Kind.filehandle)) streamWrapperFinalizer else wrapperFinalizer,\n                .gc_mark = if (index == @intFromEnum(Kind.filehandle)) streamWrapperMark else wrapperMark,",
+    "after": "                .finalizer = if (index == @intFromEnum(Kind.filehandle)) streamWrapperFinalizer\n                    else if (index == @intFromEnum(Kind.shutdownwrap)) requestWrapperFinalizer else wrapperFinalizer,\n                .gc_mark = if (index == @intFromEnum(Kind.filehandle)) streamWrapperMark\n                    else if (index == @intFromEnum(Kind.shutdownwrap)) requestWrapperMark else wrapperMark,",
+    "reason": "Separate request field finalizer and mark owner."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "before": "        const raw = c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return null;\n        const state: *State = @ptrCast(@alignCast(raw));",
+    "after": "        if (c.JS_GetClassID(value) == self.classId(.shutdownwrap)) {\n            const fields = self.requestFields(value) orelse return null;\n            return fields.state;\n        }\n        const raw = c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return null;\n        const state: *State = @ptrCast(@alignCast(raw));",
+    "reason": "Unwrap BaseObject slot of actual ShutdownWrap."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "before": "    fn nativePointerIsEmpty(self: *const Registry, wrapper: c.JSValue) bool {",
+    "after": "    fn requestFields(self: *const Registry, wrapper: c.JSValue) ?*RequestFields {\n        if (c.JS_GetClassID(wrapper) != self.classId(.shutdownwrap)) return null;\n        const raw = c.JS_GetOpaque(wrapper, self.classId(.shutdownwrap)) orelse return null;\n        const fields: *RequestFields = @ptrCast(@alignCast(raw));\n        return if (fields.registry == self) fields else null;\n    }\n    /// StreamReq::ResetObject is used only at its genuine fresh-instance sites.\n    /// It clears both slots, including the BaseObject slot, in Source order.\n    pub fn resetRequestObject(self: *Registry, wrapper: c.JSValue) !void {\n        const fields = self.requestFields(wrapper) orelse return self.check(.invalid_wrap_brand);\n        fields.state = null;\n        fields.request = null;\n    }\n    pub fn attachRequestPointer(self: *Registry, wrapper: c.JSValue, request: *anyopaque) !void {\n        const fields = self.requestFields(wrapper) orelse return self.check(.invalid_wrap_brand);\n        if (fields.request != null) check_failure.assertion(self.environment.engine, .{\n            .file_line = \"src/stream_base-inl.h:21\",\n            .message = \"(req_wrap_obj->GetAlignedPointerFromInternalField( StreamReq::kStreamReqField)) == (nullptr)\",\n            .function = \"node::StreamReq::AttachToObject\",\n        });\n        fields.request = request;\n    }\n    pub fn requestPointer(self: *const Registry, wrapper: c.JSValue) ?*anyopaque {\n        const fields = self.requestFields(wrapper) orelse return null;\n        return fields.request;\n    }\n    pub fn clearRequestPointer(self: *Registry, wrapper: c.JSValue) !void {\n        const fields = self.requestFields(wrapper) orelse return self.check(.invalid_wrap_brand);\n        fields.request = null;\n    }\n    fn nativePointerIsEmpty(self: *const Registry, wrapper: c.JSValue) bool {",
+    "reason": "Original ResetObject, AttachToObject, FromObject and Dispose slot operations."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "before": "        return c.JS_GetOpaque(wrapper, c.JS_GetClassID(wrapper)) == null;\n    }\n    fn attachNativePointer",
+    "after": "        if (c.JS_GetClassID(wrapper) == self.classId(.shutdownwrap)) {\n            const fields = self.requestFields(wrapper) orelse return false;\n            return fields.state == null;\n        }\n        return c.JS_GetOpaque(wrapper, c.JS_GetClassID(wrapper)) == null;\n    }\n    fn attachNativePointer",
+    "reason": "Admit StreamReq attachment before AsyncWrap construction."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "before": "            fields.state = state;\n        } else {\n            _ = c.JS_SetOpaque(wrapper, state);",
+    "after": "            fields.state = state;\n        } else if (c.JS_GetClassID(wrapper) == self.classId(.shutdownwrap)) {\n            const fields = self.requestFields(wrapper).?;\n            std.debug.assert(fields.state == null);\n            fields.state = state;\n        } else {\n            _ = c.JS_SetOpaque(wrapper, state);",
+    "reason": "Attach actual BaseObject independently of StreamReq."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "before": "            fields.state = null;\n        } else {\n            _ = c.JS_SetOpaque(wrapper, null);",
+    "after": "            fields.state = null;\n        } else if (c.JS_GetClassID(wrapper) == self.classId(.shutdownwrap)) {\n            const fields = self.requestFields(wrapper).?;\n            std.debug.assert(fields.state == state);\n            fields.state = null;\n        } else {\n            _ = c.JS_SetOpaque(wrapper, null);",
+    "reason": "Native BaseObject deletion does not clear StreamReq slot."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "before": "        const result = c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind));\n        if (!c.JS_IsException(result)) if (fields) |attached| {\n            _ = c.JS_SetOpaque(result, attached);\n            fields = null;\n        };\n        return s.checkedAllocation(result, generation);",
+    "after": "        var request_fields: ?*RequestFields = null;\n        if (kind == .shutdownwrap) {\n            const created = try self.environment.allocator().create(RequestFields);\n            created.* = .{ .registry = self.retain() };\n            request_fields = created;\n        }\n        errdefer if (request_fields) |unattached| {\n            self.environment.allocator().destroy(unattached);\n            self.release();\n        };\n        const result = c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind));\n        if (!c.JS_IsException(result)) {\n            if (fields) |attached| {\n                _ = c.JS_SetOpaque(result, attached);\n                fields = null;\n            }\n            if (request_fields) |attached| {\n                _ = c.JS_SetOpaque(result, attached);\n                request_fields = null;\n            }\n        }\n        const object = try s.checkedAllocation(result, generation);\n        if (kind == .shutdownwrap) {\n            // StreamWrap::Initialize configures these own InstanceTemplate\n            // fields in this order, with default (C/W/E) attributes. Defining\n            // fresh data fields must not invoke a prototype's setter.\n            inline for (.{ \"oncomplete\", \"callback\", \"handle\" }) |key|\n                try s.define(object, key, c.pi_js_null(), c.JS_PROP_C_W_E);\n        }\n        return object;",
+    "reason": "Allocate actual request fields and original own template properties."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "before": "fn wrapperFinalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {",
+    "after": "fn requestWrapperFinalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {\n    const fields: *RequestFields = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));\n    const registry = fields.registry;\n    if (registry.environment.engine) |engine| {\n        var scope = LocalScope.init(engine);\n        var failure: ?anyerror = null;\n        if (fields.state) |state| state.retire(true) catch |err| {\n            scope.boundary.escaping();\n            failure = err;\n        };\n        std.debug.assert(fields.state == null);\n        _ = c.JS_SetOpaque(value, null);\n        registry.environment.allocator().destroy(fields);\n        defer registry.release();\n        const ignored = scope.finish(if (failure) |err| @as(anyerror!c.JSValue, err) else c.pi_js_undefined()) catch |err| {\n            _ = callable.failure(engine, err, 0);\n            return;\n        };\n        engine.freeValue(ignored);\n    } else {\n        // The actual realm cleanup already retired native request states.\n        // The two native slots carry no JS references to release here.\n        std.debug.assert(fields.state == null);\n        _ = c.JS_SetOpaque(value, null);\n        registry.environment.allocator().destroy(fields);\n        registry.release();\n    }\n}\nfn requestWrapperMark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {\n    const fields: *RequestFields = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));\n    if (fields.state) |state| state.mark(runtime, marker);\n}\n\nfn wrapperFinalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {",
+    "reason": "Actual finalizer retires request before releasing wrapper field metadata."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap.zig",
+    "before": "constructors: [5]?c.JSValue = .{ null, null, null, null, null }",
+    "after": "constructors: [6]?c.JSValue = .{ null, null, null, null, null, null }",
+    "reason": "Append actual ShutdownWrap constructor cache."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap.zig",
+    "before": "cached_instances: [5]?c.JSValue = .{ null, null, null, null, null }",
+    "after": "cached_instances: [6]?c.JSValue = .{ null, null, null, null, null, null }",
+    "reason": "Append actual ShutdownWrap instance-template cache."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap.zig",
+    "before": "                receiver, use_bigint);\n        }\n        return a.duplicate(s.engine, receiver);",
+    "after": "                receiver, use_bigint);\n        } else if (self.kind == .shutdownwrap) {\n            // IsConstructCallCallback has no return assignment; constructor\n            // invocation returns its actual receiver after ResetObject.\n            try owner.registry.resetRequestObject(receiver);\n        }\n        return a.duplicate(s.engine, receiver);",
+    "reason": "Invoke the genuine present ShutdownWrap constructor body."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap.zig",
+    "before": "    // V8's no-handler FunctionTemplate returns its actual converted receiver.",
+    "after": "    if (self.kind == .shutdownwrap)\n        check.assertion(s.engine, .{\n            .file_line = \"src/stream_wrap.cc:62\",\n            .message = \"args.IsConstructCall()\",\n            .function = \"node::IsConstructCallCallback\",\n        });\n    // V8's no-handler FunctionTemplate returns its actual converted receiver.",
+    "reason": "Original native construct-call CHECK after receiver conversion."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap.zig",
+    "before": "        .fsreqcallback => \"FSReqCallback\",",
+    "after": "        .fsreqcallback => \"FSReqCallback\",\n        .shutdownwrap => \"ShutdownWrap\",",
+    "reason": "Original public constructor name."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap.zig",
+    "before": "    // These selected instance templates have only zeroed internal native\n    // fields, with no own JS properties/interceptors. CacheTemplateInstantiation\n    // retains the first actual object, then CopyJSObject returns another with\n    // that same prototype and blank internal fields.",
+    "after": "    // CacheTemplateInstantiation retains the first actual object, then\n    // CopyJSObject returns another with the same prototype and blank native\n    // slots. ShutdownWrap also copies its three original null data fields;\n    // Registry.newInstance installs those same attributes on every path.",
+    "reason": "Retain exact instance-property semantics across native cache and subclass paths."
+  },
+  {
+    "path": "src/extensions/native_node_async_wrap.zig",
+    "before": "pub fn newFSReqCallbackInstance(s: *Scope, known_owner: c.JSValue) !c.JSValue {\n    return instantiate(s, try bundleOf(s.engine, known_owner),\n        known_owner, .fsreqcallback, null);\n}",
+    "after": "pub fn newFSReqCallbackInstance(s: *Scope, known_owner: c.JSValue) !c.JSValue {\n    return instantiate(s, try bundleOf(s.engine, known_owner),\n        known_owner, .fsreqcallback, null);\n}\n\n/// env->shutdown_wrap_template() stores the real ShutdownWrap InstanceTemplate.\n/// StreamBase::Shutdown invokes ResetObject itself after this bypass operation.\npub fn newShutdownWrapInstance(s: *Scope, known_owner: c.JSValue) !c.JSValue {\n    return instantiate(s, try bundleOf(s.engine, known_owner),\n        known_owner, .shutdownwrap, null);\n}",
+    "reason": "Expose exact stored InstanceTemplate operation without present callback."
+  },
+  {
+    "path": "src/extensions/native_node_stream_resource.zig",
+    "before": "const std = @import(\"std\");",
+    "after": "const std = @import(\"std\");\nconst requests = @import(\"native_node_stream_request.zig\");",
+    "reason": "Typed actual ShutdownWrap virtual completion."
+  },
+  {
+    "path": "src/extensions/native_node_stream_resource.zig",
+    "before": "    read_methods: ?*const ReadMethods = null,",
+    "after": "    read_methods: ?*const ReadMethods = null,\n    after_shutdown: *const fn (*Listener, *requests.Shutdown, c_int) anyerror!void = forwardAfterShutdown,",
+    "reason": "Actual virtual shutdown completion."
+  },
+  {
+    "path": "src/extensions/native_node_stream_resource.zig",
+    "before": "    // The original virtual default OnStreamDestroy() has an empty body.",
+    "after": "    fn forwardAfterShutdown(self: *Listener, request: *requests.Shutdown,\n        status: c_int) anyerror!void\n    {\n        const previous = self.previous_listener orelse check.assertion(\n            if (self.stream) |stream| stream.engine else null, .{\n                .file_line = \"src/stream_base.cc:808\",\n                .message = \"(previous_listener_) != nullptr\",\n                .function = \"node::StreamListener::OnStreamAfterShutdown\",\n            });\n        return previous.after_shutdown(previous, request, status);\n    }\n\n    // The original virtual default OnStreamDestroy() has an empty body.",
+    "reason": "Original default listener forwards through live predecessor with native CHECK."
+  },
+  {
+    "path": "src/extensions/native_node_stream_resource.zig",
+    "before": "    /// Actual StreamResource::~StreamResource. OnStreamDestroy may unlink and",
+    "after": "    /// StreamResource::EmitAfterShutdown selects the live native head. The\n    /// callback may destroy this resource; no self access follows it.\n    pub fn emitAfterShutdown(self: *Resource, request: *requests.Shutdown,\n        status: c_int) anyerror!void\n    {\n        const selected = self.listener.?;\n        return selected.after_shutdown(selected, request, status);\n    }\n\n    /// Actual StreamResource::~StreamResource. OnStreamDestroy may unlink and",
+    "reason": "Original live-head completion selection."
+  },
+  {
+    "path": "src/extensions/native_node_stream_base.zig",
+    "before": "const check = @import(\"native_node_check_failure.zig\");",
+    "after": "const check = @import(\"native_node_check_failure.zig\");\nconst requests = @import(\"native_node_stream_request.zig\");\nconst shutdown = @import(\"native_node_stream_shutdown.zig\");",
+    "reason": "Concrete shutdown dependency owners."
+  },
+  {
+    "path": "src/extensions/native_node_stream_base.zig",
+    "before": "pub const Operations = struct {",
+    "after": "/// Borrowed actual Environment template/key roots. Their embedding owner must\n/// retain them through every native stream/request completion; this record is\n/// not an installation hook or a substitute template/key allocator.\npub const ShutdownBindings = struct {\n    template_owner: c.JSValue,\n    error_string: c.JSValue,\n    oncomplete_string: c.JSValue,\n};\n\npub const Operations = struct {",
+    "reason": "Actual stored template and cached names required, not fabricated."
+  },
+  {
+    "path": "src/extensions/native_node_stream_base.zig",
+    "before": "    heap_diagnostics: ?*const check.Diagnostics,\n};",
+    "after": "    heap_diagnostics: ?*const check.Diagnostics,\n    shutdown: ?ShutdownBindings = null,\n};",
+    "reason": "Read-only assemblies remain separate until genuine shutdown bindings supplied."
+  },
+  {
+    "path": "src/extensions/native_node_stream_base.zig",
+    "before": "pub const Virtuals = struct {\n    get_async_wrap: *const fn (*Base) ?*wraps.State,\n};",
+    "after": "pub const Virtuals = struct {\n    get_async_wrap: *const fn (*Base) ?*wraps.State,\n    get_object: *const fn (*Base) ?c.JSValue = defaultGetObject,\n    error_string: *const fn (*Base) ?[*:0]const u8 = defaultError,\n    clear_error: *const fn (*Base) void = defaultClearError,\n    create_shutdown: *const fn (*Base, *a.Scope, c.JSValue) anyerror!?*requests.Shutdown = shutdown.createDefault,\n    do_shutdown: ?*const fn (*Base, *a.Scope, ?*requests.Shutdown) anyerror!c_int = null,\n};\nfn defaultGetObject(stream: *Base) ?c.JSValue {\n    const wrap = stream.virtuals.get_async_wrap(stream) orelse return null;\n    return wrap.object();\n}\n// These are the original StreamResource virtual default bodies.\nfn defaultError(_: *Base) ?[*:0]const u8 { return null; }\nfn defaultClearError(_: *Base) void {}",
+    "reason": "Original GetObject/Error/ClearError/CreateShutdown defaults; actual DoShutdown required."
+  },
+  {
+    "path": "src/extensions/native_node_stream_base.zig",
+    "before": "            .default_listener = .{ .read_methods = &default_read_methods },",
+    "after": "            .default_listener = .{ .read_methods = &default_read_methods,\n                .after_shutdown = shutdown.reportAfterShutdown },",
+    "reason": "EmitToJSStreamListener inherits genuine ReportWrites completion."
+  },
+  {
+    "path": "src/extensions/native_node_stream_base.zig",
+    "before": "    /// No new HandleScope: the Source Local result and selected onread remain",
+    "after": "    pub fn shutdownRequest(self: *Base, s: *a.Scope,\n        wrapper: ?c.JSValue) anyerror!c_int\n    {\n        return shutdown.run(s, self, wrapper);\n    }\n\n    /// No new HandleScope: the Source Local result and selected onread remain",
+    "reason": "Expose actual native StreamBase::Shutdown operation."
+  },
+  {
+    "path": "src/extensions/native_node_file_handle_owner.zig",
+    "before": "const gc_close = @import(\"native_node_file_handle_gc_close.zig\");",
+    "after": "const gc_close = @import(\"native_node_file_handle_gc_close.zig\");\nconst stream_requests = @import(\"native_node_stream_request.zig\");\nconst shutdown_request = @import(\"native_node_file_handle_shutdown.zig\");",
+    "reason": "Actual FileHandleCloseWrap owner."
+  },
+  {
+    "path": "src/extensions/native_node_file_handle_owner.zig",
+    "before": "    pub const CloseReq = close_request.Type(@This());",
+    "after": "    pub const CloseReq = close_request.Type(@This());\n    pub const ShutdownReq = shutdown_request.Type(@This());",
+    "reason": "Concrete SimpleShutdownWrap<ReqWrap<uv_fs_t>> specialization."
+  },
+  {
+    "path": "src/extensions/native_node_file_handle_owner.zig",
+    "before": "    pub fn fromObject(registry: *native.Registry, wrapper: c.JSValue) !*Handle {",
+    "after": "    fn createShutdown(base: *stream_base.Base, s: *Scope,\n        wrapper: c.JSValue) anyerror!?*stream_requests.Shutdown\n    {\n        const self: *Handle = @fieldParentPtr(\"stream\", base);\n        return &((try ShutdownReq.create(s, self, wrapper)).shutdown);\n    }\n    fn doShutdown(base: *stream_base.Base, s: *Scope,\n        request: ?*stream_requests.Shutdown) anyerror!c_int\n    {\n        const self: *Handle = @fieldParentPtr(\"stream\", base);\n        return ShutdownReq.dispatch(s, self, request orelse\n            return error.ActualFileHandleShutdownRequestRequired);\n    }\n    pub fn shutdown(self: *Handle, s: *Scope, wrapper: ?c.JSValue) anyerror!c_int {\n        return self.stream.shutdownRequest(s, wrapper);\n    }\n    pub fn fromObject(registry: *native.Registry, wrapper: c.JSValue) !*Handle {",
+    "reason": "Native CreateShutdownWrap/DoShutdown overrides and actual call surface."
+  },
+  {
+    "path": "src/extensions/native_node_file_handle_owner.zig",
+    "before": "            .{ .get_async_wrap = streamWrap }, self.stream_operations);",
+    "after": "            .{ .get_async_wrap = streamWrap,\n                .create_shutdown = createShutdown, .do_shutdown = doShutdown },\n            self.stream_operations);",
+    "reason": "Select real concrete FileHandle shutdown virtuals."
+  },
+  {
+    "path": "vendor/quickjs/quickjs.c",
+    "before": "/* create a string from a UTF-8 buffer */\nJSValue JS_NewStringLen(JSContext *ctx, const char *buf, size_t buf_len)\n",
+    "after": "/* Raw one-byte string construction for native Node OneByteString callers.\n   Every byte denotes the same Latin-1 code unit, including embedded NUL.\n   Signed length selection and Node/V8 fatal policy belong to that caller. */\nJSValue JS_PiNewStringLatin1(JSContext *ctx, const uint8_t *buf, size_t len)\n{\n    if (len == 0)\n        return js_empty_string(ctx);\n    if (len > JS_STRING_LEN_MAX)\n        return JS_ThrowRangeError(ctx, \"string too long\");\n    return js_new_string8_len(ctx, buf, (int)len);\n}\n\n/* create a string from a UTF-8 buffer */\nJSValue JS_NewStringLen(JSContext *ctx, const char *buf, size_t buf_len)\n",
+    "reason": "Raw actual VM Latin-1 allocation, no UTF-8 decoding or synthesized JS string."
+  },
+  {
+    "path": "vendor/quickjs/quickjs.h",
+    "before": "JS_EXTERN JSValue JS_NewStringLen(JSContext *ctx, const char *str1, size_t len1);",
+    "after": "/* Raw Latin-1 code units; caller owns Node/V8 signed-length/fatal policy. */\nJS_EXTERN JSValue JS_PiNewStringLatin1(JSContext *ctx, const uint8_t *buf, size_t len);\nJS_EXTERN JSValue JS_NewStringLen(JSContext *ctx, const char *str1, size_t len1);",
+    "reason": "Declare the actual VM one-byte string producer."
+  }
+]

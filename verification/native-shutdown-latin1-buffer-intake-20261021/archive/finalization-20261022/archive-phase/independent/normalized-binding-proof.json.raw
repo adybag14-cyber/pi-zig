@@ -1,0 +1,333 @@
+{
+  "schema": 1,
+  "status": "independently_verified_exact_v38_archive_normalization_and_five_literal_adapter_binding",
+  "reviewer": "/root/handover_review",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "emitted_output_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-progress-validation-archive-intake-peer-20261022\\emitted-proof.json",
+    "bytes": 1360063,
+    "sha256": "A512D461EB1E9E4A8D06695D3FE4022BF371CAA92B9DC6DBB2F543542452F93E"
+  },
+  "original_manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\manifest.json",
+    "bytes": 1226916,
+    "sha256": "6D6A2436B3D741070997901B0630F04F0306C85F21D9D347D52CE91A0A3EB85D"
+  },
+  "normalized_manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-bound-20261022\\manifest.json",
+    "bytes": 2376374,
+    "sha256": "5BB0608FA530405D87A99000A9A305DBD7A6E3049AF592A0D2DF0C8489A9479C"
+  },
+  "template": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py",
+    "bytes": 23634,
+    "sha256": "8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985"
+  },
+  "bound_adapter": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-bound-20261022\\Apply-ExactV38PartialNegativeArchiveIntake-20261022.py",
+    "bytes": 23653,
+    "sha256": "A492D0C5F151E87F2A2538C2E570D1EC2C2FF905442FA3B87E89A59A277E7C09"
+  },
+  "root_binding_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-bound-20261022\\binding-and-output-proof.json",
+    "bytes": 10470,
+    "sha256": "B0F81C9196A9AFBA761094FD4C62A8EE6B6AB1E0F90374AE51723DFD15FE762F"
+  },
+  "preparation_job": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-issued-v38-partial-negative-archive-preparation-20261022\\preparation-job-observation.json",
+    "bytes": 3192,
+    "sha256": "8BC55198BC5E0D908A63C806B421056DFCAD7A21D6530260283616DF7E50BB52"
+  },
+  "binding_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-progress-archive-strengthened-adapter-binding-plan-sourceonly-20261022\\plan.json",
+    "bytes": 7679,
+    "sha256": "9B2FC05913D9090A108AC5A729B451B51D9964CF24128392809749BCF550A585"
+  },
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-progress-validation-archive-intake-peer-20261022\\check-normalized-binding.py",
+    "bytes": 15514,
+    "sha256": "E0FABDB4814086BFBAA425A681577380B715DED3265E1B1102983E3C2EA2D297"
+  },
+  "source_build_paths": 0,
+  "original_rows": 1929,
+  "normalized_rows": 1930,
+  "logical_aliases": 1930,
+  "total_commit_paths": 1931,
+  "sole_replacement": "verification/port-roadmap-resume-20261018/progress.json",
+  "sole_extra_row": {
+    "target": "verification/native-v38-validation-evidence-20261021/preparation/original-preparer-manifest.json.raw",
+    "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\manifest.json",
+    "bytes": 1226916,
+    "sha256": "6D6A2436B3D741070997901B0630F04F0306C85F21D9D347D52CE91A0A3EB85D",
+    "before": null,
+    "mode": "100644",
+    "role": "immutable_original_preparer_manifest"
+  },
+  "all_original_manifest_bytes_inverse_exact": true,
+  "whole_manifest_inverse_bytes": 1226916,
+  "current_physical_donor_count": 1931,
+  "complete_donor_pin_map_sha256": "4530B6CEBF46B5F79B4185D72F93EA200BA4411D7D193827DCB497889FCA7F44",
+  "complete_planned_prefix_count": 2122,
+  "five_independently_derived_literal_steps": [
+    {
+      "kind": "basis_head",
+      "original_offset": 377,
+      "offset": 377,
+      "before": "\"UNRESOLVED_PENDING20_RELEASED_HEAD______\"",
+      "after": "\"014062f2d139254acab4b985b4ae343db637166f\"",
+      "before_sha256": "8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985",
+      "after_sha256": "5373A18C46B6852B9E19EF26446ECCE6B9BB9FEEAF88B460F7C3C8350926AB46"
+    },
+    {
+      "kind": "manifest_relative_path",
+      "original_offset": 487,
+      "offset": 487,
+      "before": "\"evidence/UNRESOLVED-PENDING20-FINAL-MANIFEST/manifest.json\"",
+      "after": "\"evidence/root-v38-partial-negative-archive-intake-bound-20261022/manifest.json\"",
+      "before_sha256": "5373A18C46B6852B9E19EF26446ECCE6B9BB9FEEAF88B460F7C3C8350926AB46",
+      "after_sha256": "A8D323C0E4D7C452E54FEE40E2C8C111D33A6B6EDE95436D5AE16D2DFF638481"
+    },
+    {
+      "kind": "manifest_sha256",
+      "original_offset": 548,
+      "offset": 568,
+      "before": "\"UNRESOLVED_PENDING20_FINAL_MANIFEST_SHA256______________________\"",
+      "after": "\"5BB0608FA530405D87A99000A9A305DBD7A6E3049AF592A0D2DF0C8489A9479C\"",
+      "before_sha256": "A8D323C0E4D7C452E54FEE40E2C8C111D33A6B6EDE95436D5AE16D2DFF638481",
+      "after_sha256": "E723AA2B9A6A77023E65C3B793DEED52C8F0C7E3578BDEF7DCFF98E90EEA0709"
+    },
+    {
+      "kind": "total_commit_paths",
+      "original_offset": 615,
+      "offset": 635,
+      "before": "0",
+      "after": "1931",
+      "before_sha256": "E723AA2B9A6A77023E65C3B793DEED52C8F0C7E3578BDEF7DCFF98E90EEA0709",
+      "after_sha256": "1A582BF20A07B71B1369C93DB4931B993B724B38C1025D60186B4024638FC53D"
+    },
+    {
+      "kind": "commit_subject",
+      "original_offset": 617,
+      "offset": 640,
+      "before": "\"Integrate independently reviewed Shutdown Latin1 and Buffer source\"",
+      "after": "\"Record V38 accepted builds and partial runtime failure closure\"",
+      "before_sha256": "1A582BF20A07B71B1369C93DB4931B993B724B38C1025D60186B4024638FC53D",
+      "after_sha256": "A492D0C5F151E87F2A2538C2E570D1EC2C2FF905442FA3B87E89A59A277E7C09"
+    }
+  ],
+  "untouched_fragments": [
+    {
+      "bytes": 377,
+      "sha256": "60BC769793A526BC9FD6E1196C8A8ECB5CA5F6F15AB40E2E4DE3627502D05558"
+    },
+    {
+      "bytes": 68,
+      "sha256": "C41C76CBEAE6804379D2483F843F522B7BAA82B971E64F0DB2D9CED74A06FB39"
+    },
+    {
+      "bytes": 1,
+      "sha256": "D03502C43D74A30B936740A9517DC4EA2B2AD7168CAA0A774CEFE793CE0B33E7"
+    },
+    {
+      "bytes": 1,
+      "sha256": "D03502C43D74A30B936740A9517DC4EA2B2AD7168CAA0A774CEFE793CE0B33E7"
+    },
+    {
+      "bytes": 1,
+      "sha256": "D03502C43D74A30B936740A9517DC4EA2B2AD7168CAA0A774CEFE793CE0B33E7"
+    },
+    {
+      "bytes": 22949,
+      "sha256": "B571A193B5608E7A28ACADDC8C904FD0F5D00E54A2D6DD9DDF40FA297684A31E"
+    }
+  ],
+  "full_adapter_byte_inverse": true,
+  "unchanged_nonconstant_tokens": true,
+  "unchanged_function_bodies": [
+    {
+      "name": "sha",
+      "bytes": 57,
+      "sha256": "4FC52FB70BB0793D472938E4324857597433C1E7DDBB15063EE372297676A588"
+    },
+    {
+      "name": "raw",
+      "bytes": 40,
+      "sha256": "0674AD6317F2AE8EB96A5F56EFBC878FF39C90C68C99C8F4C9978F7A23316A26"
+    },
+    {
+      "name": "pinned",
+      "bytes": 73,
+      "sha256": "5DF7EDACFCE2ED39EB6DC75D1A5F85E312FDDFB88E50861484072351D188F54B"
+    },
+    {
+      "name": "git",
+      "bytes": 260,
+      "sha256": "FC6515AF1843269E597434A172257CA17ABBD50C611145B8D12A50030C9D6F91"
+    },
+    {
+      "name": "gout",
+      "bytes": 66,
+      "sha256": "D4BED77E98D7E0410BF8A6950089ECF30E6E537B8ADFE7B2A7249DF93CD6FEB1"
+    },
+    {
+      "name": "inside",
+      "bytes": 134,
+      "sha256": "BC7F1D1F13B1AC08CB47D2ECC8EEC9D015E9D5509C90D7E82AE778A30CFDA777"
+    },
+    {
+      "name": "new_file",
+      "bytes": 140,
+      "sha256": "A4CF95E3648B13330AAA4B9D1CCA39CB3EDA7D34C70738A6801D61E9F950D66A"
+    },
+    {
+      "name": "new_json",
+      "bytes": 96,
+      "sha256": "72B0BE02D4C073A234A09E2AEDF42D5451679590CC88BBCD1588A719F16DAA9C"
+    },
+    {
+      "name": "blob_many",
+      "bytes": 541,
+      "sha256": "5C5894AA029CC5F735A97EF61E00D8759C94D09386C65454A06F66CCE87E4F9B"
+    },
+    {
+      "name": "tree_paths",
+      "bytes": 139,
+      "sha256": "C33D511D519C1F80C2CC3EF6D508C6A113624CBC9C08A10BE63A825AC26C0C23"
+    },
+    {
+      "name": "no_hooks",
+      "bytes": 339,
+      "sha256": "7D17240FF95A97C6347339D55C052EE66A7744D034501DD353282E1B6476A115"
+    },
+    {
+      "name": "fail_record",
+      "bytes": 877,
+      "sha256": "8D9903227B543181EA39869C56B2946611F89D24A986064AA9FE89BC8120178C"
+    },
+    {
+      "name": "target_name",
+      "bytes": 672,
+      "sha256": "F6E592E1B4A2C10DB0ACE6F1D381BA41642428F110A2E962E6E0355F0BE9ED0B"
+    },
+    {
+      "name": "no_reparse_target",
+      "bytes": 482,
+      "sha256": "7BF75934A960EA16B26E1A6983C830136FECC5C4B7EC7B373498EFC50738E1E6"
+    },
+    {
+      "name": "oid_text",
+      "bytes": 197,
+      "sha256": "0DE20E55D9E7EC75C56D24D1B0A06F60A63E1F8462A377854BBA13C1C9B2D0FA"
+    },
+    {
+      "name": "raw_oid",
+      "bytes": 122,
+      "sha256": "14E181976C8F4485693E4571F8D89C885D7E389B1E7AD41D1191970F993F52FE"
+    },
+    {
+      "name": "repository_identity",
+      "bytes": 1256,
+      "sha256": "476632466793E9CCF0AA521E7F5A91BE5C2D1CB574C2DF8B7293EE908C882C99"
+    },
+    {
+      "name": "conversion_provenance",
+      "bytes": 1913,
+      "sha256": "6195D3D9B8D408105C44D59BD0E181A2092C04FD2E7958AB51A9F86B9E704FA5"
+    },
+    {
+      "name": "effective_attributes",
+      "bytes": 772,
+      "sha256": "6A8DFC0BA9A2E4A920DE2C23F173B65ACE51A2F3E4D86598B3166B8A9DB7D910"
+    },
+    {
+      "name": "tree_entries",
+      "bytes": 345,
+      "sha256": "D7BCF41144C4AD65A278310BC74FECB70156CADB4E334D526ECC7221D0C0A75B"
+    },
+    {
+      "name": "index_entries",
+      "bytes": 378,
+      "sha256": "C7120E02C9199E6627B73C7190B25DF583DEF3E23EA15F62BCC430E972C01B4F"
+    },
+    {
+      "name": "assert_conversion_unchanged",
+      "bytes": 537,
+      "sha256": "C2C9E280CD635354190BCE6935B6EC2C4F0B70DDA0D56B309258019D34E4628F"
+    }
+  ],
+  "phase": "fixture",
+  "future_exact_release_required": true,
+  "actual_Git_byte_preflight_remains_future": true,
+  "retained_future_gates": [
+    "canonical repository and object format",
+    "all physical donors plus synthetic manifest and all aliases",
+    "all existing and planned parent spellings",
+    "five attributes and relevant config plus origin files",
+    "independent raw OID and both Git raw/path OIDs before Main writes",
+    "pre-copy and post-copy attributes/provenance",
+    "exact staging and committed blob bytes/OIDs/modes",
+    "complete single-parent list",
+    "final clean index and worktree"
+  ],
+  "scope": {
+    "source_only": true,
+    "adapter_or_prefix_executed": false,
+    "Main_or_index_accessed": false,
+    "native_execution_authorized": false,
+    "application_qualified": false,
+    "source_mutation_hold_released": false
+  },
+  "small_control_inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\manifest.json",
+      "bytes": 1226916,
+      "sha256": "6D6A2436B3D741070997901B0630F04F0306C85F21D9D347D52CE91A0A3EB85D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-bound-20261022\\manifest.json",
+      "bytes": 2376374,
+      "sha256": "5BB0608FA530405D87A99000A9A305DBD7A6E3049AF592A0D2DF0C8489A9479C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-bound-20261022\\Apply-ExactV38PartialNegativeArchiveIntake-20261022.py",
+      "bytes": 23653,
+      "sha256": "A492D0C5F151E87F2A2538C2E570D1EC2C2FF905442FA3B87E89A59A277E7C09"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py",
+      "bytes": 23634,
+      "sha256": "8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-bound-20261022\\binding-and-output-proof.json",
+      "bytes": 10470,
+      "sha256": "B0F81C9196A9AFBA761094FD4C62A8EE6B6AB1E0F90374AE51723DFD15FE762F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v38-progress-archive-strengthened-adapter-binding-plan-sourceonly-20261022\\plan.json",
+      "bytes": 7679,
+      "sha256": "9B2FC05913D9090A108AC5A729B451B51D9964CF24128392809749BCF550A585"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-progress-validation-archive-intake-peer-20261022\\emitted-proof.json",
+      "bytes": 1360063,
+      "sha256": "A512D461EB1E9E4A8D06695D3FE4022BF371CAA92B9DC6DBB2F543542452F93E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-progress-validation-archive-intake-peer-20261022\\check-emitted.py",
+      "bytes": 23798,
+      "sha256": "8DC82B2668712BD6ACB9FDB56F8E12646085F7FE0305A705E107FC8B7D63E7F3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending20-strengthened-intake-adapter-v2-source-acceptance-20261022.json",
+      "bytes": 6683,
+      "sha256": "039E21F5F5A82E7AFEC2AD549DF8E27BDF7729BF8D1E8E4015B4E9C06B99B738"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-issued-v38-partial-negative-archive-preparation-20261022\\preparation-job-observation.json",
+      "bytes": 3192,
+      "sha256": "8BC55198BC5E0D908A63C806B421056DFCAD7A21D6530260283616DF7E50BB52"
+    }
+  ],
+  "current_input_versions": 1940
+}

@@ -1,0 +1,71 @@
+{
+  "old_source_pin": {
+    "bytes": 17444,
+    "sha256": "C36DEC0271F86FF9DAB5CF226E49C24735340F9A0C294CBF27B037E4F506D892"
+  },
+  "edits": [
+    {
+      "old": "for row in prior[\"inputs\"]:assert ident(row) in logical;readp(row)",
+      "new": "resolved_identities={key:value[1][\"donor\"] for key,value in logical.items()}\nfor alias in historical_aliases:\n    key=ident(alias[\"reference\"]);selected=alias[\"immutable_donor\"]\n    if key in resolved_identities:assert ident(resolved_identities[key])==ident(selected)\n    resolved_identities[key]=selected\nprior_input_resolution=[]\nfor row in prior[\"inputs\"]:\n    assert ident(row) in resolved_identities\n    selected=resolved_identities[ident(row)];readp(selected)\n    prior_input_resolution.append({\"historical_reference\":row,\"immutable_archived_donor\":selected,\"historical_location_read\":ident(row)==ident(selected)})\nassert sum(ident(x[\"historical_reference\"])!=ident(x[\"immutable_archived_donor\"]) for x in prior_input_resolution)==5"
+    },
+    {
+      "old": "prior_input_ids={ident(r) for r in prior[\"inputs\"]}",
+      "new": "prior_input_ids={ident(resolved_identities[ident(r)]) for r in prior[\"inputs\"]}"
+    },
+    {
+      "old": "\"all202_accepted_source_replay_inputs_preserved\":True,",
+      "new": "\"all202_accepted_source_replay_inputs_preserved\":True,\"prior_input_resolution\":prior_input_resolution,"
+    }
+  ],
+  "run": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\source-audit.py\", line 118, in <module>\r\n    for row in prior[\"inputs\"]:assert ident(row) in logical;readp(row)\r\n                                      ^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\source-audit.py\", line 118, in <module>\r\n    for row in prior[\"inputs\"]:assert ident(row) in logical;readp(row)\r\n                                      ^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "diagnostic": {
+    "ok": true,
+    "summary": "Ran python directly in the Windows host devbox.",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      },
+      "output": {
+        "mode": "tail",
+        "max_chars": 6500,
+        "max_lines": 0,
+        "stdout_original_chars": 2968,
+        "stderr_original_chars": 0,
+        "stdout_capture_truncated": false,
+        "stderr_capture_truncated": false
+      }
+    },
+    "stdout": "{\r\n  \"direct\": 197,\r\n  \"snapshot_aliases\": [\r\n    {\r\n      \"original_reference\": {\r\n        \"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\toolchain\\\\zig-x86_64-windows-0.16.0\\\\lib\\\\std\\\\Build.zig\",\r\n        \"bytes\": 102991,\r\n        \"sha256\": \"DFFB5A172899D660C370C6CDECA04C073468C64F28B9BB6FCE919E71D1D5326D\"\r\n      },\r\n      \"mapped_immutable_donor\": {\r\n        \"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\evidence\\\\native-error-build-artifact-naming-sourceonly-20261020\\\\authority\\\\zig\\\\Build.zig\",\r\n        \"bytes\": 102991,\r\n        \"sha256\": \"DFFB5A172899D660C370C6CDECA04C073468C64F28B9BB6FCE919E71D1D5326D\"\r\n      }\r\n    },\r\n    {\r\n      \"original_reference\": {\r\n        \"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\toolchain\\\\zig-x86_64-windows-0.16.0\\\\lib\\\\std\\\\Build\\\\Step\\\\Compile.zig\",\r\n        \"bytes\": 84912,\r\n        \"sha256\": \"6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84\"\r\n      },\r\n      \"mapped_immutable_donor\": {\r\n        \"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\evidence\\\\native-error-build-artifact-naming-sourceonly-20261020\\\\authority\\\\zig\\\\Build\\\\Step\\\\Compile.zig\",\r\n        \"bytes\": 84912,\r\n        \"sha256\": \"6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84\"\r\n      }\r\n    },\r\n    {\r\n      \"original_reference\": {\r\n        \"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\toolchain\\\\zig-x86_64-windows-0.16.0\\\\lib\\\\std\\\\Build\\\\Step\\\\InstallArtifact.zig\",\r\n        \"bytes\": 8841,\r\n        \"sha256\": \"6008437F2DF91E09396B0732B5E10094EF2DF5BE21AA6ABA53F08926FEF685A0\"\r\n      },\r\n      \"mapped_immutable_donor\": {\r\n        \"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\evidence\\\\native-error-build-artifact-naming-sourceonly-20261020\\\\authority\\\\zig\\\\Build\\\\Step\\\\InstallArtifact.zig\",\r\n        \"bytes\": 8841,\r\n        \"sha256\": \"6008437F2DF91E09396B0732B5E10094EF2DF5BE21AA6ABA53F08926FEF685A0\"\r\n      }\r\n    },\r\n    {\r\n      \"original_reference\": {\r\n        \"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\toolchain\\\\zig-x86_64-windows-0.16.0\\\\lib\\\\std\\\\Target.zig\",\r\n        \"bytes\": 117251,\r\n        \"sha256\": \"B830BAC98558E0E6B83AF9917F3FF492452F57F608C3C54F009384C793A6F345\"\r\n      },\r\n      \"mapped_immutable_donor\": {\r\n        \"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\evidence\\\\native-error-build-artifact-naming-sourceonly-20261020\\\\authority\\\\zig\\\\Target.zig\",\r\n        \"bytes\": 117251,\r\n        \"sha256\": \"B830BAC98558E0E6B83AF9917F3FF492452F57F608C3C54F009384C793A6F345\"\r\n      }\r\n    },\r\n    {\r\n      \"original_reference\": {\r\n        \"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\toolchain\\\\zig-x86_64-windows-0.16.0\\\\lib\\\\std\\\\zig.zig\",\r\n        \"bytes\": 44987,\r\n        \"sha256\": \"5445596331AD810FC60057FCE5555477E9317441FB36F69C632F37F0D1DA0824\"\r\n      },\r\n      \"mapped_immutable_donor\": {\r\n        \"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\evidence\\\\native-error-build-artifact-naming-sourceonly-20261020\\\\authority\\\\zig\\\\zig.zig\",\r\n        \"bytes\": 44987,\r\n        \"sha256\": \"5445596331AD810FC60057FCE5555477E9317441FB36F69C632F37F0D1DA0824\"\r\n      }\r\n    }\r\n  ]\r\n}\r\nPROOF_ABSENT True\r\n",
+    "exitCode": 0,
+    "truncated": false
+  },
+  "status": "preserved_independent_checker_historical_alias_selector_negative",
+  "target_plan_changed": false,
+  "prior_inputs": 202,
+  "direct_representations": 197,
+  "historical_Zig_snapshot_aliases": 5,
+  "no_ambient_historical_path_read": true,
+  "complete_checker_inverse": true,
+  "candidate_or_prefix_execution": false,
+  "Main_accessed": false,
+  "successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\source-audit-v2.py",
+    "bytes": 18192,
+    "sha256": "D6FDD1595669106B408AAC529B9EB308215C0955F358A2438A31BC2A051AEBBE"
+  }
+}

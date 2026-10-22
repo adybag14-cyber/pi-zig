@@ -1,0 +1,797 @@
+{
+  "schema": "pi-zig.raw-view-address-source-map.v1",
+  "upstream_repository": "https://github.com/nodejs/node",
+  "upstream_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "upstream_version": "v24.13.0",
+  "primary_commit_binding": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\node-buffer-commit-bindings.json",
+    "bytes": 1559,
+    "sha256": "95FD0CEA0BE8ADE2A1C83079BB1620ABF30C768BA64AB6743896A1BAA48FBAFA"
+  },
+  "v8_materialization_acquisition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\v8-array-buffer-acquisition.json",
+    "bytes": 754,
+    "sha256": "E0B9FE5DFD88467D5848D83005C521DE8AE5B9E33FBD6037A0B6A78453A566A1"
+  },
+  "sources": {
+    "node_header": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\node_buffer.v24.13.h",
+      "bytes": 3684,
+      "sha256": "48077ADE87E863A88E75A74C61FD948CB9AE16D7546CC5D61E1207FC95A7AC48"
+    },
+    "node_buffer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\node_buffer.v24.13.cc",
+      "bytes": 57035,
+      "sha256": "FD7D9A333F4C3DF886E39D6B6A7455D81AD57B109EF81AD8612A8C041422E36F"
+    },
+    "v8_api": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+    },
+    "v8_get_buffer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\v8-js-array-buffer.v24.13.cc",
+      "bytes": 18909,
+      "sha256": "CE1E02B2A871FD03887A9DEDD26D677EC39AC7CE2B71D3A1D58B255B8099F5B1"
+    },
+    "node_stream": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.cc.v24.13.txt",
+      "bytes": 28310,
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+    },
+    "node_stream_header": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.h.v24.13.txt",
+      "bytes": 18488,
+      "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334"
+    },
+    "vm_original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2403205,
+      "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+    },
+    "vm_projected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2404353,
+      "sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003"
+    },
+    "vm_header": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.h",
+      "bytes": 115180,
+      "sha256": "9F63BF26C91440A8C9B3D5F1FF06AB387D6E76630ADEC6D4CAA745179DB46978"
+    },
+    "engine_c": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\host-basis\\src\\extensions\\engine_abi.c",
+      "bytes": 18016,
+      "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+    },
+    "engine_header": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\host-basis\\src\\extensions\\engine_abi.h",
+      "bytes": 2003,
+      "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5"
+    },
+    "build": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\build\\original.zig",
+      "bytes": 503440,
+      "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+    },
+    "control": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+      "bytes": 22131,
+      "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+    }
+  },
+  "excerpts": [
+    {
+      "id": "node_public_declarations",
+      "role": "original authority",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\node_buffer.v24.13.h",
+        "bytes": 3684,
+        "sha256": "48077ADE87E863A88E75A74C61FD948CB9AE16D7546CC5D61E1207FC95A7AC48"
+      },
+      "start_line": 33,
+      "end_line": 42,
+      "bytes": 378,
+      "sha256": "937153B06C668B32807864886933462820B5048948F1ED109096B1F7C854EC40",
+      "text": "\ntypedef void (*FreeCallback)(char* data, void* hint);\n\nNODE_EXTERN bool HasInstance(v8::Local<v8::Value> val);\nNODE_EXTERN bool HasInstance(v8::Local<v8::Object> val);\nNODE_EXTERN char* Data(v8::Local<v8::Value> val);\nNODE_EXTERN char* Data(v8::Local<v8::Object> val);\nNODE_EXTERN size_t Length(v8::Local<v8::Value> val);\nNODE_EXTERN size_t Length(v8::Local<v8::Object> val);\n\n",
+      "mapping": "Original Buffer declares both Value and Object overloads for HasInstance/Data/Length. The new API is an internal VM primitive, not those public Node entry points."
+    },
+    {
+      "id": "node_buffer_data_brand_length",
+      "role": "original authority",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\node_buffer.v24.13.cc",
+        "bytes": 57035,
+        "sha256": "FD7D9A333F4C3DF886E39D6B6A7455D81AD57B109EF81AD8612A8C041422E36F"
+      },
+      "start_line": 239,
+      "end_line": 271,
+      "bytes": 729,
+      "sha256": "AA90CB368B7502B5032074B3177D1D0CBED99953484071D52FC244339B14217B",
+      "text": "bool HasInstance(Local<Value> val) {\n  return val->IsArrayBufferView();\n}\n\n\nbool HasInstance(Local<Object> obj) {\n  return obj->IsArrayBufferView();\n}\n\n\nchar* Data(Local<Value> val) {\n  CHECK(val->IsArrayBufferView());\n  Local<ArrayBufferView> ui = val.As<ArrayBufferView>();\n  return static_cast<char*>(ui->Buffer()->Data()) + ui->ByteOffset();\n}\n\n\nchar* Data(Local<Object> obj) {\n  return Data(obj.As<Value>());\n}\n\n\nsize_t Length(Local<Value> val) {\n  CHECK(val->IsArrayBufferView());\n  Local<ArrayBufferView> ui = val.As<ArrayBufferView>();\n  return ui->ByteLength();\n}\n\n\nsize_t Length(Local<Object> obj) {\n  CHECK(obj->IsArrayBufferView());\n  Local<ArrayBufferView> ui = obj.As<ArrayBufferView>();\n  return ui->ByteLength();\n",
+      "mapping": "Original HasInstance admits every actual ArrayBufferView. Data CHECKs the brand, calls actual Buffer()->Data plus ByteOffset; Length separately reads ByteLength. Invalid-brand NULL from the raw intrinsic does not replace this caller CHECK."
+    },
+    {
+      "id": "v8_backing_data",
+      "role": "original authority",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+        "bytes": 489340,
+        "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+      },
+      "start_line": 4067,
+      "end_line": 4069,
+      "bytes": 97,
+      "sha256": "99585D8436127703ABDC6675753A4F6B6A1973A5EEEAE257565CA81EFD9B7268",
+      "text": "void* v8::ArrayBuffer::Data() const {\n  return Utils::OpenDirectHandle(this)->backing_store();\n}\n",
+      "mapping": "ArrayBuffer::Data is the actual backing-store address. This raw intrinsic selects the corresponding already-backed QuickJS field."
+    },
+    {
+      "id": "v8_view_buffer",
+      "role": "original authority",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+        "bytes": 489340,
+        "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+      },
+      "start_line": 9189,
+      "end_line": 9208,
+      "bytes": 907,
+      "sha256": "AA4591D283F93AFD758AE0D39679EDB21A91CD698B22D415BDE7A043FF21BCDD",
+      "text": "Local<ArrayBuffer> v8::ArrayBufferView::Buffer() {\n  auto obj = Utils::OpenDirectHandle(this);\n  i::Isolate* i_isolate = obj->GetIsolate();\n  if (i::IsJSDataView(*obj)) {\n    i::DirectHandle<i::JSDataView> data_view(i::Cast<i::JSDataView>(*obj),\n                                             i_isolate);\n    DCHECK(IsJSArrayBuffer(data_view->buffer()));\n    return Utils::ToLocal(i::direct_handle(\n        i::Cast<i::JSArrayBuffer>(data_view->buffer()), i_isolate));\n  } else if (i::IsJSRabGsabDataView(*obj)) {\n    i::DirectHandle<i::JSRabGsabDataView> data_view(\n        i::Cast<i::JSRabGsabDataView>(*obj), i_isolate);\n    DCHECK(IsJSArrayBuffer(data_view->buffer()));\n    return Utils::ToLocal(i::direct_handle(\n        i::Cast<i::JSArrayBuffer>(data_view->buffer()), i_isolate));\n  } else {\n    DCHECK(IsJSTypedArray(*obj));\n    return Utils::ToLocal(i::Cast<i::JSTypedArray>(*obj)->GetBuffer());\n  }\n}\n",
+      "mapping": "DataView returns its backing buffer; TypedArray invokes GetBuffer. The latter materialization dependency is explicitly separate below."
+    },
+    {
+      "id": "v8_view_offset_length",
+      "role": "original authority",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+        "bytes": 489340,
+        "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+      },
+      "start_line": 9266,
+      "end_line": 9291,
+      "bytes": 818,
+      "sha256": "D5725B9AA8EF481976E8DD6843DED0BF26F877CE62E594C66CAC86C84691473C",
+      "text": "bool v8::ArrayBufferView::HasBuffer() const {\n  auto self = Utils::OpenDirectHandle(this);\n  if (!IsJSTypedArray(*self)) return true;\n  auto typed_array = i::Cast<i::JSTypedArray>(self);\n  return !typed_array->is_on_heap();\n}\n\nsize_t v8::ArrayBufferView::ByteOffset() {\n  auto obj = Utils::OpenDirectHandle(this);\n  return obj->WasDetached() ? 0 : obj->byte_offset();\n}\n\nsize_t v8::ArrayBufferView::ByteLength() {\n  i::DisallowGarbageCollection no_gc;\n  i::Tagged<i::JSArrayBufferView> obj = *Utils::OpenDirectHandle(this);\n  if (obj->WasDetached()) {\n    return 0;\n  }\n  if (i::IsJSTypedArray(obj)) {\n    return i::Cast<i::JSTypedArray>(obj)->GetByteLength();\n  }\n  if (i::IsJSDataView(obj)) {\n    return i::Cast<i::JSDataView>(obj)->byte_length();\n  }\n  return i::Cast<i::JSRabGsabDataView>(obj)->GetByteLength();\n}\n",
+      "mapping": "ByteOffset uses stored offset unless detached. ByteLength separately applies actual fixed/tracking view length rules. A live OOB offset is not replaced by zero merely because usable length is zero."
+    },
+    {
+      "id": "v8_getbuffer_materialization",
+      "role": "explicit remaining original policy",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\v8-js-array-buffer.v24.13.cc",
+        "bytes": 18909,
+        "sha256": "CE1E02B2A871FD03887A9DEDD26D677EC39AC7CE2B71D3A1D58B255B8099F5B1"
+      },
+      "start_line": 297,
+      "end_line": 337,
+      "bytes": 1558,
+      "sha256": "561F65CF22EFD3407969E562A7F2705838ECD4E7E33F63C1BAF56226C535FCA3",
+      "text": "Handle<JSArrayBuffer> JSTypedArray::GetBuffer() {\n  Isolate* isolate = GetIsolate();\n  DirectHandle<JSTypedArray> self(*this, isolate);\n  DCHECK(IsTypedArrayOrRabGsabTypedArrayElementsKind(self->GetElementsKind()));\n  Handle<JSArrayBuffer> array_buffer(Cast<JSArrayBuffer>(self->buffer()),\n                                     isolate);\n  if (!is_on_heap()) {\n    // Already is off heap, so return the existing buffer.\n    return array_buffer;\n  }\n  DCHECK(!array_buffer->is_resizable_by_js());\n\n  // The existing array buffer should be empty.\n  DCHECK(array_buffer->IsEmpty());\n\n  // Allocate a new backing store and attach it to the existing array buffer.\n  size_t byte_length = self->byte_length();\n  auto backing_store =\n      BackingStore::Allocate(isolate, byte_length, SharedFlag::kNotShared,\n                             InitializedFlag::kUninitialized);\n\n  if (!backing_store) {\n    isolate->heap()->FatalProcessOutOfMemory(\"JSTypedArray::GetBuffer\");\n  }\n\n  // Copy the elements into the backing store of the array buffer.\n  if (byte_length > 0) {\n    memcpy(backing_store->buffer_start(), self->DataPtr(), byte_length);\n  }\n\n  // Attach the backing store to the array buffer.\n  array_buffer->Setup(SharedFlag::kNotShared, ResizableFlag::kNotResizable,\n                      std::move(backing_store), isolate);\n\n  // Clear the elements of the typed array.\n  self->set_elements(ReadOnlyRoots(isolate).empty_byte_array());\n  self->SetOffHeapDataPtr(isolate, array_buffer->backing_store(), 0);\n  DCHECK(!self->is_on_heap());\n\n  return array_buffer;\n}\n",
+      "mapping": "Off-heap path returns existing backing buffer. On-heap path allocates backing store, fatal-OOMs on failure, copies data, attaches storage and replaces element representation. This full V8 materialization/allocator policy is NOT implemented by the raw address helper; QuickJS valid views are already backed."
+    },
+    {
+      "id": "future_user_buffer_entry",
+      "role": "future consumer authority only",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.cc.v24.13.txt",
+        "bytes": 28310,
+        "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+      },
+      "start_line": 160,
+      "end_line": 166,
+      "bytes": 260,
+      "sha256": "2B7017242BF29865F9A4269270E3AEC07710C2CA9C165B0A5B31C73EA414B4F9",
+      "text": "int StreamBase::UseUserBuffer(const FunctionCallbackInfo<Value>& args) {\n  CHECK(Buffer::HasInstance(args[0]));\n\n  uv_buf_t buf = uv_buf_init(Buffer::Data(args[0]), Buffer::Length(args[0]));\n  PushStreamListener(new CustomBufferJSListener(buf));\n  return 0;\n}\n",
+      "mapping": "Original UseUserBuffer CHECKs actual view, forms borrowed uv_buf_t from Data+Length and pushes actual CustomBufferJSListener. This packet supplies only the missing lower-level address dependency, and does not install this method."
+    },
+    {
+      "id": "future_custom_buffer_listener",
+      "role": "future consumer authority only",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.cc.v24.13.txt",
+        "bytes": 28310,
+        "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+      },
+      "start_line": 720,
+      "end_line": 751,
+      "bytes": 1179,
+      "sha256": "083E18EE1C7D4CEC5FCAEDE98680DE620F8BFE7879E113BD8392CD0BB663D609",
+      "text": "uv_buf_t CustomBufferJSListener::OnStreamAlloc(size_t suggested_size) {\n  return buffer_;\n}\n\n\nvoid CustomBufferJSListener::OnStreamRead(ssize_t nread, const uv_buf_t& buf) {\n  CHECK_NOT_NULL(stream_);\n\n  StreamBase* stream = static_cast<StreamBase*>(stream_);\n  Environment* env = stream->stream_env();\n  HandleScope handle_scope(env->isolate());\n  Context::Scope context_scope(env->context());\n\n  // In the case that there's an error and buf is null, return immediately.\n  // This can happen on unices when POLLHUP is received and UV_EOF is returned\n  // or when getting an error while performing a UV_HANDLE_ZERO_READ on Windows.\n  if (buf.base == nullptr && nread < 0) {\n    stream->CallJSOnreadMethod(nread, Local<ArrayBuffer>());\n    return;\n  }\n\n  CHECK_EQ(buf.base, buffer_.base);\n\n  MaybeLocal<Value> ret = stream->CallJSOnreadMethod(nread,\n                             Local<ArrayBuffer>(),\n                             0,\n                             StreamBase::SKIP_NREAD_CHECKS);\n  Local<Value> next_buf_v;\n  if (ret.ToLocal(&next_buf_v) && !next_buf_v->IsUndefined()) {\n    buffer_.base = Buffer::Data(next_buf_v);\n    buffer_.len = Buffer::Length(next_buf_v);\n  }\n",
+      "mapping": "Original listener borrows uv_buf_t, reports read, and conditionally replaces the buffer from actual JS result. It does not manufacture a JS root. That concrete listener and public entry remain outside this packet."
+    },
+    {
+      "id": "future_listener_inheritance",
+      "role": "future consumer authority only",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.h.v24.13.txt",
+        "bytes": 18488,
+        "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334"
+      },
+      "start_line": 203,
+      "end_line": 216,
+      "bytes": 452,
+      "sha256": "99AE9C147504D2172C9B98B7786D82357B937D8EF168AEFF823A24F9949AE24D",
+      "text": "\n// An alternative listener that uses a custom, user-provided buffer\n// for reading data.\nclass CustomBufferJSListener : public ReportWritesToJSStreamListener {\n public:\n  uv_buf_t OnStreamAlloc(size_t suggested_size) override;\n  void OnStreamRead(ssize_t nread, const uv_buf_t& buf) override;\n  void OnStreamDestroy() override { delete this; }\n\n  explicit CustomBufferJSListener(uv_buf_t buffer) : buffer_(buffer) {}\n\n private:\n  uv_buf_t buffer_;\n};\n",
+      "mapping": "Original custom listener inherits real ReportWritesToJSStreamListener. Later assembly must select the actual Shutdown reporter; generic previous-listener forwarding is not a substitute."
+    },
+    {
+      "id": "native_view_fields",
+      "role": "host representation",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 1062,
+      "end_line": 1084,
+      "bytes": 999,
+      "sha256": "039A2812879ACE06565389DF67858C650DAC5D49A1A5C1EFB061085BD8AA00FE",
+      "text": "typedef struct JSArrayBuffer {\n    int byte_length; /* 0 if detached */\n    int max_byte_length; /* -1 if not resizable; >= byte_length otherwise */\n    uint8_t detached;\n    uint8_t immutable;\n    uint8_t shared; /* if shared, the array buffer cannot be detached */\n    uint8_t uses_sab_hooks; /* actual legacy SAB allocation/clone entitlement */\n    uint8_t *data; /* NULL if detached */\n    struct list_head array_list;\n    void *opaque;\n    JSReallocArrayBufferDataFunc *realloc_func;\n    void *native_storage;\n    const JSPiArrayBufferStorageFunctions *storage_functions;\n} JSArrayBuffer;\n\ntypedef struct JSTypedArray {\n    struct list_head link; /* link to arraybuffer */\n    JSObject *obj; /* back pointer to the TypedArray/DataView object */\n    JSObject *buffer; /* based array buffer */\n    uint32_t offset; /* byte offset in the array buffer */\n    uint32_t length; /* byte length in the array buffer */\n    bool track_rab; /* auto-track length of backing array buffer */\n} JSTypedArray;\n",
+      "mapping": "Real ArrayBuffer owns data/native storage and detached bit; every TypedArray/DataView has actual buffer pointer plus stored byte offset and span. No guest property lookup is needed."
+    },
+    {
+      "id": "native_class_range",
+      "role": "host representation",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 65340,
+      "end_line": 65343,
+      "bytes": 135,
+      "sha256": "6C84CFD98B7046E3B56F9DB1DE68FECD9D1C112BEBDA4B56F118D3D89E06CF4F",
+      "text": "static bool is_typed_array(JSClassID class_id)\n{\n    return class_id >= JS_CLASS_UINT8C_ARRAY && class_id <= JS_CLASS_FLOAT64_ARRAY;\n}\n",
+      "mapping": "The actual intrinsic class-range predicate is constant class comparison; a Proxy or forged prototype does not become a native view."
+    },
+    {
+      "id": "native_typed_view_init",
+      "role": "host ownership",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 67175,
+      "end_line": 67202,
+      "bytes": 814,
+      "sha256": "2F88035D4E30ABA402534294B6FE497E4E15C5D18E63255B099AB0982A3D1F08",
+      "text": "static int typed_array_init(JSContext *ctx, JSValue obj, JSValue buffer,\n                            uint64_t offset, uint64_t len, bool track_rab)\n{\n    JSTypedArray *ta;\n    JSObject *p, *pbuffer;\n    JSArrayBuffer *abuf;\n    int size_log2;\n\n    p = JS_VALUE_GET_OBJ(obj);\n    size_log2 = typed_array_size_log2(p->class_id);\n    ta = js_malloc(ctx, sizeof(*ta));\n    if (!ta) {\n        JS_FreeValue(ctx, buffer);\n        return -1;\n    }\n    pbuffer = JS_VALUE_GET_OBJ(buffer);\n    abuf = pbuffer->u.array_buffer;\n    ta->obj = p;\n    ta->buffer = pbuffer;\n    ta->offset = offset;\n    ta->length = len << size_log2;\n    ta->track_rab = track_rab;\n    list_add_tail(&ta->link, &abuf->array_list);\n    p->u.typed_array = ta;\n    p->u.array.count = len;\n    p->u.array.u.ptr = abuf->data + offset;\n    return 0;\n}\n",
+      "mapping": "Actual initialized typed view owns its buffer and stores byte offset; cached typed elements use the same backing address. The new read neither duplicates nor releases this ownership."
+    },
+    {
+      "id": "native_typed_constructor_lifetime",
+      "role": "host ownership",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 67367,
+      "end_line": 67483,
+      "bytes": 4611,
+      "sha256": "F6CB30B3E0525569311ECEA7824FA06B2BD90AF85E29458D38C052E65786B270",
+      "text": "static JSValue js_typed_array_constructor(JSContext *ctx,\n                                          JSValueConst new_target,\n                                          int argc, JSValueConst *argv,\n                                          int classid)\n{\n    bool track_rab = false;\n    JSValue buffer, obj;\n    JSArrayBuffer *abuf;\n    int size_log2;\n    uint64_t len, offset;\n\n    size_log2 = typed_array_size_log2(classid);\n    if (JS_VALUE_GET_TAG(argv[0]) != JS_TAG_OBJECT) {\n        if (JS_ToIndex(ctx, &len, argv[0]))\n            return JS_EXCEPTION;\n        buffer = js_array_buffer_constructor1(ctx, JS_UNDEFINED,\n                                              len << size_log2,\n                                              NULL);\n        if (JS_IsException(buffer))\n            return JS_EXCEPTION;\n        offset = 0;\n    } else {\n        JSObject *p = JS_VALUE_GET_OBJ(argv[0]);\n        if (p->class_id == JS_CLASS_ARRAY_BUFFER ||\n            p->class_id == JS_CLASS_SHARED_ARRAY_BUFFER) {\n            abuf = p->u.array_buffer;\n            if (JS_ToIndex(ctx, &offset, argv[1]))\n                return JS_EXCEPTION;\n            if (abuf->detached)\n                return JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n            if ((offset & ((1 << size_log2) - 1)) != 0 ||\n                offset > js_array_buffer_current_length(abuf))\n                return JS_ThrowRangeError(ctx, \"invalid offset\");\n            if (JS_IsUndefined(argv[2])) {\n                track_rab = array_buffer_is_resizable(abuf);\n                if (!track_rab)\n                    if ((js_array_buffer_current_length(abuf) & ((1 << size_log2) - 1)) != 0)\n                        goto invalid_length;\n                len = (js_array_buffer_current_length(abuf) - offset) >> size_log2;\n            } else {\n                if (JS_ToIndex(ctx, &len, argv[2]))\n                    return JS_EXCEPTION;\n                if (abuf->detached)\n                    return JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n                if ((offset + (len << size_log2)) > js_array_buffer_current_length(abuf)) {\n                invalid_length:\n                    return JS_ThrowRangeError(ctx, \"invalid length\");\n                }\n            }\n            buffer = js_dup(argv[0]);\n        } else {\n            if (is_typed_array(p->class_id)) {\n                return js_typed_array_constructor_ta(ctx, new_target, argv[0],\n                                                     classid, js_array_data_count(p));\n            } else {\n                return js_typed_array_constructor_obj(ctx, new_target, argv[0], classid);\n            }\n        }\n    }\n\n    obj = js_create_from_ctor(ctx, new_target, classid);\n    if (JS_IsException(obj)) {\n        JS_FreeValue(ctx, buffer);\n        return JS_EXCEPTION;\n    }\n    // Re-validate buffer after js_create_from_ctor which may have run JS code\n    // that resized or detached the ArrayBuffer\n    abuf = JS_VALUE_GET_OBJ(buffer)->u.array_buffer;\n    if (abuf->detached) {\n        JS_FreeValue(ctx, buffer);\n        JS_FreeValue(ctx, obj);\n        return JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n    }\n    if (offset > js_array_buffer_current_length(abuf)) {\n        JS_FreeValue(ctx, buffer);\n        JS_FreeValue(ctx, obj);\n        return JS_ThrowRangeError(ctx, \"invalid offset\");\n    }\n    if (track_rab) {\n        // Recalculate length for RAB-backed view\n        len = (js_array_buffer_current_length(abuf) - offset) >> size_log2;\n    } else if ((offset + (len << size_log2)) > js_array_buffer_current_length(abuf)) {\n        JS_FreeValue(ctx, buffer);\n        JS_FreeValue(ctx, obj);\n        return JS_ThrowRangeError(ctx, \"invalid length\");\n    }\n    if (typed_array_init(ctx, obj, buffer, offset, len, track_rab)) {\n        JS_FreeValue(ctx, obj);\n        return JS_EXCEPTION;\n    }\n    return obj;\n}\n\nstatic void js_typed_array_finalizer(JSRuntime *rt, JSValueConst val)\n{\n    JSObject *p = JS_VALUE_GET_OBJ(val);\n    JSTypedArray *ta = p->u.typed_array;\n    if (ta) {\n        /* during the GC the finalizers are called in an arbitrary\n           order so the ArrayBuffer finalizer may have been called */\n        if (ta->link.next) {\n            list_del(&ta->link);\n        }\n        JS_FreeValueRT(rt, JS_MKPTR(JS_TAG_OBJECT, ta->buffer));\n        js_free_rt(rt, ta);\n    }\n}\n\nstatic void js_typed_array_mark(JSRuntime *rt, JSValueConst val,\n                                JS_MarkFunc *mark_func)\n{\n    JSObject *p = JS_VALUE_GET_OBJ(val);\n    JSTypedArray *ta = p->u.typed_array;\n    if (ta) {\n        JS_MarkValue(rt, JS_MKPTR(JS_TAG_OBJECT, ta->buffer), mark_func);\n    }\n}\n",
+      "mapping": "The real constructor allocates or retains backing, revalidates after guest-capable newTarget work, and initializes the view; actual finalizer releases the retained backing and mark traverses it. No separate on-heap typed-element representation is introduced by the new API."
+    },
+    {
+      "id": "native_dataview_init",
+      "role": "host ownership",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 67485,
+      "end_line": 67558,
+      "bytes": 2346,
+      "sha256": "8C915D99828147DC74C3ACE05FBC956ADE04973362C4AFE19DE8BDAFE625A356",
+      "text": "static JSValue js_dataview_constructor(JSContext *ctx,\n                                       JSValueConst new_target,\n                                       int argc, JSValueConst *argv)\n{\n    bool recompute_len = false;\n    bool track_rab = false;\n    JSArrayBuffer *abuf;\n    uint64_t offset;\n    uint32_t len;\n    JSValueConst buffer;\n    JSValue obj;\n    JSTypedArray *ta;\n    JSObject *p;\n\n    buffer = argv[0];\n    abuf = js_get_array_buffer(ctx, buffer);\n    if (!abuf)\n        return JS_EXCEPTION;\n    offset = 0;\n    if (argc > 1) {\n        if (JS_ToIndex(ctx, &offset, argv[1]))\n            return JS_EXCEPTION;\n    }\n    if (abuf->detached)\n        return JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n    if (offset > js_array_buffer_current_length(abuf))\n        return JS_ThrowRangeError(ctx, \"invalid byteOffset\");\n    len = js_array_buffer_current_length(abuf) - offset;\n    if (argc > 2 && !JS_IsUndefined(argv[2])) {\n        uint64_t l;\n        if (JS_ToIndex(ctx, &l, argv[2]))\n            return JS_EXCEPTION;\n        if (l > len)\n            return JS_ThrowRangeError(ctx, \"invalid byteLength\");\n        len = l;\n    } else {\n        recompute_len = true;\n        track_rab = array_buffer_is_resizable(abuf);\n    }\n\n    obj = js_create_from_ctor(ctx, new_target, JS_CLASS_DATAVIEW);\n    if (JS_IsException(obj))\n        return JS_EXCEPTION;\n    if (abuf->detached) {\n        /* could have been detached in js_create_from_ctor() */\n        JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n        goto fail;\n    }\n    // RAB could have been resized in js_create_from_ctor()\n    if (offset > js_array_buffer_current_length(abuf)) {\n        goto out_of_bound;\n    } else if (recompute_len) {\n        len = js_array_buffer_current_length(abuf) - offset;\n    } else if (offset + len > js_array_buffer_current_length(abuf)) {\n    out_of_bound:\n        JS_ThrowRangeError(ctx, \"invalid byteOffset or byteLength\");\n        goto fail;\n    }\n    ta = js_malloc(ctx, sizeof(*ta));\n    if (!ta) {\n    fail:\n        JS_FreeValue(ctx, obj);\n        return JS_EXCEPTION;\n    }\n    p = JS_VALUE_GET_OBJ(obj);\n    ta->obj = p;\n    ta->buffer = JS_VALUE_GET_OBJ(js_dup(buffer));\n    ta->offset = offset;\n    ta->length = len;\n    ta->track_rab = track_rab;\n    list_add_tail(&ta->link, &abuf->array_list);\n    p->u.typed_array = ta;\n    return obj;\n}\n",
+      "mapping": "Actual DataView constructor revalidates after guest-capable construction, retains buffer, and stores offset/length/tracking flag in the same native view layout."
+    },
+    {
+      "id": "native_buffer_finalizer",
+      "role": "host ownership",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 64755,
+      "end_line": 64792,
+      "bytes": 1405,
+      "sha256": "824CF6163F9FC0AF0FCCAB1049A1AECF584A416BD0CC61ACB3FB16688D2F6ECC",
+      "text": "static void js_array_buffer_finalizer(JSRuntime *rt, JSValueConst val)\n{\n    JSObject *p = JS_VALUE_GET_OBJ(val);\n    JSArrayBuffer *abuf = p->u.array_buffer;\n    struct list_head *el, *el1;\n\n    if (abuf) {\n        /* The ArrayBuffer finalizer may be called before the typed\n           array finalizers using it, so abuf->array_list is not\n           necessarily empty. */\n        list_for_each_safe(el, el1, &abuf->array_list) {\n            JSTypedArray *ta;\n            JSObject *p1;\n\n            ta = list_entry(el, JSTypedArray, link);\n            ta->link.prev = NULL;\n            ta->link.next = NULL;\n            p1 = ta->obj;\n            /* Note: the typed array length and offset fields are not modified */\n            if (p1->class_id != JS_CLASS_DATAVIEW) {\n                p1->u.array.count = 0;\n                p1->u.array.u.ptr = NULL;\n            }\n        }\n        if (abuf->native_storage) {\n            void *storage = abuf->native_storage;\n            abuf->native_storage = NULL;\n            abuf->storage_functions->release(storage);\n        } else if (abuf->shared && abuf->uses_sab_hooks &&\n                   rt->sab_funcs.sab_free) {\n            rt->sab_funcs.sab_free(rt->sab_funcs.sab_opaque, abuf->data);\n        } else {\n            if (abuf->realloc_func)\n                abuf->realloc_func(rt, abuf->opaque, abuf->data, 0);\n        }\n        js_free_rt(rt, abuf);\n    }\n}\n",
+      "mapping": "Actual finalization releases native storage or external callback and frees the backing record. The raw pointer helper has no ownership edge to prevent retirement."
+    },
+    {
+      "id": "native_detach",
+      "role": "host ownership",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 64882,
+      "end_line": 64916,
+      "bytes": 1141,
+      "sha256": "5183053D14BC9A143B63C5CD2F4FBDEC0FECD734BFDC0DD2CC0F390D00A7F163",
+      "text": "void JS_DetachArrayBuffer(JSContext *ctx, JSValueConst obj)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque(obj, JS_CLASS_ARRAY_BUFFER);\n    struct list_head *el;\n\n    if (!abuf || abuf->detached)\n        return;\n    if (abuf->native_storage) {\n        void *storage = abuf->native_storage;\n        abuf->native_storage = NULL;\n        abuf->storage_functions->release(storage);\n    } else if (abuf->realloc_func) {\n        abuf->realloc_func(ctx->rt, abuf->opaque, abuf->data, 0);\n        /* The backing data has been released. Do not release it again when\n           the detached ArrayBuffer object is later finalized. */\n        abuf->realloc_func = NULL;\n        abuf->opaque = NULL;\n    }\n    abuf->data = NULL;\n    abuf->byte_length = 0;\n    abuf->detached = true;\n\n    list_for_each(el, &abuf->array_list) {\n        JSTypedArray *ta;\n        JSObject *p;\n\n        ta = list_entry(el, JSTypedArray, link);\n        p = ta->obj;\n        /* Note: the typed array length and offset fields are not modified */\n        if (p->class_id != JS_CLASS_DATAVIEW) {\n            p->u.array.count = 0;\n            p->u.array.u.ptr = NULL;\n        }\n    }\n}\n",
+      "mapping": "Actual detach releases native/external entitlement once, clears data, marks detached and invalidates cached typed spans while preserving stored offset. The new API checks detached before address formation."
+    },
+    {
+      "id": "native_resize_refresh",
+      "role": "host representation",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 64974,
+      "end_line": 65026,
+      "bytes": 1862,
+      "sha256": "72F6F9E53497D9F0CEB9D864E15587FCCF1DAFDF26B17DF39DE87486D4F8FB18",
+      "text": "static void js_array_buffer_update_typed_arrays(JSArrayBuffer *abuf)\n{\n    uint32_t size_log2, size_elem;\n    struct list_head *el;\n    JSTypedArray *ta;\n    JSObject *p;\n    uint8_t *data;\n    int64_t len;\n\n    len = abuf->byte_length;\n    data = abuf->data;\n    list_for_each(el, &abuf->array_list) {\n        ta = list_entry(el, JSTypedArray, link);\n        p = ta->obj;\n        if (p->class_id == JS_CLASS_DATAVIEW) {\n            if (ta->track_rab && ta->offset <= len)\n                ta->length = len - ta->offset;\n            continue;\n        }\n        p->u.array.count = 0;\n        p->u.array.u.ptr = NULL;\n        size_log2 = typed_array_size_log2(p->class_id);\n        size_elem = 1 << size_log2;\n        if (ta->track_rab) {\n            if (len >= (int64_t)ta->offset + size_elem) {\n                p->u.array.count = (len - ta->offset) >> size_log2;\n                p->u.array.u.ptr = &data[ta->offset];\n            }\n        } else {\n            if (len >= (int64_t)ta->offset + ta->length) {\n                p->u.array.count = ta->length >> size_log2;\n                p->u.array.u.ptr = &data[ta->offset];\n            }\n        }\n    }\n}\n\n/* A shared native owner contains no JS pointers. Each runtime refreshes only\n   its own wrapper/view caches when it actually reads the current shared size.\n   Ordinary Arrays, fixed buffers and non-Pi storage keep their original path. */\nstatic int js_array_buffer_current_length(JSArrayBuffer *abuf)\n{\n    if (abuf->native_storage && abuf->shared && abuf->max_byte_length >= 0) {\n        size_t length =\n            abuf->storage_functions->byte_length(abuf->native_storage);\n        assert(length <= INT32_MAX);\n        if (length != (size_t)abuf->byte_length) {\n            abuf->byte_length = length;\n            js_array_buffer_update_typed_arrays(abuf);\n        }\n    }\n    return abuf->byte_length;\n}\n",
+      "mapping": "Native resize refreshes each actual view from data and retained offset; actual shared current length comes from provider length and refreshes only owner-runtime caches. The raw address function does not need to change these caches."
+    },
+    {
+      "id": "native_transfer",
+      "role": "host ownership",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 65045,
+      "end_line": 65153,
+      "bytes": 4646,
+      "sha256": "15F6087742E675A80EEB680F4F0FF5E2052C0FED5D27E87BFC7860855628A3C1",
+      "text": "static JSValue js_array_buffer_transfer(JSContext *ctx, JSValueConst this_val,\n                                        int argc, JSValueConst *argv, int magic)\n{\n    JSArrayBuffer *abuf;\n    uint64_t new_len, old_len, max_len, *pmax_len;\n    uint8_t *bs, *new_bs;\n    JSReallocArrayBufferDataFunc *realloc_func;\n    void *opaque;\n    JSValue ret;\n\n    abuf = JS_GetOpaque2(ctx, this_val, JS_CLASS_ARRAY_BUFFER);\n    if (!abuf)\n        return JS_EXCEPTION;\n    if (abuf->shared)\n        return JS_ThrowTypeError(ctx, \"cannot transfer a SharedArrayBuffer\");\n    // Spec (ArrayBufferCopyAndDetach): the newLength argument must be\n    // coerced (its valueOf observed) before the buffer's detachability /\n    // immutability is checked, so side effects of coercion are visible.\n    if (argc < 1 || JS_IsUndefined(argv[0]))\n        new_len = js_array_buffer_current_length(abuf);\n    else if (JS_ToIndex(ctx, &new_len, argv[0]))\n        return JS_EXCEPTION;\n    if (abuf->immutable)\n        return JS_ThrowTypeErrorImmutableArrayBuffer(ctx);\n    if (abuf->detached)\n        return JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n    pmax_len = NULL;\n    if (magic == JS_ARRAY_BUFFER_TRANSFER) {\n        if (array_buffer_is_resizable(abuf)) { // carry over maxByteLength\n            max_len = abuf->max_byte_length;\n            if (new_len > max_len)\n                return JS_ThrowRangeError(ctx, \"invalid array buffer length\");\n            pmax_len = &max_len;\n        }\n    }\n    /* create an empty AB */\n    if (new_len == 0) {\n        JS_DetachArrayBuffer(ctx, this_val);\n        ret = js_array_buffer_constructor2(ctx, JS_UNDEFINED, 0, pmax_len,\n                                           JS_CLASS_ARRAY_BUFFER);\n        goto fini;\n    }\n    if (abuf->native_storage) {\n        /* Node's fixed-to-fixed equal-length transfer reuses the same storage.\n           A RAB, including an equal-length RAB, transfers by a fresh allocation\n           and copy. Any in-flight native lease stays on its original owner. */\n        if (!array_buffer_is_resizable(abuf) && !pmax_len &&\n            new_len == (uint64_t)abuf->byte_length) {\n            void *storage = abuf->native_storage;\n            abuf->storage_functions->retain(storage);\n            JS_DetachArrayBuffer(ctx, this_val);\n            ret = js_array_buffer_constructor4(\n                ctx, JS_UNDEFINED, new_len, NULL, JS_CLASS_ARRAY_BUFFER,\n                NULL, NULL, NULL, false, storage, false);\n        } else {\n            JSArrayBuffer *target;\n            ret = js_array_buffer_constructor2(ctx, JS_UNDEFINED, new_len,\n                                               pmax_len, JS_CLASS_ARRAY_BUFFER);\n            if (JS_IsException(ret))\n                return ret;\n            target = JS_VALUE_GET_OBJ(ret)->u.array_buffer;\n            memcpy(target->data, abuf->data,\n                   (new_len < (uint64_t)abuf->byte_length ?\n                    new_len : (uint64_t)abuf->byte_length));\n            JS_DetachArrayBuffer(ctx, this_val);\n        }\n        goto fini;\n    }\n    bs = abuf->data;\n    old_len = js_array_buffer_current_length(abuf);\n    realloc_func = abuf->realloc_func;\n    opaque = abuf->opaque;\n    /* if length mismatch, realloc. Otherwise, use the same backing buffer. */\n    if (new_len != old_len) {\n        if (!realloc_func)\n            return JS_ThrowTypeError(ctx, \"array buffer is not resizable\");\n        /* XXX: we are currently limited to 2 GB; check before reallocating,\n           new_len does not necessarily fit in a size_t */\n        if (new_len > INT32_MAX)\n            return JS_ThrowRangeError(ctx, \"invalid array buffer length\");\n        new_bs = realloc_func(ctx->rt, opaque, bs, new_len);\n        if (!new_bs)\n            return JS_ThrowOutOfMemory(ctx);\n        bs = new_bs;\n        if (new_len > old_len)\n            memset(bs + old_len, 0, new_len - old_len);\n    }\n    /* neuter the source */\n    abuf->data = NULL;\n    abuf->byte_length = 0;\n    abuf->detached = true;\n    abuf->realloc_func = NULL;\n    abuf->opaque = NULL;\n    js_array_buffer_update_typed_arrays(abuf);\n    ret = js_array_buffer_constructor3(ctx, JS_UNDEFINED, new_len, pmax_len,\n                                       JS_CLASS_ARRAY_BUFFER, bs,\n                                       realloc_func, opaque,\n                                       /*alloc_flag*/false);\nfini:\n    if (magic == JS_ARRAY_BUFFER_TRANSFER_TO_IMMUTABLE) {\n        if (JS_IsException(ret))\n            return JS_EXCEPTION;\n        abuf = JS_GetOpaque2(ctx, ret, JS_CLASS_ARRAY_BUFFER);\n        if (!abuf)\n            return JS_EXCEPTION;\n        abuf->immutable = true;\n    }\n    return ret;\n}\n",
+      "mapping": "Existing transfer performs actual detach and either retains fixed equal-length storage or copies to new storage for RAB/changed length. The controls observe this existing operation; the new API does not implement or alter transfer."
+    },
+    {
+      "id": "native_resize",
+      "role": "host lifetime boundary",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 65155,
+      "end_line": 65218,
+      "bytes": 2791,
+      "sha256": "6E10A8451CAE19C28C356B7F4F60530C75C7B685BB9A09F7491268938197B84B",
+      "text": "static JSValue js_array_buffer_resize(JSContext *ctx, JSValueConst this_val,\n                                      int argc, JSValueConst *argv, int class_id)\n{\n    JSArrayBuffer *abuf;\n    uint8_t *data;\n    int64_t len;\n\n    abuf = JS_GetOpaque2(ctx, this_val, class_id);\n    if (!abuf)\n        return JS_EXCEPTION;\n    if (abuf->immutable)\n        return JS_ThrowTypeErrorImmutableArrayBuffer(ctx);\n    if (JS_ToInt64(ctx, &len, argv[0]))\n        return JS_EXCEPTION;\n    if (abuf->detached)\n        return JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n    if (!array_buffer_is_resizable(abuf))\n        return JS_ThrowTypeError(ctx, \"array buffer is not resizable\");\n    if (len < 0 || len > abuf->max_byte_length) {\n    bad_length:\n        return JS_ThrowRangeError(ctx, \"invalid array buffer length\");\n    }\n    if (abuf->native_storage) {\n        int status = abuf->storage_functions->resize(abuf->native_storage, len);\n        if (status == -2)\n            goto bad_length;\n        if (status < 0)\n            return JS_ThrowOutOfMemory(ctx);\n        abuf->byte_length =\n            abuf->storage_functions->byte_length(abuf->native_storage);\n        /* The native storage owner never moves this address. */\n        js_array_buffer_update_typed_arrays(abuf);\n        return JS_UNDEFINED;\n    }\n    // SABs can only grow and we don't need to realloc because\n    // js_array_buffer_constructor3 commits all memory upfront;\n    // regular RABs are resizable both ways and realloc\n    if (abuf->shared) {\n        if (len < js_array_buffer_current_length(abuf))\n            goto bad_length;\n        // Note this is off-spec; there's supposed to be a single atomic\n        // |byteLength| property that's shared across SABs but we store\n        // it per SAB instead. That means when thread A calls sab.grow(2)\n        // at time t0, and thread B calls sab.grow(1) at time t1, we don't\n        // throw a TypeError in thread B as the spec says we should,\n        // instead both threads get their own view of the backing memory,\n        // 2 bytes big in A, and 1 byte big in B\n        abuf->byte_length = len;\n    } else {\n        // the ArrayBuffer cannot be resizable without a way to resize it,\n        // js_array_buffer_constructor3 rejects that combination\n        assert(abuf->realloc_func);\n        data = abuf->realloc_func(ctx->rt, abuf->opaque, abuf->data,\n                                  max_int(len, 1));\n        if (!data)\n            return JS_ThrowOutOfMemory(ctx);\n        if (len > js_array_buffer_current_length(abuf))\n            memset(&data[js_array_buffer_current_length(abuf)], 0, len - js_array_buffer_current_length(abuf));\n        abuf->byte_length = len;\n        abuf->data = data;\n    }\n    js_array_buffer_update_typed_arrays(abuf);\n    return JS_UNDEFINED;\n}\n",
+      "mapping": "Native Pi storage keeps its data address stable while committed/usable length changes. Existing unmanaged RAB can relocate through realloc, so the new pointer is only a synchronous borrow of current data."
+    },
+    {
+      "id": "native_usable_length",
+      "role": "host dependency",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 67636,
+      "end_line": 67666,
+      "bytes": 1093,
+      "sha256": "8C2A213583D677AD493FA97967AD80A8D8C83FFC2AEFFBEF072D51FA5F1A98E5",
+      "text": "/* Intrinsic V8 ArrayBufferView::ByteLength projection. Borrow the actual view;\n   do not consult guest properties, acquire storage, allocate, or touch pending\n   state. One current backing-length snapshot supplies tracking and OOB rules. */\nsize_t JS_PiArrayBufferViewByteLength(JSValueConst view)\n{\n    JSObject *p;\n    JSTypedArray *ta;\n    JSArrayBuffer *abuf;\n    size_t length, remaining;\n\n    if (JS_VALUE_GET_TAG(view) != JS_TAG_OBJECT)\n        return 0;\n    p = JS_VALUE_GET_OBJ(view);\n    if (!is_typed_array(p->class_id) && p->class_id != JS_CLASS_DATAVIEW)\n        return 0;\n    ta = p->u.typed_array;\n    if (!ta)\n        return 0;\n    abuf = ta->buffer->u.array_buffer;\n    if (abuf->detached)\n        return 0;\n    length = js_array_buffer_current_length(abuf);\n    if (ta->offset > length)\n        return 0;\n    remaining = length - ta->offset;\n    if (!ta->track_rab)\n        return ta->length <= remaining ? ta->length : 0;\n    if (p->class_id == JS_CLASS_DATAVIEW)\n        return remaining;\n    return remaining & ~(((size_t)1 << typed_array_size_log2(p->class_id)) - 1);\n}\n",
+      "mapping": "Unchanged raw ByteLength returns zero for detached/OOB, exact fixed length or tracked whole elements. Callers must obtain usable length before dereference; address observation alone is not capacity permission."
+    },
+    {
+      "id": "owned_span_distinction",
+      "role": "host dependency distinction",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 67668,
+      "end_line": 67708,
+      "bytes": 1752,
+      "sha256": "968C9B68E21C690FD0ACFD6195059A1C1D388427CEBD53CCC4C51A9BA2A271DD",
+      "text": "/* Borrow obj; return an owned backing reference. Keep the existing typed-array\n   accessor unchanged. DataView spans use the same brand and bounds predicates\n   as the interpreter's own DataView getters, including length-tracking RABs. */\nJSValue JS_PiGetArrayBufferViewBuffer(JSContext *ctx, JSValueConst obj,\n                                      size_t *pbyte_offset,\n                                      size_t *pbyte_length,\n                                      size_t *pbytes_per_element)\n{\n    JSObject *p;\n    JSTypedArray *ta;\n    JSArrayBuffer *abuf;\n\n    if (!JS_IsDataView(obj)) {\n        JSValue result = JS_GetTypedArrayBuffer(ctx, obj, pbyte_offset,\n                                                pbyte_length,\n                                                pbytes_per_element);\n        if (JS_IsException(result) || !pbyte_length)\n            return result;\n        /* The existing accessor retains its original ABI and implementation.\n           This new span API uses the interpreter's live tracking length. */\n        p = JS_VALUE_GET_OBJ(obj);\n        ta = p->u.typed_array;\n        if (ta->track_rab)\n            *pbyte_length = (size_t)p->u.array.count << typed_array_size_log2(p->class_id);\n        return result;\n    }\n    p = get_dataview(ctx, obj);\n    if (!p)\n        return JS_EXCEPTION;\n    if (dataview_is_oob(p))\n        return JS_ThrowTypeErrorArrayBufferOOB(ctx);\n    ta = p->u.typed_array;\n    abuf = ta->buffer->u.array_buffer;\n    if (pbyte_offset)\n        *pbyte_offset = ta->offset;\n    if (pbyte_length)\n        *pbyte_length = ta->track_rab ? abuf->byte_length - ta->offset : ta->length;\n    if (pbytes_per_element)\n        *pbytes_per_element = 1;\n    return js_dup(JS_MKPTR(JS_TAG_OBJECT, ta->buffer));\n}\n",
+      "mapping": "Existing span getter may throw and returns an owned buffer reference; it is intentionally not called by this getter-free/no-ownership primitive."
+    },
+    {
+      "id": "actual_lease_ownership",
+      "role": "host dependency distinction",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "start_line": 67823,
+      "end_line": 67875,
+      "bytes": 1557,
+      "sha256": "6630EE5B3A15093A4B7A5854BBC7C2734D4C713C088B388A8E55B58F89CB0BF1",
+      "text": "int JS_PiAcquireArrayBufferView(JSContext *ctx, JSValueConst view,\n                                JSPiArrayBufferLease *out)\n{\n    JSValue buffer;\n    JSArrayBuffer *abuf;\n    size_t offset, length;\n    JSPiArrayBufferLease result = {0};\n\n    assert(out != NULL);\n    memset(out, 0, sizeof(*out));\n    if (JS_HasException(ctx))\n        return -1;\n    buffer = JS_PiGetArrayBufferViewBuffer(ctx, view, &offset, &length, NULL);\n    if (JS_IsException(buffer))\n        return -1;\n    abuf = js_get_array_buffer(ctx, buffer);\n    assert(abuf != NULL);\n    if (abuf->native_storage) {\n        result.owner = abuf->native_storage;\n        result.data = abuf->data + offset;\n        result.byte_length = length;\n        result.retain = abuf->storage_functions->retain;\n        result.release = abuf->storage_functions->release;\n        result.retain(result.owner);\n    }\n    JS_FreeValue(ctx, buffer);\n    if (JS_HasException(ctx)) {\n        if (result.owner)\n            result.release(result.owner);\n        return -1;\n    }\n    *out = result;\n    return result.owner ? 1 : 0;\n}\n\nvoid JS_PiDupArrayBufferLease(JSPiArrayBufferLease *out,\n                             const JSPiArrayBufferLease *source)\n{\n    assert(out != source);\n    assert(out->owner == NULL);\n    *out = *source;\n    if (out->owner)\n        out->retain(out->owner);\n}\n\nvoid JS_PiReleaseArrayBufferLease(JSPiArrayBufferLease *lease)\n{\n    void *owner = lease->owner;\n    void (*release)(void *) = lease->release;\n    memset(lease, 0, sizeof(*lease));\n    if (owner)\n        release(owner);\n}\n",
+      "mapping": "Real lease acquisition performs pending/brand/span checks then retains native backing; release clears the lease then drops actual owner. This controls independent backing references and is not replaced by a raw address."
+    },
+    {
+      "id": "native_owner_layout",
+      "role": "host native owner",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\host-basis\\src\\extensions\\engine_abi.c",
+        "bytes": 18016,
+        "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+      },
+      "start_line": 118,
+      "end_line": 134,
+      "bytes": 437,
+      "sha256": "F120E5888EA6A1009B80CABABD85DB3157C5F549DA0A64F405C7A286B40CA538",
+      "text": "struct PiArrayBufferBacking {\n    _Atomic size_t references;\n    _Atomic size_t byte_length;\n    _Atomic size_t committed;\n    _Atomic int resize_busy;\n    PiMemoryOwner *memory;\n    uint8_t *data;\n    void *allocation;\n    size_t allocation_size;\n    size_t page_size;\n    size_t max_byte_length;\n    size_t base_charge;\n    unsigned flags;\n};\nstatic _Atomic size_t pi_backing_allocations;\nstatic _Atomic size_t pi_shared_allocations;\n\n",
+      "mapping": "The real provider has atomic references/length, allocation and data pointer plus maximum capacity; these are actual physical storage owners rather than test counters."
+    },
+    {
+      "id": "native_backing_allocate",
+      "role": "host native owner",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\host-basis\\src\\extensions\\engine_abi.c",
+        "bytes": 18016,
+        "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+      },
+      "start_line": 191,
+      "end_line": 264,
+      "bytes": 3167,
+      "sha256": "73028459021F23362C82049623874EA5775DC2C234E96455AAF1A2E67FF2EC62",
+      "text": "static void *pi_backing_allocate(void *opaque, size_t length, size_t maximum,\n                                 unsigned flags) {\n    PiMemoryOwner *memory = opaque;\n    const int resizable = (flags & JS_PI_BACKING_RESIZABLE) != 0;\n    size_t page = 0, capacity, committed, base_charge, allocation_size;\n    void *allocation = NULL;\n    uint8_t *data;\n    if (length > maximum) return NULL;\n    if ((flags & JS_PI_BACKING_UNINITIALIZED) &&\n        (flags & (JS_PI_BACKING_SHARED | JS_PI_BACKING_RESIZABLE)))\n        return NULL;\n    if (resizable) {\n        page = pi_backing_page_size();\n        if (!pi_backing_round_pages(maximum, page, &capacity) ||\n            !pi_backing_round_pages(length, page, &committed))\n            return NULL;\n        if (!capacity) capacity = page;\n        if (capacity > SIZE_MAX - page ||\n            sizeof(PiArrayBufferBacking) > SIZE_MAX - page)\n            return NULL;\n        allocation_size = page + capacity; /* prefix page + stable data range */\n        base_charge = sizeof(PiArrayBufferBacking) + page;\n    } else {\n        capacity = length ? length : 1;\n        committed = capacity;\n        if (capacity > SIZE_MAX - sizeof(PiBackingPrefix) ||\n            sizeof(PiArrayBufferBacking) > SIZE_MAX - sizeof(PiBackingPrefix))\n            return NULL;\n        allocation_size = sizeof(PiBackingPrefix) + capacity;\n        base_charge = sizeof(PiArrayBufferBacking) + sizeof(PiBackingPrefix);\n    }\n    if (committed > SIZE_MAX - base_charge ||\n        !pi_reserve(memory, base_charge + committed))\n        return NULL;\n    PiArrayBufferBacking *backing = malloc(sizeof(*backing));\n    if (!backing) goto fail;\n    if (resizable) {\n        allocation = pi_backing_reserve_pages(allocation_size);\n        if (!allocation) goto fail;\n        if (!pi_backing_permissions(allocation, page + committed, 1)) goto fail;\n        data = (uint8_t *)allocation + page;\n    } else {\n        allocation = (flags & JS_PI_BACKING_UNINITIALIZED) ?\n            malloc(allocation_size) : calloc(1, allocation_size);\n        if (!allocation) goto fail;\n        data = (uint8_t *)allocation + sizeof(PiBackingPrefix);\n    }\n    atomic_init(&backing->references, 1);\n    atomic_init(&backing->byte_length, length);\n    atomic_init(&backing->committed, committed);\n    atomic_init(&backing->resize_busy, 0);\n    backing->memory = memory;\n    backing->data = data;\n    backing->allocation = allocation;\n    backing->allocation_size = allocation_size;\n    backing->page_size = page;\n    backing->max_byte_length = maximum;\n    backing->base_charge = base_charge;\n    backing->flags = flags;\n    ((PiBackingPrefix *)data)[-1].owner = backing;\n    pi_js_retain_memory_owner(memory);\n    atomic_fetch_add_explicit(&pi_backing_allocations, 1, memory_order_relaxed);\n    if (flags & JS_PI_BACKING_SHARED)\n        atomic_fetch_add_explicit(&pi_shared_allocations, 1, memory_order_relaxed);\n    return backing;\nfail:\n    if (allocation) {\n        if (resizable) pi_backing_free_pages(allocation, allocation_size);\n        else free(allocation);\n    }\n    free(backing);\n    pi_js_native_memory_release(memory, base_charge + committed);\n    return NULL;\n}\n",
+      "mapping": "Actual native allocation reserves fixed storage or stable mapped capacity, records data, retains memory domain and updates actual allocation accounting. Raw address access invokes none of this code."
+    },
+    {
+      "id": "native_backing_ref_lifetime",
+      "role": "host native owner",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\host-basis\\src\\extensions\\engine_abi.c",
+        "bytes": 18016,
+        "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+      },
+      "start_line": 265,
+      "end_line": 296,
+      "bytes": 1385,
+      "sha256": "C72371CEBBE02D9FB325ED0EE4A8172D9DE48ED9DC70E768C83D2BE0AF82C9E3",
+      "text": "static uint8_t *pi_backing_data(void *opaque) {\n    return ((PiArrayBufferBacking *)opaque)->data;\n}\nstatic size_t pi_backing_length(void *opaque) {\n    PiArrayBufferBacking *backing = opaque;\n    return atomic_load_explicit(&backing->byte_length, memory_order_seq_cst);\n}\nstatic void pi_backing_retain(void *opaque) {\n    PiArrayBufferBacking *backing = opaque;\n    if (atomic_fetch_add_explicit(&backing->references, 1, memory_order_relaxed) == 0)\n        abort();\n}\nstatic void pi_backing_release(void *opaque) {\n    PiArrayBufferBacking *backing = opaque;\n    const size_t previous = atomic_fetch_sub_explicit(\n        &backing->references, 1, memory_order_acq_rel);\n    if (!previous) abort();\n    if (previous != 1) return;\n    PiMemoryOwner *memory = backing->memory;\n    size_t charge = backing->base_charge +\n        atomic_load_explicit(&backing->committed, memory_order_relaxed);\n    if (backing->flags & JS_PI_BACKING_RESIZABLE)\n        pi_backing_free_pages(backing->allocation, backing->allocation_size);\n    else\n        free(backing->allocation);\n    if (backing->flags & JS_PI_BACKING_SHARED)\n        atomic_fetch_sub_explicit(&pi_shared_allocations, 1, memory_order_relaxed);\n    atomic_fetch_sub_explicit(&pi_backing_allocations, 1, memory_order_relaxed);\n    free(backing);\n    pi_js_native_memory_release(memory, charge);\n    pi_js_release_memory_owner(memory);\n}\n",
+      "mapping": "Data getter, acquired length and retain/release use real owner fields/atomics. Last reference physically releases pages/allocation and memory domain."
+    },
+    {
+      "id": "native_backing_resize",
+      "role": "host native owner",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\host-basis\\src\\extensions\\engine_abi.c",
+        "bytes": 18016,
+        "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+      },
+      "start_line": 297,
+      "end_line": 349,
+      "bytes": 2253,
+      "sha256": "D0EC5A655BB1176F8F85769387F97A3467A4952836B290E5320E412417F9B7C1",
+      "text": "static int pi_backing_resize(void *opaque, size_t length) {\n    PiArrayBufferBacking *backing = opaque;\n    if (!(backing->flags & JS_PI_BACKING_RESIZABLE) ||\n        length > backing->max_byte_length)\n        return -2;\n    /* This native-only critical section serializes page/accounting changes.\n       No guest code or JS reference is accessed, retained or released here. */\n    while (atomic_exchange_explicit(&backing->resize_busy, 1, memory_order_acquire))\n        ;\n    const size_t old_length = atomic_load_explicit(\n        &backing->byte_length, memory_order_seq_cst);\n    const size_t old_committed = atomic_load_explicit(\n        &backing->committed, memory_order_relaxed);\n    size_t committed;\n    int result = 0;\n    if ((backing->flags & JS_PI_BACKING_SHARED) && length < old_length) {\n        result = -2; /* another grow may have won since the caller's check */\n        goto done;\n    }\n    if (length == old_length) goto done;\n    if (!pi_backing_round_pages(length, backing->page_size, &committed)) {\n        result = -1;\n        goto done;\n    }\n    if (length < old_length) {\n        memset(backing->data + length, 0, old_length - length);\n        if (committed < old_committed &&\n            !pi_backing_permissions(backing->data + committed,\n                                     old_committed - committed, 0)) {\n            result = -1;\n            goto done;\n        }\n        if (committed < old_committed)\n            pi_js_native_memory_release(backing->memory, old_committed - committed);\n    } else {\n        size_t charge = committed - old_committed;\n        if (charge && !pi_reserve(backing->memory, charge)) {\n            result = -1;\n            goto done;\n        }\n        if (!pi_backing_permissions(backing->data, committed, 1)) {\n            if (charge) pi_js_native_memory_release(backing->memory, charge);\n            result = -1;\n            goto done;\n        }\n    }\n    atomic_store_explicit(&backing->committed, committed, memory_order_relaxed);\n    atomic_store_explicit(&backing->byte_length, length, memory_order_seq_cst);\ndone:\n    atomic_store_explicit(&backing->resize_busy, 0, memory_order_release);\n    return result;\n}\n/* Only trusted same-process serializer tables use this prefix, as before. */\n",
+      "mapping": "Actual provider resize checks max/shared grow rules and commits/decommits memory at stable data address; the raw helper does not grant access to uncommitted pages."
+    },
+    {
+      "id": "native_shared_alias",
+      "role": "host native owner",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\host-basis\\src\\extensions\\engine_abi.c",
+        "bytes": 18016,
+        "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+      },
+      "start_line": 350,
+      "end_line": 377,
+      "bytes": 1224,
+      "sha256": "32645778B2CDEC9DE69AAC1C2EB85E772DE3C744ACE93EBB74982FE56B6B49F6",
+      "text": "static void *pi_backing_shared_owner(uint8_t *data) {\n    PiArrayBufferBacking *backing = ((PiBackingPrefix *)data)[-1].owner;\n    if (!(backing->flags & JS_PI_BACKING_SHARED)) abort();\n    return backing;\n}\nstatic void *pi_shared_alloc(void *opaque, size_t size) {\n    PiArrayBufferBacking *backing = pi_backing_allocate(\n        opaque, size, size, JS_PI_BACKING_SHARED);\n    return backing ? backing->data : NULL;\n}\nstatic void pi_shared_dup(void *opaque, void *ptr) {\n    (void)opaque;\n    pi_backing_retain(pi_backing_shared_owner(ptr));\n}\nstatic void pi_shared_free(void *opaque, void *ptr) {\n    (void)opaque;\n    pi_backing_release(pi_backing_shared_owner(ptr));\n}\nvoid pi_js_retain_shared_buffer(void *buffer) { pi_shared_dup(NULL, buffer); }\nvoid pi_js_release_shared_buffer(void *buffer) { pi_shared_free(NULL, buffer); }\n\n/* Native diagnostics inspect the real owner, never a guest wrapper. */\nsize_t pi_js_array_buffer_backing_allocations(void) {\n    return atomic_load_explicit(&pi_backing_allocations, memory_order_relaxed);\n}\nsize_t pi_js_array_buffer_backing_references(void *opaque) {\n    PiArrayBufferBacking *backing = opaque;\n    return atomic_load_explicit(&backing->references, memory_order_acquire);\n",
+      "mapping": "Actual shared serialization hooks recover and retain the backing prefix; control references and allocation counts observe the real owner."
+    },
+    {
+      "id": "native_runtime_installs_owner",
+      "role": "host native owner",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\host-basis\\src\\extensions\\engine_abi.c",
+        "bytes": 18016,
+        "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+      },
+      "start_line": 395,
+      "end_line": 427,
+      "bytes": 1557,
+      "sha256": "491B70023F1941B83F42AF37DF87BD47C874F65DE16D372CD7629EE15FD30907",
+      "text": "JSRuntime *pi_js_new_runtime(size_t memory_limit, void **memory_owner) {\n    PiMemoryOwner *owner = malloc(sizeof(*owner));\n    if (!owner) return NULL;\n    atomic_init(&owner->references, 1);\n    atomic_init(&owner->used, 0);\n    owner->limit = memory_limit;\n    atomic_fetch_add_explicit(&pi_memory_owners, 1, memory_order_relaxed);\n    const JSMallocFunctions allocator = {\n        .js_calloc = pi_calloc, .js_malloc = pi_malloc, .js_free = pi_free,\n        .js_realloc = pi_realloc, .js_malloc_usable_size = pi_usable_size,\n    };\n    JSRuntime *runtime = JS_NewRuntime2(&allocator, owner);\n    if (!runtime) { pi_js_release_memory_owner(owner); return NULL; }\n    const JSSharedArrayBufferFunctions functions = {\n        .sab_alloc = pi_shared_alloc,\n        .sab_free = pi_shared_free,\n        .sab_dup = pi_shared_dup,\n        .sab_opaque = owner,\n    };\n    JS_SetSharedArrayBufferFunctions(runtime, &functions);\n#if defined(_WIN32) || defined(__linux__)\n    /* Only these admitted page backends activate managed resizable storage.\n       Other platforms retain the existing QuickJS allocation path. */\n    const JSPiArrayBufferStorageFunctions storage = {\n        .allocate = pi_backing_allocate, .shared_owner = pi_backing_shared_owner,\n        .data = pi_backing_data, .byte_length = pi_backing_length,\n        .resize = pi_backing_resize, .retain = pi_backing_retain,\n        .release = pi_backing_release, .opaque = owner,\n    };\n    JS_PiSetArrayBufferStorageFunctions(runtime, &storage);\n#endif\n    *memory_owner = owner;\n    return runtime;\n",
+      "mapping": "Real runtime installs allocator/SAB/storage callback owner used by the controls; this is an actual VM runtime, with no selected fake buffer implementation."
+    },
+    {
+      "id": "native_memory_accounting",
+      "role": "host native owner",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\host-basis\\src\\extensions\\engine_abi.c",
+        "bytes": 18016,
+        "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+      },
+      "start_line": 429,
+      "end_line": 437,
+      "bytes": 398,
+      "sha256": "9BEB586A945A7A3E84A0465B9B846D3393AB7BD4F1517C787857353E59C5B15D",
+      "text": "size_t pi_js_shared_buffer_allocations(void) {\n    return atomic_load_explicit(&pi_shared_allocations, memory_order_relaxed);\n}\nsize_t pi_js_native_memory_owners(void) {\n    return atomic_load_explicit(&pi_memory_owners, memory_order_relaxed);\n}\nsize_t pi_js_native_memory_used(void *opaque) {\n    PiMemoryOwner *owner = opaque;\n    return atomic_load_explicit(&owner->used, memory_order_relaxed);\n",
+      "mapping": "Existing native backing/memory accounting is read directly by allocation and lifetime controls."
+    },
+    {
+      "id": "selected_raw_address_body",
+      "role": "new selected production",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404353,
+        "sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003"
+      },
+      "start_line": 67644,
+      "end_line": 67662,
+      "bytes": 535,
+      "sha256": "BB58050E7A1570B45F9E1C189F4F662A43E8B4B8540F0A39BCBC7497067871A2",
+      "text": "uint8_t *JS_PiArrayBufferViewData(JSValueConst view)\n{\n    JSObject *p;\n    JSTypedArray *ta;\n    JSArrayBuffer *abuf;\n\n    if (JS_VALUE_GET_TAG(view) != JS_TAG_OBJECT)\n        return NULL;\n    p = JS_VALUE_GET_OBJ(view);\n    if (!is_typed_array(p->class_id) && p->class_id != JS_CLASS_DATAVIEW)\n        return NULL;\n    ta = p->u.typed_array;\n    if (!ta)\n        return NULL;\n    abuf = ta->buffer->u.array_buffer;\n    if (abuf->detached)\n        return NULL;\n    return (uint8_t *)((uintptr_t)abuf->data + (uintptr_t)ta->offset);\n}\n",
+      "mapping": "Selected API reads native class/view/buffer fields, returns NULL for invalid/incomplete/detached view, otherwise current native data plus stored byte offset. uintptr arithmetic avoids evaluating out-of-allocation C pointer arithmetic for an address-only OOB observation. No context, allocation, root, guest call, or pending operation."
+    },
+    {
+      "id": "selected_public_c_abi",
+      "role": "new selected production",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 115180,
+        "sha256": "9F63BF26C91440A8C9B3D5F1FF06AB387D6E76630ADEC6D4CAA745179DB46978"
+      },
+      "start_line": 1483,
+      "end_line": 1490,
+      "bytes": 592,
+      "sha256": "4C2DD92A899FDC9B40CA94A8C3C7DAB964820E381AE103788D3BFE43A22A9549",
+      "text": "JS_EXTERN size_t JS_PiArrayBufferViewByteLength(JSValueConst view);\n/* Borrow an actual TypedArray/DataView's backing address plus stored byte\n   offset. Detached views and invalid brands return NULL. Live RAB OOB views\n   retain their offset; consult ByteLength before any dereference. No JS root,\n   native backing entitlement, allocation, guest operation, or pending-state\n   change occurs. The caller supplies the actual view/storage lifetime; this\n   VM-owner-thread borrow is not an asynchronous or cross-thread lease. */\nJS_EXTERN uint8_t *JS_PiArrayBufferViewData(JSValueConst view);\n",
+      "mapping": "Exact uint8_t* (JSValueConst) declaration is visible through unchanged engine_abi.h->quickjs.h. Synchronous owner-thread borrow and separate usable-length requirement are explicit."
+    },
+    {
+      "id": "actual_engine_abi_header",
+      "role": "host ABI",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\host-basis\\src\\extensions\\engine_abi.h",
+        "bytes": 2003,
+        "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5"
+      },
+      "start_line": 1,
+      "end_line": 37,
+      "bytes": 2003,
+      "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5",
+      "text": "/* Portable ABI for QuickJS value-construction macros that translate-c cannot\n * represent for both the 32-bit NaN box and 64-bit tagged-union layouts. */\n#ifndef PI_EXTENSION_ENGINE_ABI_H\n#define PI_EXTENSION_ENGINE_ABI_H\n#include \"quickjs.h\"\nJSValue pi_js_undefined(void);\nJSValue pi_js_exception(void);\nJSValue pi_js_null(void);\nJSValue pi_js_bool(JSContext *context, int value);\nJSValue pi_js_int32(JSContext *context, int32_t value);\nJSModuleDef *pi_js_module(JSValue value);\nvoid *pi_js_object_identity(JSValue value);\n/* Allocation-free, host-private tags on genuine native allocator errors. */\nvoid pi_js_mark_native_allocation_error(JSValueConst value, uint64_t generation);\nuint64_t pi_js_native_allocation_error_generation(JSValueConst value);\nJSValue pi_js_module_value(JSContext *context, JSModuleDef *module);\nJSValue pi_js_function_magic(JSContext *context, JSCFunctionMagic *function, const char *name, int length, int magic);\nJSRuntime *pi_js_new_runtime(size_t memory_limit, void **memory_owner);\nvoid pi_js_release_memory_owner(void *memory_owner);\nsize_t pi_js_shared_buffer_allocations(void);\n/* Only for trusted same-process serializer tables from pi_js_new_runtime. */\nvoid pi_js_retain_shared_buffer(void *buffer);\nvoid pi_js_release_shared_buffer(void *buffer);\nsize_t pi_js_native_memory_owners(void);\nsize_t pi_js_native_memory_used(void *memory_owner);\nvoid pi_js_retain_memory_owner(void *memory_owner);\nint pi_js_native_memory_reserve(void *memory_owner, size_t bytes);\nvoid pi_js_native_memory_release(void *memory_owner, size_t bytes);\n\n/* Live native backing-owner diagnostics. owner must come from an owned lease. */\nsize_t pi_js_array_buffer_backing_allocations(void);\nsize_t pi_js_array_buffer_backing_references(void *owner);\nsize_t pi_js_array_buffer_backing_byte_length(void *owner);\nsize_t pi_js_array_buffer_backing_committed(void *owner);\nsize_t pi_js_array_buffer_backing_reserved(void *owner);\nsize_t pi_js_array_buffer_backing_page_size(void *owner);\n#endif\n",
+      "mapping": "Actual control C import includes quickjs.h and native runtime/backing observation declarations; no test-only replacement ABI is installed."
+    },
+    {
+      "id": "common_vm_build",
+      "role": "build authority",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\build\\original.zig",
+        "bytes": 503440,
+        "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+      },
+      "start_line": 69,
+      "end_line": 111,
+      "bytes": 2559,
+      "sha256": "64CE0D836F682064B665EC56618BB9B16E27D8BFAEC5EF763E71040BFECB5BF8",
+      "text": "    // The extension language is evaluated by a pinned C engine through Zig's\n    // C ABI. Host behavior and bindings remain native Zig.\n    const quickjs = b.addLibrary(.{\n        .name = \"pi-quickjs\",\n        .linkage = .static,\n        .root_module = b.createModule(.{\n            .target = target,\n            .optimize = optimize,\n            .link_libc = true,\n        }),\n    });\n    const native_icu = @import(\"tools/build_native_icu.zig\").add(b, target, optimize);\n    quickjs.root_module.linkLibrary(native_icu.library);\n    quickjs.root_module.link_libcpp = true;\n    quickjs.root_module.linkLibrary(native_yaml);\n    quickjs.root_module.addIncludePath(b.path(\"vendor/quickjs\"));\n    // Native public storage is installed for every extension VM. Carry SQLite\n    // through this common dependency so CLI, SDK and bindings all receive it.\n    linkSqlite(quickjs.root_module, sqlite_lib_dir, sqlite_library);\n    const quickjs_c_flags = [_][]const u8{ \"-std=gnu11\", \"-D_GNU_SOURCE\", \"-DQUICKJS_NG_BUILD\", \"-funsigned-char\", \"-fno-strict-aliasing\" };\n    quickjs.root_module.addCSourceFiles(.{\n        .root = b.path(\"vendor/quickjs\"),\n        .files = &.{ \"dtoa.c\", \"libregexp.c\", \"libunicode.c\", \"quickjs.c\" },\n        // QuickJS's unoptimized interpreter reserves about 60 KiB per call on\n        // Windows. Keep Zig Debug and C assertions while reducing C frame size\n        // enough for ordinary nested terminal callbacks within the VM limit.\n        .flags = if (optimize == .Debug) &(quickjs_c_flags ++ [_][]const u8{\"-Og\"}) else &quickjs_c_flags,\n    });\n    quickjs.root_module.addCSourceFile(.{\n        .file = b.path(\"src/extensions/engine_abi.c\"),\n        .flags = &.{\"-std=gnu11\"},\n    });\n    // One allocator/TLS domain is shared by native C++ parser and containers.\n    const native_node_memory = @import(\"tools/build_native_node_memory.zig\").add(b, target, optimize);\n    // One unchanged libuv/llhttp graph is shared by native TCP and file I/O owners.\n    const native_node_network = switch (target.result.os.tag) {\n        .windows, .linux => @import(\"tools/build_native_node_network.zig\").add(b, target, optimize, native_node_memory),\n        else => null,\n    };\n    // The real filesystem is reachable from every VM; share one static owner.\n    if (native_node_network) |network| quickjs.root_module.linkLibrary(network);\n    const native_package_json = @import(\"tools/build_native_package_json.zig\").add(b, target, optimize, native_node_memory);\n    if (native_package_json) |parser| quickjs.root_module.linkLibrary(parser);\n",
+      "mapping": "Existing common native VM library compiles original C units and engine ABI, inherits native libraries and exact flags. This packet adds no new C translation unit/compiler flag."
+    },
+    {
+      "id": "common_link_recipe",
+      "role": "build authority",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\build\\original.zig",
+        "bytes": 503440,
+        "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+      },
+      "start_line": 5174,
+      "end_line": 5204,
+      "bytes": 1595,
+      "sha256": "28B9F3C50A6E7940293BA8BDFC1CD682AE0043D62B100173827F985DB1BAC6D3",
+      "text": "fn linkQuickJs(b: *std.Build, module: *std.Build.Module, library: *std.Build.Step.Compile, sqlite_lib_dir: ?[]const u8) void {\n    // Every VM can reach the native process owner through SDK and TUI imports.\n    linkDurable(b, module);\n    if (sqlite_lib_dir) |directory| module.addLibraryPath(.{ .cwd_relative = directory });\n    module.addIncludePath(b.path(\"vendor/quickjs\"));\n    module.addIncludePath(b.path(\"vendor/libfyaml\"));\n    module.addIncludePath(b.path(\"src/extensions\"));\n    module.addImport(\"native_icu_api\", b.modules.get(\"native_icu_api\").?);\n    module.addIncludePath(b.path(\"vendor/photon-native\"));\n    module.addImport(\"native_photon_link\", b.modules.get(\"native_photon_link\").?);\n    module.addImport(\"native_vm_identity\", b.modules.get(\"native_vm_identity\").?);\n    module.link_libcpp = true;\n    module.linkLibrary(library);\n    module.link_libc = true;\n}\n\nfn linkSqlite(module: *std.Build.Module, library_dir: ?[]const u8, library: ?*std.Build.Step.Compile) void {\n    if (library) |compiled| module.linkLibrary(compiled) else {\n        if (library_dir) |path| module.addLibraryPath(.{ .cwd_relative = path });\n        module.linkSystemLibrary(\"sqlite3\", .{});\n    }\n    module.link_libc = true;\n}\nfn linkDurable(b: *std.Build, module: *std.Build.Module) void {\n    module.addCSourceFile(.{ .file = b.path(\"src/durable/process_probe.c\"), .flags = &.{\"-std=gnu11\"} });\n    module.link_libc = true;\n    if (module.resolved_target.?.result.os.tag == .macos) {\n        module.linkFramework(\"CoreFoundation\", .{});\n        module.linkFramework(\"CoreServices\", .{});\n    }\n}\n",
+      "mapping": "linkQuickJs supplies C include paths/library and existing linkDurable process_probe unit. It does not install a listener or execute controls."
+    }
+  ],
+  "excerpt_count": 34,
+  "selected_contract": {
+    "valid_input": "A live actual already-backed QuickJS TypedArray or DataView on its VM owner thread, held alive by caller ownership.",
+    "invalid_input": "Raw intrinsic returns NULL for nonview/Proxy/forged brand or incomplete native view. This is not Node Buffer::Data invalid-brand policy.",
+    "detached": "NULL before address arithmetic; it acquires no buffer or native entitlement.",
+    "live_oob": "Stored byte offset remains; usable ByteLength is independent and zero means no dereference permission.",
+    "ownership": "No root, native reference or asynchronous lease; resizing, detachment, transfer, GC and external owner lifetime can invalidate the borrow.",
+    "pending": "No JSContext parameter or guest/allocator/exception operation. Existing current ordinary, uncatchable and termination event state is untouched."
+  },
+  "controls": [
+    {
+      "index": 0,
+      "name": "VM view data every typed-array width and DataView expose the physical backing offset",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "start_line": 99,
+      "end_line": 129,
+      "body_bytes": 1672,
+      "body_sha256": "3CC67BD3579E9C4A0304F38ADB7894D275CA55DD78624E157ECC59AB15ABF345",
+      "independent_observation": "Every actual typed-array width plus DataView: exact backing+offset address, direct native write visible through actual JS view and JS write visible through native backing."
+    },
+    {
+      "index": 1,
+      "name": "VM view data live empty views retain their exact end pointer",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "start_line": 130,
+      "end_line": 144,
+      "body_bytes": 714,
+      "body_sha256": "04C58FAA89A01AA8BA75EE729B5F30AF8624E9241D19C71CA903DB9D1EA914E6",
+      "independent_observation": "Zero-length typed/DataView at live allocation end: exact one-past address observed only, never dereferenced."
+    },
+    {
+      "index": 2,
+      "name": "VM view data bypasses getters and rejects forged live and revoked proxy brands",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "start_line": 145,
+      "end_line": 169,
+      "body_bytes": 1562,
+      "body_sha256": "25D1107056EC390C48AAB24FDCCFAD688866C63CECDB99059AB759BF5377D1AE",
+      "independent_observation": "Throwing own getters and forged/proxied/revoked-proxy brands: no user property access and no new exception from the raw intrinsic."
+    },
+    {
+      "index": 3,
+      "name": "VM view data detached typed and DataView addresses are null while lease acquisition still throws",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "start_line": 170,
+      "end_line": 188,
+      "body_bytes": 1292,
+      "body_sha256": "E8B20539B143FB8C5C21DCCE046189B70E7F289CD4C57079ABC1462336E6A627",
+      "independent_observation": "Real detach of typed/DataView: raw NULL while existing real lease acquisition retains its throwing contract."
+    },
+    {
+      "index": 4,
+      "name": "VM view data fixed resizable views preserve stored offsets while out of bounds and after regrowth",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "start_line": 189,
+      "end_line": 215,
+      "body_bytes": 1475,
+      "body_sha256": "BEF150AE54D3601A5CAB9D6B1787E9D2B76DF37197268D8551C9E68F17950AB4",
+      "independent_observation": "Fixed native RAB shrink/OOB then regrow: stored address offset remains while usable length zero; no OOB dereference."
+    },
+    {
+      "index": 5,
+      "name": "VM view data tracking resizable views keep the address independently of rounded usable length",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "start_line": 216,
+      "end_line": 233,
+      "body_bytes": 1216,
+      "body_sha256": "55290F3EBC858CE7D3E28DBF6192E4767FCFB551B17B3E617596F220EAED4E6D",
+      "independent_observation": "Tracking RAB: usable length rounds by element width while raw address is independent of rounded zero/positive length."
+    },
+    {
+      "index": 6,
+      "name": "VM view data shared aliases expose one native address across real runtime growth",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "start_line": 234,
+      "end_line": 258,
+      "body_bytes": 1570,
+      "body_sha256": "167963CE0F212747BCFD998719A20D50AD367452DA8D14B7C019DC1DE889A15B",
+      "independent_observation": "Two actual runtimes and real shared-object serialization alias one physical native store; growth is observed without a fabricated backing owner."
+    },
+    {
+      "index": 7,
+      "name": "VM view data allocates nothing under the actual VM memory limit",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "start_line": 259,
+      "end_line": 278,
+      "body_bytes": 1084,
+      "body_sha256": "2918C85D7EFDCF73F2E25780E91E5C9E53CEFF7C4ACBF136B7FC5A1CE03E8FAC",
+      "independent_observation": "Actual VM memory limit is lowered after setup; raw access leaves native allocation accounting/reference counts and pending state unchanged."
+    },
+    {
+      "index": 8,
+      "name": "VM view data preserves actual ordinary uncatchable and private termination completions",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "start_line": 279,
+      "end_line": 319,
+      "body_bytes": 2567,
+      "body_sha256": "B84CDE43D7C44A609E46976D9D0093D845E9F05E52117B6DC7FA245A5B67C824",
+      "independent_observation": "Actual ordinary, uncatchable and private termination pending completions retain value/type/generation; private completion comparison uses dedicated predicate, not SameValue."
+    },
+    {
+      "index": 9,
+      "name": "VM view data borrows without keeping the actual view or native backing alive",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "start_line": 320,
+      "end_line": 352,
+      "body_bytes": 1957,
+      "body_sha256": "F45F5D7D373AA677AC2C9A96121FF48D9BDE45AABE90457E61908AC68F0048F5",
+      "independent_observation": "Actual lease observes backing references: raw reads add none; real view/buffer GC leaves only the explicit lease until its final release."
+    },
+    {
+      "index": 10,
+      "name": "VM view data observes unmanaged external storage without adding a lease or changing cleanup",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "start_line": 353,
+      "end_line": 378,
+      "body_bytes": 1543,
+      "body_sha256": "D673E5D7F58967A6240491D14263059591774CC431C2AC91CA2F4790FFBE7E45",
+      "independent_observation": "Unmanaged external stack bytes: raw physical address with no native lease; actual detach invokes free callback exactly once."
+    },
+    {
+      "index": 11,
+      "name": "VM view data follows real ArrayBuffer transfer detachment and the receiving physical storage",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "start_line": 379,
+      "end_line": 392,
+      "body_bytes": 906,
+      "body_sha256": "91A2CB70D878D7F00F8273721856592F0E3673CB49F23945810682B667D02EAA",
+      "independent_observation": "Existing real ArrayBuffer transfer detaches old view and preserves/changes actual receiving backing as its operation requires; raw helper follows current owners."
+    }
+  ],
+  "fixture_prefix": {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+      "bytes": 22131,
+      "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+    },
+    "start_line": 1,
+    "end_line": 98,
+    "bytes": 4573,
+    "sha256": "E152719E304BDB5D9621C5B5E9A8B47A9224432E725C49E2708BE797A87396A9",
+    "description": "Actual raw C VM/context/allocator fixture and owned-value helpers; no full fake engine, trace policy or native observer replaces production."
+  },
+  "bounded_source_findings": [
+    "The primitive deliberately selects existing native backing fields; it does not call the retained, throwing JS_PiAcquireArrayBufferView or JS_PiGetArrayBufferViewBuffer.",
+    "Full Node Buffer::Data caller brand CHECK remains necessary before this intrinsic can back that method.",
+    "V8 JSTypedArray::GetBuffer on-heap materialization allocation/copy/fatal-OOM path is pinned and explicitly not implemented here. Current QuickJS constructors already create or retain actual backing.",
+    "Literal C include sets are unchanged by the two raw edits and optional corrected Latin-1 composition.",
+    "Any future CustomBuffer listener must preserve actual ReportWrites inheritance, native buffer lifetime, receiver signature, liveness and argument-check order; none is published here."
+  ],
+  "source_only": true,
+  "compiler_native_reference_generator_execution": false,
+  "Main_changed": false,
+  "runtime_qualified": false
+}

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "status": "preserved_readonly_schema_lookup_negative",
+  "author": "/root/module_io_port",
+  "source_only": true,
+  "script": "from pathlib import Path\nimport json,hashlib\nw=Path(r'C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018')\nd=w/'verification/unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022'\np=json.loads((d/'copy-manifest-plan.json').read_bytes());h=json.loads((d/'handoff.json').read_bytes())\nprint(json.dumps({'keys':{k:({'type':type(v).__name__,'count':len(v)} if isinstance(v,(dict,list)) else v) for k,v in p.items()},'counts':p['counts'],'manifest':p['manifest_contract'],'hcounts':h['complete_current_planned_counts'],'after_seal':h['observed_after_core_plan_seal'],'externals':h['external_references_retained']},indent=2))",
+  "result": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"<string>\", line 6, in <module>\r\n    print(json.dumps({'keys':{k:({'type':type(v).__name__,'count':len(v)} if isinstance(v,(dict,list)) else v) for k,v in p.items()},'counts':p['counts'],'manifest':p['manifest_contract'],'hcounts':h['complete_current_planned_counts'],'after_seal':h['observed_after_core_plan_seal'],'externals':h['external_references_retained']},indent=2))\r\n                                                                                                                                                                     ~^^^^^^^^^^^^^^^^^^^^^\r\nKeyError: 'manifest_contract'",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"<string>\", line 6, in <module>\r\n    print(json.dumps({'keys':{k:({'type':type(v).__name__,'count':len(v)} if isinstance(v,(dict,list)) else v) for k,v in p.items()},'counts':p['counts'],'manifest':p['manifest_contract'],'hcounts':h['complete_current_planned_counts'],'after_seal':h['observed_after_core_plan_seal'],'externals':h['external_references_retained']},indent=2))\r\n                                                                                                                                                                     ~^^^^^^^^^^^^^^^^^^^^^\r\nKeyError: 'manifest_contract'\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "cause": "The readout asked the core plan for manifest_contract; that field belongs to its handoff. The core plan instead has manifest_target and manifest_self_reference_rule.",
+  "correction": "A separate read-only readout selected the actual core keys and the handoff supplemental rows. No existing evidence or candidate was altered.",
+  "candidate_or_prefix_executed": false,
+  "Main_accessed": false,
+  "files_written_by_failed_call": false,
+  "native_attempt": false
+}

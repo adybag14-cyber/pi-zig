@@ -1,0 +1,1827 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 530121,
+    "sha256": "B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending21-shutdown-descriptor-copy-plan-successor-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 590893,
+    "sha256": "836BC121159347F7BC68DBF71E97787B59F532D10A95D18DE318370B5F94AFD6"
+  },
+  "operations": [
+    {
+      "op": "replace",
+      "path": [
+        "source_rows",
+        14,
+        "donor"
+      ],
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17019,
+        "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+      },
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17039,
+        "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 302,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/copy-manifest-plan.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+          "bytes": 530121,
+          "sha256": "B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+              "bytes": 530121,
+              "sha256": "B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/copy-manifest-plan.json.raw",
+            "reference_sites": [
+              {
+                "from": "this handoff",
+                "ref": "explicit separately sealed copy-plan evidence"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 303,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/finite-plan-adaptation.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\finite-plan-adaptation.json",
+          "bytes": 178617,
+          "sha256": "F82B79EF2026464D7171FD02D4A88E313C34757AD819349653ABAC451AECDB52"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\finite-plan-adaptation.json",
+              "bytes": 178617,
+              "sha256": "F82B79EF2026464D7171FD02D4A88E313C34757AD819349653ABAC451AECDB52"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/finite-plan-adaptation.json.raw",
+            "reference_sites": [
+              {
+                "from": "this handoff",
+                "ref": "explicit separately sealed copy-plan evidence"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 304,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/source-proof.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\source-proof.json",
+          "bytes": 170872,
+          "sha256": "71458C161214F8C3F5F9F9A60F436EB569FB22E9B81EBD3B2488D342430FF824"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\source-proof.json",
+              "bytes": 170872,
+              "sha256": "71458C161214F8C3F5F9F9A60F436EB569FB22E9B81EBD3B2488D342430FF824"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/source-proof.json.raw",
+            "reference_sites": [
+              {
+                "from": "this handoff",
+                "ref": "explicit separately sealed copy-plan evidence"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 305,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/source-plan-author.py.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\source-plan-author.py",
+          "bytes": 21918,
+          "sha256": "24087B0D29B0636D35A19A2086977356B1676F0EF2726A816DE7EABF6EB160AF"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\source-plan-author.py",
+              "bytes": 21918,
+              "sha256": "24087B0D29B0636D35A19A2086977356B1676F0EF2726A816DE7EABF6EB160AF"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/source-plan-author.py.raw",
+            "reference_sites": [
+              {
+                "from": "this handoff",
+                "ref": "explicit separately sealed copy-plan evidence"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 306,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/authoring/part1.txt.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\authoring\\part1.txt",
+          "bytes": 10890,
+          "sha256": "9342C54A9782F60BB76ED00BB54932F33CA66D0294B341CCAECC2B3874BF31FE"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\authoring\\part1.txt",
+              "bytes": 10890,
+              "sha256": "9342C54A9782F60BB76ED00BB54932F33CA66D0294B341CCAECC2B3874BF31FE"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/authoring/part1.txt.raw",
+            "reference_sites": [
+              {
+                "from": "this handoff",
+                "ref": "explicit separately sealed copy-plan evidence"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 307,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/authoring/part2.txt.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\authoring\\part2.txt",
+          "bytes": 11028,
+          "sha256": "D83B41C84A9827CE49D0A1B3409D120518D9AD1EAF476068BF87737EF7CBCFEB"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\authoring\\part2.txt",
+              "bytes": 11028,
+              "sha256": "D83B41C84A9827CE49D0A1B3409D120518D9AD1EAF476068BF87737EF7CBCFEB"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/authoring/part2.txt.raw",
+            "reference_sites": [
+              {
+                "from": "this handoff",
+                "ref": "explicit separately sealed copy-plan evidence"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 308,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/README.md.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\README.md",
+          "bytes": 5836,
+          "sha256": "D22EF377FF3E5EA3D7D3D09EAB7C2334B9FA627A2A04060CE519B22DFD4AF958"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\README.md",
+              "bytes": 5836,
+              "sha256": "D22EF377FF3E5EA3D7D3D09EAB7C2334B9FA627A2A04060CE519B22DFD4AF958"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/README.md.raw",
+            "reference_sites": [
+              {
+                "from": "this handoff",
+                "ref": "explicit separately sealed copy-plan evidence"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 309,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/authorities/initial-readout-key-negative.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending21-shutdown-descriptor-copy-plan-successor-sourceonly-20261022\\initial-readout-key-negative.json",
+          "bytes": 2846,
+          "sha256": "6D6F10472BD39D688CAC080D37F846D9AC308E653BAE744D91DAB3AB28E3286A"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending21-shutdown-descriptor-copy-plan-successor-sourceonly-20261022\\initial-readout-key-negative.json",
+              "bytes": 2846,
+              "sha256": "6D6F10472BD39D688CAC080D37F846D9AC308E653BAE744D91DAB3AB28E3286A"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/authorities/initial-readout-key-negative.json.raw",
+            "reference_sites": [
+              {
+                "from": "explicit Root-requested supplemental preservation",
+                "ref": "initial-readout-key-negative.json"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 310,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/authorities/prior21-handoff.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\handoff.json",
+          "bytes": 20300,
+          "sha256": "922C5187B64C7F9B9E565B532D8879DF7155C0B686CBEBBCA36570D12545984A"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\handoff.json",
+              "bytes": 20300,
+              "sha256": "922C5187B64C7F9B9E565B532D8879DF7155C0B686CBEBBCA36570D12545984A"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/authorities/prior21-handoff.json.raw",
+            "reference_sites": [
+              {
+                "from": "explicit Root-requested supplemental preservation",
+                "ref": "prior21-handoff.json"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 311,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/authorities/root-fs-fixture-acceptance.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-fs-request-pump-escrow-source-acceptance-20261022.json",
+          "bytes": 6387,
+          "sha256": "905A69C83F4802963A5D035E076F3F910CDB64ED3D364516325E64C1B60E3ACE"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-fs-request-pump-escrow-source-acceptance-20261022.json",
+              "bytes": 6387,
+              "sha256": "905A69C83F4802963A5D035E076F3F910CDB64ED3D364516325E64C1B60E3ACE"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/authorities/root-fs-fixture-acceptance.json.raw",
+            "reference_sites": [
+              {
+                "from": "explicit Root-requested supplemental preservation",
+                "ref": "root-fs-fixture-acceptance.json"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 312,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/authorities/root-prior21-inventory-serialization-observation.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-copy-plan-inventory-serialization-observation-20261022.json",
+          "bytes": 9147,
+          "sha256": "3CFE9706D0FB4D3A40B5C82A5BF92DD47E5DD3AF397E645CC6BC656DE5529297"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-copy-plan-inventory-serialization-observation-20261022.json",
+              "bytes": 9147,
+              "sha256": "3CFE9706D0FB4D3A40B5C82A5BF92DD47E5DD3AF397E645CC6BC656DE5529297"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/authorities/root-prior21-inventory-serialization-observation.json.raw",
+            "reference_sites": [
+              {
+                "from": "explicit Root-requested supplemental preservation",
+                "ref": "root-prior21-inventory-serialization-observation.json"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 313,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/authorities/root-prior21-plan-acceptance.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-copy-plan-source-acceptance-20261022.json",
+          "bytes": 19222,
+          "sha256": "213E78C874B52119218F70CD162F1C90BAA1B792B86CB3E3E2A6C56EBFA06F28"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-copy-plan-source-acceptance-20261022.json",
+              "bytes": 19222,
+              "sha256": "213E78C874B52119218F70CD162F1C90BAA1B792B86CB3E3E2A6C56EBFA06F28"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/authorities/root-prior21-plan-acceptance.json.raw",
+            "reference_sites": [
+              {
+                "from": "explicit Root-requested supplemental preservation",
+                "ref": "root-prior21-plan-acceptance.json"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 314,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/authorities/root-shutdown-fixture-acceptance.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-invalid-descriptor-fixture-source-acceptance-20261022.json",
+          "bytes": 20948,
+          "sha256": "0B59166DB17DE39B2CB8B5A975885E5AEADCDF0900C40E8CECB80387BD6053F7"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-invalid-descriptor-fixture-source-acceptance-20261022.json",
+              "bytes": 20948,
+              "sha256": "0B59166DB17DE39B2CB8B5A975885E5AEADCDF0900C40E8CECB80387BD6053F7"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/authorities/root-shutdown-fixture-acceptance.json.raw",
+            "reference_sites": [
+              {
+                "from": "explicit Root-requested supplemental preservation",
+                "ref": "root-shutdown-fixture-acceptance.json"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 315,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/fs-fixture-peer/peer.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\peer.json",
+          "bytes": 6574,
+          "sha256": "C55A1B8277B69A6107B6A994F9A69F2C347E4A735E75B835A0F158D6A04A40F4"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\peer.json",
+              "bytes": 6574,
+              "sha256": "C55A1B8277B69A6107B6A994F9A69F2C347E4A735E75B835A0F158D6A04A40F4"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/fs-fixture-peer/peer.json.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 316,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/fs-fixture-peer/source-check.py.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\source-check.py",
+          "bytes": 17415,
+          "sha256": "FBC21ADEB0E14D394771D761787069D3DB13F1A9A6C624BDD62075BBCDE826E7"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\source-check.py",
+              "bytes": 17415,
+              "sha256": "FBC21ADEB0E14D394771D761787069D3DB13F1A9A6C624BDD62075BBCDE826E7"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/fs-fixture-peer/source-check.py.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 317,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/fs-fixture-peer/source-proof.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\source-proof.json",
+          "bytes": 109273,
+          "sha256": "DFD7004CF0AF84BCA64B51A1A3E720850ADF212B14AC5FB7E52DDFA90AFFC751"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\source-proof.json",
+              "bytes": 109273,
+              "sha256": "DFD7004CF0AF84BCA64B51A1A3E720850ADF212B14AC5FB7E52DDFA90AFFC751"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/fs-fixture-peer/source-proof.json.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 318,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/prior21-plan-peer/initial-readout-scalar-negative.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\initial-readout-scalar-negative.json",
+          "bytes": 2492,
+          "sha256": "CA6899C851E0764B0F11DADC9518FD793FAC8B205EAB68C97E406F23CF074E5C"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\initial-readout-scalar-negative.json",
+              "bytes": 2492,
+              "sha256": "CA6899C851E0764B0F11DADC9518FD793FAC8B205EAB68C97E406F23CF074E5C"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/prior21-plan-peer/initial-readout-scalar-negative.json.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 319,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/prior21-plan-peer/peer.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\peer.json",
+          "bytes": 6670,
+          "sha256": "F937DC6A109FFC2869084BA106A2DD68DE80479F541259C4E4D3ABEA7EE5C68E"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\peer.json",
+              "bytes": 6670,
+              "sha256": "F937DC6A109FFC2869084BA106A2DD68DE80479F541259C4E4D3ABEA7EE5C68E"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/prior21-plan-peer/peer.json.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 320,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/prior21-plan-peer/source-check.py.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\source-check.py",
+          "bytes": 26139,
+          "sha256": "7996E4B4B3BBF324EB90B4B2C5296FC5554A0D4311652EDA8A4D207849BC477F"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\source-check.py",
+              "bytes": 26139,
+              "sha256": "7996E4B4B3BBF324EB90B4B2C5296FC5554A0D4311652EDA8A4D207849BC477F"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/prior21-plan-peer/source-check.py.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 321,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/prior21-plan-peer/source-proof.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\source-proof.json",
+          "bytes": 239255,
+          "sha256": "19808F88A061E803E58DF9EF6CB5FD7E96C28C89183EAE3865D8128C592080EB"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\source-proof.json",
+              "bytes": 239255,
+              "sha256": "19808F88A061E803E58DF9EF6CB5FD7E96C28C89183EAE3865D8128C592080EB"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/prior21-plan-peer/source-proof.json.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 322,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture-peer/peer.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022\\peer.json",
+          "bytes": 7586,
+          "sha256": "3CDAD5D1917730A49258676E6A19402737D3A3669B99C1DDCDE5EF515711D120"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022\\peer.json",
+              "bytes": 7586,
+              "sha256": "3CDAD5D1917730A49258676E6A19402737D3A3669B99C1DDCDE5EF515711D120"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture-peer/peer.json.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 323,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture-peer/source-audit.py.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022\\source-audit.py",
+          "bytes": 10606,
+          "sha256": "673BDDD874D94FB663AEDCBCA8674BE36FF8A6FF365397E0ECA552FF674D780B"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022\\source-audit.py",
+              "bytes": 10606,
+              "sha256": "673BDDD874D94FB663AEDCBCA8674BE36FF8A6FF365397E0ECA552FF674D780B"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture-peer/source-audit.py.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 324,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture-peer/source-proof.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022\\source-proof.json",
+          "bytes": 49890,
+          "sha256": "028C99E547AFBAAA5C057881B13A4D5AB7167CE14074A0A55A8AC33B7C2B421D"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022\\source-proof.json",
+              "bytes": 49890,
+              "sha256": "028C99E547AFBAAA5C057881B13A4D5AB7167CE14074A0A55A8AC33B7C2B421D"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture-peer/source-proof.json.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 325,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/fixture.patch.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\fixture.patch",
+          "bytes": 576,
+          "sha256": "2A2F3A84492565B89780C5FBF0947A45974B90EB05C6E7E04FA2BECE81309C87"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\fixture.patch",
+              "bytes": 576,
+              "sha256": "2A2F3A84492565B89780C5FBF0947A45974B90EB05C6E7E04FA2BECE81309C87"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/fixture.patch.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 326,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/handoff.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\handoff.json",
+          "bytes": 5769,
+          "sha256": "9E3CCC745B51917D2BEA16761D853563BFAD875D72093EC5E902EF2E5CE5F951"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\handoff.json",
+              "bytes": 5769,
+              "sha256": "9E3CCC745B51917D2BEA16761D853563BFAD875D72093EC5E902EF2E5CE5F951"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/handoff.json.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows",
+        177,
+        "logical_donors"
+      ],
+      "index": 1,
+      "after": {
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test.zig",
+          "bytes": 17019,
+          "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+        },
+        "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/original/src/native_node_stream_shutdown_test.zig.raw",
+        "reference_sites": [
+          {
+            "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022",
+            "ref": "complete immutable packet membership"
+          }
+        ],
+        "historical_reference_aliases": []
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 327,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/projected/src/native_node_stream_shutdown_test.zig.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+          "bytes": 17039,
+          "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+              "bytes": 17039,
+              "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/projected/src/native_node_stream_shutdown_test.zig.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 328,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/proposal.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\proposal.json",
+          "bytes": 26590,
+          "sha256": "331C9A44BA5543C9676324CCB30EC04E79E6DD1A36D23103C59331DEDE851C10"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\proposal.json",
+              "bytes": 26590,
+              "sha256": "331C9A44BA5543C9676324CCB30EC04E79E6DD1A36D23103C59331DEDE851C10"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/proposal.json.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 329,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/README.md.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\README.md",
+          "bytes": 3428,
+          "sha256": "99AF4CECD80E643006FBCCBBDF84B134E194A148A747A463396ACCB3CF1257B5"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\README.md",
+              "bytes": 3428,
+              "sha256": "99AF4CECD80E643006FBCCBBDF84B134E194A148A747A463396ACCB3CF1257B5"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/README.md.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 330,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/source-audit.py.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\source-audit.py",
+          "bytes": 12234,
+          "sha256": "69612CEEAC78BFE456918FA9F876084F3063BF6A6216845C16C5F06B82C6F617"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\source-audit.py",
+              "bytes": 12234,
+              "sha256": "69612CEEAC78BFE456918FA9F876084F3063BF6A6216845C16C5F06B82C6F617"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/source-audit.py.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 331,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/source-proof.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\source-proof.json",
+          "bytes": 56676,
+          "sha256": "3D3E8B670F048A7A07AEDABF8ECCF897694855CD4149646E861E3FE35DBD8757"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\source-proof.json",
+              "bytes": 56676,
+              "sha256": "3D3E8B670F048A7A07AEDABF8ECCF897694855CD4149646E861E3FE35DBD8757"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/source-proof.json.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "append",
+      "path": [
+        "archive_rows"
+      ],
+      "index": 332,
+      "after": {
+        "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/static-discovery.json.raw",
+        "kind": "immutable_evidence_archive",
+        "donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\static-discovery.json",
+          "bytes": 1375,
+          "sha256": "65AE7506A49E9849AF6BB83B7B878E46B4E429FA7C1F95E0A9229AF6B4FFF82D"
+        },
+        "preimage": null,
+        "logical_donors": [
+          {
+            "donor": {
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\static-discovery.json",
+              "bytes": 1375,
+              "sha256": "65AE7506A49E9849AF6BB83B7B878E46B4E429FA7C1F95E0A9229AF6B4FFF82D"
+            },
+            "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/descriptor-successor-20261022/shutdown-fixture/static-discovery.json.raw",
+            "reference_sites": [
+              {
+                "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022",
+                "ref": "complete immutable packet membership"
+              }
+            ],
+            "historical_reference_aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "op": "replace",
+      "path": [
+        "status"
+      ],
+      "before": "unissued_inert_shutdown_latin1_buffer_fs_fixture_21_path_copy_manifest_plan",
+      "after": "unissued_inert_shutdown_latin1_buffer_fs_fixture21_descriptor_successor_copy_plan"
+    },
+    {
+      "op": "add",
+      "path": [
+        "shutdown_descriptor_successor"
+      ],
+      "before": null,
+      "after": {
+        "predecessor_plan": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+          "bytes": 530121,
+          "sha256": "B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC"
+        },
+        "predecessor_handoff": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\handoff.json",
+          "bytes": 20300,
+          "sha256": "922C5187B64C7F9B9E565B532D8879DF7155C0B686CBEBBCA36570D12545984A"
+        },
+        "predecessor_Root_source_acceptance": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-copy-plan-source-acceptance-20261022.json",
+          "bytes": 19222,
+          "sha256": "213E78C874B52119218F70CD162F1C90BAA1B792B86CB3E3E2A6C56EBFA06F28"
+        },
+        "proposal": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\proposal.json",
+          "bytes": 26590,
+          "sha256": "331C9A44BA5543C9676324CCB30EC04E79E6DD1A36D23103C59331DEDE851C10"
+        },
+        "handoff": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\handoff.json",
+          "bytes": 5769,
+          "sha256": "9E3CCC745B51917D2BEA16761D853563BFAD875D72093EC5E902EF2E5CE5F951"
+        },
+        "independent_peer": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022\\peer.json",
+          "bytes": 7586,
+          "sha256": "3CDAD5D1917730A49258676E6A19402737D3A3669B99C1DDCDE5EF515711D120"
+        },
+        "Root_source_acceptance": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-invalid-descriptor-fixture-source-acceptance-20261022.json",
+          "bytes": 20948,
+          "sha256": "0B59166DB17DE39B2CB8B5A975885E5AEADCDF0900C40E8CECB80387BD6053F7"
+        },
+        "source_row_index": 14,
+        "relative_path": "src/native_node_stream_shutdown_test.zig",
+        "original_donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test.zig",
+          "bytes": 17019,
+          "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+        },
+        "selected_donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+          "bytes": 17039,
+          "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+        },
+        "exact_expression_offset": 5720,
+        "before": "-2",
+        "after": "std.math.maxInt(c_int)",
+        "unchanged_other20_source_rows": true,
+        "unchanged18_declarations_assertions_helpers_imports": true,
+        "source_path_count": 21,
+        "static_discovery_only": true,
+        "native_attempt_added": false
+      }
+    },
+    {
+      "op": "replace",
+      "path": [
+        "source_order_and_scope",
+        "explicitly_excluded"
+      ],
+      "before": [
+        "pending runtime template identity",
+        "full CustomBuffer listener",
+        "any additional production tracing/clock source not in the exact twenty source rows",
+        "any other fixture or production change beyond the exact FS request pumpPending proposal",
+        "future V38 negative archive, actual archive commit head, release, configuration and native outcomes"
+      ],
+      "after": [
+        "pending runtime template identity",
+        "full CustomBuffer listener",
+        "any additional production tracing/clock source not in the exact twenty source rows",
+        "any fixture or production change outside the exact accepted FS request pumpPending and Shutdown invalid-descriptor proposals",
+        "future V38 negative archive, actual archive commit head, release, configuration and native outcomes"
+      ]
+    },
+    {
+      "op": "add",
+      "path": [
+        "source_order_and_scope",
+        "shutdown_descriptor_correction"
+      ],
+      "before": null,
+      "after": {
+        "proposal": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\proposal.json",
+          "bytes": 26590,
+          "sha256": "331C9A44BA5543C9676324CCB30EC04E79E6DD1A36D23103C59331DEDE851C10"
+        },
+        "source": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+          "bytes": 17039,
+          "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+        },
+        "production_changes": 0,
+        "all18_declarations_and_assertions_unchanged": true,
+        "actual_future_runtime": null
+      }
+    },
+    {
+      "op": "add",
+      "path": [
+        "coverage",
+        "descriptor_successor_packet_memberships"
+      ],
+      "before": null,
+      "after": [
+        {
+          "label": "shutdown-fixture",
+          "directory": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022",
+          "files": [
+            {
+              "relative_path": "fixture.patch",
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\fixture.patch",
+              "bytes": 576,
+              "sha256": "2A2F3A84492565B89780C5FBF0947A45974B90EB05C6E7E04FA2BECE81309C87"
+            },
+            {
+              "relative_path": "handoff.json",
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\handoff.json",
+              "bytes": 5769,
+              "sha256": "9E3CCC745B51917D2BEA16761D853563BFAD875D72093EC5E902EF2E5CE5F951"
+            },
+            {
+              "relative_path": "original/src/native_node_stream_shutdown_test.zig",
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test.zig",
+              "bytes": 17019,
+              "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+            },
+            {
+              "relative_path": "projected/src/native_node_stream_shutdown_test.zig",
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+              "bytes": 17039,
+              "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+            },
+            {
+              "relative_path": "proposal.json",
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\proposal.json",
+              "bytes": 26590,
+              "sha256": "331C9A44BA5543C9676324CCB30EC04E79E6DD1A36D23103C59331DEDE851C10"
+            },
+            {
+              "relative_path": "README.md",
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\README.md",
+              "bytes": 3428,
+              "sha256": "99AF4CECD80E643006FBCCBBDF84B134E194A148A747A463396ACCB3CF1257B5"
+            },
+            {
+              "relative_path": "source-audit.py",
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\source-audit.py",
+              "bytes": 12234,
+              "sha256": "69612CEEAC78BFE456918FA9F876084F3063BF6A6216845C16C5F06B82C6F617"
+            },
+            {
+              "relative_path": "source-proof.json",
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\source-proof.json",
+              "bytes": 56676,
+              "sha256": "3D3E8B670F048A7A07AEDABF8ECCF897694855CD4149646E861E3FE35DBD8757"
+            },
+            {
+              "relative_path": "static-discovery.json",
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\static-discovery.json",
+              "bytes": 1375,
+              "sha256": "65AE7506A49E9849AF6BB83B7B878E46B4E429FA7C1F95E0A9229AF6B4FFF82D"
+            }
+          ]
+        },
+        {
+          "label": "shutdown-fixture-peer",
+          "directory": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022",
+          "files": [
+            {
+              "relative_path": "peer.json",
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022\\peer.json",
+              "bytes": 7586,
+              "sha256": "3CDAD5D1917730A49258676E6A19402737D3A3669B99C1DDCDE5EF515711D120"
+            },
+            {
+              "relative_path": "source-audit.py",
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022\\source-audit.py",
+              "bytes": 10606,
+              "sha256": "673BDDD874D94FB663AEDCBCA8674BE36FF8A6FF365397E0ECA552FF674D780B"
+            },
+            {
+              "relative_path": "source-proof.json",
+              "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022\\source-proof.json",
+              "bytes": 49890,
+              "sha256": "028C99E547AFBAAA5C057881B13A4D5AB7167CE14074A0A55A8AC33B7C2B421D"
+            }
+          ]
+        },
+        {
+          "label": "prior21-plan-peer",
+          "directory": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022",
+          "files": [
+            {
+              "relative_path": "initial-readout-scalar-negative.json",
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\initial-readout-scalar-negative.json",
+              "bytes": 2492,
+              "sha256": "CA6899C851E0764B0F11DADC9518FD793FAC8B205EAB68C97E406F23CF074E5C"
+            },
+            {
+              "relative_path": "peer.json",
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\peer.json",
+              "bytes": 6670,
+              "sha256": "F937DC6A109FFC2869084BA106A2DD68DE80479F541259C4E4D3ABEA7EE5C68E"
+            },
+            {
+              "relative_path": "source-check.py",
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\source-check.py",
+              "bytes": 26139,
+              "sha256": "7996E4B4B3BBF324EB90B4B2C5296FC5554A0D4311652EDA8A4D207849BC477F"
+            },
+            {
+              "relative_path": "source-proof.json",
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\source-proof.json",
+              "bytes": 239255,
+              "sha256": "19808F88A061E803E58DF9EF6CB5FD7E96C28C89183EAE3865D8128C592080EB"
+            }
+          ]
+        },
+        {
+          "label": "fs-fixture-peer",
+          "directory": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022",
+          "files": [
+            {
+              "relative_path": "peer.json",
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\peer.json",
+              "bytes": 6574,
+              "sha256": "C55A1B8277B69A6107B6A994F9A69F2C347E4A735E75B835A0F158D6A04A40F4"
+            },
+            {
+              "relative_path": "source-check.py",
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\source-check.py",
+              "bytes": 17415,
+              "sha256": "FBC21ADEB0E14D394771D761787069D3DB13F1A9A6C624BDD62075BBCDE826E7"
+            },
+            {
+              "relative_path": "source-proof.json",
+              "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\source-proof.json",
+              "bytes": 109273,
+              "sha256": "DFD7004CF0AF84BCA64B51A1A3E720850ADF212B14AC5FB7E52DDFA90AFFC751"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "add",
+      "path": [
+        "coverage",
+        "descriptor_successor_already_archived_reference_sites"
+      ],
+      "before": null,
+      "after": []
+    },
+    {
+      "op": "add",
+      "path": [
+        "coverage",
+        "descriptor_successor_source_review_authorities"
+      ],
+      "before": null,
+      "after": {
+        "prior21_peer": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\peer.json",
+          "bytes": 6670,
+          "sha256": "F937DC6A109FFC2869084BA106A2DD68DE80479F541259C4E4D3ABEA7EE5C68E"
+        },
+        "prior21_Root_acceptance": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-copy-plan-source-acceptance-20261022.json",
+          "bytes": 19222,
+          "sha256": "213E78C874B52119218F70CD162F1C90BAA1B792B86CB3E3E2A6C56EBFA06F28"
+        },
+        "FS_fixture_peer": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\peer.json",
+          "bytes": 6574,
+          "sha256": "C55A1B8277B69A6107B6A994F9A69F2C347E4A735E75B835A0F158D6A04A40F4"
+        },
+        "FS_fixture_Root_acceptance": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-fs-request-pump-escrow-source-acceptance-20261022.json",
+          "bytes": 6387,
+          "sha256": "905A69C83F4802963A5D035E076F3F910CDB64ED3D364516325E64C1B60E3ACE"
+        },
+        "Shutdown_fixture_peer": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022\\peer.json",
+          "bytes": 7586,
+          "sha256": "3CDAD5D1917730A49258676E6A19402737D3A3669B99C1DDCDE5EF515711D120"
+        },
+        "Shutdown_fixture_Root_acceptance": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-invalid-descriptor-fixture-source-acceptance-20261022.json",
+          "bytes": 20948,
+          "sha256": "0B59166DB17DE39B2CB8B5A975885E5AEADCDF0900C40E8CECB80387BD6053F7"
+        },
+        "prior_core_null_slots_are_preserved_historical_fields": true,
+        "future_archive_commit_release_and_final_manifest_remain_unknown": true
+      }
+    },
+    {
+      "op": "add",
+      "path": [
+        "coverage",
+        "descriptor_successor_static_observations"
+      ],
+      "before": null,
+      "after": {
+        "shutdown_static_discovery": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\static-discovery.json",
+          "bytes": 1375,
+          "sha256": "65AE7506A49E9849AF6BB83B7B878E46B4E429FA7C1F95E0A9229AF6B4FFF82D"
+        },
+        "prior_plan_Root_readonly_serialization_observation": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-copy-plan-inventory-serialization-observation-20261022.json",
+          "bytes": 9147,
+          "sha256": "3CFE9706D0FB4D3A40B5C82A5BF92DD47E5DD3AF397E645CC6BC656DE5529297"
+        },
+        "prior_plan_peer_readout_negative": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\initial-readout-scalar-negative.json",
+          "bytes": 2492,
+          "sha256": "CA6899C851E0764B0F11DADC9518FD793FAC8B205EAB68C97E406F23CF074E5C"
+        },
+        "this_plan_readout_negative": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending21-shutdown-descriptor-copy-plan-successor-sourceonly-20261022\\initial-readout-key-negative.json",
+          "bytes": 2846,
+          "sha256": "6D6F10472BD39D688CAC080D37F846D9AC308E653BAE744D91DAB3AB28E3286A"
+        },
+        "no_separate_raw_receipts_exist_for_shutdown_lookup_display_observations": true,
+        "no_native_attempt_created": true
+      }
+    },
+    {
+      "op": "replace",
+      "path": [
+        "counts"
+      ],
+      "before": {
+        "source_paths": 21,
+        "source_replacements": 9,
+        "source_additions": 12,
+        "immutable_archive_donors": 329,
+        "archive_copy_paths": 302,
+        "core_copy_rows": 323,
+        "core_plus_final_manifest_paths": 324,
+        "archive_bytes_before_content_dedup": 46959127,
+        "archive_bytes_to_copy": 37463076,
+        "duplicate_archive_copies_removed": 27,
+        "archive_bytes_saved": 9496051,
+        "physical_rows_added_after_old243": 80,
+        "logical_records_after_old268": 82,
+        "future_plan_review_receipt_paths_not_yet_in_core_count": true
+      },
+      "after": {
+        "source_paths": 21,
+        "source_replacements": 9,
+        "source_additions": 12,
+        "immutable_archive_donors": 361,
+        "archive_copy_paths": 333,
+        "core_copy_rows": 354,
+        "core_plus_final_manifest_paths": 355,
+        "archive_bytes_before_content_dedup": 48583865,
+        "archive_bytes_to_copy": 39070795,
+        "duplicate_archive_copies_removed": 28,
+        "archive_bytes_saved": 9513070,
+        "physical_rows_added_after_old243": 111,
+        "logical_records_after_old268": 114,
+        "future_plan_review_receipt_paths_not_yet_in_core_count": true,
+        "old_B490_core_rows": 323,
+        "carried_922C_supplemental_rows": 7,
+        "previous_total_including_manifest": 331
+      }
+    },
+    {
+      "op": "add",
+      "path": [
+        "preserved_descriptor_predecessor_accounting"
+      ],
+      "before": null,
+      "after": {
+        "old_B490_source_rows": 21,
+        "old_B490_archive_rows": 302,
+        "old_B490_archive_logical_donors": 329,
+        "all7_exact_922C_supplemental_rows_carried": true,
+        "carried_archive_rows": 309,
+        "carried_archive_logical_donors": 336,
+        "source_paths_added": 0,
+        "source_donor_replacements": 1,
+        "all_other20_source_rows_exact": true,
+        "all_carried_physical_rows_and_logical_prefixes_exact": true,
+        "original11AA_donor_still_archived": true,
+        "all_original_negatives_retained": true,
+        "inherited_future_unknowns_and_byte_preflight_unchanged": true
+      }
+    }
+  ],
+  "intermediate_states": [
+    {
+      "index": 0,
+      "before_bytes": 530121,
+      "before_sha256": "B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC",
+      "after_bytes": 530146,
+      "after_sha256": "A2FFB3ECB52B1A35CD6B6611C775705E6BDEC59238D8C29DD06EA6061EC5A360"
+    },
+    {
+      "index": 1,
+      "before_bytes": 530146,
+      "before_sha256": "A2FFB3ECB52B1A35CD6B6611C775705E6BDEC59238D8C29DD06EA6061EC5A360",
+      "after_bytes": 531513,
+      "after_sha256": "2C15CBDB989911FB65CAED57F06B919E9AE0787384A2E5D9671D796F4A64160C"
+    },
+    {
+      "index": 2,
+      "before_bytes": 531513,
+      "before_sha256": "2C15CBDB989911FB65CAED57F06B919E9AE0787384A2E5D9671D796F4A64160C",
+      "after_bytes": 532896,
+      "after_sha256": "B00BF39AC79ECEA5106905A8E0044366E5A10C642134312F1FA9BF49CEF2860F"
+    },
+    {
+      "index": 3,
+      "before_bytes": 532896,
+      "before_sha256": "B00BF39AC79ECEA5106905A8E0044366E5A10C642134312F1FA9BF49CEF2860F",
+      "after_bytes": 534239,
+      "after_sha256": "EFA076AC39E94C0E8B935A4CDC7D67C64490B4D5A0F8371FA4B4C627EEF44B1F"
+    },
+    {
+      "index": 4,
+      "before_bytes": 534239,
+      "before_sha256": "EFA076AC39E94C0E8B935A4CDC7D67C64490B4D5A0F8371FA4B4C627EEF44B1F",
+      "after_bytes": 535596,
+      "after_sha256": "462DB97275FFBAAD1F69413C509CAFC0FDFFCA73060E6DEDEC636633A7E34B91"
+    },
+    {
+      "index": 5,
+      "before_bytes": 535596,
+      "before_sha256": "462DB97275FFBAAD1F69413C509CAFC0FDFFCA73060E6DEDEC636633A7E34B91",
+      "after_bytes": 536947,
+      "after_sha256": "1C54EA0BDEA92C4FE8BF2BA36440B1517D89345F5BD98160754BEACEEA1D54AC"
+    },
+    {
+      "index": 6,
+      "before_bytes": 536947,
+      "before_sha256": "1C54EA0BDEA92C4FE8BF2BA36440B1517D89345F5BD98160754BEACEEA1D54AC",
+      "after_bytes": 538298,
+      "after_sha256": "BDF9B4C896CD5471FB8B669F2B6F13E30A1CD3E43B07EC40AF18AD1C619AE0CD"
+    },
+    {
+      "index": 7,
+      "before_bytes": 538298,
+      "before_sha256": "BDF9B4C896CD5471FB8B669F2B6F13E30A1CD3E43B07EC40AF18AD1C619AE0CD",
+      "after_bytes": 539605,
+      "after_sha256": "FB02BD5C022B44882CC368067A4280118A5850B7D3B160E4D5FD1984D4A8EDB8"
+    },
+    {
+      "index": 8,
+      "before_bytes": 539605,
+      "before_sha256": "FB02BD5C022B44882CC368067A4280118A5850B7D3B160E4D5FD1984D4A8EDB8",
+      "after_bytes": 541049,
+      "after_sha256": "20CA42D7CD6F456C2FCF9B48B7E455A2E48E2E4245CF0B947192331F16C7C31C"
+    },
+    {
+      "index": 9,
+      "before_bytes": 541049,
+      "before_sha256": "20CA42D7CD6F456C2FCF9B48B7E455A2E48E2E4245CF0B947192331F16C7C31C",
+      "after_bytes": 542424,
+      "after_sha256": "CCCAEAFCEA544EAD28FD3B57FCF7650B5E803B255433C64468AE51F4D9860EE5"
+    },
+    {
+      "index": 10,
+      "before_bytes": 542424,
+      "before_sha256": "CCCAEAFCEA544EAD28FD3B57FCF7650B5E803B255433C64468AE51F4D9860EE5",
+      "after_bytes": 543694,
+      "after_sha256": "9DB741CD81EF5783800F9B0F5276BEA179C06DA59DAA85DCB7E88D7D6EBD1F96"
+    },
+    {
+      "index": 11,
+      "before_bytes": 543694,
+      "before_sha256": "9DB741CD81EF5783800F9B0F5276BEA179C06DA59DAA85DCB7E88D7D6EBD1F96",
+      "after_bytes": 545052,
+      "after_sha256": "FC5C58517F718AD79CE8473681F10C811A35C58DE2F07A75E65A71BF9AD7C8D1"
+    },
+    {
+      "index": 12,
+      "before_bytes": 545052,
+      "before_sha256": "FC5C58517F718AD79CE8473681F10C811A35C58DE2F07A75E65A71BF9AD7C8D1",
+      "after_bytes": 546316,
+      "after_sha256": "7FC1FAA9E3D972CFC06B71C5C662FA06D02EC5A7F4E869AAD2F6B59738622CC2"
+    },
+    {
+      "index": 13,
+      "before_bytes": 546316,
+      "before_sha256": "7FC1FAA9E3D972CFC06B71C5C662FA06D02EC5A7F4E869AAD2F6B59738622CC2",
+      "after_bytes": 547624,
+      "after_sha256": "A426810ECDA320A5B38ED17EEE8644E9177BC0AE7C59D1121FEA1C9C0E8D652D"
+    },
+    {
+      "index": 14,
+      "before_bytes": 547624,
+      "before_sha256": "A426810ECDA320A5B38ED17EEE8644E9177BC0AE7C59D1121FEA1C9C0E8D652D",
+      "after_bytes": 548923,
+      "after_sha256": "0AA4076DBC836E41812B83E46D958A45C0CD7FAE928E0A9B08D6F3FD4619D08B"
+    },
+    {
+      "index": 15,
+      "before_bytes": 548923,
+      "before_sha256": "0AA4076DBC836E41812B83E46D958A45C0CD7FAE928E0A9B08D6F3FD4619D08B",
+      "after_bytes": 550248,
+      "after_sha256": "92D3101B329ED7CAF5380170C5B386CC65C1BB3E94316AF37FE781A966A06814"
+    },
+    {
+      "index": 16,
+      "before_bytes": 550248,
+      "before_sha256": "92D3101B329ED7CAF5380170C5B386CC65C1BB3E94316AF37FE781A966A06814",
+      "after_bytes": 551583,
+      "after_sha256": "B8DD8B53B1DF4CE7796BA001F668897B703E073E5B7AF883304320BD79D35D80"
+    },
+    {
+      "index": 17,
+      "before_bytes": 551583,
+      "before_sha256": "B8DD8B53B1DF4CE7796BA001F668897B703E073E5B7AF883304320BD79D35D80",
+      "after_bytes": 553030,
+      "after_sha256": "719D9C14D009F678B9FB2AA92B371157CBCFF3A7466A70C350443B5F1B75254D"
+    },
+    {
+      "index": 18,
+      "before_bytes": 553030,
+      "before_sha256": "719D9C14D009F678B9FB2AA92B371157CBCFF3A7466A70C350443B5F1B75254D",
+      "after_bytes": 554369,
+      "after_sha256": "2E4F8D1103FBC6EA51123FDB6ECFCE06C03134409ACA6E62044D8CEE0989EB8C"
+    },
+    {
+      "index": 19,
+      "before_bytes": 554369,
+      "before_sha256": "2E4F8D1103FBC6EA51123FDB6ECFCE06C03134409ACA6E62044D8CEE0989EB8C",
+      "after_bytes": 555734,
+      "after_sha256": "481224BFE4BCF5EF90F8C48A87F8D9D188F27658822F701D308D64D963DD5971"
+    },
+    {
+      "index": 20,
+      "before_bytes": 555734,
+      "before_sha256": "481224BFE4BCF5EF90F8C48A87F8D9D188F27658822F701D308D64D963DD5971",
+      "after_bytes": 557109,
+      "after_sha256": "215059E85B59289FDABE25151283B3C3941977168433269061D43B04353F2E90"
+    },
+    {
+      "index": 21,
+      "before_bytes": 557109,
+      "before_sha256": "215059E85B59289FDABE25151283B3C3941977168433269061D43B04353F2E90",
+      "after_bytes": 558567,
+      "after_sha256": "497ADA964932DB534979574A8374395CEFE27C5963E1C258340933078CC4AC81"
+    },
+    {
+      "index": 22,
+      "before_bytes": 558567,
+      "before_sha256": "497ADA964932DB534979574A8374395CEFE27C5963E1C258340933078CC4AC81",
+      "after_bytes": 560051,
+      "after_sha256": "6EBA5557DBCF73D8502D006A916A630A24C8D7DCC15AA118D7F5D9C3D9C8A4E1"
+    },
+    {
+      "index": 23,
+      "before_bytes": 560051,
+      "before_sha256": "6EBA5557DBCF73D8502D006A916A630A24C8D7DCC15AA118D7F5D9C3D9C8A4E1",
+      "after_bytes": 561543,
+      "after_sha256": "4C28FB5FE871AB54121F7020B5B402B6A09D3ADE08E4B0880D2728E9FA87622D"
+    },
+    {
+      "index": 24,
+      "before_bytes": 561543,
+      "before_sha256": "4C28FB5FE871AB54121F7020B5B402B6A09D3ADE08E4B0880D2728E9FA87622D",
+      "after_bytes": 563017,
+      "after_sha256": "BCF283311F3B1CF3B4C2E5E272A081AE69CACA2AE6FD324FEBF0C55D6340B2C5"
+    },
+    {
+      "index": 25,
+      "before_bytes": 563017,
+      "before_sha256": "BCF283311F3B1CF3B4C2E5E272A081AE69CACA2AE6FD324FEBF0C55D6340B2C5",
+      "after_bytes": 564489,
+      "after_sha256": "DF6E3BA34B0506A9D888EAD6C9BF8F8C389CB8C5D264A457A1932AB63CBBF496"
+    },
+    {
+      "index": 26,
+      "before_bytes": 564489,
+      "before_sha256": "DF6E3BA34B0506A9D888EAD6C9BF8F8C389CB8C5D264A457A1932AB63CBBF496",
+      "after_bytes": 565451,
+      "after_sha256": "5BCF355E6673F3A937F831DC05CA9F6B0D23BFE81BA648B2DB149AC28C45AA74"
+    },
+    {
+      "index": 27,
+      "before_bytes": 565451,
+      "before_sha256": "5BCF355E6673F3A937F831DC05CA9F6B0D23BFE81BA648B2DB149AC28C45AA74",
+      "after_bytes": 567081,
+      "after_sha256": "D726845CB81A3858F3E69A8F40EF51C15F1317FD5462C6BB8C93A736003CEA3A"
+    },
+    {
+      "index": 28,
+      "before_bytes": 567081,
+      "before_sha256": "D726845CB81A3858F3E69A8F40EF51C15F1317FD5462C6BB8C93A736003CEA3A",
+      "after_bytes": 568559,
+      "after_sha256": "3FC0D184BB9D9DDDA272AE2685066A3D310547AAFBB28768E398689B88A2ACB1"
+    },
+    {
+      "index": 29,
+      "before_bytes": 568559,
+      "before_sha256": "3FC0D184BB9D9DDDA272AE2685066A3D310547AAFBB28768E398689B88A2ACB1",
+      "after_bytes": 570019,
+      "after_sha256": "54B307047232A6BB2912A1B339F48F3ED410791E52B8A36BFB2C857846E37B46"
+    },
+    {
+      "index": 30,
+      "before_bytes": 570019,
+      "before_sha256": "54B307047232A6BB2912A1B339F48F3ED410791E52B8A36BFB2C857846E37B46",
+      "after_bytes": 571505,
+      "after_sha256": "ECB78610B5BDFD2EEC088CFA529D3E98D1FD67D1E885A134F447D907878137E1"
+    },
+    {
+      "index": 31,
+      "before_bytes": 571505,
+      "before_sha256": "ECB78610B5BDFD2EEC088CFA529D3E98D1FD67D1E885A134F447D907878137E1",
+      "after_bytes": 572999,
+      "after_sha256": "77D231A305C23F00CB267428E641BA5A1A159903EB4A9BFB7E549D2394242BED"
+    },
+    {
+      "index": 32,
+      "before_bytes": 572999,
+      "before_sha256": "77D231A305C23F00CB267428E641BA5A1A159903EB4A9BFB7E549D2394242BED",
+      "after_bytes": 574507,
+      "after_sha256": "4457FB2E6BDBF34C0C54CCB9034E01BAEA63ED86E227C463B7C0239A004F2C5B"
+    },
+    {
+      "index": 33,
+      "before_bytes": 574507,
+      "before_sha256": "4457FB2E6BDBF34C0C54CCB9034E01BAEA63ED86E227C463B7C0239A004F2C5B",
+      "after_bytes": 574513,
+      "after_sha256": "12E2BBD1880137B1C33E8D52F2EC7D9C14625F313E688B6C14D8964456EDF8BB"
+    },
+    {
+      "index": 34,
+      "before_bytes": 574513,
+      "before_sha256": "12E2BBD1880137B1C33E8D52F2EC7D9C14625F313E688B6C14D8964456EDF8BB",
+      "after_bytes": 577763,
+      "after_sha256": "EF5B107F0961E6012CEFEE265F1A800FCFF3669585B8E017C033B8035E441436"
+    },
+    {
+      "index": 35,
+      "before_bytes": 577763,
+      "before_sha256": "EF5B107F0961E6012CEFEE265F1A800FCFF3669585B8E017C033B8035E441436",
+      "after_bytes": 577800,
+      "after_sha256": "7478FFC84AC3AE3011A6FAFF76CD8C0D189B04C0E9096290D4B006F7C857CDC4"
+    },
+    {
+      "index": 36,
+      "before_bytes": 577800,
+      "before_sha256": "7478FFC84AC3AE3011A6FAFF76CD8C0D189B04C0E9096290D4B006F7C857CDC4",
+      "after_bytes": 578652,
+      "after_sha256": "E0B0B219AC5A29A7F4BB2075542602C308168E1D097F173492E968527A7B6260"
+    },
+    {
+      "index": 37,
+      "before_bytes": 578652,
+      "before_sha256": "E0B0B219AC5A29A7F4BB2075542602C308168E1D097F173492E968527A7B6260",
+      "after_bytes": 586643,
+      "after_sha256": "1AEA515C492C748A885875A63EF79907F9F90C69F4BFBE518238DAD95881D509"
+    },
+    {
+      "index": 38,
+      "before_bytes": 586643,
+      "before_sha256": "1AEA515C492C748A885875A63EF79907F9F90C69F4BFBE518238DAD95881D509",
+      "after_bytes": 586708,
+      "after_sha256": "7552063987886E44D554F9D5BE721D18C8D9B03F679007585387997B57E97AF2"
+    },
+    {
+      "index": 39,
+      "before_bytes": 586708,
+      "before_sha256": "7552063987886E44D554F9D5BE721D18C8D9B03F679007585387997B57E97AF2",
+      "after_bytes": 588621,
+      "after_sha256": "AFB8C883CBB603FABFCF8ADA5DFC07EFD0BD96BCE24941F722BFD63E0FB35C06"
+    },
+    {
+      "index": 40,
+      "before_bytes": 588621,
+      "before_sha256": "AFB8C883CBB603FABFCF8ADA5DFC07EFD0BD96BCE24941F722BFD63E0FB35C06",
+      "after_bytes": 590143,
+      "after_sha256": "5CE3B1F13986DB80FBDEDA6A81D86E5512D4DA5470B24BE0C96CDA29881912E6"
+    },
+    {
+      "index": 41,
+      "before_bytes": 590143,
+      "before_sha256": "5CE3B1F13986DB80FBDEDA6A81D86E5512D4DA5470B24BE0C96CDA29881912E6",
+      "after_bytes": 590263,
+      "after_sha256": "F6D2008EBB5C1343849CA43BC6D6DD3468ECB2BB9623D5EF8A82D06C7B759ED9"
+    },
+    {
+      "index": 42,
+      "before_bytes": 590263,
+      "before_sha256": "F6D2008EBB5C1343849CA43BC6D6DD3468ECB2BB9623D5EF8A82D06C7B759ED9",
+      "after_bytes": 590893,
+      "after_sha256": "836BC121159347F7BC68DBF71E97787B59F532D10A95D18DE318370B5F94AFD6"
+    }
+  ],
+  "whole_forward_and_raw_inverse": true,
+  "original_raw_bytes_recovered": 530121,
+  "original_raw_sha256": "B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC"
+}

@@ -1,0 +1,435 @@
+{
+  "schema": "pi-zig.independent-sdk-shutdown-latin1-source-peer.v1",
+  "reviewer": "sdk_environment_port, separate from module_io_port author",
+  "assessment": "No additional concrete source blocker in the selected finite corrected slice. Original C argument defects are preserved as negative source evidence and corrected only by immutable successor11FA3C23. This is not compilation, runtime, public FileHandle, or bootstrap qualification.",
+  "selected_manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production-proposal.json",
+    "bytes": 38512,
+    "sha256": "C75EDD403EA03303A55CF64C903F2193EA74CBFAE843196DA7096C8AC3A7CAA0"
+  },
+  "selected_shared_projection": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\proposal.json",
+    "bytes": 38226,
+    "sha256": "C58D31835CCE099D8C99BF7432CE4B0B2FAA83186857EA46EDFC55CEB3542A41"
+  },
+  "selected_c_successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\proposal.json",
+    "bytes": 2900,
+    "sha256": "11FA3C2397945908756CB487FE2F22E8762B56AF7187CD87AF8275678905F9F1"
+  },
+  "source_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\source-map.json",
+    "bytes": 88169,
+    "sha256": "2B78DFAA1C4CF44784AEE4F837B76F9B09ABAB265E79F053AF342B5B27D3A448"
+  },
+  "source_map_successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\source-map-successor.json",
+    "bytes": 4913,
+    "sha256": "7B883EF61A24846E9847A8BFAC41D36DFF5C6E4201572EB46946A0F9BF94DB3F"
+  },
+  "original_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-sdk-peer-sourceonly-20261020\\predecessor-latin1-source-negative.json",
+    "bytes": 6418,
+    "sha256": "5D95C40F4F21DF511E0F929912B385EBA0875A9F78EAD65EEDAE569252984243"
+  },
+  "independent_replay": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-sdk-peer-sourceonly-20261020\\independent-source-replay.json",
+    "bytes": 13031,
+    "sha256": "AF77B6B17A468DE855C0988621BD773D5020CDCC6AF3F69111105C307DC1E9AD"
+  },
+  "independent_replay_program": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-sdk-peer-sourceonly-20261020\\independent-source-replay.py",
+    "bytes": 5855,
+    "sha256": "36011AB92A88976219386CA2A350302298DA3D6454E068D82E80B59D2EB64879"
+  },
+  "author_read_only_audit_reproduced_exact": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\source-proof.json",
+    "bytes": 31491,
+    "sha256": "098091FBDCEEA8B87AD9F2C655BB09937222DBF2F3C731C6FACD0A91285A8F68"
+  },
+  "comparison_basis": {
+    "immutable_main_git_commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+    "owner_error_overlay": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projection.json",
+      "bytes": 25832,
+      "sha256": "E1C3AE19CE38CF7FB6B21043F9B154B4DC4AE0952A9B149BD6BE792AFAC7C3B3"
+    },
+    "fs_observer_overlay": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\proposal.json",
+      "bytes": 16691,
+      "sha256": "E22848488C054D9B748CD6A7E078EFECF468D32804F8161842562250F4DBF454"
+    },
+    "native_fatal_required_commit": "5059d6a",
+    "moving_Main_not_used_as_dependency_bytes": true,
+    "actual_return_try_file": "src/extensions/native_node_async_wrap_make_callback.zig",
+    "actual_return_try_sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2",
+    "filename_scope": "native_node_async_wrap.zig 7E970CA3 is a separate correctly selected base. No correction to that file was required to preserve MakeCallback."
+  },
+  "read_scope": {
+    "full_new_production_files": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_shutdown.zig",
+        "bytes": 9800,
+        "sha256": "D88164C9B392F9A5A0906DF2166129204A88A0936C83D3FA1DFF008484EC94F2"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_one_byte_string.zig",
+        "bytes": 2658,
+        "sha256": "2387DDE54B2B079BC0F78490602E4CF150F4A1E46FFC3FC05D7EF3CB5CEE4507"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_one_byte_string_diagnostics.cpp",
+        "bytes": 2695,
+        "sha256": "3E61B1FDD631E80B31F51F5B130D203C4C01BD41FF4EE4FD2831C27074459B53"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_one_byte_string_diagnostics.h",
+        "bytes": 576,
+        "sha256": "687E51133E348B90B4C7CF5CBEB53C2098CF6988A5C3915F68DF008D0A9E1C88"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_stream_request.zig",
+        "bytes": 6970,
+        "sha256": "654816139FC110560BA21BDBBEA35744468B1E6C52154448D30CEDC3656A6E8B"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_stream_shutdown.zig",
+        "bytes": 11021,
+        "sha256": "2BEE67EE76015C0549729F3F3B12CD4BBBF32C5DBF5A28D8CEE3F111E0C86D7E"
+      }
+    ],
+    "full_control_fixture_files": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_one_byte_string_test.zig",
+        "bytes": 5064,
+        "sha256": "AC3E1AD12FB0F48905EC8B561094F54DD93653AD7C8DC5DD7CC0EBB54959C461"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17019,
+        "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10312,
+        "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+      }
+    ],
+    "shared_review": "All37 exact finite edits, relevant native-slot/state/constructor/listener/base/handle contexts, two-expression C successor and actual private helpers. Whole 2.4MB QuickJS implementation is pinned, not represented as newly read in full.",
+    "original_excerpt_count": 43,
+    "helper_signature_addendum_excerpts": 4,
+    "selected_original_authorities": "Pinned Node v24.13.0 commit def0bdf8abee441cfcbf793a8dc24a6f3b899573, selected StreamBase/StreamReq/Shutdown/FileHandle/ReqWrap/AsyncWrap/Env, util and contained V8 string/factory/MaybeHandle/diagnostic/API bodies.",
+    "host_dependency_reads": [
+      "Actual State/Registry/Entry queue, retaining pointer, weak/reset and retirement operations.",
+      "Actual Controller.enter, dispatchRawClose, completion delivery/wrapper and stop/drain ownership.",
+      "Frozen operation Scope and commonjs Boundary ordinary-pending escrow/retirement; real capture is not a fabricated fatal condition.",
+      "Unchanged MakeCallback972B, native check/fatal interfaces, direct TLS C/H/HPP owner, existing native network and memory build recipes."
+    ],
+    "full_selected_test_names": [
+      {
+        "root": "src/native_node_stream_shutdown_test.zig",
+        "declared": 18,
+        "names": [
+          "native Stream shutdown actual constructor owns original null fields and independent empty slots",
+          "native Stream shutdown genuine Simple wrapper clears request slot before last native pointer retirement",
+          "native Stream shutdown physical close reports after trace end cleanup and AfterClose with borrowed handle",
+          "native Stream shutdown real accepted bad descriptor still performs AfterClose and reports negative status",
+          "native Stream shutdown closed fast path completes synchronously and restores the prior trigger",
+          "native Stream shutdown closing fast path retires its own request while real first close stays queued",
+          "native Stream shutdown nonfunction oncomplete yields undefined without invoking trace or callback",
+          "native Stream shutdown absent oncomplete skips the ordinary Get and native callback",
+          "native Stream shutdown throwing oncomplete getter preserves actual reason and still disposes native request",
+          "native Stream shutdown real close callback exception survives actual Wrapper and event destruction",
+          "native Stream shutdown disabled JavaScript returns before oncomplete getter while native close retires",
+          "native Stream shutdown live listener head uses original predecessor forwarding into real reporter",
+          "native StreamReq Done stores actual Latin1 error bytes then reports and clears request field",
+          "native StreamReq Done failing ordinary error setter returns before OnDone and preserves both native slots",
+          "native StreamReq Done false nonwritable Set still continues to OnDone",
+          "native Stream shutdown reporter converts Latin1 error then clears original stream error",
+          "native Stream shutdown missing caller object uses actual stored InstanceTemplate then real native close",
+          "native Stream shutdown request init inherits actual handle async ID and restores prior trigger"
+        ],
+        "anonymous_allowlist_blocks": [
+          {
+            "relative_path": "src/extensions/native_durable_storage.zig",
+            "line": 861
+          },
+          {
+            "relative_path": "src/extensions/native_bindings.zig",
+            "line": 3451
+          },
+          {
+            "relative_path": "src/durable/session.zig",
+            "line": 8
+          },
+          {
+            "relative_path": "src/extensions/native_durable_task_abort.zig",
+            "line": 13
+          },
+          {
+            "relative_path": "src/durable/scheduler.zig",
+            "line": 12
+          },
+          {
+            "relative_path": "src/extensions/native_durable_context_view.zig",
+            "line": 13
+          },
+          {
+            "relative_path": "src/ai/root.zig",
+            "line": 329
+          },
+          {
+            "relative_path": "src/durable/tool_read.zig",
+            "line": 18
+          }
+        ]
+      },
+      {
+        "root": "src/native_node_one_byte_string_test.zig",
+        "declared": 8,
+        "names": [
+          "native OneByteString explicit full byte range preserves all Latin1 code units including high bytes",
+          "native OneByteString UTF8-looking bytes remain two original Latin1 code units",
+          "native OneByteString explicit length preserves embedded NUL before nonASCII bytes",
+          "native OneByteString negative length follows original strlen termination",
+          "native OneByteString zero length accepts null data without reading a byte",
+          "native OneByteString all negative signed lengths select the CString branch",
+          "native OneByteString explicit prefix does not consume trailing buffer bytes",
+          "native OneByteString returned caller ownership survives source scope and real VM collection"
+        ],
+        "anonymous_allowlist_blocks": [
+          {
+            "relative_path": "src/extensions/native_durable_storage.zig",
+            "line": 861
+          },
+          {
+            "relative_path": "src/extensions/native_bindings.zig",
+            "line": 3451
+          },
+          {
+            "relative_path": "src/durable/session.zig",
+            "line": 8
+          },
+          {
+            "relative_path": "src/extensions/native_durable_task_abort.zig",
+            "line": 13
+          },
+          {
+            "relative_path": "src/durable/scheduler.zig",
+            "line": 12
+          },
+          {
+            "relative_path": "src/extensions/native_durable_context_view.zig",
+            "line": 13
+          },
+          {
+            "relative_path": "src/ai/root.zig",
+            "line": 329
+          },
+          {
+            "relative_path": "src/durable/tool_read.zig",
+            "line": 18
+          }
+        ]
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "latin1-empty-runtime",
+      "original": "js_empty_string(ctx)",
+      "actual_private_signature": "static inline JSValue js_empty_string(JSRuntime *rt)",
+      "selected": "js_empty_string(ctx->rt)",
+      "status": "closed in successor11FA3C23",
+      "evidence": "Original JS_NewStringLen also selects ctx->rt. The initial context-pointer argument was a concrete source type defect, not an observed runtime failure."
+    },
+    {
+      "id": "latin1-byte-pointer",
+      "original": "js_new_string8_len(ctx, buf, (int)len)",
+      "actual_private_signature": "static JSValue js_new_string8_len(JSContext *ctx, const char *buf, int len)",
+      "selected": "js_new_string8_len(ctx, (const char *)buf, (int)len)",
+      "status": "closed in successor11FA3C23",
+      "evidence": "uint8_t/unsigned char and plain char are distinct C pointer target types. The explicit cast supplies the actual byte-copy helper parameter without UTF-8 decoding."
+    },
+    {
+      "id": "length-cast",
+      "status": "bounded",
+      "evidence": "Actual JS_STRING_LEN_MAX is ((1 << 30) - 1), tested before the existing int cast. 1073741823 fits the actual int width admitted by the native helper/static_assert. The Node wrapper applies its smaller pointer-size-dependent V8 maximum separately."
+    }
+  ],
+  "lifetime_and_behavior": [
+    {
+      "component": "Independent native request slot",
+      "assessment": "RequestFields keeps an independent StreamReq pointer and Registry retention; attaches before AsyncWrap init and contains no hidden guest handle root. Reset clears BaseObject then request slot. FromObject reads request slot directly. Mark/finalizer use actual State and retire it before destroying fields.",
+      "source_ids": [
+        "request_fields",
+        "request_attach",
+        "request_reset",
+        "shutdown_template"
+      ]
+    },
+    {
+      "component": "Dispose and member order",
+      "assessment": "Actual State retain increments before possible ownership checks, and its temporary release is always owned. Dispose clears request slot, detaches, then releases; no request or State dereference follows a potentially final release. Scope retains Environment independently through pending/error/root cleanup. Default Simple has no additional JS members; FileHandle request adds actual storage and Entry after genuine AsyncWrap init.",
+      "source_ids": [
+        "request_dispose",
+        "simple_constructor",
+        "simple_type",
+        "reqwrap_constructor"
+      ]
+    },
+    {
+      "component": "StreamBase Shutdown",
+      "assessment": "Stored real InstanceTemplate is used only when the native overload receives no wrapper; real Reset follows. Native callback wrapper remains held across DoShutdown/error handling. Actual stream async ID and prior default trigger are used; trigger restores before outer pointer and locals. Immediate nonzero results Dispose, error Set failure keeps UV_EBUSY and returns before ClearError. Missing actual template/virtual/environment binding is an explicit host assembly error.",
+      "source_ids": [
+        "stream_shutdown",
+        "trigger_scope",
+        "default_simple"
+      ]
+    },
+    {
+      "component": "Real FileHandle close request",
+      "assessment": "FileHandleCloseWrap implements SimpleShutdownWrap<ReqWrap<uv_fs_t>> with provider35, canonical CLOSE storage and actual intrusive Entry. Closed or closing calls Done(0), returns1. Otherwise sets closing, CHECKs fd!=-1, traces and dispatches actual close; original ignored negative dispatch behavior is retained. It introduces no FileHandle Global or Promise.",
+      "source_ids": [
+        "filehandle_shutdown",
+        "reqwrap_dispatch",
+        "provider_number"
+      ]
+    },
+    {
+      "component": "Completion and callback continuation",
+      "assessment": "Existing native Wrapper retains, detaches and decreases waiting before callback. Selected completion reads trace result, calls actual AfterClose, freshly reads result, cleans actual request, then Done. Completed ordinary AfterClose/listener failures are escrowed so native continuation/Dispose runs; fatal/aborted port completion performs native retirement without fabricating guest success. The outer Wrapper retains through Done. Ordinary escrow does not itself cause Scope.pending to rethrow; it observes actual current pending and returns the owned reason at finish.",
+      "source_ids": [
+        "filehandle_shutdown",
+        "reqwrap_wrapper",
+        "reporter_shutdown"
+      ]
+    },
+    {
+      "component": "Reporter and live listener chain",
+      "assessment": "Actual live head is selected at emission. Generic listener forwards to actual previous; default JS listener and exported reporter select genuine ReportWrites body. can_call_into_js prevents getter/callback entry. Status/stream/error arguments and ClearError order are real. Has.FromJust uses genuine fatal owner on empty; ordinary Get and nonfunction->undefined remain separate; actual callable uses unchanged MakeCallback972B. No stream/state access after guest callback.",
+      "source_ids": [
+        "live_emit",
+        "reporter_class",
+        "reporter_body",
+        "listener_forward",
+        "callback_name_get",
+        "v8_has_policy"
+      ]
+    },
+    {
+      "component": "Done error property",
+      "assessment": "Optional error-string Scope retires before OnDone. Actual setter exception returns before OnDone, while kDontThrow nonwritable false continues. No fake property result, caught-false replacement or altered assertion is introduced.",
+      "source_ids": [
+        "request_done",
+        "v8_set_policy"
+      ]
+    },
+    {
+      "component": "Latin-1 primitive and original string policy",
+      "assessment": "Corrected C copies raw bytes, including high bytes and embedded NUL for positive explicit lengths; zero returns real empty string. Negative signed length uses real strlen once, original safe CHECK_GE maximum then int cast. Explicit over-V8-maximum retains ToLocalChecked fatal; inferred invalid length retains real RangeError followed by actual MaybeHandle CHECK. Real allocation/OOM occurrence selects existing heap failure owner. V8 one-character cache, layout, GC/retry and internalized mode are explicitly unimplemented by this bounded raw primitive.",
+      "source_ids": [
+        "onebyte_defaults",
+        "onebyte_wrapper",
+        "cstring_length",
+        "newstring_api_policy",
+        "raw_allocation_policy",
+        "normal_length_specials",
+        "internal_maybe_check"
+      ]
+    },
+    {
+      "component": "Native diagnostic ABI",
+      "assessment": "Both exact C ABI entries match H/Zig/CPP and declare borrowed DiagnosticContextScope first. Actual TLS stores only synchronous borrow and restores previous. Selected int/size_t stream formatting retains original body tokens after explicit template argument deduction only. DEBUG source keeps original diagnostic file/line/new/delete; release and official paths remain distinct. Selected build does not define DEBUG/OFFICIAL, and no native fatal subprocess was run.",
+      "source_ids": [
+        "check_stream",
+        "check_op_macro",
+        "check_operand_stream",
+        "check_operand_constraint",
+        "check_message",
+        "check_operators"
+      ]
+    }
+  ],
+  "controls_and_fixture": {
+    "named_source_counts": [
+      18,
+      8
+    ],
+    "total_named_declarations": 26,
+    "actual_future_metadata": null,
+    "full_fixture_read": true,
+    "stable_address": "Fixture is stack-local at a stable address for its entire native lifetime.",
+    "actual_objects": "Controls use the real VM, native canonical close request, actual queue/counters, genuine template/State, real descriptor ownership and actual property/callback exceptions.",
+    "descriptors": "Physical fixture descriptors are greater than2; bad-descriptor -2 uses actual accepted native close. Production fd policy is unchanged.",
+    "phase_safe_observation": "Pre-admission trace observes only Entry/native storage fields valid there; completed-only pi_uv_fs_request_info remains on actual completion. It does not repeat the preserved V34 init-observer assertion failure.",
+    "borrowed_handle": "Actual JS request.handle edge keeps handle alive where required; shutdown request itself adds no hidden Global.",
+    "checked_groups": [
+      "constructor null own fields/prototype/independent slots",
+      "genuine Simple final-release retirement",
+      "physical close ordering and negative status",
+      "closed/closing synchronous paths",
+      "nonfunction/absent/throwing callbacks",
+      "disabled JS and live predecessor chain",
+      "real Latin1 error and throwing/nonwritable Set",
+      "missing native wrapper InstanceTemplate path",
+      "actual init provider and trigger",
+      "all Latin1 bytes/NUL/negative length/owned GC return"
+    ],
+    "observer_limits": "Control trace callbacks are labeled observations, not production trace or production hook policy. Native fatal branches are source-bound only.",
+    "assertions_and_names_unchanged_by_successor": true
+  },
+  "composition_and_build": {
+    "all37_shared_edits_and2_successor_edits": "Independent sequential intermediate hashes and complete byte inverses pass.",
+    "C195_E228_overlap": "Both forward orders and both whole inverse orders reproduce exact six-file composition; Shutdown QuickJS C/H are different files from the native_uv FS observer C/H.",
+    "source_build_paths_verified": 17,
+    "new_production_files": 6,
+    "new_fixture_control_files": 3,
+    "build_proposal": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\build\\proposal.json",
+      "bytes": 7512,
+      "sha256": "2B7888AFCD7DB29A98FB2329D0668ADA6ECA15F818E29B15F834C1C006D17F86"
+    },
+    "build_inverse_exact": true,
+    "build_scope": "One install-only insertion; two addTest plus install artifacts; no Run/SystemCommand. Actual network/VM libraries retained. Exactly one direct diagnostic TLS C, V8 fatal CPP and new adapter CPP per target; the network recipe contains none of those three.",
+    "required_native_sources": [
+      "src/extensions/native_v8_base_fatal.h",
+      "src/extensions/native_v8_base_fatal.cpp"
+    ],
+    "literal_module_counts": [
+      708,
+      679
+    ],
+    "literal_union_modules": 709,
+    "literal_union_embeds": 242,
+    "selected_dependency_entries_reproduced": 961,
+    "literal_anonymous_blocks_per_root": [
+      8,
+      8
+    ],
+    "compiler_selected_metadata": null,
+    "closure_limit": "Conservative literal Zig import/embed graph only. Toolchain and standard native header closure are not newly qualified.",
+    "manifest_inventory_rows": 90,
+    "manifest_inventory_whole_digest_verified": true,
+    "full_dependency_inventory_and_source_proof_reproduced_exact": true,
+    "preserved_old_module_counts": {
+      "tracked_dirty": 7,
+      "old_drafts": 10,
+      "historical_untracked": 134
+    },
+    "module_index_empty": true
+  },
+  "remaining_dependencies": [
+    "Actual full StreamBase AddMethods and public FileHandle template publication; JSMethod receiver/liveness and constructor-signature entry is outside this native overload slice.",
+    "Genuine process FS trace owner, bootstrap-owned key/template lifetime, production hook classifier/report/exit policy; no observer substitutes.",
+    "Separate immutable V8 fatal native owner source intake5059d6a and exactly owned TLS translation unit at integration.",
+    "MemoryRetainer virtual assembly, worker broker and complete public FileHandle assembly.",
+    "Separate authorized compiler/native/target/runtime validation. Existing Root runtime negatives remain preserved."
+  ],
+  "Main_edited": false,
+  "module_production_edited": false,
+  "compiler_native_reference_generator_executed": false,
+  "source_only": true,
+  "runtime_or_platform_qualified": false,
+  "integration_authorized_by_this_receipt": false
+}

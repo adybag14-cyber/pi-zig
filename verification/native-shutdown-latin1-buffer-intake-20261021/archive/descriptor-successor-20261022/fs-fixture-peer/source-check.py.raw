@@ -1,0 +1,148 @@
+"""Independent immutable-source peer for the single FS fixture boundary repair.
+No candidate/prefix/target/Main/native execution; only Git object reads and static checks.
+"""
+from pathlib import Path
+import hashlib,json,re,subprocess,datetime
+B=Path(r"C:\Users\adyba\pi-zig");E=B/"evidence";W=B/"worktrees/modules-io-resume-20261018";S=B/"worktrees/sdk-owners-resume-20261018"
+D=Path(__file__).resolve().parent;P=W/"verification/v38-fs-request-pump-escrow-sourceonly-20261022"
+H="014062f2d139254acab4b985b4ae343db637166f";TARGET="src/native_node_fs_request_owner_test.zig"
+pins={};data={}
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def raw(p,n=None,h=None):
+ p=Path(p);q=p.resolve();assert any(q.is_relative_to(x.resolve())for x in (E,W,S))and not q.is_relative_to((B/"main").resolve()),str(p)
+ key=str(p)
+ if key not in data:data[key]=p.read_bytes()
+ b=data[key]
+ assert n is None or len(b)==n,(p,len(b),n)
+ assert h is None or sha(b)==h,(p,sha(b),h)
+ pins[key]=dict(path=key,bytes=len(b),sha256=sha(b));return b
+def js(p,n=None,h=None):return json.loads(raw(p,n,h))
+def check(row):raw(row["path"],row["bytes"],row["sha256"]);return pins[str(Path(row["path"]))]
+def put(p,v):
+ b=(json.dumps(v,indent=2)+"\n").encode()
+ with p.open("xb")as f:f.write(b)
+ assert p.read_bytes()==b
+ return dict(path=str(p),bytes=len(b),sha256=sha(b))
+handoff=js(P/"handoff.json",9374,"B0C5A47DB2C0C48BF60433BEEE7E02F4300B23A9192D752ED3F3FDE400DC4A2E")
+proposal=js(P/"successor-v2/proposal.json",6844,"B24664CA4DADD2B96EA581710A244050EB6F963C3AC0DD11F4BD5D04DBF83106")
+proof=js(P/"source-proof.json",130180,"11851D8D9B92BDD123EB0D515B4F117FF48ECB79A932DDDF3393A662013503ED")
+raw(P/"static-source-check-v2.py",16444,"D86F14112C229D8FF1B2EFFDFC3885F9E9139499D9A59E795751247E658608C8")
+assert proposal["basis"]==handoff["basis"]==dict(head=H,read_via=str(W),source=TARGET)
+assert len(proposal["files"])==1 and proposal["files"][0]["relative_path"]==TARGET
+row=proposal["files"][0];check(row["original"]);check(row["projected"])
+old=raw(row["original"]["path"]);new=raw(row["projected"]["path"])
+assert (len(old),sha(old))==(57263,"402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81")
+assert (len(new),sha(new))==(57891,"FD337AA09700EA151943ED06A86CE5623C37210FA57637B892DCB6AB797C02D6")
+assert len(row["edits"])==1
+e=row["edits"][0];a=e["before"].encode();z=e["after"].encode();off=e["offset"]
+assert sha(a)==e["before_sha256"] and sha(z)==e["after_sha256"] and old.count(a)==new.count(z)==1
+assert old[off:off+len(a)]==a and old[:off]+z+old[off+len(a):]==new and new[:off]+a+new[off+len(z):]==old
+assert old[:off]==new[:off] and old[off+len(a):]==new[off+len(z):]
+for r in proof["source_inputs"]:check(r)
+for r in handoff["packet_inventory_excluding_this_handoff"]:raw(P/r["relative_path"],r["bytes"],r["sha256"])
+for r in handoff["preserved_negatives"]:check(r)
+# Batch raw immutable Git blobs; no checkout read or update, filters, compiler or candidate invocation.
+grows=proof["immutable_git_inputs"];assert len(grows)==76 and len({r["relative_path"]for r in grows})==76
+assert all(r["head"]==H for r in grows)
+names=[r["relative_path"]for r in grows]
+request=("".join(H+":"+p+"\n"for p in names)).encode()
+response=subprocess.check_output(["git","--no-optional-locks","cat-file","--batch"],input=request,cwd=W)
+blobs={};gitrows=[];offset=0
+for expected in grows:
+ end=response.index(b"\n",offset);header=response[offset:end].decode();oid,kind,size=header.split(" ");size=int(size);offset=end+1
+ b=response[offset:offset+size];offset+=size;assert response[offset:offset+1]==b"\n";offset+=1
+ assert kind=="blob"and len(b)==size==expected["bytes"]and sha(b)==expected["sha256"]
+ assert oid==expected["git_blob"]==hashlib.sha1(b"blob "+str(size).encode()+b"\0"+b).hexdigest()
+ blobs[expected["relative_path"]]=b;gitrows.append(expected)
+assert offset==len(response)and blobs[TARGET]==old
+# Entire untouched test section includes all assertions and all25 named declarations.
+cut=old.index(b'\ntest "');cut2=new.index(b'\ntest "')
+assert old[cut:]==new[cut2:]
+testnames=lambda b:re.findall(rb'(?m)^test "([^"]+)"',b)
+imports=lambda b:re.findall(rb'@import\("([^"]+)"\)',b)
+assert testnames(old)==testnames(new)and len(testnames(old))==25 and imports(old)==imports(new)
+functions=lambda b:re.findall(rb'\bfn\s+([A-Za-z_]\w*)\s*\(',b)
+f=functions(new);assert f.count(b"pumpPendingBody")==1;f.remove(b"pumpPendingBody");assert f==functions(old)
+assert old[:old.index(b"    fn pumpPending(")]==new[:new.index(b"    fn pumpPending(")]
+wait=proposal["correction_from_initial"]["edit"]["after"].encode()
+assert len(wait)==392 and sha(wait)=="1557DC46588A8B54A8A2605695B25379BB3C3FE23700DFCA5DE8DEB36EFCC951"
+assert old.count(wait)==new.count(wait)==1
+bad=raw(proposal["correction_from_initial"]["before"]["path"]);fix=proposal["correction_from_initial"]["edit"]
+assert fix["before"]==""and bad[:fix["offset"]]+wait+bad[fix["offset"]:]==new and new.replace(wait,b"",1)==bad and wait not in bad
+loop=a[a.index(b"        const until = physical.uv_hrtime()"):a.index(b"        try outer_scope.deinit();")]
+assert len(loop)==721 and sha(loop)=="CDBB385F3D419AD7154DC731F319A80B98DEA82064695B73F66FC551200762F8"and z.count(loop)==1
+wrapper,body=z.split(b"    fn pumpPendingBody(self: *Fixture) !void {\n")
+assert body==loop+b"    }\n"
+assert wrapper.count(b"outer_scope.deinit()")==1 and wrapper.count(b"handles.finish(")==1 and wrapper.count(b"a.Scope.init(self.engine)")==1
+assert wrapper.count(b"handles.boundary.start();")==1 and wrapper.count(b"handles.boundary.escaping();")==2
+assert wrapper.index(b"try self.outer(")<wrapper.index(b"a.Scope.init(")<wrapper.index(b"handles.boundary.start();")<wrapper.index(b"self.pumpPendingBody()")
+assert wrapper.index(b"handles.boundary.escaping();")<wrapper.index(b"outer_scope.markFailed();")<wrapper.index(b"outer_scope.deinit()")<wrapper.index(b"handles.finish(")
+assert b"catch {}"not in wrapper and b"JS_GetException"not in wrapper and b"JS_DupValue"not in wrapper
+assert b"if (failure == null) failure = err;"in wrapper and b"self.engine.freeValue(ignored);"in wrapper
+# Resolve the actual imported ownership APIs, not a model of them.
+args=blobs["src/extensions/native_node_argument_values.zig"];scope=blobs["src/extensions/native_node_operation_scope.zig"];boundary=blobs["src/extensions/native_node_commonjs_owned_boundary.zig"]
+assert b'pub const Scope = @import("native_node_operation_scope.zig").Scope;'in args
+assert b"boundary = Boundary.begin(engine)"in scope and b"return self.boundary.finish(result, &self.values)"in scope
+for token in (b"const previous=engine.captured_exception;engine.captured_exception=null;",b"engine.native_exception_diagnostics_suppressed+=1;",b"if(!self.finished and !self.invocation.active)self.engine.enterNativeInvocation(&self.invocation);",b"self.engine.captured_exception=null;self.reason=value;self.reason_pending=false;self.fatal=false;",b"defer self.engine.native_exception_diagnostics_suppressed-=1;",b"self.engine.leaveNativeInvocation(&self.invocation,c.pi_js_undefined())",b"self.engine.checked(c.JS_Throw(self.engine.context,value))"):
+ assert token in boundary,token
+# Every supplied source excerpt is reproduced from immutable originals; Node authority provenance stays explicit.
+ref=S/"verification/native-fsreqpromise-before-hook-followup-sourceonly-20261020"
+nodepromise=raw(ref/"authority/node_file-inl.v24.13.h",14756,"2E96C28CB0BBB4520D8E0C0997188922C3DDE28853D14A3E19D7D559BC9493D5")
+nodecallback=raw(ref/"authority/node-api-callback.v24.13.cc",13682,"0A4C8ECF051F995F9669826DC9D85560ADD6ECD6FB2E28CE6B2F3DD309947DE2")
+refproposal=js(ref/"proposal.json",12997,"08F45EF3D26E4D2CBB8A5FA3A144E635AB6DA9B64B486871F7B1D102F6488B56")
+for path,b in ((ref/"authority/node_file-inl.v24.13.h",nodepromise),(ref/"authority/node-api-callback.v24.13.cc",nodecallback)):
+ rows=[r for r in refproposal["authority_files"]if r["path"]==str(path)];assert len(rows)==1
+ assert rows[0]["bytes"]==len(b)and rows[0]["sha256"]==sha(b)and raw(rows[0]["source_path"])==b
+ledger=js(S/"verification/native-file-handle-readwrap-sourceonly-20261020/authority/acquisition.json",1500,"B0F81C989F8A965BD16A6500759B69A20556D4A7A74A637915FCC2FCBCB7ACA4")
+assert ledger["node_commit"]=="def0bdf8abee441cfcbf793a8dc24a6f3b899573"
+doc=[v for v in ledger["documents"]if v["url"].endswith("/src/node_file-inl.h")];assert len(doc)==1 and doc[0]["sha256"]==sha(nodepromise)
+for ex in proof["excerpts"]:
+ b=blobs.get(ex["label"])
+ if b is None:b=nodepromise if ex["label"]=="Node FSReqPromise Resolve/Reject"else nodecallback if ex["label"]=="Node InternalCallbackScope destructor and Close"else None
+ assert b is not None,ex["label"]
+ excerpt=b"".join(b.splitlines(keepends=True)[ex["first_line"]-1:ex["last_line"]])
+ assert excerpt.decode()==ex["text"] and len(excerpt)==ex["bytes"]and sha(excerpt)==ex["sha256"]
+assert len(proof["excerpts"])==31
+# Bind the changed helper and all its call sites to the original63 cohort and preserve the original negative.
+grant=js(E/"root-native-foundation-v38-existing63-runtime-control-20261022-134223/root-grant.json",27023,"7F3B7CE0574741302B8F07713025A42B3B94A36A1E7D745E8CA9B89172264775")
+result=js(E/"root-native-foundation-v38-existing63-runtime-20261022-134223/result.json",250628,"60532D49A021587856D9B362F456D8C1ACE22A7E3FECFB6980A2FA0FF2D30F87")
+matrix=js(E/"combined-native-batch-v38-regression63-prepared-20261021/groups.json",1104585,"8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03")
+selected=grant["groups"];assert len(selected)==63 and [g["group"]for g in result["groups"]]==selected[:17]
+remaining=selected[17:];byname={g["name"]:g for g in matrix["groups"]}
+roots=[]
+for n in selected:
+ path=byname[n]["source_root"];b=blobs[path]
+ roots.append(dict(group=n,source=path,sha256=sha(b),unstarted=n in remaining,contains_private_pump=b"fn pumpPending("in b))
+assert len(remaining)==46 and not any(r["contains_private_pump"]for r in roots if r["unstarted"])
+one=subprocess.check_output(["git","--no-optional-locks","grep","-n","-F","fn pumpPending(",H,"--","src"],cwd=W)
+assert one.decode().splitlines()==[H+":"+TARGET+":270:    fn pumpPending(self: *Fixture) !void {"]
+absent=subprocess.run(["git","--no-optional-locks","grep","-n","-F","native_node_fs_request_owner_test.zig",H,"--","src"],cwd=W,capture_output=True)
+assert absent.returncode==1 and absent.stdout==absent.stderr==b""
+census=proof["census"]["test_source_search"];assert census["pattern"]==r"native_env_pump|fn pumpPending|var [A-Za-z_]*scope: callbacks.Scope|\.markFailed\("
+scan=subprocess.check_output(["git","--no-optional-locks","grep","-n","-E",census["pattern"],H,"--","src/*test*.zig"],cwd=W)
+assert len(scan)==census["raw_bytes"]and sha(scan)==census["sha256"]and scan.decode()==census["text"]
+callers=[];current=None
+for no,line in enumerate(old.decode().splitlines(),1):
+ if line.startswith('test "'):current=line
+ if b"f.pumpPending()"in line.encode():callers.append(dict(line=no,test=current,source=line))
+assert len(callers)==8 and len({r["test"]for r in callers})==7 and sum("expectError"in r["source"]for r in callers)==1
+canonical=js(E/"root-native-foundation-v38-existing63-runtime-20261022-134223/groups/native-node-fs-request-owner/runtime.results.json",2582,"C7EED6EDADEADD1C7FDB5E3196612EC878F12D3A554C47178508EFF39BAD8FC2")
+assert canonical["started"]==canonical["completed"]==26 and [r["index"]for r in canonical["results"]if r["flags"]]!=[]
+assert [r["index"]for r in canonical["results"]if r["flags"]]==[22]
+# The existing direct getter control consumes the reason before close; this repair changes neither it nor settle.
+for m in (b"    fn outer(",b"    fn settle(",b"    fn takeCaught("):
+ start=old.index(m);end=old.index(b"\n    }\n",start)+7
+ assert old[start:end]in new
+explanations=[
+ dict(topic="actual producer and caller lifetime",finding="The live Promise getter error is already preserved through Request.settle, AfterScope, ReqWrap retirement and UV event release. The old fixture then invokes successful outer callback cleanup after returning that typed failure; Completion treats the captured reason as diagnostic DATA and retires it.",evidence=["src/extensions/native_node_fs_request_promise.zig:184-234","src/extensions/native_node_fs_after_scope.zig:85-109","src/extensions/native_node_uv_service.zig:55-73","src/extensions/native_node_callback_scope.zig:773-790","src/extensions/native_sdk_owned_completion.zig:92-143,184-228"]),
+ dict(topic="selected ownership",finding="Scope.init is inactive by value. start runs at the caller-stable address before the pump. On the explicit failure path, escaping moves captured ownership into Boundary.reason before outer cleanup. There is one outer deinit, then one finish; finish retires the scope and restores the selected reason through Engine capture. No duplicate or manual GetException/extra free is introduced.",evidence=["src/extensions/native_node_operation_scope.zig","src/extensions/native_node_commonjs_owned_boundary.zig"]),
+ dict(topic="cleanup outcomes",finding="A body failure retains the first typed error. A cleanup failure is recorded if no earlier typed error exists; actual pending/fatal precedence stays with the unchanged Boundary implementation. Balanced start/finish preserves the invocation lifetime and diagnostics-suppression counter.",evidence=["selected pumpPending wrapper","Boundary.select,observe,escaping,finishRetired"]),
+ dict(topic="bounded success and preservation",finding="All eight existing pump call sites are in seven controls; the one prior synchronous getter failure consumes its captured reason before calling pump. The 721-byte polling loop, deadlines, queue rejection, all25 named tests/assertions/imports and adjacent waitQueued remain byte-identical. The repair makes no general claim about unrelated incoming diagnostic history.",evidence=["all25 unchanged test section","all8 pump call sites"]),
+ dict(topic="scope limits",finding="No remaining root defines or imports the private pumpPending helper. This excludes this exact fixture pattern only; it is not validation of46 unstarted groups. The analogous settle helper and original partial-init cleanup remain unchanged. Future metadata/runtime acceptance must come from fresh authorized validation.",evidence=["63 immutable root census","whole-src exact-definition/no-import queries"])
+]
+selfb=Path(__file__).read_bytes();selfpin=dict(path=str(Path(__file__)),bytes=len(selfb),sha256=sha(selfb))
+report=dict(schema=1,status="independently_verified_bounded_single_fixture_completion_ownership",reviewer="/root/handover_review",reviewed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),source_checker=selfpin,proposal=pins[str(P/"successor-v2/proposal.json")],selected_source=row["projected"],original_source=row["original"],module_proof=pins[str(P/"source-proof.json")],handoff=pins[str(P/"handoff.json")],full_one_hunk_forward_and_inverse=True,untouched_prefix_suffix=True,initial_adjacent_method_negative_preserved=True,selected_restores_waitQueued_exactly=True,only_new_function="pumpPendingBody",poll_loop=dict(bytes=len(loop),sha256=sha(loop)),test_section=dict(bytes=len(old[cut:]),sha256=sha(old[cut:]),all_named_declarations=25,full_bytes_unchanged=True),all_imports_unchanged=True,all_existing_declarations_unchanged=True,actual_call_sites=callers,ownership_findings=explanations,source_excerpts=proof["excerpts"],immutable_git_inputs=gitrows,evidence_inputs=sorted(pins.values(),key=lambda r:r["path"].casefold()),original_cohort_roots=roots,remaining_unstarted_groups=remaining,original_failed_index=22,original_complete_metadata_entries=26,original_runtime_negative_preserved=True,candidate_or_prefix_executed=False,compiler_or_native_executed=False,Main_or_index_accessed=False,source_intake_authorized=False,runtime_qualification=False,product_qualification=False)
+pp=put(D/"source-proof.json",report)
+peer=dict(schema=1,status="independently_accepted_source_only_fs_request_fixture_pump_completion_ownership",reviewer="/root/handover_review",reviewed_utc=report["reviewed_utc"],candidate_head=H,proposal=report["proposal"],selected_source=row["projected"],original_source=row["original"],source_checker=selfpin,decisive_proof=pp,module_handoff=report["handoff"],no_bounded_source_blocker=True,finite_replacement_hunks=1,only_source_target=TARGET,production_files_changed=0,named_test_controls_unchanged=25,entire_test_section_unchanged=True,unchanged_loop_bytes=721,unchanged_adjacent_method_bytes=392,source_import_graph_unchanged=True,unchanged_preexisting_helper_entry_and_partial_init=True,actual_call_sites=8,actual_calling_controls=7,immutable_git_inputs=len(gitrows),evidence_inputs=len(pins),ownership_findings=explanations,preserved_authoring_negatives=handoff["preserved_negatives"],original_runtime_negative=dict(group="native-node-fs-request-owner",index=22,actual_completed=26,unchanged=True),unstarted_groups_not_qualified=46,source_only=True,candidate_executed=False,candidate_prefix_executed=False,compiler_native_or_generator_executed=False,Main_or_index_accessed=False,source_intake_authorized=False,runtime_qualification=False,application_qualified=False)
+peerpin=put(D/"peer.json",peer)
+print(json.dumps(dict(status="independent_fixture_source_peer_passed",checker=selfpin,proof=pp,peer=peerpin,evidence_inputs=len(pins),immutable_git_inputs=len(gitrows),test_controls=25,call_sites=8)))

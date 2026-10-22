@@ -1,0 +1,132 @@
+"""Independent static peer of the pending20 intake source. Candidates are read/AST-parsed only.
+No candidate import, evaluation, prefix, Git, Main/index, intake, generator or native execution.
+Only create-only review artifacts in this owned verification directory are written.
+"""
+from pathlib import Path, PurePosixPath
+import ast, hashlib, json, re
+ROOT=Path(r"C:\Users\adyba\pi-zig")
+OUT=ROOT/"worktrees/sdk-owners-resume-20261018/verification/pending20-strengthened-intake-adapter-peer-20261022"
+D=ROOT/"evidence/unissued-pending20-strengthened-intake-adapter-sourceonly-20261022"
+PINS=json.loads(r'''[{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py","bytes":9719,"sha256":"56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"},{"path":"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\finite-intake-adapter-reuse-plan-sourceonly-20261021\\plan.json","bytes":23193,"sha256":"E020D4B82F088A5BA4B38CB002B056589676A561C780CE1BD950976D9DC0A95C"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-buffer-unissued-copy-plan-acceptance-20261021.json","bytes":7059,"sha256":"4B97947A3A185D0D6E9ED282B2FC4E19621BD792AED4F18F4A0D7E594A682788"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261021\\git-attribute-capability-observation.json","bytes":2972,"sha256":"0FC8853FC86F22C7CF11CBCB9CD6EE03FF34D4ED3FC6E955F5A9F3D3B92E00C4"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py","bytes":23554,"sha256":"1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\finite-source-adaptation.json","bytes":56895,"sha256":"2E657192C7DF2B8216D128E82C7AB47E57ECD0AB43FCDD2327E8F83C32A69A69"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\source-check.py","bytes":13451,"sha256":"14DA700BDB7A8C3A1A6CB88984056510B127382A27053020F1BB49078065EBA2"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\static-source-proof.json","bytes":9915,"sha256":"7B4C2D3F56451498C790AD655C8864FCE0CB582676E857F430E0FEF3FCB53804"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\unissued-binding-and-schema-contract.json","bytes":10902,"sha256":"ACF23FA22E0C380BF744923B5CA8A8B55D30B83B0D655AAFF6FF2EE80790136D"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\handoff.json","bytes":9923,"sha256":"45623F0F2BDA1E5333DE7FB9F7005F971D13FC1F9FBAF903D147020684CD9B53"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\authoring\\declared-edits.json","bytes":27011,"sha256":"3205A1A6B4B5E7171E6232358152F843E5D7D352EE5677D6C9C51435B14DFF42"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py","bytes":23634,"sha256":"8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\planned-parent-alias-v2-finite-adaptation.json","bytes":3114,"sha256":"6079473C24AA9496D5CFC41F89830A643740B9DB99D80ACEA573C7093EEAE123"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\original-planned-parent-alias-source-finding.json","bytes":996,"sha256":"1D336DEF267175CBA6FB0A82FF59549F8D4CE6DA24E7BB8612B52D7709C49025"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\check-planned-parent-alias-v2.py","bytes":7137,"sha256":"3101EBE1CD0130762B9DBBAD36C7AE59D440D4A508487CCBB07035EB1B3F825B"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\planned-parent-alias-v2-static-proof.json","bytes":6399,"sha256":"C2664D407704552DE7837B16FB0A0FB0D01C6EC5D1353B5CB97B993C6FE3616B"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\v2-handoff.json","bytes":3920,"sha256":"D770F0657EFA7D5B47576889DFB1610ACB6AE33435A20105D935F656AB8AFA2A"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-manifest-plan.json","bytes":378545,"sha256":"E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"}]''')
+def digest(b): return hashlib.sha256(b).hexdigest().upper()
+def describe(p,b): return {"path":str(p),"bytes":len(b),"sha256":digest(b)}
+cache={}; checked=[]
+def read_pin(pin):
+ p=Path(pin["path"])
+ main=str(ROOT/"main").casefold()
+ assert not str(p).casefold().startswith(main+"\\") and str(p).casefold()!=main,p
+ resolved=p.resolve()
+ assert ROOT.resolve() in resolved.parents and not str(resolved).casefold().startswith(main+"\\"),p
+ key=str(resolved).casefold()
+ if key not in cache: cache[key]=p.read_bytes()
+ b=cache[key]
+ assert len(b)==pin["bytes"] and digest(b)==pin["sha256"].upper(),pin
+ checked.append({"path":str(p),"bytes":len(b),"sha256":digest(b)})
+ return b
+def file(name):
+ return raw_by_path[str(D/name).casefold()]
+def loads(name):return json.loads(file(name))
+def spans(b):
+ lines=b.splitlines(keepends=True)
+ return {n.name:{"bytes":b"".join(lines[n.lineno-1:n.end_lineno]),"lines":[n.lineno,n.end_lineno]}
+  for n in ast.parse(b.decode("utf-8")).body if isinstance(n,ast.FunctionDef)}
+raw_by_path={p["path"].casefold():read_pin(p) for p in PINS}
+base=raw_by_path[PINS[0]["path"].casefold()]
+old=file("Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py")
+selected=file("Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py")
+finite=loads("finite-source-adaptation.json")
+delta=loads("planned-parent-alias-v2-finite-adaptation.json")
+declared=loads("authoring/declared-edits.json")
+contract=loads("unissued-binding-and-schema-contract.json")
+handoff=loads("handoff.json");v2handoff=loads("v2-handoff.json")
+assert v2handoff["selected_source"]["sha256"]==digest(selected)
+assert contract["candidate"]["sha256"]==digest(old)
+assert handoff["source"]["sha256"]==digest(old)
+assert v2handoff["preserved_predecessor_source"]["sha256"]==digest(old)
+# Rehash each direct packet reference recursively, without treating string source as executable.
+reference_rows=[]
+def references(x,loc="$"):
+ if isinstance(x,dict):
+  if {"path","bytes","sha256"}<=set(x) and isinstance(x["path"],str) and isinstance(x["bytes"],int):
+   b=read_pin(x);reference_rows.append({"location":loc,**describe(x["path"],b)})
+  for k,v in x.items(): references(v,loc+"."+k)
+ elif isinstance(x,list):
+  for i,v in enumerate(x):references(v,loc+"["+str(i)+"]")
+for name in ("handoff.json","v2-handoff.json","unissued-binding-and-schema-contract.json",
+ "finite-source-adaptation.json","planned-parent-alias-v2-finite-adaptation.json",
+ "static-source-proof.json","planned-parent-alias-v2-static-proof.json"):
+ references(loads(name),name)
+assert len(finite["steps"])==20==len(declared["edits"]) and finite["step_count"]==20
+current=base;origins=list(range(len(base)));steps=[]
+for n,(step,definition) in enumerate(zip(finite["steps"],declared["edits"]),1):
+ at=step["current_offset_bytes"];before=step["before_utf8"].encode();after=step["after_utf8"].encode()
+ assert step["step"]==n and step["label"]==definition["label"]
+ assert definition["before"]==step["before_utf8"] and definition["after"]==step["after_utf8"]
+ text=current.decode("utf-8")
+ assert at==len(text[:definition["offset"]].encode()) and text[definition["offset"]:definition["offset"]+len(definition["before"])]==definition["before"]
+ assert (len(current),digest(current))==(step["intermediate_before_bytes"],step["intermediate_before_sha256"])
+ assert current[at:at+len(before)]==before
+ assert (len(before),digest(before))==(step["before_bytes"],step["before_sha256"])
+ assert (len(after),digest(after))==(step["after_bytes"],step["after_sha256"])
+ prefix=current[:at];suffix=current[at+len(before):]
+ assert step["untouched_prefix"]=={"bytes":len(prefix),"sha256":digest(prefix)}
+ assert step["untouched_suffix"]=={"bytes":len(suffix),"sha256":digest(suffix)}
+ current=prefix+after+suffix
+ assert (len(current),digest(current))==(step["intermediate_after_bytes"],step["intermediate_after_sha256"])
+ origins=origins[:at]+[-1]*len(after)+origins[at+len(before):]
+ steps.append({"step":n,"label":step["label"],"input":step["intermediate_before_sha256"],"output":digest(current),"offset":at,"old_bytes":len(before),"new_bytes":len(after)})
+assert current==old
+reverse=old
+for step in reversed(finite["steps"]):
+ at=step["current_offset_bytes"];a=step["before_utf8"].encode();b=step["after_utf8"].encode()
+ assert digest(reverse)==step["intermediate_after_sha256"] and reverse[at:at+len(b)]==b
+ reverse=reverse[:at]+a+reverse[at+len(b):]
+ assert digest(reverse)==step["intermediate_before_sha256"]
+assert reverse==base
+# Independently reconstruct the complete surviving/replaced baseline-byte partition.
+fragments=[];i=0
+while i<len(origins):
+ if origins[i]<0:i+=1;continue
+ start=i;bs=origins[i];i+=1
+ while i<len(origins) and origins[i]==bs+i-start:i+=1
+ block=old[start:i];assert block==base[bs:bs+len(block)]
+ fragments.append({"baseline_start":bs,"candidate_start":start,"bytes":len(block),"sha256":digest(block)})
+assert fragments==finite["complete_untouched_fragments"]
+kept={x for x in origins if x>=0};assert len(kept)==sum(x["bytes"] for x in fragments)
+ranges=[];i=0
+while i<len(base):
+ if i in kept:i+=1;continue
+ start=i;i+=1
+ while i<len(base) and i not in kept:i+=1
+ ranges.append({"baseline_start":start,"bytes":i-start,"sha256":digest(base[start:i])})
+assert ranges==finite["baseline_replaced_ranges"]
+assert len(kept)+sum(x["bytes"] for x in ranges)==9719
+tail_start=base.index(b'rows=manifest["rows"]\n');tail=base[tail_start:]
+tail_proof={"baseline_start":tail_start,"bytes":len(tail),"sha256":digest(tail),
+ "retained_outside_declared_replacements_bytes":sum(x>=tail_start for x in kept),
+ "inside_declared_replaced_spans_bytes":len(tail)-sum(x>=tail_start for x in kept),
+ "all_5897_bytes_accounted":True,"entire_tail_unchanged":False}
+assert tail_proof==finite["baseline_tail_accounting"] and len(tail)==5897
+# The v2 correction is exactly one main-body hunk; both directions and every other byte match.
+assert delta["step_count"]==len(delta["steps"])==1
+s=delta["steps"][0];at=s["offset_bytes"];a=s["before_utf8"].encode();b=s["after_utf8"].encode()
+assert old.count(a)==1 and old[at:at+len(a)]==a
+assert len(a)==s["before_bytes"]==420 and len(b)==s["after_bytes"]==500
+assert digest(old)==s["input_sha256"] and digest(selected)==s["output_sha256"]
+assert digest(old[:at])==s["untouched_prefix_sha256"]
+assert digest(old[at+len(a):])==s["untouched_suffix_sha256"]
+assert selected==old[:at]+b+old[at+len(a):]
+assert old==selected[:at]+a+selected[at+len(b):]
+assert len(selected)-len(old)==80
+bf,of,sf=spans(base),spans(old),spans(selected)
+assert len(bf)==11 and len(of)==len(sf)==22
+assert {k:v["bytes"] for k,v in of.items()}=={k:v["bytes"] for k,v in sf.items()}
+assert all(sf[k]["bytes"]==v["bytes"] for k,v in bf.items())
+helpers=[{"name":k,"bytes":len(v["bytes"]),"sha256":digest(v["bytes"]),"selected_lines":v["lines"],
+ "inherited_from_56DE":k in bf,"unchanged_in_v2":True} for k,v in sf.items()]
+for row in finite["unchanged_inherited_helpers"]:
+ v=bf[row["name"]];assert v["bytes"]==of[row["name"]]["bytes"]
+ assert (len(v["bytes"]),digest(v["bytes"]))==(row["bytes"],row["sha256"])
+ assert row["baseline_lines"]==v["lines"] and row["candidate_lines"]==of[row["name"]]["lines"]
+for row in finite["new_helper_bodies"]:
+ v=of[row["name"]];assert (len(v["bytes"]),digest(v["bytes"]),v["lines"])==(row["bytes"],row["sha256"],row["lines"])

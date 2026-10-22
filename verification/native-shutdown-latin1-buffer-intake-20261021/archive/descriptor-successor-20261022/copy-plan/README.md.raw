@@ -1,0 +1,25 @@
+# Shutdown descriptor selection in the pending 21-source plan
+
+The selected source plan changes one donor: src/native_node_stream_shutdown_test.zig now selects CC33A814, whose only source edit replaces the invalid-descriptor literal -2 with std.math.maxInt(c_int). The previously reviewed 11AA5059 file remains an immutable archive donor. The other 20 source rows, including the accepted linkage build 594A048C and FS pump escrow fixture FD337AA0, retain their exact bytes and order.
+
+Root source acceptance 0B59166D and SDK independent peer 3CDAD5D1 establish the bounded descriptor correction. The source reasoning follows the pinned Windows libuv fd <= 2 branch and returning UCRT invalid-parameter handler. This remains a source finding; the new control has not been compiled or executed.
+
+## Exact finite plan
+
+The baseline is B4901741, with its separately sealed 922C5187 handoff. The 43 recorded JSON operations reverse to all 530,121 original baseline bytes. They replace only the selected Shutdown donor, carry the seven exact supplemental rows from 922C into the new core, append the bounded review and fixture evidence, and update explicit selection/accounting fields. Existing source preimages, source order, original 302 physical archive destinations and all 329 logical donor prefixes remain intact. Together with the seven carried rows, the complete previous 331-path plan is preserved, including its separate manifest position.
+
+The new core has 21 source rows and 333 archive rows. Its 361 logical archive records include one additional full-byte alias for the original 11AA file; no original donor was removed. Core copies plus the separate final manifest total 355 paths. The handoff adds exact source-plan/finite-proof/author/proof/README archive rows after those hashes exist. It gives the resulting complete count without introducing a self-hash cycle.
+
+## Review and observation preservation
+
+The core includes the complete nine-file descriptor packet, all three SDK peer files, all four F937 prior-plan peer files, all three C55A FS fixture peer files, Root acceptances 0B59166D, 213E78C8 and 905A69C8, the unchanged 922C handoff, and Root's 3CFE9706 serialization observation. The inherited B490 and earlier packets retain their existing authoring and source-review negatives.
+
+The new initial-readout-key-negative.json records a read-only query that asked the core plan for manifest_contract, a field belonging to its handoff. A separate corrected readout used manifest_target and the actual handoff fields. The failed readout wrote no source or candidate. The earlier Shutdown path-lookup/display observations exist only in static-discovery65AE, and the orchestration parse rejection is recorded in handoff9E3C/README99AF. No separate raw receipts are invented and none of these observations is a native attempt.
+
+## Static verification and remaining authority
+
+The source-plan author checked all 43 forward/intermediate/reverse states, the raw baseline inverse, 362 current input versions, exact old archive prefixes, full-byte duplicate equality, path and parent-case uniqueness including the manifest, nine immutable014 Git replacement preimages, and all remaining planned targets' absence from that immutable tree. All 18 Shutdown test names and all 20 other source donors are exact. These checks do not inspect the current Main filesystem or index.
+
+The inherited future-admission block and every byte-conversion/stage/commit requirement are unchanged. Historical null source-review slots in B490 remain unchanged; newly observed source review receipts are identified explicitly in the successor coverage block. The future archive commit, source head, exact final manifest, bound adapter, conversion preflight, release and execution authority remain unresolved. The eventual adapter must check every final path, including the manifest and every .raw file, against the actual released head and effective Git attributes before writing.
+
+Original V38 native artifacts and complete compiler/source graphs remain separate external references unless already selected by the bounded archive. The plan does not claim a self-contained historical runtime archive, a successful original63 runtime, a new native result, full FileHandle/public template completion, or application qualification.

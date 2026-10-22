@@ -1,0 +1,30 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-v8-primitive.h",
+    "sha256": "22B7F84FC79E55144323A29BE18CCB657E09FA3BE5D2A2FD5380CBE4C82E4A28",
+    "bytes": 37573,
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/include/v8-primitive.h",
+    "receipt": "string-acquisition.json"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-string.h",
+    "sha256": "F567EE2A36FF5FF854E400E98A65FFCAF5F36A0A196C9A1DC759E965A306911B",
+    "bytes": 56245,
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/objects/string.h",
+    "receipt": "string-acquisition.json"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-factory-base.cc",
+    "sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83",
+    "bytes": 57199,
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/heap/factory-base.cc",
+    "receipt": "string-factory-acquisition.json"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-maybe-handles.h",
+    "sha256": "9F504121AF2ADF2307FA3AF36A0AFB4810D50AEFD55CAD965B751D62C5C0861B",
+    "bytes": 12894,
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/handles/maybe-handles.h",
+    "receipt": "string-factory-acquisition.json"
+  }
+]

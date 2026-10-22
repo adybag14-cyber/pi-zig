@@ -1,0 +1,186 @@
+"""Independent finite normalization/adapter source audit; no target or Main evaluation."""
+from pathlib import Path, PurePosixPath
+import ast, copy, hashlib, io, json, re, tokenize
+B=Path(r"C:\Users\adyba\pi-zig")
+E=B/"evidence"
+OUT=E/"independent-v38-progress-validation-archive-intake-peer-20261022"
+D=E/"root-v38-partial-negative-archive-intake-bound-20261022"
+S=E/"pending-v38-partial-negative-progress-and-validation-archive-intake-20261022"
+H="014062f2d139254acab4b985b4ae343db637166f"
+A="verification/native-v38-validation-evidence-20261021"
+P="verification/port-roadmap-resume-20261018/progress.json"
+PINS={
+ "old_manifest":(S/"manifest.json",1226916,"6D6A2436B3D741070997901B0630F04F0306C85F21D9D347D52CE91A0A3EB85D"),
+ "manifest":(D/"manifest.json",2376374,"5BB0608FA530405D87A99000A9A305DBD7A6E3049AF592A0D2DF0C8489A9479C"),
+ "adapter":(D/"Apply-ExactV38PartialNegativeArchiveIntake-20261022.py",23653,"A492D0C5F151E87F2A2538C2E570D1EC2C2FF905442FA3B87E89A59A277E7C09"),
+ "template":(E/"unissued-pending20-strengthened-intake-adapter-sourceonly-20261022/Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py",23634,"8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985"),
+ "root_proof":(D/"binding-and-output-proof.json",10470,"B0F81C9196A9AFBA761094FD4C62A8EE6B6AB1E0F90374AE51723DFD15FE762F"),
+ "plan":(E/"v38-progress-archive-strengthened-adapter-binding-plan-sourceonly-20261022/plan.json",7679,"9B2FC05913D9090A108AC5A729B451B51D9964CF24128392809749BCF550A585"),
+ "emitted_proof":(OUT/"emitted-proof.json",1360063,"A512D461EB1E9E4A8D06695D3FE4022BF371CAA92B9DC6DBB2F543542452F93E"),
+ "emitted_checker":(OUT/"check-emitted.py",23798,"8DC82B2668712BD6ACB9FDB56F8E12646085F7FE0305A705E107FC8B7D63E7F3"),
+ "template_acceptance":(E/"root-pending20-strengthened-intake-adapter-v2-source-acceptance-20261022.json",6683,"039E21F5F5A82E7AFEC2AD549DF8E27BDF7729BF8D1E8E4015B4E9C06B99B738"),
+ "preparation_job":(E/"root-issued-v38-partial-negative-archive-preparation-20261022/preparation-job-observation.json",3192,"8BC55198BC5E0D908A63C806B421056DFCAD7A21D6530260283616DF7E50BB52"),
+}
+seen={}
+def need(x,m):
+ if not x:raise AssertionError(m)
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def encode(x):return (json.dumps(x,ensure_ascii=False,indent=2)+"\n").encode()
+def pin(p,b):return {"path":str(p),"bytes":len(b),"sha256":sha(b)}
+def read(p):
+ p=Path(p);rel=p.relative_to(B).parts
+ need(p.is_absolute() and ".." not in p.parts and not p.is_symlink(),"canonical evidence path")
+ need(rel[0].casefold()=="evidence","only evidence access")
+ b=p.read_bytes();seen[str(p).casefold()]=pin(p,b);return b
+def pp(k):
+ p,n,h=PINS[k];return {"path":str(p),"bytes":n,"sha256":h}
+def raw(k):
+ p,n,h=PINS[k];b=read(p);need(len(b)==n and sha(b)==h,"exact pinned "+k);return b
+def doc(k):return json.loads(raw(k))
+need(Path(__file__).resolve()==OUT/"check-normalized-binding.py","own checker filename")
+old=doc("old_manifest");new=doc("manifest");root=doc("root_proof");plan=doc("plan")
+ep=doc("emitted_proof");raw("emitted_checker");raw("template_acceptance")
+need(ep["status"]=="independently_verified_exact_v38_emitted_partial_negative_archive" and ep["manifest"]==pp("old_manifest"),"own independent emitted basis")
+need(set(new)==set(old)|{"logical_donor_aliases","exact_normalization"},"only two new top-level fields")
+need([k for k in old if new[k]!=old[k]]==["path_count_including_manifest","rows"],"only original row/count fields change")
+need(len(old["rows"])==1929 and len(new["rows"])==len(new["logical_donor_aliases"])==1930 and new["path_count_including_manifest"]==1931,"exact1931 final paths")
+for oldrow,newrow in zip(old["rows"],new["rows"]):
+ expected=copy.deepcopy(oldrow);expected["mode"]="100644"
+ if expected["before"] is not None:expected["before"]["mode"]="100644"
+ need(newrow==expected,"only explicit mode additions, exact order/preimage/role/donor")
+extra={"target":A+"/preparation/original-preparer-manifest.json.raw",
+ "source":pp("old_manifest")["path"],"bytes":1226916,"sha256":pp("old_manifest")["sha256"],
+ "before":None,"mode":"100644","role":"immutable_original_preparer_manifest"}
+need(new["rows"][-1]==extra==root["original_manifest_archive_row"],"one exact raw original-manifest row")
+need(new["logical_donor_aliases"]==[{k:r[k] for k in ("target","source","bytes","sha256")} for r in new["rows"]],"complete exact one-to-one physical donor aliases")
+need(new["exact_normalization"]=={"original_manifest":pp("old_manifest"),"binding_plan":pp("plan"),
+ "original_rows":1929,"normalized_rows":1930,"total_commit_paths":1931,
+ "preserved_original_row_order_and_fields":True,"original_manifest_retained_raw":True,
+ "mode":"100644","native_execution_authorized":False},"bounded exact normalization annotation")
+inv=copy.deepcopy(new)
+del inv["logical_donor_aliases"];del inv["exact_normalization"];inv["rows"].pop()
+for r in inv["rows"]:
+ del r["mode"]
+ if r["before"] is not None:del r["before"]["mode"]
+inv["path_count_including_manifest"]=1930
+need(inv==old and encode(inv)==raw("old_manifest"),"entire1226916-byte manifest inverse")
+need(new["manifest_target"]==A+"/manifest.json" and new["source_build_paths"]==0 and new["existing_progress_replacements"]==1,"zero source changes")
+for k in ("main_applied","source_mutation_hold_released","main_intake_authorized","native_execution_authorized","application_qualified","production_bridge_removed","published_release"):
+ need(new[k] is False,"unissued manifest "+k)
+# Recheck every physical donor including the eventual manifest; no Git/Main operations.
+allrows=new["rows"]+[{"target":new["manifest_target"],"source":pp("manifest")["path"],"bytes":pp("manifest")["bytes"],
+ "sha256":pp("manifest")["sha256"],"before":None,"role":"exact_intake_manifest","mode":"100644"}]
+names=[];prefixes={};donors=[]
+for r in allrows:
+ rel=r["target"];parts=PurePosixPath(rel).parts
+ need(rel==PurePosixPath(rel).as_posix() and not PurePosixPath(rel).is_absolute() and "\\" not in rel,"canonical relative path")
+ need(parts and rel==P or parts and rel.startswith(A+"/"),"only archive/progress scope")
+ need(not any(x in ("",".","..") or x[-1:] in (" ",".") or re.search(r'[<>:"|?*\x00-\x1f]',x) or re.fullmatch(r'(?i)(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?',x) for x in parts),"no Windows path aliases")
+ for depth in range(1,len(parts)+1):
+  name="/".join(parts[:depth]);key=name.casefold()
+  need(key not in prefixes or prefixes[key]==name,"complete planned parent spellings")
+  prefixes[key]=name
+ names.append(rel)
+ b=read(r["source"]);need(len(b)==r["bytes"] and sha(b)==r["sha256"],"current exact final donor")
+ donors.append({"target":rel,**pin(Path(r["source"]),b),"mode":r["mode"]})
+ need(r["mode"]=="100644","only ordinary source/archive mode")
+ if r["before"] is not None:
+  need(rel==P and r["before"]=={"bytes":554689,"sha256":"BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028","mode":"100644"},"only exact progress before mode")
+need(len(set(n.casefold() for n in names))==1931,"complete full-target uniqueness")
+folded={n.casefold() for n in names}
+for rel in names:
+ ps=rel.split("/")
+ need(not any("/".join(ps[:i]).casefold() in folded for i in range(1,len(ps))),"no target file/directory collision")
+# Derive all five literal positions independently from AST nodes; never evaluate the adapter.
+base=raw("template");bound=raw("adapter");ta=ast.parse(base);tb=ast.parse(bound)
+def assignments(tree):
+ return {n.targets[0].id:n.value for n in tree.body if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name)}
+aa,bb=assignments(ta),assignments(tb)
+need(isinstance(aa["BASIS"],ast.Constant) and isinstance(bb["BASIS"],ast.Constant),"literal head")
+ma,mb=aa["MANIFESTS"],bb["MANIFESTS"]
+need(isinstance(ma,ast.Dict) and isinstance(mb,ast.Dict) and len(ma.keys)==len(mb.keys)==1 and ma.keys[0].value==mb.keys[0].value=="fixture","unchanged single phase")
+an=[aa["BASIS"],*ma.values[0].elts];bn=[bb["BASIS"],*mb.values[0].elts]
+expected_old=["UNRESOLVED_PENDING20_RELEASED_HEAD______","evidence/UNRESOLVED-PENDING20-FINAL-MANIFEST/manifest.json",
+ "UNRESOLVED_PENDING20_FINAL_MANIFEST_SHA256______________________",0,"Integrate independently reviewed Shutdown Latin1 and Buffer source"]
+expected_new=[H,"evidence/root-v38-partial-negative-archive-intake-bound-20261022/manifest.json",pp("manifest")["sha256"],1931,
+ "Record V38 accepted builds and partial runtime failure closure"]
+need([n.value for n in an]==expected_old and [n.value for n in bn]==expected_new,"only exact five admitted values")
+def positions(data,node):
+ lines=data.splitlines(keepends=True);offsets=[0]
+ for line in lines:offsets.append(offsets[-1]+len(line))
+ return offsets[node.lineno-1]+node.col_offset,offsets[node.end_lineno-1]+node.end_col_offset
+edits=[];kinds=["basis_head","manifest_relative_path","manifest_sha256","total_commit_paths","commit_subject"]
+state=base;shift=0;original_cursor=0;candidate_cursor=0;fragments=[]
+for kind,a,b,r in zip(kinds,an,bn,root["literal_bindings"]):
+ a0,a1=positions(base,a);b0,b1=positions(bound,b)
+ need(base[original_cursor:a0]==bound[candidate_cursor:b0],"all inter-literal raw bytes unchanged")
+ fragments.append({"bytes":a0-original_cursor,"sha256":sha(base[original_cursor:a0])})
+ before,after=base[a0:a1],bound[b0:b1]
+ offset=a0+shift;need(offset==b0 and state[offset:offset+len(before)]==before,"derived current token offset")
+ current_sha=sha(state);nextstate=state[:offset]+after+state[offset+len(before):]
+ row={"kind":kind,"original_offset":a0,"offset":offset,"before":before.decode(),"after":after.decode(),
+ "before_sha256":current_sha,"after_sha256":sha(nextstate)}
+ need(row==r,"Root per-step proof independently reproduced")
+ edits.append(row);state=nextstate;shift+=len(after)-len(before)
+ original_cursor=a1;candidate_cursor=b1
+need(len(root["literal_bindings"])==len(edits)==5 and state==bound,"complete byte forward")
+need(base[original_cursor:]==bound[candidate_cursor:],"entire unchanged executable tail")
+fragments.append({"bytes":len(base)-original_cursor,"sha256":sha(base[original_cursor:])})
+state=bound
+for r in reversed(edits):
+ i=r["offset"];a=r["after"].encode();b=r["before"].encode()
+ need(sha(state)==r["after_sha256"] and state[i:i+len(a)]==a,"inverse exact intermediate")
+ state=state[:i]+b+state[i+len(a):];need(sha(state)==r["before_sha256"],"inverse old hash")
+need(state==base,"entire23634-byte inverse")
+# Nonconstant token stream and complete function bodies are independently retained.
+def toks(data):
+ return [(t.type,t.string) for t in tokenize.tokenize(io.BytesIO(data).readline) if t.type not in (tokenize.ENCODING,tokenize.ENDMARKER)]
+tsa,tsb=toks(base),toks(bound);need(len(tsa)==len(tsb),"token length")
+changed=[(i,x,y) for i,(x,y) in enumerate(zip(tsa,tsb)) if x!=y]
+need(len(changed)==5 and [x[1][0] for x in changed]==[tokenize.STRING]*3+[tokenize.NUMBER,tokenize.STRING],"only five literal tokens")
+functions=[]
+fa=[n for n in ta.body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))]
+fb=[n for n in tb.body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))]
+need(len(fa)==len(fb)==22,"22 full functions")
+for a,b in zip(fa,fb):
+ al=base.splitlines(keepends=True);bl=bound.splitlines(keepends=True)
+ av=b"".join(al[a.lineno-1:a.end_lineno]);bv=b"".join(bl[b.lineno-1:b.end_lineno])
+ need(a.name==b.name and av==bv,"complete exact helper")
+ functions.append({"name":a.name,"bytes":len(av),"sha256":sha(av)})
+need(functions==root["function_bodies"],"all full helper hashes independently matched")
+for n,v in zip(bn,expected_old):n.value=v
+need(ast.dump(ta,include_attributes=False)==ast.dump(tb,include_attributes=False),"all AST other than admitted constants exact")
+# Root's successful historical preparer run, not an intake/native grant.
+job=doc("preparation_job");j=job["status"];logs=job["logs"]
+need(j["id"]=="job-op-f0b6fea9d54d8e53040b85fe885ffed76b9eea70e830a6e71680fe57c3a3c78a" and j["status"]=="succeeded" and j["exitCode"]==0 and j["runnerAlive"] is False,"exact original evidence-preparation job")
+need(logs["id"]==j["id"] and logs["status"]=="succeeded" and logs["stderr"]=="" and logs["logs"]["truncated"] is False,"actual terminal stdout envelope")
+event=json.loads(logs["stdout"]);need(event["manifest"]==pp("old_manifest") and event["commit_paths"]==1930 and event["Main_access"] is False and event["native_execution"] is False and event["configuration_issued"] is False,"original preparer output identity")
+need(job["native_execution_authorized"] is False and job["Main_changed"] is False,"separate historical prep authority")
+need(root["template"]==pp("template") and root["bound_adapter"]==pp("adapter") and root["normalized_manifest"]==pp("manifest") and root["original_manifest"]==pp("old_manifest"),"Root proof exact objects")
+for k in ("source_intake_authorized","adapter_executed","native_execution_authorized","application_qualified","production_bridge_removed"):
+ need(root[k] is False,"Root current unissued flags")
+# Rehash every pinned input after the entire independent check.
+for row in list(seen.values()):need(pin(Path(row["path"]),Path(row["path"]).read_bytes())==row,"current versions unchanged")
+proof={"schema":1,"status":"independently_verified_exact_v38_archive_normalization_and_five_literal_adapter_binding",
+ "reviewer":"/root/handover_review","candidate_head":H,"emitted_output_proof":pp("emitted_proof"),
+ "original_manifest":pp("old_manifest"),"normalized_manifest":pp("manifest"),"template":pp("template"),"bound_adapter":pp("adapter"),
+ "root_binding_proof":pp("root_proof"),"preparation_job":pp("preparation_job"),"binding_plan":pp("plan"),
+ "checker":pin(Path(__file__),read(__file__)),"source_build_paths":0,"original_rows":1929,"normalized_rows":1930,"logical_aliases":1930,
+ "total_commit_paths":1931,"sole_replacement":P,"sole_extra_row":extra,"all_original_manifest_bytes_inverse_exact":True,
+ "whole_manifest_inverse_bytes":1226916,"current_physical_donor_count":len(donors),
+ "complete_donor_pin_map_sha256":sha(encode(donors)),"complete_planned_prefix_count":len(prefixes),
+ "five_independently_derived_literal_steps":edits,"untouched_fragments":fragments,"full_adapter_byte_inverse":True,
+ "unchanged_nonconstant_tokens":True,"unchanged_function_bodies":functions,"phase":"fixture",
+ "future_exact_release_required":True,"actual_Git_byte_preflight_remains_future":True,
+ "retained_future_gates":["canonical repository and object format","all physical donors plus synthetic manifest and all aliases",
+ "all existing and planned parent spellings","five attributes and relevant config plus origin files",
+ "independent raw OID and both Git raw/path OIDs before Main writes","pre-copy and post-copy attributes/provenance",
+ "exact staging and committed blob bytes/OIDs/modes","complete single-parent list","final clean index and worktree"],
+ "scope":{"source_only":True,"adapter_or_prefix_executed":False,"Main_or_index_accessed":False,"native_execution_authorized":False,
+ "application_qualified":False,"source_mutation_hold_released":False},
+ "small_control_inputs":[pp(k) for k in PINS],"current_input_versions":len(seen)}
+target=OUT/"normalized-binding-proof.json";need(not target.exists(),"create-only proof")
+out=encode(proof)
+with target.open("xb") as f:need(f.write(out)==len(out),"complete proof")
+need(target.read_bytes()==out,"proof readback")
+print(json.dumps({"proof":pin(target,out),"checked_current_versions":len(seen),"commit_paths":1931,"literal_edits":5,"helpers":22},separators=(",",":")))

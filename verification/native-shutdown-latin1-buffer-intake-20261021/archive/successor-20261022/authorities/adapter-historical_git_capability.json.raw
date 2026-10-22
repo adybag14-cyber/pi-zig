@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "status": "observed_read_only_host_git_attribute_capabilities",
+  "author": "/root/handover_review",
+  "observed_utc_date": "2026-10-21",
+  "probes": [
+    {
+      "program": "git",
+      "args": [
+        "--version"
+      ],
+      "working_dir": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018",
+      "result": {
+        "ok": true,
+        "summary": "Ran git directly in the Windows host devbox.",
+        "data": {
+          "execution": {
+            "queue_wait_ms": 1,
+            "slot": 9
+          },
+          "output": {
+            "mode": "tail",
+            "max_chars": 2000,
+            "max_lines": 0,
+            "stdout_original_chars": 29,
+            "stderr_original_chars": 0,
+            "stdout_capture_truncated": false,
+            "stderr_capture_truncated": false
+          }
+        },
+        "stdout": "git version 2.52.0.windows.1\n",
+        "exitCode": 0,
+        "truncated": false
+      }
+    },
+    {
+      "program": "git",
+      "args": [
+        "var",
+        "GIT_ATTR_SYSTEM"
+      ],
+      "working_dir": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018",
+      "result": {
+        "ok": true,
+        "summary": "Ran git directly in the Windows host devbox.",
+        "data": {
+          "execution": {
+            "queue_wait_ms": 1,
+            "slot": 9
+          },
+          "output": {
+            "mode": "tail",
+            "max_chars": 2000,
+            "max_lines": 0,
+            "stdout_original_chars": 39,
+            "stderr_original_chars": 0,
+            "stdout_capture_truncated": false,
+            "stderr_capture_truncated": false
+          }
+        },
+        "stdout": "C:/Program Files/Git/etc/gitattributes\n",
+        "exitCode": 0,
+        "truncated": false
+      }
+    },
+    {
+      "program": "git",
+      "args": [
+        "var",
+        "GIT_ATTR_GLOBAL"
+      ],
+      "working_dir": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018",
+      "result": {
+        "ok": true,
+        "summary": "Ran git directly in the Windows host devbox.",
+        "data": {
+          "execution": {
+            "queue_wait_ms": 1,
+            "slot": 9
+          },
+          "output": {
+            "mode": "tail",
+            "max_chars": 2000,
+            "max_lines": 0,
+            "stdout_original_chars": 38,
+            "stderr_original_chars": 0,
+            "stdout_capture_truncated": false,
+            "stderr_capture_truncated": false
+          }
+        },
+        "stdout": "C:/Users/adyba/.config/git/attributes\n",
+        "exitCode": 0,
+        "truncated": false
+      }
+    }
+  ],
+  "note": "Bounded independently authorized probes from the Module worktree. No Main path was accessed. Candidate adapter and prefix were not executed. The future adapter must query its actual repository format and attribute paths again.",
+  "Main_accessed": false,
+  "target_or_prefix_executed": false,
+  "native_executed": false
+}

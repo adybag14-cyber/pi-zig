@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "status": "independently_accepted_source_only_fs_request_fixture_pump_completion_ownership",
+  "reviewer": "/root/handover_review",
+  "reviewed_utc": "2026-10-22T14:18:25.110806+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\successor-v2\\proposal.json",
+    "bytes": 6844,
+    "sha256": "B24664CA4DADD2B96EA581710A244050EB6F963C3AC0DD11F4BD5D04DBF83106"
+  },
+  "selected_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\successor-v2\\projected\\src\\native_node_fs_request_owner_test.zig",
+    "bytes": 57891,
+    "sha256": "FD337AA09700EA151943ED06A86CE5623C37210FA57637B892DCB6AB797C02D6"
+  },
+  "original_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\original\\src\\native_node_fs_request_owner_test.zig",
+    "bytes": 57263,
+    "sha256": "402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81"
+  },
+  "source_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\source-check.py",
+    "bytes": 17415,
+    "sha256": "FBC21ADEB0E14D394771D761787069D3DB13F1A9A6C624BDD62075BBCDE826E7"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\source-proof.json",
+    "bytes": 109273,
+    "sha256": "DFD7004CF0AF84BCA64B51A1A3E720850ADF212B14AC5FB7E52DDFA90AFFC751"
+  },
+  "module_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\handoff.json",
+    "bytes": 9374,
+    "sha256": "B0C5A47DB2C0C48BF60433BEEE7E02F4300B23A9192D752ED3F3FDE400DC4A2E"
+  },
+  "no_bounded_source_blocker": true,
+  "finite_replacement_hunks": 1,
+  "only_source_target": "src/native_node_fs_request_owner_test.zig",
+  "production_files_changed": 0,
+  "named_test_controls_unchanged": 25,
+  "entire_test_section_unchanged": true,
+  "unchanged_loop_bytes": 721,
+  "unchanged_adjacent_method_bytes": 392,
+  "source_import_graph_unchanged": true,
+  "unchanged_preexisting_helper_entry_and_partial_init": true,
+  "actual_call_sites": 8,
+  "actual_calling_controls": 7,
+  "immutable_git_inputs": 76,
+  "evidence_inputs": 28,
+  "ownership_findings": [
+    {
+      "topic": "actual producer and caller lifetime",
+      "finding": "The live Promise getter error is already preserved through Request.settle, AfterScope, ReqWrap retirement and UV event release. The old fixture then invokes successful outer callback cleanup after returning that typed failure; Completion treats the captured reason as diagnostic DATA and retires it.",
+      "evidence": [
+        "src/extensions/native_node_fs_request_promise.zig:184-234",
+        "src/extensions/native_node_fs_after_scope.zig:85-109",
+        "src/extensions/native_node_uv_service.zig:55-73",
+        "src/extensions/native_node_callback_scope.zig:773-790",
+        "src/extensions/native_sdk_owned_completion.zig:92-143,184-228"
+      ]
+    },
+    {
+      "topic": "selected ownership",
+      "finding": "Scope.init is inactive by value. start runs at the caller-stable address before the pump. On the explicit failure path, escaping moves captured ownership into Boundary.reason before outer cleanup. There is one outer deinit, then one finish; finish retires the scope and restores the selected reason through Engine capture. No duplicate or manual GetException/extra free is introduced.",
+      "evidence": [
+        "src/extensions/native_node_operation_scope.zig",
+        "src/extensions/native_node_commonjs_owned_boundary.zig"
+      ]
+    },
+    {
+      "topic": "cleanup outcomes",
+      "finding": "A body failure retains the first typed error. A cleanup failure is recorded if no earlier typed error exists; actual pending/fatal precedence stays with the unchanged Boundary implementation. Balanced start/finish preserves the invocation lifetime and diagnostics-suppression counter.",
+      "evidence": [
+        "selected pumpPending wrapper",
+        "Boundary.select,observe,escaping,finishRetired"
+      ]
+    },
+    {
+      "topic": "bounded success and preservation",
+      "finding": "All eight existing pump call sites are in seven controls; the one prior synchronous getter failure consumes its captured reason before calling pump. The 721-byte polling loop, deadlines, queue rejection, all25 named tests/assertions/imports and adjacent waitQueued remain byte-identical. The repair makes no general claim about unrelated incoming diagnostic history.",
+      "evidence": [
+        "all25 unchanged test section",
+        "all8 pump call sites"
+      ]
+    },
+    {
+      "topic": "scope limits",
+      "finding": "No remaining root defines or imports the private pumpPending helper. This excludes this exact fixture pattern only; it is not validation of46 unstarted groups. The analogous settle helper and original partial-init cleanup remain unchanged. Future metadata/runtime acceptance must come from fresh authorized validation.",
+      "evidence": [
+        "63 immutable root census",
+        "whole-src exact-definition/no-import queries"
+      ]
+    }
+  ],
+  "preserved_authoring_negatives": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\source-authoring-negative.json",
+      "bytes": 1121,
+      "sha256": "D6F273FC834D16CEE2BEED1B3C9111F6C5323D8FBC08535EFD348A4968F93192"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\static-checker-range-negative.json",
+      "bytes": 2182,
+      "sha256": "FFB7005BD1337CEAB11C74A24F558A56A3764B73EB355D48EDE1107A21574EDF"
+    }
+  ],
+  "original_runtime_negative": {
+    "group": "native-node-fs-request-owner",
+    "index": 22,
+    "actual_completed": 26,
+    "unchanged": true
+  },
+  "unstarted_groups_not_qualified": 46,
+  "source_only": true,
+  "candidate_executed": false,
+  "candidate_prefix_executed": false,
+  "compiler_native_or_generator_executed": false,
+  "Main_or_index_accessed": false,
+  "source_intake_authorized": false,
+  "runtime_qualification": false,
+  "application_qualified": false
+}

@@ -1,0 +1,11 @@
+--- a/src/native_node_stream_shutdown_test.zig
++++ b/src/native_node_stream_shutdown_test.zig
+@@ -102,7 +102,7 @@
+ 
+ test "native Stream shutdown real accepted bad descriptor still performs AfterClose and reports negative status" {
+     var f: Fixture = undefined; try f.init(); defer f.deinit();
+-    const handle = try f.create(-2);
++    const handle = try f.create(std.math.maxInt(c_int));
+     const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper);
+     try f.publishRequest(wrapper);
+     try std.testing.expectEqual(@as(c_int, 0), try f.run(wrapper));

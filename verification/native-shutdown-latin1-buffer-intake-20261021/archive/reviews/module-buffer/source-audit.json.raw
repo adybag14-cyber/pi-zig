@@ -1,0 +1,255 @@
+{
+  "schema": 1,
+  "status": "independent_finite_source_checks_passed_build_acceptance_excluded",
+  "reviewer": "/root/module_io_port",
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\production-proposal.json",
+    "bytes": 43670,
+    "sha256": "978981A96D6CDD2791FF6B90DDBC575235A83E9C3B678CD3961389AB6866AF12"
+  },
+  "frozen_packet_rows_rehashed": 72,
+  "inventory_serialization_sha256": "9CEE70FE4A41851DD558EF7C71F20B4BE76CE7505218770407E22B0710FF2168",
+  "inspector_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\source-audit-successor.py",
+      "bytes": 6483,
+      "sha256": "78B60FE0C924819731B0C3AC75D52EB60328EABF3B5AFE6390EF599C3CD9D796"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\prepare-closure.py",
+      "bytes": 12444,
+      "sha256": "4B6A9EBEDFB06C1A1339396EDF0B5E561E3F88D680F9CAEA759236BF808101F2"
+    }
+  ],
+  "exact_reproduced_sdk_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\source-only-checks.json",
+    "bytes": 48455,
+    "sha256": "F59FD3FD1A5BD0BE2A59145156C9E0E052F44BB210494C9A4FC12DE4F5D3B6E4"
+  },
+  "proof_byte_equal": true,
+  "reproduced_sdk_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependency-inventory.json",
+    "bytes": 44600,
+    "sha256": "9843533B132D9C04C273F05F794B36BCB85E68B08C1FB8D71F2738071129DF5D"
+  },
+  "reproduced_sdk_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\closure-and-preservation.json",
+    "bytes": 18464,
+    "sha256": "5C33DE78B6650A92D6EE162A9ACBA6657BEFE6B78310CAFD15453ACC152E9809"
+  },
+  "source_file_versions_rechecked": 113,
+  "original_host_selected_excerpts_bound": 34,
+  "fixture_and_control_bodies_bound": 12,
+  "prior_sdk_source_files_preserved": 40,
+  "direct_vm_edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404353,
+        "sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003"
+      },
+      "exact_offset": true,
+      "exact_intermediate_pins": true,
+      "full_inverse": true
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114656,
+        "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 115180,
+        "sha256": "9F63BF26C91440A8C9B3D5F1FF06AB387D6E76630ADEC6D4CAA745179DB46978"
+      },
+      "exact_offset": true,
+      "exact_intermediate_pins": true,
+      "full_inverse": true
+    }
+  ],
+  "extra_source_excerpts": [
+    {
+      "id": "object_pointer_macro",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404353,
+        "sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003"
+      },
+      "start_line": 239,
+      "end_line": 244,
+      "bytes": 282,
+      "sha256": "9C179CAD7BC3D8045A3003430C1A1D8FC72CDB9805C7EBC50FB411BFA34A9638",
+      "text": "typedef struct JSString JSAtomStruct;\ntypedef struct JSStringRope JSStringRope;\n\n#define JS_VALUE_GET_OBJ(v) ((JSObject *)JS_VALUE_GET_PTR(v))\n#define JS_VALUE_GET_STRING(v) ((JSString *)JS_VALUE_GET_PTR(v))\n#define JS_VALUE_GET_STRING_ROPE(v) ((JSStringRope *)JS_VALUE_GET_PTR(v))\n"
+    },
+    {
+      "id": "actual_private_termination_value",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404353,
+        "sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003"
+      },
+      "start_line": 1549,
+      "end_line": 1568,
+      "bytes": 791,
+      "sha256": "7210A8F9597CD12A779DF9714A01FDF74993953DF69F9A1A34D32BC9FF4D3283",
+      "text": "/* No guest value can have an exception-sentinel payload. This private\n   immediate is created only by native termination servicing/propagation; it carries no\n   allocation or Error flag and is never a Promise value or diagnostic. */\nstatic JSValue js_pi_termination_token(void)\n{\n    return JS_MKVAL(JS_TAG_EXCEPTION, 1);\n}\n\n/* Native completion propagation only: this result does not establish a\n   pending event or lease. It carries an already-observed termination failure\n   across a callback even when Cancel cleared the actual pending event. */\nJSValue JS_PiNativeTerminationResult(void)\n{\n    return js_pi_termination_token();\n}\n\nbool JS_PiIsExecutionTermination(JSValueConst value)\n{\n    return JS_VALUE_GET_TAG(value) == JS_TAG_EXCEPTION &&\n           JS_VALUE_GET_INT(value) == 1;\n"
+    },
+    {
+      "id": "actual_vm_allocation_limit_checks",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404353,
+        "sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003"
+      },
+      "start_line": 2311,
+      "end_line": 2357,
+      "bytes": 1226,
+      "sha256": "20CCBA7569A2542088BA62363B5D2F662F25E2E797035B01696C57522E6E43AE",
+      "text": "{\n    void *ptr;\n    JSMallocState *s;\n\n    /* Do not allocate zero bytes: behavior is platform dependent */\n    assert(count != 0 && size != 0);\n\n    if (size > 0)\n        if (unlikely(count != (count * size) / size))\n            return NULL;\n\n    s = &rt->malloc_state;\n    /* When malloc_limit is 0 (unlimited), malloc_limit - 1 will be SIZE_MAX. */\n    if (unlikely(s->malloc_size + (count * size) > s->malloc_limit - 1))\n        return NULL;\n\n    ptr = js_arena_calloc(rt, count, size);\n    if (!ptr)\n        return NULL;\n\n    s->malloc_count++;\n    s->malloc_size += js_arena_usable_size(rt, ptr) + MALLOC_OVERHEAD;\n    return ptr;\n}\n\nvoid *js_malloc_rt(JSRuntime *rt, size_t size)\n{\n    void *ptr;\n    JSMallocState *s;\n\n    /* Do not allocate zero bytes: behavior is platform dependent */\n    if (unlikely(size == 0))\n        return NULL;\n\n    s = &rt->malloc_state;\n    /* When malloc_limit is 0 (unlimited), malloc_limit - 1 will be SIZE_MAX. */\n    if (unlikely(s->malloc_size + size > s->malloc_limit - 1))\n        return NULL;\n\n    ptr = js_arena_malloc(rt, size);\n    if (!ptr)\n        return NULL;\n\n    s->malloc_count++;\n    s->malloc_size += js_arena_usable_size(rt, ptr) + MALLOC_OVERHEAD;\n    return ptr;\n}\n"
+    },
+    {
+      "id": "actual_vm_memory_limit_setter",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404353,
+        "sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003"
+      },
+      "start_line": 2793,
+      "end_line": 2796,
+      "bytes": 99,
+      "sha256": "45A6B419126C9B7140C590A347FFA019A1C50DC83EAE30F555BCAA1CA139D84B",
+      "text": "void JS_SetMemoryLimit(JSRuntime *rt, size_t limit)\n{\n    rt->malloc_state.malloc_limit = limit;\n}\n"
+    },
+    {
+      "id": "actual_termination_request_generation_and_cancel",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404353,
+        "sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003"
+      },
+      "start_line": 2863,
+      "end_line": 2929,
+      "bytes": 2154,
+      "sha256": "D1B0AC4616196008FE6A1A4CFE18C1DC1BB113AED75431F19583CC8EA535969F",
+      "text": "void JS_PiRequestExecutionTermination(JSRuntime *rt)\n{\n#ifdef CONFIG_ATOMICS\n    atomic_store(&rt->pi_termination_requested, true);\n#else\n    rt->pi_termination_requested = true;\n#endif\n}\n\nbool JS_PiIsExecutionTerminating(JSRuntime *rt)\n{\n    return rt->pi_termination_in_flight &&\n           JS_PiIsExecutionTermination(rt->current_exception);\n}\n\nuint64_t JS_PiExecutionTerminationGeneration(JSRuntime *rt)\n{\n    return rt->pi_termination_generation;\n}\n\nvoid JS_PiCancelExecutionTermination(JSRuntime *rt)\n{\n#ifdef CONFIG_ATOMICS\n    atomic_store(&rt->pi_termination_requested, false);\n#else\n    rt->pi_termination_requested = false;\n#endif\n    /* V8 clears the request even when no actual termination is pending.\n       Its event cancellation is conditional on the private pending event;\n       an event held only by a native cleanup owner is not that condition. */\n    if (!JS_PiIsExecutionTerminating(rt))\n        return;\n    rt->current_exception = JS_UNINITIALIZED;\n    rt->pi_termination_in_flight = false;\n}\n\nint JS_PiCheckExecutionTermination(JSContext *ctx)\n{\n    JSRuntime *rt = ctx->rt;\n    bool requested;\n\n    if (rt->pi_termination_in_flight) {\n        /* Reentry while the token is detached republishes the same event.\n           It does not create another generation or a replacement Error. */\n        JS_Throw(ctx, js_pi_termination_token());\n        return -1;\n    }\n    if (JS_PiIsExecutionTermination(rt->current_exception))\n        return -1; /* cancelled native abrupt completion, not a new event */\n    if (!js_pi_termination_requested(rt))\n        return 0;\n    /* Existing ordinary/fatal pending-entry policy is retained. A request\n       waits until the earlier real event has been handled by its owner. */\n    if (JS_HasException(ctx))\n        return -1;\n#ifdef CONFIG_ATOMICS\n    requested = atomic_exchange(&rt->pi_termination_requested, false);\n#else\n    requested = rt->pi_termination_requested;\n    rt->pi_termination_requested = false;\n#endif\n    if (!requested)\n        return 0;\n    rt->pi_termination_in_flight = true;\n    rt->pi_termination_generation++;\n    JS_Throw(ctx, js_pi_termination_token());\n    return -1;\n"
+    },
+    {
+      "id": "actual_throw_and_pending_take",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404353,
+        "sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003"
+      },
+      "start_line": 9266,
+      "end_line": 9308,
+      "bytes": 1422,
+      "sha256": "948EAE7CFBE1CA38BD852B0FAA9302BBBB4588A6B82ED41A28A661305FA8F892",
+      "text": "JSValue JS_Throw(JSContext *ctx, JSValue obj)\n{\n    JSRuntime *rt = ctx->rt;\n    if (JS_PiIsExecutionTermination(obj)) {\n        if (!rt->pi_termination_in_flight) {\n            /* A cancelled cleanup completion cannot revive the event or\n               displace a new real reason. It still cannot enter guest catch. */\n            if (JS_IsUninitialized(rt->current_exception))\n                rt->current_exception = obj;\n            return JS_EXCEPTION;\n        }\n        if (!JS_PiIsExecutionTermination(rt->current_exception)) {\n            JSValue displaced = rt->current_exception;\n            rt->current_exception = obj;\n            JS_FreeValue(ctx, displaced);\n        }\n        return JS_EXCEPTION;\n    }\n    if (JS_PiIsExecutionTerminating(rt)) {\n        /* Retire the supplied value with the native event still published.\n           Cancellation in that retirement is authoritative. */\n        JS_FreeValue(ctx, obj);\n        return JS_EXCEPTION;\n    }\n    JS_FreeValue(ctx, rt->current_exception);\n    rt->current_exception = obj;\n    return JS_EXCEPTION;\n}\n\n/* return the pending exception (cannot be called twice). */\nJSValue JS_GetException(JSContext *ctx)\n{\n    JSValue val;\n    JSRuntime *rt = ctx->rt;\n    val = rt->current_exception;\n    rt->current_exception = JS_UNINITIALIZED;\n    return val;\n}\n\nbool JS_HasException(JSContext *ctx)\n{\n    return !JS_IsUninitialized(ctx->rt->current_exception);\n}\n"
+    },
+    {
+      "id": "actual_uncatchable_flag_setter",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404353,
+        "sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003"
+      },
+      "start_line": 14008,
+      "end_line": 14016,
+      "bytes": 228,
+      "sha256": "593094D4AE7DCF3EFBFC9BF1A8C883D73D545132D6304A891316DD3C9A23356A",
+      "text": "void JS_SetUncatchableError(JSContext *ctx, JSValueConst val)\n{\n    js_set_uncatchable_error(ctx, val, true);\n}\n\nvoid JS_ClearUncatchableError(JSContext *ctx, JSValueConst val)\n{\n    js_set_uncatchable_error(ctx, val, false);\n}\n"
+    },
+    {
+      "id": "checked_value_tag_pointer_macros",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 115180,
+        "sha256": "9F63BF26C91440A8C9B3D5F1FF06AB387D6E76630ADEC6D4CAA745179DB46978"
+      },
+      "start_line": 223,
+      "end_line": 236,
+      "bytes": 685,
+      "sha256": "453C9435C837716A5BCB0C2FB68607B2083F260B00B524E85996E84DAD014CA0",
+      "text": "#if defined(JS_CHECK_JSVALUE)\n\ntypedef struct JSValue *JSValue;\ntypedef const struct JSValue *JSValueConst;\n\n#define JS_MKVAL(tag, val)       ((JSValue)((tag) | (intptr_t)(val) << 4))\n#define JS_MKPTR(tag, ptr)       ((JSValue)((tag) | (intptr_t)(ptr)))\n#define JS_VALUE_GET_NORM_TAG(v) ((int)((intptr_t)(v) & 15))\n#define JS_VALUE_GET_TAG(v)      ((int)((intptr_t)(v) & 15))\n#define JS_VALUE_GET_SHORT_BIG_INT(v) JS_VALUE_GET_INT(v)\n#define JS_VALUE_GET_PTR(v)      ((void *)((intptr_t)(v) & ~15))\n#define JS_VALUE_GET_INT(v)      ((int)((intptr_t)(v) >> 4))\n#define JS_VALUE_GET_BOOL(v)     ((int)((intptr_t)(v) >> 4))\n#define JS_VALUE_GET_FLOAT64(v)  ((double)((intptr_t)(v) >> 4))\n"
+    },
+    {
+      "id": "nan_boxed_value_tag_pointer_macros",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 115180,
+        "sha256": "9F63BF26C91440A8C9B3D5F1FF06AB387D6E76630ADEC6D4CAA745179DB46978"
+      },
+      "start_line": 251,
+      "end_line": 262,
+      "bytes": 435,
+      "sha256": "9B688904E9BE74E69765577C56AD780F0A1FF0E3D307E793B61161E018F8EDA5",
+      "text": "#elif defined(JS_NAN_BOXING) && JS_NAN_BOXING\n\ntypedef uint64_t JSValue;\n\n#define JS_VALUE_GET_TAG(v) (int)((v) >> 32)\n#define JS_VALUE_GET_INT(v) (int)(v)\n#define JS_VALUE_GET_BOOL(v) (int)(v)\n#define JS_VALUE_GET_SHORT_BIG_INT(v) (int)(v)\n#define JS_VALUE_GET_PTR(v) (void *)(intptr_t)(v)\n\n#define JS_MKVAL(tag, val) (((uint64_t)(tag) << 32) | (uint32_t)(val))\n#define JS_MKPTR(tag, ptr) (((uint64_t)(tag) << 32) | (uintptr_t)(ptr))\n"
+    },
+    {
+      "id": "tagged_union_value_tag_pointer_macros",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 115180,
+        "sha256": "9F63BF26C91440A8C9B3D5F1FF06AB387D6E76630ADEC6D4CAA745179DB46978"
+      },
+      "start_line": 317,
+      "end_line": 336,
+      "bytes": 608,
+      "sha256": "9BDFD568B23F84D28937979333F877572BA91CAC258ABCC3F146E72289A3872A",
+      "text": "typedef union JSValueUnion {\n    int32_t int32;\n    double float64;\n    void *ptr;\n    int32_t short_big_int;\n} JSValueUnion;\n\ntypedef struct JSValue {\n    JSValueUnion u;\n    int64_t tag;\n} JSValue;\n\n#define JS_VALUE_GET_TAG(v) ((int32_t)(v).tag)\n/* same as JS_VALUE_GET_TAG, but return JS_TAG_FLOAT64 with NaN boxing */\n#define JS_VALUE_GET_NORM_TAG(v) JS_VALUE_GET_TAG(v)\n#define JS_VALUE_GET_INT(v) ((v).u.int32)\n#define JS_VALUE_GET_BOOL(v) ((v).u.int32)\n#define JS_VALUE_GET_FLOAT64(v) ((v).u.float64)\n#define JS_VALUE_GET_SHORT_BIG_INT(v) ((v).u.short_big_int)\n#define JS_VALUE_GET_PTR(v) ((v).u.ptr)\n"
+    }
+  ],
+  "declared_names": [
+    "VM view data every typed-array width and DataView expose the physical backing offset",
+    "VM view data live empty views retain their exact end pointer",
+    "VM view data bypasses getters and rejects forged live and revoked proxy brands",
+    "VM view data detached typed and DataView addresses are null while lease acquisition still throws",
+    "VM view data fixed resizable views preserve stored offsets while out of bounds and after regrowth",
+    "VM view data tracking resizable views keep the address independently of rounded usable length",
+    "VM view data shared aliases expose one native address across real runtime growth",
+    "VM view data allocates nothing under the actual VM memory limit",
+    "VM view data preserves actual ordinary uncatchable and private termination completions",
+    "VM view data borrows without keeping the actual view or native backing alive",
+    "VM view data observes unmanaged external storage without adding a lease or changing cleanup",
+    "VM view data follows real ArrayBuffer transfer detachment and the receiving physical storage"
+  ],
+  "actual_future_metadata": null,
+  "one_repository_zig_root": true,
+  "literal_anonymous_root_blocks": 0,
+  "quoted_c_reachable_files": 25,
+  "quoted_c_include_edges": 33,
+  "dependency_inventory_entries": 31,
+  "raw_abi": "uint8_t *JS_PiArrayBufferViewData(JSValueConst)",
+  "full_new_c_body_read": true,
+  "full_new_header_declaration_read": true,
+  "full_control_fixture_and_12_bodies_read": true,
+  "all_34_source_map_excerpts_read": true,
+  "optional_corrected_latin1_both_orders_and_full_inverses": true,
+  "pending_current_state_changed_by_new_body": false,
+  "new_ownership_or_allocation_operation_in_new_body": false,
+  "original_build": {
+    "proposal": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\build\\proposal.json",
+      "bytes": 4359,
+      "sha256": "AD344119A626BB53199DB10991521D2B21A7D464D4EBE68265CECF929A9CA89C"
+    },
+    "byte_composition_reproduced": true,
+    "source_intake_approved": false,
+    "reason": "Original addTest .name changes the cached artifact basename; strict validation requires canonical cached test.exe/test.pdb. SDK is preparing a separate finite naming successor. No successor is included in this receipt."
+  },
+  "limitations": [
+    "Actual already-backed views only, held alive by the caller on their VM owner thread.",
+    "A returned address is a synchronous borrow; current ByteLength is required before any dereference. OOB addresses are observed, not dereferenced.",
+    "Node caller CHECK, V8 GetBuffer on-heap materialization/allocation policy, full listener/public entry/template and bootstrap are separate.",
+    "No Main or SDK source file was changed; only this new independent evidence output is written.",
+    "No compiler, preprocessor, product, native test, reference, generator, metadata query or runtime was run."
+  ]
+}

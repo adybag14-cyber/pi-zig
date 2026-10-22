@@ -1,0 +1,29 @@
+    fn pumpPending(self: *Fixture) !void {
+        var outer_scope: callbacks.Scope = undefined;
+        try self.outer(&outer_scope, self.target);
+        defer if (!outer_scope.deinitialized) {
+            outer_scope.markFailed();
+            outer_scope.deinit() catch {};
+        };
+        const until = physical.uv_hrtime() + 10 * std.time.ns_per_s;
+        while (self.env().requests.waiting != 0) {
+            // This control explicitly selects nested callback settlement, not
+            // the separately unfinished production microtask checkpoint.
+            if (c.JS_IsJobPending(self.engine.runtime))
+                return error.UnselectedFSReadControlTaskQueue;
+            const pump = self.engine.native_env_pump orelse return error.ActualFSReadHubRequired;
+            _ = try pump(self.engine);
+            if (self.env().requests.waiting == 0) break;
+            if (physical.uv_hrtime() >= until) return error.ActualFSReadCompletionTimeout;
+            physical.uv_sleep(1);
+        }
+        try outer_scope.deinit();
+    }
+    fn waitQueued(self: *Fixture, count: usize) !void {
+        const service = self.controller.?.service;
+        const until = physical.uv_hrtime() + 10 * std.time.ns_per_s;
+        while (uv.pi_uv_service_snapshot(service).queued_events < count) {
+            if (physical.uv_hrtime() >= until) return error.ActualFSReadCompletionTimeout;
+            physical.uv_sleep(1);
+        }
+    }

@@ -1,0 +1,186 @@
+"""Read-only source/immutable-Git checks, then create-only evidence outputs.
+Never imports or executes a candidate, a Zig source, an auditor, or a native test.
+"""
+from pathlib import Path
+import hashlib,json,re,subprocess,difflib
+W=Path(r'C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018')
+D=W/'verification/v38-fs-request-pump-escrow-sourceonly-20261022'
+V=D/'successor-v2'
+E=Path(r'C:\Users\adyba\pi-zig\evidence')
+S=Path(r'C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018')
+H='014062f2d139254acab4b985b4ae343db637166f'
+P='src/native_node_fs_request_owner_test.zig'
+inputs={}; git_inputs={}; cache={}; excerpts=[]
+def sha(b): return hashlib.sha256(b).hexdigest().upper()
+def pin(p,expect=None):
+    p=Path(p);b=p.read_bytes();r={'path':str(p),'bytes':len(b),'sha256':sha(b)}
+    if expect: assert (len(b),sha(b))==expect,(r,expect)
+    inputs[str(p)]=r
+    return b,r
+def js(p,expect=None):
+    b,r=pin(p,expect);return json.loads(b)
+def git(*args):
+    return subprocess.check_output(['git','--no-optional-locks','-C',str(W),*args])
+def blob(p,expect=None):
+    if p not in cache:
+        b=git('cat-file','blob',H+':'+p);cache[p]=b
+        oid=git('rev-parse',H+':'+p).decode().strip()
+        git_inputs[p]={'head':H,'relative_path':p,'git_blob':oid,'bytes':len(b),'sha256':sha(b)}
+    b=cache[p]
+    if expect:assert (len(b),sha(b))==expect,(p,expect,git_inputs[p])
+    return b
+def excerpt(label,b,a,z):
+    ls=b.splitlines(keepends=True);raw=b''.join(ls[a-1:z])
+    assert len(ls)>=z
+    excerpts.append({'label':label,'first_line':a,'last_line':z,'bytes':len(raw),'sha256':sha(raw),'text':raw.decode()})
+def put(p,b):
+    p.parent.mkdir(parents=True,exist_ok=True)
+    with p.open('xb') as f:f.write(b)
+    actual=p.read_bytes();assert actual==b
+    return {'path':str(p),'bytes':len(b),'sha256':sha(b)}
+def outjson(p,j):return put(p,(json.dumps(j,indent=2)+'\n').encode())
+proposal=js(V/'proposal.json',(6844,'B24664CA4DADD2B96EA581710A244050EB6F963C3AC0DD11F4BD5D04DBF83106'))
+row=proposal['files'][0];assert len(proposal['files'])==1 and row['relative_path']==P
+original,op=pin(row['original']['path'],(57263,'402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81'))
+candidate,cp=pin(row['projected']['path'],(57891,'FD337AA09700EA151943ED06A86CE5623C37210FA57637B892DCB6AB797C02D6'))
+assert blob(P)==original
+ed=row['edits'][0];old=ed['before'].encode();new=ed['after'].encode();at=ed['offset']
+assert len(row['edits'])==1 and original[at:at+len(old)]==old
+assert original.count(old)==candidate.count(new)==1
+assert original[:at]+new+original[at+len(old):]==candidate
+assert candidate.replace(new,old,1)==original
+assert candidate[:at]==original[:at] and candidate[at+len(new):]==original[at+len(old):]
+initial=js(D/'proposal.json',(5200,'CC5EF57CD091051AC373A6351515BF6EB1F5893CFAA896D2E2181CEBADC208E2'))
+negative=js(D/'source-authoring-negative.json',(1121,'D6F273FC834D16CEE2BEED1B3C9111F6C5323D8FBC08535EFD348A4968F93192'))
+bad,bp=pin(D/'projected'/P,(57499,'AC46016E60CCCAAAC03A19C9852708B758BA2CA0A69858CBB5FD408AE87E4375'))
+fix=proposal['correction_from_initial']['edit'];wait=fix['after'].encode()
+assert fix['before']=='' and candidate==bad[:fix['offset']]+wait+bad[fix['offset']:]
+assert candidate.replace(wait,b'',1)==bad
+assert original.count(wait)==candidate.count(wait)==1 and wait not in bad
+assert not negative['selected_for_intake'] and not negative['candidate_executed']
+first_test=original.index(b'\ntest "')
+assert original[first_test:]==candidate[candidate.index(b'\ntest "'):], 'all tests and post-Fixture helpers must remain exact'
+names=lambda b:re.findall(rb'(?m)^test "([^"]+)"',b)
+imports=lambda b:re.findall(rb'@import\("([^"]+)"\)',b)
+assert names(original)==names(candidate) and len(names(original))==25
+assert imports(original)==imports(candidate)
+fn=lambda b:re.findall(rb'\bfn\s+([A-Za-z_]\w*)\s*\(',b)
+of=fn(original);cf=fn(candidate);cf.remove(b'pumpPendingBody');assert cf==of
+assert new.count(b'outer_scope.deinit()')==1
+assert new.count(b'a.Scope.init(self.engine)')==1
+assert new.count(b'handles.boundary.start();')==1
+assert new.count(b'handles.finish(')==1
+assert new.index(b'handles.boundary.start();')<new.index(b'self.pumpPendingBody()')
+assert new.index(b'handles.boundary.escaping();')<new.index(b'outer_scope.deinit()')
+assert new.index(b'outer_scope.deinit()')<new.index(b'handles.finish(')
+loop=old[old.index(b'        const until = physical.uv_hrtime()'):old.index(b'        try outer_scope.deinit();')]
+assert new.count(loop)==1 and (len(loop),sha(loop))==(721,'CDBB385F3D419AD7154DC731F319A80B98DEA82064695B73F66FC551200762F8')
+assert b'catch {}' not in new and b'JS_GetException' not in new
+all_test_assertions=lambda b:[s for s in b.splitlines() if b'std.testing.' in s or b'try f.expect' in s or b'try expectOwn' in s]
+assert all_test_assertions(original)==all_test_assertions(candidate)
+production={
+ 'src/extensions/engine.zig':(99337,'87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417'),
+ 'src/extensions/native_node_argument_values.zig':(3512,'8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9'),
+ 'src/extensions/native_sdk_owned_completion.zig':(15176,'BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC'),
+ 'src/extensions/native_node_fs_after_scope.zig':(4949,'28500D5D0A6D551AE2491FF49357A3682FCA678F88055AFC57CF0D1DA8C63D04'),
+ 'src/extensions/native_node_uv_service.zig':(8937,'CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5'),
+ 'src/extensions/native_env_io.zig':(8014,'4BC66694AB6B22FC9A51A0943192BDCD61F0213C6846B0A69E0B459C26EF120E'),
+ 'src/extensions/native_node_operation_scope.zig':(6995,'0663228C40E2982D7809A7D0B143C3E6E96EE803B6FFAA384054CCCF19878F8C'),
+ 'src/extensions/native_node_callback_scope.zig':(40069,'E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E'),
+ 'src/extensions/native_node_commonjs_owned_boundary.zig':(9934,'29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA'),
+ 'src/extensions/native_node_fs_request_promise.zig':(19385,'8EFC2D58C1B1BD5069777FE1D06618F4572F54EEDAC09265EAD26BE8E675A4DF'),
+ 'src/extensions/native_node_fs_request_io.zig':(15469,'B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996'),
+}
+for p,e in production.items():blob(p,e)
+ranges={
+ P:[(212,236),(270,298),(625,657),(947,990)],
+ 'src/extensions/native_node_fs_request_promise.zig':[(184,234)],
+ 'src/extensions/native_node_fs_request_io.zig':[(159,189),(248,265)],
+ 'src/extensions/native_node_fs_after_scope.zig':[(27,47),(85,109)],
+ 'src/extensions/native_node_uv_service.zig':[(55,73)],
+ 'src/extensions/native_env_io.zig':[(103,119)],
+ 'src/extensions/engine.zig':[(729,738),(1198,1258)],
+ 'src/extensions/native_node_callback_scope.zig':[(671,690),(699,732),(773,790)],
+ 'src/extensions/native_sdk_owned_completion.zig':[(92,143),(184,228)],
+ 'src/extensions/native_node_commonjs_owned_boundary.zig':[(12,20),(78,85),(115,164)],
+ 'src/extensions/native_node_operation_scope.zig':[(7,14),(89,92)],
+ 'src/native_node_file_handle_owner_test_support.zig':[(117,138),(484,494)],
+ 'src/native_node_file_handle_read_test_support.zig':[(386,400)],
+ 'src/native_node_reqwrap_callback_routing_test.zig':[(316,330)],
+ 'src/native_node_callback_scope_test.zig':[(127,137),(258,299)],
+}
+for p,rs in ranges.items():
+ b=blob(p)
+ for a,z in rs:excerpt(p,b,a,z)
+refbase=S/'verification/native-fsreqpromise-before-hook-followup-sourceonly-20261020'
+refproposal=js(refbase/'proposal.json',(12997,'08F45EF3D26E4D2CBB8A5FA3A144E635AB6DA9B64B486871F7B1D102F6488B56'))
+nodefiles={}
+for name,n,h in [
+ ('node_file-inl.v24.13.h',14756,'2E96C28CB0BBB4520D8E0C0997188922C3DDE28853D14A3E19D7D559BC9493D5'),
+ ('node-api-callback.v24.13.cc',13682,'0A4C8ECF051F995F9669826DC9D85560ADD6ECD6FB2E28CE6B2F3DD309947DE2')]:
+ b,r=pin(refbase/'authority'/name,(n,h));nodefiles[name]=b
+ binding=[x for x in refproposal['authority_files'] if x['path']==str(refbase/'authority'/name)]
+ assert len(binding)==1 and binding[0]['sha256']==h and binding[0]['bytes']==n
+ donor,_=pin(binding[0]['source_path'],(n,h));assert donor==b
+excerpt('Node FSReqPromise Resolve/Reject',nodefiles['node_file-inl.v24.13.h'],219,251)
+excerpt('Node InternalCallbackScope destructor and Close',nodefiles['node-api-callback.v24.13.cc'],107,148)
+ledgerpath=S/'verification/native-file-handle-readwrap-sourceonly-20261020/authority/acquisition.json'
+ledger=js(ledgerpath,(1500,'B0F81C989F8A965BD16A6500759B69A20556D4A7A74A637915FCC2FCBCB7ACA4'))
+assert ledger['node_commit']=='def0bdf8abee441cfcbf793a8dc24a6f3b899573'
+lf=[x for x in ledger['documents'] if x['url'].endswith('/src/node_file-inl.h')]
+assert len(lf)==1 and lf[0]['sha256']==sha(nodefiles['node_file-inl.v24.13.h'])
+# Original negative observations are inputs, not execution/closure authority here.
+run=E/'root-native-foundation-v38-existing63-runtime-20261022-134223'
+gdir=run/'groups/native-node-fs-request-owner'
+negative_files={}
+for name,n,h in [
+ ('runtime.stderr.log',486,'8933D2F8ED52C54071D20E3C8A21983C7A14CCA6D8EE1198C6F6EFE965B54196'),
+ ('runtime.stdout.bin',742,'16910F179BEF779C537314F442CE1A12A5A6632EAA3243FC0928500E257A5860'),
+ ('runtime.results.json',2582,'C7EED6EDADEADD1C7FDB5E3196612EC878F12D3A554C47178508EFF39BAD8FC2'),
+ ('runtime.json',1244,'1DC9124F80AC08C083764B11B629C9EF9C7B2C28699DFBE8C482C7ED17E598D2')]:
+ b,r=pin(gdir/name,(n,h));negative_files[name]=r
+observed=js(gdir/'runtime.results.json')
+assert observed['started']==observed['completed']==26
+assert [x['index'] for x in observed['results'] if x['flags']!=0]==[22]
+# Bind the literal source census to the actual admitted cohort and stopped prefix.
+grant=js(E/'root-native-foundation-v38-existing63-runtime-control-20261022-134223/root-grant.json',(27023,'7F3B7CE0574741302B8F07713025A42B3B94A36A1E7D745E8CA9B89172264775'))
+result=js(run/'result.json',(250628,'60532D49A021587856D9B362F456D8C1ACE22A7E3FECFB6980A2FA0FF2D30F87'))
+matrix=js(E/'combined-native-batch-v38-regression63-prepared-20261021/groups.json',(1104585,'8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03'))
+selected=grant['groups'];attempted=[x['group'] for x in result['groups']]
+assert len(selected)==63 and attempted==selected[:17]
+remaining=selected[17:];assert len(remaining)==46
+byname={x['name']:x for x in matrix['groups']}
+rootrows=[]
+for n in selected:
+ r=byname[n];p=r['source_root'];b=blob(p)
+ rootrows.append({'group':n,'source':git_inputs[p],'remaining_unstarted':n in remaining,'contains_pumpPending':b'fn pumpPending(' in b,'contains_native_env_pump':b'native_env_pump' in b})
+pattern=r'native_env_pump|fn pumpPending|var [A-Za-z_]*scope: callbacks.Scope|\.markFailed\('
+census_raw=git('grep','-n','-E',pattern,H,'--','src/*test*.zig')
+one=git('grep','-n','-F','fn pumpPending(',H,'--','src')
+assert one.decode().splitlines()==[H+':'+P+':270:    fn pumpPending(self: *Fixture) !void {']
+noimport=subprocess.run(['git','--no-optional-locks','-C',str(W),'grep','-n','-F','native_node_fs_request_owner_test.zig',H,'--','src'],capture_output=True)
+assert noimport.returncode==1 and noimport.stdout==b'' and noimport.stderr==b''
+assert not any(r['contains_pumpPending'] for r in rootrows if r['remaining_unstarted'])
+# Static ownership/unchanged-source claims; not an execution result.
+proof={
+ 'status':'passed_bounded_static_source_checks',
+ 'source_only':True,'candidate_executed':False,'native_execution_authorized':False,'main_applied':False,'application_qualified':False,
+ 'selected_proposal':inputs[str(V/'proposal.json')],'source_audit':pin(Path(__file__))[1],
+ 'source_inputs':list(inputs.values()),'immutable_git_inputs':list(git_inputs.values()),
+ 'finite_projection':{'edit_count':1,'offset':at,'before_bytes':len(old),'after_bytes':len(new),'whole_forward_inverse':True,'untouched_prefix_suffix':True,'original':op,'selected':cp},
+ 'preserved_authoring_negative':inputs[str(D/'source-authoring-negative.json')],
+ 'initial_to_selected_correction':{'restored_adjacent_method_bytes':len(wait),'whole_inverse':True,'initial_candidate':bp},
+ 'preservation':{'named_controls':25,'names':[x.decode() for x in names(original)],'all_test_section_bytes':len(original[first_test:]),'all_test_section_sha256':sha(original[first_test:]),'test_section_exact':True,'all_testing_assertion_lines_exact':True,'imports_exact':True,'original_function_declaration_inventory_preserved':True,'only_new_function':'pumpPendingBody','waitQueued_exact':True,'poll_loop_bytes':len(loop),'poll_loop_sha256':sha(loop),'production_edits':0},
+ 'ownership_order':{'stable_boundary_started_before_pump':True,'actual_failure_escaped_before_outer_teardown':True,'outer_deinit_once_after_body':True,'boundary_finished_once_after_teardown':True,'no_manual_exception_recovery':True,'reason_moved_not_duplicated':'Boundary.escaping consumes captured_exception; finish moves selected reason through JS_Throw to Engine capture; fixture takeCaught transfers it to the existing defer free.','success_path':'The exact original loop and successful callback close execute once; the added stack Scope finishes undefined and frees that sentinel. No new guest call, job checkpoint, request retirement or polling operation is added.','prior_pattern':'The accepted FileHandle finishImmediate fixture already uses Scope/escaping/markFailed/deinit/finish. This repair starts its stable Scope before the producer, so an error created by this pump cannot become Boundary.previous history.','production_cause':'The original production scopes correctly own the getter failure through request cleanup and UV event release. The fixture previously ran successful outer deinit after that error was in captured_exception; Completion treated that incoming success diagnostic as DATA and retired it.'},
+ 'original_reference':{'fsreqpromise_commit':ledger['node_commit'],'fsreqpromise_acquisition':inputs[str(ledgerpath)],'callback_scope_provenance':'Exact inherited Node v24.13 body is bound by the accepted 08F45 authority table and its unchanged previous-packet source; this packet does not invent a new acquisition receipt.','required_semantics':'Failed live promise Get returns from Resolve/Reject, while the native callback-scope destructor still closes/pops and the original error propagates.'},
+ 'original_runtime_negative':negative_files,
+ 'census':{'grant':inputs[str(E/'root-native-foundation-v38-existing63-runtime-control-20261022-134223/root-grant.json')],'matrix':inputs[str(E/'combined-native-batch-v38-regression63-prepared-20261021/groups.json')],'result':inputs[str(run/'result.json')],'selected_group_count':63,'attempted_prefix_count':17,'remaining_count':46,'roots':rootrows,'whole_src_pumpPending_definition':one.decode(),'whole_src_no_literal_import_of_failed_test_root':True,'test_source_search':{'pattern':pattern,'raw_bytes':len(census_raw),'sha256':sha(census_raw),'text':census_raw.decode()},'finding':'No remaining root defines pumpPending, and no src file imports the failing private test root. The other three physical fixture pump helpers have no local callback-scope teardown in their pump body. The callback-scope controls directly exercise scope closure and do not compose the failed raw-pump/deferred-outer-cleanup pattern.','limits':'This census excludes this exact fixture pattern, not every possible ownership error or any claim about unstarted tests. The same failing fixture settle helper has analogous deferred cleanup but its existing callers use normal settlement; the inline getter control consumes its reason before outer deinit. These are not additional proved repairs.'},
+ 'excerpts':excerpts,
+ 'limits':['No build, compiler, target, Node/reference, native, candidate, or runtime auditor execution.','No live Main read/write or index action; source preimages came from immutable Git objects through the owned worktree.','The native negative and all original assertions remain unchanged. Fresh independently granted validation is still required.']
+}
+patch=''.join(difflib.unified_diff(original.decode().splitlines(True),candidate.decode().splitlines(True),fromfile='a/'+P,tofile='b/'+P))
+# FINAL CREATE-ONLY EVIDENCE OUTPUTS
+patch_pin=put(D/'fixture.patch',patch.encode())
+proof['patch']=patch_pin
+proof_pin=outjson(D/'source-proof.json',proof)
+print(json.dumps({'status':proof['status'],'proof':proof_pin,'patch':patch_pin,'source_inputs':len(inputs),'git_inputs':len(git_inputs),'excerpts':len(excerpts),'named_controls':25,'remaining_roots':46}))

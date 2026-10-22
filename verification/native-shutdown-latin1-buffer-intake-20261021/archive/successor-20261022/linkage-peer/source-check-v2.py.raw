@@ -1,0 +1,391 @@
+from pathlib import Path
+import ast,bisect,collections,hashlib,json,os,posixpath,re,subprocess,time
+B=Path(r"C:\Users\adyba\pi-zig")
+W=B/"worktrees/modules-io-resume-20261018"
+D=W/"verification/native-node-shutdown-linkage-build-successor-sourceonly-20261022"
+P=B/"evidence/independent-shutdown-linkage-build-successor-source-peer-20261022"
+HEAD="014062f2d139254acab4b985b4ae343db637166f"
+OUT=P/"source-proof.json"
+def need(ok,what):
+    if not ok: raise AssertionError(what)
+def sha(raw): return hashlib.sha256(raw).hexdigest().upper()
+inputs={}
+def readpin(row):
+    path=Path(row["path"])
+    need(not str(path).lower().startswith(str(B/"main").lower()+"\\"),"Main read forbidden")
+    raw=path.read_bytes()
+    need(len(raw)==row["bytes"] and sha(raw)==row["sha256"],("pin",row))
+    inputs[(str(path),sha(raw))]=dict(path=str(path),bytes=len(raw),sha256=sha(raw))
+    return raw
+def fixed(path,n,h): return readpin(dict(path=str(path),bytes=n,sha256=h))
+def git(*args,input=None):
+    q=subprocess.run(["git","--no-optional-locks","-C",str(W),*args],input=input,capture_output=True,timeout=40,
+                     env={**os.environ,"GIT_OPTIONAL_LOCKS":"0"})
+    need(q.returncode==0,("git read",args,q.stderr.decode(errors="replace")))
+    return q.stdout
+need(not OUT.exists(),"proof create-only")
+mr=fixed(D/"manifest.json",22441,"8364BCC21A30411D343F36EBE34DBC2C767DD1BC30C569220F5C2C79DC9C6F69")
+manifest=json.loads(mr)
+need(manifest["basis_head"]==HEAD and manifest["changed_source_paths"]==["build.zig"],"scope")
+for row in manifest["inventory"]:
+    readpin(dict(path=str(D/row["relative_path"]),bytes=row["bytes"],sha256=row["sha256"]))
+for row in manifest["external_existing_authorities"]+manifest["preserved_checker_observations"]:readpin(row)
+handoff=json.loads(fixed(D/"handoff.json",4141,"4D54DC7853B871CA1334F88CAEE18835B06C8729CA62521443326740E0D840BF"))
+proposal=json.loads(readpin(manifest["finite_edit_proposal"]))
+reference=json.loads(readpin(manifest["source_proof"]))
+inventory=json.loads(fixed(D/"source-import-inventory.json",3607367,"3E96991E1AD5128D797C9E46ECA6E403ECD606507E2D99D6137EE80F3F6768A6"))
+plan=json.loads(readpin(manifest["accepted_copy_plan"]))
+old=readpin(proposal["original_snapshot"]);new=readpin(proposal["projected"])
+need(old==readpin(proposal["original_donor"]),"original accepted build donor")
+need(proposal["preserved_other19_donors"]==manifest["preserved_other19_donors"],"19 donor agreement")
+need(proposal["preserved_other19_donors"]==[dict(relative_path=r["relative_path"],donor=r["donor"]) for r in plan["source_rows"] if r["relative_path"]!="build.zig"],"19 exact selected donors")
+steps=proposal["steps"];need(len(steps)==9,"nine edits")
+cur=old;edit_rows=[]
+for i,s in enumerate(steps,1):
+    a=s["before_utf8"].encode();b=s["after_utf8"].encode();o=s["offset"]
+    need(s["index"]==i and len(cur)==s["input_bytes"] and sha(cur)==s["input_sha256"],("step input",i))
+    need(len(a)==s["before_bytes"] and len(b)==s["after_bytes"] and cur[o:o+len(a)]==a,("step preimage",i))
+    nxt=cur[:o]+b+cur[o+len(a):]
+    need(len(nxt)==s["output_bytes"] and sha(nxt)==s["output_sha256"],("step output",i))
+    need(nxt[:o]+a+nxt[o+len(b):]==cur,("step inverse",i))
+    edit_rows.append(dict(index=i,label=s["label"],offset=o,input_sha256=sha(cur),output_sha256=sha(nxt),prefix_sha256=sha(cur[:o]),suffix_sha256=sha(cur[o+len(a):])))
+    cur=nxt
+need(cur==new,"whole forward")
+for s in reversed(steps):
+    a=s["before_utf8"].encode();b=s["after_utf8"].encode();o=s["offset"]
+    need(cur[o:o+len(b)]==b,"reverse span")
+    cur=cur[:o]+a+cur[o+len(b):]
+need(cur==old,"whole inverse")
+# All raw Zig inputs are derived independently from the immutable Git tree.
+tree={}
+for entry in git("ls-tree","-r","-z",HEAD).split(b"\0"):
+    if entry:
+        meta,path=entry.split(b"\t",1);mode,kind,oid=meta.split()
+        if kind==b"blob":tree[path.decode()]=(mode.decode(),oid.decode())
+zig_paths=sorted(p for p in tree if p.endswith(".zig") and p.startswith(("src/","tools/")))
+need(len(zig_paths)==2841,"complete raw source census")
+def batch(paths):
+    data=git("cat-file","--batch",input=("\n".join(tree[p][1] for p in paths)+"\n").encode())
+    result={};at=0
+    for path in paths:
+        end=data.index(b"\n",at);oid,kind,n=data[at:end].split();n=int(n);start=end+1
+        raw=data[start:start+n]
+        need(kind==b"blob" and oid.decode()==tree[path][1] and data[start+n:start+n+1]==b"\n",("raw blob",path))
+        need(hashlib.sha1(b"blob "+str(n).encode()+b"\0"+raw).hexdigest()==oid.decode(),("raw object id",path))
+        result[path]=raw;at=start+n+1
+    need(at==len(data),"complete cat-file output")
+    return result
+sources=batch(zig_paths)
+rawpins=[dict(relative_path=p,bytes=len(sources[p]),sha256=sha(sources[p]),git_blob=tree[p][1],mode=tree[p][0],basis="raw_git_"+HEAD)for p in zig_paths]
+need(rawpins==inventory["git_source_pins"],"entire independent raw Git inventory")
+overlay=[]
+for row in plan["source_rows"]:
+    raw=readpin(row["donor"]);path=row["relative_path"]
+    overlay.append(dict(relative_path=path,donor=row["donor"]))
+    sources[path]=raw
+need(overlay==inventory["selected_overlay"] and sources["build.zig"]==old,"complete accepted overlay")
+# Tokenize comments, quoted literals and Zig multiline strings before identifying imports.
+# This scanner never evaluates Zig and uses independently derived token/brace positions.
+token_re=re.compile(r'(?P<comment>//[^\n]*)|(?P<multi>\\\\[^\n]*)|(?P<string>"(?:\\.|[^"\\])*")|(?P<char>\'(?:\\.|[^\'\\])*\')|(?P<word>@?[A-Za-z_][A-Za-z_0-9]*)|(?P<punct>\S)')
+def tokens(raw):
+    s=raw.decode("utf-8")
+    return s,[(m.group(),m.start(),m.end(),m.lastgroup)for m in token_re.finditer(s)if m.lastgroup not in ("comment","multi")]
+def line_at(s,offset): return bisect.bisect_right([i for i,c in enumerate(s)if c=="\n"],offset)+1
+literal_named={"catalog_tool":"tools/catalog.zig","native_icu_api":"src/extensions/icu/native_icu_api.zig","native_photon_link":"src/ai/photon_session.zig","pi_zig":"src/root.zig"}
+edges={};named=collections.defaultdict(list);missing=[];nonliteral=[]
+for path,raw in sources.items():
+    if not path.endswith(".zig"):continue
+    s,ts=tokens(raw);nl=[m.start()for m in re.finditer("\n",s)];out=[]
+    for i,t in enumerate(ts):
+        if t[0]!="@import":continue
+        line=bisect.bisect_right(nl,t[1])+1
+        if not(i+3<len(ts) and ts[i+1][0]=="(" and ts[i+2][3]=="string" and ts[i+3][0]==")"):
+            nonliteral.append(dict(source=path,line=line));continue
+        value=json.loads(ts[i+2][0])
+        dest=posixpath.normpath(posixpath.join(posixpath.dirname(path),value)) if value.endswith(".zig") else literal_named.get(value)
+        if dest is None:named[value].append(dict(source=path,line=line))
+        elif dest in sources:out.append(dict(target=dest,literal=value,line=line))
+        else:missing.append(dict(source=path,import_=value,destination=dest,line=line))
+    edges[path]=out
+missing=[dict(source=x["source"],**{"import":x["import_"]},destination=x["destination"],line=x["line"])for x in missing]
+need(not nonliteral and nonliteral==inventory["nonliteral_import_sites"],"literal import grammar complete")
+need(edges==inventory["literal_import_edges"],"complete edges reconstructed from raw source bytes")
+need(missing==inventory["unresolved_relative_imports"] and len(missing)==2,"two retained missing imports")
+bindings={"pi_features":["src/features_no_sqlite.zig","src/features_sqlite.zig"],"sqlite_persistence":["src/sqlite_server_persistence.zig"],"release_config":["src/config.zig"]}
+options={"native_vm_identity","sdk_public_allocation_options","sdk_ui_allocation_options"}
+need(set(named)-{"std","builtin","root"}==set(bindings)|options,"complete named imports")
+need(b"pub const sqlite_enabled = false;"in sources["src/features_no_sqlite.zig"] and b"pub const sqlite_enabled = true;"in sources["src/features_sqlite.zig"],"both feature branches")
+for name,targets in bindings.items():
+    for site in named[name]:
+        for target in targets:
+            need(target in sources,("named source",target))
+edges_aug={p:[e["target"]for e in es]for p,es in edges.items()}
+for name,targets in bindings.items():
+    for site in named[name]:edges_aug[site["source"]].extend(targets)
+identity=sources["tools/build_native_vm_identity.zig"]
+need(identity.count(b"options.addOption(")==2 and b'options.addOption([64]u8, "sha256"'in identity and b'options.addOption([]const u8, "schema"'in identity and b"return options.createModule();"in identity,"constant VM identity options")
+need(b'sdk_public_options.addOption(?u8, "range", sdk_public_allocation_range);'in old and b'sdk_ui_options.addOption(?u8, "range", sdk_ui_allocation_range);'in old,"two constant allocation modules")
+def reach(root,target=None):
+    queue=[root];parent={root:None}
+    for p in queue:
+        if p==target:
+            result=[]
+            while p is not None:result.append(p);p=parent[p]
+            return result[::-1]
+        for q in edges_aug.get(p,[]):
+            if q not in parent:parent[q]=p;queue.append(q)
+    return sorted(parent) if target is None else None
+# Derive all root fields and their enclosing literal loops; no trusted line-range census.
+def root_fields(raw):
+    s,ts=tokens(raw);pairs={};stack=[]
+    for i,t in enumerate(ts):
+        v=t[0]
+        if v in ("(","[","{"):stack.append((v,i))
+        elif v in (")","]","}"):
+            need(stack and {"(":")","[":"]","{":"}"}[stack[-1][0]]==v,("balanced build syntax",i))
+            _,j=stack.pop();pairs[j]=i
+    need(not stack,"balanced complete build")
+    loops=[]
+    for i,t in enumerate(ts):
+        if t[0]!="for" or i+1 not in pairs or ts[i+1][0]!="(":continue
+        e=pairs[i+1];j=e+1
+        if j>=len(ts)or ts[j][0]!="|":continue
+        k=j+1
+        while k<len(ts)and ts[k][0]!="|":k+=1
+        if k+1>=len(ts)or ts[k+1][0]!="{":continue
+        capture=[x[0]for x in ts[j+1:k]if x[3]=="word"]
+        iterable=ts[i+2:e]
+        vals=[json.loads(x[0])for x in iterable if x[3]=="string"]
+        binding=None
+        if not vals and len(iterable)==1 and iterable[0][3]=="word":
+            name=iterable[0][0]
+            declarations=[n for n in range(i-2)if [x[0]for x in ts[n:n+3]]==["const",name,"="]]
+            need(len(declarations)==1,("unique preceding constant loop table",name))
+            n=declarations[0];a=n+3;z=a
+            while z<i and ts[z][0]!=";":
+                z=pairs[z]+1 if z in pairs else z+1
+            need(z<i and ts[z][0]==";",("complete constant loop table",name))
+            vals=[json.loads(x[0])for x in ts[a:z]if x[3]=="string"]
+            table=s[ts[n][1]:ts[z][2]].encode()
+            binding=dict(name=name,bytes=len(table),sha256=sha(table),utf8=table.decode())
+        loops.append(dict(start=i,body=k+1,end=pairs[k+1],capture=capture,values=vals,table_binding=binding,header_start=ts[i][1],header_end=ts[k+1][2]))
+    fields=[];dynamic=[]
+    nl=[m.start()for m in re.finditer("\n",s)]
+    for i in range(len(ts)-3):
+        if [x[0]for x in ts[i:i+3]]!=[".","root_source_file","="]:continue
+        j=i+3;k=j
+        while k<len(ts) and ts[k][0]!=",":
+            if k in pairs:k=pairs[k]+1
+            else:k+=1
+        need(k<len(ts),"root field delimiter")
+        expr=s[ts[j][1]:ts[k-1][2]]
+        row=dict(line=bisect.bisect_right(nl,ts[i][1])+1,expression=expr)
+        m=re.fullmatch(r'b\.path\("([^"]+)"\)',expr)
+        if m:row["roots"]=[m.group(1)]
+        else:
+            enclosing=[x for x in loops if x["body"]<i<x["end"]]
+            need(enclosing,("dynamic root outside loop",row))
+            loop=max(enclosing,key=lambda x:x["body"])
+            need(any(re.search(r"\b"+re.escape(v)+r"\b",expr)for v in loop["capture"]),("dynamic root capture",row))
+            roots=sorted({v for v in loop["values"]if v.endswith(".zig")and v.startswith(("src/","tools/"))})
+            need(roots,("finite loop literals",row))
+            row["roots"]=roots
+            hdr=s[loop["header_start"]:loop["header_end"]].encode()
+            dynamic.append(dict(**row,loop_capture=loop["capture"],constant_table_binding=loop["table_binding"],header_bytes=len(hdr),header_sha256=sha(hdr),header_utf8=hdr.decode()))
+        fields.append(row)
+    return fields,dynamic
+fields,loops=root_fields(old)
+new_fields,new_loops=root_fields(new)
+need(len(fields)==545 and len(loops)==8 and sum(len(x["roots"])==1 for x in fields)==537,"545 root fields/537 direct/eight finite loops")
+need([(x["expression"],x["roots"])for x in fields]==[(x["expression"],x["roots"])for x in new_fields],"all root definitions unchanged")
+need([x["roots"]for x in loops]==[x["roots"]for x in reference["loop_families"]],"independently derived loop families")
+roots=sorted({r for f in fields for r in f["roots"]})
+need(all(r in sources for r in roots),"every build root resolves")
+helpers=[];queue=[x["target"]for x in edges["build.zig"]]
+for p in queue:
+    if p in helpers:continue
+    helpers.append(p)
+    for e in edges.get(p,[]):
+        if e["target"].startswith("tools/") and e["target"] not in queue:queue.append(e["target"])
+helper_roots=[]
+for p in helpers:
+    hf,hd=root_fields(sources[p]);need(not hd,("unaccounted dynamic helper root",p))
+    helper_roots.extend(r for f in hf for r in f["roots"])
+    need(not any(x in sources[p]for x in [b"native_node_one_byte_string_diagnostics.cpp",b"native_v8_base_fatal.cpp",b"native_node_diagnostic_context.c"]),("native TU outside selected library",p))
+need(sorted(helpers)==sorted(reference["build_helper_sources"]),"complete helper import census")
+need(helper_roots==["src/extensions/icu/native_icu_api.zig"],"only ICU helper root")
+all_roots=sorted(set(roots)|set(helper_roots));need(len(all_roots)==543,"543 complete build/helper roots")
+need(all_roots==reference["actual_unique_root_files"],"complete root list equality")
+onebyte="src/extensions/native_node_one_byte_string.zig"
+base="src/extensions/native_node_stream_base.zig"
+hits={r:reach(r,onebyte)for r in all_roots};hits={r:v for r,v in hits.items()if v}
+selected=[
+ ("node_stream_read","src/native_node_stream_read_test.zig","native-node-stream-read"),
+ ("node_file_handle_read","src/native_node_file_handle_read_test.zig","native-node-file-handle-read"),
+ ("node_fs_callback_template","src/native_node_fs_callback_template_test.zig","native-node-fs-callback-template"),
+ ("node_file_handle_owner","src/native_node_file_handle_owner_test.zig","native-node-file-handle-owner"),
+ ("node_fs_before_hook_continuation","src/native_node_fs_before_hook_continuation_test.zig","native-node-fs-before-hook-continuation"),
+ ("node_file_handle_transfer","src/native_node_file_handle_transfer_test.zig","native-node-file-handle-transfer"),
+ ("node_stream_shutdown","src/native_node_stream_shutdown_test.zig","native-node-stream-shutdown"),
+ ("node_one_byte_string","src/native_node_one_byte_string_test.zig","native-node-one-byte-string")]
+selected_roots={r for _,r,_ in selected};resource="src/native_node_stream_resource_test.zig"
+need(set(hits)==selected_roots|{resource},"nine and only nine import closures")
+need(all(reach(r,"src/extensions/native_node_readline_errors.zig")is None for r in all_roots),"retained missing imports unreachable from all selected roots")
+# Check concrete artifact recipes, unchanged root/filter/install/target identities and scope.
+def artifact_block(raw,var):
+    needle=("        const "+var+" = b.addTest(.{\n").encode()
+    need(raw.count(needle)==1,("unique artifact",var))
+    a=raw.index(needle);z=raw.find(b"\n        const ",a+1)
+    need(z>a,("artifact extent",var))
+    return a,z,raw[a:z]
+library=steps[0]["after_utf8"].encode()[:-len(steps[0]["before_utf8"].encode())]
+need(library.count(b"b.addLibrary(")==1 and b'.name = "pi-node-one-byte-string-diagnostics"'in library and b".linkage = .static"in library,"one static library")
+need(b"root_source_file"not in library and b".target = target"in library and b".optimize = optimize"in library and b".link_libc = true"in library and b".link_libcpp = true"in library,"C/C++ library module shape")
+TUS=["src/extensions/native_node_diagnostic_context.c","src/extensions/native_v8_base_fatal.cpp","src/extensions/native_node_one_byte_string_diagnostics.cpp"]
+need([x for x in TUS if library.count(('"'+x+'"').encode())==1]==TUS,"exact three TU membership")
+need(b'&.{"-std=gnu11"}'in library and b'&.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" }'in library,"exact existing C/C++ flags")
+need(b"DEBUG"not in library and b"OFFICIAL_BUILD"not in library,"no macro change")
+lib_name="node_one_byte_diagnostics"
+link_re=rb"\b([A-Za-z_][A-Za-z_0-9]*)\.root_module\.linkLibrary\("+lib_name.encode()+rb"\);"
+need([m.decode()for m in re.findall(link_re,new)]==[v for v,_,_ in selected],"exact eight ordered consumers")
+recipe_rows=[]
+for var,root,target in selected:
+    a,z,ob=artifact_block(old,var);na,nz,nb=artifact_block(new,var)
+    link=(var+".root_module.linkLibrary("+lib_name+");").encode()
+    need(nb.count(link)==1 and not any(('"'+x+'"').encode()in nb for x in TUS),("no direct duplicate membership",var))
+    for needle in [('"'+root+'"').encode(),('b.step("build-'+target+'"').encode(),('b.fmt("'+target+'{s}"').encode(),(var+".root_module.linkLibrary(network);").encode()]:
+        need(needle in ob and needle in nb,("retained artifact identity",var,needle))
+    need(not re.search(rb"\b"+var.encode()+rb"\b",new[:na]+new[nz:]),("all consumer references in reviewed block",var))
+    recipe_rows.append(dict(variable=var,root=root,target="build-"+target,original_block_sha256=sha(ob),selected_block_sha256=sha(nb),import_path=hits[root],native_library_links=1,direct_trio_memberships=0))
+# The network conditional's brace range encloses the sole library and all eight consumers.
+s,ts=tokens(new);braces={};stack=[]
+for i,t in enumerate(ts):
+    if t[0]=="{":stack.append(i)
+    elif t[0]=="}":
+        need(stack,"balanced braces");braces[stack.pop()]=i
+scope_candidates=[]
+for i,t in enumerate(ts):
+    if t[0]=="if" and [x[0]for x in ts[i:i+8]]==["if","(","native_node_network",")","|","network","|","{"]:
+        scope_candidates.append((ts[i+7][1],ts[braces[i+7]][2]))
+positions=[new.index(b"const node_one_byte_diagnostics =")]+[artifact_block(new,v)[0]for v,_,_ in selected]
+need(any(all(a<pos<z for pos in positions)for a,z in scope_candidates),"one existing network-conditional lexical scope")
+def identity_statements(raw):
+    return [x.strip()for x in raw.splitlines()if any(t in x for t in [b".root_source_file",b".filters",b"b.step(",b".dest_sub_path",b".use_llvm",b".addImport("])]
+need(identity_statements(old)==identity_statements(new),"all root/filter/install/target/import/LLVM lines unchanged")
+need(new.count(b'"src/extensions/native_node_diagnostic_context.c"')==2 and new.count(b'"src/extensions/native_v8_base_fatal.cpp"')==1 and new.count(b'"src/extensions/native_node_one_byte_string_diagnostics.cpp"')==1,"only shared trio and preserved standalone TLS")
+for var in ["node_diagnostic_context","node_stream_resource"]:
+    _,_,ob=artifact_block(old,var);_,_,nb=artifact_block(new,var)
+    need(ob==nb,("excluded artifact complete byte identity",var))
+    need(lib_name.encode()not in nb,("excluded library link",var))
+_,_,transfer_old=artifact_block(old,"node_file_handle_transfer")
+_,_,transfer_new=artifact_block(new,"node_file_handle_transfer")
+transfer_file=b'"src/extensions/native_node_file_handle_transfer.cpp"'
+need(transfer_old.count(transfer_file)==transfer_new.count(transfer_file)==1,"Transfer original CPP retained")
+# Actual call-site evidence is separate from conservative import closure.
+native_paths=[r["relative_path"]for r in reference["raw_git_additional_native_pins"]]
+native=batch(native_paths)
+for row in reference["raw_git_additional_native_pins"]:
+    raw=native[row["relative_path"]]
+    need(len(raw)==row["bytes"] and sha(raw)==row["sha256"] and tree[row["relative_path"]]==(row["mode"],row["git_blob"]),"native raw Git source")
+    sources[row["relative_path"]]=raw
+excerpt_rows=[]
+for row in reference["source_excerpts"]:
+    path=row["source"];need(path in sources,("source excerpt path",path))
+    raw=b"".join(sources[path].splitlines(keepends=True)[row["start"]-1:row["end"]])
+    need(len(raw)==row["bytes"] and sha(raw)==row["sha256"] and raw==row["utf8"].encode(),("actual source excerpt",path,row["start"]))
+    excerpt_rows.append(dict(source=path,source_bytes=len(sources[path]),source_sha256=sha(sources[path]),start=row["start"],end=row["end"],bytes=len(raw),sha256=sha(raw)))
+call_observations=[]
+def require_source(path,needles,role):
+    raw=sources[path]
+    for needle in needles:need(needle.encode()in raw,("call chain",path,needle))
+    call_observations.append(dict(source=path,bytes=len(raw),sha256=sha(raw),checked_literals=needles,role=role))
+require_source(base,[".after_shutdown = shutdown.reportAfterShutdown","self.resource.push(&self.default_listener);"],"Base.init installs actual reporter callback")
+require_source("src/extensions/native_node_stream_shutdown.zig",["return reportAfterRequest(listener, &request.request, status);","try latin1.fromCString(s, message, diagnostics)"],"reporter reaches OneByte")
+require_source("src/extensions/native_node_stream_request.zig",["scope.finish(setErrorBody(&scope, self, text))","try latin1.fromCString(s, text,"],"Request.done error path reaches OneByte")
+require_source("src/extensions/native_node_file_handle_owner.zig",["try self.stream.init(","stream: stream_base.Base"],"actual Handle owner embeds and initializes Base")
+require_source("src/native_node_stream_read_test.zig",["try f.init();","try node.stream.init("],"actual StreamRead fixture initializes Base")
+require_source("src/native_node_file_handle_read_test_support.zig",["fn assemble(","try node.stream.init("],"shared Read and FS callback fixture initializes Base")
+for path in ["src/native_node_file_handle_read_test.zig","src/native_node_fs_callback_template_test.zig"]:
+    require_source(path,['@import("native_node_file_handle_read_test_support.zig")',"try f.init();"],"selected controls call actual Read fixture")
+require_source("src/native_node_file_handle_owner_test_support.zig",["try Handle.construct(","pub fn create("],"shared actual owner constructor")
+for path in ["src/native_node_file_handle_owner_test.zig","src/native_node_file_handle_transfer_test.zig"]:
+    require_source(path,["try f.create("],"selected controls construct actual owner")
+require_source("src/native_node_stream_shutdown_test_support.zig",["self.base.create(","pub fn create("],"Shutdown fixture calls actual owner fixture create")
+require_source("src/native_node_stream_shutdown_test.zig",["f.create("],"selected Shutdown controls construct actual owner")
+require_source("src/native_node_one_byte_string_test.zig",["try latin1.fromOneByte("],"direct OneByte control")
+before=sources["src/native_node_fs_before_hook_continuation_test.zig"]
+need(b"f.create("not in before and b"f.createArgs("not in before and b"f.installFsRead()"in before,"before-hook conservative qualification")
+res=sources[resource]
+need(b"streams.Resource.init(engine)"in res and b"listener: streams.Listener = .{ .on_destroy = destroyed }"in res,"Resource selected lifetime-only initializer")
+_,restokens=tokens(res);reswords=[x[0]for x in restokens]
+for forbidden in ["reportAfterShutdown","reportAfterRequest","fromCString","fromOneByte","refAllDecls"]:
+    need(forbidden not in reswords,("Resource actual exclusion",forbidden))
+need(not any(x["target"]==base for x in edges[resource]),"Resource root has no direct Base import")
+require_source("src/extensions/native_node_stream_resource.zig",["forwardAfterShutdown","pub fn init(engine:"],"Resource default forwarding remains separate from Base reporter")
+declarations={}
+for _,root,_ in selected:
+    _,rt=tokens(sources[root])
+    declarations[root]=sum(t[0]=="test" and i+1<len(rt)and rt[i+1][3]=="string"for i,t in enumerate(rt))
+need(list(declarations.values())==[18,14,11,18,3,13,18,8],"selected declarations preserved; no metadata inference")
+for path in ["src/root.zig","src/main.zig"]:
+    if path in sources:need(reach(path,onebyte)is None,("default source no OneByte path",path))
+for helper in ["tools/build_native_node_network.zig","tools/build_native_node_memory.zig"]:
+    need(b"root_source_file"not in sources[helper],("C-only native helper",helper))
+    need(not any(Path(x).name.encode()in sources[helper]for x in TUS),("no duplicate native helper memberships",helper))
+require_source("src/extensions/native_node_one_byte_string_diagnostics.cpp",['#include "native_node_diagnostic_context.hpp"','#include "native_v8_base_fatal.h"',"pi_node_one_byte_string_cstring_length","pi_node_one_byte_string_empty_maybe_handle"],"actual native diagnostic dependencies included exactly")
+require_source("src/extensions/native_node_file_handle_transfer.cpp",['#include "native_node_diagnostic_context.hpp"',"DiagnosticContextScope"],"Transfer retains direct CPP and shares TLS definition")
+# Pinned Zig source API is bound to the accepted compiler seal, not ambient documentation.
+acceptance_path=B/"evidence/root-v38-existing63-complete-buildquery-acceptance-20261021.json"
+accepted=json.loads(fixed(acceptance_path,6281,"E6ADF28AEA05357A0C0CCFAE9BE63D27C020F17DA75F4D75E9136C62A10FDDDE"))
+need(accepted["candidate_head"]==HEAD and accepted["complete_buildquery_accepted"]is True,"compiler seal provenance")
+seal=json.loads(readpin(accepted["build_final"]))
+need(seal["candidate_head"]==HEAD and len(seal["compiler"])==19546,"accepted compiler inventory")
+api_specs=[
+("lib/std/Build.zig",102991,"DFFB5A172899D660C370C6CDECA04C073468C64F28B9BB6FCE919E71D1D5326D",[(823,856),(918,920)]),
+("lib/std/Build/Module.zig",26577,"0D5D2A468C99BEA020BD8B8CA13C32E64ABD66686D1821C9737FFC1A9292729F",[(116,128),(216,258),(397,437),(470,473),(485,488),(649,659)])]
+api_rows=[];apis={}
+for relative,n,h,ranges in api_specs:
+    matches=[r for r in seal["compiler"]if r["relative"]==relative]
+    need(len(matches)==1 and matches[0]["sha256"]==h,("exact compiler API member",relative))
+    raw=fixed(Path(matches[0]["path"]),n,h);apis[relative]=raw;ex=[]
+    for a,z in ranges:
+        selected_bytes=b"".join(raw.splitlines(keepends=True)[a-1:z])
+        ex.append(dict(start=a,end=z,bytes=len(selected_bytes),sha256=sha(selected_bytes),utf8=selected_bytes.decode()))
+    api_rows.append(dict(relative=relative,path=matches[0]["path"],bytes=n,sha256=h,excerpts=ex))
+need(b"root_source_file: ?LazyPath = null,"in apis["lib/std/Build/Module.zig"],"null Zig root documented by pinned API")
+for literal in [b"linkage: std.builtin.LinkMode = .static",b"pub fn addLibrary",b".kind = .lib",b".linkage = options.linkage",b"pub fn createModule"]:
+    need(literal in apis["lib/std/Build.zig"],("Build API",literal))
+for literal in [b"pub fn addCSourceFile(",b"pub fn addCSourceFiles(",b".root = options.root orelse b.path(\"\")",b"pub fn linkLibrary(",b"assert(library.kind == .lib)",b"m.link_objects.append",b"link_libcpp: ?bool = null",b"pub fn addIncludePath("]:
+    need(literal in apis["lib/std/Build/Module.zig"],("Module API",literal))
+# The output is an independent source proof. It does not invoke any reviewed file.
+raw_graph_digest=sha(json.dumps(edges,sort_keys=True,separators=(",",":")).encode())
+source_census_digest=sha(json.dumps(rawpins,sort_keys=True,separators=(",",":")).encode())
+need(not OUT.exists(),"final create-only output")
+proof={
+"schema":1,"status":"independently_verified_bounded_shutdown_linkage_build_successor_source",
+"reviewer":"/root/handover_review","basis_head":HEAD,
+"candidate_manifest":dict(path=str(D/"manifest.json"),bytes=len(mr),sha256=sha(mr)),
+"candidate_build":proposal["projected"],"accepted_old_build":proposal["original_donor"],
+"finite_edit_count":9,"forward_inverse_and_every_untouched_fragment":edit_rows,"whole_forward_and_raw_inverse_exact":True,
+"all_other19_selected_donors_exact":proposal["preserved_other19_donors"],
+"independent_graph":{"raw_git_files":len(rawpins),"raw_census_digest":source_census_digest,"literal_graph_digest":raw_graph_digest,"all_source_inventory_rows_match":True,"nonliteral_imports":nonliteral,"retained_missing_imports":missing,"missing_imports_unreachable_from_all543_roots":True,"named_source_bindings":bindings,"constant_options_modules":sorted(options)},
+"independent_build_census":{"root_field_count":len(fields),"direct_field_count":len(fields)-len(loops),"finite_loop_families":loops,"all_root_fields":fields,"helper_sources":helpers,"helper_roots":helper_roots,"unique_root_files":all_roots},
+"onebyte_import_closures":hits,"selected_artifacts":recipe_rows,
+"source_call_chains":call_observations,"actual_source_excerpts_rechecked":excerpt_rows,
+"seven_proven_call_roots":[r for _,r,_ in selected if "before_hook"not in r],
+"conservative_only_root":"src/native_node_fs_before_hook_continuation_test.zig",
+"resource_exclusion":{"root":resource,"bytes":len(res),"sha256":sha(res),"full_body_reviewed":True,"reason":"Resource.init plus default forwarding listener only; no Base.init, actual reporter selection, request Done or declaration-forcing operation in the complete controls."},
+"other_root_exclusions":{"root_count":len(all_roots)-len(hits),"no_import_path_to_OneByte":True,"network_and_memory_C_only_helpers_unchanged":True,"default_root_and_main_no_OneByte_path":True,"standalone_diagnostic_context_full_recipe_unchanged":True},
+"library":{"name":"pi-node-one-byte-string-diagnostics","linkage":"static","members":TUS,"consumers":8,"proven_callers":7,"conservative_consumer":1,"native_module_null_Zig_root":True,"same_network_scope":True,"same_target_optimize_C_Cpp_flags":True,"new_release_macros":False,"duplicate_direct_trio_per_consumer":0,"Transfer_direct_CPP_retained":True},
+"compiler_authority":dict(path=str(acceptance_path),bytes=6281,sha256="E6ADF28AEA05357A0C0CCFAE9BE63D27C020F17DA75F4D75E9136C62A10FDDDE"),
+"compiler_seal":accepted["build_final"],"pinned_Zig_API_sources":api_rows,
+"preserved_module_checker_observations":manifest["preserved_checker_observations"],
+"current_inputs":sorted(inputs.values(),key=lambda r:(r["path"].lower(),r["sha256"])),
+"raw_git_additional_native_pins":reference["raw_git_additional_native_pins"],
+"source_only":True,"Main_accessed":False,"candidate_or_prefix_executed":False,"compiler_or_native_executed":False,"configuration_issued":False,"intake_authorized":False,"application_qualified":False,
+"limits":["Static source and recipe review does not establish compiler instantiation, archive extraction, cross-platform linking or runtime behavior.","Selected current source is raw immutable014 plus exact accepted20 donors and the single proposed build successor.","No V38 outcome is transferred to future source; post-intake source/dependency catalog and fresh native validation remain required.","Public FileHandle/runtime-template identity/full CustomBuffer listener remain outside this source scope."]}
+P.mkdir(parents=True,exist_ok=True)
+encoded=(json.dumps(proof,indent=2)+"\n").encode()
+with OUT.open("xb")as stream:stream.write(encoded)
+need(OUT.read_bytes()==encoded,"proof readback")
+print(json.dumps(dict(output=dict(path=str(OUT),bytes=len(encoded),sha256=sha(encoded)),counts=dict(edits=9,raw_zig=len(rawpins),roots=len(all_roots),root_fields=len(fields),loops=len(loops),import_closures=len(hits),library_links=len(selected),proven_callers=7,conservative_links=1,current_pins=len(inputs)),candidate_executed=False,Main_accessed=False)))

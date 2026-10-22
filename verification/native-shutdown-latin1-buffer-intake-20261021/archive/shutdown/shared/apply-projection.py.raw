@@ -1,0 +1,30 @@
+import pathlib,json,hashlib
+d=pathlib.Path(r'C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018\verification/native-node-shutdown-wrap-sourceonly-20261020/shared')
+es=json.loads((d/'edits.json').read_bytes());work={};steps=[]
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p,b=None):
+ if b is None:b=p.read_bytes()
+ return {'path':str(p),'bytes':len(b),'sha256':sha(b)}
+for e in es:
+ p=e['path'];before=work.get(p,(d/'original'/p).read_bytes());old=e['before'].encode();new=e['after'].encode()
+ assert before.count(old)==1,(p,e['reason'],before.count(old))
+ after=before.replace(old,new)
+ assert after.count(new)==1 and after.replace(new,old)==before
+ steps.append({**e,'before_sha256':sha(before),'after_sha256':sha(after)})
+ work[p]=after
+rows=[]
+for p,final in work.items():
+ b=final
+ for e in reversed([x for x in es if x['path']==p]):b=b.replace(e['after'].encode(),e['before'].encode())
+ assert b==(d/'original'/p).read_bytes(),p
+ target=d/'projected'/p;assert not target.exists(),str(target)
+ rows.append({'relative_path':p,'original':pin(d/'original'/p),'projected':pin(target,final),'whole_inverse_exact':True})
+proposal={'schema':1,'status':'source_only_shutdown_shared_projection','basis':pin(d/'basis.json'),
+ 'selected_quickjs_basis':'Accepted constructor successor C 5C746837 / H 7FBD8411, not current Main or an altered accepted packet',
+ 'path_count':len(rows),'edit_count':len(steps),'files':rows,'edits':steps,
+ 'live_shared_sources_mutated':False,'main_mutated':False,'native_execution':False,'qualification':False}
+target=d/'proposal.json';assert not target.exists()
+for p,b in work.items():
+ dst=d/'projected'/p;dst.parent.mkdir(parents=True,exist_ok=True);dst.write_bytes(b)
+target.write_bytes((json.dumps(proposal,indent=2)+'\n').encode())
+print(json.dumps(pin(target)))

@@ -1,0 +1,40 @@
+{
+  "schema": "pi-zig.raw-view-data-source-inspector-negative.v1",
+  "source_only": true,
+  "preserved_inspector": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\source-audit.py",
+    "bytes": 5885,
+    "sha256": "4849FD0A1494DF03E17C6FF3EE949C3A7F7DA22A608A759D7A0D81E9937CC674"
+  },
+  "failed_check": "Exact regular-expression token set omitted the C return keyword matched by return (uint8_t *)",
+  "observed_identifiers": [
+    "JS_PiArrayBufferViewData",
+    "if",
+    "JS_VALUE_GET_TAG",
+    "JS_VALUE_GET_OBJ",
+    "if",
+    "is_typed_array",
+    "if",
+    "if",
+    "return"
+  ],
+  "classification": "metadata inspector lexical classification only; no production failure observed",
+  "failure_before_proof_output": true,
+  "source_map_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\source-map.json",
+    "bytes": 94479,
+    "sha256": "73E9599B832ADF1694650E8D04DF8A2D5DA4D012D6D19BB63748C7C987790D28"
+  },
+  "inventory_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependency-inventory.json",
+    "bytes": 44600,
+    "sha256": "9843533B132D9C04C273F05F794B36BCB85E68B08C1FB8D71F2738071129DF5D"
+  },
+  "closure_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\closure-and-preservation.json",
+    "bytes": 18464,
+    "sha256": "5C33DE78B6650A92D6EE162A9ACBA6657BEFE6B78310CAFD15453ACC152E9809"
+  },
+  "production_or_Main_changes": false,
+  "compiler_native_reference_generator_execution": false
+}

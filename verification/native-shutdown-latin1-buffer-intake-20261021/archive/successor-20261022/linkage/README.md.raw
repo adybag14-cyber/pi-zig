@@ -1,0 +1,76 @@
+# Pending Shutdown diagnostic linkage: build-only successor
+
+This packet proposes one replacement build donor for the accepted twenty-path Shutdown / Latin-1 / Buffer source union. It does not modify that union, Main, or any production source body.
+
+The original build donor is 514,007 bytes, SHA-256 868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7. The proposed donor is 514,105 bytes, SHA-256 594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF. The nine disclosed replacements have a complete byte inverse. All other nineteen selected donors remain unchanged.
+
+## Concrete dependency and correction
+
+The selected Base.init stores shutdown.reportAfterShutdown in its native default listener. The reporter's ordinary dynamic error-string branch calls latin1.fromCString. OneByteString uses pi_node_one_byte_string_cstring_length and pi_node_one_byte_string_empty_maybe_handle. Those C ABI entries enter the borrowed diagnostic context and call the genuine V8 fatal owner where the original algorithm requires it.
+
+Before this correction, only the new Shutdown and OneByteString artifacts compile all three required translation units. The retained Transfer artifact compiles TLS alone. Several retained roots construct the same Base and therefore retain its reporter.
+
+The successor defines one static library, pi-node-one-byte-string-diagnostics, inside the existing native_node_network conditional. Its three members are:
+
+| Member | Existing flags retained |
+| --- | --- |
+| src/extensions/native_node_diagnostic_context.c | -std=gnu11 |
+| src/extensions/native_v8_base_fatal.cpp | -std=gnu++20 -fno-exceptions -fno-rtti -fno-strict-aliasing |
+| src/extensions/native_node_one_byte_string_diagnostics.cpp | -std=gnu++20 -fno-exceptions -fno-rtti -fno-strict-aliasing |
+
+The library inherits the same target and optimize values and declares libc and libc++ linkage. It uses the contained src/extensions include directory. No DEBUG, OFFICIAL_BUILD, bootstrap hook, ambient SDK include path, or public template publication is added.
+
+The nine edits define that library, add five retained-artifact links, replace Transfer's direct TLS membership with a library link, and replace both new artifacts' direct trio memberships with a library link. The Transfer C++ owner itself stays in its original recipe.
+
+## Artifact coverage
+
+Every row below links the library once. The installed Windows artifact appends .exe; existing filters, target names and install destinations are unchanged.
+
+| Build target | Source basis for the dependency |
+| --- | --- |
+| build-native-node-stream-read | The root's Fixture bootstrap calls node.stream.init. |
+| build-native-node-file-handle-read | The real read fixture calls node.stream.init. |
+| build-native-node-fs-callback-template | Its controls initialize that same real read fixture. |
+| build-native-node-file-handle-owner | Fixture.create / createArgs / createBody calls Handle.construct, which calls Base.init. |
+| build-native-node-file-handle-transfer | Controls construct the real Handle; the retained transfer C++ owner also uses the same diagnostic TLS. |
+| build-native-node-stream-shutdown | The real owner fixture and the request/reporter operations are selected by the controls. |
+| build-native-node-one-byte-string | Its create helper directly calls latin1.fromOneByte. |
+| build-native-node-fs-before-hook-continuation | Conservative coverage of the shared owner fixture. Its current three controls select FS Read and teardown, so this packet does not claim a selected Handle.construct or Base.init call here. |
+
+There are seven proven caller roots and one additional conservative link. The earlier analysis shorthand calling all eight proven Base.init consumers is refined here; no compiler-selected count is inferred.
+
+## Complete bounded source census
+
+The static audit reads immutable Git objects at 014062f2d139254acab4b985b4ae343db637166f through the assigned worktree, then overlays the exact twenty accepted donor files. It rehashes all 2,841 committed Zig source files under src and tools and reproduces the complete literal import inventory.
+
+The selected build contains 545 root_source_file fields: 537 literal fields and eight finite loop families. Every loop's literal members are recorded. Including the imported ICU API module, there are 543 distinct build/helper root files. The build helper inventory also covers the C/C++ network, memory, YAML, Photon, ICU, package JSON and transform-compression recipes. These helpers do not add an unenumerated relevant Zig root.
+
+All named imports are resolved from the build. The two pi_features selections and sqlite_persistence/release_config modules are included. The three generated options modules contain only the observed scalar/string/hash options. No nonliteral Zig import is present in the inspected source set. Two pre-existing missing readline imports are recorded explicitly; the containing source has no importer and is outside every selected root closure.
+
+Nine root import closures reach OneByteString. Eight are supplied by the correction above. The ninth is the StreamResource test root, whose complete body constructs Resource and plain native Listener records. Its default callback is forwardAfterShutdown, which only invokes the previous listener's callback and the existing Node CHECK. The root never constructs Base, calls Request.done, or selects the JavaScript reporter. Its exact source and relevant Resource bodies are pinned in the proof.
+
+The other 534 distinct roots have no import path to OneByteString or Base in the resolved graph. This includes src/root.zig, both CLI selections through src/main.zig, and the SQLite persistence module. The network and memory libraries have C/C++ source memberships and no Base.init path. Their recipes remain unchanged.
+
+## Native definition ownership
+
+For each of the eight selected artifacts, the three dependencies occur once in the linked diagnostic archive, with zero duplicate direct memberships. This is a source recipe statement; it does not predict archive extraction or runtime symbol counts.
+
+The separate diagnostic-context control target retains its original direct TLS implementation and C++ test support byte-for-byte. It does not link the new library. The network and memory libraries supply neither the new diagnostic archive nor a second TLS/fatal definition.
+
+The existing native context C/H/HPP pins are checked against immutable Git. The two accepted fatal files and the OneByteString C/H/Zig files remain identical to their accepted donor snapshots. No Node CHECK substitution is introduced.
+
+## Proof and preserved observations
+
+build-proposal.json records the exact nine edits, intermediate hashes, original/projected donors, all nineteen preserved donors and the complete inverse.
+
+source-proof.json records the reproduced source graph, all root fields and loop families, exact artifact mappings, source excerpts, native membership checks and all edit inverses. The selected checker is source-audit-v2.py.
+
+The initial source-audit.py hit the Hermes 30-second wall timeout before writing a proof. An exact process query then found no remaining checker process, and readback confirmed the proof was absent. checker-timeout-observation.json preserves those observations.
+
+A subsequent source read found that the documentary OneByteString excerpt ended at line 52, not line 67. checker-range-successor.json records the sole checker-only correction and its full inverse. The selected checker completed successfully with a 60-second wall budget. Neither observation changed the proposed build donor or any production file.
+
+## Limits and next step
+
+This packet establishes bounded source coverage and native recipe composition. No compiler, preprocessor, linker, build target, runtime test, reference implementation, or source generator was executed. No Main source, index, configuration, intake, or native lease was changed or issued.
+
+Independent source review should bind this replacement build donor before any later exact intake. The accepted nineteen other source donors and their existing evidence remain the source basis. A later separately authorized fresh build/runtime cohort must establish actual linkage and behavior. Full FileHandle/public template publication, the checked/unchecked ApiFailure owner, process tracing/bootstrap and target qualification remain separate work.

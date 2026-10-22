@@ -1,0 +1,43 @@
+# Native ShutdownWrap and Latin-1 source proposal
+
+This packet proposes the real native StreamReq/ShutdownWrap slice and the selected node::OneByteString(kNormal) byte operation. It does not install public FileHandle/StreamBase methods or bootstrap process tracing.
+
+## Selected source
+
+- Six new production snapshots are under production/src/extensions/.
+- Seven shared files, 37 exact reversible edits, and immutable originals are in shared/proposal.json (C58D3183). Apply the finite edits only to their selected preimages.
+- Three new control/support snapshots are under controls/src/: 18 shutdown declarations and 8 OneByteString declarations.
+- build/proposal.json (2B7888AF) is one install-only insertion on accepted Owner/Error combined build399BD2EF. It adds two explicit artifact targets and no run steps.
+- dependencies/ retains unchanged copies of the existing TLS diagnostic C/H/HPP owner and the previously reviewed V8 fatal H/CPP owner5059d6a. The latter remains a separate source-intake prerequisite.
+
+## Concrete ownership
+
+The request slot is independent from the AsyncWrap native slot and attaches before the genuine AsyncWrap constructor. The default SimpleShutdown owns only its own native state. The FileHandle variant adds real canonical filesystem request storage and actual ReqWrap Entry; its stream pointer is borrowed. It creates no handle Global, Promise, replacement queue, or synthesized native completion.
+
+FileHandle shutdown uses the existing real Controller.dispatchRawClose and callback Wrapper. Completion performs trace end, actual AfterClose, a fresh result read, native cleanup, and Done. A completed ordinary callback exception does not skip the original native continuation. Scope retirement restores the trigger before releasing the outer request pointer and local handles. The real callback Wrapper remains alive through Done/Dispose.
+
+The reusable reporter is native_node_stream_shutdown.reportAfterRequest(listener, request, status), with reportAfterShutdown as its typed adapter. This is the original ReportWritesToJSStreamListener body: disabled-JS return, actual arguments, optional error/ClearError, genuine Has.FromJust terminal policy, ordinary Get, nonfunction -> undefined, then actual MakeCallback. Generic StreamListener predecessor forwarding remains separate.
+
+## Latin-1 scope
+
+JS_PiNewStringLatin1 calls the real QuickJS one-byte allocator and preserves each input byte as the corresponding code unit. Explicit lengths preserve embedded NUL; negative signed lengths call actual strlen. The selected wrapper keeps the distinct explicit-over-max ToLocalChecked path and inferred-length internal MaybeHandle CHECK path, real allocation-failure ownership, and genuine native diagnostics.
+
+The raw VM primitive does not implement V8's heap layout, one-character cache, or GC/retry machinery. Original length-zero and length-one factory decisions are recorded explicitly; no claim equates a QuickJS raw allocation with the full V8 heap policy. Internalized-string mode is outside this selected wrapper.
+
+The build recipe compiles one TLS implementation, one V8 fatal owner and the new two-entry diagnostic adapter per new executable. The selected network library contains none of those three translation units. Neither DEBUG nor OFFICIAL_BUILD is selected, even when Zig optimize is Debug; native Debug/official parity is not claimed. Both C ABI entries install borrowed DiagnosticContextScope first and queue no context pointer.
+
+## Basis, verification, and controls
+
+All unchanged closure bytes are immutable raw c764130c Git blobs. Explicit overlays select accepted Owner/Error files, the exact C195 + E228 FS observer composition, then this packet's finite projection. Both C195/E228 orders and both complete inverses reproduce the same bytes. Shutdown's QuickJS C/H files are distinct from E228's native_uv_fs.h/native_uv_tcp.c; no FS observer edit is discarded.
+
+The source audit derives 708 conservative literal modules for the shutdown root and 679 for OneByteString, with a 709-module union and 242 embedded files. Each root's conservative closure contains eight literal anonymous blocks. These are source allowlists, not predictions of actual compiler-selected metadata. The only newly declared named controls are 18 + 8.
+
+The fixture is a stack-local object kept at a stable address throughout its lifetime. It reuses the frozen actual FileHandle fixture and actual native queue/storage/VM. Physical controls select descriptors >2, preserving the Windows CRT-close boundary. Trace callbacks are labeled control observers; they are not production trace or hook policies. Completion-only request info is never read by the pre-admission observer.
+
+prepare-closure-v2.py has one final output-writing phase. Its complete read-only prefix can be replayed to reproduce dependency-inventory.json and closure-and-preservation.json. The earlier missing-filename audit negative and its script remain immutable. source-audit.py verifies this replay, all selected snapshots, original excerpt bytes, the finite diagnostic ABI and build inverse. No compiler, preprocessor, native image, Node reference runtime, or project generator has been executed.
+
+## Remaining assembly and qualification
+
+The full StreamBase::AddMethods and public FileHandle template, process-lifetime FS trace owner, bootstrap-owned cached keys/template lifetime, production hook policy, MemoryRetainer virtual assembly, and worker broker remain separate owners. This packet does not replace them with observers or no-op handlers. Native compilation, platform/runtime validation, default wiring, and Main intake require separate review and authorization.
+
+The old seven dirty source paths, ten tracing drafts, and 134 historical untracked pins remain byte-exact; the index is empty. All accepted predecessor packets and preserved runtime negatives remain unchanged.

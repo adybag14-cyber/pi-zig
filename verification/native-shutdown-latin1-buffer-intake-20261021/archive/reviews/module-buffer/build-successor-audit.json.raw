@@ -1,0 +1,327 @@
+{
+  "schema": 1,
+  "status": "independent_finite_build_successor_source_checks_passed",
+  "reviewer": "/root/module_io_port",
+  "successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\proposal.json",
+    "bytes": 30389,
+    "sha256": "81B6F6E7F0DDF12A4A32903E49E6AAE3F4FCDDECCBBA791301DB1FCA7F565913"
+  },
+  "reviewed_builder": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\prepare-proposal.py",
+    "bytes": 11634,
+    "sha256": "AE03BA7DB4A6AE37D987A35ACBBAA1DF384A9F9BF16AC194D02BBB4B7E98B041"
+  },
+  "complete_proposal_reproduced_byte_exact": true,
+  "source_snapshots_reproduced": 8,
+  "source_pins_rehashed": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v34-prepared-20261020\\Audit-CombinedNativeBatch.py",
+      "bytes": 17691,
+      "sha256": "1436211CABD8D2D2C0A31DB4005C05BA3451E50E381F7EC3AFF8ACC094CAE98B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v34-prepared-20261020\\Run-CombinedNativeBatch.ps1",
+      "bytes": 60094,
+      "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\proposal.json",
+      "bytes": 12811,
+      "sha256": "262AFAA489DC7620FECE7D077FCB1C7A4904E6B65BC420A8A697B6C2341A158A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\zig-naming-authority.json",
+      "bytes": 11751,
+      "sha256": "F972718987A310E725142A598637E08FDC688639B6EA5AA53B0E3F1E97F13CDD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build.zig",
+      "bytes": 102991,
+      "sha256": "DFFB5A172899D660C370C6CDECA04C073468C64F28B9BB6FCE919E71D1D5326D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\Compile.zig",
+      "bytes": 84912,
+      "sha256": "6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\InstallArtifact.zig",
+      "bytes": 8841,
+      "sha256": "6008437F2DF91E09396B0732B5E10094EF2DF5BE21AA6ABA53F08926FEF685A0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Target.zig",
+      "bytes": 117251,
+      "sha256": "B830BAC98558E0E6B83AF9917F3FF492452F57F608C3C54F009384C793A6F345"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\zig.zig",
+      "bytes": 44987,
+      "sha256": "5445596331AD810FC60057FCE5555477E9317441FB36F69C632F37F0D1DA0824"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-current-head-composition-20261020\\projection.json",
+      "bytes": 26005,
+      "sha256": "B0919FB27FB4825C57CAC6FCE0BE074DD58945ED42DA3D7781B8241FAAFFF92D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_vm_array_buffer_view_data_test.zig",
+      "bytes": 22131,
+      "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\c764-with-original-buffer.zig",
+      "bytes": 504188,
+      "sha256": "2D046B3325B617146658B82B2BC12F58A8A811EC50403F91F9135553849C1DAE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\current79-build.zig",
+      "bytes": 509023,
+      "sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\current79-with-shutdown.zig",
+      "bytes": 513195,
+      "sha256": "ED75E6415A6BA63B4E4F51D7620818D7CAB494971D373F8C2CF3DB8F2E4E026E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\install-only-block.zig.txt",
+      "bytes": 748,
+      "sha256": "FB4A10A7214C73651AA6681E48092C8E63A04E49337A03EF81E11FD3F8ECB6D7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\prepare-proposal.py",
+      "bytes": 11634,
+      "sha256": "AE03BA7DB4A6AE37D987A35ACBBAA1DF384A9F9BF16AC194D02BBB4B7E98B041"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\c764-with-corrected-buffer.zig",
+      "bytes": 504252,
+      "sha256": "FE532CFA7EFBB474D6B4E84ACE2AF563A019282CDD043D836EF824DED854724F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\current79-with-buffer.zig",
+      "bytes": 509835,
+      "sha256": "51AC4EEFEE7E09507C9ECFBA6052B9378D7E5335789A44E3421618BB1D7FBF4B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\current79-with-shutdown-and-buffer.zig",
+      "bytes": 514007,
+      "sha256": "868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\install-only-block.zig.txt",
+      "bytes": 812,
+      "sha256": "A294A6F8CA4D868376BE9DF89B5F8C0C51638FD5E7E4C53DB769D63B37810EC3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\build\\proposal.json",
+      "bytes": 4359,
+      "sha256": "AD344119A626BB53199DB10991521D2B21A7D464D4EBE68265CECF929A9CA89C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+      "bytes": 22131,
+      "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\production-proposal.json",
+      "bytes": 43670,
+      "sha256": "978981A96D6CDD2791FF6B90DDBC575235A83E9C3B678CD3961389AB6866AF12"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\latin1-successor-composition.json",
+      "bytes": 7587,
+      "sha256": "F992DA49E1550C3E46769D2B1D57DA239391B3D05743BC3C64CCCEC022A8D807"
+    }
+  ],
+  "exact_two_block_edits_and_whole_inverse": true,
+  "exact_two_comparison_file_edits_and_whole_inverse": true,
+  "exact_current79_insertion_and_inverse": true,
+  "current79_build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\current79-build.zig",
+    "bytes": 509023,
+    "sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55"
+  },
+  "current79_plus_buffer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\current79-with-buffer.zig",
+    "bytes": 509835,
+    "sha256": "51AC4EEFEE7E09507C9ECFBA6052B9378D7E5335789A44E3421618BB1D7FBF4B"
+  },
+  "exact_current_shutdown_insertion_and_inverse": true,
+  "current79_plus_shutdown_plus_buffer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\current79-with-shutdown-and-buffer.zig",
+    "bytes": 514007,
+    "sha256": "868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+  },
+  "buffer_before_or_after_selected_shutdown_identical": true,
+  "both_whole_inverse_orders_exact": true,
+  "selected_transfer_then_shutdown_order_preserved": true,
+  "transfer_shutdown_mutual_commutation_not_claimed": true,
+  "canonical_error_naming_preserved": true,
+  "authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\zig-naming-authority.json",
+    "bytes": 11751,
+    "sha256": "F972718987A310E725142A598637E08FDC688639B6EA5AA53B0E3F1E97F13CDD"
+  },
+  "all12_naming_excerpts_read_and_verified": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build.zig",
+        "bytes": 102991,
+        "sha256": "DFFB5A172899D660C370C6CDECA04C073468C64F28B9BB6FCE919E71D1D5326D"
+      },
+      "first_line": 858,
+      "last_line": 888,
+      "bytes": 1222,
+      "sha256": "EE9C4706DB5E9801729FEF37049B457991792A3BBB7BB238CD8CC2D80EC7750E"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\Compile.zig",
+        "bytes": 84912,
+        "sha256": "6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84"
+      },
+      "first_line": 381,
+      "last_line": 410,
+      "bytes": 1326,
+      "sha256": "2829D2CC11C0A63DF639AC88BAF76F55F704CB58B90377B076696975AC527F62"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\Compile.zig",
+        "bytes": 84912,
+        "sha256": "6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84"
+      },
+      "first_line": 1484,
+      "last_line": 1485,
+      "bytes": 74,
+      "sha256": "95F4A3364C03246EBE12D0CAD19805A012E152766A4C24A626B58856848B5500"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\Compile.zig",
+        "bytes": 84912,
+        "sha256": "6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84"
+      },
+      "first_line": 1810,
+      "last_line": 1813,
+      "bytes": 249,
+      "sha256": "DF19F568321B9B44BE85EAA24A46EEE9C3C9BFD83F42C809B6898BA1E8265FEA"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\Compile.zig",
+        "bytes": 84912,
+        "sha256": "6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84"
+      },
+      "first_line": 1836,
+      "last_line": 1850,
+      "bytes": 576,
+      "sha256": "F43BD1DAC664A97ECA873FFD5B0A7E950A2507F13CD73B60BEB38285DF81533A"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\InstallArtifact.zig",
+        "bytes": 8841,
+        "sha256": "6008437F2DF91E09396B0732B5E10094EF2DF5BE21AA6ABA53F08926FEF685A0"
+      },
+      "first_line": 78,
+      "last_line": 82,
+      "bytes": 196,
+      "sha256": "49796C6EB2DE6B1F05DF62C3F55554636C03C238A981E2BA6C11129A3E5F3310"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\InstallArtifact.zig",
+        "bytes": 8841,
+        "sha256": "6008437F2DF91E09396B0732B5E10094EF2DF5BE21AA6ABA53F08926FEF685A0"
+      },
+      "first_line": 104,
+      "last_line": 108,
+      "bytes": 165,
+      "sha256": "DBEC95C5551721D4A24EDBF7CD3A73FFDA38F4D10BBE2D04D33C730085025D25"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\InstallArtifact.zig",
+        "bytes": 8841,
+        "sha256": "6008437F2DF91E09396B0732B5E10094EF2DF5BE21AA6ABA53F08926FEF685A0"
+      },
+      "first_line": 162,
+      "last_line": 165,
+      "bytes": 289,
+      "sha256": "C2F5D1D19869A33D6B0E30246B0DD14FF76501CABF4B24D3A9938E09EFD5FBE9"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\zig.zig",
+        "bytes": 44987,
+        "sha256": "5445596331AD810FC60057FCE5555477E9317441FB36F69C632F37F0D1DA0824"
+      },
+      "first_line": 156,
+      "last_line": 161,
+      "bytes": 334,
+      "sha256": "2B17AA1AFF55A298739007ADAD77C9CEBECFEFCC59B4D405237F3D0A1B4134AC"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\zig.zig",
+        "bytes": 44987,
+        "sha256": "5445596331AD810FC60057FCE5555477E9317441FB36F69C632F37F0D1DA0824"
+      },
+      "first_line": 979,
+      "last_line": 1010,
+      "bytes": 1150,
+      "sha256": "761905ECF83F8ECA5F1D272DC28760FB3C624617A1364C9CAC1CB10B1D560398"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Target.zig",
+        "bytes": 117251,
+        "sha256": "B830BAC98558E0E6B83AF9917F3FF492452F57F608C3C54F009384C793A6F345"
+      },
+      "first_line": 100,
+      "last_line": 111,
+      "bytes": 379,
+      "sha256": "FB3565975603188D5A62814B5F18A31550AB9CE075A4AF978F247DAAEDA0E512"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Target.zig",
+        "bytes": 117251,
+        "sha256": "B830BAC98558E0E6B83AF9917F3FF492452F57F608C3C54F009384C793A6F345"
+      },
+      "first_line": 2119,
+      "last_line": 2121,
+      "bytes": 112,
+      "sha256": "008316C2EA8A3E808300C8A90C3F5630E1799FE1346A85772112D06C81BA58DA"
+    }
+  ],
+  "target": {
+    "build_step": "build-native-vm-array-buffer-view-data",
+    "root_source": "src/native_vm_array_buffer_view_data_test.zig",
+    "filter": "VM view data",
+    "cached_executable_windows": "test.exe",
+    "cached_pdb_windows": "test.pdb",
+    "installed_executable_windows": "native-vm-array-buffer-view-data.exe",
+    "installed_pdb_windows": "test.pdb",
+    "installed_executable_non_windows": "native-vm-array-buffer-view-data",
+    "declared_named_controls": 12,
+    "actual_future_metadata": null
+  },
+  "original_production_control_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-vm-view-data-independent-peer-20261020\\source-audit.json",
+    "bytes": 20684,
+    "sha256": "E7F8CA48D5DD2B5B70C76B112A34503A8411807942C72E81AB0226578D7B8F26"
+  },
+  "original_build_rejection_retained": "The preceding production proof excludes AD344119. This additive successor selects A294A6F8/81B6F6E7 only and leaves that predecessor unchanged.",
+  "no_production_or_control_change": true,
+  "no_main_change": true,
+  "no_compiler_native_reference_generator_execution": true,
+  "whole_build_body_executed": false,
+  "actual_artifacts_produced": false,
+  "actual_future_metadata": null,
+  "conclusion": "The finite naming change preserves canonical cached test.exe/test.pdb and selects only the installed executable basename. No remaining bounded source-composition blocker was found; this receipt grants no intake or native execution."
+}

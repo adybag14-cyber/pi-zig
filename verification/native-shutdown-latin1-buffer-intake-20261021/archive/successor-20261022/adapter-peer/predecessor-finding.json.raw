@@ -1,0 +1,27 @@
+{
+  "predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py",
+    "bytes": 23554,
+    "sha256": "1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010"
+  },
+  "source_finding_pin": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\original-planned-parent-alias-source-finding.json",
+    "bytes": 996,
+    "sha256": "1D336DEF267175CBA6FB0A82FF59549F8D4CE6DA24E7BB8612B52D7709C49025"
+  },
+  "status": "confirmed_source_contract_gap_corrected_only_in_selected_v2",
+  "counterexample": [
+    "verification/Foo/a.raw",
+    "verification/foo/b.raw"
+  ],
+  "premise": "The Foo/foo parent is absent from the original committed-prefix map.",
+  "old_existing_only_check_conflicts": [],
+  "selected_combined_prefix_check_conflicts": [
+    {
+      "previous": "verification/Foo",
+      "next": "verification/foo"
+    }
+  ],
+  "full_name_uniqueness_and_file_ancestor_checks_alone_do_not_reject": true,
+  "candidate_or_prefix_executed": false
+}

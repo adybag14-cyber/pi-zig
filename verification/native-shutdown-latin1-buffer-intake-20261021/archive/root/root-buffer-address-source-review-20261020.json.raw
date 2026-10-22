@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "bounded_buffer_address_source_semantics_reviewed_build_successor_pending",
+  "created_utc": "2026-10-20T22:12:01.544626+00:00",
+  "candidate_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\production-proposal.json",
+    "bytes": 43670,
+    "sha256": "978981A96D6CDD2791FF6B90DDBC575235A83E9C3B678CD3961389AB6866AF12"
+  },
+  "source_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\source-map.json",
+    "bytes": 94479,
+    "sha256": "73E9599B832ADF1694650E8D04DF8A2D5DA4D012D6D19BB63748C7C987790D28"
+  },
+  "source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\source-only-checks.json",
+    "bytes": 48455,
+    "sha256": "F59FD3FD1A5BD0BE2A59145156C9E0E052F44BB210494C9A4FC12DE4F5D3B6E4"
+  },
+  "dependency_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependency-inventory.json",
+    "bytes": 44600,
+    "sha256": "9843533B132D9C04C273F05F794B36BCB85E68B08C1FB8D71F2738071129DF5D"
+  },
+  "closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\closure-and-preservation.json",
+    "bytes": 18464,
+    "sha256": "5C33DE78B6650A92D6EE162A9ACBA6657BEFE6B78310CAFD15453ACC152E9809"
+  },
+  "all_packet_inventory_rows_verified": 72,
+  "root_read_complete_production_C_and_header_insertions": true,
+  "root_read_complete_12_controls_and_fixture": true,
+  "root_read_all_34_original_host_selected_excerpts": true,
+  "root_read_audit_and_closure_scripts": true,
+  "read_only_prefix_reproduced_entire_proof": true,
+  "proof_bytes": 48455,
+  "source_file_versions_reverified": 113,
+  "whole_VM_and_corrected_Latin1_composition_inverses": true,
+  "old_negative_evidence_preserved": true,
+  "current_VM_preimages_match": true,
+  "semantics": [
+    "Actual initialized TypedArray or DataView native class and view fields; no property lookup, guest call or pending state operation.",
+    "Current backing address plus stored offset, with detached and invalid brands returning null before address formation.",
+    "Live resizable out-of-bounds address observation does not confer usable length or dereference permission.",
+    "Synchronous owner-thread borrow adds no JS root, native backing reference or lease; caller lifetime, resize and transfer obligations remain.",
+    "Original Node Buffer::Data brand CHECK and V8 on-heap materialization policy remain separate."
+  ],
+  "build_finding": "Original install-only Buffer block still selects addTest.name. Separate finite successor must preserve canonical cache test.exe/test.pdb while explicitly naming the installed executable, then compose on current Main without undoing Error naming or Transfer/Shutdown insertion order.",
+  "independent_peer_pending": true,
+  "build_source_release": false,
+  "Main_intake_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_qualified": false,
+  "application_qualified": false
+}

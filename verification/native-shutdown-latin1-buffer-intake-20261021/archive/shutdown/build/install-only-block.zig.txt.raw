@@ -1,0 +1,58 @@
+        const node_stream_shutdown = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_stream_shutdown_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native Stream shutdown", "native StreamReq Done"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_stream_shutdown.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_stream_shutdown.root_module, typescript_parser);
+        linkSqlite(node_stream_shutdown.root_module, sqlite_lib_dir, sqlite_library);
+        node_stream_shutdown.root_module.addImport("catalog_tool", catalog_tool);
+        node_stream_shutdown.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        node_stream_shutdown.root_module.addIncludePath(b.path("src/extensions"));
+        node_stream_shutdown.root_module.linkLibrary(network);
+        // This target owns one TLS implementation and one V8 fatal owner.
+        // The selected network library contains neither translation unit.
+        node_stream_shutdown.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_diagnostic_context.c"),
+            .flags = &.{"-std=gnu11"},
+        });
+        node_stream_shutdown.root_module.addCSourceFiles(.{
+            .files = &.{
+                "src/extensions/native_v8_base_fatal.cpp",
+                "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+            },
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+        if (target.result.os.tag == .windows) {
+            node_stream_shutdown.root_module.linkSystemLibrary("advapi32", .{});
+            node_stream_shutdown.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-stream-shutdown", "Install 18 concrete source controls without execution").dependOn(&b.addInstallArtifact(node_stream_shutdown, .{ .dest_sub_path = b.fmt("native-node-stream-shutdown{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        const node_one_byte_string = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_one_byte_string_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native OneByteString"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_one_byte_string.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_one_byte_string.root_module, typescript_parser);
+        linkSqlite(node_one_byte_string.root_module, sqlite_lib_dir, sqlite_library);
+        node_one_byte_string.root_module.addImport("catalog_tool", catalog_tool);
+        node_one_byte_string.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        node_one_byte_string.root_module.addIncludePath(b.path("src/extensions"));
+        node_one_byte_string.root_module.linkLibrary(network);
+        // This target owns one TLS implementation and one V8 fatal owner.
+        // The selected network library contains neither translation unit.
+        node_one_byte_string.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_diagnostic_context.c"),
+            .flags = &.{"-std=gnu11"},
+        });
+        node_one_byte_string.root_module.addCSourceFiles(.{
+            .files = &.{
+                "src/extensions/native_v8_base_fatal.cpp",
+                "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+            },
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+        if (target.result.os.tag == .windows) {
+            node_one_byte_string.root_module.linkSystemLibrary("advapi32", .{});
+            node_one_byte_string.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-one-byte-string", "Install 8 concrete source controls without execution").dependOn(&b.addInstallArtifact(node_one_byte_string, .{ .dest_sub_path = b.fmt("native-node-one-byte-string{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);

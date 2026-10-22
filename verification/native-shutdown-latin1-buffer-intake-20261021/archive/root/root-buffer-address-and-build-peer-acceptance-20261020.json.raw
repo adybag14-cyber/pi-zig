@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "bounded_buffer_address_and_corrected_build_source_accepted",
+  "created_utc": "2026-10-20T22:21:01.526429+00:00",
+  "candidate_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "reviews": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-buffer-address-source-review-20261020.json",
+      "bytes": 3388,
+      "sha256": "528D22E46B8A6CC0C5CE9B2A4523C3ED277B73E23B9865FF619F892665C93E3B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-buffer-build-naming-source-review-20261020.json",
+      "bytes": 1582,
+      "sha256": "22E9F7646E633104550458352AA5BE26628B8C02548469CC6AFAC910D1325567"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-vm-view-data-independent-peer-20261020\\peer.json",
+      "bytes": 21621,
+      "sha256": "19D4C7FCAFC0525907856AF400F7232752F8EE8A2BBBEBF93A2B3D0164A68BE6"
+    }
+  ],
+  "independent_peer_full_read": true,
+  "selected_packets": [
+    {
+      "role": "immutable production/control predecessor",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\production-proposal.json",
+      "bytes": 43670,
+      "sha256": "978981A96D6CDD2791FF6B90DDBC575235A83E9C3B678CD3961389AB6866AF12"
+    },
+    {
+      "role": "selected additive build naming/current-head successor",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\proposal.json",
+      "bytes": 30389,
+      "sha256": "81B6F6E7F0DDF12A4A32903E49E6AAE3F4FCDDECCBBA791301DB1FCA7F565913"
+    }
+  ],
+  "selected_build_block": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\install-only-block.zig.txt",
+    "bytes": 812,
+    "sha256": "A294A6F8CA4D868376BE9DF89B5F8C0C51638FD5E7E4C53DB769D63B37810EC3"
+  },
+  "accepted_scope": "Raw synchronous native ArrayBufferView address primitive, all twelve source controls, exact corrected Latin1 composition, and canonical-artifact build insertion/current-head composition only.",
+  "future_actual_metadata": null,
+  "source_acceptance": true,
+  "build_naming_blocker_resolved_by_successor": true,
+  "original_rejected_build_preserved": true,
+  "preserved_preflight_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-buffer-peer-hash-literal-preflight-negative-20261020.json",
+    "bytes": 1881,
+    "sha256": "CDBE49E7AF2641F6450B1A54281FB72AC8CCDD078A2A3F6D3CABB76A5F136CF8"
+  },
+  "Main_intake_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_qualified": false,
+  "application_qualified": false,
+  "limits": [
+    "Source acceptance only: no Main intake, commit/push, native execution or publication authority is granted by this peer.",
+    "Build names are derived from pinned Zig source. No executable/PDB was produced and no compiler-selected metadata or runtime behavior was measured.",
+    "All raw synchronous borrow, caller lifetime and separate usable-length requirements remain binding.",
+    "Node caller CHECK, V8 on-heap GetBuffer materialization/fatal policy, actual CustomBuffer listener and full StreamBase/FileHandle receiver/template/bootstrap assembly remain separate work.",
+    "The quoted-include inventory does not newly qualify standard/toolchain angle headers or the inherited transitive ICU/YAML/SQLite/photon/network/package library graphs.",
+    "Optional full Shutdown composition retains its independently recorded fatal/TLS/source prerequisites and native qualification limits."
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "status": "preserved_independent_source_review_finding",
+  "reviewer": "/root/sdk_environment_port",
+  "original_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py",
+    "bytes": 23554,
+    "sha256": "1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010",
+    "lines": 373,
+    "complete": true,
+    "AST_parse_only": true,
+    "candidate_executed": false
+  },
+  "finding": "Committed-path prefixes were checked but newly planned prefixes were not added to that map before copying.",
+  "counterexample_paths": [
+    "verification/Foo/a.raw",
+    "verification/foo/b.raw"
+  ],
+  "premise": "The shared parent does not already appear in committed paths. Full target names differ, yet their parent spelling aliases on Windows.",
+  "candidate_or_prefix_executed": false,
+  "Main_accessed": false,
+  "original_preserved": true
+}

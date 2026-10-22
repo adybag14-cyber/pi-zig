@@ -1,0 +1,259 @@
+"""Independent read-only emitted archive check. Never executes EE11, its prefix, or an intake."""
+from pathlib import Path
+import copy, datetime, gzip, hashlib, io, json
+B=Path(r"C:\Users\adyba\pi-zig")
+E=B/"evidence"
+OUT=E/"independent-v38-progress-validation-archive-intake-peer-20261022"
+STAGE=E/"pending-v38-partial-negative-progress-and-validation-archive-intake-20261022"
+ISSUED=E/"root-issued-v38-partial-negative-archive-preparation-20261022"
+ARCHIVE="verification/native-v38-validation-evidence-20261021"
+PROGRESS="verification/port-roadmap-resume-20261018/progress.json"
+HEAD="014062f2d139254acab4b985b4ae343db637166f"
+PINS={
+ "manifest":(STAGE/"manifest.json",1226916,"6D6A2436B3D741070997901B0630F04F0306C85F21D9D347D52CE91A0A3EB85D"),
+ "review":(STAGE/"preparation-review.json",2671,"C7230F42BCCFBA31D222EBAB86E0499BD58B1FA4F11F1B62F0BA0A71BE3F35EB"),
+ "progress":(STAGE/"projected"/PROGRESS,678718,"4FF79AE87F671BB8F16283E38D282CB58444A1A0FA42659B0F3CED505EE04343"),
+ "copy_plan":(ISSUED/"final-copy-plan.json",2087247,"D464F55A2BB25BF72B62623515A11EF6218F10946C6A0F08A4DC9B62E2396A1C"),
+ "configuration":(ISSUED/"configuration.json",290023,"6A7F24A02AB315126A1E84BECCE6130F50091F65261D00E5196946C15734FBF8"),
+ "issuance_review":(ISSUED/"root-issuance-review.json",570198,"B7509DC26F7E1AC2257C7385054AAB23C2C03B3A3DCB7771A8A68CFA1D03D9D7"),
+ "unissued":(E/"unissued-v38-partial-negative-observed-copy-plan-sourceonly-20261022/copy-plan.unissued.json",2087262,"5031ACABB93A3F4E119D0C7F0DE6D7835EBBCFEFCAF5CE84FF2FFD02010401B6"),
+ "source_review":(E/"root-v38-partial-negative-progress-archive-preparer-source-acceptance-20261022.json",17708,"07950C4FFB6DE67AC8A1739BA585F8646387E66B26AE2B5005B9E6393CC48AD6"),
+ "history":(STAGE/"projected"/ARCHIVE/"history-preservation.json",53201,"80BFABC0CB00C3258C61D46F8B68779628D3F86DBF73738AC8CF400DA3445F44"),
+ "index":(STAGE/"projected"/ARCHIVE/"archive-index.json",1774608,"DE2B27825E461A75C63F37765E763146C4F7B71560118B0942111E0BD3697261"),
+ "seals":(STAGE/"projected"/ARCHIVE/"seal-archive-map.json",5794,"B452316A65DC517D9D7136A2E48127650BE2C3661CE743E9FFDDE0BA269E0660"),
+ "prior_progress":(STAGE/"projected"/ARCHIVE/"prior-progress.json.raw",554689,"BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028"),
+}
+seen={}
+cache={}
+def need(c,m):
+ if not c:raise AssertionError(m)
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def encode(x):return (json.dumps(x,indent=2,ensure_ascii=False)+"\n").encode()
+def pin(p,b):return {"path":str(p),"bytes":len(b),"sha256":sha(b)}
+def allowed(value):
+ p=Path(value);rel=p.relative_to(B).parts
+ need(p.is_absolute() and ".." not in p.parts and not p.is_symlink(),"canonical original/output file")
+ need(rel and (rel[0].casefold()=="evidence" or len(rel)>=4 and rel[0].casefold()=="worktrees" and rel[2].casefold()=="verification"),"no Main access")
+ need(not any(x.casefold() in {"cache","global-cache",".zig-cache","zig-out","installed"} for x in rel),"no cache input")
+ need(p.suffix.casefold() not in (".exe",".dll",".pdb"),"no native executable input")
+ return p
+def raw(p):
+ p=allowed(p);k=str(p).casefold()
+ if k not in cache:
+  b=p.read_bytes();cache[k]=b;seen[k]=pin(p,b)
+ return cache[k]
+def exact(p):
+ need(set(p)=={"path","bytes","sha256"},"exact pin keys")
+ b=raw(p["path"]);need(seen[p["path"].casefold()]==p,"actual pinned bytes "+p["path"]);return b
+def pp(key):
+ p,n,h=PINS[key];return {"path":str(p),"bytes":n,"sha256":h}
+def load(key):return json.loads(exact(pp(key)))
+def document(p):return json.loads(exact(p))
+def get(x,path):
+ for k in path:x=x[k]
+ return x
+def lists(x,path=()):
+ if isinstance(x,list):
+  yield path,x
+  for i,v in enumerate(x):yield from lists(v,path+(i,))
+ elif isinstance(x,dict):
+  for k,v in x.items():yield from lists(v,path+(k,))
+def names(p,dirs=False):return sorted(x.name for x in p.iterdir() if x.is_dir()==dirs)
+def pinfields(x):return isinstance(x,dict) and {"path","bytes","sha256"}<=set(x)
+def record_refs(x):
+ if pinfields(x):yield {k:x[k] for k in ("path","bytes","sha256")}
+ elif isinstance(x,dict):
+  for v in x.values():yield from record_refs(v)
+ elif isinstance(x,list):
+  for v in x:yield from record_refs(v)
+
+need(Path(__file__).resolve()==OUT/"check-emitted.py","own static checker identity")
+m,review,updated,cp,cfg,issuance,unissued,source_review,hist,index,seals,old=[load(k) for k in
+ ("manifest","review","progress","copy_plan","configuration","issuance_review","unissued","source_review","history","index","seals","prior_progress")]
+need([k for k in cp if cp[k]!=unissued[k]]==["status","reviewer"],"Root issued copy only two fields")
+restored=copy.deepcopy(cp)
+for k in ("status","reviewer"):restored[k]=unissued[k]
+need(encode(restored)==exact(pp("unissued")),"entire inert copy-plan raw inverse")
+need(cp["status"]=="root_reviewed_exact_final_v38_partial_negative_archive_copy_plan" and cp["reviewer"]=="Root","exact Root issued data status")
+need(cfg["final_copy_plan"]==pp("copy_plan") and cfg["source_review"]==pp("source_review"),"actual separate Root config/source chain")
+need(cfg["preparer_sha256"]==review["preparer"]["sha256"]=="EE11C073C1D1CAD599D7F88B34B78133A5E3A90F68D1E1094D6AF77D7C5128AB","selected reviewed EE11")
+need(cfg["candidate_head"]==review["candidate_head"]==cp["candidate_head"]==HEAD,"exact frozen head")
+need(cfg["evidence_preparation_authorized"] is True,"only historical evidence-preparation release")
+for k in ("main_intake_authorized","native_execution_authorized","runtime_authority","source_mutation_hold_released","application_qualified","production_bridge_removed","published_release"):
+ need(cfg[k] is False,"no new authority in preparation cfg "+k)
+need(review["root_configuration"]==pp("configuration") and review["source_review"]==pp("source_review") and review["manifest"]==pp("manifest") and review["projected_progress"]==pp("progress"),"emitted review exact outputs")
+need(m["comparison_head"]==HEAD and m["status"]=="exact_v38_partial_negative_progress_archive_intake_unissued","unissued source-free manifest")
+need(m["path_count_including_manifest"]==1930 and len(m["rows"])==1929 and m["source_build_paths"]==0 and m["existing_progress_replacements"]==1,"exact original emitted scope")
+for k in ("main_applied","source_mutation_hold_released","main_intake_authorized","native_execution_authorized","application_qualified","production_bridge_removed","published_release"):
+ need(m[k] is False,"manifest no authority "+k)
+need(m["final_copy_plan"]==pp("copy_plan") and m["source_review"]==pp("source_review"),"manifest exact admitted sources")
+expected_targets=set(cfg["expected_output_paths"])
+need(len(expected_targets)==1930 and expected_targets=={r["target"] for r in m["rows"]}|{m["manifest_target"]},"complete exact emitted targets")
+need([r["target"] for r in m["rows"]]==sorted(r["target"] for r in m["rows"]),"deterministic emitted row order")
+need(names(STAGE,True)==["projected"] and names(STAGE)==["manifest.json","preparation-review.json"],"complete untouched stage membership")
+actual_paths={p.relative_to(STAGE/"projected").as_posix() for p in (STAGE/"projected").rglob("*") if p.is_file()}
+need(actual_paths=={r["target"] for r in m["rows"]},"complete projected file membership")
+out_by={}
+for r in m["rows"]:
+ need(set(r)=={"target","source","bytes","sha256","before","role"},"original six-field rows preserved")
+ need(Path(r["source"])==STAGE/"projected"/r["target"],"exact projected donor location")
+ need(r["target"]==PROGRESS or r["target"].startswith(ARCHIVE+"/"),"only progress/archive")
+ b=exact({"path":r["source"],"bytes":r["bytes"],"sha256":r["sha256"]})
+ need(r["target"].casefold() not in out_by,"no target case aliases")
+ out_by[r["target"].casefold()]=(r,b)
+ if r["target"]==PROGRESS:
+  need(r["before"]=={"bytes":554689,"sha256":pp("prior_progress")["sha256"]},"exact only old preimage")
+ else:need(r["before"] is None,"new archive preimages absent")
+def output(target):
+ return out_by[target.casefold()]
+copy_rows=cp["rows"]
+need(len(copy_rows)==1919,"all exact observed original rows")
+original_by={r["original"]["path"].casefold():r for r in copy_rows}
+need(len(original_by)==1919,"unique original paths")
+expected_raw=[]
+for r in copy_rows:
+ b=exact(r["original"]);target=r["proposed_archive_relative_path"]
+ if r["representation"]=="raw_byte_exact":
+  out,ob=output(target);need(ob==b and target.endswith(".raw"),"complete original raw archive")
+  expected_raw.append({"original":r["original"],"target":target,"projected":pin(Path(out["source"]),ob)})
+ else:need(r["representation"]=="proposed_lossless_gzip_identical_bookend_pair","exact pair only")
+need(len(expected_raw)==1911,"1911 raw original rows")
+gzip_proof=[]
+need(len(cp["bookend_plans"])==len(seals)==4,"exact four observed pairs")
+for plan,record in zip(cp["bookend_plans"],seals):
+ need(record["phase"]==plan["phase"] and record["originals"]==plan["originals"] and record["target"]==plan["proposed_archive_relative_path"],"exact pair map identity")
+ a,b=[exact(p) for p in record["originals"]]
+ need(a==b,"complete original byte equality")
+ out,z=output(record["target"])
+ need(record["projected"]==pin(Path(out["source"]),z),"exact compressed file pin")
+ need(z[:10]==bytes.fromhex("1f8b08000000000002ff") and gzip.decompress(z)==a,"complete two-source decompression")
+ stream=io.BytesIO()
+ with gzip.GzipFile(filename="",mode="wb",compresslevel=9,fileobj=stream,mtime=0) as g:g.write(a)
+ need(stream.getvalue()==z,"independent deterministic recompression equals actual archive")
+ seal=json.loads(a);counts={k:len(seal[k]) for k in ("source","tree","vendor","compiler","controls")}
+ need(seal["candidate_head"]==HEAD and counts==record["seal_counts"]==plan["seal_counts"],"actual sealed cardinalities")
+ need(record["complete_two_source_roundtrip"] is True and record["deterministic_second_encoding_equal"] is True,"actual map flags")
+ need(record["gzip"]=={"filename":"","mtime":0,"compresslevel":9,"header_hex":z[:10].hex()},"exact gzip recipe")
+ gzip_proof.append({"phase":record["phase"],"originals":record["originals"],"compressed":record["projected"],"byte_equal":True,"independent_reencoding_equal":True,"seal_counts":counts})
+need(index["raw_archive_files"][:1911]==expected_raw and len(index["raw_archive_files"])==1920,"exact original raw map plus nine preparation records")
+aux=index["raw_archive_files"][1911:]
+need([Path(r["target"]).name for r in aux]==[
+ "supplemental-preservation-inputs.json.raw","partial-observed-inventory.json.raw","partial-progress-plan.json.raw",
+ "inert-plan-handoff.json.raw","prior-accepted-policy.py.raw","preparer.py.raw","root-issued-configuration.json.raw",
+ "root-source-acceptance.json.raw","root-final-copy-plan.json.raw"],"exact nine auxiliary records")
+for r in aux:
+ out,b=output(r["target"]);need(b==exact(r["original"]) and r["projected"]==pin(Path(out["source"]),b),"complete auxiliary original mapping")
+need(aux[5]["original"]==review["preparer"] and aux[6]["original"]==pp("configuration") and aux[7]["original"]==pp("source_review") and aux[8]["original"]==pp("copy_plan"),"actual source/Root auxiliary chain")
+need(index["compressed_original_bookends"]==seals and index["all_selected_observed_input_versions"]==1919 and index["compressed_bookend_pairs"]==4 and index["prelaunch_bookend_files_retained_raw"]==2,"complete archive index counts")
+for n in ("before.json","final.json"):
+ phase=cp["observed_phase_membership"][3];r=original_by[str(Path(phase["proof"])/n).casefold()]
+ need(r["representation"]=="raw_byte_exact" and output(r["proposed_archive_relative_path"])[1]==exact(r["original"]),"prelaunch kept separate raw")
+# Recheck complete phase memberships and direct original pointer relations without reading cache artifacts.
+phase_counts=[]
+for ph in cp["observed_phase_membership"]:
+ proof,control=Path(ph["proof"]),Path(ph["control"])
+ need(names(proof)==ph["proof_top_level_files"] and names(control)==ph["control_top_level_files"] and names(control,True)==[],"complete current phase top files")
+ need(names(proof,True)==sorted(["groups"]+ph["excluded_subdirectories"]),"only explicit original exclusions")
+ need(names(proof/"groups",True)==sorted(ph["group_files"]),"all original group directories")
+ total=len(ph["proof_top_level_files"])+len(ph["control_top_level_files"])
+ for group,files in ph["group_files"].items():
+  gd=proof/"groups"/group
+  need(names(gd)==files and names(gd,True)==ph["excluded_group_subdirectories"][group],"complete group files")
+  total+=len(files)
+ phase_counts.append(total)
+need(phase_counts==[90,73,1214,19,253],"five complete actual memberships")
+for edge in cp["direct_pin_relationships"]:
+ value=get(document(edge["document"]),edge["json_path"])
+ need({k:value[k] for k in ("path","bytes","sha256")}==edge["exact_referenced_pin"],"all1040 exact direct relations")
+ need(edge["document"]["path"].casefold() in original_by and edge["exact_referenced_pin"]["path"].casefold() in original_by,"direct endpoints represented")
+oldinv=document(cp["partial_inventory"])
+need(copy_rows[:314]==oldinv["rows"] and cp["direct_pin_relationships"][:183]==oldinv["direct_pin_relationships"] and cp["bookend_plans"][:2]==oldinv["bookend_plans"],"entire old314/183/2 prefixes")
+# Independent historical traversal and exact whole-file inverse.
+replaced={"current_source_head_at_record","updated_utc","record_note","current_execution_checkpoint","next_native_batch","preserved_attempts","execution_checkpoint_history","retained_recent_native_negatives"}
+added={"v38_validation_and_archive_checkpoint"}
+need(set(updated)==set(old)|added and added.isdisjoint(old),"only one added top-level field")
+need(hist["replaced_top_level_keys"]==sorted(replaced) and hist["added_top_level_keys"]==sorted(added),"exact eight replacement keys")
+for k in old:
+ if k not in replaced:need(updated[k]==old[k],"unrelated historical field exact")
+lengths={"integrated_source_units":65,"preserved_attempts":38,"retained_recent_native_negatives":14,"execution_checkpoint_history":14}
+increments={"integrated_source_units":0,"preserved_attempts":7,"retained_recent_native_negatives":1,"execution_checkpoint_history":1}
+for k,n in lengths.items():
+ need(len(old[k])==n and updated[k][:n]==old[k] and len(updated[k])==n+increments[k],"exact append-only "+k)
+need(updated["execution_checkpoint_history"][-1]==old["current_execution_checkpoint"],"complete old checkpoint")
+checks=[]
+for path,items in lists(old):
+ current=get(updated,path);need(isinstance(current,list) and current[:len(items)]==items,"entire historical nested prefix")
+ checks.append({"path":list(path),"old_length":len(items),"new_length":len(current),"unchanged_prefix_sha256":sha(encode(items))})
+need(len(checks)==181 and checks==hist["nested_list_checks"],"independent all181 complete lists")
+inverse=copy.deepcopy(updated)
+for k in added:del inverse[k]
+for k in replaced:inverse[k]=copy.deepcopy(old[k])
+need(inverse==old and encode(inverse)==exact(pp("prior_progress")),"entire554689-byte progress inverse")
+need(hist["old_checkpoint_sha256"]==sha(encode(old["current_execution_checkpoint"])) and hist["projected_progress"]==pp("progress"),"history exact old/new identities")
+need(hist["new_top_level_history_lengths"]=={k:len(updated[k]) for k in lengths},"exact resulting history lengths")
+# Current outcome fields are joined to immutable accepted roots, not inferred from future source.
+v=updated["v38_validation_and_archive_checkpoint"];checkpoint=updated["current_execution_checkpoint"]
+new4,orig=v["new4"],v["original63"]
+need(v["source_head_at_record"]==updated["current_source_head_at_record"]==checkpoint["source_head"]==HEAD,"record exact original head")
+need(v["recorded_utc"]==updated["updated_utc"]==checkpoint["recorded_utc"]==review["prepared_utc"]==cfg["recorded_utc"],"actual issued timestamp")
+need(v["observed_selected_groups"]==67 and v["source_declarations"]==1307 and v["observed_actual_metadata_total"]==1346 and v["group_cap_unchanged"]==64,"separate exact cohorts")
+for batch,summary,declared,actual,owners in (("new4",new4,58,61,8),("existing63",orig,1249,1285,126)):
+ root=document(cp["cohorts"][batch]["buildquery_root_acceptance"])
+ need(summary["source_head"]==HEAD and summary["declared_controls"]==declared and summary["actual_metadata_count"]==actual,"actual source/metadata distinction")
+ need(summary["groups"]==root["groups"] and summary["actual_group_counts"]==root["actual_group_counts"],"full actual group order/count vector")
+ bq=summary["buildquery"]
+ need(bq["root_acceptance"]==cp["cohorts"][batch]["buildquery_root_acceptance"] and bq["closure"]==root["independent_closure"] and bq["metadata_acceptance"]==root["metadata_acceptance"] and bq["result"]==root["build_result"],"exact accepted BQ relationships")
+ need(bq["native_owner_count"]==owners and bq["actual_tests_started"]==0 and bq["runtime_qualification"] is False,"BQ contains no runtime")
+ need(summary["metadata_transferred_to_another_head"] is False and summary["source_mutation_hold_released"] is False,"no metadata transfer")
+rt=new4["runtime"];rroot=document(cp["cohorts"]["new4"]["runtime_root_acceptance"])
+need(rt["root_acceptance"]==cp["cohorts"]["new4"]["runtime_root_acceptance"] and rt["closure"]==rroot["independent_runtime_closure"] and rt["result"]==rroot["runtime_result"],"accepted unchanged new4 runtime")
+need(rt["observed_started"]==rt["observed_completed"]==61 and rt["observed_failed"]==rt["not_started"]==0 and rt["selected_native_runtime_accepted"] is True and rt["product_qualification"] is False,"only original new4 runtime positive")
+nr=document(cp["cohorts"]["existing63"]["runtime_negative_root_acceptance"]);n=orig["runtime"];cl=document(n["closure"]);rr=document(n["result"])
+need(n["root_acceptance"]==cp["cohorts"]["existing63"]["runtime_negative_root_acceptance"] and n["closure"]==nr["independent_negative_closure"] and n["result"]==nr["runtime_result"],"original strict negative links")
+need(n["observed_started"]==n["observed_completed"]==321 and n["observed_passed"]==320 and n["observed_failed"]==1 and n["not_started"]==964,"actual partial negative counts")
+need(n["native_owner_count"]==n["attempted_groups"]==17 and n["actual_process_intervals_closed"]==20 and n["unstarted_groups"]==46 and n["granted_groups"]==63,"actual owner/group cutpoint")
+need(n["original_group_statuses"]==[g["status"] for g in rr["groups"]]==["partial_batch_not_admissible"]*16+["failed"],"all original demotions retained")
+need(n["not_started_groups"]==orig["groups"][17:] and len(n["failed_tests"])==1 and n["failed_tests"][0]["index"]==22 and n["failed_tests"][0]["flags"]==1,"exact remaining groups and original failed index")
+for k in ("positive_group_acceptance","selected_native_runtime_accepted","product_qualification","runtime_qualification","source_mutation_hold_released"):
+ need(n[k] is False,"negative not qualified "+k)
+pl=orig["prelaunch"];pr=document(cp["cohorts"]["existing63"]["prelaunch_root_negative"])
+need(pl["root_acceptance"]==cp["cohorts"]["existing63"]["prelaunch_root_negative"] and pl["native_failure"] is False and pl["raw_native_selected_tests_started"] is None and pl["classified_native_tests_started"]==pl["classified_native_owners_started"]==0 and pl["all_native_tests_unstarted"]==1285,"separate raw-null zero-native prelaunch")
+need(len(v["non_native_negatives"])==3 and all(x["native_failure"] is False for x in v["non_native_negatives"]),"three non-native negatives")
+attempts=updated["preserved_attempts"][-7:]
+need(attempts[0]==v["non_native_negatives"][0] and attempts[2]==v["non_native_negatives"][1] and attempts[5]==v["non_native_negatives"][2]==pl,"exact non-native attempt records")
+for i,summary,key,batch,groups,declared in ((1,new4,"buildquery","new4",4,58),(3,new4,"runtime","new4",4,58),(4,orig,"buildquery","existing63",63,1249)):
+ for k,val in summary[key].items():need(attempts[i][k]==val,"exact accepted attempt data")
+ need(attempts[i]["source_head"]==HEAD and attempts[i]["batch"]==batch and attempts[i]["declared_groups"]==groups and attempts[i]["declared_controls"]==declared,"attempt source identity")
+need(attempts[-1]==updated["retained_recent_native_negatives"][-1] and attempts[-1]["native_failure"] is True,"single actual native failure appended")
+for k,val in n.items():need(attempts[-1][k]==val,"entire exact negative record")
+need(checkpoint["v38_new4"]==new4 and checkpoint["v38_original63"]==orig and checkpoint["v38_non_native_preparation_and_auditor_negatives"]==v["non_native_negatives"],"checkpoint mirrors actual records")
+future=updated["next_native_batch"]
+need(checkpoint["next_validation"]==future and future["batch_group_counts"]==[4,63] and future["batch_source_declarations"]==[58,1249] and future["catalog_expected_groups"]==117 and future["catalog_expected_source_declarations"]==2013 and future["group_cap"]==64,"retained next-scope counts")
+need(future["actual_metadata_count"] is None and future["v38_observed_metadata_by_batch"]=={"new4":61,"existing63":1285},"future metadata unknown")
+for k in ("execution_authority","runtime_authority","qualification","prior_metadata_transferred","source_mutation_hold_released","v38_both_complete_buildquery_and_strict_runtime_accepted"):
+ need(future[k] is False,"no future grant/outcome")
+for k in ("selected_native_runtime_accepted_for_this_head","metadata_transferred_to_another_head","runtime_qualification","application_qualification","production_bridge_removed","published_release","source_mutation_hold_released","native_execution_authorized"):
+ need(v[k] is False,"current whole-product/bridge/future flags false")
+for p in record_refs({"new4":new4,"original63":orig,"negatives":v["non_native_negatives"]}):
+ exact(p);need(p["path"].casefold() in original_by,"all current summary receipt references retained")
+
+proof={"schema":1,"status":"independently_verified_exact_v38_emitted_partial_negative_archive","reviewer":"/root/handover_review","candidate_head":HEAD,
+ "manifest":pp("manifest"),"preparation_review":pp("review"),"progress":pp("progress"),"issued_copy_plan":pp("copy_plan"),
+ "configuration":pp("configuration"),"source_review":pp("source_review"),"checker":pin(Path(__file__),raw(__file__)),
+ "emitted_paths":1930,"physical_rows":1929,"original_copy_rows":1919,"raw_original_rows":1911,"auxiliary_raw_records":9,
+ "direct_pin_edges":len(cp["direct_pin_relationships"]),"complete_phase_file_counts":phase_counts,
+ "retained314_183_2_prefixes_exact":True,"complete_projected_directory_membership":True,
+ "all_raw_original_and_projected_bytes_equal":True,"gzip_pairs":gzip_proof,"raw_prelaunch_bookends":2,
+ "complete_historical_list_prefixes":181,"historical_length_changes":{k:[len(old[k]),len(updated[k])] for k in lengths},
+ "full554689_byte_inverse":True,"new4_actual_metadata_and_completed_runtime":61,
+ "original63_actual_metadata":1285,"original63_runtime":{"attempted_groups":17,"unstarted_groups":46,"completed":321,"passed":320,"failed":1,"unstarted_tests":964,"original_demoted_groups":16},
+ "validation_attempts_appended":7,"native_negative_records_appended":1,"non_native_negative_records_appended":3,
+ "scope":{"source_only":True,"candidate_or_prefix_executed":False,"Main_or_index_accessed":False,"intake_executed":False,
+ "native_execution_authorized":False,"application_qualified":False,"source_mutation_hold_released":False},
+ "input_versions":[seen[k] for k in sorted(seen)]}
+for p in list(seen.values()):need(pin(Path(p["path"]),allowed(p["path"]).read_bytes())==p,"final unchanged input read")
+out=OUT/"emitted-proof.json";need(not out.exists(),"create-only proof")
+data=encode(proof)
+with out.open("xb") as f:need(f.write(data)==len(data),"whole proof")
+need(out.read_bytes()==data,"proof readback")
+print(json.dumps({"proof":pin(out,data),"checked_versions":len(seen),"paths":1930,"prefixes":181,"gzip_pairs":4},separators=(",",":")))

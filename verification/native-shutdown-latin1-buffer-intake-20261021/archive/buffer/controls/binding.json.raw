@@ -1,0 +1,31 @@
+{
+  "schema": "native-view-data-controls-v1",
+  "source_only": true,
+  "native_execution": false,
+  "live": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_vm_array_buffer_view_data_test.zig",
+    "bytes": 22131,
+    "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+  },
+  "snapshot": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+    "bytes": 22131,
+    "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+  },
+  "declared_controls": 12,
+  "names": [
+    "VM view data every typed-array width and DataView expose the physical backing offset",
+    "VM view data live empty views retain their exact end pointer",
+    "VM view data bypasses getters and rejects forged live and revoked proxy brands",
+    "VM view data detached typed and DataView addresses are null while lease acquisition still throws",
+    "VM view data fixed resizable views preserve stored offsets while out of bounds and after regrowth",
+    "VM view data tracking resizable views keep the address independently of rounded usable length",
+    "VM view data shared aliases expose one native address across real runtime growth",
+    "VM view data allocates nothing under the actual VM memory limit",
+    "VM view data preserves actual ordinary uncatchable and private termination completions",
+    "VM view data borrows without keeping the actual view or native backing alive",
+    "VM view data observes unmanaged external storage without adding a lease or changing cleanup",
+    "VM view data follows real ArrayBuffer transfer detachment and the receiving physical storage"
+  ],
+  "independence": "Actual VM/physical native storage, raw SAB serialization aliases, real detached/RAB/OOB/foreign growth, real current pending ordinary/uncatchable/private termination events and native backing reference observation. No production listener or test-selected replacement policy is installed."
+}

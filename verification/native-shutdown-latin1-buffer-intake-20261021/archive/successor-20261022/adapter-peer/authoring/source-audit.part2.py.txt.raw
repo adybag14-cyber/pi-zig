@@ -1,0 +1,154 @@
+# AST-only contract and write-barrier accounting; no candidate function is invoked.
+tree=ast.parse(selected.decode("utf-8"));text=selected.decode("utf-8")
+assignments={}
+for node in tree.body:
+ if isinstance(node,ast.Assign) and len(node.targets)==1 and isinstance(node.targets[0],ast.Name):
+  if node.targets[0].id in {"BASIS","MANIFESTS","BYTE_CONTRACT","ATTR_NAMES","BRANCH"}:
+   assignments[node.targets[0].id]=ast.literal_eval(node.value)
+assert assignments["BASIS"]=="UNRESOLVED_PENDING20_RELEASED_HEAD______"
+assert assignments["MANIFESTS"]["fixture"][:3]==("evidence/UNRESOLVED-PENDING20-FINAL-MANIFEST/manifest.json","UNRESOLVED_PENDING20_FINAL_MANIFEST_SHA256______________________",0)
+assert len(assignments["BASIS"])==40 and len(assignments["MANIFESTS"]["fixture"][1])==64
+assert assignments["BYTE_CONTRACT"]=="pending20_exact_git_bytes_attributes_aliases_modes_v1"
+assert assignments["ATTR_NAMES"]==("text","eol","filter","working-tree-encoding","ident")
+assert assignments["BRANCH"]=="work/pi-zig-consolidated-20261016"
+assert len(contract["future_literal_bindings"])==4
+assert all(x["future_value"] is None for x in contract["future_literal_bindings"])
+assert [x["current_literal"] for x in contract["future_literal_bindings"]]==[assignments["BASIS"],*assignments["MANIFESTS"]["fixture"][:3]]
+release_fields=sorted({n.slice.value for n in ast.walk(tree) if isinstance(n,ast.Subscript)
+ and isinstance(n.value,ast.Name) and n.value.id=="release" and isinstance(n.slice,ast.Constant) and isinstance(n.slice.value,str)})
+assert release_fields==sorted(["executor_sha256","basis_main_head","branch","source_intake_authorized","native_execution_authorized","application_qualified","authorized_phases","required_current_pins","receipt_directory","git_byte_preflight_contract","expected_git_object_format"])
+main=text[text.index('assert re.fullmatch(r"[0-9a-f]{40}",BASIS)'):]
+markers=[
+ 'assert re.fullmatch(r"[0-9a-f]{40}",BASIS)',
+ 'assert all(re.fullmatch(r"[0-9A-F]{64}",value[1]) and value[2]>0',
+ 'assert release["source_intake_authorized"] is True',
+ 'for pin in release["required_current_pins"]:',
+ 'sys.excepthook=fail_record',
+ 'repository=repository_identity()',
+ 'manifest_path=inside(ROOT/manifest_rel,ROOT/"evidence")',
+ 'allrows=[*rows,',
+ 'existing_spelling={}',
+ 'planned_spelling=dict(existing_spelling)',
+ 'assert key not in planned_spelling or planned_spelling[key]==value',
+ 'planned_spelling[key]=value',
+ 'rel.casefold() not in existing_spelling',
+ 'logical_aliases=manifest["logical_donor_aliases"]',
+ 'alias_records.append({"target":target_manifest',
+ 'for (row,old),blob in zip(preimages,blob_many([preimage_reference',
+ 'for (row,old),blob in zip(preimages,blob_many([head',
+ 'attributes=effective_attributes(names)',
+ 'provenance=conversion_provenance(names)',
+ 'raw_git=oid_text(git("hash-object","--no-filters","--stdin",input=b).stdout,object_format)',
+ 'path_git=oid_text(git("hash-object","--path="+rel,"--stdin",input=b).stdout,object_format)',
+ 'before_copy_revalidation=assert_conversion_unchanged',
+ 'new_json(proof/(phase+"-preflight.json"),preflight)',
+ 'FAILURE_STATE.update(stage="copying_exact_reviewed_rows",Main_or_index_writes_started=True)',
+ 'post_copy_revalidation=assert_conversion_unchanged',
+ 'git("--literal-pathspecs","add",',
+ 'index=index_entries();staged_rows=[]',
+ 'assert entry["mode"]==row["mode"] and entry["oid"]==expected_ids[rel] and entry["stage"]==0',
+ 'pre_commit_revalidation=assert_conversion_unchanged',
+ 'commit=git("commit","--file="+str(message))',
+ 'assert after!=head and parents==[head]',
+ 'assert entry["type"]=="blob" and entry["mode"]==row["mode"] and entry["oid"]==expected_ids[rel]',
+ 'final_revalidation=assert_conversion_unchanged',
+ 'new_json(receipt_path,receipt)']
+positions=[main.index(x) for x in markers]
+assert positions==sorted(positions) and len(set(positions))==len(positions)
+barriers=[{"source_line":text[:len(text)-len(main)+pos].count("\n")+1,"marker":marker}
+ for marker,pos in zip(markers,positions)]
+for required in [
+ 'assert raw_git==expected_blob','assert path_git==raw_git','alias_bytes==b',
+ 'assert key in alias_keys','assert before["mode"]==row["mode"]','assert row["mode"]=="100644"',
+ 'assert len(set(x.casefold() for x in names))==count',
+ 'assert blob==old,("basis_preimage",row["target"])','assert blob==old,("head_preimage",row["target"])',
+ 'assert actual_attributes==attributes','assert actual_provenance==provenance',
+ 'assert not present,("unreviewed_git_environment_override_names",present)',
+ 'for variable in ("GIT_ATTR_SYSTEM","GIT_ATTR_GLOBAL"):',
+ '"config","--includes","--show-origin","--show-scope","--null","--get-regexp",pattern'
+ ]:
+ assert required in text,required
+assert 'core\\.(autocrlf|eol|safecrlf|attributesfile|checkroundtripencoding|filemode|ignorecase|symlinks|protectntfs|protecthfs)' in text
+assert 'for key in ("filter","working-tree-encoding","ident"):' in text
+assert 'assert values[key] in ("unset","unspecified")' in text
+assert sf["effective_attributes"]["bytes"].decode().index('assert values[key]')>sf["effective_attributes"]["bytes"].decode().index('fields=output.split')
+assert text.count("existing_spelling[key]=value")==1 and text.count("planned_spelling[key]=value")==1
+assert text.index("existing_spelling[key]=value")<text.index("planned_spelling=dict(existing_spelling)")
+run_nodes=[n for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute)
+ and isinstance(n.func.value,ast.Name) and n.func.value.id=="subprocess" and n.func.attr=="run"]
+assert len(run_nodes)==1
+assert all(not(isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id in {"eval","exec","compile","__import__"}) for n in ast.walk(tree))
+imports=[ast.get_source_segment(text,n) for n in tree.body if isinstance(n,(ast.Import,ast.ImportFrom))]
+# Independent data-only prefix analysis, never executing copied candidate logic.
+def prefix_conflicts(paths,remember):
+ known={"verification":"verification"};issues=[]
+ for path in paths:
+  components=path.split("/")
+  for length in range(1,len(components)+1):
+   prefix="/".join(components[:length]);key=prefix.casefold()
+   if key in known and known[key]!=prefix:issues.append({"previous":known[key],"next":prefix})
+   if remember:known[key]=prefix
+ return issues
+example=["verification/Foo/a.raw","verification/foo/b.raw"]
+assert prefix_conflicts(example,False)==[]
+assert prefix_conflicts(example,True)==[{"previous":"verification/Foo","next":"verification/foo"}]
+assert len({x.casefold() for x in example})==2
+assert not any(y.casefold().startswith(x.casefold()+"/") for x in example for y in example if x!=y)
+finding={"predecessor":describe(D/"Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py",old),
+ "source_finding_pin":describe(D/"original-planned-parent-alias-source-finding.json",file("original-planned-parent-alias-source-finding.json")),
+ "status":"confirmed_source_contract_gap_corrected_only_in_selected_v2",
+ "counterexample":example,"premise":"The Foo/foo parent is absent from the original committed-prefix map.",
+ "old_existing_only_check_conflicts":[],"selected_combined_prefix_check_conflicts":prefix_conflicts(example,True),
+ "full_name_uniqueness_and_file_ancestor_checks_alone_do_not_reject":True,
+ "candidate_or_prefix_executed":False}
+plan=json.loads(read_pin(contract["strict_copy_plan"]))
+assert len(plan["source_rows"])==20 and len(plan["archive_rows"])==223
+assert plan["counts"]["immutable_archive_donors"]==248 and plan["counts"]["core_copy_rows"]==243
+assert plan["counts"]["core_plus_final_manifest_paths"]==244
+assert plan["actual_released_head"] is None and all(v is False for v in plan["authority"].values())
+rows=plan["source_rows"]+plan["archive_rows"]
+targets=[x["relative_path"] for x in rows]+[plan["manifest_target"]]
+assert len(targets)==244 and len({p.casefold() for p in targets})==244
+assert prefix_conflicts(targets,True)==[]
+targetset={p.casefold() for p in targets}
+for p in targets:
+ assert str(PurePosixPath(p))==p and not p.startswith("/") and "\\" not in p and ":" not in p
+ assert p=="build.zig" or p.startswith(("src/","vendor/quickjs/","verification/"))
+ assert not any(ord(c)<32 or ord(c)==127 or c in '<>"|?*' for c in p)
+ parts=p.split("/")
+ for part in parts:
+  assert part not in ("",".","..") and part[-1] not in ". "
+  assert part.casefold() not in (".git",".gitattributes")
+  assert not re.fullmatch(r"(con|prn|aux|nul|clock\$|conin\$|conout\$|com[1-9¹²³]|lpt[1-9¹²³])",part.split(".")[0],re.I)
+ assert all("/".join(parts[:i]).casefold() not in targetset for i in range(1,len(parts)))
+donor_rows=[];alias_rows=[];aliaskeys=set();logical_archive_names=[];preimage_count=0
+for row in rows:
+ target=row["relative_path"];primary=read_pin(row["donor"])
+ donor_rows.append({"target":target,"donor":row["donor"],"kind":row["kind"],"raw_bytes_verified":True})
+ if row["preimage"] is not None:
+  before=read_pin(row["preimage"]);preimage_count+=1
+  assert row in plan["source_rows"]
+  donor_rows[-1]["immutable_preimage"]=row["preimage"]
+ aliases=[{"donor":row["donor"],"logical_archive_relative_path":None}] if row in plan["source_rows"] else row["logical_donors"]
+ primary_key=None
+ for alias in aliases:
+  p=alias["donor"];actual=read_pin(p);assert actual==primary
+  key=(target,str(Path(p["path"]).resolve()).casefold(),p["bytes"],p["sha256"])
+  assert key not in aliaskeys,key
+  aliaskeys.add(key)
+  if p==row["donor"]:primary_key=key
+  alias_rows.append({"target":target,"donor":p,"logical_archive_relative_path":alias["logical_archive_relative_path"],"same_physical_raw_bytes":True})
+  if alias["logical_archive_relative_path"] is not None:logical_archive_names.append(alias["logical_archive_relative_path"])
+ assert primary_key in aliaskeys,target
+assert preimage_count==8 and len(alias_rows)==268 and len(logical_archive_names)==248
+assert len(set(logical_archive_names))==248
+for key in ("source_acceptance","source_peer","source_replay","paused_record"):
+ value=plan[key]
+ if isinstance(value,dict) and {"path","bytes","sha256"}<=set(value):read_pin(value)
+e2b={"plan":contract["strict_copy_plan"],"source_donors":20,"physical_archive_donors":223,
+ "core_physical_paths":243,"core_paths_plus_manifest":244,"source_preimage_snapshots":8,
+ "source_primary_logical_aliases":20,"archive_logical_aliases":248,"core_logical_aliases":268,
+ "synthetic_manifest_alias_is_additional_and_future":True,"all_alias_bytes_equal_primary":True,
+ "all_current_plan_target_prefix_spellings_agree":True,"all_current_plan_targets_canonical":True,
+ "donors":donor_rows,"logical_aliases":alias_rows,"manifest_target":plan["manifest_target"],
+ "future_complete_manifest_count_not_issued":True,"live_Main_preimage_or_Git_conversion_validation_not_performed":True}

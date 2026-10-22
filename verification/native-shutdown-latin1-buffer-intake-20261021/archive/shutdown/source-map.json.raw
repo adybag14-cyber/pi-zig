@@ -1,0 +1,1045 @@
+{
+  "schema": "pi-zig.shutdown-latin1-original-source-map.v1",
+  "upstream_repository": "https://github.com/nodejs/node",
+  "upstream_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "upstream_version": "v24.13.0",
+  "authorities": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\async_wrap-inl.h",
+      "bytes": 3024,
+      "sha256": "0C1713056A8C8FB26EB12DF40FF600A3D1CC392FAB99D2276DCF2E2975873B9E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\async_wrap.cc",
+      "bytes": 27043,
+      "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\async_wrap.h",
+      "bytes": 12198,
+      "sha256": "3EBF97B3044B4875D1F62C3F8BA1668886F4AE19F6369A8DD20EC0E262BBF1EF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\env-inl.h",
+      "bytes": 28109,
+      "sha256": "41949D4DFA01B04174B0E881B1DB3DD12BF51B9428B89946504603700FCF3E5E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\env.cc",
+      "bytes": 84987,
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\env.h",
+      "bytes": 45315,
+      "sha256": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\Node-MIT-LICENSE-excerpt.txt",
+      "bytes": 2337,
+      "sha256": "EC62DC96DA0099B87F4511736C87309335527FB7031639493E06C95728DC8C54"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\node_file.cc",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\node_file.h",
+      "bytes": 17193,
+      "sha256": "A63A31D1BCAEB7AF416B19ABEAFAB880DB7D424378DC27050F9FC2EE4921E16F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\req_wrap-inl.h",
+      "bytes": 5640,
+      "sha256": "27C770D8756B626C80210F96F9DB1CF31BFBF09AAB1DA53DC35B382314883E67"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base-inl.h",
+      "bytes": 5052,
+      "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base.cc",
+      "bytes": 28310,
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base.h",
+      "bytes": 18488,
+      "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_wrap.cc",
+      "bytes": 13099,
+      "sha256": "FCA1B10EC090A78AC3CDA6496C4E6A47E340555113D9E2B5B5174E6C6D30ACB8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_wrap.h",
+      "bytes": 4309,
+      "sha256": "A1B66FB749D5708C3218899081470BED0B8A1F70AFA5D6EAEDE00D0120C4FC0C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\util-inl.h",
+      "bytes": 27509,
+      "sha256": "8979B5C3115BC3D1C9478910088944D3761130E7D7A0ED8ED7452FCEC5870E83"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\util.h",
+      "bytes": 39726,
+      "sha256": "29BD133B9FB9000B2A624ABDDFB42FBD538CFA33D3BB00377AD8F1122C74AF52"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-api.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-factory-base.cc",
+      "bytes": 57199,
+      "sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\V8-LICENSE.txt",
+      "bytes": 3093,
+      "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-logging.h",
+      "bytes": 21624,
+      "sha256": "0FA464788992D2AB04B14F9A9B9B808E29759D111E867BABD69EAED03D931405"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-maybe-handles.h",
+      "bytes": 12894,
+      "sha256": "9F504121AF2ADF2307FA3AF36A0AFB4810D50AEFD55CAD965B751D62C5C0861B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-string.h",
+      "bytes": 56245,
+      "sha256": "F567EE2A36FF5FF854E400E98A65FFCAF5F36A0A196C9A1DC759E965A306911B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-v8-primitive.h",
+      "bytes": 37573,
+      "sha256": "22B7F84FC79E55144323A29BE18CCB657E09FA3BE5D2A2FD5380CBE4C82E4A28"
+    }
+  ],
+  "selected_source_snapshots": [
+    {
+      "relative_path": "src/extensions/native_node_file_handle_shutdown.zig",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_shutdown.zig",
+        "bytes": 9800,
+        "sha256": "D88164C9B392F9A5A0906DF2166129204A88A0936C83D3FA1DFF008484EC94F2"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_one_byte_string.zig",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_one_byte_string.zig",
+        "bytes": 2658,
+        "sha256": "2387DDE54B2B079BC0F78490602E4CF150F4A1E46FFC3FC05D7EF3CB5CEE4507"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_one_byte_string_diagnostics.cpp",
+        "bytes": 2695,
+        "sha256": "3E61B1FDD631E80B31F51F5B130D203C4C01BD41FF4EE4FD2831C27074459B53"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_one_byte_string_diagnostics.h",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_one_byte_string_diagnostics.h",
+        "bytes": 576,
+        "sha256": "687E51133E348B90B4C7CF5CBEB53C2098CF6988A5C3915F68DF008D0A9E1C88"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_stream_request.zig",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_stream_request.zig",
+        "bytes": 6970,
+        "sha256": "654816139FC110560BA21BDBBEA35744468B1E6C52154448D30CEDC3656A6E8B"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_stream_shutdown.zig",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_stream_shutdown.zig",
+        "bytes": 11021,
+        "sha256": "2BEE67EE76015C0549729F3F3B12CD4BBBF32C5DBF5A28D8CEE3F111E0C86D7E"
+      }
+    },
+    {
+      "relative_path": "src/native_node_one_byte_string_test.zig",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_one_byte_string_test.zig",
+        "bytes": 5064,
+        "sha256": "AC3E1AD12FB0F48905EC8B561094F54DD93653AD7C8DC5DD7CC0EBB54959C461"
+      }
+    },
+    {
+      "relative_path": "src/native_node_stream_shutdown_test.zig",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17019,
+        "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+      }
+    },
+    {
+      "relative_path": "src/native_node_stream_shutdown_test_support.zig",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10312,
+        "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_async_wrap.zig",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_async_wrap.zig",
+        "bytes": 20655,
+        "sha256": "F2BEC62AC7817F16EE57E50B80D903ECCB0F8D60AFCB8B61FED920245918CC27"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_async_wrap_state.zig",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_async_wrap_state.zig",
+        "bytes": 34046,
+        "sha256": "1530C4043859CFF37D7F157F5557E4597E68972C1F1A1B82D208978F47E3D67A"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_owner.zig",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 17650,
+        "sha256": "F2672292FBEBEEF74B35C32C38203E3D1E1D259052E7AB5AFB34DA29840B544D"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_stream_base.zig",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_stream_base.zig",
+        "bytes": 12321,
+        "sha256": "F85721695F41998E3676C196B4791D295EA62C8DE89FD83159F05BACDEF7716E"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_stream_resource.zig",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_stream_resource.zig",
+        "bytes": 6847,
+        "sha256": "39255A86BA9631F95E9CBD13B85AE7264A30A015EF4454F10B2D64BD643F2D8A"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.c",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403712,
+        "sha256": "2AEE7EA130CCF08282928A9FDA056B444CF0905E8C53F1EFD520E8243F9C37B4"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.h",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114822,
+        "sha256": "4728F93F8CC0D51FB6066E31502BE87920FE7B395BB57DED6D4E80BD1543222C"
+      }
+    }
+  ],
+  "excerpts": [
+    {
+      "id": "request_fields",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base.h",
+        "bytes": 18488,
+        "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334"
+      },
+      "start_line": 33,
+      "end_line": 90,
+      "excerpt_bytes": 1937,
+      "excerpt_sha256": "65C52BD96A28F03F87F060178C70D11478A5CBC586DC959134C10C4EA95DD983",
+      "excerpt": "class StreamReq {\n public:\n  // The kSlot internal field here mirrors BaseObject::InternalFields::kSlot\n  // here because instances derived from StreamReq will also derive from\n  // BaseObject, and the slots are used for the identical purpose.\n  enum InternalFields {\n    kSlot = BaseObject::kSlot,\n    kStreamReqField = BaseObject::kInternalFieldCount,\n    kInternalFieldCount\n  };\n\n  inline explicit StreamReq(\n      StreamBase* stream,\n      v8::Local<v8::Object> req_wrap_obj);\n\n  virtual ~StreamReq() = default;\n  virtual AsyncWrap* GetAsyncWrap() = 0;\n  inline v8::Local<v8::Object> object();\n\n  // TODO(RaisinTen): Update the return type to a Maybe, so that we can indicate\n  // if there is a pending exception/termination.\n  void Done(int status, const char* error_str = nullptr);\n  inline void Dispose();\n\n  StreamBase* stream() const { return stream_; }\n\n  static inline StreamReq* FromObject(v8::Local<v8::Object> req_wrap_obj);\n\n  // Sets all internal fields of `req_wrap_obj` to `nullptr`.\n  // This is what the `WriteWrap` and `ShutdownWrap` JS constructors do,\n  // and what we use in C++ after creating these objects from their\n  // v8::ObjectTemplates, to avoid the overhead of calling the\n  // constructor explicitly.\n  static inline void ResetObject(v8::Local<v8::Object> req_wrap_obj);\n\n protected:\n  virtual void OnDone(int status) = 0;\n\n  inline void AttachToObject(v8::Local<v8::Object> req_wrap_obj);\n\n private:\n  StreamBase* const stream_;\n};\n\nclass ShutdownWrap : public StreamReq {\n public:\n  inline ShutdownWrap(\n      StreamBase* stream,\n      v8::Local<v8::Object> req_wrap_obj);\n\n  static inline ShutdownWrap* FromObject(v8::Local<v8::Object> req_wrap_obj);\n  template <typename T, bool kIsWeak>\n  static inline ShutdownWrap* FromObject(\n      const BaseObjectPtrImpl<T, kIsWeak>& base_obj);\n\n  // Call stream()->EmitAfterShutdown() and dispose of this request wrap.\n  void OnDone(int status) override;\n};\n",
+      "production_basenames": [
+        "native_node_stream_request.zig",
+        "native_node_async_wrap_state.zig"
+      ],
+      "source_mapping": "StreamReq owns a borrowed StreamBase pointer and an internal request slot independent from BaseObject; ShutdownWrap supplies OnDone."
+    },
+    {
+      "id": "request_attach",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base-inl.h",
+        "bytes": 5052,
+        "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6"
+      },
+      "start_line": 14,
+      "end_line": 32,
+      "excerpt_bytes": 633,
+      "excerpt_sha256": "B4FCCC7556BE0006A5573A1D82A8813F273D0A40DEB3CAD00352380C36729DDB",
+      "excerpt": "StreamReq::StreamReq(\n    StreamBase* stream,\n    v8::Local<v8::Object> req_wrap_obj) : stream_(stream) {\n  AttachToObject(req_wrap_obj);\n}\n\nvoid StreamReq::AttachToObject(v8::Local<v8::Object> req_wrap_obj) {\n  CHECK_EQ(req_wrap_obj->GetAlignedPointerFromInternalField(\n               StreamReq::kStreamReqField),\n           nullptr);\n  req_wrap_obj->SetAlignedPointerInInternalField(\n      StreamReq::kStreamReqField, this);\n}\n\nStreamReq* StreamReq::FromObject(v8::Local<v8::Object> req_wrap_obj) {\n  return static_cast<StreamReq*>(\n      req_wrap_obj->GetAlignedPointerFromInternalField(\n          StreamReq::kStreamReqField));\n}\n",
+      "production_basenames": [
+        "native_node_stream_request.zig",
+        "native_node_async_wrap_state.zig"
+      ],
+      "source_mapping": "Attach the request slot before the OtherBase/AsyncWrap constructor. FromObject reads that slot independently. Genuine CHECK failure uses the existing Node assertion owner."
+    },
+    {
+      "id": "request_dispose",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base-inl.h",
+        "bytes": 5052,
+        "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6"
+      },
+      "start_line": 34,
+      "end_line": 48,
+      "excerpt_bytes": 416,
+      "excerpt_sha256": "655F53430B80D4EFBD8E9D357AACF3F00649E926D7BF39C9FE23C84D210E3432",
+      "excerpt": "void StreamReq::Dispose() {\n  BaseObjectPtr<AsyncWrap> destroy_me{GetAsyncWrap()};\n  object()->SetAlignedPointerInInternalField(\n      StreamReq::kStreamReqField, nullptr);\n  destroy_me->Detach();\n}\n\nv8::Local<v8::Object> StreamReq::object() {\n  return GetAsyncWrap()->object();\n}\n\nShutdownWrap::ShutdownWrap(\n    StreamBase* stream,\n    v8::Local<v8::Object> req_wrap_obj)\n    : StreamReq(stream, req_wrap_obj) { }\n",
+      "production_basenames": [
+        "native_node_stream_request.zig"
+      ],
+      "source_mapping": "Acquire a temporary actual BaseObjectPtr, clear only the StreamReq slot, Detach, then release. Last release may destroy the request; no subsequent request dereference."
+    },
+    {
+      "id": "request_reset",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base-inl.h",
+        "bytes": 5052,
+        "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6"
+      },
+      "start_line": 162,
+      "end_line": 167,
+      "excerpt_bytes": 274,
+      "excerpt_sha256": "62BB7490B8EEB405E968A9A8DA9755FB726DD31DD1C573D3446121FD9AF83A83",
+      "excerpt": "void StreamReq::ResetObject(v8::Local<v8::Object> obj) {\n  DCHECK_GT(obj->InternalFieldCount(), StreamReq::kStreamReqField);\n\n  obj->SetAlignedPointerInInternalField(StreamReq::kSlot, nullptr);\n  obj->SetAlignedPointerInInternalField(StreamReq::kStreamReqField, nullptr);\n}\n",
+      "production_basenames": [
+        "native_node_async_wrap_state.zig",
+        "native_node_async_wrap.zig"
+      ],
+      "source_mapping": "Fresh template construction clears the BaseObject slot then the StreamReq slot. Real branded native fields replace V8 internal fields without adding guest roots."
+    },
+    {
+      "id": "shutdown_template",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_wrap.cc",
+        "bytes": 13099,
+        "sha256": "FCA1B10EC090A78AC3CDA6496C4E6A47E340555113D9E2B5B5174E6C6D30ACB8"
+      },
+      "start_line": 61,
+      "end_line": 92,
+      "excerpt_bytes": 1271,
+      "excerpt_sha256": "EDB3EE586C6883F98B4498FE98CF9BB7DFF6C5EFBD9E3310CC3402D583C29032",
+      "excerpt": "void IsConstructCallCallback(const FunctionCallbackInfo<Value>& args) {\n  CHECK(args.IsConstructCall());\n  StreamReq::ResetObject(args.This());\n}\n\nvoid LibuvStreamWrap::Initialize(Local<Object> target,\n                                 Local<Value> unused,\n                                 Local<Context> context,\n                                 void* priv) {\n  Environment* env = Environment::GetCurrent(context);\n  Isolate* isolate = env->isolate();\n\n  Local<FunctionTemplate> sw =\n      NewFunctionTemplate(isolate, IsConstructCallCallback);\n  sw->InstanceTemplate()->SetInternalFieldCount(StreamReq::kInternalFieldCount);\n\n  // we need to set handle and callback to null,\n  // so that those fields are created and functions\n  // do not become megamorphic\n  // Fields:\n  // - oncomplete\n  // - callback\n  // - handle\n  sw->InstanceTemplate()->Set(env->oncomplete_string(), v8::Null(isolate));\n  sw->InstanceTemplate()->Set(FIXED_ONE_BYTE_STRING(isolate, \"callback\"),\n                              v8::Null(isolate));\n  sw->InstanceTemplate()->Set(env->handle_string(), v8::Null(isolate));\n\n  sw->Inherit(AsyncWrap::GetConstructorTemplate(env));\n\n  SetConstructorFunction(context, target, \"ShutdownWrap\", sw);\n  env->set_shutdown_wrap_template(sw->InstanceTemplate());\n",
+      "production_basenames": [
+        "native_node_async_wrap.zig",
+        "native_node_async_wrap_state.zig"
+      ],
+      "source_mapping": "Actual constructor checks construct-call and resets fields; own oncomplete/callback/handle data fields are null in original order with default C/W/E attributes. Inherits the actual AsyncWrap template. This native template surface is not full FileHandle public publication."
+    },
+    {
+      "id": "stream_shutdown",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base.cc",
+        "bytes": 28310,
+        "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+      },
+      "start_line": 44,
+      "end_line": 80,
+      "excerpt_bytes": 1026,
+      "excerpt_sha256": "54070F3D368DA238B25AE0F26BDC64A643BAAB729B264CF75A964C38E10373A8",
+      "excerpt": "int StreamBase::Shutdown(v8::Local<v8::Object> req_wrap_obj) {\n  Environment* env = stream_env();\n\n  v8::HandleScope handle_scope(env->isolate());\n\n  if (req_wrap_obj.IsEmpty()) {\n    if (!env->shutdown_wrap_template()\n             ->NewInstance(env->context())\n             .ToLocal(&req_wrap_obj)) {\n      return UV_EBUSY;\n    }\n    StreamReq::ResetObject(req_wrap_obj);\n  }\n\n  BaseObjectPtr<AsyncWrap> req_wrap_ptr;\n  AsyncHooks::DefaultTriggerAsyncIdScope trigger_scope(GetAsyncWrap());\n  ShutdownWrap* req_wrap = CreateShutdownWrap(req_wrap_obj);\n  if (req_wrap != nullptr) req_wrap_ptr.reset(req_wrap->GetAsyncWrap());\n  int err = DoShutdown(req_wrap);\n\n  if (err != 0 && req_wrap != nullptr) {\n    req_wrap->Dispose();\n  }\n\n  const char* msg = Error();\n  if (msg != nullptr) {\n    if (req_wrap_obj\n            ->Set(env->context(),\n                  env->error_string(),\n                  OneByteString(env->isolate(), msg))\n            .IsNothing()) {\n      return UV_EBUSY;\n    }\n    ClearError();\n  }\n\n  return err;\n",
+      "production_basenames": [
+        "native_node_stream_shutdown.zig"
+      ],
+      "source_mapping": "Missing input uses the stored actual InstanceTemplate. UV_EBUSY on failed ToLocal/Set; trigger scope encloses construction/DoShutdown/disposal/error handling; trigger restores before BaseObjectPtr release and local Scope disposal."
+    },
+    {
+      "id": "trigger_scope",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\env.cc",
+        "bytes": 84987,
+        "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+      },
+      "start_line": 264,
+      "end_line": 285,
+      "excerpt_bytes": 885,
+      "excerpt_sha256": "A18B84E1FA1215616887641E48FA9E9C9B279483CB099C0E80C46EF2F66CE612",
+      "excerpt": "AsyncHooks::DefaultTriggerAsyncIdScope::DefaultTriggerAsyncIdScope(\n    Environment* env, double default_trigger_async_id)\n    : async_hooks_(env->async_hooks()) {\n  if (env->async_hooks()->fields()[AsyncHooks::kCheck] > 0) {\n    CHECK_GE(default_trigger_async_id, 0);\n  }\n\n  old_default_trigger_async_id_ =\n      async_hooks_->async_id_fields()[AsyncHooks::kDefaultTriggerAsyncId];\n  async_hooks_->async_id_fields()[AsyncHooks::kDefaultTriggerAsyncId] =\n      default_trigger_async_id;\n}\n\nAsyncHooks::DefaultTriggerAsyncIdScope::~DefaultTriggerAsyncIdScope() {\n  async_hooks_->async_id_fields()[AsyncHooks::kDefaultTriggerAsyncId] =\n      old_default_trigger_async_id_;\n}\n\nAsyncHooks::DefaultTriggerAsyncIdScope::DefaultTriggerAsyncIdScope(\n    AsyncWrap* async_wrap)\n    : DefaultTriggerAsyncIdScope(async_wrap->env(),\n                                 async_wrap->get_async_id()) {}\n",
+      "production_basenames": [
+        "native_node_stream_shutdown.zig"
+      ],
+      "source_mapping": "Checks default trigger >= 0 when kCheck>0 (including NaN rejection), saves old trigger, installs the actual stream AsyncWrap ID, restores old trigger first on all completed paths."
+    },
+    {
+      "id": "simple_constructor",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base-inl.h",
+        "bytes": 5052,
+        "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6"
+      },
+      "start_line": 97,
+      "end_line": 109,
+      "excerpt_bytes": 401,
+      "excerpt_sha256": "C56FB5E849BFE6549749777A15BF2F5189DB7BDA0EB09B91C70B761BEDA73E48",
+      "excerpt": "StreamBase::StreamBase(Environment* env) : env_(env) {\n  PushStreamListener(&default_listener_);\n}\n\ntemplate <typename OtherBase>\nSimpleShutdownWrap<OtherBase>::SimpleShutdownWrap(\n    StreamBase* stream,\n    v8::Local<v8::Object> req_wrap_obj)\n  : ShutdownWrap(stream, req_wrap_obj),\n    OtherBase(stream->stream_env(),\n              req_wrap_obj,\n              AsyncWrap::PROVIDER_SHUTDOWNWRAP) {\n}\n",
+      "production_basenames": [
+        "native_node_stream_shutdown.zig",
+        "native_node_file_handle_shutdown.zig",
+        "native_node_stream_base.zig"
+      ],
+      "source_mapping": "Base installs its real default listener. SimpleShutdown constructs StreamReq first, then actual OtherBase with PROVIDER_SHUTDOWNWRAP."
+    },
+    {
+      "id": "simple_type",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base.h",
+        "bytes": 18488,
+        "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334"
+      },
+      "start_line": 436,
+      "end_line": 455,
+      "excerpt_bytes": 748,
+      "excerpt_sha256": "13C90278BDA234E65D94B644A2F5056CD39B2704C740BCAADC7E2A2ED888B1F5",
+      "excerpt": "// These are helpers for creating `ShutdownWrap`/`WriteWrap` instances.\n// `OtherBase` must have a constructor that matches the `AsyncWrap`\n// constructors\u2019s (Environment*, Local<Object>, AsyncWrap::Provider) signature\n// and be a subclass of `AsyncWrap`.\ntemplate <typename OtherBase>\nclass SimpleShutdownWrap : public ShutdownWrap, public OtherBase {\n public:\n  SimpleShutdownWrap(StreamBase* stream,\n                     v8::Local<v8::Object> req_wrap_obj);\n\n  AsyncWrap* GetAsyncWrap() override { return this; }\n\n  SET_NO_MEMORY_INFO()\n  SET_MEMORY_INFO_NAME(SimpleShutdownWrap)\n  SET_SELF_SIZE(SimpleShutdownWrap)\n\n  bool IsNotIndicativeOfMemoryLeakAtExit() const override {\n    return OtherBase::IsNotIndicativeOfMemoryLeakAtExit();\n  }\n};\n",
+      "production_basenames": [
+        "native_node_stream_shutdown.zig",
+        "native_node_file_handle_shutdown.zig"
+      ],
+      "source_mapping": "Two concrete instantiations: default AsyncWrap and FileHandle ReqWrap<uv_fs_t>. No synthetic Promise/Global/Handle root is introduced."
+    },
+    {
+      "id": "provider_number",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\async_wrap.h",
+        "bytes": 12198,
+        "sha256": "3EBF97B3044B4875D1F62C3F8BA1668886F4AE19F6369A8DD20EC0E262BBF1EF"
+      },
+      "start_line": 34,
+      "end_line": 88,
+      "excerpt_bytes": 4384,
+      "excerpt_sha256": "305949754E8C4DB5C85108368165BB8896FBB6AF690EFCEA0FF9EA71DDECDE9F",
+      "excerpt": "#define NODE_ASYNC_NON_CRYPTO_PROVIDER_TYPES(V)                                \\\n  V(NONE)                                                                      \\\n  V(DIRHANDLE)                                                                 \\\n  V(DNSCHANNEL)                                                                \\\n  V(ELDHISTOGRAM)                                                              \\\n  V(FILEHANDLE)                                                                \\\n  V(FILEHANDLECLOSEREQ)                                                        \\\n  V(BLOBREADER)                                                                \\\n  V(FSEVENTWRAP)                                                               \\\n  V(FSREQCALLBACK)                                                             \\\n  V(FSREQPROMISE)                                                              \\\n  V(GETADDRINFOREQWRAP)                                                        \\\n  V(GETNAMEINFOREQWRAP)                                                        \\\n  V(HEAPSNAPSHOT)                                                              \\\n  V(HTTP2SESSION)                                                              \\\n  V(HTTP2STREAM)                                                               \\\n  V(HTTP2PING)                                                                 \\\n  V(HTTP2SETTINGS)                                                             \\\n  V(HTTPINCOMINGMESSAGE)                                                       \\\n  V(HTTPCLIENTREQUEST)                                                         \\\n  V(LOCKS)                                                                     \\\n  V(JSSTREAM)                                                                  \\\n  V(JSUDPWRAP)                                                                 \\\n  V(MESSAGEPORT)                                                               \\\n  V(PIPECONNECTWRAP)                                                           \\\n  V(PIPESERVERWRAP)                                                            \\\n  V(PIPEWRAP)                                                                  \\\n  V(PROCESSWRAP)                                                               \\\n  V(PROMISE)                                                                   \\\n  V(QUERYWRAP)                                                                 \\\n  V(QUIC_ENDPOINT)                                                             \\\n  V(QUIC_LOGSTREAM)                                                            \\\n  V(QUIC_PACKET)                                                               \\\n  V(QUIC_SESSION)                                                              \\\n  V(QUIC_STREAM)                                                               \\\n  V(QUIC_UDP)                                                                  \\\n  V(SHUTDOWNWRAP)                                                              \\\n  V(SIGNALWRAP)                                                                \\\n  V(STATWATCHER)                                                               \\\n  V(STREAMPIPE)                                                                \\\n  V(TCPCONNECTWRAP)                                                            \\\n  V(TCPSERVERWRAP)                                                             \\\n  V(TCPWRAP)                                                                   \\\n  V(TTYWRAP)                                                                   \\\n  V(UDPSENDWRAP)                                                               \\\n  V(UDPWRAP)                                                                   \\\n  V(SIGINTWATCHDOG)                                                            \\\n  V(WORKER)                                                                    \\\n  V(WORKERCPUPROFILE)                                                          \\\n  V(WORKERCPUUSAGE)                                                            \\\n  V(WORKERHEAPPROFILE)                                                         \\\n  V(WORKERHEAPSNAPSHOT)                                                        \\\n  V(WORKERHEAPSTATISTICS)                                                      \\\n  V(WRITEWRAP)                                                                 \\\n  V(ZLIB)\n",
+      "production_basenames": [
+        "native_node_async_wrap_state.zig"
+      ],
+      "source_mapping": "Exact original macro order yields NONE=0 and SHUTDOWNWRAP=35; provider append does not renumber existing providers."
+    },
+    {
+      "id": "default_simple",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base.cc",
+        "bytes": 28310,
+        "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+      },
+      "start_line": 854,
+      "end_line": 858,
+      "excerpt_bytes": 173,
+      "excerpt_sha256": "0C9896DEDD1E5A7DF2F80C2E8647AACDB00BB41CEC1195F5FBF804F9D2F1B744",
+      "excerpt": "ShutdownWrap* StreamBase::CreateShutdownWrap(\n    Local<Object> object) {\n  auto* wrap = new SimpleShutdownWrap<AsyncWrap>(this, object);\n  wrap->MakeWeak();\n  return wrap;\n",
+      "production_basenames": [
+        "native_node_stream_shutdown.zig"
+      ],
+      "source_mapping": "StreamBase default CreateShutdownWrap allocates genuine SimpleShutdownWrap<AsyncWrap> and makes it weak."
+    },
+    {
+      "id": "request_done",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base.cc",
+        "bytes": 28310,
+        "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+      },
+      "start_line": 868,
+      "end_line": 883,
+      "excerpt_bytes": 455,
+      "excerpt_sha256": "8154D8F6FCF858829484B7E98CDCF0A0C8B1015D866F6E3A7F2A7590791FB6CA",
+      "excerpt": "void StreamReq::Done(int status, const char* error_str) {\n  AsyncWrap* async_wrap = GetAsyncWrap();\n  Environment* env = async_wrap->env();\n  if (error_str != nullptr) {\n    v8::HandleScope handle_scope(env->isolate());\n    if (async_wrap->object()\n            ->Set(env->context(),\n                  env->error_string(),\n                  OneByteString(env->isolate(), error_str))\n            .IsNothing()) {\n      return;\n    }\n  }\n\n  OnDone(status);\n}\n",
+      "production_basenames": [
+        "native_node_stream_request.zig"
+      ],
+      "source_mapping": "Optional error-string block owns its own HandleScope; ordinary Set IsNothing returns before OnDone. The native void OnDone continuation is preserved on completed operations."
+    },
+    {
+      "id": "stream_default_get_object",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base.cc",
+        "bytes": 28310,
+        "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+      },
+      "start_line": 492,
+      "end_line": 494,
+      "excerpt_bytes": 77,
+      "excerpt_sha256": "589DD12E8952F996E717ED3F27913791C7A5C997BB43EE30B479D474637FE3F8",
+      "excerpt": "Local<Object> StreamBase::GetObject() {\n  return GetAsyncWrap()->object();\n}\n",
+      "production_basenames": [
+        "native_node_stream_base.zig"
+      ],
+      "source_mapping": "Default GetObject returns actual GetAsyncWrap()->object()."
+    },
+    {
+      "id": "stream_default_error",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base.cc",
+        "bytes": 28310,
+        "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+      },
+      "start_line": 677,
+      "end_line": 684,
+      "excerpt_bytes": 115,
+      "excerpt_sha256": "F11E3423427284090BFDABC475CF76C3CFE5A5BF63D28E35BD01F32B120FC8D6",
+      "excerpt": "const char* StreamResource::Error() const {\n  return nullptr;\n}\n\n\nvoid StreamResource::ClearError() {\n  // No-op\n}\n",
+      "production_basenames": [
+        "native_node_stream_base.zig"
+      ],
+      "source_mapping": "Original default Error is null and ClearError has an empty body; these are source defaults, not placeholder host implementations."
+    },
+    {
+      "id": "live_emit",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base-inl.h",
+        "bytes": 5052,
+        "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6"
+      },
+      "start_line": 60,
+      "end_line": 90,
+      "excerpt_bytes": 918,
+      "excerpt_sha256": "CDD6E123E03A2637FD47F0566D599FF9E409589A95080A81216C7D9C9E3CE4F1",
+      "excerpt": "void StreamResource::PushStreamListener(StreamListener* listener) {\n  CHECK_NOT_NULL(listener);\n  CHECK_NULL(listener->stream_);\n\n  listener->previous_listener_ = listener_;\n  listener->stream_ = this;\n\n  listener_ = listener;\n}\n\nuv_buf_t StreamResource::EmitAlloc(size_t suggested_size) {\n  DebugSealHandleScope seal_handle_scope;\n  return listener_->OnStreamAlloc(suggested_size);\n}\n\nvoid StreamResource::EmitRead(ssize_t nread, const uv_buf_t& buf) {\n  DebugSealHandleScope seal_handle_scope;\n  if (nread > 0)\n    bytes_read_ += static_cast<uint64_t>(nread);\n  listener_->OnStreamRead(nread, buf);\n}\n\nvoid StreamResource::EmitAfterWrite(WriteWrap* w, int status) {\n  DebugSealHandleScope seal_handle_scope;\n  listener_->OnStreamAfterWrite(w, status);\n}\n\nvoid StreamResource::EmitAfterShutdown(ShutdownWrap* w, int status) {\n  DebugSealHandleScope seal_handle_scope;\n  listener_->OnStreamAfterShutdown(w, status);\n}\n",
+      "production_basenames": [
+        "native_node_stream_resource.zig"
+      ],
+      "source_mapping": "Emitter selects the current live listener head. Default listener forwards to its actual predecessor; no cached substitute chain."
+    },
+    {
+      "id": "reporter_class",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base.h",
+        "bytes": 18488,
+        "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334"
+      },
+      "start_line": 184,
+      "end_line": 201,
+      "excerpt_bytes": 672,
+      "excerpt_sha256": "1EA117E3D89E28CB19A43B067B479BC38C68F950332E90160FF7B11DC4A3B1B3",
+      "excerpt": "// method of the JS objects associated with the wrap objects.\nclass ReportWritesToJSStreamListener : public StreamListener {\n public:\n  void OnStreamAfterWrite(WriteWrap* w, int status) override;\n  void OnStreamAfterShutdown(ShutdownWrap* w, int status) override;\n\n private:\n  void OnStreamAfterReqFinished(StreamReq* req_wrap, int status);\n};\n\n\n// A default emitter that just pushes data chunks as Buffer instances to\n// JS land via the handle\u2019s .ondata method.\nclass EmitToJSStreamListener : public ReportWritesToJSStreamListener {\n public:\n  uv_buf_t OnStreamAlloc(size_t suggested_size) override;\n  void OnStreamRead(ssize_t nread, const uv_buf_t& buf) override;\n};\n",
+      "production_basenames": [
+        "native_node_stream_shutdown.zig",
+        "native_node_stream_base.zig"
+      ],
+      "source_mapping": "The real default EmitToJSStreamListener derives ReportWritesToJSStreamListener. Its shutdown callback therefore selects reporter semantics, not generic predecessor forwarding."
+    },
+    {
+      "id": "reporter_body",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base.cc",
+        "bytes": 28310,
+        "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+      },
+      "start_line": 755,
+      "end_line": 780,
+      "excerpt_bytes": 917,
+      "excerpt_sha256": "91DDBC7BEF7FDF3094B0ACD839EA00CD35E93FB0E96E2559981F82307A4CDAE6",
+      "excerpt": "void ReportWritesToJSStreamListener::OnStreamAfterReqFinished(\n    StreamReq* req_wrap, int status) {\n  StreamBase* stream = static_cast<StreamBase*>(stream_);\n  Environment* env = stream->stream_env();\n  if (!env->can_call_into_js()) return;\n  AsyncWrap* async_wrap = req_wrap->GetAsyncWrap();\n  HandleScope handle_scope(env->isolate());\n  Context::Scope context_scope(env->context());\n  CHECK(!async_wrap->persistent().IsEmpty());\n  Local<Object> req_wrap_obj = async_wrap->object();\n\n  Local<Value> argv[] = {\n    Integer::New(env->isolate(), status),\n    stream->GetObject(),\n    Undefined(env->isolate())\n  };\n\n  const char* msg = stream->Error();\n  if (msg != nullptr) {\n    argv[2] = OneByteString(env->isolate(), msg);\n    stream->ClearError();\n  }\n\n  if (req_wrap_obj->Has(env->context(), env->oncomplete_string()).FromJust())\n    async_wrap->MakeCallback(env->oncomplete_string(), arraysize(argv), argv);\n}\n",
+      "production_basenames": [
+        "native_node_stream_shutdown.zig"
+      ],
+      "source_mapping": "Return immediately if JS disabled. Check persistent nonempty; arguments status, actual stream object, undefined; optional Latin-1 error then ClearError. Has.FromJust retains genuine terminal failure ownership; subsequent MakeCallback getter remains ordinary."
+    },
+    {
+      "id": "reporter_shutdown",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base.cc",
+        "bytes": 28310,
+        "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+      },
+      "start_line": 787,
+      "end_line": 795,
+      "excerpt_bytes": 251,
+      "excerpt_sha256": "9DEAB5E8DA8068B3124984D967FD17976AD2E2DF7B819A81EAA0CEDF2D88638B",
+      "excerpt": "void ReportWritesToJSStreamListener::OnStreamAfterShutdown(\n    ShutdownWrap* req_wrap, int status) {\n  OnStreamAfterReqFinished(req_wrap, status);\n}\n\nvoid ShutdownWrap::OnDone(int status) {\n  stream()->EmitAfterShutdown(this, status);\n  Dispose();\n}\n",
+      "production_basenames": [
+        "native_node_stream_request.zig",
+        "native_node_stream_shutdown.zig"
+      ],
+      "source_mapping": "OnStreamAfterShutdown delegates to shared reporter; Shutdown OnDone invokes stream listener and always follows the completed void callback with Dispose."
+    },
+    {
+      "id": "listener_forward",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\stream_base.cc",
+        "bytes": 28310,
+        "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+      },
+      "start_line": 807,
+      "end_line": 809,
+      "excerpt_bytes": 168,
+      "excerpt_sha256": "441C7FAB03FC136BAA606B724B9B780A4B9C73A8B1553AE05E47F11E3563CC6C",
+      "excerpt": "void StreamListener::OnStreamAfterShutdown(ShutdownWrap* w, int status) {\n  CHECK_NOT_NULL(previous_listener_);\n  previous_listener_->OnStreamAfterShutdown(w, status);\n",
+      "production_basenames": [
+        "native_node_stream_resource.zig"
+      ],
+      "source_mapping": "Base StreamListener checks non-null previous listener and forwards actual request/status. SDK's custom listener must select exported reporter callback where inherited from ReportWrites."
+    },
+    {
+      "id": "callback_name_get",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\async_wrap-inl.h",
+        "bytes": 3024,
+        "sha256": "0C1713056A8C8FB26EB12DF40FF600A3D1CC392FAB99D2276DCF2E2975873B9E"
+      },
+      "start_line": 72,
+      "end_line": 84,
+      "excerpt_bytes": 447,
+      "excerpt_sha256": "4F9F2056567D77F8BC45E31E69202633797C5AE9ADB2AF314667FDD5835848DE",
+      "excerpt": "inline v8::MaybeLocal<v8::Value> AsyncWrap::MakeCallback(\n    const v8::Local<v8::Name> symbol,\n    int argc,\n    v8::Local<v8::Value>* argv) {\n  v8::Local<v8::Value> cb_v;\n  if (!object()->Get(env()->context(), symbol).ToLocal(&cb_v))\n    return v8::MaybeLocal<v8::Value>();\n  if (!cb_v->IsFunction()) {\n    v8::Isolate* isolate = env()->isolate();\n    return Undefined(isolate);\n  }\n  return MakeCallback(cb_v.As<v8::Function>(), argc, argv);\n}\n",
+      "production_basenames": [
+        "native_node_stream_shutdown.zig"
+      ],
+      "source_mapping": "Ordinary Get, then nonfunction => undefined without invocation or trace. Actual callable delegates to unchanged native_node_async_wrap_make_callback.zig 972B9D09 return-try owner."
+    },
+    {
+      "id": "filehandle_shutdown",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\node_file.cc",
+        "bytes": 139386,
+        "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+      },
+      "start_line": 668,
+      "end_line": 696,
+      "excerpt_bytes": 959,
+      "excerpt_sha256": "8235C67B43E909627D4042A8A86E149B9EC0DE4E304FBF665112E08E60BF141A",
+      "excerpt": "typedef SimpleShutdownWrap<ReqWrap<uv_fs_t>> FileHandleCloseWrap;\n\nShutdownWrap* FileHandle::CreateShutdownWrap(Local<Object> object) {\n  return new FileHandleCloseWrap(this, object);\n}\n\nint FileHandle::DoShutdown(ShutdownWrap* req_wrap) {\n  if (closing_ || closed_) {\n    req_wrap->Done(0);\n    return 1;\n  }\n  FileHandleCloseWrap* wrap = static_cast<FileHandleCloseWrap*>(req_wrap);\n  closing_ = true;\n  CHECK_NE(fd_, -1);\n  FS_ASYNC_TRACE_BEGIN0(UV_FS_CLOSE, wrap)\n  wrap->Dispatch(uv_fs_close, fd_, uv_fs_callback_t{[](uv_fs_t* req) {\n    FileHandleCloseWrap* wrap = static_cast<FileHandleCloseWrap*>(\n        FileHandleCloseWrap::from_req(req));\n    FS_ASYNC_TRACE_END1(\n        req->fs_type, wrap, \"result\", static_cast<int>(req->result))\n    FileHandle* handle = static_cast<FileHandle*>(wrap->stream());\n    handle->AfterClose();\n\n    int result = static_cast<int>(req->result);\n    uv_fs_req_cleanup(req);\n    wrap->Done(result);\n  }});\n\n  return 0;\n",
+      "production_basenames": [
+        "native_node_file_handle_shutdown.zig",
+        "native_node_file_handle_owner.zig"
+      ],
+      "source_mapping": "FileHandleCloseWrap is SimpleShutdownWrap<ReqWrap<uv_fs_t>>. Closed/closing: Done(0), return1. Otherwise closing=true, CHECK fd!=-1, trace begin, real Dispatch uv_fs_close; original ignores negative dispatch result and returns0. Completion trace end, actual AfterClose, fresh result read, cleanup, Done."
+    },
+    {
+      "id": "reqwrap_constructor",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\req_wrap-inl.h",
+        "bytes": 5640,
+        "sha256": "27C770D8756B626C80210F96F9DB1CF31BFBF09AAB1DA53DC35B382314883E67"
+      },
+      "start_line": 17,
+      "end_line": 39,
+      "excerpt_bytes": 489,
+      "excerpt_sha256": "F34A9AB2E1BDB8D795E72F98F56E348748E2A004BAD46A83AD4DE7CDADE6356C",
+      "excerpt": "template <typename T>\nReqWrap<T>::ReqWrap(Environment* env,\n                    v8::Local<v8::Object> object,\n                    AsyncWrap::ProviderType provider)\n    : AsyncWrap(env, object, provider),\n      ReqWrapBase(env) {\n  MakeWeak();\n  Reset();\n}\n\ntemplate <typename T>\nReqWrap<T>::~ReqWrap() {}\n\ntemplate <typename T>\nvoid ReqWrap<T>::Dispatched() {\n  req_.data = this;\n}\n\ntemplate <typename T>\nvoid ReqWrap<T>::Reset() {\n  original_callback_ = nullptr;\n  req_.data = nullptr;\n}\n",
+      "production_basenames": [
+        "native_node_file_handle_shutdown.zig"
+      ],
+      "source_mapping": "Actual AsyncWrap then actual ReqWrapBase queue entry, MakeWeak and Reset. Original ReqWrap destructor is empty. Preallocated canonical C storage is a native layout prerequisite, not an invented async admission."
+    },
+    {
+      "id": "reqwrap_wrapper",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\req_wrap-inl.h",
+        "bytes": 5640,
+        "sha256": "27C770D8756B626C80210F96F9DB1CF31BFBF09AAB1DA53DC35B382314883E67"
+      },
+      "start_line": 120,
+      "end_line": 139,
+      "excerpt_bytes": 780,
+      "excerpt_sha256": "3ACC65D92E637FFF2F5EE570C1CB0A6F5BCA5569A841728574D28802AD8C79E8",
+      "excerpt": "// Match the `void callback(uv_req_t*, ...);` signature that all libuv\n// callbacks use.\ntemplate <typename ReqT, typename... Args>\nstruct MakeLibuvRequestCallback<ReqT, void(*)(ReqT*, Args...)> {\n  using F = void(*)(ReqT* req, Args... args);\n\n  static void Wrapper(ReqT* req, Args... args) {\n    BaseObjectPtr<ReqWrap<ReqT>> req_wrap{ReqWrap<ReqT>::from_req(req)};\n    req_wrap->Detach();\n    req_wrap->env()->DecreaseWaitingRequestCounter();\n    F original_callback = reinterpret_cast<F>(req_wrap->original_callback_);\n    original_callback(req, args...);\n  }\n\n  static F For(ReqWrap<ReqT>* req_wrap, F v) {\n    CHECK_NULL(req_wrap->original_callback_);\n    req_wrap->original_callback_ =\n        reinterpret_cast<typename ReqWrap<ReqT>::callback_t>(v);\n    return Wrapper;\n  }\n",
+      "production_basenames": [
+        "native_node_file_handle_shutdown.zig"
+      ],
+      "source_mapping": "Existing Controller/Entry owns real Wrapper: retain, Detach, decrease waiting, invoke original callback, then release pointer. Cleanup/OnDone occur while that native pointer remains alive."
+    },
+    {
+      "id": "reqwrap_dispatch",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\req_wrap-inl.h",
+        "bytes": 5640,
+        "sha256": "27C770D8756B626C80210F96F9DB1CF31BFBF09AAB1DA53DC35B382314883E67"
+      },
+      "start_line": 142,
+      "end_line": 169,
+      "excerpt_bytes": 1244,
+      "excerpt_sha256": "469262A7CB4E438B8C45B165B8984E7BCFC07B0A8418951C0824ED92299AD29D",
+      "excerpt": "template <typename T>\ntemplate <typename LibuvFunction, typename... Args>\nint ReqWrap<T>::Dispatch(LibuvFunction fn, Args... args) {\n  Dispatched();\n  // This expands as:\n  //\n  // int err = fn(env()->event_loop(), req(), arg1, arg2, Wrapper, arg3, ...)\n  //              ^                                       ^        ^\n  //              |                                       |        |\n  //              \\-- Omitted if `fn` has no              |        |\n  //                  first `uv_loop_t*` argument         |        |\n  //                                                      |        |\n  //        A function callback whose first argument      |        |\n  //        matches the libuv request type is replaced ---/        |\n  //        by the `Wrapper` method defined above                  |\n  //                                                               |\n  //               Other (non-function) arguments are passed  -----/\n  //               through verbatim\n  int err = CallLibuvFunction<T, LibuvFunction>::Call(\n      fn,\n      env()->event_loop(),\n      req(),\n      MakeLibuvRequestCallback<T, Args>::For(this, args)...);\n  if (err >= 0) {\n    ClearWeak();\n    env()->IncreaseWaitingRequestCounter();\n  }\n  return err;\n",
+      "production_basenames": [
+        "native_node_file_handle_shutdown.zig"
+      ],
+      "source_mapping": "Existing real Dispatch owns original callback routing, actual admission, ClearWeak and waiting increment only if admission>=0. Shutdown does not replace this with a Promise or fake queue."
+    },
+    {
+      "id": "onebyte_defaults",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\util.h",
+        "bytes": 39726,
+        "sha256": "29BD133B9FB9000B2A624ABDDFB42FBD538CFA33D3BB00377AD8F1122C74AF52"
+      },
+      "start_line": 334,
+      "end_line": 351,
+      "excerpt_bytes": 584,
+      "excerpt_sha256": "EA4B9E4FA11E831972EDEADB9844E99A96BE0E70BB3B1192D8375084661957AD",
+      "excerpt": "inline v8::Local<v8::String> OneByteString(\n    v8::Isolate* isolate,\n    const char* data,\n    int length = -1,\n    v8::NewStringType type = v8::NewStringType::kNormal);\n\n// For the people that compile with -funsigned-char.\ninline v8::Local<v8::String> OneByteString(\n    v8::Isolate* isolate,\n    const signed char* data,\n    int length = -1,\n    v8::NewStringType type = v8::NewStringType::kNormal);\n\ninline v8::Local<v8::String> OneByteString(\n    v8::Isolate* isolate,\n    const unsigned char* data,\n    int length = -1,\n    v8::NewStringType type = v8::NewStringType::kNormal);\n",
+      "production_basenames": [
+        "native_node_one_byte_string.zig"
+      ],
+      "source_mapping": "Selected ordinary char/uint8 OneByteString has signed int length default -1 and NewStringType kNormal. Internalized mode is outside this selected wrapper."
+    },
+    {
+      "id": "onebyte_wrapper",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\util-inl.h",
+        "bytes": 27509,
+        "sha256": "8979B5C3115BC3D1C9478910088944D3761130E7D7A0ED8ED7452FCEC5870E83"
+      },
+      "start_line": 161,
+      "end_line": 184,
+      "excerpt_bytes": 1138,
+      "excerpt_sha256": "9012D049A095D2C02C39FDC737F3B84F463AD4D8BDDAE3CC51A58AA926E4BFFC",
+      "excerpt": "inline v8::Local<v8::String> OneByteString(v8::Isolate* isolate,\n                                           const char* data,\n                                           int length,\n                                           v8::NewStringType type) {\n  return v8::String::NewFromOneByte(\n             isolate, reinterpret_cast<const uint8_t*>(data), type, length)\n      .ToLocalChecked();\n}\n\ninline v8::Local<v8::String> OneByteString(v8::Isolate* isolate,\n                                           const signed char* data,\n                                           int length,\n                                           v8::NewStringType type) {\n  return v8::String::NewFromOneByte(\n             isolate, reinterpret_cast<const uint8_t*>(data), type, length)\n      .ToLocalChecked();\n}\n\ninline v8::Local<v8::String> OneByteString(v8::Isolate* isolate,\n                                           const unsigned char* data,\n                                           int length,\n                                           v8::NewStringType type) {\n  return v8::String::NewFromOneByte(isolate, data, type, length)\n      .ToLocalChecked();\n",
+      "production_basenames": [
+        "native_node_one_byte_string.zig"
+      ],
+      "source_mapping": "Ordinary OneByteString calls NewFromOneByte(...).ToLocalChecked; raw VM primitive is separate from V8 allocation and failure policy."
+    },
+    {
+      "id": "empty_api_fatal",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-api.cc",
+        "bytes": 489340,
+        "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+      },
+      "start_line": 674,
+      "end_line": 679,
+      "excerpt_bytes": 188,
+      "excerpt_sha256": "BE9826CC9A0C929F90C568A26A4A250418FF5B72C00A6AD134CA1117666FDF01",
+      "excerpt": "void FromJustIsNothing() {\n  Utils::ApiCheck(false, \"v8::FromJust\", \"Maybe value is Nothing\");\n}\n\nvoid ToLocalEmpty() {\n  Utils::ApiCheck(false, \"v8::ToLocalChecked\", \"Empty MaybeLocal\");\n",
+      "production_basenames": [
+        "native_node_one_byte_string.zig",
+        "native_node_stream_shutdown.zig"
+      ],
+      "source_mapping": "ToLocalEmpty exact location v8::ToLocalChecked/message Empty MaybeLocal; Has.FromJust selects FromJustIsNothing exact Maybe value is Nothing. Existing actual Node/V8 failure owner is retained."
+    },
+    {
+      "id": "cstring_length",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-api.cc",
+        "bytes": 489340,
+        "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+      },
+      "start_line": 7535,
+      "end_line": 7542,
+      "excerpt_bytes": 252,
+      "excerpt_sha256": "C80A9B11252D289B45D4B29152FE6D70B86768A4AF723D85EA01F7BFE0A1A2C0",
+      "excerpt": "inline int StringLength(const char* string) {\n  size_t len = strlen(string);\n  CHECK_GE(i::kMaxInt, len);\n  return static_cast<int>(len);\n}\n\ninline int StringLength(const uint8_t* string) {\n  return StringLength(reinterpret_cast<const char*>(string));\n",
+      "production_basenames": [
+        "native_node_one_byte_string_diagnostics.cpp",
+        "native_node_one_byte_string.zig"
+      ],
+      "source_mapping": "Negative signed length invokes genuine strlen once and original CHECK_GE(kMaxInt,len) before narrowing to int. Explicit nonnegative lengths do not scan for NUL."
+    },
+    {
+      "id": "newstring_normal",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-api.cc",
+        "bytes": 489340,
+        "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+      },
+      "start_line": 7553,
+      "end_line": 7569,
+      "excerpt_bytes": 729,
+      "excerpt_sha256": "E93718CE22E00B06470E12BAA57682FF738AF6DF867FC68563D94632062DF33C",
+      "excerpt": "inline i::MaybeHandle<i::String> NewString(i::Factory* factory,\n                                           NewStringType type,\n                                           base::Vector<const char> string) {\n  if (type == NewStringType::kInternalized) {\n    return factory->InternalizeUtf8String(string);\n  }\n  return factory->NewStringFromUtf8(string);\n}\n\nV8_WARN_UNUSED_RESULT\ninline i::MaybeHandle<i::String> NewString(i::Factory* factory,\n                                           NewStringType type,\n                                           base::Vector<const uint8_t> string) {\n  if (type == NewStringType::kInternalized) {\n    return factory->InternalizeString(string);\n  }\n  return factory->NewStringFromOneByte(string);\n",
+      "production_basenames": [
+        "native_node_one_byte_string.zig"
+      ],
+      "source_mapping": "Selected kNormal forwards one-byte vector to NewStringFromOneByte; no UTF-8 interpretation and no internalized-string claim."
+    },
+    {
+      "id": "newstring_api_policy",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-api.cc",
+        "bytes": 489340,
+        "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+      },
+      "start_line": 7587,
+      "end_line": 7605,
+      "excerpt_bytes": 1444,
+      "excerpt_sha256": "441E64C57F9C6825184EAC0633C40A826F72EEB13D6FA947FCCB7D3400D3DAC1",
+      "excerpt": "#define NEW_STRING(v8_isolate, class_name, function_name, Char, data, type,   \\\n                   length)                                                    \\\n  MaybeLocal<String> result;                                                  \\\n  if (length == 0) {                                                          \\\n    result = String::Empty(v8_isolate);                                       \\\n  } else if (length > 0 &&                                                    \\\n             static_cast<uint32_t>(length) > i::String::kMaxLength) {         \\\n    result = MaybeLocal<String>();                                            \\\n  } else {                                                                    \\\n    i::Isolate* i_isolate = reinterpret_cast<internal::Isolate*>(v8_isolate); \\\n    ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);                               \\\n    API_RCS_SCOPE(i_isolate, class_name, function_name);                      \\\n    if (length < 0) length = StringLength(data);                              \\\n    i::DirectHandle<i::String> handle_result =                                \\\n        NewString(i_isolate->factory(), type,                                 \\\n                  base::Vector<const Char>(data, length))                     \\\n            .ToHandleChecked();                                               \\\n    result = Utils::ToLocal(handle_result);                                   \\\n  }\n",
+      "production_basenames": [
+        "native_node_one_byte_string.zig"
+      ],
+      "source_mapping": "Length0 returns empty. Explicit positive over max returns empty Maybe before ENTER_V8. Negative computes strlen inside scope, then internal MaybeHandle::ToHandleChecked; these are different failure paths."
+    },
+    {
+      "id": "newfromonebyte",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-api.cc",
+        "bytes": 489340,
+        "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+      },
+      "start_line": 7627,
+      "end_line": 7631,
+      "excerpt_bytes": 298,
+      "excerpt_sha256": "CF8A6587230FBF56536F38E4D95436CF475D2169041A7E6661825FAB35C3EA5A",
+      "excerpt": "MaybeLocal<String> String::NewFromOneByte(Isolate* v8_isolate,\n                                          const uint8_t* data,\n                                          NewStringType type, int length) {\n  NEW_STRING(v8_isolate, String, NewFromOneByte, uint8_t, data, type, length);\n  return result;\n",
+      "production_basenames": [
+        "native_node_one_byte_string.zig"
+      ],
+      "source_mapping": "The original uint8_t entry uses NEW_STRING and returns its result; selected port preserves signed length decisions and byte interpretation."
+    },
+    {
+      "id": "max_length",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-v8-primitive.h",
+        "bytes": 37573,
+        "sha256": "22B7F84FC79E55144323A29BE18CCB657E09FA3BE5D2A2FD5380CBE4C82E4A28"
+      },
+      "start_line": 121,
+      "end_line": 130,
+      "excerpt_bytes": 266,
+      "excerpt_sha256": "6576F2EB4BFF655ACD26898FE437C830EE6BB1D6981C856062D33273FCC0F911",
+      "excerpt": "/**\n * A JavaScript string value (ECMA-262, 4.3.17).\n */\nclass V8_EXPORT String : public Name {\n public:\n  static constexpr int kMaxLength =\n      internal::kApiSystemPointerSize == 4 ? (1 << 28) - 16 : (1 << 29) - 24;\n\n  enum Encoding {\n    UNKNOWN_ENCODING = 0x1,\n",
+      "production_basenames": [
+        "native_node_one_byte_string.zig"
+      ],
+      "source_mapping": "Pinned max-length selection is (1<<28)-16 for 32-bit pointers and (1<<29)-24 for 64-bit pointers. Network build target admission remains separate."
+    },
+    {
+      "id": "raw_allocation_policy",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-factory-base.cc",
+        "bytes": 57199,
+        "sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83"
+      },
+      "start_line": 809,
+      "end_line": 839,
+      "excerpt_bytes": 1359,
+      "excerpt_sha256": "BDB66B713D40AB379BACD8ADA0C2054448A76D6A9EEA0AAA130D99F8F34F8169",
+      "excerpt": "MaybeHandle<SeqStringT> FactoryBase<Impl>::NewRawStringWithMap(\n    int length, Tagged<Map> map, AllocationType allocation) {\n  DCHECK(SeqStringT::IsCompatibleMap(map, read_only_roots()));\n  DCHECK_IMPLIES(!StringShape(map).IsShared(),\n                 RefineAllocationTypeForInPlaceInternalizableString(\n                     allocation, map) == allocation);\n  if (length < 0 || static_cast<uint32_t>(length) > String::kMaxLength) {\n    THROW_NEW_ERROR(isolate(), NewInvalidStringLengthError());\n  }\n  DCHECK_GT(length, 0);  // Use Factory::empty_string() instead.\n  int size = SeqStringT::SizeFor(length);\n  DCHECK_GE(ObjectTraits<SeqStringT>::kMaxSize, size);\n\n  Tagged<SeqStringT> string =\n      Cast<SeqStringT>(AllocateRawWithImmortalMap(size, allocation, map));\n  DisallowGarbageCollection no_gc;\n  string->clear_padding_destructively(length);\n  string->set_length(length);\n  string->set_raw_hash_field(String::kEmptyHashField);\n  DCHECK_EQ(size, string->Size());\n  return handle(string, isolate());\n}\n\ntemplate <typename Impl>\nMaybeHandle<SeqOneByteString> FactoryBase<Impl>::NewRawOneByteString(\n    int length, AllocationType allocation) {\n  Tagged<Map> map = read_only_roots().seq_one_byte_string_map();\n  return NewRawStringWithMap<SeqOneByteString>(\n      length, map,\n      RefineAllocationTypeForInPlaceInternalizableString(allocation, map));\n}\n",
+      "production_basenames": [
+        "native_node_one_byte_string.zig"
+      ],
+      "source_mapping": "V8 invalid length throws RangeError and returns an empty MaybeHandle before raw allocation. Actual heap retry/GC/layout is not claimed reproduced by a QuickJS raw allocator."
+    },
+    {
+      "id": "normal_length_specials",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-factory-base.cc",
+        "bytes": 57199,
+        "sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83"
+      },
+      "start_line": 982,
+      "end_line": 1001,
+      "excerpt_bytes": 928,
+      "excerpt_sha256": "20E56260CCB9863055E90A4857676F42B4EDD236C6332CED4D13770B1C123404",
+      "excerpt": "MaybeHandle<String> FactoryBase<Impl>::NewStringFromOneByte(\n    base::Vector<const uint8_t> string, AllocationType allocation) {\n  DCHECK_NE(allocation, AllocationType::kReadOnly);\n  int length = string.length();\n  if (length == 0) return empty_string();\n  if (length == 1) return LookupSingleCharacterStringFromCode(string[0]);\n  Handle<SeqOneByteString> result;\n  ASSIGN_RETURN_ON_EXCEPTION(isolate(), result,\n                             NewRawOneByteString(string.length(), allocation));\n\n  DisallowGarbageCollection no_gc;\n  // Copy the characters into the new object.\n  // SharedStringAccessGuardIfNeeded is NotNeeded because {result} is freshly\n  // allocated and hasn't escaped the factory yet, so it can't be concurrently\n  // accessed.\n  CopyChars(Cast<SeqOneByteString>(*result)->GetChars(\n                no_gc, SharedStringAccessGuardIfNeeded::NotNeeded()),\n            string.begin(), length);\n  return result;\n}\n",
+      "production_basenames": [
+        "native_node_one_byte_string.zig"
+      ],
+      "source_mapping": "Length0 uses empty_string; length1 uses LookupSingleCharacterStringFromCode; other lengths use raw allocation/copy. Raw VM primitive does not implement V8 single-character caching/heap machinery."
+    },
+    {
+      "id": "internal_maybe_check",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-maybe-handles.h",
+        "bytes": 12894,
+        "sha256": "9F504121AF2ADF2307FA3AF36A0AFB4810D50AEFD55CAD965B751D62C5C0861B"
+      },
+      "start_line": 52,
+      "end_line": 57,
+      "excerpt_bytes": 221,
+      "excerpt_sha256": "736BF39F3E29F23A48579B988D57E9CAAEE196A3B06607FAF41B9D3BD71B4744",
+      "excerpt": "  V8_INLINE void Assert() const { DCHECK_NOT_NULL(location_); }\n  V8_INLINE void Check() const { CHECK_NOT_NULL(location_); }\n\n  V8_INLINE Handle<T> ToHandleChecked() const {\n    Check();\n    return Handle<T>(location_);\n",
+      "production_basenames": [
+        "native_node_one_byte_string_diagnostics.cpp",
+        "native_node_one_byte_string.zig"
+      ],
+      "source_mapping": "Internal ToHandleChecked calls MaybeHandle::Check, CHECK_NOT_NULL(location_), distinct from external ToLocalChecked fatal."
+    },
+    {
+      "id": "check_stream",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-logging.h",
+        "bytes": 21624,
+        "sha256": "0FA464788992D2AB04B14F9A9B9B808E29759D111E867BABD69EAED03D931405"
+      },
+      "start_line": 76,
+      "end_line": 79,
+      "excerpt_bytes": 90,
+      "excerpt_sha256": "7E1CC64054F32E15CCFC9196EEA63FDF86BD0FF8FC729A84295B4A7BE4F8492E",
+      "excerpt": "namespace v8 {\nnamespace base {\n\nclass CheckMessageStream : public std::ostringstream {};\n",
+      "production_basenames": [
+        "native_node_one_byte_string_diagnostics.cpp"
+      ],
+      "source_mapping": "DEBUG formatting uses the actual std::ostringstream-derived CheckMessageStream."
+    },
+    {
+      "id": "check_op_macro",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-logging.h",
+        "bytes": 21624,
+        "sha256": "0FA464788992D2AB04B14F9A9B9B808E29759D111E867BABD69EAED03D931405"
+      },
+      "start_line": 144,
+      "end_line": 180,
+      "excerpt_bytes": 2203,
+      "excerpt_sha256": "CAF8E86C2D8A82FA0D6147D12DDD9B3019A89D94970DC6F08A4A4980A71296CB",
+      "excerpt": "// Helper macro for binary operators.\n// Don't use this macro directly in your code, use CHECK_EQ et al below.\n#define CHECK_OP(name, op, lhs, rhs)                                      \\\n  do {                                                                    \\\n    if (std::string* _msg = ::v8::base::Check##name##Impl<                \\\n            typename ::v8::base::pass_value_or_ref<decltype(lhs)>::type,  \\\n            typename ::v8::base::pass_value_or_ref<decltype(rhs)>::type>( \\\n            (lhs), (rhs), #lhs \" \" #op \" \" #rhs)) {                       \\\n      FATAL(\"Check failed: %s.\", _msg->c_str());                          \\\n      delete _msg;                                                        \\\n    }                                                                     \\\n  } while (false)\n\n#define DCHECK_OP(name, op, lhs, rhs)                                     \\\n  do {                                                                    \\\n    if (std::string* _msg = ::v8::base::Check##name##Impl<                \\\n            typename ::v8::base::pass_value_or_ref<decltype(lhs)>::type,  \\\n            typename ::v8::base::pass_value_or_ref<decltype(rhs)>::type>( \\\n            (lhs), (rhs), #lhs \" \" #op \" \" #rhs)) {                       \\\n      V8_Dcheck(__FILE__, __LINE__, _msg->c_str());                       \\\n      delete _msg;                                                        \\\n    }                                                                     \\\n  } while (false)\n\n#else\n\n// Make all CHECK functions discard their log strings to reduce code\n// bloat for official release builds.\n\n#define CHECK_OP(name, op, lhs, rhs)                                         \\\n  do {                                                                       \\\n    bool _cmp = ::v8::base::Cmp##name##Impl<                                 \\\n        typename ::v8::base::pass_value_or_ref<decltype(lhs)>::type,         \\\n        typename ::v8::base::pass_value_or_ref<decltype(rhs)>::type>((lhs),  \\\n                                                                     (rhs)); \\\n    CHECK_WITH_MSG(_cmp, #lhs \" \" #op \" \" #rhs);                             \\\n  } while (false)\n",
+      "production_basenames": [
+        "native_node_one_byte_string_diagnostics.cpp"
+      ],
+      "source_mapping": "Retain DEBUG CHECK_OP new string, Fatal and delete path; release uses comparison plus CHECK_WITH_MSG. Operands and strlen evaluate once."
+    },
+    {
+      "id": "check_operand_stream",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-logging.h",
+        "bytes": 21624,
+        "sha256": "0FA464788992D2AB04B14F9A9B9B808E29759D111E867BABD69EAED03D931405"
+      },
+      "start_line": 186,
+      "end_line": 192,
+      "excerpt_bytes": 173,
+      "excerpt_sha256": "F8B3BCCB069F64DF13B9B832F0BC3FF5C0FC26C4DBFDFAD9FDED042AFEB04774",
+      "excerpt": "namespace detail {\ntemplate <typename... Ts>\nstd::string PrintToString(Ts&&... ts) {\n  CheckMessageStream oss;\n  (..., (oss << std::forward<Ts>(ts)));\n  return oss.str();\n}\n",
+      "production_basenames": [
+        "native_node_one_byte_string_diagnostics.cpp"
+      ],
+      "source_mapping": "Selected int and size_t operands are ordinary streamable integral types; the finite helper selects the same real stream operation."
+    },
+    {
+      "id": "check_operand_constraint",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-logging.h",
+        "bytes": 21624,
+        "sha256": "0FA464788992D2AB04B14F9A9B9B808E29759D111E867BABD69EAED03D931405"
+      },
+      "start_line": 216,
+      "end_line": 223,
+      "excerpt_bytes": 393,
+      "excerpt_sha256": "92551513215340E8347924B4F43BAAC3D188BC6BC49F6E884818356335A995B7",
+      "excerpt": "// Define PrintCheckOperand<T> for each T which defines operator<< for ostream,\n// except types explicitly specialized below.\ntemplate <typename T>\n  requires(!std::is_function_v<typename std::remove_pointer<T>::type> &&\n           !std::is_enum_v<T> && has_output_operator<T, CheckMessageStream>)\nstd::string PrintCheckOperand(T val) {\n  return detail::PrintToString(std::forward<T>(val));\n}\n",
+      "production_basenames": [
+        "native_node_one_byte_string_diagnostics.cpp"
+      ],
+      "source_mapping": "The original streamable overload applies to selected int/size_t; enum/character/unprintable overloads are outside this finite instantiation."
+    },
+    {
+      "id": "check_message",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-logging.h",
+        "bytes": 21624,
+        "sha256": "0FA464788992D2AB04B14F9A9B9B808E29759D111E867BABD69EAED03D931405"
+      },
+      "start_line": 296,
+      "end_line": 314,
+      "excerpt_bytes": 816,
+      "excerpt_sha256": "0AE7D05F9BEA5C5AA0C1255B9F45478DADBA31467BD9D0714CA690D731ADCCE4",
+      "excerpt": "// Build the error message string.  This is separate from the \"Impl\"\n// function template because it is not performance critical and so can\n// be out of line, while the \"Impl\" code should be inline. Caller\n// takes ownership of the returned string.\ntemplate <typename Lhs, typename Rhs>\nV8_NOINLINE std::string* MakeCheckOpString(Lhs lhs, Rhs rhs, char const* msg) {\n  std::string lhs_str = PrintCheckOperand<Lhs>(lhs);\n  std::string rhs_str = PrintCheckOperand<Rhs>(rhs);\n  CheckMessageStream ss;\n  ss << msg;\n  constexpr size_t kMaxInlineLength = 50;\n  if (lhs_str.size() <= kMaxInlineLength &&\n      rhs_str.size() <= kMaxInlineLength) {\n    ss << \" (\" << lhs_str << \" vs. \" << rhs_str << \")\";\n  } else {\n    ss << \"\\n   \" << lhs_str << \"\\n vs.\\n   \" << rhs_str << \"\\n\";\n  }\n  return new std::string(ss.str());\n}\n",
+      "production_basenames": [
+        "native_node_one_byte_string_diagnostics.cpp"
+      ],
+      "source_mapping": "Actual native std::string construction retains 50-character inline threshold and multiline alternative; no formatted host surrogate."
+    },
+    {
+      "id": "check_operators",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-logging.h",
+        "bytes": 21624,
+        "sha256": "0FA464788992D2AB04B14F9A9B9B808E29759D111E867BABD69EAED03D931405"
+      },
+      "start_line": 445,
+      "end_line": 452,
+      "excerpt_bytes": 422,
+      "excerpt_sha256": "AB9A13194A514D315795040E7BAEA28B75E435D22EB03E9135E8DAF1BD14586A",
+      "excerpt": "#define CHECK_EQ(lhs, rhs) CHECK_OP(EQ, ==, lhs, rhs)\n#define CHECK_NE(lhs, rhs) CHECK_OP(NE, !=, lhs, rhs)\n#define CHECK_LE(lhs, rhs) CHECK_OP(LE, <=, lhs, rhs)\n#define CHECK_LT(lhs, rhs) CHECK_OP(LT, <, lhs, rhs)\n#define CHECK_GE(lhs, rhs) CHECK_OP(GE, >=, lhs, rhs)\n#define CHECK_GT(lhs, rhs) CHECK_OP(GT, >, lhs, rhs)\n#define CHECK_NULL(val) CHECK((val) == nullptr)\n#define CHECK_NOT_NULL(val) CHECK((val) != nullptr)\n",
+      "production_basenames": [
+        "native_node_one_byte_string_diagnostics.cpp"
+      ],
+      "source_mapping": "CHECK_GE maps to integral safe comparison, CHECK_NOT_NULL expands to (location_) != nullptr. Release expression spelling and DEBUG file/line are pinned."
+    },
+    {
+      "id": "v8_set_policy",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-api.cc",
+        "bytes": 489340,
+        "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+      },
+      "start_line": 4323,
+      "end_line": 4336,
+      "excerpt_bytes": 730,
+      "excerpt_sha256": "7956AC6ADA701E8EB7F247A9198EB98C510F1309F38EA466AC31566A6698E0ED",
+      "excerpt": "Maybe<bool> v8::Object::Set(v8::Local<v8::Context> context,\n                            v8::Local<Value> key, v8::Local<Value> value) {\n  auto i_isolate = reinterpret_cast<i::Isolate*>(context->GetIsolate());\n  ENTER_V8(i_isolate, context, Object, Set, i::HandleScope);\n  auto self = Utils::OpenDirectHandle(this);\n  auto key_obj = Utils::OpenDirectHandle(*key);\n  auto value_obj = Utils::OpenDirectHandle(*value);\n  has_exception =\n      i::Runtime::SetObjectProperty(i_isolate, self, key_obj, value_obj,\n                                    i::StoreOrigin::kMaybeKeyed,\n                                    Just(i::ShouldThrow::kDontThrow))\n          .is_null();\n  RETURN_ON_FAILED_EXECUTION_PRIMITIVE(bool);\n  return Just(true);\n",
+      "production_basenames": [
+        "native_node_stream_request.zig"
+      ],
+      "source_mapping": "Original Object::Set uses kDontThrow: false is not empty Maybe. Actual setter/proxy exception is preserved; nonwritable data false result continues."
+    },
+    {
+      "id": "v8_has_policy",
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\authority\\v8-api.cc",
+        "bytes": 489340,
+        "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+      },
+      "start_line": 4895,
+      "end_line": 4914,
+      "excerpt_bytes": 883,
+      "excerpt_sha256": "3A2080B3BDDCCFD0CA382C334DF22E31002A7A502941D494BC1997A24715F562",
+      "excerpt": "Maybe<bool> v8::Object::Has(Local<Context> context, Local<Value> key) {\n  auto i_isolate = reinterpret_cast<i::Isolate*>(context->GetIsolate());\n  ENTER_V8(i_isolate, context, Object, Has, i::HandleScope);\n  auto self = Utils::OpenDirectHandle(this);\n  auto key_obj = Utils::OpenDirectHandle(*key);\n  Maybe<bool> maybe = Nothing<bool>();\n  // Check if the given key is an array index.\n  uint32_t index = 0;\n  if (i::Object::ToArrayIndex(*key_obj, &index)) {\n    maybe = i::JSReceiver::HasElement(i_isolate, self, index);\n  } else {\n    // Convert the key to a name - possibly by calling back into JavaScript.\n    i::DirectHandle<i::Name> name;\n    if (i::Object::ToName(i_isolate, key_obj).ToHandle(&name)) {\n      maybe = i::JSReceiver::HasProperty(i_isolate, self, name);\n    }\n  }\n  has_exception = maybe.IsNothing();\n  RETURN_ON_FAILED_EXECUTION_PRIMITIVE(bool);\n  return maybe;\n",
+      "production_basenames": [
+        "native_node_stream_shutdown.zig"
+      ],
+      "source_mapping": "Has is an actual potentially throwing ordinary operation; the reporter's FromJust remains terminal on empty, not truthy coercion or caught false."
+    }
+  ],
+  "native_ownership": {
+    "request": "Independent actual StreamReq pointer plus actual AsyncWrap state; no new JS-visible pointer property. Request slot attach precedes native AsyncWrap constructor and init hook.",
+    "simple": "Default SimpleShutdownWrap owns only its own actual state; FileHandle variant also owns canonical uv_fs_t native storage and real Entry. Stream pointer is borrowed; it does not retain a FileHandle Global or manufacture a Promise.",
+    "dispatch": "Actual Controller.dispatchRawClose + existing real Wrapper; waiting admission and retirement remain owned by existing ReqWrap machinery. No read of completion-only info before completion.",
+    "callback": "Trace end sees real completed request. AfterClose may run ordinary JS read callback. An ordinary pending exception does not skip the following result read/cleanup/Done native continuation. Terminal port boundary performs only native retirement, not synthetic guest success.",
+    "scope_order": "Each port Scope owns real VM values/exception occurrence. Restore default trigger, release outer native request pointer, retire locals in source destructor order. The enclosing callback Wrapper remains alive through OnDone and Dispose.",
+    "field_lifetime": "RequestFields retain Registry only; they mark actual State if present and contain no JS values. Original null own properties are native template allocations. Cached error/oncomplete keys and template owner are borrowed actual Environment assembly inputs.",
+    "reporter_reuse": "native_node_stream_shutdown.reportAfterRequest / reportAfterShutdown are the concrete ReportWritesToJSStreamListener operations. Generic StreamListener forwarding stays separate."
+  },
+  "latin1_policy": {
+    "raw_vm_primitive": "JS_PiNewStringLatin1 uses original QuickJS private js_new_string8_len and preserves each uint8 as a one-byte code unit. It does not call UTF-8 JS_NewStringLen. Explicit length preserves embedded NUL; strlen branch stops at first NUL.",
+    "zero_length": "No data dereference; actual VM empty string.",
+    "explicit_over_max": "Original API empty Maybe reaches exact ToLocalChecked fatal through existing failure owner.",
+    "inferred_length": "Real native strlen followed by genuine V8 CHECK_GE(kMaxInt,len). Factory-invalid max path selects actual RangeError then internal MaybeHandle CHECK_NOT_NULL.",
+    "allocation_failure": "Actual VM allocation/real native OOM occurrence is detected at the operation boundary and forwarded to existing native heap failure owner. No synthetic OOM string or exception substitution.",
+    "not_implemented_by_raw_primitive": [
+      "V8 single-character string cache",
+      "V8 heap object layout",
+      "V8 GC/retry allocator machinery",
+      "internalized NewFromOneByte mode"
+    ],
+    "two_abi_entries": "Both direct native wrappers declare borrowed DiagnosticContextScope first and never queue its JSContext pointer.",
+    "macro_selection": "Chosen gnu++20 recipe does not define DEBUG/OFFICIAL_BUILD. DEBUG preserves file/line and original stream/new/delete diagnostic formatting; nonDEBUG expression only; official release uses genuine immediate crash. Native configuration/target qualification is separate.",
+    "fatal_prerequisite": "Already reviewed immutable native_v8_base_fatal owner commit5059d6a. Default callbacks/hook installation are not claimed here."
+  },
+  "controls": {
+    "shutdown": 18,
+    "latin1": 8,
+    "future_actual_metadata": null,
+    "fixture": "A stack-local Fixture has a stable address for its lifetime and owns an unchanged underlying real FileHandle fixture. Uses real VM/native queue/physical descriptors. Trace callbacks are explicitly labeled observers, not production bootstrap policies.",
+    "descriptor_policy": "Physical fixture descriptors >2 avoid Windows deliberately skipping CRT close for fd<=2. The actual production descriptor policy is unchanged.",
+    "fatal_controls": "No native-fatal subprocess is launched. Fatal length/OOM behavior is source-bound only; ordinary byte/NUL/control branches use real VM source controls."
+  },
+  "limits": [
+    "No compiler, preprocessor, native runtime, Node reference runtime, or generator execution.",
+    "No Main edits, build authorization, default wiring or runtime/platform qualification.",
+    "Complete StreamBase AddMethods/public FileHandle template and worker broker remain separately owned and unassembled.",
+    "Genuine process FS trace owner, cached key/template bootstrap lifetime, and production hook policy are required inputs, never replaced by the labeled control observers.",
+    "MemoryRetainer virtual assembly and full public JS entry publication remain outside this finite native shutdown slice.",
+    "The complete constructor/error predecessor and historical runtime negatives remain immutable."
+  ]
+}

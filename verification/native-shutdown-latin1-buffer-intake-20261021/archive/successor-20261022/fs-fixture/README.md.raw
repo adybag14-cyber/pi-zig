@@ -1,0 +1,63 @@
+# FS request fixture completion ownership
+
+## Selected repair
+
+The selected proposal is successor-v2/proposal.json (B24664CA4DADD2B96EA581710A244050EB6F963C3AC0DD11F4BD5D04DBF83106). It projects one fixture file from immutable Git head 014062f2d139254acab4b985b4ae343db637166f:
+
+- Original: src/native_node_fs_request_owner_test.zig, 57,263 bytes, 402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81.
+- Selected: 57,891 bytes, FD337AA09700EA151943ED06A86CE5623C37210FA57637B892DCB6AB797C02D6.
+
+The change wraps the existing physical-pump loop in a caller-stable native operation Scope. It starts that boundary before the pump, records the actual failed outcome before outer callback cleanup, deinitializes the outer callback scope once, and finishes the owned outcome afterwards. The old 721-byte poll/deadline loop is moved intact to pumpPendingBody. The helper is private to this test root.
+
+No production file is projected or modified. No native test, compiler, Node reference, candidate, auditor, build, or generator ran for this proposal. The prior runtime failure remains an original negative; this source correction has no fresh runtime result.
+
+## Observed failure and causal path
+
+The original owner result contains 26 completed metadata entries with index 22 flagged. Its 486-byte stderr identifies takeCaught at original line 233 and the live Promise getter control at line 976. The expectation immediately before takeCaught already received error.JavaScriptException. Missing captured data is therefore consistent with an exception that was produced but lost during later cleanup.
+
+The immutable production path is Request.settle -> actual live promise property Get -> callback-scope destructor -> FSReqAfterScope cleanup/detach -> ReqWrap completion retirement -> native event release. Those layers capture the real failed outcome before their own teardown. Engine.captureValue assigns the selected reason to captured_exception even while diagnostic string conversion is suppressed.
+
+The old fixture's pumpPending returned that error through try pump, then its deferred outer_scope.deinit ran. The outer scope was marked failed, so normal restoration/retirement still happened. Its close operation itself succeeded. Scope.deinit records that successful close with Completion.initVoid; the already captured getter reason is then historical diagnostic DATA for that successful completion. Completion.finishAction retires this diagnostic. The typed error propagates, but the slot read by takeCaught is empty.
+
+The repair changes this caller ordering. It does not change the live getter lookup, Promise settlement, callback stack behavior, native cleanup, or request dispatch.
+
+## Original-source requirement
+
+The exact Node node_file-inl.h Resolve/Reject bodies at lines 219-251 set finished_, construct HandleScope and InternalCallbackScope, then perform a live promise property Get. A failed Get returns early so the existing exception can propagate; C++ scope destruction still happens.
+
+The pinned header is 14,756 bytes / 2E96C28CB0BBB4520D8E0C0997188922C3DDE28853D14A3E19D7D559BC9493D5. Its acquisition record B0F81C989F8A965BD16A6500759B69A20556D4A7A74A637915FCC2FCBCB7ACA4 binds Node commit def0bdf8abee441cfcbf793a8dc24a6f3b899573 and src/node_file-inl.h.
+
+The selected InternalCallbackScope destructor/Close body is the exact inherited Node v24.13 authority, 13,682 bytes / 0A4C8ECF051F995F9669826DC9D85560ADD6ECD6FB2E28CE6B2F3DD309947DE2. Both it and its prior-packet source match the accepted 08F45 FSReqPromise authority table. This packet does not manufacture a new acquisition receipt for that inherited body.
+
+## Ownership and cleanup proof
+
+1. Outer callback initialization stays before the pump, with the same resource, IDs, flags, frame, and partial-init failure helper. No new fallible step is inserted between successful initialization and the ownership record.
+2. Scope.init returns an inactive value. boundary.start links it only after it is at its final local address, before the nested native pump can produce an error.
+3. When the pump fails, escaping moves the real captured reason into boundary.reason and clears captured_exception. This is a move of an existing owned root, not a duplicate or a classification inferred from a diagnostic flag.
+4. outer_scope.markFailed retains the old error cleanup behavior. Exactly one outer_scope.deinit call follows the completed pump body. The outer close still restores IDs/frame and retires its own resource/frame references.
+5. That teardown cannot retire the selected reason as a success diagnostic because the reason is owned by the surrounding boundary. If teardown itself produces a failure, the same boundary records it and the existing ordinary/fatal precedence applies. The first typed error is retained unless there was no earlier typed failure.
+6. Scope.finish retires its empty local-value storage, closes the stable native invocation, and transfers the selected reason through JS_Throw and Engine capture. The existing takeCaught then transfers that one captured ownership to the test's existing defer free. No direct duplicate, extra reason free, stale borrowed pointer, or second outer teardown was added.
+
+The accepted concrete FileHandle fixture already uses the Scope -> explicit escaping -> callback deinit -> finish pattern in finishImmediate, current source lines 117-138. The selected wrapper starts its Scope before the raw producer, so a reason made by this pump cannot be mistaken for Boundary.previous history.
+
+On the selected successful fixture paths the same original loop completes and the same outer close runs once, then the new Scope finishes/free's undefined. No guest call, task checkpoint, request retirement, buffer operation, new poll, or assertion is added. Scope bookkeeping and diagnostic suppression are balanced internally. This is a statement about the existing fixture's selected paths, not a new general contract for callers entering with unrelated historical captured data.
+
+The body deadline, queue checks, job-pending rejection, request waiting tests, native-pump selection, one-millisecond sleeps, and ten-second timeout remain byte-for-byte unchanged. The original outer-init helper's separate partial-init behavior is outside this repair.
+
+## Scope preservation and census
+
+The static check verifies the complete forward/inverse edit, exact unchanged prefix/suffix, all 25 named test bodies and assertions, the entire test section, import list, all prior function declarations, exact adjacent waitQueued method, and the unchanged poll loop. The sole new function declaration is pumpPendingBody.
+
+The census is tied to the original runtime grant, matrix, and 17-group stopped prefix. It reads all 63 root source files from immutable Git objects and identifies the remaining 46 explicitly. Whole-src git grep finds one pumpPending definition, in this failed fixture; no src file imports that private test root. None of the remaining 46 roots defines this helper.
+
+The other physical fixture pumps (FileHandle owner, FileHandle read, and ReqWrap routing) do not deinitialize a local callback scope in their pump bodies. The callback-scope controls directly exercise scope closure; they do not compose the failing raw-pump/deferred-outer-cleanup sequence.
+
+The same FS owner fixture has a settle helper with analogous deferred cleanup, but its existing callers select normal settlement. Its direct ordinary getter-failure control consumes the reason before outer deinit. These observations are retained separately from the demonstrated pumpPending repair. This census does not qualify unstarted tests or rule out every other possible ownership defect.
+
+## Preserved authoring negatives
+
+The first source projection's textual endpoint accidentally included the adjacent waitQueued method. Full hunk inspection caught the omission before release or execution. The first proposal and source remain immutable; source-authoring-negative.json records the finding. Selected v2 restores that exact 392-byte method and binds the one-function replacement from the original source.
+
+The initial static checker used two final-line endpoints that counted a trailing empty split line. It stopped before output creation. Its original source and complete failure envelope remain immutable; static-checker-range-negative.json contains the two exact corrections and full inverse. The selected static-source-check-v2.py completed successfully. Neither checker executed candidate code.
+
+The proof and patch are source evidence only. Independent source review, Root integration authority, and a separately granted fresh native cohort remain required.

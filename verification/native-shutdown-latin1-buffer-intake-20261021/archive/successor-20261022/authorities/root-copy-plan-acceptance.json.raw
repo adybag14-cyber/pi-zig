@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "status": "root_accepted_unissued_pending20_copy_plan",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-21T15:54:27.232887+00:00",
+  "immutable_source_basis": "014062f2d139254acab4b985b4ae343db637166f",
+  "source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-buffer-union014-source-peer-acceptance-20261021.json",
+    "bytes": 4491,
+    "sha256": "DCD89661CDA72A4B4003DD4FDF80D443FB166407767D73F07F698473D52C7BAA"
+  },
+  "plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-manifest-plan.json",
+    "bytes": 378545,
+    "sha256": "E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\handoff.json",
+    "bytes": 8845,
+    "sha256": "5B673525420F88F9DAEAF811F478A2E596ABFB10CAD48B4863A050AA97DEBE5F"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\peer.json",
+    "bytes": 9503,
+    "sha256": "4FD34F278BB7F102F1B2E8D72F79CC8BE57E27C1F061512515E3FB9E9A455B15"
+  },
+  "fully_read_independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\source-audit-v3.py",
+    "bytes": 18845,
+    "sha256": "6E421DD5F6B9BBA85BBAAB2E21F8DA3B83B6BDBF9326033CE14F8910BD24AB38"
+  },
+  "independent_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\source-proof.json",
+    "bytes": 393757,
+    "sha256": "DFD3407C50A595DC2A70F1C3BDA264DAB5953027E6B693B5238E9C0F36714920"
+  },
+  "preserved_checker_negatives": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\checker-alias-selector-negative.json",
+      "bytes": 6985,
+      "sha256": "A2068E7A737FB099B0BEA14207F7711C5F17D4204FE2DCC8EF18BA4AF1839447"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\checker-document-selector-negative.json",
+      "bytes": 8394,
+      "sha256": "982E2BFB0C4F359D103CBA8FAFB4295BB21623CC77E946D55BCB89777AFA4ABB"
+    }
+  ],
+  "source_paths": 20,
+  "source_replacements": 8,
+  "source_additions": 12,
+  "physical_archive_rows": 223,
+  "logical_archive_donors": 248,
+  "full_byte_equal_duplicate_aliases": 25,
+  "duplicate_bytes_saved": 8879053,
+  "independent_inputs_rehashed": 252,
+  "explicit_JSON_reference_sites_checked": 140,
+  "current_planned_paths_including_manifest": 247,
+  "current_planned_additions_including_manifest": 239,
+  "all_eight_raw014_preimages_and_twelve_absences_rechecked": true,
+  "all_physical_and_logical_target_identity_checks_passed": true,
+  "all_future_byte_preflight_staging_and_commit_gates_include_manifest": true,
+  "bounded_archive_only": true,
+  "fully_self_contained_archive_claim": false,
+  "external_references": {
+    "fully_self_contained_archive_claim": false,
+    "historical_clock_references": [
+      {
+        "pin": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.hpp",
+          "bytes": 1236,
+          "sha256": "F7AE55D36E54D64AC7FA36CF6F64D06A631889213EE0E43998F8701004338E98"
+        },
+        "refs": [
+          {
+            "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\manifest.json",
+            "ref": "$.unchanged_clock_dependencies[0]"
+          }
+        ],
+        "reason": "Historical clock implementation referenced by the broader fatal/tracing predecessor; not required by the selected fatal C/H or any of the twenty source targets. No production clock source is copied or read."
+      },
+      {
+        "pin": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.cpp",
+          "bytes": 13664,
+          "sha256": "E0408BD2D94D728FACD1E2B36C7DD831BEF49E12BF53C52FE60D602D001B0064"
+        },
+        "refs": [
+          {
+            "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\manifest.json",
+            "ref": "$.unchanged_clock_dependencies[1]"
+          }
+        ],
+        "reason": "Historical clock implementation referenced by the broader fatal/tracing predecessor; not required by the selected fatal C/H or any of the twenty source targets. No production clock source is copied or read."
+      }
+    ],
+    "historical_live_toolchain_or_source_locations_read": false,
+    "repository_wide_source_tree_not_recopied": true,
+    "dependency_inventory_JSON_retained_complete": true,
+    "new_complete_source_dependency_catalog_required_after_actual_intake": true,
+    "original_absolute_references_preserved_in_raw_documents": true
+  },
+  "future_requirements": {
+    "required_actual_original63_buildquery_closure": null,
+    "required_actual_original63_strict_runtime_closure": null,
+    "required_current_V38_all_original_process_closure": null,
+    "required_Root_source_intake_release": null,
+    "required_finite_intake_adapter": null,
+    "required_independent_adapter_manifest_peer": null,
+    "required_exact_final_manifest": null,
+    "required_current_head_and_clean_index_observation": null,
+    "required_complete_current_byte_conversion_preflight": null,
+    "all_requirements_unissued": true,
+    "source_head_policy": "Use the exact Root-released head after original63 validation and all current validation processes close. This plan proves only the immutable014 source basis. Any change in one of the eight preimages, any collision with a new source or archive target, or any source/build rebase requires a distinct finite reviewed successor; never treat this plan as authority to overwrite.",
+    "receipt_policy": "Later adapter, review, release, preflight, staged/path-list, commit and receipt records must be separately retained with exact observed pins. Their future identities, timestamps and outcomes are not fabricated here.",
+    "plan_record_policy": "After the inert plan and its own static checker/proof are sealed, their exact pins may be added as three separately enumerated archive rows in the small handoff. The explanatory handoff is retained outside Main and need not be recursively copied. Any additional later intake records require an explicit manifest successor and externally pinned release."
+  },
+  "actual_conversion_preflight_performed": false,
+  "final_manifest_issued": false,
+  "intake_adapter_reviewed": false,
+  "source_mutation_hold_released": false,
+  "native_execution_authorized": false,
+  "product_qualification": false
+}

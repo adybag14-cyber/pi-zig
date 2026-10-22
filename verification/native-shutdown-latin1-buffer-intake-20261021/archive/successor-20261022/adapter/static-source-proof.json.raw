@@ -1,0 +1,325 @@
+{
+  "schema": 1,
+  "status": "static_source_accounting_passed_unissued",
+  "utc": "2026-10-22T13:05:31.950546+00:00",
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\source-check.py",
+    "bytes": 13451,
+    "sha256": "14DA700BDB7A8C3A1A6CB88984056510B127382A27053020F1BB49078065EBA2"
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+      "bytes": 9719,
+      "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\finite-intake-adapter-reuse-plan-sourceonly-20261021\\plan.json",
+      "bytes": 23193,
+      "sha256": "E020D4B82F088A5BA4B38CB002B056589676A561C780CE1BD950976D9DC0A95C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-manifest-plan.json",
+      "bytes": 378545,
+      "sha256": "E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-buffer-unissued-copy-plan-acceptance-20261021.json",
+      "bytes": 7059,
+      "sha256": "4B97947A3A185D0D6E9ED282B2FC4E19621BD792AED4F18F4A0D7E594A682788"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261021\\git-attribute-capability-observation.json",
+      "bytes": 2972,
+      "sha256": "0FC8853FC86F22C7CF11CBCB9CD6EE03FF34D4ED3FC6E955F5A9F3D3B92E00C4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py",
+      "bytes": 23554,
+      "sha256": "1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\authoring\\declared-edits.json",
+      "bytes": 27011,
+      "sha256": "3205A1A6B4B5E7171E6232358152F843E5D7D352EE5677D6C9C51435B14DFF42"
+    }
+  ],
+  "adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\finite-source-adaptation.json",
+    "bytes": 56895,
+    "sha256": "2E657192C7DF2B8216D128E82C7AB47E57ECD0AB43FCDD2327E8F83C32A69A69"
+  },
+  "exact_step_count": 20,
+  "whole_forward_exact": true,
+  "whole_inverse_exact": true,
+  "inherited_helper_count": 11,
+  "new_helper_count": 11,
+  "helpers": [
+    {
+      "name": "sha",
+      "bytes": 57,
+      "sha256": "4FC52FB70BB0793D472938E4324857597433C1E7DDBB15063EE372297676A588",
+      "baseline_lines": [
+        11,
+        11
+      ],
+      "candidate_lines": [
+        12,
+        12
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "raw",
+      "bytes": 40,
+      "sha256": "0674AD6317F2AE8EB96A5F56EFBC878FF39C90C68C99C8F4C9978F7A23316A26",
+      "baseline_lines": [
+        12,
+        12
+      ],
+      "candidate_lines": [
+        13,
+        13
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "pinned",
+      "bytes": 73,
+      "sha256": "5DF7EDACFCE2ED39EB6DC75D1A5F85E312FDDFB88E50861484072351D188F54B",
+      "baseline_lines": [
+        13,
+        14
+      ],
+      "candidate_lines": [
+        14,
+        15
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "git",
+      "bytes": 260,
+      "sha256": "FC6515AF1843269E597434A172257CA17ABBD50C611145B8D12A50030C9D6F91",
+      "baseline_lines": [
+        15,
+        18
+      ],
+      "candidate_lines": [
+        16,
+        19
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "gout",
+      "bytes": 66,
+      "sha256": "D4BED77E98D7E0410BF8A6950089ECF30E6E537B8ADFE7B2A7249DF93CD6FEB1",
+      "baseline_lines": [
+        19,
+        19
+      ],
+      "candidate_lines": [
+        20,
+        20
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "inside",
+      "bytes": 134,
+      "sha256": "BC7F1D1F13B1AC08CB47D2ECC8EEC9D015E9D5509C90D7E82AE778A30CFDA777",
+      "baseline_lines": [
+        20,
+        23
+      ],
+      "candidate_lines": [
+        21,
+        24
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "new_file",
+      "bytes": 140,
+      "sha256": "A4CF95E3648B13330AAA4B9D1CCA39CB3EDA7D34C70738A6801D61E9F950D66A",
+      "baseline_lines": [
+        24,
+        27
+      ],
+      "candidate_lines": [
+        25,
+        28
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "new_json",
+      "bytes": 96,
+      "sha256": "72B0BE02D4C073A234A09E2AEDF42D5451679590CC88BBCD1588A719F16DAA9C",
+      "baseline_lines": [
+        28,
+        28
+      ],
+      "candidate_lines": [
+        29,
+        29
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "blob_many",
+      "bytes": 541,
+      "sha256": "5C5894AA029CC5F735A97EF61E00D8759C94D09386C65454A06F66CCE87E4F9B",
+      "baseline_lines": [
+        29,
+        40
+      ],
+      "candidate_lines": [
+        30,
+        41
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "tree_paths",
+      "bytes": 139,
+      "sha256": "C33D511D519C1F80C2CC3EF6D508C6A113624CBC9C08A10BE63A825AC26C0C23",
+      "baseline_lines": [
+        41,
+        42
+      ],
+      "candidate_lines": [
+        42,
+        43
+      ],
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "no_hooks",
+      "bytes": 339,
+      "sha256": "7D17240FF95A97C6347339D55C052EE66A7744D034501DD353282E1B6476A115",
+      "baseline_lines": [
+        43,
+        48
+      ],
+      "candidate_lines": [
+        44,
+        49
+      ],
+      "complete_full_line_bytes_equal": true
+    }
+  ],
+  "tail_accounting": {
+    "baseline_start": 3822,
+    "bytes": 5897,
+    "sha256": "E8CAF87944A614D7BAC12EF745B79D83314DD7CFAF94F06B99231E4D008A2F8E",
+    "retained_outside_declared_replacements_bytes": 2312,
+    "inside_declared_replaced_spans_bytes": 3585,
+    "all_5897_bytes_accounted": true,
+    "entire_tail_unchanged": false
+  },
+  "ordered_main_barriers": [
+    {
+      "marker": "assert release[\"source_intake_authorized\"] is True",
+      "main_character_offset": 379
+    },
+    {
+      "marker": "for pin in release[\"required_current_pins\"]:",
+      "main_character_offset": 579
+    },
+    {
+      "marker": "repository=repository_identity()",
+      "main_character_offset": 972
+    },
+    {
+      "marker": "FAILURE_STATE.update(stage=\"complete_donor_path_and_preimage_admission\"",
+      "main_character_offset": 1925
+    },
+    {
+      "marker": "logical_aliases=manifest[\"logical_donor_aliases\"]",
+      "main_character_offset": 4090
+    },
+    {
+      "marker": "FAILURE_STATE[\"stage\"]=\"complete_attribute_and_git_object_preflight\"",
+      "main_character_offset": 5718
+    },
+    {
+      "marker": "attributes=effective_attributes(names)",
+      "main_character_offset": 5787
+    },
+    {
+      "marker": "raw_git=oid_text(git(\"hash-object\",\"--no-filters\",\"--stdin\",input=b).stdout,object_format)",
+      "main_character_offset": 6034
+    },
+    {
+      "marker": "path_git=oid_text(git(\"hash-object\",\"--path=\"+rel,\"--stdin\",input=b).stdout,object_format)",
+      "main_character_offset": 6329
+    },
+    {
+      "marker": "before_copy_revalidation=assert_conversion_unchanged(",
+      "main_character_offset": 6851
+    },
+    {
+      "marker": "new_json(proof/(phase+\"-preflight.json\"),preflight)",
+      "main_character_offset": 7969
+    },
+    {
+      "marker": "FAILURE_STATE.update(stage=\"copying_exact_reviewed_rows\",Main_or_index_writes_started=True)",
+      "main_character_offset": 8328
+    },
+    {
+      "marker": "post_copy_revalidation=assert_conversion_unchanged(",
+      "main_character_offset": 8892
+    },
+    {
+      "marker": "git(\"--literal-pathspecs\",\"add\",",
+      "main_character_offset": 9272
+    },
+    {
+      "marker": "assert entry[\"mode\"]==row[\"mode\"] and entry[\"oid\"]==expected_ids[rel] and entry[\"stage\"]==0",
+      "main_character_offset": 9827
+    },
+    {
+      "marker": "pre_commit_revalidation=assert_conversion_unchanged(",
+      "main_character_offset": 10067
+    },
+    {
+      "marker": "commit=git(\"commit\",\"--file=\"+str(message))",
+      "main_character_offset": 10566
+    },
+    {
+      "marker": "assert after!=head and parents==[head]",
+      "main_character_offset": 10695
+    },
+    {
+      "marker": "assert entry[\"type\"]==\"blob\" and entry[\"mode\"]==row[\"mode\"] and entry[\"oid\"]==expected_ids[rel]",
+      "main_character_offset": 11284
+    },
+    {
+      "marker": "final_revalidation=assert_conversion_unchanged(",
+      "main_character_offset": 11491
+    },
+    {
+      "marker": "new_json(receipt_path,receipt)",
+      "main_character_offset": 12598
+    }
+  ],
+  "future_bindings": {
+    "released_head": null,
+    "final_manifest_path": null,
+    "final_manifest_sha256": null,
+    "final_manifest_count": null,
+    "Root_source_release": null,
+    "Root_manifest_adapter_peer": null
+  },
+  "syntax_checked_without_evaluation": true,
+  "source_or_prefix_executed": false,
+  "candidate_child_programs_executed": false,
+  "Main_accessed": false,
+  "index_accessed": false,
+  "candidate_runtime_behavior_claimed": false,
+  "application_qualified": false,
+  "concrete_external_blocker": "Retained-target Latin1 diagnostics/fatal linkage requires a separately reviewed build-only successor before source intake can be issued.",
+  "semantic_limit": "Static source/proof checks do not grant intake authority or predict actual Git conversion, modes, future source head or native outcomes."
+}

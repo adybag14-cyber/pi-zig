@@ -1,0 +1,22 @@
+{
+  "schema": "pi-zig.shutdown-source-audit-preflight-negative.v1",
+  "cause": "The first closure audit incorrectly named native_node_memory.h/.cpp instead of the actual build recipe's native_simdjson_memory.cpp and existing header. It stopped while reading a missing raw c764 blob, before the script's only output-writing phase.",
+  "execution": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\prepare-closure.py\", line 151, in <module>\r\n    b,row=get(rel);native_rows.append(row)\r\n          ~~~^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\prepare-closure.py\", line 92, in get\r\n    b,oid=baseline(rel);row={'relative_path':rel,'origin':'raw Git blob','repository':str(MAIN),'commit':HEAD,'git_blob':oid,'bytes':len(b),'sha256':sha(b)}\r\n          ~~~~~~~~^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\prepare-closure.py\", line 81, in baseline\r\n    assert not header.endswith(' missing'),key\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: c764130caf2f2c7c63728bec0f6d1e16ac5c59a4:src/extensions/native_node_memory.h",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\prepare-closure.py\", line 151, in <module>\r\n    b,row=get(rel);native_rows.append(row)\r\n          ~~~^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\prepare-closure.py\", line 92, in get\r\n    b,oid=baseline(rel);row={'relative_path':rel,'origin':'raw Git blob','repository':str(MAIN),'commit':HEAD,'git_blob':oid,'bytes':len(b),'sha256':sha(b)}\r\n          ~~~~~~~~^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\prepare-closure.py\", line 81, in baseline\r\n    assert not header.endswith(' missing'),key\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: c764130caf2f2c7c63728bec0f6d1e16ac5c59a4:src/extensions/native_node_memory.h\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "production_changed": false,
+  "main_changed": false,
+  "compiler_native_execution": false
+}

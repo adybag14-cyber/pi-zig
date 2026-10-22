@@ -1,0 +1,864 @@
+{
+  "schema": "pi-zig.shutdown-latin1-finite-production-proposal.v1",
+  "status": "Source-only proposed intake; independent SDK source peer in progress; no Main/build/native authorization.",
+  "comparison_main_commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "new_production_files": 6,
+  "new_control_support_files": 3,
+  "shared_files": 7,
+  "source_build_paths": [
+    {
+      "relative_path": "src/extensions/native_node_async_wrap_state.zig",
+      "kind": "replace after selected predecessor intake",
+      "selected_preimage": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_async_wrap_state.zig",
+        "bytes": 28133,
+        "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_async_wrap_state.zig",
+        "bytes": 34046,
+        "sha256": "1530C4043859CFF37D7F157F5557E4597E68972C1F1A1B82D208978F47E3D67A"
+      },
+      "finite_delta": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\proposal.json",
+        "bytes": 38226,
+        "sha256": "C58D31835CCE099D8C99BF7432CE4B0B2FAA83186857EA46EDFC55CEB3542A41"
+      },
+      "additive_delta": null
+    },
+    {
+      "relative_path": "src/extensions/native_node_async_wrap.zig",
+      "kind": "replace after selected predecessor intake",
+      "selected_preimage": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_async_wrap.zig",
+        "bytes": 19741,
+        "sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_async_wrap.zig",
+        "bytes": 20655,
+        "sha256": "F2BEC62AC7817F16EE57E50B80D903ECCB0F8D60AFCB8B61FED920245918CC27"
+      },
+      "finite_delta": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\proposal.json",
+        "bytes": 38226,
+        "sha256": "C58D31835CCE099D8C99BF7432CE4B0B2FAA83186857EA46EDFC55CEB3542A41"
+      },
+      "additive_delta": null
+    },
+    {
+      "relative_path": "src/extensions/native_node_stream_resource.zig",
+      "kind": "replace after selected predecessor intake",
+      "selected_preimage": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_stream_resource.zig",
+        "bytes": 5762,
+        "sha256": "6CA4CF5CD5E71EAD8C9E6F4FCF0D0075190C853E26978B497389F7D29EBE0AC6"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_stream_resource.zig",
+        "bytes": 6847,
+        "sha256": "39255A86BA9631F95E9CBD13B85AE7264A30A015EF4454F10B2D64BD643F2D8A"
+      },
+      "finite_delta": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\proposal.json",
+        "bytes": 38226,
+        "sha256": "C58D31835CCE099D8C99BF7432CE4B0B2FAA83186857EA46EDFC55CEB3542A41"
+      },
+      "additive_delta": null
+    },
+    {
+      "relative_path": "src/extensions/native_node_stream_base.zig",
+      "kind": "replace after selected predecessor intake",
+      "selected_preimage": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_stream_base.zig",
+        "bytes": 10864,
+        "sha256": "0A3F4EB5133BC9543D5AD77DC33F4753ABEC866EB721BCE0A8F08C16BECD5ABF"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_stream_base.zig",
+        "bytes": 12321,
+        "sha256": "F85721695F41998E3676C196B4791D295EA62C8DE89FD83159F05BACDEF7716E"
+      },
+      "finite_delta": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\proposal.json",
+        "bytes": 38226,
+        "sha256": "C58D31835CCE099D8C99BF7432CE4B0B2FAA83186857EA46EDFC55CEB3542A41"
+      },
+      "additive_delta": null
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_owner.zig",
+      "kind": "replace after selected predecessor intake",
+      "selected_preimage": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 17650,
+        "sha256": "F2672292FBEBEEF74B35C32C38203E3D1E1D259052E7AB5AFB34DA29840B544D"
+      },
+      "finite_delta": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\proposal.json",
+        "bytes": 38226,
+        "sha256": "C58D31835CCE099D8C99BF7432CE4B0B2FAA83186857EA46EDFC55CEB3542A41"
+      },
+      "additive_delta": null
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.c",
+      "kind": "replace after selected predecessor intake",
+      "selected_preimage": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403730,
+        "sha256": "BC772BEE8794ADBD59385DA98F037310730704DFB9D251EA258862B1C887E454"
+      },
+      "finite_delta": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\proposal.json",
+        "bytes": 38226,
+        "sha256": "C58D31835CCE099D8C99BF7432CE4B0B2FAA83186857EA46EDFC55CEB3542A41"
+      },
+      "additive_delta": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\proposal.json",
+        "bytes": 2900,
+        "sha256": "11FA3C2397945908756CB487FE2F22E8762B56AF7187CD87AF8275678905F9F1"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.h",
+      "kind": "replace after selected predecessor intake",
+      "selected_preimage": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114656,
+        "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114822,
+        "sha256": "4728F93F8CC0D51FB6066E31502BE87920FE7B395BB57DED6D4E80BD1543222C"
+      },
+      "finite_delta": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\proposal.json",
+        "bytes": 38226,
+        "sha256": "C58D31835CCE099D8C99BF7432CE4B0B2FAA83186857EA46EDFC55CEB3542A41"
+      },
+      "additive_delta": null
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_shutdown.zig",
+      "kind": "new production",
+      "selected_preimage": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_shutdown.zig",
+        "bytes": 9800,
+        "sha256": "D88164C9B392F9A5A0906DF2166129204A88A0936C83D3FA1DFF008484EC94F2"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_one_byte_string.zig",
+      "kind": "new production",
+      "selected_preimage": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_one_byte_string.zig",
+        "bytes": 2658,
+        "sha256": "2387DDE54B2B079BC0F78490602E4CF150F4A1E46FFC3FC05D7EF3CB5CEE4507"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+      "kind": "new production",
+      "selected_preimage": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_one_byte_string_diagnostics.cpp",
+        "bytes": 2695,
+        "sha256": "3E61B1FDD631E80B31F51F5B130D203C4C01BD41FF4EE4FD2831C27074459B53"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_one_byte_string_diagnostics.h",
+      "kind": "new production",
+      "selected_preimage": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_one_byte_string_diagnostics.h",
+        "bytes": 576,
+        "sha256": "687E51133E348B90B4C7CF5CBEB53C2098CF6988A5C3915F68DF008D0A9E1C88"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_stream_request.zig",
+      "kind": "new production",
+      "selected_preimage": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_stream_request.zig",
+        "bytes": 6970,
+        "sha256": "654816139FC110560BA21BDBBEA35744468B1E6C52154448D30CEDC3656A6E8B"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_stream_shutdown.zig",
+      "kind": "new production",
+      "selected_preimage": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_stream_shutdown.zig",
+        "bytes": 11021,
+        "sha256": "2BEE67EE76015C0549729F3F3B12CD4BBBF32C5DBF5A28D8CEE3F111E0C86D7E"
+      }
+    },
+    {
+      "relative_path": "src/native_node_one_byte_string_test.zig",
+      "kind": "new control/support",
+      "selected_preimage": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_one_byte_string_test.zig",
+        "bytes": 5064,
+        "sha256": "AC3E1AD12FB0F48905EC8B561094F54DD93653AD7C8DC5DD7CC0EBB54959C461"
+      }
+    },
+    {
+      "relative_path": "src/native_node_stream_shutdown_test.zig",
+      "kind": "new control/support",
+      "selected_preimage": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17019,
+        "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+      }
+    },
+    {
+      "relative_path": "src/native_node_stream_shutdown_test_support.zig",
+      "kind": "new control/support",
+      "selected_preimage": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10312,
+        "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+      }
+    },
+    {
+      "relative_path": "build.zig",
+      "kind": "replace after selected predecessor intake",
+      "selected_preimage": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\build\\original-build.zig",
+        "bytes": 506940,
+        "sha256": "399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\build\\projected-build.zig",
+        "bytes": 511112,
+        "sha256": "8CBCA84B70EB6B95DC6CB350FF10B6F3ADDD635BA120376FE2F5319F3BD3D407"
+      },
+      "finite_delta": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\build\\proposal.json",
+        "bytes": 7512,
+        "sha256": "2B7888AFCD7DB29A98FB2329D0668ADA6ECA15F818E29B15F834C1C006D17F86"
+      }
+    }
+  ],
+  "source_build_path_count": 17,
+  "shared_edit_count": 37,
+  "additive_c_expression_edits": 2,
+  "selected_shared_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\proposal.json",
+    "bytes": 38226,
+    "sha256": "C58D31835CCE099D8C99BF7432CE4B0B2FAA83186857EA46EDFC55CEB3542A41"
+  },
+  "selected_c_successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\proposal.json",
+    "bytes": 2900,
+    "sha256": "11FA3C2397945908756CB487FE2F22E8762B56AF7187CD87AF8275678905F9F1"
+  },
+  "selected_build_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\build\\proposal.json",
+    "bytes": 7512,
+    "sha256": "2B7888AFCD7DB29A98FB2329D0668ADA6ECA15F818E29B15F834C1C006D17F86"
+  },
+  "source_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\source-map.json",
+    "bytes": 88169,
+    "sha256": "2B78DFAA1C4CF44784AEE4F837B76F9B09ABAB265E79F053AF342B5B27D3A448"
+  },
+  "source_map_successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\source-map-successor.json",
+    "bytes": 4913,
+    "sha256": "7B883EF61A24846E9847A8BFAC41D36DFF5C6E4201572EB46946A0F9BF94DB3F"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\source-audit.py",
+    "bytes": 7403,
+    "sha256": "7039FB987FECA0A0CAAC966A482D5E9405B505BD900FA814DCD3C85D17CF4951"
+  },
+  "source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\source-proof.json",
+    "bytes": 31491,
+    "sha256": "098091FBDCEEA8B87AD9F2C655BB09937222DBF2F3C731C6FACD0A91285A8F68"
+  },
+  "dependency_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\dependency-inventory.json",
+    "bytes": 2079317,
+    "sha256": "B141BD5D0E85A45EAB5A9588F895AF3AEF01FED8580B51F362A0D136BBFC5677"
+  },
+  "closure_and_preservation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\closure-and-preservation.json",
+    "bytes": 63794,
+    "sha256": "A9E33FF285C889D48F06F41859FE6B5472C7BE6FE6E1F777F8D247485B2F68D2"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\README.md",
+    "bytes": 5887,
+    "sha256": "A91C2E5CC2A93374809E15D155D0EC4E35360188B2CE88CAB0D7E1B598C7C6CF"
+  },
+  "successor_readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\README.md",
+    "bytes": 1528,
+    "sha256": "FC69A1A5C994A1DBDA234FAA1E2CE2C59411AC2178C7559424510A32B6A9B638"
+  },
+  "required_predecessors": {
+    "owner_error_combined": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projection.json",
+      "bytes": 25832,
+      "sha256": "E1C3AE19CE38CF7FB6B21043F9B154B4DC4AE0952A9B149BD6BE792AFAC7C3B3"
+    },
+    "fs_observer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\proposal.json",
+      "bytes": 16691,
+      "sha256": "E22848488C054D9B748CD6A7E078EFECF468D32804F8161842562250F4DBF454"
+    },
+    "v8_fatal_source_only_commit": "5059d6a",
+    "v8_fatal_owner_manifest": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\manifest.json",
+      "bytes": 15642,
+      "sha256": "7DC76CE1A3362BA842CFBBE3B36AB21CC9096D403608CE0C49959650780C65B5"
+    },
+    "fatal_exact_required_source_paths": [
+      "src/extensions/native_v8_base_fatal.h",
+      "src/extensions/native_v8_base_fatal.cpp"
+    ],
+    "tls_owner": "Existing accepted diagnostic-context C/H/HPP sources copied unchanged under dependencies; per-target C ownership explicitly proposed.",
+    "callback_correction_unchanged": {
+      "relative_path": "src/extensions/native_node_async_wrap_make_callback.zig",
+      "origin": "raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "57bcdaa29eb5627f6f3605d0841d466f8b965dc1",
+      "bytes": 3361,
+      "sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+    }
+  },
+  "new_roots": [
+    {
+      "root_source": "src/native_node_stream_shutdown_test.zig",
+      "filters": [
+        "native Stream shutdown",
+        "native StreamReq Done"
+      ],
+      "target": "build-native-node-stream-shutdown",
+      "artifact_basename": "native-node-stream-shutdown",
+      "declared_source_controls": 18
+    },
+    {
+      "root_source": "src/native_node_one_byte_string_test.zig",
+      "filters": [
+        "native OneByteString"
+      ],
+      "target": "build-native-node-one-byte-string",
+      "artifact_basename": "native-node-one-byte-string",
+      "declared_source_controls": 8
+    }
+  ],
+  "declared_named_control_count": 26,
+  "future_actual_metadata_count": null,
+  "conservative_closure_summary": [
+    {
+      "root": "src/native_node_stream_shutdown_test.zig",
+      "modules": 708,
+      "embeds": 242,
+      "anonymous_literal_blocks": 8
+    },
+    {
+      "root": "src/native_node_one_byte_string_test.zig",
+      "modules": 679,
+      "embeds": 242,
+      "anonymous_literal_blocks": 8
+    }
+  ],
+  "inventory": [
+    {
+      "relative_path": "authority/async_wrap-inl.h",
+      "bytes": 3024,
+      "sha256": "0C1713056A8C8FB26EB12DF40FF600A3D1CC392FAB99D2276DCF2E2975873B9E"
+    },
+    {
+      "relative_path": "authority/async_wrap.cc",
+      "bytes": 27043,
+      "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC"
+    },
+    {
+      "relative_path": "authority/async_wrap.h",
+      "bytes": 12198,
+      "sha256": "3EBF97B3044B4875D1F62C3F8BA1668886F4AE19F6369A8DD20EC0E262BBF1EF"
+    },
+    {
+      "relative_path": "authority/copied-authority-bindings.json",
+      "bytes": 4999,
+      "sha256": "D1A399A61645C49ADE0BC03FAAFF3D127B1B6EB216B1D4128794129FD014B869"
+    },
+    {
+      "relative_path": "authority/env-inl.h",
+      "bytes": 28109,
+      "sha256": "41949D4DFA01B04174B0E881B1DB3DD12BF51B9428B89946504603700FCF3E5E"
+    },
+    {
+      "relative_path": "authority/env.cc",
+      "bytes": 84987,
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+    },
+    {
+      "relative_path": "authority/env.h",
+      "bytes": 45315,
+      "sha256": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0"
+    },
+    {
+      "relative_path": "authority/inline-acquisition.json",
+      "bytes": 7471,
+      "sha256": "C4B6FF58756C3F42A72D29A7E661C3F00427B52C70A915AD7F90C226479AAE47"
+    },
+    {
+      "relative_path": "authority/inline-source-bindings.json",
+      "bytes": 1631,
+      "sha256": "F521705F0868272A0B02DE95F2CB480273CB3D842588BAAA9AABF79AF5C2BD74"
+    },
+    {
+      "relative_path": "authority/Node-MIT-LICENSE-excerpt.txt",
+      "bytes": 2337,
+      "sha256": "EC62DC96DA0099B87F4511736C87309335527FB7031639493E06C95728DC8C54"
+    },
+    {
+      "relative_path": "authority/node_file.cc",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+    },
+    {
+      "relative_path": "authority/node_file.h",
+      "bytes": 17193,
+      "sha256": "A63A31D1BCAEB7AF416B19ABEAFAB880DB7D424378DC27050F9FC2EE4921E16F"
+    },
+    {
+      "relative_path": "authority/req_wrap-inl.h",
+      "bytes": 5640,
+      "sha256": "27C770D8756B626C80210F96F9DB1CF31BFBF09AAB1DA53DC35B382314883E67"
+    },
+    {
+      "relative_path": "authority/shutdown-extra-authority-bindings.json",
+      "bytes": 1833,
+      "sha256": "4C023434407CDD6A2A7F7EA852E92E56B2D1B738F212CC2EEC47E1496A56AC71"
+    },
+    {
+      "relative_path": "authority/stream-wrap-acquisition.json",
+      "bytes": 5418,
+      "sha256": "07E4042E0A015243EEFFE4923588173C00137F56202A4F5BEDA4CAD656207609"
+    },
+    {
+      "relative_path": "authority/stream_base-inl.h",
+      "bytes": 5052,
+      "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6"
+    },
+    {
+      "relative_path": "authority/stream_base.cc",
+      "bytes": 28310,
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+    },
+    {
+      "relative_path": "authority/stream_base.h",
+      "bytes": 18488,
+      "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334"
+    },
+    {
+      "relative_path": "authority/stream_wrap.cc",
+      "bytes": 13099,
+      "sha256": "FCA1B10EC090A78AC3CDA6496C4E6A47E340555113D9E2B5B5174E6C6D30ACB8"
+    },
+    {
+      "relative_path": "authority/stream_wrap.h",
+      "bytes": 4309,
+      "sha256": "A1B66FB749D5708C3218899081470BED0B8A1F70AFA5D6EAEDE00D0120C4FC0C"
+    },
+    {
+      "relative_path": "authority/string-acquisition.json",
+      "bytes": 5240,
+      "sha256": "57C003BDA61C03989707BD5140A7A4B3F68F009372FD45F2AC28E943C56EA5B0"
+    },
+    {
+      "relative_path": "authority/string-factory-acquisition.json",
+      "bytes": 5252,
+      "sha256": "93D9A81ED7195BEFA409DB700F72CA555A259C3CDF599E45EFD3375061BD133F"
+    },
+    {
+      "relative_path": "authority/string-source-bindings.json",
+      "bytes": 1836,
+      "sha256": "5AD7C15843D7B961E3FE556A92451E82F0101D133DFA37C40D40B8D5E44BB6FF"
+    },
+    {
+      "relative_path": "authority/util-header-acquisition.json",
+      "bytes": 4011,
+      "sha256": "2B9574B649F1CAB95F1783C4F88D094B321A893AF817E04989C28EE86E054686"
+    },
+    {
+      "relative_path": "authority/util-inl.h",
+      "bytes": 27509,
+      "sha256": "8979B5C3115BC3D1C9478910088944D3761130E7D7A0ED8ED7452FCEC5870E83"
+    },
+    {
+      "relative_path": "authority/util.h",
+      "bytes": 39726,
+      "sha256": "29BD133B9FB9000B2A624ABDDFB42FBD538CFA33D3BB00377AD8F1122C74AF52"
+    },
+    {
+      "relative_path": "authority/v8-api.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+    },
+    {
+      "relative_path": "authority/v8-factory-base.cc",
+      "bytes": 57199,
+      "sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83"
+    },
+    {
+      "relative_path": "authority/V8-LICENSE.txt",
+      "bytes": 3093,
+      "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509"
+    },
+    {
+      "relative_path": "authority/v8-logging.h",
+      "bytes": 21624,
+      "sha256": "0FA464788992D2AB04B14F9A9B9B808E29759D111E867BABD69EAED03D931405"
+    },
+    {
+      "relative_path": "authority/v8-maybe-handles.h",
+      "bytes": 12894,
+      "sha256": "9F504121AF2ADF2307FA3AF36A0AFB4810D50AEFD55CAD965B751D62C5C0861B"
+    },
+    {
+      "relative_path": "authority/v8-string.h",
+      "bytes": 56245,
+      "sha256": "F567EE2A36FF5FF854E400E98A65FFCAF5F36A0A196C9A1DC759E965A306911B"
+    },
+    {
+      "relative_path": "authority/v8-v8-primitive.h",
+      "bytes": 37573,
+      "sha256": "22B7F84FC79E55144323A29BE18CCB657E09FA3BE5D2A2FD5380CBE4C82E4A28"
+    },
+    {
+      "relative_path": "build/install-only-block.zig.txt",
+      "bytes": 4172,
+      "sha256": "84A361CB3F0B7CF81136BB6B5DAD73994478C41614A171CB18E40AA7926CF106"
+    },
+    {
+      "relative_path": "build/original-build.zig",
+      "bytes": 506940,
+      "sha256": "399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52"
+    },
+    {
+      "relative_path": "build/prepare-proposal.py",
+      "bytes": 5142,
+      "sha256": "4C927AE2FF0437D620357833885A80BFD460E3E22DCC13FAD2000E2216A1BF88"
+    },
+    {
+      "relative_path": "build/projected-build.zig",
+      "bytes": 511112,
+      "sha256": "8CBCA84B70EB6B95DC6CB350FF10B6F3ADDD635BA120376FE2F5319F3BD3D407"
+    },
+    {
+      "relative_path": "build/proposal.json",
+      "bytes": 7512,
+      "sha256": "2B7888AFCD7DB29A98FB2329D0668ADA6ECA15F818E29B15F834C1C006D17F86"
+    },
+    {
+      "relative_path": "closure-and-preservation.json",
+      "bytes": 62517,
+      "sha256": "C89B5E09BCB97AEC8CF213AFCDFD3D7CF17296B1E11FEC323AEE3EA969659D08"
+    },
+    {
+      "relative_path": "closure-preflight-negative.json",
+      "bytes": 2741,
+      "sha256": "6EFC52FE1DFEB5A3B6A860FC959FC907451C9F3E4B8ABB89D9475768EA7352C5"
+    },
+    {
+      "relative_path": "controls/src/native_node_one_byte_string_test.zig",
+      "bytes": 5064,
+      "sha256": "AC3E1AD12FB0F48905EC8B561094F54DD93653AD7C8DC5DD7CC0EBB54959C461"
+    },
+    {
+      "relative_path": "controls/src/native_node_stream_shutdown_test.zig",
+      "bytes": 17019,
+      "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+    },
+    {
+      "relative_path": "controls/src/native_node_stream_shutdown_test_support.zig",
+      "bytes": 10312,
+      "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+    },
+    {
+      "relative_path": "dependencies/src/extensions/native_node_diagnostic_context.c",
+      "bytes": 789,
+      "sha256": "AC01853D724253740008E26D2663545D2F564A6E59DE91AA8CE2C8777C7B832C"
+    },
+    {
+      "relative_path": "dependencies/src/extensions/native_node_diagnostic_context.h",
+      "bytes": 775,
+      "sha256": "4D8E43A6527FED6AA19F86A2A51CD490E5DDEAC6CCC323635B700ED4E8B798C0"
+    },
+    {
+      "relative_path": "dependencies/src/extensions/native_node_diagnostic_context.hpp",
+      "bytes": 914,
+      "sha256": "7EA7700F4EDCC6ED5C27DF98574BE27A572AFF01E151B9F39667E6737ACC30B9"
+    },
+    {
+      "relative_path": "dependencies/src/extensions/native_v8_base_fatal.cpp",
+      "bytes": 7723,
+      "sha256": "1C83C0523655ACD3FF64CA067AE2CB5131C98B36A2E60910AEF4C64699BD3BBC"
+    },
+    {
+      "relative_path": "dependencies/src/extensions/native_v8_base_fatal.h",
+      "bytes": 7727,
+      "sha256": "C5B2D6E6F7B8DA0E8C9D70E8934392B10BB638DA5C209870385FCE1AC71D3CBF"
+    },
+    {
+      "relative_path": "dependency-inventory.json",
+      "bytes": 2079261,
+      "sha256": "531CE4BB7C80371CCED78A077E3D76145289BF816E29D75E19E030A9736265D2"
+    },
+    {
+      "relative_path": "prepare-closure-v2.py",
+      "bytes": 12521,
+      "sha256": "ECEB34D814E1AE4142C6DBFC69530BF874B000FFA7870A2889CBD1E9C1EEB875"
+    },
+    {
+      "relative_path": "prepare-closure.py",
+      "bytes": 12511,
+      "sha256": "46B2EF0AA8435FF70A6968767E4090908AD14D8C66A79A8BA13A281A0FC1619C"
+    },
+    {
+      "relative_path": "prepare-manifest.py",
+      "bytes": 6248,
+      "sha256": "F6FE9C710647CB5FEDAFC35A02D9F0CB052B4253983FDA300DF1C37175842431"
+    },
+    {
+      "relative_path": "prepare-source-map.py",
+      "bytes": 17889,
+      "sha256": "B61A4E1E7F4C11915ECCB3834350B86A2C951417944A174FE6C5AB7F98B570C3"
+    },
+    {
+      "relative_path": "production/src/extensions/native_node_file_handle_shutdown.zig",
+      "bytes": 9800,
+      "sha256": "D88164C9B392F9A5A0906DF2166129204A88A0936C83D3FA1DFF008484EC94F2"
+    },
+    {
+      "relative_path": "production/src/extensions/native_node_one_byte_string.zig",
+      "bytes": 2658,
+      "sha256": "2387DDE54B2B079BC0F78490602E4CF150F4A1E46FFC3FC05D7EF3CB5CEE4507"
+    },
+    {
+      "relative_path": "production/src/extensions/native_node_one_byte_string_diagnostics.cpp",
+      "bytes": 2695,
+      "sha256": "3E61B1FDD631E80B31F51F5B130D203C4C01BD41FF4EE4FD2831C27074459B53"
+    },
+    {
+      "relative_path": "production/src/extensions/native_node_one_byte_string_diagnostics.h",
+      "bytes": 576,
+      "sha256": "687E51133E348B90B4C7CF5CBEB53C2098CF6988A5C3915F68DF008D0A9E1C88"
+    },
+    {
+      "relative_path": "production/src/extensions/native_node_stream_request.zig",
+      "bytes": 6970,
+      "sha256": "654816139FC110560BA21BDBBEA35744468B1E6C52154448D30CEDC3656A6E8B"
+    },
+    {
+      "relative_path": "production/src/extensions/native_node_stream_shutdown.zig",
+      "bytes": 11021,
+      "sha256": "2BEE67EE76015C0549729F3F3B12CD4BBBF32C5DBF5A28D8CEE3F111E0C86D7E"
+    },
+    {
+      "relative_path": "README.md",
+      "bytes": 5887,
+      "sha256": "A91C2E5CC2A93374809E15D155D0EC4E35360188B2CE88CAB0D7E1B598C7C6CF"
+    },
+    {
+      "relative_path": "shared/apply-projection.py",
+      "bytes": 1819,
+      "sha256": "55FADA57B2C436C1A2505B2A0DB96F05974AE384E217FBEA16B5D1D68A4D52F6"
+    },
+    {
+      "relative_path": "shared/basis.json",
+      "bytes": 3672,
+      "sha256": "E55445514F46981AF3B8559B9A23D3A4ACCCC664B5B057B92ED46DA064548003"
+    },
+    {
+      "relative_path": "shared/edits.json",
+      "bytes": 24803,
+      "sha256": "6FB9CD38AD7961A9B095AE4980E5879B25C78BF775DEE3AC11314B5ED9DB918C"
+    },
+    {
+      "relative_path": "shared/original/src/extensions/native_node_async_wrap.zig",
+      "bytes": 19741,
+      "sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+    },
+    {
+      "relative_path": "shared/original/src/extensions/native_node_async_wrap_state.zig",
+      "bytes": 28133,
+      "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1"
+    },
+    {
+      "relative_path": "shared/original/src/extensions/native_node_file_handle_owner.zig",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+    },
+    {
+      "relative_path": "shared/original/src/extensions/native_node_stream_base.zig",
+      "bytes": 10864,
+      "sha256": "0A3F4EB5133BC9543D5AD77DC33F4753ABEC866EB721BCE0A8F08C16BECD5ABF"
+    },
+    {
+      "relative_path": "shared/original/src/extensions/native_node_stream_resource.zig",
+      "bytes": 5762,
+      "sha256": "6CA4CF5CD5E71EAD8C9E6F4FCF0D0075190C853E26978B497389F7D29EBE0AC6"
+    },
+    {
+      "relative_path": "shared/original/vendor/quickjs/quickjs.c",
+      "bytes": 2403205,
+      "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+    },
+    {
+      "relative_path": "shared/original/vendor/quickjs/quickjs.h",
+      "bytes": 114656,
+      "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+    },
+    {
+      "relative_path": "shared/projected/src/extensions/native_node_async_wrap.zig",
+      "bytes": 20655,
+      "sha256": "F2BEC62AC7817F16EE57E50B80D903ECCB0F8D60AFCB8B61FED920245918CC27"
+    },
+    {
+      "relative_path": "shared/projected/src/extensions/native_node_async_wrap_state.zig",
+      "bytes": 34046,
+      "sha256": "1530C4043859CFF37D7F157F5557E4597E68972C1F1A1B82D208978F47E3D67A"
+    },
+    {
+      "relative_path": "shared/projected/src/extensions/native_node_file_handle_owner.zig",
+      "bytes": 17650,
+      "sha256": "F2672292FBEBEEF74B35C32C38203E3D1E1D259052E7AB5AFB34DA29840B544D"
+    },
+    {
+      "relative_path": "shared/projected/src/extensions/native_node_stream_base.zig",
+      "bytes": 12321,
+      "sha256": "F85721695F41998E3676C196B4791D295EA62C8DE89FD83159F05BACDEF7716E"
+    },
+    {
+      "relative_path": "shared/projected/src/extensions/native_node_stream_resource.zig",
+      "bytes": 6847,
+      "sha256": "39255A86BA9631F95E9CBD13B85AE7264A30A015EF4454F10B2D64BD643F2D8A"
+    },
+    {
+      "relative_path": "shared/projected/vendor/quickjs/quickjs.c",
+      "bytes": 2403712,
+      "sha256": "2AEE7EA130CCF08282928A9FDA056B444CF0905E8C53F1EFD520E8243F9C37B4"
+    },
+    {
+      "relative_path": "shared/projected/vendor/quickjs/quickjs.h",
+      "bytes": 114822,
+      "sha256": "4728F93F8CC0D51FB6066E31502BE87920FE7B395BB57DED6D4E80BD1543222C"
+    },
+    {
+      "relative_path": "shared/proposal.json",
+      "bytes": 38226,
+      "sha256": "C58D31835CCE099D8C99BF7432CE4B0B2FAA83186857EA46EDFC55CEB3542A41"
+    },
+    {
+      "relative_path": "source-audit.py",
+      "bytes": 7403,
+      "sha256": "7039FB987FECA0A0CAAC966A482D5E9405B505BD900FA814DCD3C85D17CF4951"
+    },
+    {
+      "relative_path": "source-map-successor.json",
+      "bytes": 4913,
+      "sha256": "7B883EF61A24846E9847A8BFAC41D36DFF5C6E4201572EB46946A0F9BF94DB3F"
+    },
+    {
+      "relative_path": "source-map.json",
+      "bytes": 88169,
+      "sha256": "2B78DFAA1C4CF44784AEE4F837B76F9B09ABAB265E79F053AF342B5B27D3A448"
+    },
+    {
+      "relative_path": "source-proof.json",
+      "bytes": 31491,
+      "sha256": "098091FBDCEEA8B87AD9F2C655BB09937222DBF2F3C731C6FACD0A91285A8F68"
+    },
+    {
+      "relative_path": "successor/closure-and-preservation.json",
+      "bytes": 63794,
+      "sha256": "A9E33FF285C889D48F06F41859FE6B5472C7BE6FE6E1F777F8D247485B2F68D2"
+    },
+    {
+      "relative_path": "successor/dependency-inventory.json",
+      "bytes": 2079317,
+      "sha256": "B141BD5D0E85A45EAB5A9588F895AF3AEF01FED8580B51F362A0D136BBFC5677"
+    },
+    {
+      "relative_path": "successor/prepare-closure.py",
+      "bytes": 13354,
+      "sha256": "2B4D17CE90B24F6DA86CEB55DF6D9A95236B88163D5E750367882939A62A3817"
+    },
+    {
+      "relative_path": "successor/prepare-source-map.py",
+      "bytes": 2266,
+      "sha256": "2F455118F75EC642BCB7417DEACA1ECD6654AC0A246BFACD50E52BE806B8BC21"
+    },
+    {
+      "relative_path": "successor/prepare-successor.py",
+      "bytes": 2797,
+      "sha256": "B1489FADB4DF28E293E8EE8538689705E32317880A75D54B50230E5A580ED459"
+    },
+    {
+      "relative_path": "successor/projected/vendor/quickjs/quickjs.c",
+      "bytes": 2403730,
+      "sha256": "BC772BEE8794ADBD59385DA98F037310730704DFB9D251EA258862B1C887E454"
+    },
+    {
+      "relative_path": "successor/proposal.json",
+      "bytes": 2900,
+      "sha256": "11FA3C2397945908756CB487FE2F22E8762B56AF7187CD87AF8275678905F9F1"
+    },
+    {
+      "relative_path": "successor/README.md",
+      "bytes": 1528,
+      "sha256": "FC69A1A5C994A1DBDA234FAA1E2CE2C59411AC2178C7559424510A32B6A9B638"
+    }
+  ],
+  "inventory_entries": 90,
+  "inventory_sha256": "40D7A71315133D80C2635097AFFCABD761CF2637ECDD360FEC14D05BA3430C54",
+  "inventory_recipe": "sorted rglob files, relative_path/bytes/uppercase sha256 rows; sha256(json.dumps(rows,sort_keys=True,separators=(comma,colon)).encode()). Manifest excludes itself.",
+  "findings_preserved": [
+    "Initial closure script missing native_node_memory.h preflight stopped before output writes; corrected actual build-native memory owner in v2.",
+    "SDK filename provenance warning was retracted: native_node_async_wrap and native_node_async_wrap_make_callback are different; actual unchanged callback 972B9D09 is preserved.",
+    "Initial Latin1 C passed ctx rather than ctx->rt and uint8_t* without char* cast; immutable two-expression successor11FA3C23 corrects both. Initial full projection/map/closure remain intact."
+  ],
+  "remaining_assembly": [
+    "No compiler, preprocessor, native runtime, Node reference runtime, or generator execution.",
+    "No Main edits, build authorization, default wiring or runtime/platform qualification.",
+    "Complete StreamBase AddMethods/public FileHandle template and worker broker remain separately owned and unassembled.",
+    "Genuine process FS trace owner, cached key/template bootstrap lifetime, and production hook policy are required inputs, never replaced by the labeled control observers.",
+    "MemoryRetainer virtual assembly and full public JS entry publication remain outside this finite native shutdown slice.",
+    "The complete constructor/error predecessor and historical runtime negatives remain immutable."
+  ],
+  "source_only": true,
+  "Main_changed": false,
+  "live_production_changed": false,
+  "compiler_native_reference_generator_execution": false,
+  "runtime_platform_qualified": false,
+  "source_publication_or_commit_granted": false
+}

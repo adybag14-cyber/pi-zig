@@ -1,0 +1,114 @@
+"""Finite source audit only. The final write is isolated below.
+No compiler, native target, reference Node, or project generator is invoked."""
+import pathlib,json,hashlib,re
+P=pathlib.Path(r'C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018\verification\native-node-shutdown-wrap-sourceonly-20261020')
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ p=pathlib.Path(p);b=p.read_bytes();return {'path':str(p),'bytes':len(b),'sha256':sha(b)}
+def checked(row):
+ p=pathlib.Path(row['path']);b=p.read_bytes()
+ assert len(b)==row['bytes'] and sha(b)==row['sha256'].upper(),str(p)
+ return b
+def read_json(p):return json.loads(pathlib.Path(p).read_text(encoding='utf-8'))
+def serialize(obj):return (json.dumps(obj,indent=2)+'\n').encode()
+script=P/'successor/prepare-closure.py'
+source=script.read_text(encoding='utf-8')
+marker='# All checks complete. The sole output phase writes only this new packet.'
+assert source.count(marker)==1
+namespace={}
+exec(compile(source.split(marker)[0],str(script)+' [read-only prefix]','exec'),namespace)
+replays=[]
+for field,rel in [('inventory','successor/dependency-inventory.json'),('closure','successor/closure-and-preservation.json')]:
+ actual=serialize(namespace[field]);expected=(P/rel).read_bytes()
+ assert actual==expected,rel
+ replays.append(dict(pin(P/rel),read_only_prefix_reproduced_exact=True))
+m=read_json(P/'source-map.json')
+assert pin(P/'source-map.json')['sha256']=='2B78DFAA1C4CF44784AEE4F837B76F9B09ABAB265E79F053AF342B5B27D3A448'
+pins=[pin(P/'source-map.json'),pin(script),*replays]
+for row in m['authorities']:checked(row);pins.append(row)
+for row in m['selected_source_snapshots']:checked(row['snapshot']);pins.append(row['snapshot'])
+for row in namespace['copy_plan']:
+ q,b=row;assert q.read_bytes()==b;pins.append(pin(q))
+excerpts=[]
+for e in m['excerpts']:
+ raw=checked(e['authority'])
+ selected=b''.join(raw.splitlines(keepends=True)[e['start_line']-1:e['end_line']])
+ assert len(selected)==e['excerpt_bytes'] and sha(selected)==e['excerpt_sha256']
+ assert selected.decode('utf-8')==e['excerpt']
+ excerpts.append({'id':e['id'],'bytes':len(selected),'sha256':sha(selected),'matched_original_bytes':True})
+cpp=(P/'production/src/extensions/native_node_one_byte_string_diagnostics.cpp').read_text(encoding='utf-8')
+header=(P/'production/src/extensions/native_node_one_byte_string_diagnostics.h').read_text(encoding='utf-8')
+zig=(P/'production/src/extensions/native_node_one_byte_string.zig').read_text(encoding='utf-8')
+names=['pi_node_one_byte_string_cstring_length','pi_node_one_byte_string_empty_maybe_handle']
+assert set(re.findall(r'\b(pi_node_one_byte_string_\w+)\s*\(',header))==set(names)
+assert set(re.findall(r'extern fn\s+(pi_node_one_byte_string_\w+)\s*\(',zig))==set(names)
+for name in names:
+ idx=cpp.index(name+'(');brace=cpp.index('{',idx)
+ tail=cpp[brace+1:].lstrip()
+ assert tail.startswith('pi::node::DiagnosticContextScope diagnostic_scope(context);'),name
+assert cpp.count('std::strlen(')==1
+def body(src,name):
+ idx=src.index(name+'(');start=src.index('{',idx)
+ depth=0
+ for i in range(start,len(src)):
+  if src[i]=='{':depth+=1
+  elif src[i]=='}':
+   depth-=1
+   if depth==0:return src[start:i+1]
+ raise AssertionError(name)
+def tokens(src):
+ # Alternation keeps quoted literals intact while removing comments.
+ src=re.sub(r'("(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\')|//[^\n]*|/\*[\s\S]*?\*/',
+            lambda q:q.group(1) or '',src)
+ return re.findall(r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|[A-Za-z_]\w*|[0-9]+|::|->|<=|>=|==|!=|&&|\|\||[^\s]',src)
+original=(P/'authority/v8-logging.h').read_text(encoding='utf-8')
+original_body=body(original,'MakeCheckOpString')
+selected_body=body(cpp,'MakeCheckOpString')
+normalized=original_body.replace('PrintCheckOperand<Lhs>(lhs)','PrintCheckOperand(lhs)').replace('PrintCheckOperand<Rhs>(rhs)','PrintCheckOperand(rhs)')
+assert tokens(normalized)==tokens(selected_body)
+selected=read_json(P/'successor/proposal.json')
+q=checked(selected['projected']).decode('utf-8')
+helper=body(q,'JS_PiNewStringLatin1')
+assert 'return js_empty_string(ctx->rt);' in helper
+assert 'return js_new_string8_len(ctx, (const char *)buf, (int)len);' in helper
+assert 'JS_NewStringLen(' not in helper
+assert 'if (len > JS_STRING_LEN_MAX)' in helper
+assert '#define JS_STRING_LEN_MAX ((1 << 30) - 1)' in q
+assert 'static inline JSValue js_empty_string(JSRuntime *rt)' in q
+assert 'static JSValue js_new_string8_len(JSContext *ctx, const char *buf, int len)' in q
+pins.extend([pin(P/'successor/proposal.json'),selected['projected']])
+provider=(P/'authority/async_wrap.h').read_text(encoding='utf-8').split('#define NODE_ASYNC_NON_CRYPTO_PROVIDER_TYPES(V)',1)[1].split('#if HAVE_OPENSSL',1)[0]
+providers=re.findall(r'V\((\w+)\)',provider)
+assert providers[0]=='NONE' and providers.index('SHUTDOWNWRAP')==35
+build=read_json(P/'build/proposal.json')
+block=checked(build['block']).decode('utf-8')
+assert block.count('b.addTest(')==2 and block.count('b.addInstallArtifact(')==2
+assert 'addRunArtifact' not in block and 'addSystemCommand' not in block
+for name in ['native_node_diagnostic_context.c','native_v8_base_fatal.cpp','native_node_one_byte_string_diagnostics.cpp']:
+ assert block.count(name)==2,name
+names_by_root=[{'root':g['root'],'declared':g['declared_named_count'],'names':g['declared_names'],'anonymous_allowlist_blocks':g['anonymous_literal_blocks']} for g in namespace['graphs']]
+proof={
+ 'schema':'pi-zig.shutdown-latin1-final-source-proof.v1',
+ 'inputs':pins,'read_only_closure_replays':replays,
+ 'selected_overlay':'C58D3183 seven-file/37-edit original plus 11FA3C23 two-expression C argument successor; all predecessors preserved.',
+ 'authority_count':len(m['authorities']),'original_excerpt_count':len(excerpts),'excerpts':excerpts,
+ 'selected_sources_pinned':len(m['selected_source_snapshots']),
+ 'dependency_inventory_entries_reproduced':len(namespace['cache']),
+ 'conservative_module_union':len(namespace['allmods']),'conservative_embed_union':len(namespace['allembeds']),
+ 'diagnostic_abi':{'names':names,'matching_header_zig_cpp':True,'borrowed_context_scope_first':True,'strlen_evaluated_once':True},
+ 'debug_message_body':{'original_body_sha256':sha(original_body.encode()),'selected_body_sha256':sha(selected_body.encode()),
+ 'normalization':'Only explicit PrintCheckOperand<Lhs/Rhs> template arguments are replaced by deduction in the selected integral-only helper; comments/whitespace ignored; string-literal tokens retained.',
+ 'token_equality':True,'scope':'MakeCheckOpString function body only, not a general V8 template or compiler qualification.'},
+ 'raw_latin1_c_arguments':{'empty_helper':'JSRuntime* via ctx->rt','one_byte_helper':'const char* via explicit cast from uint8_t*','int_length':'len<=((1<<30)-1) before existing narrowing cast','utf8_decoder_not_called':True},
+ 'provider_original_macro_ordinal':35,
+ 'control_roots':names_by_root,'declared_control_total':26,
+ 'future_actual_metadata_count':None,
+ 'build_targets':build['new_roots'],'build_no_run_steps':True,
+ 'preservation_reproduced':{k:len(v) for k,v in namespace['preserved'].items()},
+ 'source_only':True,'Main_edited':False,'compiler_or_native_execution':False,'qualification':False
+}
+# Sole output write: a new immutable source-only proof.
+target=P/'source-proof.json'
+assert not target.exists(),str(target)
+target.write_bytes(serialize(proof))
+print(json.dumps(pin(target)))

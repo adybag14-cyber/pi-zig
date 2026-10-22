@@ -1,0 +1,188 @@
+{
+  "schema": 1,
+  "status": "unissued_strengthened_pending20_source_intake_adapter_ready_for_independent_review",
+  "author": "/root/handover_review",
+  "date": "2026-10-22",
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py",
+    "bytes": 23554,
+    "sha256": "1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010",
+    "lines": 373
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\finite-source-adaptation.json",
+    "bytes": 56895,
+    "sha256": "2E657192C7DF2B8216D128E82C7AB47E57ECD0AB43FCDD2327E8F83C32A69A69"
+  },
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\source-check.py",
+    "bytes": 13451,
+    "sha256": "14DA700BDB7A8C3A1A6CB88984056510B127382A27053020F1BB49078065EBA2"
+  },
+  "static_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\static-source-proof.json",
+    "bytes": 9915,
+    "sha256": "7B4C2D3F56451498C790AD655C8864FCE0CB582676E857F430E0FEF3FCB53804"
+  },
+  "declared_edits": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\authoring\\declared-edits.json",
+    "bytes": 27011,
+    "sha256": "3205A1A6B4B5E7171E6232358152F843E5D7D352EE5677D6C9C51435B14DFF42"
+  },
+  "binding_and_schema_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\unissued-binding-and-schema-contract.json",
+    "bytes": 10902,
+    "sha256": "ACF23FA22E0C380BF744923B5CA8A8B55D30B83B0D655AAFF6FF2EE80790136D"
+  },
+  "accepted_inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+      "bytes": 9719,
+      "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\finite-intake-adapter-reuse-plan-sourceonly-20261021\\plan.json",
+      "bytes": 23193,
+      "sha256": "E020D4B82F088A5BA4B38CB002B056589676A561C780CE1BD950976D9DC0A95C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-manifest-plan.json",
+      "bytes": 378545,
+      "sha256": "E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-buffer-unissued-copy-plan-acceptance-20261021.json",
+      "bytes": 7059,
+      "sha256": "4B97947A3A185D0D6E9ED282B2FC4E19621BD792AED4F18F4A0D7E594A682788"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261021\\git-attribute-capability-observation.json",
+      "bytes": 2972,
+      "sha256": "0FC8853FC86F22C7CF11CBCB9CD6EE03FF34D4ED3FC6E955F5A9F3D3B92E00C4"
+    }
+  ],
+  "scope": "Source-only finite strengthening of the accepted V37 mixed source/archive adapter. No current or future intake has been issued or executed.",
+  "semantic_edit_groups": [
+    {
+      "kind": "description_and_unresolved_literal_bindings",
+      "steps": [
+        1,
+        3,
+        4
+      ],
+      "summary": "Accurate source-only description; unresolved released head and one manifest tuple. Phase fixture and branch preserved. Later Root binding must be separately finite and reviewed."
+    },
+    {
+      "kind": "assertion_admission_and_new_strict_helpers",
+      "steps": [
+        2,
+        5
+      ],
+      "summary": "Reject disabled assertions; add canonical Windows path/reparse, actual repository/object-format, five-attribute/config-origin capture, raw Git digest, index/tree modes and immutable failure-observation helpers."
+    },
+    {
+      "kind": "release_manifest_and_donor_preflight",
+      "steps": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "summary": "Exact named byte contract, safe failure namespace, evidence-contained manifest, explicit manifest mode, canonical all-target/source/preimage checks and complete content-dedup alias inventory."
+    },
+    {
+      "kind": "dual_git_byte_gate_and_preflight_evidence",
+      "steps": [
+        10,
+        11
+      ],
+      "summary": "All paths including manifest receive raw independent/Git/path-aware ID comparison after disallowed attribute admission; full provenance and revalidation are captured before source/index writes."
+    },
+    {
+      "kind": "accurate_message_copy_and_postcopy_barrier",
+      "steps": [
+        12,
+        13,
+        14
+      ],
+      "summary": "No native authority from source commit; stage-labelled exact copies, full byte readback and unchanged attributes/configuration before literal NUL-list staging."
+    },
+    {
+      "kind": "stage_commit_and_complete_receipt",
+      "steps": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "summary": "Exact stage-zero modes/IDs and raw bytes, pre-commit provenance check, complete single-parent relation, exact committed modes/IDs/raw bytes and final provenance/clean status; final immutable receipt and success only after all gates."
+    }
+  ],
+  "exact_static_results": {
+    "sequential_edits": 20,
+    "every_intermediate_hash_verified": true,
+    "whole_forward_exact": true,
+    "whole_raw_inverse_exact": true,
+    "inherited_complete_helpers": 11,
+    "inherited_helpers_changed": 0,
+    "new_helpers": 11,
+    "baseline_rows_to_end_bytes": 5897,
+    "baseline_rows_to_end_sha256": "E8CAF87944A614D7BAC12EF745B79D83314DD7CFAF94F06B99231E4D008A2F8E",
+    "entire_baseline_tail_accounted": true,
+    "tail_claimed_unchanged": false,
+    "unchanged_raw_fragments_and_replaced_baseline_ranges": "Fully enumerated in finite-source-adaptation.json, including UTF-8 byte offsets rather than authoring character offsets.",
+    "AST_only_syntax_check": true,
+    "candidate_evaluated": false,
+    "actual_Git_conversion_or_commit_tested": false
+  },
+  "future_manifest_translation": {
+    "physical_rows": "Translate the accepted exact source rows and physical archive rows to target/source/bytes/sha256/before/role/mode. Every added future authority or revised build-only donor changes the explicit reviewed manifest and count.",
+    "aliases": "Flatten each accepted logical_donors entry into logical_donor_aliases with physical target and raw source pin. Include every physical primary and every dedup alias exactly once per target/canonical donor/size/hash; preserve logical archive destinations and historical references.",
+    "modes": "Record actual old modes for replacements, preserve them exactly; new source/archive/manifest paths use 100644. No mode is inferred from extension.",
+    "no_attribute_change": "Any .gitattributes target is rejected; the stronger contract must succeed under the actual unchanged attributes.",
+    "no_conversion_shortcut": "All archive .raw paths and the manifest participate in full actual byte-conversion checks."
+  },
+  "release_requirements": {
+    "status": "unissued",
+    "source_review_and_peer": null,
+    "actual_final_manifest": null,
+    "actual_root_released_head": null,
+    "exact_final_count": null,
+    "exact_logical_alias_count": null,
+    "actual_object_format": null,
+    "actual_root_release": null,
+    "existing_invariants": "Same strict branch, exact release/self-hash, clean tree/index, complete required pins, no hook override/non-sample hook, literal core.autocrlf=false, exact predecessor/raw bytes and no native/application authority.",
+    "added_contract": "git_byte_preflight_contract=pending20_exact_git_bytes_attributes_aliases_modes_v1; expected_git_object_format; per-phase logical_donor_alias_count; row/before modes.",
+    "later_binding": "Four exact literal replacements only (head, manifest path, manifest SHA-256 and positive total count) after actual sources/closure/manifest and independent peer are accepted."
+  },
+  "failure_preservation": {
+    "post_release": "A unique create-only failure receipt captures exception, traceback, exact adapter/release, last stage and whether Main/index writes began. No rollback, cleanup, normalization or resumed write occurs.",
+    "early_release_admission": "Unresolved/invalid binding, CLI, release or namespace failures occur before the hook and before any Main/index writes; Root must retain the original job/tool rejection.",
+    "source_authoring_outcomes": "Bounded create-only/chunk-append saves and one successful own static checker run; no checker or candidate failure occurred in this 22Oct packet."
+  },
+  "separate_blocker": {
+    "status": "retained_target_native_linkage_unresolved",
+    "description": "The accepted twenty-path union still needs the separate exact build-only successor/peer for shared Latin1 diagnostics/fatal linkage across all affected retained artifacts. Module owns that task. This adapter does not alter the source union, build recipes or validation readiness.",
+    "V39_plan": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-v39-pending20-catalog-validation-plan-20261021\\catalog-validation-plan.json",
+      "bytes": 43878,
+      "sha256": "EA2AE101AC381659E604478E8303D22E7C508CE38994B43A9367B2FC8506B7F4"
+    }
+  },
+  "authority": {
+    "source_only": true,
+    "intake_issued": false,
+    "release_issued": false,
+    "configuration_issued": false,
+    "Main_accessed": false,
+    "Main_written": false,
+    "index_accessed": false,
+    "index_written": false,
+    "candidate_or_prefix_executed": false,
+    "generator_or_native_executed": false,
+    "application_qualified": false
+  },
+  "all_prior_artifacts_preserved": true
+}

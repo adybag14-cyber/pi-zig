@@ -1,0 +1,29 @@
+{
+  "schema": "native-view-data-composition-scope-clarification-v1",
+  "source_only": true,
+  "preserved_original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\latin1-composition.json",
+    "bytes": 4905,
+    "sha256": "2DF7C6AB519FED6FC640E84E3981884B67032B0E5D23E56F279BFC9A9413BF70"
+  },
+  "correction": "The original composition selected_scope mentions an old SDK AsyncWrap whole-file basis. The two AsyncWrap filenames had been conflated in recovery shorthand. Actual Main c764 native_node_async_wrap.zig is 7E970CA3, matching Module C58D3183. The accepted 972B return-try correction is in native_node_async_wrap_make_callback.zig, a separate file untouched by C58D3183. Thus no non-installable AsyncWrap basis or source mismatch follows from this wording.",
+  "actual_shared_preimage": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_async_wrap.zig",
+    "bytes": 19741,
+    "sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+  },
+  "actual_separate_make_callback": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_async_wrap_make_callback.zig",
+    "bytes": 3361,
+    "sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+  },
+  "accepted_fix_commit": "b5ebda01d3b407d123fe2b4d7a894a230565d223",
+  "accepted_exact_callback_line": "if (returned) |value| return try s.own(value);",
+  "unchanged_claims": [
+    "Both four-edit VM forward orders are byte-identical.",
+    "Both complete VM inverse orders recover the common accepted constructor C/H base.",
+    "The 2DF7C6AB receipt verifies only the two selected Latin-1 VM edits; it does not independently approve the remaining Shutdown behavior."
+  ],
+  "all_prior_packets_and_sources_unchanged": true,
+  "native_execution": false
+}

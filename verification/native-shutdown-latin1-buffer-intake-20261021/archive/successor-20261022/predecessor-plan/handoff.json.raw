@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "status": "unissued_reviewable_20_source_path_intake_copy_plan_complete",
+  "author": "/root/handover_review",
+  "source_only": true,
+  "plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-manifest-plan.json",
+    "bytes": 378545,
+    "sha256": "E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"
+  },
+  "static_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-plan-static-check.py",
+    "bytes": 14694,
+    "sha256": "F1A2D992481F78196156D788DC93FB6AEE388C3F14DDFEBD885250921AEA3CCF"
+  },
+  "static_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-plan-static-proof.json",
+    "bytes": 27341,
+    "sha256": "91D255E32B48F5E9B7DE2412B2502090CEA2C2C4BC2C309317D648E62BA50B2A",
+    "current_inputs_read": 249,
+    "core_copy_rows": 243,
+    "archive_copy_rows": 223
+  },
+  "checker_exit_code": 0,
+  "source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-buffer-union014-source-peer-acceptance-20261021.json",
+    "bytes": 4491,
+    "sha256": "DCD89661CDA72A4B4003DD4FDF80D443FB166407767D73F07F698473D52C7BAA"
+  },
+  "scope": "Exact accepted Shutdown/Latin1/Buffer twenty-path source union, plus immutable authority and evidence archive mappings, prepared for later Root review after V38 original63 validation.",
+  "core": {
+    "source_rows": 20,
+    "replacements": 8,
+    "source_additions": 12,
+    "physical_archive_rows": 223,
+    "logical_immutable_archive_donors": 248,
+    "core_rows": 243,
+    "separate_manifest_target": "verification/native-shutdown-latin1-buffer-intake-20261021/manifest.json",
+    "core_rows_plus_manifest": 244
+  },
+  "supplemental_current_plan_archive_rows": [
+    {
+      "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/planning/copy-manifest-plan.json.raw",
+      "kind": "immutable_evidence_archive",
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-manifest-plan.json",
+        "bytes": 378545,
+        "sha256": "E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"
+      },
+      "preimage": null
+    },
+    {
+      "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/planning/copy-plan-static-check.py.raw",
+      "kind": "immutable_evidence_archive",
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-plan-static-check.py",
+        "bytes": 14694,
+        "sha256": "F1A2D992481F78196156D788DC93FB6AEE388C3F14DDFEBD885250921AEA3CCF"
+      },
+      "preimage": null
+    },
+    {
+      "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/planning/copy-plan-static-proof.json.raw",
+      "kind": "immutable_evidence_archive",
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-plan-static-proof.json",
+        "bytes": 27341,
+        "sha256": "91D255E32B48F5E9B7DE2412B2502090CEA2C2C4BC2C309317D648E62BA50B2A",
+        "current_inputs_read": 249,
+        "core_copy_rows": 243,
+        "archive_copy_rows": 223
+      },
+      "preimage": null
+    }
+  ],
+  "complete_current_plan_path_count_including_manifest": 247,
+  "complete_current_plan_replacements": 8,
+  "complete_current_plan_new_paths_including_manifest": 239,
+  "self_reference_policy": "The three supplemental rows pin only already sealed plan/checker/proof artifacts. This explanatory handoff is retained at its original evidence path and is not itself a recursive archive row. The actual final manifest is independently serialized, externally pinned, and separately path-aware preflighted before any copy. Later Root intake/execution receipts are future additions requiring an explicit reviewed manifest successor or a later evidence intake.",
+  "dedup_result": {
+    "full_byte_equal_aliases": 25,
+    "bytes_saved": 8879053,
+    "archive_bytes_before_dedup": 39416075,
+    "archive_bytes_after_dedup": 30537022,
+    "historical_snapshot_aliases": 9,
+    "distinct_immutable_inputs_read_by_static_checker": 249
+  },
+  "archive_completeness": {
+    "Shutdown_packet_members": 90,
+    "Buffer_packet_members": 72,
+    "accepted_independent014_inputs": 202,
+    "Root_source_acceptances": 6,
+    "explicit_negative_and_rejected_versions": 12,
+    "all_direct_peer_companions_and_selected_authority_snapshots_mapped": true,
+    "original_sources_and_evidence_retained": true
+  },
+  "bounded_reading_map": [
+    {
+      "field": "source_rows",
+      "purpose": "Twenty exact source/build donor pins and the eight immutable014 preimages; twelve required absences."
+    },
+    {
+      "field": "archive_rows",
+      "purpose": "Every physical immutable copy destination, original logical donor and exact-byte alias. Original packet JSON and scripts remain raw, unchanged and inert."
+    },
+    {
+      "field": "deduplication and coverage",
+      "purpose": "Deterministic exact-byte dedup, complete90/72 inventories, source-proof202 inputs, history and the bounded dependency-archive boundary."
+    },
+    {
+      "field": "retained_negative_and_rejected_versions",
+      "purpose": "Twelve explicitly selected original negative/predecessor versions, with distinct corrected byte versions retained alongside them."
+    },
+    {
+      "field": "source_order_and_scope",
+      "purpose": "Required Transfer-before-Shutdown order, corrected VM/build composition, fatal5059 donors, Error naming and protected MakeCallback preservation."
+    },
+    {
+      "field": "future_admission_requirements and git_byte_preflight",
+      "purpose": "Unissued actual head/validation/process/release/adapter requirements and mandatory whole-set raw/path-aware Git checks, including final manifest."
+    }
+  ],
+  "precise_scope_notes": [
+    "The broader fatal/tracing predecessor manifest records its original source commit and three frozen sources. The selected fatal C/H pair is separately proven byte-identical to raw5059 by accepted independent014/Root receipts. The third clock-diagnostics snapshot is only historical archive data, not a source addition.",
+    "Two historical live clock implementation pins remain explicitly external to this bounded archive; they are not dependencies of the selected fatal C/H source pair and are not among the twenty source targets. Neither is read or copied by the plan check.",
+    "Nine historical toolchain/live-source locations resolve to exact pinned immutable snapshots. The plan makes no assertion about the present bytes at those historical live locations.",
+    "Complete dependency/closure inventories are archived without copying every historical common repository module. New native validation must bind current complete source/dependency inventories independently after an actual intake."
+  ],
+  "observed_source_result": "The accepted independent replay and Root acceptance found no concrete composition blocker or rebase for the twenty source paths at immutable014. This planning check found no missing required immutable donor or archive path collision.",
+  "remaining_actual_requirements": [
+    "Root acceptance of the exact final copy plan and finite intake adapter; no executable intake adapter is supplied or authorized here.",
+    "Observed closure of current V38 original63 BuildQuery and strict runtime, all required original process intervals and current source seals; outcomes remain unknown in this plan.",
+    "Exact actual released Main head, fresh clean-tree/index check, all eight current raw preimages and every new path absence.",
+    "Complete actual Git attribute/filter/encoding and raw/path-aware byte-conversion preflight for all247 current planned paths including the manifest, plus any separately reviewed future rows.",
+    "A distinct exact Root source release, followed by Root-owned intake/staged-blob/commit verification and retained receipts.",
+    "Separate catalog/source graph refresh and fresh native grants for the three new roots;38 declared controls do not predict actual metadata or qualification."
+  ],
+  "Main_accessed": false,
+  "Main_changed": false,
+  "index_accessed": false,
+  "existing_artifacts_changed": false,
+  "intake_adapter_authored": false,
+  "intake_executed": false,
+  "generator_or_candidate_prefix_executed": false,
+  "compiler_or_native_executed": false,
+  "Git_attribute_or_conversion_preflight_executed": false,
+  "configuration_issued": false,
+  "manifest_issued": false,
+  "source_release": false,
+  "runtime_qualified": false,
+  "application_qualified": false
+}

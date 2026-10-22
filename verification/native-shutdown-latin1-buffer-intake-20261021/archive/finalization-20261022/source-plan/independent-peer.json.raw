@@ -1,0 +1,183 @@
+{
+  "schema": 1,
+  "status": "independently_accepted_inert_pending21_Shutdown_descriptor_copy_plan_successor",
+  "reviewer": "/root/handover_review",
+  "source_only": true,
+  "selected_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending21-shutdown-descriptor-copy-plan-successor-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 590893,
+    "sha256": "836BC121159347F7BC68DBF71E97787B59F532D10A95D18DE318370B5F94AFD6"
+  },
+  "author_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending21-shutdown-descriptor-copy-plan-successor-sourceonly-20261022\\handoff.json",
+    "bytes": 26290,
+    "sha256": "C0F22344BFD5AC5D9146243D44E815433E5F66D275CA09E49945D1D393131727"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending21-shutdown-descriptor-copy-plan-successor-sourceonly-20261022\\finite-plan-adaptation.json",
+    "bytes": 83341,
+    "sha256": "05EA1D8E91B9CAC2232B9AA1BFF73C7744B10C4CB8DE63ADE3E6483AA5476896"
+  },
+  "source_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-pending21-shutdown-descriptor-copy-plan-peer-20261022\\source-check.py",
+    "bytes": 25293,
+    "sha256": "EA008FEA57EE5E1230F34F4CDC45B2C59932EB6BFEC27691C32D7F3D59201CCC"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-pending21-shutdown-descriptor-copy-plan-peer-20261022\\source-proof.json",
+    "bytes": 212611,
+    "sha256": "EA7324E2A94E0CA5C7019CE13B201AF4ECDDF043AFF6A0C1F3ECC482ED6B1393"
+  },
+  "source_author": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending21-shutdown-descriptor-copy-plan-successor-sourceonly-20261022\\source-plan-author.py",
+    "bytes": 18208,
+    "sha256": "85D17DD79F423F413487254911429D2A05A04F18A3C4A3B5C986C734DCF4BDB1"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 530121,
+    "sha256": "B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC"
+  },
+  "baseline_root_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-copy-plan-source-acceptance-20261022.json",
+    "bytes": 19222,
+    "sha256": "213E78C874B52119218F70CD162F1C90BAA1B792B86CB3E3E2A6C56EBFA06F28"
+  },
+  "Shutdown_root_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-invalid-descriptor-fixture-source-acceptance-20261022.json",
+    "bytes": 20948,
+    "sha256": "0B59166DB17DE39B2CB8B5A975885E5AEADCDF0900C40E8CECB80387BD6053F7"
+  },
+  "preserved_readout_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending21-shutdown-descriptor-copy-plan-successor-sourceonly-20261022\\initial-readout-key-negative.json",
+    "bytes": 2846,
+    "sha256": "6D6F10472BD39D688CAC080D37F846D9AC308E653BAE744D91DAB3AB28E3286A"
+  },
+  "no_bounded_source_blocker": true,
+  "own_checker_passed_first_run": true,
+  "findings": {
+    "finite": {
+      "operations": 43,
+      "all_intermediate_bytes_and_hashes_reproduced": true,
+      "whole_forward_and_inverse_exact": true,
+      "baseline_raw_bytes_recovered": 530121,
+      "source_donor_replacements": 1,
+      "source_paths_added": 0,
+      "only_changed_source_row_index": 14,
+      "target": "src/native_node_stream_shutdown_test.zig",
+      "old_source_sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85",
+      "new_source_sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F",
+      "expression": {
+        "offset": 5720,
+        "before": "-2",
+        "after": "std.math.maxInt(c_int)"
+      },
+      "whole_source_inverse": true,
+      "all18_names_and_untouched_source_bytes": true,
+      "other20_complete_source_rows_exact": true,
+      "build594A_and_FS_fixtureFD337_exact": true
+    },
+    "inherited_archives": {
+      "old_B490_physical_rows": 302,
+      "old_B490_logical_prefixes": 329,
+      "carried_922C_supplemental_rows": 7,
+      "total_carried_physical_rows": 309,
+      "total_carried_logical_prefixes": 336,
+      "all_previous_physical_destinations_and_prefixes_exact": true,
+      "original11AA_source_retained": true,
+      "all_original_rejected_versions_retained": true
+    },
+    "current_archives": {
+      "core_physical": 333,
+      "core_logical": 361,
+      "new_logical_records": 25,
+      "new_physical_records": 24,
+      "new_full_byte_aliases": 1,
+      "self_proof_supplements": 5,
+      "total_physical": 338,
+      "total_logical": 366,
+      "all_full_byte_aliases": 28,
+      "complete_new_packet_sizes": [
+        9,
+        3,
+        4,
+        3
+      ],
+      "all_packet_members_reenumerated": true,
+      "all_source_and_alias_bytes_rehashed": true,
+      "all19_member_pins_bound_to_actual_authority": true,
+      "all_Source_FS_prior_plan_peers_and_Root_receipts_archived": true,
+      "no_self_handoff_hash_cycle": true
+    },
+    "complete_plan": {
+      "source_paths": 21,
+      "source_replacements": 9,
+      "source_additions": 12,
+      "source_and_archive_rows": 359,
+      "with_manifest": 360,
+      "immutable014_additions": 351,
+      "all_path_and_parent_spellings_checked": true,
+      "all9_immutable014_Git_blob_bytes_and100644_modes_verified": true,
+      "current_source_intake_preflight_not_performed": true
+    },
+    "inputs": {
+      "current_distinct_evidence_versions": 371,
+      "author_recorded_versions_rehashed": 362,
+      "unchanged_immutable_Git_preimage_count": 9
+    },
+    "scope": {
+      "Transfer_must_precede_Shutdown": true,
+      "Transfer_Shutdown_commutation_claimed": false,
+      "Error_naming_unchanged": true,
+      "three_new_roots_source_declarations": 38,
+      "actual_future_metadata": null,
+      "actual_future_runtime": null,
+      "full_CustomBuffer_listener_excluded": true,
+      "pending_runtime_template_identity_excluded": true,
+      "all_historical_unknowns_and_byte_preflight_contract_retained": true,
+      "old_negative_counts": {
+        "attempted_groups": 17,
+        "completed": 321,
+        "passed": 320,
+        "failed": 1,
+        "unstarted_tests": 964
+      },
+      "no_original_runtime_promotion": true
+    }
+  },
+  "post_plan_external_archive_observation": {
+    "root_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-acceptance-20261022.json",
+      "bytes": 4745,
+      "sha256": "FE26DA5FC688601E1403DB77D67FFA8633B29F107D94DE376A96A7AE7A2CBCA7"
+    },
+    "before_head": "014062f2d139254acab4b985b4ae343db637166f",
+    "after_head": "e65c636b8600d351920cff88aa31c9f804d5f0b9",
+    "complete_commit_parents": [
+      "014062f2d139254acab4b985b4ae343db637166f"
+    ],
+    "Root_reported_committed_paths": 1931,
+    "source_build_paths": 0,
+    "Root_acceptance_read_and_rehashed": true,
+    "independent_current_Main_query_performed": false,
+    "sealed_plan_and_handoff_historical_nulls_not_modified": true
+  },
+  "remaining_final_intake_work": [
+    "Keep 836B and C0F2 immutable. A distinct final manifest must bind the observed e65 archive commit, exact Root archive acceptance and actual control receipts.",
+    "Append separately pinned current handoff, this peer/checker/proof, Root plan acceptance and any final review records as explicit .raw rows; recount physical paths and logical aliases after byte dedup.",
+    "Bind the strengthened adapter only to the separately reviewed final manifest and actually released source head; no authority arises from this peer.",
+    "Before any write, perform every current preimage/absence/mode, donor/alias, canonical path, five-attribute/config-origin and raw/path-aware Git byte gate, including the final manifest.",
+    "Retain complete post-copy, index, committed-byte/mode/OID, full-parent and final clean-state checks.",
+    "Future V39 catalog, metadata and runtime evidence must derive from the actual source intake; no V38 runtime results transfer to that source."
+  ],
+  "candidate_or_prefix_executed": false,
+  "adapter_executed": false,
+  "Main_or_index_accessed": false,
+  "source_intake_authorized": false,
+  "configuration_issued": false,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "runtime_qualification": false,
+  "application_qualified": false,
+  "reviewed_utc": "2026-10-22T15:06:33.419920+00:00"
+}

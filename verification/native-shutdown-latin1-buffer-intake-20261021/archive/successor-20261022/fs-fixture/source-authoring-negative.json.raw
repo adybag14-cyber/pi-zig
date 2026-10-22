@@ -1,0 +1,17 @@
+{
+  "status": "preserved_source_authoring_negative",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\projected\\src\\native_node_fs_request_owner_test.zig",
+    "bytes": 57499,
+    "sha256": "AC46016E60CCCAAAC03A19C9852708B758BA2CA0A69858CBB5FD408AE87E4375"
+  },
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\proposal.json",
+    "bytes": 5200,
+    "sha256": "CC5EF57CD091051AC373A6351515BF6EB1F5893CFAA896D2E2181CEBADC208E2"
+  },
+  "finding": "The initial textual hunk ended at expectPromiseInt rather than waitQueued and inadvertently removed the adjacent waitQueued helper. Detected by full hunk source read before any execution or release.",
+  "selected_for_intake": false,
+  "candidate_executed": false,
+  "correction": "Restore the exact adjacent waitQueued helper bytes and bind the selected whole-file projection to only pumpPending replacement. All original negative bytes remain unchanged."
+}

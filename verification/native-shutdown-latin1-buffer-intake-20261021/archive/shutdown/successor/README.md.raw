@@ -1,0 +1,9 @@
+# Selected two-expression C successor
+
+Use successor/proposal.json (11FA3C23) after the immutable shared/proposal.json (C58D3183). The selected QuickJS C is successor/projected/vendor/quickjs/quickjs.c, SHA BC772BEE8794ADBD59385DA98F037310730704DFB9D251EA258862B1C887E454. QuickJS H and the other six shared outputs are unchanged.
+
+Independent SDK source review found two real parameter mismatches in the original primitive before execution or Main intake. The first passed JSContext* to js_empty_string(JSRuntime*) and is corrected to ctx->rt. The second passed uint8_t* to the private const char* allocator parameter and now uses an explicit cast. The existing int length conversion remains guarded by JS_STRING_LEN_MAX. Each fix is one exact expression; their complete inverse recovers the preserved original C.
+
+All six new owners, three control/support files, 26 control names/assertions, and build2B7888 remain unchanged. Source-map2B78DFAA remains the preserved original mapping; source-map-successor.json adds the concrete private-helper signature/body binding and selects the corrected C. The selected closure is successor/dependency-inventory.json (B141BD5D) plus successor/closure-and-preservation.json (A9E33FF2), reproduced by source-audit.py/source-proof.json (098091FB).
+
+The earlier closure, map, scripts and README remain immutable predecessor evidence. No compiler, preprocessor, native image, reference Node, or project generator was executed, and no production or Main file was changed by either projection.

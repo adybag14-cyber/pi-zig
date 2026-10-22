@@ -1,0 +1,84 @@
+{
+  "schema": "native-view-data-latin1-composition-v1",
+  "source_only": true,
+  "native_compiler_execution": false,
+  "main_or_existing_source_mutated": false,
+  "raw_buffer_vm_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\proposal.json",
+    "bytes": 5935,
+    "sha256": "8F6E77DD9DABDB0112B43139A0EEB56FCF0653C5A040834C23AF40E4DBC48874"
+  },
+  "module_shutdown_shared_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\proposal.json",
+    "bytes": 38226,
+    "sha256": "C58D31835CCE099D8C99BF7432CE4B0B2FAA83186857EA46EDFC55CEB3542A41"
+  },
+  "selected_scope": "Only the two immutable Latin-1 QuickJS C/H edits from Module C58D3183 compose here. This is not acceptance of the five non-VM Shutdown deltas or their old SDK AsyncWrap whole-file basis.",
+  "basis": "Accepted native Error constructor VM C5C746837/H7FBD8411. Both proposals preserve all those predecessor bytes outside their respective insertions.",
+  "files": [
+    {
+      "relative_path": "vendor/quickjs/quickjs.c",
+      "common_predecessor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "raw_buffer_projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404353,
+        "sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003"
+      },
+      "module_latin1_projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403712,
+        "sha256": "2AEE7EA130CCF08282928A9FDA056B444CF0905E8C53F1EFD520E8243F9C37B4"
+      },
+      "combined": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\combined-with-latin1\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404860,
+        "sha256": "C3E33541892A551896118DD2007B1E80A229B54CD2CD9677F075A1CB44EBCFF5"
+      },
+      "both_forward_orders_identical": true,
+      "both_complete_inverse_orders_exact": true,
+      "raw_buffer_edit_count": 1,
+      "latin1_edit_count": 1
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.h",
+      "common_predecessor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114656,
+        "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+      },
+      "raw_buffer_projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 115180,
+        "sha256": "9F63BF26C91440A8C9B3D5F1FF06AB387D6E76630ADEC6D4CAA745179DB46978"
+      },
+      "module_latin1_projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114822,
+        "sha256": "4728F93F8CC0D51FB6066E31502BE87920FE7B395BB57DED6D4E80BD1543222C"
+      },
+      "combined": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\combined-with-latin1\\vendor\\quickjs\\quickjs.h",
+        "bytes": 115346,
+        "sha256": "05AA4DF250CB642536077C5DF80C08C92C1C40BAA347C18140AFB577B583B0EB"
+      },
+      "both_forward_orders_identical": true,
+      "both_complete_inverse_orders_exact": true,
+      "raw_buffer_edit_count": 1,
+      "latin1_edit_count": 1
+    }
+  ],
+  "file_count": 2,
+  "combined_edit_count": 4,
+  "all_per_proposal_intermediate_hashes_verified": true,
+  "both_forward_orders_identical": true,
+  "both_complete_inverse_orders_exact": true,
+  "limits": [
+    "Source byte composition does not establish compiler or native behavior.",
+    "Raw Latin-1 allocation and raw Buffer address access remain lower-level primitives; Node fatal/brand policy belongs to their actual native callers.",
+    "No installed CustomBuffer listener, complete FileHandle methods/template, cross-thread borrowed pointer lease, or shutdown bootstrap is implied."
+  ]
+}

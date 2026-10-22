@@ -1,0 +1,33 @@
+{
+  "status": "preserved_static_checker_range_negative",
+  "source_only": true,
+  "candidate_unchanged": true,
+  "candidate_executed": false,
+  "observed": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\static-source-check.py\", line 114, in <module>\r\n    for a,z in rs:excerpt(p,b,a,z)\r\n                  ~~~~~~~^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\static-source-check.py\", line 34, in excerpt\r\n    assert len(ls)>=z\r\n           ^^^^^^^^^^\r\nAssertionError",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\static-source-check.py\", line 114, in <module>\r\n    for a,z in rs:excerpt(p,b,a,z)\r\n                  ~~~~~~~^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\static-source-check.py\", line 34, in excerpt\r\n    assert len(ls)>=z\r\n           ^^^^^^^^^^\r\nAssertionError\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "finding": "Two mapped final-line endpoints included the nonexistent trailing empty split line. Correct endpoints are Boundary line 164 and Operation Scope line 92; candidate bytes and all source gates remain unchanged.",
+  "edits": [
+    {
+      "before": "'src/extensions/native_node_commonjs_owned_boundary.zig':[(12,20),(78,85),(115,165)]",
+      "after": "'src/extensions/native_node_commonjs_owned_boundary.zig':[(12,20),(78,85),(115,164)]"
+    },
+    {
+      "before": "'src/extensions/native_node_operation_scope.zig':[(7,14),(89,93)]",
+      "after": "'src/extensions/native_node_operation_scope.zig':[(7,14),(89,92)]"
+    }
+  ],
+  "whole_inverse": true
+}

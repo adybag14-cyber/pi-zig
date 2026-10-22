@@ -1,0 +1,64 @@
+{
+  "edits": [
+    {
+      "old": "root_ids={ident(r) for r in root_authorities}",
+      "new": "root_ids={ident(r) for r in root_authorities}\naccepted_document_ids=root_ids|prior_input_ids\nreview_companion_sites=[\n (W/\"verification/native-vm-view-data-independent-peer-20261020/peer.json\",\"$.independent_companions[0]\"),\n (W/\"verification/native-vm-view-data-independent-peer-20261020/peer.json\",\"$.independent_companions[2]\"),\n (R/\"worktrees/sdk-owners-resume-20261018/verification/native-node-shutdown-sdk-peer-sourceonly-20261020/peer.json\",\"$.original_negative\")]\nfor parent,reference in review_companion_sites:\n    assert norm(parent) in cache\n    row=getref(json.loads(cache[norm(parent)]),reference)\n    assert ident(row) in logical\n    accepted_document_ids.add(ident(row))"
+    },
+    {
+      "old": "elif site[\"from\"]==\"Root/peer accepted document\":assert site[\"ref\"]==\"document\" and ident(d[\"donor\"]) in root_ids",
+      "new": "elif site[\"from\"]==\"Root/peer accepted document\":assert site[\"ref\"]==\"document\" and ident(d[\"donor\"]) in accepted_document_ids"
+    }
+  ],
+  "failed_run": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\source-audit-v2.py\", line 159, in <module>\r\n    elif site[\"from\"]==\"Root/peer accepted document\":assert site[\"ref\"]==\"document\" and ident(d[\"donor\"]) in root_ids\r\n                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 2,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\source-audit-v2.py\", line 159, in <module>\r\n    elif site[\"from\"]==\"Root/peer accepted document\":assert site[\"ref\"]==\"document\" and ident(d[\"donor\"]) in root_ids\r\n                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "source_binding_observation": {
+    "ok": true,
+    "summary": "Ran python directly in the Windows host devbox.",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      },
+      "output": {
+        "mode": "tail",
+        "max_chars": 7000,
+        "max_lines": 0,
+        "stdout_original_chars": 4027,
+        "stderr_original_chars": 0,
+        "stdout_capture_truncated": false,
+        "stderr_capture_truncated": false
+      }
+    },
+    "stdout": "{\"pin\": {\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\evidence\\\\native-error-build-artifact-naming-sourceonly-20261020\\\\proposal.json\", \"bytes\": 12811, \"sha256\": \"262AFAA489DC7620FECE7D077FCB1C7A4904E6B65BC420A8A697B6C2341A158A\"}, \"prior_replay_input\": true}\r\n{\"pin\": {\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018\\\\verification\\\\native-vm-view-data-independent-peer-20261020\\\\build-successor-audit.json\", \"bytes\": 15638, \"sha256\": \"0E5C1B420FA8096B08D65BB162CD05D26132D200E920E1DEEC758C9A20D93D0F\"}, \"prior_replay_input\": false}\r\n{\"pin\": {\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018\\\\verification\\\\native-vm-view-data-independent-peer-20261020\\\\source-audit.json\", \"bytes\": 20684, \"sha256\": \"E7F8CA48D5DD2B5B70C76B112A34503A8411807942C72E81AB0226578D7B8F26\"}, \"prior_replay_input\": false}\r\n{\"pin\": {\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\sdk-owners-resume-20261018\\\\verification\\\\native-node-shutdown-sdk-peer-sourceonly-20261020\\\\predecessor-latin1-source-negative.json\", \"bytes\": 6418, \"sha256\": \"5D95C40F4F21DF511E0F929912B385EBA0875A9F78EAD65EEDAE569252984243\"}, \"prior_replay_input\": false}\r\n{\"pin\": {\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\evidence\\\\root-shutdown-latin1-buffer-union014-source-peer-acceptance-20261021.json\", \"bytes\": 4491, \"sha256\": \"DCD89661CDA72A4B4003DD4FDF80D443FB166407767D73F07F698473D52C7BAA\"}, \"prior_replay_input\": false}\r\n{\"pin\": {\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018\\\\verification\\\\native-node-shutdown-current-head-composition-20261020\\\\manifest.json\", \"bytes\": 2311, \"sha256\": \"FC336DF8621E56CC2FFB053A5F6BFC1AF2D01A9348A28099DE82A2D9A741776D\"}, \"prior_replay_input\": true}\r\n{\"from\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018\\\\verification\\\\native-vm-view-data-independent-peer-20261020\\\\build-successor-audit.json\", \"ref\": \"$.original_production_control_review\", \"pin\": {\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018\\\\verification\\\\native-vm-view-data-independent-peer-20261020\\\\source-audit.json\", \"bytes\": 20684, \"sha256\": \"E7F8CA48D5DD2B5B70C76B112A34503A8411807942C72E81AB0226578D7B8F26\"}}\r\n{\"from\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018\\\\verification\\\\native-vm-view-data-independent-peer-20261020\\\\peer.json\", \"ref\": \"$.independent_companions[0]\", \"pin\": {\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018\\\\verification\\\\native-vm-view-data-independent-peer-20261020\\\\build-successor-audit.json\", \"bytes\": 15638, \"sha256\": \"0E5C1B420FA8096B08D65BB162CD05D26132D200E920E1DEEC758C9A20D93D0F\"}}\r\n{\"from\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018\\\\verification\\\\native-vm-view-data-independent-peer-20261020\\\\peer.json\", \"ref\": \"$.independent_companions[2]\", \"pin\": {\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018\\\\verification\\\\native-vm-view-data-independent-peer-20261020\\\\source-audit.json\", \"bytes\": 20684, \"sha256\": \"E7F8CA48D5DD2B5B70C76B112A34503A8411807942C72E81AB0226578D7B8F26\"}}\r\n{\"from\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\sdk-owners-resume-20261018\\\\verification\\\\native-node-shutdown-sdk-peer-sourceonly-20261020\\\\independent-source-replay.json\", \"ref\": \"$.original_source_negative\", \"pin\": {\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\sdk-owners-resume-20261018\\\\verification\\\\native-node-shutdown-sdk-peer-sourceonly-20261020\\\\predecessor-latin1-source-negative.json\", \"bytes\": 6418, \"sha256\": \"5D95C40F4F21DF511E0F929912B385EBA0875A9F78EAD65EEDAE569252984243\"}}\r\n{\"from\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\sdk-owners-resume-20261018\\\\verification\\\\native-node-shutdown-sdk-peer-sourceonly-20261020\\\\peer.json\", \"ref\": \"$.original_negative\", \"pin\": {\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\sdk-owners-resume-20261018\\\\verification\\\\native-node-shutdown-sdk-peer-sourceonly-20261020\\\\predecessor-latin1-source-negative.json\", \"bytes\": 6418, \"sha256\": \"5D95C40F4F21DF511E0F929912B385EBA0875A9F78EAD65EEDAE569252984243\"}}\r\n",
+    "exitCode": 0,
+    "truncated": false
+  },
+  "status": "preserved_checker_label_selector_negative",
+  "cause": "The Root/peer accepted document label denotes six directly accepted documents, not the distinct six Root acceptance receipts. Preserve the latter check; bind the former to prior replay inputs, exact Root acceptance, and three exact pinned semantic peer companion fields.",
+  "original_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\source-audit-v2.py",
+    "bytes": 18192,
+    "sha256": "D6FDD1595669106B408AAC529B9EB308215C0955F358A2438A31BC2A051AEBBE"
+  },
+  "successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending20-copy-plan-independent-peer-20261021\\source-audit-v3.py",
+    "bytes": 18845,
+    "sha256": "6E421DD5F6B9BBA85BBAAB2E21F8DA3B83B6BDBF9326033CE14F8910BD24AB38"
+  },
+  "complete_raw_inverse": true,
+  "target_plan_unchanged": true,
+  "Main_accessed": false
+}

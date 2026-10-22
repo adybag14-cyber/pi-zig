@@ -1,0 +1,88 @@
+from pathlib import Path
+import json,hashlib,subprocess
+P=Path(r'C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018\verification\native-node-shutdown-wrap-sourceonly-20261020')
+OUT=Path(r'C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018\verification\native-node-shutdown-sdk-peer-sourceonly-20261020')
+def sha(b): return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ p=Path(p);b=p.read_bytes();return {'path':str(p),'bytes':len(b),'sha256':sha(b)}
+def checked(row):
+ p=Path(row['path']);b=p.read_bytes()
+ assert len(b)==row['bytes'] and sha(b)==row['sha256'].upper(),str(p)
+ return b
+def js(p): return json.loads(Path(p).read_text(encoding='utf-8'))
+m=js(P/'production-proposal.json')
+assert pin(P/'production-proposal.json')['sha256']=='C75EDD403EA03303A55CF64C903F2193EA74CBFAE843196DA7096C8AC3A7CAA0'
+source=(P/'source-audit.py').read_text(encoding='utf-8')
+marker='# Sole output write: a new immutable source-only proof.'
+assert source.count(marker)==1
+ns={}
+exec(compile(source.split(marker)[0],str(P/'source-audit.py')+' [reviewed read-only prefix]','exec'),ns)
+proof=(json.dumps(ns['proof'],indent=2)+'\n').encode()
+assert proof==(P/'source-proof.json').read_bytes()
+inventory=m['inventory']
+assert len(inventory)==90
+assert sha(json.dumps(inventory,sort_keys=True,separators=(',',':')).encode())==m['inventory_sha256']
+print(json.dumps({'inventory_first':inventory[0]}))
+for row in inventory:
+ b=(P/row['relative_path']).read_bytes()
+ assert len(b)==row['bytes'] and sha(b)==row['sha256'],row['relative_path']
+# Independent sequential intermediate-hash replay, then exact whole inverses.
+shared=js(P/'shared/proposal.json'); details=[]
+for row in shared['files']:
+ raw=checked(row['original']);cur=raw;edits=[e for e in shared['edits'] if e['path']==row['relative_path']]
+ for e in edits:
+  assert sha(cur)==e['before_sha256'],row['relative_path']
+  a=e['before'].encode();b=e['after'].encode();assert cur.count(a)==1
+  cur=cur.replace(a,b,1);assert sha(cur)==e['after_sha256']
+ assert cur==checked(row['projected'])
+ for e in reversed(edits):
+  a=e['after'].encode();b=e['before'].encode();assert cur.count(a)==1
+  cur=cur.replace(a,b,1)
+ assert cur==raw
+ details.append({'path':row['relative_path'],'edits':len(edits),'intermediate_hashes_and_full_inverse':True})
+succ=js(P/'successor/proposal.json');cur=checked(succ['original']);orig=cur
+for e in succ['edits']:
+ assert sha(cur)==e['input_sha256'];a=e['before'].encode();b=e['after'].encode()
+ assert cur.count(a)==1 and cur.index(a)==e['offset'];cur=cur.replace(a,b,1)
+ assert sha(cur)==e['output_sha256']
+assert cur==checked(succ['projected'])
+for e in reversed(succ['edits']):
+ a=e['after'].encode();b=e['before'].encode();assert cur.count(a)==1;cur=cur.replace(a,b,1)
+assert cur==orig
+add=js(P/'source-map-successor.json');bindings=[]
+for row in add['bindings']:
+ b=checked(row['file']);part=b''.join(b.splitlines(keepends=True)[row['start_line']-1:row['end_line']])
+ assert len(part)==row['bytes'] and sha(part)==row['sha256'] and part.decode('utf-8')==row['text']
+ bindings.append({'file_sha256':row['file']['sha256'],'start_line':row['start_line'],'end_line':row['end_line'],'sha256':sha(part)})
+selected=[]
+for row in m['source_build_paths']:
+ checked(row['selected'])
+ if row['selected_preimage'] is not None: checked(row['selected_preimage'])
+ selected.append({'relative_path':row['relative_path'],'selected':row['selected']})
+assert len(selected)==17
+raw=checked(succ['projected']).decode('utf-8')
+helper=ns['body'](raw,'JS_PiNewStringLatin1')
+assert helper.index('len > JS_STRING_LEN_MAX') < helper.index('(int)len')
+assert '#define JS_STRING_LEN_MAX ((1 << 30) - 1)' in raw and (1<<30)-1 < (1<<31)-1
+assert 'static JSValue js_new_string8_len(JSContext *ctx, const char *buf, int len)' in raw
+result={
+ 'schema':'pi-zig.sdk-independent-shutdown-latin1-source-replay.v1',
+ 'manifest':pin(P/'production-proposal.json'),'original_source_negative':pin(OUT/'predecessor-latin1-source-negative.json'),
+ 'selected_successor':pin(P/'successor/proposal.json'),'selected_c':succ['projected'],
+ 'full_read_only_prefixes':{'closure':pin(P/'successor/prepare-closure.py'),'source_audit':pin(P/'source-audit.py'),'source_proof_reproduced_exact':pin(P/'source-proof.json')},
+ 'closure_outputs_reproduced_exact':[pin(P/'successor/dependency-inventory.json'),pin(P/'successor/closure-and-preservation.json')],
+ 'manifest_inventory_rows_verified':len(inventory),'manifest_inventory_sha256':m['inventory_sha256'],
+ 'original_shared_sequential_replays':details,'original_edit_count':len(shared['edits']),'successor_edits':len(succ['edits']),
+ 'whole_forward_inverse_exact':True,'all_intermediate_hashes_exact':True,'helper_signature_bindings':bindings,
+ 'length_cast_bound':{'maximum_admitted':(1<<30)-1,'selected_int_max':(1<<31)-1,'guard_precedes_cast':True},
+ 'selected_source_build_paths':selected,
+ 'conservative_module_union':ns['proof']['conservative_module_union'],'conservative_embed_union':ns['proof']['conservative_embed_union'],
+ 'selected_dependency_entries':ns['proof']['dependency_inventory_entries_reproduced'],
+ 'mapped_original_excerpts':ns['proof']['original_excerpt_count'],
+ 'declared_source_controls':26,'future_actual_metadata':None,
+ 'preservation_counts':ns['proof']['preservation_reproduced'],
+ 'source_only':True,'Main_edited':False,'module_source_edited':False,'compiler_native_reference_generator_executed':False,'runtime_qualified':False}
+target=OUT/'independent-source-replay.json'
+with target.open('xb') as f:f.write((json.dumps(result,indent=2)+'\n').encode())
+print(json.dumps(pin(target)))
+print(json.dumps({k:result[k] for k in ['original_edit_count','successor_edits','manifest_inventory_rows_verified','conservative_module_union','conservative_embed_union','selected_dependency_entries','mapped_original_excerpts','preservation_counts']}))

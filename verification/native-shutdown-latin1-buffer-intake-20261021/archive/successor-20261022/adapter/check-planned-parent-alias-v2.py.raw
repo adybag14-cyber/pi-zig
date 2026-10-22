@@ -1,0 +1,65 @@
+"""Static accounting of the independently reported planned-parent alias correction. No target evaluation."""
+from pathlib import Path
+import ast,hashlib,json
+D=Path("C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022")
+I=json.loads(r'''{"baseline":{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py","bytes":9719,"sha256":"56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"},"original":{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py","bytes":23554,"sha256":"1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010","lines":373,"complete":true,"AST_parse_only":true,"candidate_executed":false},"selected":{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py","bytes":23634,"sha256":"8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985"},"prior_finite":{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\finite-source-adaptation.json","bytes":56895,"sha256":"2E657192C7DF2B8216D128E82C7AB47E57ECD0AB43FCDD2327E8F83C32A69A69"},"prior_proof":{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\static-source-proof.json","bytes":9915,"sha256":"7B4C2D3F56451498C790AD655C8864FCE0CB582676E857F430E0FEF3FCB53804"},"prior_handoff":{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\handoff.json","bytes":9923,"sha256":"45623F0F2BDA1E5333DE7FB9F7005F971D13FC1F9FBAF903D147020684CD9B53"}}''')
+E=json.loads(r'''{"offset":13136,"before":"for row in allrows:\n rel=target_name(row[\"target\"]);no_reparse_target(rel)\n assert row[\"mode\"] in (\"100644\",\"100755\"),(rel,row[\"mode\"])\n parts=rel.split(\"/\")\n for depth in range(1,len(parts)+1):\n  value=\"/\".join(parts[:depth]);key=value.casefold()\n  assert key not in existing_spelling or existing_spelling[key]==value,(\"target_existing_case_alias\",value)\n target=inside(MAIN/rel,MAIN); donor=inside(row[\"source\"],ROOT)\n","after":"planned_spelling=dict(existing_spelling)\nfor row in allrows:\n rel=target_name(row[\"target\"]);no_reparse_target(rel)\n assert row[\"mode\"] in (\"100644\",\"100755\"),(rel,row[\"mode\"])\n parts=rel.split(\"/\")\n for depth in range(1,len(parts)+1):\n  value=\"/\".join(parts[:depth]);key=value.casefold()\n  assert key not in planned_spelling or planned_spelling[key]==value,(\"target_existing_or_planned_case_alias\",value)\n  planned_spelling[key]=value\n target=inside(MAIN/rel,MAIN); donor=inside(row[\"source\"],ROOT)\n"}''')
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(x):
+ b=Path(x["path"]).read_bytes();assert len(b)==x["bytes"] and sha(b)==x["sha256"],x
+ return b
+def new(name,v):
+ p=D/name;assert not p.exists(),str(p);b=(json.dumps(v,indent=2)+"\n").encode()
+ with p.open("xb")as f:f.write(b)
+ assert p.read_bytes()==b
+ return {"path":str(p),"bytes":len(b),"sha256":sha(b)}
+base=pin(I["baseline"]);old=pin(I["original"]);selected=pin(I["selected"])
+prior=json.loads(pin(I["prior_finite"]));pin(I["prior_proof"]);pin(I["prior_handoff"])
+cur=base
+for s in prior["steps"]:
+ assert sha(cur)==s["intermediate_before_sha256"]
+ a=s["before_utf8"].encode();b=s["after_utf8"].encode();at=s["current_offset_bytes"]
+ assert cur[at:at+len(a)]==a;cur=cur[:at]+b+cur[at+len(a):]
+ assert sha(cur)==s["intermediate_after_sha256"]
+assert cur==old
+at=len(old.decode()[:E["offset"]].encode());a=E["before"].encode();b=E["after"].encode()
+assert old.count(a)==1 and old[at:at+len(a)]==a
+assert old[:at]+b+old[at+len(a):]==selected
+assert selected[:at]+a+selected[at+len(b):]==old
+for s in reversed(prior["steps"]):
+ a0=s["before_utf8"].encode();b0=s["after_utf8"].encode();p=s["current_offset_bytes"]
+ assert cur[p:p+len(b0)]==b0;cur=cur[:p]+a0+cur[p+len(b0):]
+ assert sha(cur)==s["intermediate_before_sha256"]
+assert cur==base
+def helpers(raw):
+ tree=ast.parse(raw.decode());lines=raw.splitlines(keepends=True)
+ return {n.name:b"".join(lines[n.lineno-1:n.end_lineno])for n in tree.body if isinstance(n,ast.FunctionDef)}
+h0=helpers(old);h1=helpers(selected);assert h0==h1 and len(h1)==22
+hb=helpers(base);assert len(hb)==11 and all(h1[k]==v for k,v in hb.items())
+text=selected.decode()
+assert text.count("planned_spelling=dict(existing_spelling)")==1
+assert text.count("planned_spelling[key]=value")==1
+assert 'rel.casefold() not in existing_spelling' in text
+assert text.index("planned_spelling=dict(existing_spelling)")<text.index('logical_aliases=manifest["logical_donor_aliases"]')<text.index('Main_or_index_writes_started=True')
+finding=new("original-planned-parent-alias-source-finding.json",{
+ "schema":1,"status":"preserved_independent_source_review_finding","reviewer":"/root/sdk_environment_port",
+ "original_source":I["original"],"finding":"Committed-path prefixes were checked but newly planned prefixes were not added to that map before copying.",
+ "counterexample_paths":["verification/Foo/a.raw","verification/foo/b.raw"],
+ "premise":"The shared parent does not already appear in committed paths. Full target names differ, yet their parent spelling aliases on Windows.",
+ "candidate_or_prefix_executed":False,"Main_accessed":False,"original_preserved":True})
+adapt=new("planned-parent-alias-v2-finite-adaptation.json",{
+ "schema":1,"status":"source_only_one_hunk_strengthening","finding":finding,"original":I["original"],"selected":I["selected"],
+ "prior_finite":I["prior_finite"],"step_count":1,"steps":[{"offset_bytes":at,"before_utf8":E["before"],"after_utf8":E["after"],
+ "before_bytes":len(a),"after_bytes":len(b),"input_sha256":sha(old),"output_sha256":sha(selected),
+ "untouched_prefix_sha256":sha(old[:at]),"untouched_suffix_sha256":sha(old[at+len(a):])}],
+ "whole_forward_exact":True,"whole_inverse_exact":True,"complete_inverse_to_56DE":True,
+ "all22_helper_bodies_unchanged":True,"committed_spelling_absence_gate_preserved":True,"candidate_or_prefix_executed":False})
+proof=new("planned-parent-alias-v2-static-proof.json",{
+ "schema":1,"status":"passed_static_v2_source_accounting","inputs":I,
+ "checker":{"path":str(Path(__file__)),"bytes":len(Path(__file__).read_bytes()),"sha256":sha(Path(__file__).read_bytes())},
+ "finding":finding,"adaptation":adapt,"prior20_steps_replayed":True,"one_v2_step_replayed":True,"complete_raw_inverse_to_56DE":True,
+ "all22_helpers_equal":[{"name":k,"bytes":len(v),"sha256":sha(v)}for k,v in h1.items()],
+ "new_gate":"All existing and planned target-prefix spellings must agree before donor/attribute preflight completes; original existing-only absence inventory is unchanged.",
+ "no_candidate_evaluation":True,"Main_accessed":False,"index_accessed":False,"native_executed":False,
+ "unresolved_future_release_bindings_retained":True})
+print(json.dumps({"finding":finding,"adaptation":adapt,"proof":proof}))

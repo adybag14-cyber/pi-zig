@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "status": "root_accepted_pending20_source_replay_on_immutable014",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-21T15:39:01.711685+00:00",
+  "reviewed_immutable_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-union014-source-peer-20261021\\peer.json",
+    "bytes": 9106,
+    "sha256": "19603E22021A2CFC8B980A63BEDD3B9DD8924458C6038577B0BC0A686EF32688"
+  },
+  "fully_read_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-union014-source-peer-20261021\\source-check.py",
+    "bytes": 23490,
+    "sha256": "EF781D4B1F189F686DC3C283F19B38D7E0EAF291E773A0628A1563C548BCB7B3"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-union014-source-peer-20261021\\source-proof.json",
+    "bytes": 242053,
+    "sha256": "10E00AB52375D9CE323860CCA2A571E8AFAF18E701219920C06E91A7C23107BF"
+  },
+  "original_paused_record": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-source-intake-20261020\\paused-resolved-inputs.json",
+    "bytes": 14121,
+    "sha256": "83F392D93DB3E4EC59721BD728275B0A9312EF97261E30939FB2E43EDC95C48E"
+  },
+  "original_Root_acceptances": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-source-review-20261020.json",
+      "bytes": 6030,
+      "sha256": "77DBEF1F44375E4E8A4F940DE59AC090D07DC161D16633D6A72488104FBC927F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-current-head-composition-acceptance-20261020.json",
+      "bytes": 2278,
+      "sha256": "62B6827BCE020C20E43A53375CA8F486B9C7219348923FEF3A851E3B574652FF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-buffer-address-source-review-20261020.json",
+      "bytes": 3388,
+      "sha256": "528D22E46B8A6CC0C5CE9B2A4523C3ED277B73E23B9865FF619F892665C93E3B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-buffer-build-naming-source-review-20261020.json",
+      "bytes": 1582,
+      "sha256": "22E9F7646E633104550458352AA5BE26628B8C02548469CC6AFAC910D1325567"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-buffer-address-and-build-peer-acceptance-20261020.json",
+      "bytes": 3728,
+      "sha256": "039A2C66937952360B243CC4129993C9C9DEFF5667CE28F24C06B00EE76A8490"
+    }
+  ],
+  "source_paths": 20,
+  "replacements": 8,
+  "new_paths": 12,
+  "immutable_inputs_rehashed": 202,
+  "Git_blobs_rehashed": 16,
+  "complete_forward_reverse_sequences": 36,
+  "total_replayed_steps": 88,
+  "all_twenty_raw_donors_and_eight_preimages_verified": true,
+  "twelve_paths_absent_at_immutable_head": true,
+  "Transfer_before_Shutdown_order_preserved": true,
+  "VM_and_Buffer_Shutdown_compositions_exact": true,
+  "declared_new_controls": 38,
+  "actual_future_metadata_count": null,
+  "source_composition_accepted": true,
+  "remaining": [
+    "Seal a distinct final source/evidence manifest for the actual Root-released head, with the eight exact replacement preimages and twelve required absences.",
+    "Choose and deduplicate immutable proof and authority archive destinations, preserving rejected predecessors and using raw suffixes wherever Git conversion could alter their bytes.",
+    "Review the exact finite intake adapter and perform the Git attribute/filter/encoding byte preflight for every final donor, including the manifest, before source or index writes.",
+    "After current V38 validation closure, Root must separately authorize and perform the exact intake.",
+    "Refresh complete source/dependency/catalog bindings for the three new roots and perform separately authorized fresh native validation; all future actual metadata remains unknown."
+  ],
+  "scope_limits": [
+    "This review independently replays the finite raw source changes, compositions, immutable preimages and required local prerequisites from already accepted packets.",
+    "Full StreamBase/FileHandle publication, production tracing/hook bootstrap and inherited platform/library qualification remain separately scoped work.",
+    "Current V38 native results do not qualify this pending union."
+  ],
+  "explicitly_excluded": [
+    "pending runtime template identity",
+    "full CustomBuffer listener"
+  ],
+  "intake_manifest_issued": false,
+  "source_mutation_hold_released": false,
+  "native_execution_authorized": false,
+  "product_qualification": false
+}

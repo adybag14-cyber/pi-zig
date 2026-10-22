@@ -1,0 +1,195 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "native_or_compiler_executed": false,
+  "scope": "Source predicate projection for the original immediate-crash sequences and logging build modes; no C/C++ preprocessing or target qualification.",
+  "source_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "authority": [
+    {
+      "path": "authority/deps__v8__include__v8config.h",
+      "bytes": 35211,
+      "sha256": "7454D35A34B52B23A50F9EF2742DC0C57025CD9EB1F85C27B7618FE2B269BACF",
+      "selected_lines": [
+        "97-181: native OS detection",
+        "359-486: clang/GNU/MSVC detection",
+        "818-858: native host architecture detection"
+      ]
+    },
+    {
+      "path": "authority/deps__v8__src__base__build_config.h",
+      "bytes": 3770,
+      "sha256": "9D8E16FB6A11064851500CC89592B91397F42B14CC15A9B496B1C2F4FDE420F6",
+      "finding": "Full body read. Includes v8config.h and derives ARM instruction/JIT/page-size constants; it does not redefine the compiler or host-architecture predicates selected by immediate-crash.h."
+    },
+    {
+      "path": "authority/deps__v8__src__base__immediate-crash.h",
+      "bytes": 6487,
+      "sha256": "48B403992C692E20C9212C69E72AD2E1DDFCD2A264278BEE0C1A4E37BB5BD758"
+    },
+    {
+      "path": "authority/deps__v8__src__base__logging.h",
+      "bytes": 21624,
+      "sha256": "0FA464788992D2AB04B14F9A9B9B808E29759D111E867BABD69EAED03D931405"
+    }
+  ],
+  "compiler_selection": [
+    {
+      "native": "__clang__ && __GNUC__",
+      "original": "V8_CC_GNU = 1 in v8config.h 359-363",
+      "projection": "defined(__GNUC__)",
+      "sequence": "GNU host sequence, GNU lambda wrapper, __builtin_unreachable"
+    },
+    {
+      "native": "__GNUC__ without __clang__",
+      "original": "V8_CC_GNU = 1 in v8config.h 429-431",
+      "projection": "defined(__GNUC__)",
+      "sequence": "GNU host sequence, GNU lambda wrapper, __builtin_unreachable"
+    },
+    {
+      "native": "_MSC_VER with clang-cl, without __GNUC__",
+      "original": "V8_CC_MSVC = 1 in v8config.h 478-485, V8_CC_GNU remains unset",
+      "projection": "defined(_MSC_VER) after the GNU branch",
+      "sequence": "clang-cl ARM64 uses __debugbreak plus empty asm; other clang-cl hosts use int3 then ud2; __builtin_unreachable remains"
+    },
+    {
+      "native": "_MSC_VER without __clang__ or __GNUC__",
+      "original": "V8_CC_MSVC = 1",
+      "projection": "defined(_MSC_VER)",
+      "sequence": "__debugbreak; empty second macro; no GNU lambda and no __builtin_unreachable, exactly as original"
+    },
+    {
+      "native": "both compiler flags present",
+      "original": "immediate-crash.h tests V8_CC_GNU before V8_CC_MSVC",
+      "projection": "GNU branch precedes MSVC branch",
+      "sequence": "GNU precedence retained"
+    }
+  ],
+  "host_selection": [
+    {
+      "original": "V8_HOST_ARCH_X64",
+      "native": "_M_X64 || __x86_64__",
+      "v8config_lines": "818-824",
+      "selected_sequence": "GNU int3; ud2 except Darwin empty asm; __builtin_unreachable. Current Windows x86_64 and declared Linux/Darwin x86_64 map here.",
+      "scope": "Native x86_64 compiler modes, including original x32 classification for the trap instruction choice."
+    },
+    {
+      "original": "V8_HOST_ARCH_IA32",
+      "native": "_M_IX86 || __i386__",
+      "v8config_lines": "825-827",
+      "selected_sequence": "Same x86 trap choice."
+    },
+    {
+      "original": "V8_HOST_ARCH_ARM64",
+      "native": "__AARCH64EL__ || _M_ARM64",
+      "v8config_lines": "828-830",
+      "selected_sequence": "GNU brk #0 then hlt #0; clang-cl __debugbreak then empty asm. Declared Linux/Darwin/Windows ARM64 native selections map here."
+    },
+    {
+      "original": "V8_HOST_ARCH_ARM",
+      "native": "__ARMEL__",
+      "v8config_lines": "831-833",
+      "selected_sequence": "GNU bkpt #0 then udf #0."
+    },
+    {
+      "original": "V8_HOST_ARCH_PPC64",
+      "native": "__PPC64__ || _ARCH_PPC64",
+      "v8config_lines": "840-842",
+      "selected_sequence": "GNU .vbyte 4,0x7D821008 on AIX; .4byte 0x7D821008 otherwise; empty second asm.",
+      "scope": "Original sequence retained; no PPC/AIX platform qualification claimed."
+    },
+    {
+      "original": "V8_OS_ZOS",
+      "native": "__MVS__",
+      "v8config_lines": "178-181",
+      "selected_sequence": "Original GNU __builtin_trap then empty asm, selected before S390X.",
+      "scope": "Original sequence retained; no z/OS platform qualification claimed."
+    },
+    {
+      "original": "V8_HOST_ARCH_S390X",
+      "native": "__s390x__",
+      "v8config_lines": "843-845",
+      "selected_sequence": "GNU .2byte 0x0001 then empty asm.",
+      "scope": "Original sequence retained; no S390 platform qualification claimed."
+    },
+    {
+      "original": "other recognized GNU host",
+      "native": "Original MIPS64/LOONG64/RISCV selections reach the default immediate-crash branch",
+      "v8config_lines": "834-839 and 846-855",
+      "selected_sequence": "__builtin_trap then empty asm; no additional architecture fidelity claim."
+    }
+  ],
+  "operating_system_selection": [
+    {
+      "original": "V8_OS_DARWIN",
+      "native": "__APPLE__",
+      "v8config_lines": "104-114",
+      "effect": "x86 second asm intentionally empty because original __builtin_unreachable epilogue handles the termination sequence."
+    },
+    {
+      "original": "V8_OS_AIX",
+      "native": "_AIX",
+      "v8config_lines": "135-138",
+      "effect": "PPC64 .vbyte assembler spelling."
+    },
+    {
+      "original": "V8_OS_WIN",
+      "native": "_WIN32 excluding __CYGWIN__",
+      "v8config_lines": "116-119 and 174-176",
+      "effect": "Windows output cache, _vsnprintf_s, debugger break and ExitProcess abort path."
+    },
+    {
+      "original": "POSIX VPrintError Android branch",
+      "native": "ANDROID && !V8_ANDROID_LOG_STDOUT",
+      "effect": "Preserved exactly as platform-posix.cc uses it, independently of __ANDROID__ host detection; ANDROID_LOG_ERROR with literal tag \"v8\"."
+    }
+  ],
+  "build_modes": [
+    {
+      "mode": "DEBUG (with or without OFFICIAL_BUILD)",
+      "fatal": "file/line and full message passed to pi_v8_base_fatal; default Dcheck uses the same debug signature",
+      "check": "Check failed: %s. and actual integral MakeCheckOpString; std::ostringstream-derived CheckMessageStream, original <=50 choice, new std::string, original unreachable delete after terminal fatal",
+      "unreachable": "Debug fatal receives the caller's supplied file/line and original unreachable code literal."
+    },
+    {
+      "mode": "non-DEBUG and non-OFFICIAL_BUILD",
+      "fatal": "Actual fatal signature accepts only format/varargs; callback receives local empty file and zero line, as original",
+      "check": "Only original expression string; no operand stream allocation",
+      "unreachable": "Formatted native fatal with original unreachable code literal"
+    },
+    {
+      "mode": "non-DEBUG and OFFICIAL_BUILD",
+      "fatal": "Original single-argument FATAL macro discards the argument and emits actual immediate crash; the original 2-7 argument selections call formatted native fatal",
+      "check": "Original CHECK_FAILED_HANDLER selects single-argument fatal and therefore immediate crash; clock wrappers take that same direct crash branch",
+      "unreachable": "Original single-argument UNREACHABLE selects immediate crash; no callback, output, abort-mode switch or default Node assertion is inserted."
+    }
+  ],
+  "debug_check_op_mapping": {
+    "original": "logging.h DEBUG CHECK_OP invokes MakeCheckOpString only after failed comparison, FATAL(\"Check failed: %s.\", _msg->c_str()), then delete _msg. FATAL is terminal.",
+    "production": "Clock operands are captured and compared in unchanged native_node_tracing_clock.cpp, converted to int64_t only on failure. ClockCheckFailureOperands allocates the original native string, calls pi_v8_base_fatal with caller file/line, and retains delete message after the terminal call.",
+    "original_make_check_op_string_body": "All 110 normalized tokens match the int64_t-specialized production body in source-body-proof.json; the native stream temporaries and heap string ownership remain.",
+    "selected_clock_cpp_sha256": "E0408BD2D94D728FACD1E2B36C7DD831BEF49E12BF53C52FE60D602D001B0064",
+    "selected_clock_hpp_sha256": "F7AE55D36E54D64AC7FA36CF6F64D06A631889213EE0E43998F8701004338E98",
+    "original_time_cc_failure_lines": [
+      "62: CHECK_EQ(kr, KERN_SUCCESS)",
+      "65-67: CHECK_LE(user_time.seconds, int64 maximum minus system_time.seconds)",
+      "76: CHECK_GT(kSecondsLimit, seconds)",
+      "125: CHECK_GT(kSecondsLimit, ts.tv_sec)",
+      "117 and 815: UNREACHABLE"
+    ]
+  },
+  "structural_proof": {
+    "source_body_proof": "source-body-proof.json",
+    "source_body_proof_sha256": "989F792AFC49279B3F71127C17B3CCA84543BFD093A6DA69ED117AF9E8BFA3EB",
+    "checks": 25,
+    "immediate_crash": "Complete original macro body token equality after the explicitly listed predicate/name substitutions.",
+    "fatal_macros": "Nine FATAL/GRACEFUL/CHECK_FAILED definitions match in original order.",
+    "print_error": "Both complete original OS::PrintError bodies match the same production helper, including fflush(stderr) after va_end.",
+    "retained_auditor_negative": "source-body-proof-attempt1.json; two projection selector/name defects corrected without production source changes."
+  },
+  "limits": [
+    "This proves selected source relationships, not preprocessing, assembly, linking, native execution, output capture, trap delivery, crash-stack shape, concurrency or platform qualification.",
+    "Native compiler predicates must describe one coherent host architecture. Contradictory manually defined compiler/host macros and the rest of the V8 build-configuration system are outside the bounded projection.",
+    "Current native build flags were observed by Root without DEBUG or OFFICIAL_BUILD. All owner build branches are retained; the separate clock release projection's DEBUG DCHECK/platform qualification remains outside this unit.",
+    "Native callback pointers retain the original unsynchronized process-global assignment policy. Process-bootstrap installation, lifetime and serialization must be composed explicitly."
+  ]
+}

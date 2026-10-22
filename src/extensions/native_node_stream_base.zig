@@ -11,6 +11,8 @@ const resources = @import("native_node_stream_resource.zig");
 const managed = @import("native_node_managed_buffers.zig");
 const async_callback = @import("native_node_async_wrap_make_callback.zig");
 const check = @import("native_node_check_failure.zig");
+const requests = @import("native_node_stream_request.zig");
+const shutdown = @import("native_node_stream_shutdown.zig");
 const c = a.c;
 const uv = managed.uv;
 
@@ -26,17 +28,39 @@ pub const Allocation = struct {
         usize, Initialization) managed.Token,
 };
 
+/// Borrowed actual Environment template/key roots. Their embedding owner must
+/// retain them through every native stream/request completion; this record is
+/// not an installation hook or a substitute template/key allocator.
+pub const ShutdownBindings = struct {
+    template_owner: c.JSValue,
+    error_string: c.JSValue,
+    oncomplete_string: c.JSValue,
+};
+
 pub const Operations = struct {
     allocation: Allocation,
     trace: async_callback.Trace,
     // The actual native report policy supplied by the embedding. Null retains
     // the original report-disabled configuration; it is not a guest callback.
     heap_diagnostics: ?*const check.Diagnostics,
+    shutdown: ?ShutdownBindings = null,
 };
 
 pub const Virtuals = struct {
     get_async_wrap: *const fn (*Base) ?*wraps.State,
+    get_object: *const fn (*Base) ?c.JSValue = defaultGetObject,
+    error_string: *const fn (*Base) ?[*:0]const u8 = defaultError,
+    clear_error: *const fn (*Base) void = defaultClearError,
+    create_shutdown: *const fn (*Base, *a.Scope, c.JSValue) anyerror!?*requests.Shutdown = shutdown.createDefault,
+    do_shutdown: ?*const fn (*Base, *a.Scope, ?*requests.Shutdown) anyerror!c_int = null,
 };
+fn defaultGetObject(stream: *Base) ?c.JSValue {
+    const wrap = stream.virtuals.get_async_wrap(stream) orelse return null;
+    return wrap.object();
+}
+// These are the original StreamResource virtual default bodies.
+fn defaultError(_: *Base) ?[*:0]const u8 { return null; }
+fn defaultClearError(_: *Base) void {}
 pub const ReadChecks = enum { check_nread, skip_nread_checks };
 
 /// This is embedded in the actual derived stream at a stable address. Like the
@@ -57,7 +81,8 @@ pub const Base = struct {
         self.* = .{
             .resource = resources.Resource.init(engine),
             .environment = environment,
-            .default_listener = .{ .read_methods = &default_read_methods },
+            .default_listener = .{ .read_methods = &default_read_methods,
+                .after_shutdown = shutdown.reportAfterShutdown },
             .virtuals = virtuals,
             .operations = operations,
             .initialized = true,
@@ -82,6 +107,12 @@ pub const Base = struct {
     pub fn fromObject(registry: *wraps.Registry, wrapper: c.JSValue) ?*Base {
         const pointer = registry.streamPointer(wrapper) orelse return null;
         return @ptrCast(@alignCast(pointer));
+    }
+
+    pub fn shutdownRequest(self: *Base, s: *a.Scope,
+        wrapper: ?c.JSValue) anyerror!c_int
+    {
+        return shutdown.run(s, self, wrapper);
     }
 
     /// No new HandleScope: the Source Local result and selected onread remain

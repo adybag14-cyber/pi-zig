@@ -1,0 +1,186 @@
+"""Source-only byte composition and literal dependency inspection.
+No compiler, preprocessor, product, native test, reference, formatter or project generator.
+All output writes are isolated after the single final marker.
+"""
+from pathlib import Path
+import json,hashlib,re,posixpath,subprocess
+P=Path(r'C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018\verification\native-node-custom-buffer-sourceonly-20261020');W=Path(r'C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018');M=Path(r'C:\Users\adyba\pi-zig\main')
+HEAD='c764130caf2f2c7c63728bec0f6d1e16ac5c59a4'
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ p=Path(p);b=p.read_bytes();return {'path':str(p),'bytes':len(b),'sha256':sha(b)}
+def checked(r):
+ b=Path(r['path']).read_bytes();assert len(b)==r['bytes'] and sha(b)==r['sha256'].upper(),r['path'];return b
+def js(p):return json.loads(Path(p).read_text(encoding='utf-8'))
+def apply(b,edits,reverse=False):
+ for e in reversed(edits) if reverse else edits:
+  a=e['after' if reverse else 'before'].encode();v=e['before' if reverse else 'after'].encode()
+  assert b.count(a)==1;(a,v)
+  b=b.replace(a,v,1)
+ return b
+vm=js(P/'vm/proposal.json');comp=js(P/'vm/latin1-successor-composition.json');control=js(P/'controls/binding.json');build=js(P/'build/proposal.json')
+pins=[pin(P/'vm/proposal.json'),pin(P/'vm/latin1-successor-composition.json'),pin(P/'controls/binding.json'),pin(P/'build/proposal.json'),pin(P/'build/shutdown-composition.json')]
+overlay={f['path']:f['projected'] for f in vm['files']}
+intake=Path(r'C:\Users\adyba\pi-zig\evidence\pending-file-handle-and-error-intake-20261020/projection.json')
+accepted=js(intake);pins.append(pin(intake))
+fragment=next(r['projected'] for r in accepted['paths'] if r['relative_path']=='src/extensions/native_vm_error_constructor_name.c.inc')
+assert fragment['sha256']=='8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843'
+overlay['src/extensions/native_vm_error_constructor_name.c.inc']=fragment
+overlay['src/native_vm_array_buffer_view_data_test.zig']=control['snapshot']
+for f in vm['files']:
+ raw=checked(f['original']);assert raw==checked(f['basis']);cur=raw
+ es=[{'before':e['old_text'],'after':e['new_text']} for e in vm['edits'] if e['path']==f['path']]
+ assert apply(cur,es)==checked(f['projected'])
+ assert apply(checked(f['projected']),es,True)==raw
+ pins.extend([f['original'],f['basis'],f['projected']])
+assert checked(control['live'])==checked(control['snapshot'])
+pins.extend([control['live'],control['snapshot'],fragment])
+# Both corrected Latin-1/Buffer orders and complete inverses from selected explicit packets.
+module=js(comp['module_shared_proposal']['path']);successor=js(comp['module_c_successor']['path'])
+mf={f['relative_path']:f for f in module['files']}
+composition=[]
+for f in comp['files']:
+ rel=f['relative_path'];basis=checked(f['common_predecessor'])
+ buffer_edits=[{'before':e['old_text'],'after':e['new_text']} for e in vm['edits'] if e['path']==rel]
+ se=[e for e in module['edits'] if e['path']==rel]
+ ce=successor['edits'] if rel==successor['relative_path'] else []
+ assert checked(mf[rel]['original'])==basis
+ a=apply(apply(apply(basis,buffer_edits),se),ce);b=apply(apply(apply(basis,se),ce),buffer_edits)
+ assert a==b==checked(f['combined'])
+ assert apply(apply(apply(a,ce,True),se,True),buffer_edits,True)==basis
+ assert apply(apply(apply(b,buffer_edits,True),ce,True),se,True)==basis
+ assert apply(checked(f['preserved_prior_combined']),ce)==a
+ assert apply(a,ce,True)==checked(f['preserved_prior_combined'])
+ pins.extend([f['common_predecessor'],f['selected_latin1_projected'],f['combined'],f['preserved_prior_combined']])
+ composition.append({'relative_path':rel,'selected_combined':f['combined'],'both_forward_orders':True,'both_complete_inverses':True})
+# Retain immutable raw Git blobs without consulting moving Main file bytes.
+proc=subprocess.Popen(['git','-C',str(M),'cat-file','--batch'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+cache={};missing=set();copies=[]
+def get(rel):
+ rel=posixpath.normpath(rel)
+ assert not rel.startswith('../') and not rel.startswith('/')
+ if rel in cache:return cache[rel]
+ if rel in missing:return None
+ if rel in overlay:
+  b=checked(overlay[rel]);row={'relative_path':rel,'origin':'selected immutable source','source':overlay[rel],'bytes':len(b),'sha256':sha(b)}
+ else:
+  key=HEAD+':'+rel;proc.stdin.write((key+'\n').encode());proc.stdin.flush()
+  line=proc.stdout.readline().decode().strip()
+  if line.endswith(' missing'):missing.add(rel);return None
+  oid,kind,size=line.split();assert kind=='blob'
+  b=proc.stdout.read(int(size));assert proc.stdout.read(1)==b'\n'
+  dst=P/'dependencies/main-c764'/rel
+  row={'relative_path':rel,'origin':'immutable raw Git blob','repository':str(M),'commit':HEAD,'git_blob':oid,'bytes':len(b),'sha256':sha(b),'snapshot':{'path':str(dst),'bytes':len(b),'sha256':sha(b)}}
+  copies.append((dst,b))
+ cache[rel]=(b,row);return cache[rel]
+root='src/native_vm_array_buffer_view_data_test.zig';source=get(root)[0].decode('utf-8')
+names=re.findall(r'^\s*test\s+"([^"]+)"',source,re.M);assert names==control['names'] and len(names)==12
+imports=re.findall(r'@import\(\s*"([^"]+)"\s*\)',source)
+assert imports==['std'],imports
+cincludes=re.findall(r'@cInclude\(\s*"([^"]+)"\s*\)',source)
+assert cincludes==['engine_abi.h'],cincludes
+anonymous=re.findall(r'^\s*test\s*\{',source,re.M);assert not anonymous
+# Conservative quoted C includes of the existing direct VM and linkDurable units.
+native_roots=['vendor/quickjs/dtoa.c','vendor/quickjs/libregexp.c','vendor/quickjs/libunicode.c','vendor/quickjs/quickjs.c','src/extensions/engine_abi.c','src/durable/process_probe.c','src/extensions/engine_abi.h']
+include_dirs=['vendor/quickjs','src/extensions','src/durable','vendor/libfyaml','vendor/photon-native']
+todo=list(native_roots);seen=set();edges=[];system=[];unresolved=[]
+while todo:
+ rel=todo.pop()
+ if rel in seen:continue
+ result=get(rel)
+ assert result is not None,rel
+ seen.add(rel);b,row=result;text=b.decode('utf-8')
+ for match in re.finditer(r'^\s*#\s*include\s*"([^"]+)"',text,re.M):
+  literal=match.group(1)
+  candidates=[posixpath.normpath(posixpath.join(posixpath.dirname(rel),literal))]
+  candidates += [posixpath.normpath(posixpath.join(d,literal)) for d in include_dirs]
+  candidates=list(dict.fromkeys(candidates))
+  dest=next((q for q in candidates if not q.startswith('../') and get(q) is not None),None)
+  entry={'from':rel,'literal':literal,'line':text[:match.start()].count('\n')+1,'to':dest}
+  edges.append(entry)
+  if dest is None:unresolved.append(entry)
+  else:todo.append(dest)
+ for match in re.finditer(r'^\s*#\s*include\s*<([^>]+)>',text,re.M):
+  system.append({'from':rel,'literal':match.group(1),'line':text[:match.start()].count('\n')+1})
+assert not unresolved,unresolved
+# No new C include dependency is added by the raw primitive or by optional Latin-1 composition.
+inc_pattern=rb'^\s*#\s*include\s*(?:"[^"]+"|<[^>]+>)'
+for f in vm['files']:
+ orig=checked(f['original']);new=checked(f['projected'])
+ assert re.findall(inc_pattern,orig,re.M)==re.findall(inc_pattern,new,re.M)
+ combo=next(c for c in comp['files'] if c['relative_path']==f['path'])
+ assert re.findall(inc_pattern,new,re.M)==re.findall(inc_pattern,checked(combo['combined']),re.M)
+# Pin inherited recipe owners without claiming to preprocess every linked vendor graph.
+recipe_rel=['build.zig','tools/build_native_icu.zig','tools/build_native_node_memory.zig','tools/build_native_node_network.zig','tools/build_native_package_json.zig']
+recipes=[]
+for rel in recipe_rel:
+ result=get(rel);assert result is not None,rel;recipes.append(result[1])
+assert get('build.zig')[0]==checked(build['original'])
+# Whole build delta and fixed-order optional source projections.
+be=[{'before':build['edit']['old_text'],'after':build['edit']['new_text']}]
+borig=checked(build['original']);bnew=checked(build['projected'])
+assert apply(borig,be)==bnew and apply(bnew,be,True)==borig
+all_layers=[]
+for r in build['optional_source_composition']['predecessor_packets_in_order']:
+ d=json.loads(checked(r))
+ ee=d.get('edits')
+ if ee is None:ee=[{'before':d['edit']['old_text'],'after':d['edit']['new_text']}]
+ all_layers.append(ee)
+pre=borig
+for ee in all_layers:pre=apply(pre,ee)
+assert apply(pre,be)==checked(build['optional_source_composition']['combined'])
+later=js(P/'build/shutdown-composition.json');sh=js(later['shutdown_proposal']['path'])
+all_layers.append(sh['edits']);pre=apply(pre,sh['edits'])
+both=apply(pre,be);assert both==checked(later['combined'])
+early=apply(borig,be)
+for ee in all_layers:early=apply(early,ee)
+assert early==both
+a=apply(both,be,True)
+for ee in reversed(all_layers):a=apply(a,ee,True)
+assert a==borig
+a=both
+for ee in reversed(all_layers):a=apply(a,ee,True)
+assert apply(a,be,True)==borig
+block=checked(build['block']).decode('utf-8')
+assert block.count('b.addTest(')==1 and block.count('addInstallArtifact(')==1
+assert 'addRunArtifact' not in block and 'addSystemCommand' not in block
+# Read-only preservation of all forty pre-existing SDK src files sealed by TransferData proof.
+prior_path=W/'verification/native-file-handle-transfer-sourceonly-20261020/source-only-checks.json'
+prior=js(prior_path);prefix=str(W/'src').lower()+'\\'
+protected=[row for row in prior['verified_files'] if row['path'].lower().startswith(prefix)]
+assert len(protected)==40
+for row in protected:checked(row)
+pins.append(pin(prior_path))
+proc.stdin.close();proc.wait(timeout=10);assert proc.returncode==0
+inventory={
+ 'schema':'pi-zig.raw-view-data-finite-source-dependencies.v1','basis_main_commit':HEAD,
+ 'root':{'path':root,'source':control['snapshot'],'repo_literal_zig_modules':[root],'external_imports':imports,'c_includes':cincludes,'declared_names':names,'declared_count':12,'repo_literal_anonymous_count':0,'compiler_selected_metadata':None},
+ 'native_direct_roots':native_roots,'quoted_include_dirs':include_dirs,
+ 'quoted_include_reachable_paths':sorted(seen),'quoted_include_edges':sorted(edges,key=lambda e:(e['from'],e['line'],e['literal'])),
+ 'unresolved_quoted_includes':unresolved,'standard_or_external_angle_includes':sorted(system,key=lambda e:(e['from'],e['line'],e['literal'])),
+ 'entries':[cache[k][1] for k in sorted(cache)],
+ 'inherited_native_recipes':recipes,'corrected_optional_vm_composition':composition,
+ 'source_include_sets_unchanged':True,
+ 'limits':['This is a conservative literal quoted-C include graph and the one repository Zig root; conditional preprocessor branches are not evaluated.',
+ 'Standard/toolchain angle includes and transitive native ICU, YAML, SQLite, photon, package JSON, network/libuv libraries remain inherited dependencies of the immutable common build. Their compiler-selected closure is not newly qualified.',
+ 'Actual compiler-selected anonymous/standard tests and runtime metadata are unknown; no executable was produced.']}
+closure={
+ 'schema':'pi-zig.raw-view-data-source-composition-preservation.v1','inputs':pins,'vm_edits':2,'vm_whole_forward_inverse':True,
+ 'corrected_latin1_two_orders_and_whole_inverses':True,'old_bad_latin1_snapshots_preserved':True,
+ 'build_delta_whole_forward_inverse':True,'fixed_order_optional_build_layers':['Owner','Error constructor','TransferData','Shutdown/Latin1'],
+ 'buffer_before_or_after_fixed_layers_identical':True,'both_optional_build_whole_inverses':True,
+ 'selected_raw_control_live_snapshot_exact':True,'declared_source_controls':12,'future_actual_metadata':None,
+ 'preservation_basis':pin(prior_path),'preserved_prior_sdk_sources':protected,'preserved_prior_sdk_source_count':40,
+ 'source_dependencies':{'repo_zig_roots':1,'quoted_C_reachable_files':len(seen),'quoted_C_include_edges':len(edges),'pinned_recipe_files':len(recipes),'total_inventory_entries':len(cache)},
+ 'Main_writes':False,'existing_production_writes':False,'compiler_native_reference_generator_execution':False,'runtime_qualified':False}
+# FINAL OUTPUT PHASE: only new immutable source-review artifacts.
+for dest,b in copies:
+ dest.parent.mkdir(parents=True,exist_ok=True)
+ if dest.exists():assert dest.read_bytes()==b
+ else:
+  with dest.open('xb') as f:f.write(b)
+for name,obj in [('dependency-inventory.json',inventory),('closure-and-preservation.json',closure)]:
+ dest=P/name
+ with dest.open('xb') as f:f.write((json.dumps(obj,indent=2)+'\n').encode())
+ print(json.dumps(pin(dest)))
+print(json.dumps(closure['source_dependencies']))

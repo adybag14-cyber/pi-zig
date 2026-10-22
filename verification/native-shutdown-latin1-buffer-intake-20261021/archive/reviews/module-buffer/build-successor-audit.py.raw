@@ -1,0 +1,93 @@
+"""Additive independent review of the exact Buffer naming/current-head successor."""
+from pathlib import Path
+import hashlib, json
+P=Path(r"C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018\verification\native-node-custom-buffer-build-successor-20261020")
+OUT=Path(r"C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018\verification\native-vm-view-data-independent-peer-20261020")
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ p=Path(p);b=p.read_bytes();return dict(path=str(p),bytes=len(b),sha256=sha(b))
+def checked(r):
+ b=Path(r["path"]).read_bytes();assert len(b)==r["bytes"] and sha(b)==r["sha256"],r["path"];return b
+def ser(x):return (json.dumps(x,indent=2)+"\n").encode()
+proposal_pin=dict(path=str(P/"proposal.json"),bytes=30389,sha256="81B6F6E7F0DDF12A4A32903E49E6AAE3F4FCDDECCBBA791301DB1FCA7F565913")
+proposal_raw=checked(proposal_pin);q=json.loads(proposal_raw)
+builder=q["builder"];assert builder["sha256"]=="AE03BA7DB4A6AE37D987A35ACBBAA1DF384A9F9BF16AC194D02BBB4B7E98B041"
+source=checked(builder).decode()
+marker="# FINAL OUTPUT PHASE: new immutable source-review artifacts only."
+assert source.count(marker)==1
+# Complete builder was read; this prefix performs only reads, git reads,
+# byte projections and hashes. Its output phase is never executed.
+ns={}
+exec(compile(source.split(marker)[0],str(P/"prepare-proposal.py")+" [independent read-only replay]","exec"),ns)
+assert ser(ns["proof"])==proposal_raw
+for rel,raw in ns["copies"]:assert (P/rel).read_bytes()==raw
+seen={}
+def visit(x):
+ if isinstance(x,dict):
+  if {"path","bytes","sha256"}<=set(x):
+   checked(x);seen[(x["path"].lower(),x["sha256"])]=dict(path=x["path"],bytes=x["bytes"],sha256=x["sha256"])
+  for value in x.values():visit(value)
+ elif isinstance(x,list):
+  for value in x:visit(value)
+visit(q)
+def replay(before,edits):
+ b=before
+ for e in edits:
+  a=e["before"].encode();v=e["after"].encode();at=e["byte_offset"]
+  assert a and b.count(a)==1 and b.find(a)==at and sha(b)==e["before_sha256"]
+  b=b[:at]+v+b[at+len(a):]
+  assert sha(b)==e["after_sha256"]
+ projected=b
+ for e in reversed(edits):
+  at=e["byte_offset"];a=e["after"].encode();v=e["before"].encode()
+  assert sha(b)==e["after_sha256"] and b[at:at+len(a)]==a
+  b=b[:at]+v+b[at+len(a):]
+  assert sha(b)==e["before_sha256"]
+ assert b==before
+ return projected
+assert replay(checked(q["original_block"]),q["exact_two_block_edits"])==checked(q["corrected_block"])
+assert replay(checked(q["original_projected_comparison"]),q["exact_two_whole_file_edits"])==checked(q["corrected_projected_comparison"])
+cur=q["current_head_projection"]
+assert replay(checked(cur["original"]),[cur["edit"]])==checked(cur["projected"])
+combo=q["selected_shutdown_composition"]
+assert replay(checked(combo["original"]),[combo["buffer_after_shutdown_edit"]])==checked(combo["projected"])
+assert replay(checked(cur["projected"]),[combo["shutdown_after_buffer_edit"]])==checked(combo["projected"])
+assert replay(checked(cur["original"]),[combo["original_shutdown_edit"]])==checked(combo["original"])
+old=checked(q["original_block"]);new=checked(q["corrected_block"])
+assert old.count(b".name =")==1 and b".name =" not in new
+assert b'.dest_sub_path = b.fmt("native-vm-array-buffer-view-data{s}", .{if (target.result.os.tag == .windows) ".exe" else ""})' in new
+for literal in [b'src/native_vm_array_buffer_view_data_test.zig',b'"VM view data"',b'.use_llvm = use_llvm',b'linkQuickJs(b, vm_array_buffer_view_data_tests.root_module, quickjs, sqlite_lib_dir)']:
+ assert old.count(literal)==new.count(literal)==1
+for forbidden in [b'addRunArtifact',b'addSystemCommand',b'.stack_size',b'.stack_limit']:
+ assert forbidden not in new
+authority=json.loads(checked(q["naming_authority"]))
+excerpts=[]
+for f in authority["files"]:
+ raw=checked(f["original"]);assert checked(f["snapshot"])==raw
+ for e in f["excerpts"]:
+  actual=b"".join(raw.splitlines(keepends=True)[e["first_line"]-1:e["last_line"]])
+  assert len(actual)==e["bytes"] and sha(actual)==e["sha256"] and actual.decode()==e["text"]
+  excerpts.append(dict(source=f["original"],first_line=e["first_line"],last_line=e["last_line"],bytes=len(actual),sha256=sha(actual)))
+assert len(excerpts)==12
+production_proof_pin=dict(path=str(OUT/"source-audit.json"),bytes=20684,sha256="E7F8CA48D5DD2B5B70C76B112A34503A8411807942C72E81AB0226578D7B8F26")
+checked(production_proof_pin)
+result=dict(
+ schema=1,status="independent_finite_build_successor_source_checks_passed",
+ reviewer="/root/module_io_port",successor=proposal_pin,reviewed_builder=builder,
+ complete_proposal_reproduced_byte_exact=True,source_snapshots_reproduced=8,
+ source_pins_rehashed=sorted(seen.values(),key=lambda r:(r["path"].lower(),r["sha256"])),
+ exact_two_block_edits_and_whole_inverse=True,exact_two_comparison_file_edits_and_whole_inverse=True,
+ exact_current79_insertion_and_inverse=True,current79_build=cur["original"],current79_plus_buffer=cur["projected"],
+ exact_current_shutdown_insertion_and_inverse=True,current79_plus_shutdown_plus_buffer=combo["projected"],
+ buffer_before_or_after_selected_shutdown_identical=True,both_whole_inverse_orders_exact=True,
+ selected_transfer_then_shutdown_order_preserved=True,transfer_shutdown_mutual_commutation_not_claimed=True,
+ canonical_error_naming_preserved=True,authority=q["naming_authority"],all12_naming_excerpts_read_and_verified=excerpts,
+ target=q["target"],original_production_control_review=production_proof_pin,
+ original_build_rejection_retained="The preceding production proof excludes AD344119. This additive successor selects A294A6F8/81B6F6E7 only and leaves that predecessor unchanged.",
+ no_production_or_control_change=True,no_main_change=True,no_compiler_native_reference_generator_execution=True,
+ whole_build_body_executed=False,actual_artifacts_produced=False,actual_future_metadata=None,
+ conclusion="The finite naming change preserves canonical cached test.exe/test.pdb and selects only the installed executable basename. No remaining bounded source-composition blocker was found; this receipt grants no intake or native execution."
+)
+# Sole write: independent new evidence.
+with (OUT/"build-successor-audit.json").open("xb") as f:f.write(ser(result))
+print(json.dumps(pin(OUT/"build-successor-audit.json")))

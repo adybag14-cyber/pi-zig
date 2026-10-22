@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "finite_buffer_build_naming_and_current_head_composition_source_reviewed",
+  "created_utc": "2026-10-20T22:18:14.743974+00:00",
+  "candidate_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\proposal.json",
+    "bytes": 30389,
+    "sha256": "81B6F6E7F0DDF12A4A32903E49E6AAE3F4FCDDECCBBA791301DB1FCA7F565913"
+  },
+  "verified_unique_pin_paths": 24,
+  "exact_two_block_and_whole_file_changes_replayed": true,
+  "all_edit_offsets_intermediate_hashes_and_full_inverses_verified": true,
+  "current_head_and_optional_Shutdown_two_orders_and_inverses_verified": true,
+  "selected_combined_build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\current79-with-shutdown-and-buffer.zig",
+    "bytes": 514007,
+    "sha256": "868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+  },
+  "all_72_original_packet_rows_unchanged": true,
+  "all_12_controls_unchanged": true,
+  "pinned_Zig_naming_excerpts_reverified": 12,
+  "canonical_cached_test_exe_pdb_preserved": true,
+  "explicit_installed_executable_name": true,
+  "prior_Error_naming_and_selected_Transfer_then_Shutdown_order_preserved": true,
+  "Main_changed": false,
+  "Main_intake_authorized": false,
+  "independent_peer_pending": true,
+  "native_execution_authorized": false,
+  "qualification": false
+}

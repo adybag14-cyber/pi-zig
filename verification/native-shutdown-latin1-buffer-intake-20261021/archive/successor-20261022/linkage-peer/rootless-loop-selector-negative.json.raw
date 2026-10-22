@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "status": "preserved_independent_static_checker_scope_negative",
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v2.py",
+    "bytes": 31510,
+    "sha256": "C715E169C5FF1C05BA054DB7F2C1956C4EF8C0EDF42A02B6B48B980298ACD358"
+  },
+  "observation": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v2.py\", line 197, in <module>\r\n    fields,loops=root_fields(old)\r\n                 ~~~~~~~~~~~^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v2.py\", line 163, in root_fields\r\n    need(len(declarations)==1,(\"unique preceding constant loop table\",name))\r\n    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v2.py\", line 10, in need\r\n    if not ok: raise AssertionError(what)\r\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: ('unique preceding constant loop table', 'runtime_names')",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 2,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v2.py\", line 197, in <module>\r\n    fields,loops=root_fields(old)\r\n                 ~~~~~~~~~~~^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v2.py\", line 163, in root_fields\r\n    need(len(declarations)==1,(\"unique preceding constant loop table\",name))\r\n    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-linkage-build-successor-source-peer-20261022\\source-check-v2.py\", line 10, in need\r\n    if not ok: raise AssertionError(what)\r\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: ('unique preceding constant loop table', 'runtime_names')\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "reason": "The static parser attempted finite-table resolution for runtime_names, an unrelated loop without a root_source_file field. The successor restricts resolution to actual root-bearing loops; no candidate change or target execution.",
+  "candidate_or_prefix_executed": false,
+  "Main_accessed": false
+}

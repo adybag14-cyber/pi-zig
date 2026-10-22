@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "status": "unissued_strengthened_pending20_intake_binding_and_schema_contract",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py",
+    "bytes": 23554,
+    "sha256": "1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+    "bytes": 9719,
+    "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+  },
+  "strict_copy_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-manifest-plan.json",
+    "bytes": 378545,
+    "sha256": "E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"
+  },
+  "gap_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\finite-intake-adapter-reuse-plan-sourceonly-20261021\\plan.json",
+    "bytes": 23193,
+    "sha256": "E020D4B82F088A5BA4B38CB002B056589676A561C780CE1BD950976D9DC0A95C"
+  },
+  "historical_git_capability": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261021\\git-attribute-capability-observation.json",
+    "bytes": 2972,
+    "sha256": "0FC8853FC86F22C7CF11CBCB9CD6EE03FF34D4ED3FC6E955F5A9F3D3B92E00C4"
+  },
+  "future_literal_bindings": [
+    {
+      "name": "BASIS",
+      "current_literal": "UNRESOLVED_PENDING20_RELEASED_HEAD______",
+      "future_value": null,
+      "requirement": "Exact later Root-released forty-hex SHA-1 commit; the draft rejects the unresolved marker before CLI admission."
+    },
+    {
+      "name": "MANIFESTS.fixture.path",
+      "current_literal": "evidence/UNRESOLVED-PENDING20-FINAL-MANIFEST/manifest.json",
+      "future_value": null,
+      "requirement": "Exact reviewed final manifest path inside project evidence; a separately reviewed binding must preserve all validation bodies."
+    },
+    {
+      "name": "MANIFESTS.fixture.sha256",
+      "current_literal": "UNRESOLVED_PENDING20_FINAL_MANIFEST_SHA256______________________",
+      "future_value": null,
+      "requirement": "Actual uppercase 64-hex raw manifest SHA-256, externally pinned without self-hashing the manifest."
+    },
+    {
+      "name": "MANIFESTS.fixture.count",
+      "current_literal": 0,
+      "future_value": null,
+      "requirement": "Actual complete physical rows plus one manifest self-row; all final peer/authority additions must be enumerated."
+    }
+  ],
+  "cli": {
+    "shape": "python <separately bound exact adapter> fixture <absolute Root release path> <raw release SHA-256>",
+    "phase": "fixture",
+    "issued": false
+  },
+  "release_contract": {
+    "retained_consumed_fields": {
+      "executor_sha256": "Exact bound executable file SHA-256, including the later four-literal binding.",
+      "basis_main_head": "Exact bound BASIS.",
+      "branch": "work/pi-zig-consolidated-20261016",
+      "source_intake_authorized": "Must be true in a separately issued Root release; this document confers no authority.",
+      "native_execution_authorized": false,
+      "application_qualified": false,
+      "required_current_pins": "Every exact {path,bytes,sha256} is rehashed before repository admission. Root supplies exact manifest, adapter/source peers, complete required native/process closures and acceptance pins; the generic adapter does not rederive the semantic acceptance of those authorities.",
+      "receipt_directory": "New intended namespace inside project evidence; every emitted file is create-only."
+    },
+    "added_fields": {
+      "git_byte_preflight_contract": "pending20_exact_git_bytes_attributes_aliases_modes_v1",
+      "expected_git_object_format": "Actual future repository format observed and pinned by Root; no format is issued here.",
+      "authorized_phases.fixture.manifest_sha256": "Same exact final manifest hash as the bound tuple.",
+      "authorized_phases.fixture.total_commit_paths": "Same exact physical path count as the bound tuple, including manifest.",
+      "authorized_phases.fixture.logical_donor_alias_count": "Exact manifest logical_donor_aliases length, excluding the synthetic manifest alias."
+    },
+    "future_release": null
+  },
+  "manifest_contract": {
+    "retained_root_fields": [
+      "rows",
+      "target_manifest OR manifest_target"
+    ],
+    "row": {
+      "target": "Canonical relative forward-slash Windows path under build.zig, src/, vendor/quickjs/ or verification/.",
+      "source": "Pinned donor inside the project container and outside Main; resolution may not escape project ROOT.",
+      "bytes": "Exact raw length.",
+      "sha256": "Exact uppercase raw SHA-256.",
+      "role": "Explicit retained role.",
+      "mode": "Required exact Git mode. Allowed 100644 or 100755; all additions require 100644.",
+      "before": "null for additions; replacements require {bytes,sha256,mode}, and before.mode must equal the selected mode."
+    },
+    "logical_donor_aliases": {
+      "required": true,
+      "row_fields": {
+        "target": "One physical row target, excluding manifest.",
+        "source": "Exact original donor path, including every selected content-dedup alias.",
+        "bytes": "Exact raw alias length.",
+        "sha256": "Exact raw alias SHA-256."
+      },
+      "checks": "Every alias is independently read/pinned and compared byte-for-byte to the selected physical bytes; every primary physical donor must appear; duplicate target/canonical-path/length/hash identities are rejected.",
+      "retained_semantic_fields": "Logical archive destination, reference sites and historical-reference aliases from E2B remain unchanged in the reviewed manifest. Their completeness is a semantic manifest-peer/Root responsibility.",
+      "count": null
+    },
+    "synthetic_manifest": {
+      "appended_by_adapter": true,
+      "mode": "100644",
+      "before": null,
+      "participates_in": "Every path, attributes, dual Git ID, raw-byte, stage-mode and committed-mode check, plus a synthetic alias record."
+    },
+    "attributes_targets": "The adapter rejects any target component named .gitattributes and any .git component. No attribute edit or donor normalization is permitted.",
+    "exact_final_manifest": null
+  },
+  "preflight_contract": [
+    "Reject disabled Python assertions and unresolved head/hash/count literals before CLI admission; require the manifest path to resolve inside evidence and match its separately bound raw hash after exact release admission.",
+    "Require exact release/self/branch/head and every release pin; install immutable failure observation only after a valid release and receipt namespace are admitted.",
+    "Admit canonical non-bare Main repository, object format and version; reject Git repository/config/attribute/pathspec environment overrides by name without exposing their values.",
+    "Reject Windows path aliases, reserved devices, ADS, case-fold and file/directory collisions, reparse redirects, unexpected modes, any replacement byte or committed-basis mismatch, and every non-absent addition.",
+    "Read all primary donors and all logical aliases before any Main/index write; preserve their immutable originals.",
+    "Capture text/eol/filter/working-tree-encoding/ident for every path; reject filter/encoding/ident unless unset or unspecified before the first path-aware hash.",
+    "Capture only relevant conversion/attribute configuration with origin/scope and the exact system/global/repository/root/target-ancestor attribute-source bytes or absence.",
+    "For every final path, compute the repository-format raw blob ID independently and require equality with Git --no-filters and Git --path binary-stdin results, both without -w.",
+    "Revalidate repository identity, attributes and conversion provenance after all hashes and before any source/index write; save exact preflight before copying.",
+    "Read every copied target byte-for-byte, revalidate unchanged attributes/configuration before literal NUL-list staging, and preserve any mismatch without rollback or relaxation.",
+    "Require the exact complete staged path set, stage zero, declared modes and preflight IDs as well as raw indexed bytes; revalidate conversion provenance again before commit.",
+    "Require the complete parent list to equal exactly the prior head, exact changed path set, committed modes/IDs/raw bytes and clean final checkout; save a new receipt granting no native/application qualification."
+  ],
+  "evidence_outputs": {
+    "success_files": [
+      "fixture-preflight.json",
+      "fixture-paths.nul",
+      "fixture-commit-message.txt",
+      "fixture-post-copy.json",
+      "fixture-staged.json",
+      "fixture-receipt.json"
+    ],
+    "replacement_temporary_files": "Create-only receipt-directory fixture-replacement-<index>.tmp; os.replace consumes each exact temporary into its reviewed existing destination.",
+    "failure_files": "fixture-negative-<UTC microseconds>-<random suffix>.json after valid release/namespace admission; exact exception/traceback, last stage, before/after heads if known, and write-start flag. No rollback or cleanup.",
+    "early_admission_failures": "Invalid/unresolved bindings, CLI, release or namespace admission still raise before this hook; Root must preserve the actual tool/job failure externally. No Main or index write occurs before those gates.",
+    "candidate_execution_performed": false
+  },
+  "capability_limits": {
+    "historical_observation_only": "Git 2.52.0.windows.1 and GIT_ATTR_SYSTEM/GIT_ATTR_GLOBAL path queries were observed from the Module worktree on 2026-10-21; this is not current repository acceptance.",
+    "future_behavior": "The adapter queries current capabilities/paths/object format. Unsupported queries or mismatches fail closed; no fallback or weakening.",
+    "current_head_shape": "The project binding remains an exact forty-character SHA-1 commit contract; raw object helper supports SHA-1/SHA-256 but an unsupported project head shape is rejected rather than inferred."
+  },
+  "outstanding": {
+    "retained_target_linkage": "Module is preparing a separately reviewed build-only successor for shared Latin1 diagnostics/fatal call reachability. Accepted twenty-path source bytes alone are not validation-ready.",
+    "future_manifest_and_count": null,
+    "actual_source_release": null,
+    "final_independent_adapter_manifest_peer": null,
+    "native_authority": false
+  },
+  "authority": {
+    "source_only": true,
+    "configuration_issued": false,
+    "intake_authorized": false,
+    "Main_accessed": false,
+    "Main_written": false,
+    "index_accessed": false,
+    "index_written": false,
+    "candidate_or_prefix_executed": false,
+    "native_executed": false,
+    "application_qualified": false
+  }
+}

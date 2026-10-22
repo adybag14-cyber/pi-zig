@@ -1,0 +1,94 @@
+{
+  "schema": "independent-shutdown-latin1-predecessor-source-negative-v1",
+  "status": "concrete_source_blocker_in_frozen_predecessor",
+  "source_only": true,
+  "module_shared_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\proposal.json",
+    "bytes": 38226,
+    "sha256": "C58D31835CCE099D8C99BF7432CE4B0B2FAA83186857EA46EDFC55CEB3542A41"
+  },
+  "vm_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\vendor\\quickjs\\quickjs.c",
+    "bytes": 2403712,
+    "sha256": "2AEE7EA130CCF08282928A9FDA056B444CF0905E8C53F1EFD520E8243F9C37B4"
+  },
+  "prior_exact_composition_preserved": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\latin1-composition.json",
+    "bytes": 4905,
+    "sha256": "2DF7C6AB519FED6FC640E84E3981884B67032B0E5D23E56F279BFC9A9413BF70"
+  },
+  "excerpts": [
+    {
+      "id": "actual_empty_helper",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\vendor\\quickjs\\quickjs.c",
+      "source_sha256": "2AEE7EA130CCF08282928A9FDA056B444CF0905E8C53F1EFD520E8243F9C37B4",
+      "start_line": 5195,
+      "end_line": 5199,
+      "bytes": 164,
+      "sha256": "92035334616F4900942E230308B57069E80C2BF871D955C3EDA6F470D7FD2109",
+      "text": "static inline JSValue js_empty_string(JSRuntime *rt)\n{\n    JSAtomStruct *p = rt->atom_array[JS_ATOM_empty_string];\n    return js_dup(JS_MKPTR(JS_TAG_STRING, p));\n}\n"
+    },
+    {
+      "id": "actual_byte_helper",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\vendor\\quickjs\\quickjs.c",
+      "source_sha256": "2AEE7EA130CCF08282928A9FDA056B444CF0905E8C53F1EFD520E8243F9C37B4",
+      "start_line": 5201,
+      "end_line": 5211,
+      "bytes": 388,
+      "sha256": "6768656DA97B3FE06BD7E4EC2617DF26F3B0D38CCBA188B335B74B41CE6C592C",
+      "text": "// XXX: `buf` contains raw 8-bit data, no UTF-8 decoding is performed\n// XXX: no special case for len == 0\nstatic JSValue js_new_string8_len(JSContext *ctx, const char *buf, int len)\n{\n    JSString *str;\n    str = js_alloc_string(ctx, len, 0);\n    if (!str)\n        return JS_EXCEPTION;\n    memcpy(str8(str), buf, len);\n    str8(str)[len] = '\\0';\n    return JS_MKPTR(JS_TAG_STRING, str);\n"
+    },
+    {
+      "id": "new_latin1_body",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\vendor\\quickjs\\quickjs.c",
+      "source_sha256": "2AEE7EA130CCF08282928A9FDA056B444CF0905E8C53F1EFD520E8243F9C37B4",
+      "start_line": 5669,
+      "end_line": 5679,
+      "bytes": 506,
+      "sha256": "9DAB510A6A34C7AD38AA0FD7F45D81369C0ED1A712183F9C0DDCA03A3658860B",
+      "text": "/* Raw one-byte string construction for native Node OneByteString callers.\n   Every byte denotes the same Latin-1 code unit, including embedded NUL.\n   Signed length selection and Node/V8 fatal policy belong to that caller. */\nJSValue JS_PiNewStringLatin1(JSContext *ctx, const uint8_t *buf, size_t len)\n{\n    if (len == 0)\n        return js_empty_string(ctx);\n    if (len > JS_STRING_LEN_MAX)\n        return JS_ThrowRangeError(ctx, \"string too long\");\n    return js_new_string8_len(ctx, buf, (int)len);\n}\n"
+    },
+    {
+      "id": "existing_empty_caller",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\vendor\\quickjs\\quickjs.c",
+      "source_sha256": "2AEE7EA130CCF08282928A9FDA056B444CF0905E8C53F1EFD520E8243F9C37B4",
+      "start_line": 5681,
+      "end_line": 5689,
+      "bytes": 240,
+      "sha256": "DAD49BDBAA06A1FC8B571D947575F21AA2E56895EBAF6249B82BA55A33C4D9B1",
+      "text": "/* create a string from a UTF-8 buffer */\nJSValue JS_NewStringLen(JSContext *ctx, const char *buf, size_t buf_len)\n{\n    JSString *str;\n    size_t len;\n    int kind;\n\n    if (unlikely(buf_len <= 0))\n        return js_empty_string(ctx->rt);\n"
+    }
+  ],
+  "findings": [
+    {
+      "id": "runtime_argument",
+      "severity": "source_blocker",
+      "evidence": [
+        "actual_empty_helper",
+        "new_latin1_body",
+        "existing_empty_caller"
+      ],
+      "finding": "The new len==0 branch passes JSContext* ctx to js_empty_string(JSRuntime* rt). The helper reads rt->atom_array; these are different native owner types. This is a concrete call-signature mismatch and an unsafe owner interpretation if admitted despite its diagnostic.",
+      "proposed_exact_old": "return js_empty_string(ctx);",
+      "proposed_exact_new": "return js_empty_string(ctx->rt);",
+      "native_failure_observed": false
+    },
+    {
+      "id": "byte_pointer_type",
+      "severity": "c_constraint_diagnostic",
+      "evidence": [
+        "actual_byte_helper",
+        "new_latin1_body"
+      ],
+      "finding": "The new const uint8_t* (unsigned char*) argument is passed to const char*. Plain char remains a distinct C type under -funsigned-char. Use an explicit character-storage reinterpretation for the original byte-copy helper.",
+      "proposed_exact_old": "return js_new_string8_len(ctx, buf, (int)len);",
+      "proposed_exact_new": "return js_new_string8_len(ctx, (const char *)buf, (int)len);",
+      "native_failure_observed": false
+    }
+  ],
+  "requested_successor": "Owning Module agent must preserve C58D3183 and seal the two-expression QuickJS C successor. Header, six new production bodies, shared non-VM deltas and all26 control names/assertions need no edit for these findings.",
+  "review_scope_so_far": "All six new production bodies, 37 shared edits, 26 controls/support and build insertion read. Actual Source StreamReq/Shutdown/FileHandleCloseWrap, Controller/Entry/State and selected V8 one-byte string authority read; complete final manifest and independent pin closure still pending.",
+  "existing_source_mutations": false,
+  "compiler_native_reference_execution": false,
+  "runtime_qualification": false
+}

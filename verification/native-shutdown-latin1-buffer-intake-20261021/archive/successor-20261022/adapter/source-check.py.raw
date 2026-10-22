@@ -1,0 +1,185 @@
+"""Own static source accounting only: never evaluate, import or invoke the intake candidate."""
+from pathlib import Path
+import ast, datetime, hashlib, json
+D=Path("C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022")
+PINS=json.loads(r'''[{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py","bytes":9719,"sha256":"56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"},{"path":"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\finite-intake-adapter-reuse-plan-sourceonly-20261021\\plan.json","bytes":23193,"sha256":"E020D4B82F088A5BA4B38CB002B056589676A561C780CE1BD950976D9DC0A95C"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-manifest-plan.json","bytes":378545,"sha256":"E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-buffer-unissued-copy-plan-acceptance-20261021.json","bytes":7059,"sha256":"4B97947A3A185D0D6E9ED282B2FC4E19621BD792AED4F18F4A0D7E594A682788"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261021\\git-attribute-capability-observation.json","bytes":2972,"sha256":"0FC8853FC86F22C7CF11CBCB9CD6EE03FF34D4ED3FC6E955F5A9F3D3B92E00C4"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py","bytes":23554,"sha256":"1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010"},{"path":"C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\authoring\\declared-edits.json","bytes":27011,"sha256":"3205A1A6B4B5E7171E6232358152F843E5D7D352EE5677D6C9C51435B14DFF42"}]''')
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def checked(pin):
+ b=Path(pin["path"]).read_bytes()
+ assert len(b)==pin["bytes"] and sha(b)==pin["sha256"],pin
+ return b
+def describe(path,b):return {"path":str(path),"bytes":len(b),"sha256":sha(b)}
+def write_new(path,value):
+ b=(json.dumps(value,indent=2,ensure_ascii=False)+"\n").encode("utf-8")
+ assert not path.exists(),str(path)
+ with path.open("xb") as f:f.write(b)
+ assert path.read_bytes()==b
+ return describe(path,b)
+def functions(raw):
+ lines=raw.splitlines(keepends=True);tree=ast.parse(raw.decode("utf-8"))
+ return {node.name:(b"".join(lines[node.lineno-1:node.end_lineno]),node.lineno,node.end_lineno)
+  for node in tree.body if isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef))}
+outputs=[D/"finite-source-adaptation.json",D/"static-source-proof.json"]
+assert all(not path.exists() for path in outputs)
+loaded=[checked(pin) for pin in PINS]
+base,gap_raw,plan_raw,accept_raw,cap_raw,selected,declared_raw=loaded
+gap=json.loads(gap_raw);plan=json.loads(plan_raw);accept=json.loads(accept_raw);cap=json.loads(cap_raw)
+declared=json.loads(declared_raw);steps=declared["edits"]
+assert len(steps)==20
+assert declared["baseline"]==PINS[0]
+assert declared["candidate"]["path"]==PINS[5]["path"]
+assert declared["candidate"]["sha256"]==PINS[5]["sha256"]
+assert declared["candidate"]["bytes"]==PINS[5]["bytes"]
+assert declared["candidate_or_prefix_executed"] is False
+current=base;origins=list(range(len(base)));finite=[];labels=set()
+for number,edit in enumerate(steps,1):
+ assert edit["label"] not in labels
+ labels.add(edit["label"])
+ text=current.decode("utf-8");char_offset=edit["offset"]
+ before=edit["before"].encode("utf-8");after=edit["after"].encode("utf-8")
+ assert text[char_offset:char_offset+len(edit["before"])]==edit["before"],number
+ offset=len(text[:char_offset].encode("utf-8"));assert current[offset:offset+len(before)]==before
+ prefix=current[:offset];suffix=current[offset+len(before):]
+ next_raw=prefix+after+suffix
+ assert next_raw[:offset]==prefix and next_raw[offset+len(after):]==suffix
+ finite.append({"step":number,"label":edit["label"],"current_offset_bytes":offset,
+  "before_utf8":edit["before"],"after_utf8":edit["after"],
+  "before_bytes":len(before),"after_bytes":len(after),"before_sha256":sha(before),"after_sha256":sha(after),
+  "intermediate_before_bytes":len(current),"intermediate_before_sha256":sha(current),
+  "intermediate_after_bytes":len(next_raw),"intermediate_after_sha256":sha(next_raw),
+  "untouched_prefix":{"bytes":len(prefix),"sha256":sha(prefix)},
+  "untouched_suffix":{"bytes":len(suffix),"sha256":sha(suffix)}})
+ origins=origins[:offset]+[-1]*len(after)+origins[offset+len(before):]
+ current=next_raw
+assert current==selected
+back=selected
+for edit in reversed(finite):
+ offset=edit["current_offset_bytes"];before=edit["before_utf8"].encode("utf-8");after=edit["after_utf8"].encode("utf-8")
+ assert sha(back)==edit["intermediate_after_sha256"]
+ assert back[offset:offset+len(after)]==after
+ back=back[:offset]+before+back[offset+len(after):]
+ assert sha(back)==edit["intermediate_before_sha256"]
+assert back==base
+# The full-line function bytes are parsed, never evaluated.
+bf=functions(base);sf=functions(selected)
+expected=["sha","raw","pinned","git","gout","inside","new_file","new_json","blob_many","tree_paths","no_hooks"]
+assert list(bf)==expected and len(sf)==22
+helpers=[]
+for name in expected:
+ old,old_start,old_end=bf[name];new,new_start,new_end=sf[name]
+ assert old==new,name
+ helpers.append({"name":name,"bytes":len(old),"sha256":sha(old),
+  "baseline_lines":[old_start,old_end],"candidate_lines":[new_start,new_end],"complete_full_line_bytes_equal":True})
+gap_helpers=gap["independently_recomputed_source_comparison"][0]["helpers"]
+assert [(x["name"],x["bytes"],x["sha256"]) for x in helpers]==[(x["name"],x["bytes"],x["sha256"]) for x in gap_helpers]
+new_helpers=[{"name":name,"bytes":len(value[0]),"sha256":sha(value[0]),"lines":[value[1],value[2]]}
+ for name,value in sf.items() if name not in bf]
+tail_start=base.index(b'rows=manifest["rows"]\n');tail=base[tail_start:]
+assert len(tail)==5897 and sha(tail)=="E8CAF87944A614D7BAC12EF745B79D83314DD7CFAF94F06B99231E4D008A2F8E"
+# Track every raw baseline byte that survives outside an explicitly replaced span.
+fragments=[];i=0
+while i<len(origins):
+ if origins[i]<0:i+=1;continue
+ start=i;original=origins[i];i+=1
+ while i<len(origins) and origins[i]==original+(i-start):i+=1
+ block=selected[start:i];assert block==base[original:original+len(block)]
+ fragments.append({"baseline_start":original,"candidate_start":start,"bytes":len(block),"sha256":sha(block)})
+covered={x for x in origins if x>=0};assert len(covered)==sum(x["bytes"] for x in fragments)
+replaced=[];i=0
+while i<len(base):
+ if i in covered:i+=1;continue
+ start=i;i+=1
+ while i<len(base) and i not in covered:i+=1
+ replaced.append({"baseline_start":start,"bytes":i-start,"sha256":sha(base[start:i])})
+assert sum(x["bytes"] for x in replaced)+len(covered)==len(base)
+tail_retained=sum(x>=tail_start for x in covered)
+tail_accounting={"baseline_start":tail_start,"bytes":len(tail),"sha256":sha(tail),
+ "retained_outside_declared_replacements_bytes":tail_retained,
+ "inside_declared_replaced_spans_bytes":len(tail)-tail_retained,
+ "all_5897_bytes_accounted":True,"entire_tail_unchanged":False}
+# Fixed unresolved literals, no invented future intake identity.
+tree=ast.parse(selected.decode("utf-8"));assignments={}
+for node in tree.body:
+ if isinstance(node,ast.Assign) and len(node.targets)==1 and isinstance(node.targets[0],ast.Name):
+  if node.targets[0].id in ("BASIS","MANIFESTS","BYTE_CONTRACT","ATTR_NAMES"):
+   assignments[node.targets[0].id]=ast.literal_eval(node.value)
+assert assignments["BASIS"]=="UNRESOLVED_PENDING20_RELEASED_HEAD______"
+assert len(assignments["BASIS"])==40
+manifest=assignments["MANIFESTS"];assert set(manifest)=={"fixture"}
+assert manifest["fixture"][:3]==("evidence/UNRESOLVED-PENDING20-FINAL-MANIFEST/manifest.json",
+ "UNRESOLVED_PENDING20_FINAL_MANIFEST_SHA256______________________",0)
+assert len(manifest["fixture"][1])==64
+assert assignments["BYTE_CONTRACT"]=="pending20_exact_git_bytes_attributes_aliases_modes_v1"
+assert assignments["ATTR_NAMES"]==("text","eol","filter","working-tree-encoding","ident")
+text=selected.decode("utf-8")
+assert 'if not __debug__: raise RuntimeError' in text
+assert 'Future released source head is unresolved' in text and 'Future manifest bindings are unresolved' in text
+assert text.index('Future manifest bindings are unresolved')<text.index('assert len(sys.argv)==4')
+# Complete ordered main-body barriers. Helper definitions are outside this ordering.
+main=text[text.index('assert len(sys.argv)==4'):]
+markers=[
+ 'assert release["source_intake_authorized"] is True',
+ 'for pin in release["required_current_pins"]:',
+ 'repository=repository_identity()',
+ 'FAILURE_STATE.update(stage="complete_donor_path_and_preimage_admission"',
+ 'logical_aliases=manifest["logical_donor_aliases"]',
+ 'FAILURE_STATE["stage"]="complete_attribute_and_git_object_preflight"',
+ 'attributes=effective_attributes(names)',
+ 'raw_git=oid_text(git("hash-object","--no-filters","--stdin",input=b).stdout,object_format)',
+ 'path_git=oid_text(git("hash-object","--path="+rel,"--stdin",input=b).stdout,object_format)',
+ 'before_copy_revalidation=assert_conversion_unchanged(',
+ 'new_json(proof/(phase+"-preflight.json"),preflight)',
+ 'FAILURE_STATE.update(stage="copying_exact_reviewed_rows",Main_or_index_writes_started=True)',
+ 'post_copy_revalidation=assert_conversion_unchanged(',
+ 'git("--literal-pathspecs","add",',
+ 'assert entry["mode"]==row["mode"] and entry["oid"]==expected_ids[rel] and entry["stage"]==0',
+ 'pre_commit_revalidation=assert_conversion_unchanged(',
+ 'commit=git("commit","--file="+str(message))',
+ 'assert after!=head and parents==[head]',
+ 'assert entry["type"]=="blob" and entry["mode"]==row["mode"] and entry["oid"]==expected_ids[rel]',
+ 'final_revalidation=assert_conversion_unchanged(',
+ 'new_json(receipt_path,receipt)']
+positions=[main.index(marker) for marker in markers];assert positions==sorted(positions) and len(set(positions))==len(positions)
+barriers=[{"marker":marker,"main_character_offset":pos} for marker,pos in zip(markers,positions)]
+for required in [
+ 'assert raw_git==expected_blob','assert path_git==raw_git',
+ 'alias_bytes==b','assert key in alias_keys','assert before["mode"]==row["mode"]',
+ 'for rel in names: no_reparse_target(rel)',
+ 'assert blob==old,("basis_preimage",row["target"])',
+ 'assert blob==old,("head_preimage",row["target"])',
+ 'no_hooks()','"rollback_or_cleanup_performed":False',
+ 'assert actual_attributes==attributes','assert actual_provenance==provenance',
+ 'present=sorted(k for k in os.environ if k in unsafe or k.startswith("GIT_CONFIG_"))']:
+ assert required in text,required
+# The sole child invocation remains the original Git helper; no candidate import/evaluation exists.
+run_calls=[node for node in ast.walk(tree) if isinstance(node,ast.Call) and isinstance(node.func,ast.Attribute)
+ and isinstance(node.func.value,ast.Name) and node.func.value.id=="subprocess" and node.func.attr=="run"]
+assert len(run_calls)==1
+for node in ast.walk(tree):
+ if isinstance(node,ast.Call) and isinstance(node.func,ast.Name):
+  assert node.func.id not in {"eval","exec","compile","__import__"},node.func.id
+adaptation={"schema":1,"status":"unissued_finite_strengthened_pending20_adapter_source",
+ "baseline":PINS[0],"candidate":PINS[5],"declared_edits":PINS[6],"step_count":len(finite),
+ "steps":finite,"whole_forward_exact":True,"whole_inverse_exact":True,
+ "complete_untouched_fragments":fragments,"baseline_replaced_ranges":replaced,
+ "all_baseline_bytes_accounted":True,"baseline_tail_accounting":tail_accounting,
+ "unchanged_inherited_helpers":helpers,"new_helper_bodies":new_helpers,
+ "source_only":True,"candidate_or_prefix_executed":False,"Main_accessed":False,
+ "configuration_issued":False,"native_execution_authorized":False}
+adaptation_pin=write_new(outputs[0],adaptation)
+proof={"schema":1,"status":"static_source_accounting_passed_unissued",
+ "utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),
+ "checker":describe(__file__,Path(__file__).read_bytes()),"inputs":PINS,"adaptation":adaptation_pin,
+ "exact_step_count":len(finite),"whole_forward_exact":True,"whole_inverse_exact":True,
+ "inherited_helper_count":len(helpers),"new_helper_count":len(new_helpers),"helpers":helpers,
+ "tail_accounting":tail_accounting,"ordered_main_barriers":barriers,
+ "future_bindings":{"released_head":None,"final_manifest_path":None,"final_manifest_sha256":None,
+ "final_manifest_count":None,"Root_source_release":None,"Root_manifest_adapter_peer":None},
+ "syntax_checked_without_evaluation":True,"source_or_prefix_executed":False,
+ "candidate_child_programs_executed":False,"Main_accessed":False,"index_accessed":False,
+ "candidate_runtime_behavior_claimed":False,"application_qualified":False,
+ "concrete_external_blocker":"Retained-target Latin1 diagnostics/fatal linkage requires a separately reviewed build-only successor before source intake can be issued.",
+ "semantic_limit":"Static source/proof checks do not grant intake authority or predict actual Git conversion, modes, future source head or native outcomes."}
+proof_pin=write_new(outputs[1],proof)
+print(json.dumps({"adaptation":adaptation_pin,"proof":proof_pin,"steps":len(finite),"unchanged_helpers":len(helpers),
+ "baseline_tail_bytes_accounted":len(tail),"candidate_or_prefix_executed":False,"Main_accessed":False}))

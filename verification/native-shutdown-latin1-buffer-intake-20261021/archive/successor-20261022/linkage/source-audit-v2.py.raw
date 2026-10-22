@@ -1,0 +1,245 @@
+from pathlib import Path
+import collections,hashlib,json,os,posixpath,re,subprocess
+B=Path(r"C:\Users\adyba\pi-zig")
+W=B/"worktrees/modules-io-resume-20261018"
+D=W/"verification/native-node-shutdown-linkage-build-successor-sourceonly-20261022"
+HEAD="014062f2d139254acab4b985b4ae343db637166f"
+OUT=D/"source-proof.json"
+assert not OUT.exists(),str(OUT)
+sha=lambda b:hashlib.sha256(b).hexdigest().upper()
+pins=[]
+def pin(p,expected=None):
+ r=Path(p).read_bytes();row={"path":str(p),"bytes":len(r),"sha256":sha(r)}
+ if expected:assert (len(r),sha(r))==expected,(p,row)
+ pins.append(row);return r
+def git(*args,input=None):
+ q=subprocess.run(["git","--no-optional-locks","-C",str(W),*args],input=input,capture_output=True,env={**os.environ,"GIT_OPTIONAL_LOCKS":"0"})
+ assert q.returncode==0,q.stderr;return q.stdout
+inventory=json.loads(pin(D/"source-import-inventory.json",(3607367,"3E96991E1AD5128D797C9E46ECA6E403ECD606507E2D99D6137EE80F3F6768A6")))
+proposal=json.loads(pin(D/"build-proposal.json",(19578,"66015D20AF046807E1F22E2FFBB0E08EB81CD6070F5781E9ACE61EA6249FC9DB")))
+original=pin(D/"original/build.zig",(514007,"868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"))
+projected=pin(D/"projected/build.zig",(514105,"594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF"))
+plan=json.loads(pin(B/"evidence/unissued-shutdown-latin1-buffer-union014-intake-plan-20261021/copy-manifest-plan.json",(378545,"E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74")))
+pin(D/"source-import-inventory-author.py",(6144,"94192B7C4931166A4D66C9F41FCF4E2B950B4993EBADE8A9DD48D5723B5A49DA"))
+pin(D/"author-build-proposal.py",(8530,"F09E0840543F48A46FF7B236E33730E3E1B51C347130B9553B32E6E6C449E48B"))
+for name,n,h in [
+ ("catalog-validation-plan.json",43878,"EA2AE101AC381659E604478E8303D22E7C508CE38994B43A9367B2FC8506B7F4"),
+ ("source-observations.json",28145,"1033A5ACEAC5F3C755BABD3C4652410BBAA5A5342400A109617BA5DA3A53D071"),
+ ("handoff.json",3795,"E99924DF1D0BC21F1D3D74FA750BC1FC3AACA7AD9744CC4A18FAC42E544751D6")]:
+ pin(B/"evidence/unissued-v39-pending20-catalog-validation-plan-20261021"/name,(n,h))
+tree={}
+for rec in git("ls-tree","-r","-z",HEAD).split(b"\0"):
+ if rec:
+  meta,path=rec.split(b"\t",1);mode,kind,oid=meta.split()
+  if kind==b"blob":tree[path.decode()]={"git_blob":oid.decode(),"mode":mode.decode()}
+ip=inventory["git_source_pins"]
+assert len(ip)==2841
+assert [p["relative_path"]for p in ip]==sorted(p for p in tree if p.endswith(".zig")and p.startswith(("src/","tools/")))
+for p in ip:assert tree[p["relative_path"]]=={k:p[k]for k in ("git_blob","mode")}
+blobdata=git("cat-file","--batch",input=("\n".join(p["git_blob"]for p in ip)+"\n").encode())
+at=0;sources={};sourcepins={}
+for p in ip:
+ end=blobdata.index(b"\n",at);oid,kind,n=blobdata[at:end].split();n=int(n);start=end+1;r=blobdata[start:start+n]
+ assert kind==b"blob"and oid.decode()==p["git_blob"]and (n,sha(r))==(p["bytes"],p["sha256"])
+ assert blobdata[start+n:start+n+1]==b"\n";at=start+n+1
+ sources[p["relative_path"]]=r;sourcepins[p["relative_path"]]=p
+assert at==len(blobdata)
+overlay={}
+for row in plan["source_rows"]:
+ p=row["donor"];r=pin(p["path"],(p["bytes"],p["sha256"]))
+ overlay[row["relative_path"]]=r
+ if row["relative_path"].endswith(".zig"):sources[row["relative_path"]]=r;sourcepins[row["relative_path"]]=p
+assert len(overlay)==20 and overlay["build.zig"]==original
+assert proposal["preserved_other19_donors"]==[{"relative_path":r["relative_path"],"donor":r["donor"]}for r in plan["source_rows"]if r["relative_path"]!="build.zig"]
+native_git=[]
+for path,expect in [
+ ("src/extensions/native_node_diagnostic_context.c",(789,"AC01853D724253740008E26D2663545D2F564A6E59DE91AA8CE2C8777C7B832C")),
+ ("src/extensions/native_node_diagnostic_context.h",(775,"4D8E43A6527FED6AA19F86A2A51CD490E5DDEAC6CCC323635B700ED4E8B798C0")),
+ ("src/extensions/native_node_diagnostic_context.hpp",(914,"7EA7700F4EDCC6ED5C27DF98574BE27A572AFF01E151B9F39667E6737ACC30B9")),
+ ("src/extensions/native_node_file_handle_transfer.cpp",None)]:
+ r=git("cat-file","blob",HEAD+":"+path)
+ if expect:assert (len(r),sha(r))==expect
+ row={"relative_path":path,"bytes":len(r),"sha256":sha(r),**tree[path],"basis":HEAD}
+ native_git.append(row);sources[path]=r;sourcepins[path]=row
+rx=re.compile(r'(?P<comment>//[^\n]*)|(?P<multiline>\\\\[^\n]*)|(?P<string>"(?:\\.|[^"\\])*")|(?P<char>\'(?:\\.|[^\'\\])*\')|(?P<word>@?[A-Za-z_][A-Za-z_0-9]*)|(?P<punct>\S)')
+def lex(s):return [(m.group(),m.start(),m.end(),m.lastgroup)for m in rx.finditer(s)if m.lastgroup not in ("comment","multiline")]
+named={"catalog_tool":"tools/catalog.zig","native_icu_api":"src/extensions/icu/native_icu_api.zig","native_photon_link":"src/ai/photon_session.zig","pi_zig":"src/root.zig"}
+edges={};missing=[];unknown=[];named_sites=collections.defaultdict(list)
+for p,r in sources.items():
+ if not p.endswith(".zig"):continue
+ s=r.decode();ts=lex(s);out=[]
+ for i,t in enumerate(ts):
+  if t[0]!="@import":continue
+  assert ts[i+1][0]=="("and ts[i+2][3]=="string"and ts[i+3][0]==")",(p,t)
+  text=json.loads(ts[i+2][0]);line=s.count("\n",0,t[1])+1;dest=None
+  if text.endswith(".zig"):dest=posixpath.normpath(posixpath.join(posixpath.dirname(p),text))
+  elif text in named:dest=named[text]
+  else:named_sites[text].append({"source":p,"line":line})
+  if dest is not None:
+   if dest not in sources:missing.append({"source":p,"import":text,"destination":dest,"line":line})
+   else:out.append({"target":dest,"literal":text,"line":line})
+ edges[p]=out
+assert edges==inventory["literal_import_edges"]
+assert missing==inventory["unresolved_relative_imports"]and len(missing)==2
+aug={p:list(es)for p,es in edges.items()}
+bindings={"pi_features":["src/features_no_sqlite.zig","src/features_sqlite.zig"],"sqlite_persistence":["src/sqlite_server_persistence.zig"],"release_config":["src/config.zig"]}
+options={"native_vm_identity","sdk_public_allocation_options","sdk_ui_allocation_options"}
+assert set(named_sites)-{"std","builtin","root"}==set(bindings)|options
+for name,targets in bindings.items():
+ for site in named_sites[name]:
+  for target in targets:
+   assert target in sources
+   aug[site["source"]].append({"target":target,"literal":name,"line":site["line"],"source_only_named_resolution":True})
+assert b"pub const sqlite_enabled = false;"in sources["src/features_no_sqlite.zig"]
+assert b"pub const sqlite_enabled = true;"in sources["src/features_sqlite.zig"]
+ident=sources["tools/build_native_vm_identity.zig"]
+assert b'options.addOption([64]u8, "sha256"'in ident and b'options.addOption([]const u8, "schema"'in ident
+assert len(re.findall(rb'options\.addOption\(',ident))==2
+assert b'return options.createModule();'in ident
+assert b'sdk_public_options.addOption(?u8, "range", sdk_public_allocation_range);'in original
+assert b'sdk_ui_options.addOption(?u8, "range", sdk_ui_allocation_range);'in original
+def reach(root,target=None):
+ todo=[root];parent={root:None}
+ for p in todo:
+  if p==target:
+   out=[]
+   while p is not None:out.append(p);p=parent[p]
+   return out[::-1]
+  for e in aug.get(p,[]):
+   q=e["target"]
+   if q not in parent:parent[q]=p;todo.append(q)
+ return None if target else sorted(parent)
+s=original.decode();ts=lex(s);fields=[]
+for i,t in enumerate(ts):
+ if t[0]=="."and i+2<len(ts)and ts[i+1][0]=="root_source_file"and ts[i+2][0]=="=":
+  j=i+3;k=j;depth=0
+  while k<len(ts):
+   x=ts[k][0]
+   if x==","and depth==0:break
+   if x in ("(","[","{"):depth+=1
+   if x in (")","]","}"):depth-=1
+   k+=1
+  expr=s[ts[j][1]:ts[k-1][2]]
+  fields.append({"line":s.count("\n",0,t[1])+1,"expression":expr})
+literal=[];dynamic=[]
+for f in fields:
+ m=re.fullmatch(r'b\.path\("([^"]+)"\)',f["expression"])
+ if m:literal.append({**f,"root":m.group(1)})
+ else:dynamic.append(f)
+assert len(fields)==545 and len(literal)==537
+families={190:(185,195,3),225:(224,229,4),3235:(3234,3244,3),3748:(3741,3755,4),3941:(3935,3950,2),4366:(4358,4377,5),4385:(4381,4394,2),4429:(4424,4438,3)}
+assert [f["line"]for f in dynamic]==list(families)
+lines=original.splitlines(keepends=True);family_rows=[]
+for f in dynamic:
+ a,z,n=families[f["line"]];raw=b"".join(lines[a-1:z])
+ roots=sorted(set(re.findall(r'"((?:src|tools)/[^"]+\.zig)"',raw.decode())))
+ header=b"".join(lines[a-1:f["line"]-1])
+ roots=sorted(set(re.findall(r'"((?:src|tools)/[^"]+\.zig)"',header.decode())))
+ assert len(roots)==n,(f,roots,n)
+ family_rows.append({**f,"header_start":a,"header_end":f["line"]-1,"header_bytes":len(header),"header_sha256":sha(header),"roots":roots})
+roots=sorted({r["root"]for r in literal}|{r for f in family_rows for r in f["roots"]})
+assert set(roots)<=set(inventory["build_literal_root_candidates"])
+build_helpers=sorted({e["target"]for e in edges["build.zig"]})
+helper_roots=[]
+for p in build_helpers:
+ text=sources[p].decode()
+ fs=re.findall(r'\.root_source_file\s*=\s*b\.path\("([^"]+)"\)',text)
+ if p=="tools/build_native_icu.zig":assert fs==["src/extensions/icu/native_icu_api.zig"]
+ else:assert not fs,p
+ helper_roots.extend(fs)
+ for needle in ["native_node_one_byte_string_diagnostics.cpp","native_v8_base_fatal.cpp","native_node_diagnostic_context.c"]:assert needle not in text,p
+all_roots=sorted(set(roots)|set(helper_roots))
+onebyte="src/extensions/native_node_one_byte_string.zig"
+base="src/extensions/native_node_stream_base.zig"
+hits={r:reach(r,onebyte)for r in all_roots};hits={r:p for r,p in hits.items()if p}
+selected=[
+ ("node_stream_read","src/native_node_stream_read_test.zig","native-node-stream-read","direct Base.init"),
+ ("node_file_handle_read","src/native_node_file_handle_read_test.zig","native-node-file-handle-read","read fixture Base.init"),
+ ("node_fs_callback_template","src/native_node_fs_callback_template_test.zig","native-node-fs-callback-template","read fixture Base.init"),
+ ("node_file_handle_owner","src/native_node_file_handle_owner_test.zig","native-node-file-handle-owner","Handle.construct to Base.init"),
+ ("node_fs_before_hook_continuation","src/native_node_fs_before_hook_continuation_test.zig","native-node-fs-before-hook-continuation","conservative shared owner-fixture dependency; no selected construct call proved"),
+ ("node_file_handle_transfer","src/native_node_file_handle_transfer_test.zig","native-node-file-handle-transfer","Handle.construct to Base.init and actual native transfer TLS"),
+ ("node_stream_shutdown","src/native_node_stream_shutdown_test.zig","native-node-stream-shutdown","real Handle constructor and reporter/request operations"),
+ ("node_one_byte_string","src/native_node_one_byte_string_test.zig","native-node-one-byte-string","direct OneByteString API")]
+selected_roots={x[1]for x in selected}
+resource="src/native_node_stream_resource_test.zig"
+assert set(hits)==selected_roots|{resource}
+assert all(reach(r,"src/extensions/native_node_readline_errors.zig")is None for r in all_roots)
+artifact_rows=[]
+for var,root,target,reason in selected:
+ assert original.count(('"'+root+'"').encode())==1
+ start=original.index(("        const "+var+" = b.addTest(.{\n").encode())
+ end=original.find(b"\n        const ",start+1);assert end>start
+ block=original[start:end]
+ assert ('b.step("build-'+target+'"').encode()in block and ('b.fmt("'+target+'{s}"').encode()in block
+ outside=original[:start]+original[end:]
+ assert not re.search(rb'\b'+var.encode()+rb'\b',outside),var
+ assert (var+".root_module.linkLibrary(node_one_byte_diagnostics);").encode()in projected
+ artifact_rows.append({"variable":var,"root":root,"target":"build-"+target,"artifact_basename":target,"windows_suffix":".exe","reason":reason,"original_block_bytes":len(block),"original_block_sha256":sha(block),"source_import_path":hits[root]})
+assert b".after_shutdown = shutdown.reportAfterShutdown"in sources[base]
+for p in ["src/extensions/native_node_file_handle_owner.zig","src/native_node_file_handle_read_test_support.zig","src/native_node_stream_read_test.zig"]:
+ assert b".stream.init("in sources[p],p
+assert b"try Handle.construct("in sources["src/native_node_file_handle_owner_test_support.zig"]
+assert b"try latin1.fromOneByte("in sources["src/native_node_one_byte_string_test.zig"]
+res=sources["src/extensions/native_node_stream_resource.zig"];rt=sources[resource]
+assert b"= forwardAfterShutdown,"in res and b"return previous.after_shutdown(previous, request, status);"in res
+assert b".resource = streams.Resource.init(engine)"in rt
+for needle in [b"Base.init",b"reportAfterShutdown",b"emitAfterShutdown",b"Request.done",b".shutdown(",b"refAllDecls"]:assert needle not in rt
+before=sources["src/native_node_fs_before_hook_continuation_test.zig"]
+assert b"try f.installFsRead();"in before
+for needle in [b"try f.create(",b"try f.createArgs(",b"Handle.construct",b"Base.init"]:assert needle not in before
+cur=original;steps=[]
+for row in proposal["steps"]:
+ assert len(cur)==row["input_bytes"]and sha(cur)==row["input_sha256"]
+ a=row["before_utf8"].encode();b=row["after_utf8"].encode();pos=row["offset"]
+ assert cur.count(a)==1 and cur[pos:pos+len(a)]==a
+ nxt=cur[:pos]+b+cur[pos+len(a):]
+ assert len(nxt)==row["output_bytes"]and sha(nxt)==row["output_sha256"]
+ assert nxt[:pos]+a+nxt[pos+len(b):]==cur
+ steps.append({"index":row["index"],"label":row["label"],"input":row["input_sha256"],"output":row["output_sha256"],"untouched_prefix_sha256":sha(cur[:pos]),"untouched_suffix_sha256":sha(cur[pos+len(a):])})
+ cur=nxt
+assert len(steps)==9 and cur==projected
+for row in reversed(proposal["steps"]):
+ a=row["before_utf8"].encode();b=row["after_utf8"].encode();pos=row["offset"];assert cur[pos:pos+len(b)]==b
+ cur=cur[:pos]+a+cur[pos+len(b):]
+ assert sha(cur)==row["input_sha256"]
+assert cur==original
+assert projected.count(b".linkLibrary(node_one_byte_diagnostics);")==8
+assert projected.count(b'"src/extensions/native_node_diagnostic_context.c"')==2
+assert projected.count(b'"src/extensions/native_v8_base_fatal.cpp"')==1
+assert projected.count(b'"src/extensions/native_node_one_byte_string_diagnostics.cpp"')==1
+for needle in [b".root_source_file",b".filters",b"b.step(",b".addInstallArtifact",b".use_llvm",b".root_module.addImport("]:
+ assert [l for l in original.splitlines()if needle in l]==[l for l in projected.splitlines()if needle in l]
+standalone=original[original.index(b"        const native_diagnostic_context_tests ="):original.index(b'\n}',original.index(b"        const native_diagnostic_context_tests ="))]
+assert standalone in projected and b"node_one_byte_diagnostics"not in standalone
+assert b"native_node_diagnostic_context.c"not in sources["tools/build_native_node_network.zig"]
+assert b"native_node_diagnostic_context.c"not in sources["tools/build_native_node_memory.zig"]
+excerpts=[]
+ranges={
+ "src/extensions/native_node_stream_base.zig":[(77,91)],
+ "src/extensions/native_node_file_handle_owner.zig":[(41,57),(154,193)],
+ "src/native_node_file_handle_owner_test_support.zig":[(308,338),(339,370),(392,422),(553,573),(589,641)],
+ "src/native_node_file_handle_read_test_support.zig":[(242,270),(299,323)],
+ "src/native_node_stream_read_test.zig":[(235,252),(292,308)],
+ "src/extensions/native_node_stream_shutdown.zig":[(175,226)],
+ "src/extensions/native_node_stream_request.zig":[(37,63)],
+ "src/extensions/native_node_one_byte_string.zig":[(1,52)],
+ "src/native_node_one_byte_string_test.zig":[(3,14)],
+ "src/extensions/native_node_stream_resource.zig":[(24,52),(54,64)],
+ resource:[(1,87),(89,178)],
+ "src/native_node_fs_before_hook_continuation_test.zig":[(40,115)],
+ "tools/build_native_vm_identity.zig":[(78,82)],
+ "src/features_no_sqlite.zig":[(1,2)],"src/features_sqlite.zig":[(1,2)]}
+for p,rs in ranges.items():
+ lines=sources[p].splitlines(keepends=True)
+ for a,z in rs:
+  assert z<=len(lines),(p,z,len(lines))
+  r=b"".join(lines[a-1:z]);excerpts.append({"source":p,"source_pin":sourcepins[p],"start":a,"end":z,"bytes":len(r),"sha256":sha(r),"utf8":r.decode()})
+excluded_roots=[{"root":r,"imports_onebyte":False,"imports_base":False}for r in all_roots if r not in hits]
+assert all(reach(r,base)is None for r in all_roots if r not in hits)
+for r in ["src/root.zig","src/main.zig","src/sqlite_server_persistence.zig"]:assert r in all_roots and r not in hits
+proof={"schema":1,"status":"passed_bounded_source_only_linkage_build_successor","basis_head":HEAD,"current_file_pins":pins,"raw_git_zig_versions_verified":len(ip),"raw_git_additional_native_pins":native_git,"complete_literal_import_inventory_reproduced":True,"named_import_bindings":bindings,"constant_options_modules":sorted(options),"isolated_preexisting_missing_imports":missing,"build_root_fields":fields,"loop_families":family_rows,"actual_unique_root_files":all_roots,"build_helper_sources":{p:sourcepins[p]for p in build_helpers},"build_helper_zig_roots":helper_roots,"onebyte_import_closures":hits,"artifact_consumers":artifact_rows,"proven_direct_or_fixture_construct_consumers":7,"additional_conservative_shared_fixture_artifacts":1,"excluded_stream_resource":{"root":resource,"reason":"Entire root constructs Resource and native Listener records only. The stored forwardAfterShutdown callback only forwards to the previous callback and uses the existing Node CHECK. No Base.init, Request.done, or reporter entry is selected by this root.","original_root_pin":sourcepins[resource]},"excluded_other_build_roots":excluded_roots,"native_library_ownership":{"archive":"pi-node-one-byte-string-diagnostics","members":proposal["native_library"]["source_members"],"consumer_link_count":8,"definitions_from_archive_membership_per_consumer":1,"direct_duplicate_membership_per_consumer":0,"standalone_diagnostic_context_target_unchanged":True,"network_memory_original_native_owners_unchanged":True,"release_macro_selection_unchanged":"No DEBUG/OFFICIAL_BUILD definition added; target/optimize inherited exactly. No Debug parity or platform qualification is inferred.","windows_dependencies":"Same existing libc/libc++ and Windows kernel imports as the accepted direct recipes; no additional ambient SDK include path.","source_scope":"Recipe membership and source paths, not predicted linker extraction or runtime symbol counts."},"forward_and_inverse_steps":steps,"entire_inverse_exact":True,"original_root_filter_step_install_sequences_unchanged":True,"preserved_other19_donors":proposal["preserved_other19_donors"],"source_excerpts":excerpts,"source_only":True,"Main_accessed":False,"build_or_target_executed":False,"compiler_or_native_executed":False,"configuration_issued":False,"intake_authorized":False,"application_qualified":False}
+raw=(json.dumps(proof,indent=2)+"\n").encode()
+with OUT.open("xb")as f:f.write(raw)
+assert OUT.read_bytes()==raw
+print(json.dumps({"proof":{"path":str(OUT),"bytes":len(raw),"sha256":sha(raw)},"raw_git_zig_versions":len(ip),"build_root_fields":len(fields),"loop_families":len(family_rows),"unique_root_files":len(all_roots),"onebyte_import_roots":len(hits),"artifact_links":len(artifact_rows),"proven_consumers":7,"conservative_fixture_links":1,"excerpts":len(excerpts),"finite_edits":len(steps),"other19_unchanged":True}))

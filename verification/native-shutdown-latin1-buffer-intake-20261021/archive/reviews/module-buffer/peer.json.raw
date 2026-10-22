@@ -1,0 +1,341 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_semantics_and_build_successor",
+  "reviewer": "/root/module_io_port",
+  "scope": "Independent source review of the frozen raw ArrayBufferView address C/H insertion, complete 12-control fixture, original authority/host ownership paths, exact VM composition, and additive canonical-artifact build successor.",
+  "selected_packets": [
+    {
+      "role": "immutable production/control predecessor",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\production-proposal.json",
+      "bytes": 43670,
+      "sha256": "978981A96D6CDD2791FF6B90DDBC575235A83E9C3B678CD3961389AB6866AF12"
+    },
+    {
+      "role": "selected additive build naming/current-head successor",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\proposal.json",
+      "bytes": 30389,
+      "sha256": "81B6F6E7F0DDF12A4A32903E49E6AAE3F4FCDDECCBBA791301DB1FCA7F565913"
+    }
+  ],
+  "selected_source_files": [
+    {
+      "relative_path": "vendor/quickjs/quickjs.c",
+      "role": "finite shared VM insertion",
+      "required_predecessor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "selected_projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404353,
+        "sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.h",
+      "role": "finite shared VM insertion",
+      "required_predecessor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114656,
+        "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+      },
+      "selected_projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 115180,
+        "sha256": "9F63BF26C91440A8C9B3D5F1FF06AB387D6E76630ADEC6D4CAA745179DB46978"
+      }
+    },
+    {
+      "relative_path": "src/native_vm_array_buffer_view_data_test.zig",
+      "role": "new actual VM controls",
+      "selected_projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      }
+    }
+  ],
+  "selected_build_block": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\install-only-block.zig.txt",
+    "bytes": 812,
+    "sha256": "A294A6F8CA4D868376BE9DF89B5F8C0C51638FD5E7E4C53DB769D63B37810EC3"
+  },
+  "independent_companions": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-vm-view-data-independent-peer-20261020\\build-successor-audit.json",
+      "bytes": 15638,
+      "sha256": "0E5C1B420FA8096B08D65BB162CD05D26132D200E920E1DEEC758C9A20D93D0F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-vm-view-data-independent-peer-20261020\\build-successor-audit.py",
+      "bytes": 6256,
+      "sha256": "A07B95072AC916ED7C579D4B950434CF64666B8DEBB687769F79AF15AF09A886"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-vm-view-data-independent-peer-20261020\\source-audit.json",
+      "bytes": 20684,
+      "sha256": "E7F8CA48D5DD2B5B70C76B112A34503A8411807942C72E81AB0226578D7B8F26"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-vm-view-data-independent-peer-20261020\\source-audit.py",
+      "bytes": 9083,
+      "sha256": "055F61FC567B4301997B3CF8490CA075BF0AD99A7A82CF02FC4ADAC123C476EF"
+    }
+  ],
+  "production_findings": [
+    {
+      "topic": "Native brand and valid representation",
+      "finding": "The complete new C body first checks the actual JSValue tag, then the actual TypedArray class range or DataView class, then the initialized typed_array pointer. It performs no guest lookup or Proxy unwrapping. The read constructors initialize ta->buffer/offset before publishing ta; the actual view retains and marks its real buffer. This relies on the explicit live view/owner-thread precondition and does not admit use during or after collection."
+    },
+    {
+      "topic": "Original Node/V8 mapping",
+      "finding": "Pinned Node Buffer::Data uses Buffer()->Data() plus ByteOffset. Pinned V8 ArrayBuffer::Data reads backing_store, and ByteOffset returns the stored offset unless detached. The selected already-backed QuickJS fields express that lower-level address operation. Node's caller brand CHECK and V8 TypedArray::GetBuffer's on-heap allocation/copy/fatal policy remain separate; raw invalid-brand NULL is not substituted for those owners."
+    },
+    {
+      "topic": "Detached and out-of-bounds views",
+      "finding": "The detached branch returns NULL before any address formation. Live RAB out-of-bounds views retain the original stored offset even when the separate usable ByteLength is zero. Integer uintptr_t addition avoids forming an out-of-allocation pointer by C pointer arithmetic solely to observe such an address. It is not permission to dereference the result. All selected control dereferences occur within retained and currently usable extents."
+    },
+    {
+      "topic": "Backing and lifetime",
+      "finding": "The helper reads abuf->data on every call. Native Pi storage preserves that address while actual commit/usable length changes, whereas the existing unmanaged resize path may move data. Detach, transfer, collection and owner retirement can invalidate an earlier borrow. The new helper adds no root, native reference or lease and calls no release. The fixture uses actual retaining views or explicit independent leases when observing ownership counters and never uses a borrowed address after final retirement."
+    },
+    {
+      "topic": "Shared buffers",
+      "finding": "The provider publishes actual shared length atomically and retains real shared storage through serializer hooks. The primitive only reads stable data and offset; usable length remains the existing independent ByteLength operation. The two-runtime control observes real growth and common physical storage without fabricating a cross-thread JS lease. No concurrency or target qualification is inferred."
+    },
+    {
+      "topic": "No allocation, guest work or pending-state change",
+      "finding": "The full body and actual macro/class helper definitions contain only value/tag/class/field reads and local pointer arithmetic. No JSContext, allocator, guest call, root/lease operation or current-exception access occurs. The controls use real malloc_state limit guards, JS_Throw/JS_GetException, uncatchable Error flags and private termination request/generation/cancel owners. The source read supports noninterference without relying solely on the lexical helper inventory."
+    },
+    {
+      "topic": "Fixture teardown",
+      "finding": "Fixture initialization/deinitialization retains the actual memory domain through runtime teardown. Deferred JS values are freed before their contexts; clone bytes and explicit shared backing references are retired in their actual ownership order. External stack storage and callback state outlive the runtime/cleanup that borrows them. Explicit early releases reset variables or leases, avoiding repeated ownership drops in deferred cleanup."
+    },
+    {
+      "topic": "Bounded ABI",
+      "finding": "The exact uint8_t *(JSValueConst) declaration is visible through unchanged engine_abi.h -> quickjs.h and the common VM library. No new translation unit, include, compiler option, generic host bridge, replacement callback policy, listener or public FileHandle method is introduced."
+    }
+  ],
+  "control_source_review": [
+    {
+      "index": 0,
+      "name": "VM view data every typed-array width and DataView expose the physical backing offset",
+      "observation": "Reads every supported TypedArray width and DataView at nonzero aligned or byte offsets, then performs in-extent physical writes in both directions.",
+      "executed": false
+    },
+    {
+      "index": 1,
+      "name": "VM view data live empty views retain their exact end pointer",
+      "observation": "Observes one-past-end addresses of zero-length views over a retained nonempty backing without dereferencing them.",
+      "executed": false
+    },
+    {
+      "index": 2,
+      "name": "VM view data bypasses getters and rejects forged live and revoked proxy brands",
+      "observation": "Uses throwing own getters, a live Proxy and a revoked Proxy plus forged prototypes; native branding remains independent of all guest properties.",
+      "executed": false
+    },
+    {
+      "index": 3,
+      "name": "VM view data detached typed and DataView addresses are null while lease acquisition still throws",
+      "observation": "Actually detaches the backing and checks raw NULL/zero length, while the independent retaining lease API still raises its real catchable error.",
+      "executed": false
+    },
+    {
+      "index": 4,
+      "name": "VM view data fixed resizable views preserve stored offsets while out of bounds and after regrowth",
+      "observation": "Shrinks a real fixed RAB below each stored offset, observes addresses without dereference, then regrows before the physical write.",
+      "executed": false
+    },
+    {
+      "index": 5,
+      "name": "VM view data tracking resizable views keep the address independently of rounded usable length",
+      "observation": "Separately observes stored address and rounded usable length for tracking typed/DataView views through shrink-to-zero and regrowth.",
+      "executed": false
+    },
+    {
+      "index": 6,
+      "name": "VM view data shared aliases expose one native address across real runtime growth",
+      "observation": "Uses actual same-process SAB serialization, retained backing and two real VM runtimes; growth occurs before an in-range write through the receiver alias. This is not a concurrent-thread qualification.",
+      "executed": false
+    },
+    {
+      "index": 7,
+      "name": "VM view data allocates nothing under the actual VM memory limit",
+      "observation": "Sets the actual QuickJS malloc limit to 1 and checks native memory accounting and backing references remain unchanged during repeated valid/invalid raw reads.",
+      "executed": false
+    },
+    {
+      "index": 8,
+      "name": "VM view data preserves actual ordinary uncatchable and private termination completions",
+      "observation": "Establishes real ordinary, flagged uncatchable and private execution-termination pending events. Reads under the actual memory limit retain the current reason or private event generation, then dispose through the existing real completion APIs.",
+      "executed": false
+    },
+    {
+      "index": 9,
+      "name": "VM view data borrows without keeping the actual view or native backing alive",
+      "observation": "Drops actual view/buffer references, runs GC, observes the only remaining native lease reference and releases it; no raw address is used after final retirement.",
+      "executed": false
+    },
+    {
+      "index": 10,
+      "name": "VM view data observes unmanaged external storage without adding a lease or changing cleanup",
+      "observation": "Uses caller-owned external stack storage and its actual cleanup callback; no native lease is acquired, the raw in-range write changes the real bytes, and detach triggers exactly the existing single cleanup.",
+      "executed": false
+    },
+    {
+      "index": 11,
+      "name": "VM view data follows real ArrayBuffer transfer detachment and the receiving physical storage",
+      "observation": "Performs actual ArrayBuffer transfer, observes NULL on the detached old view and checks the receiving physical bytes through a new view.",
+      "executed": false
+    }
+  ],
+  "composition_evidence": {
+    "original_manifest_rows_rehashed": 72,
+    "inventory_serialization_sha256": "9CEE70FE4A41851DD558EF7C71F20B4BE76CE7505218770407E22B0710FF2168",
+    "complete_sdk_source_proof_reproduced": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\source-only-checks.json",
+      "bytes": 48455,
+      "sha256": "F59FD3FD1A5BD0BE2A59145156C9E0E052F44BB210494C9A4FC12DE4F5D3B6E4"
+    },
+    "complete_sdk_inventory_reproduced": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependency-inventory.json",
+      "bytes": 44600,
+      "sha256": "9843533B132D9C04C273F05F794B36BCB85E68B08C1FB8D71F2738071129DF5D"
+    },
+    "complete_sdk_closure_reproduced": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\closure-and-preservation.json",
+      "bytes": 18464,
+      "sha256": "5C33DE78B6650A92D6EE162A9ACBA6657BEFE6B78310CAFD15453ACC152E9809"
+    },
+    "unique_file_versions_rechecked": 113,
+    "source_map_excerpts_read_and_bound": 34,
+    "additional_macro_allocator_completion_excerpts": 10,
+    "fixture_and_control_bodies_bound": 12,
+    "prior_sdk_source_files_preserved": 40,
+    "vm_insertions": 2,
+    "exact_offsets_intermediate_hashes_and_whole_inverses": true,
+    "corrected_latin1_composition": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\latin1-successor-composition.json",
+      "bytes": 7587,
+      "sha256": "F992DA49E1550C3E46769D2B1D57DA239391B3D05743BC3C64CCCEC022A8D807"
+    },
+    "optional_combined_vm_files": [
+      {
+        "relative_path": "vendor/quickjs/quickjs.c",
+        "combined": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\combined-with-latin1-successor\\vendor\\quickjs\\quickjs.c",
+          "bytes": 2404878,
+          "sha256": "091E5BE0C22F35CE2029852DEA8D8B017B3784013ED93EDB9F1545A49D8D275F"
+        }
+      },
+      {
+        "relative_path": "vendor/quickjs/quickjs.h",
+        "combined": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\combined-with-latin1-successor\\vendor\\quickjs\\quickjs.h",
+          "bytes": 115346,
+          "sha256": "05AA4DF250CB642536077C5DF80C08C92C1C40BAA347C18140AFB577B583B0EB"
+        }
+      }
+    ],
+    "corrected_latin1_both_orders_and_full_inverses": true,
+    "repository_zig_roots": 1,
+    "quoted_c_reachable_files": 25,
+    "quoted_c_include_edges": 33,
+    "dependency_inventory_entries": 31,
+    "future_actual_metadata": null
+  },
+  "build_successor_review": {
+    "original_rejected_build": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\build\\proposal.json",
+      "bytes": 4359,
+      "sha256": "AD344119A626BB53199DB10991521D2B21A7D464D4EBE68265CECF929A9CA89C"
+    },
+    "original_rejection": "Custom addTest.name changes cached executable/PDB basenames, contrary to the unchanged strict test.exe/test.pdb contract. The original AD344 proposal and all predecessor bytes remain immutable.",
+    "selected_corrected_block": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\install-only-block.zig.txt",
+      "bytes": 812,
+      "sha256": "A294A6F8CA4D868376BE9DF89B5F8C0C51638FD5E7E4C53DB769D63B37810EC3"
+    },
+    "exact_two_changes": [
+      "Remove only the custom addTest.name field, selecting the pinned default test compiler name.",
+      "Set only addInstallArtifact.dest_sub_path for the public installed executable basename."
+    ],
+    "naming_authority": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\zig-naming-authority.json",
+      "bytes": 11751,
+      "sha256": "F972718987A310E725142A598637E08FDC688639B6EA5AA53B0E3F1E97F13CDD"
+    },
+    "naming_excerpts_read_and_bound": 12,
+    "naming_original_files_bound": 5,
+    "target": {
+      "build_step": "build-native-vm-array-buffer-view-data",
+      "root_source": "src/native_vm_array_buffer_view_data_test.zig",
+      "filter": "VM view data",
+      "cached_executable_windows": "test.exe",
+      "cached_pdb_windows": "test.pdb",
+      "installed_executable_windows": "native-vm-array-buffer-view-data.exe",
+      "installed_pdb_windows": "test.pdb",
+      "installed_executable_non_windows": "native-vm-array-buffer-view-data",
+      "declared_named_controls": 12,
+      "actual_future_metadata": null
+    },
+    "complete_successor_proof_reproduced": true,
+    "output_snapshots_reproduced": 8,
+    "whole_block_and_comparison_file_inverses": true,
+    "current79": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\current79-build.zig",
+      "bytes": 509023,
+      "sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55"
+    },
+    "current79_plus_buffer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\current79-with-buffer.zig",
+      "bytes": 509835,
+      "sha256": "51AC4EEFEE7E09507C9ECFBA6052B9378D7E5335789A44E3421618BB1D7FBF4B"
+    },
+    "selected_shutdown_basis": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-current-head-composition-20261020\\projection.json",
+      "bytes": 26005,
+      "sha256": "B0919FB27FB4825C57CAC6FCE0BE074DD58945ED42DA3D7781B8241FAAFFF92D"
+    },
+    "current79_plus_shutdown": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\current79-with-shutdown.zig",
+      "bytes": 513195,
+      "sha256": "ED75E6415A6BA63B4E4F51D7620818D7CAB494971D373F8C2CF3DB8F2E4E026E"
+    },
+    "current79_plus_shutdown_plus_buffer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\current79-with-shutdown-and-buffer.zig",
+      "bytes": 514007,
+      "sha256": "868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+    },
+    "buffer_before_or_after_selected_shutdown_exact": true,
+    "both_whole_inverse_orders_exact": true,
+    "existing_transfer_before_shutdown_preserved": true,
+    "transfer_shutdown_mutual_commutation_not_claimed": true,
+    "canonical_error_block_unchanged": true,
+    "root_source_filter_guards_linkage_and_control_assertions_unchanged": true,
+    "run_steps_added": 0,
+    "note": "The earlier independent source-audit.json intentionally excludes the original AD344 build. build-successor-audit.json adds acceptance of 81B6/A294 only. No frozen predecessor was amended."
+  },
+  "limits": [
+    "Source acceptance only: no Main intake, commit/push, native execution or publication authority is granted by this peer.",
+    "Build names are derived from pinned Zig source. No executable/PDB was produced and no compiler-selected metadata or runtime behavior was measured.",
+    "All raw synchronous borrow, caller lifetime and separate usable-length requirements remain binding.",
+    "Node caller CHECK, V8 on-heap GetBuffer materialization/fatal policy, actual CustomBuffer listener and full StreamBase/FileHandle receiver/template/bootstrap assembly remain separate work.",
+    "The quoted-include inventory does not newly qualify standard/toolchain angle headers or the inherited transitive ICU/YAML/SQLite/photon/network/package library graphs.",
+    "Optional full Shutdown composition retains its independently recorded fatal/TLS/source prerequisites and native qualification limits."
+  ],
+  "execution": {
+    "main_changed": false,
+    "sdk_source_changed": false,
+    "frozen_packets_changed": false,
+    "compiler_or_preprocessor_run": false,
+    "native_or_reference_run": false,
+    "project_generator_run": false,
+    "metadata_query_run": false,
+    "controls_run": false,
+    "actual_future_metadata": null
+  },
+  "conclusion": "No remaining concrete blocker was found in the selected raw address implementation, 12 source controls, VM composition, or additive 81B6 build naming/current-head source projection within the stated scope."
+}

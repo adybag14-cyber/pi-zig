@@ -1,0 +1,369 @@
+{
+  "schema": 1,
+  "status": "root_accepted_unissued_inert21_source_copy_plan",
+  "reviewer": "/root",
+  "reviewed_utc": "2026-10-22T14:24:44.930006+00:00",
+  "basis_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "source_plan_accepted": true,
+  "selected_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 530121,
+    "sha256": "B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC"
+  },
+  "author_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\handoff.json",
+    "bytes": 20300,
+    "sha256": "922C5187B64C7F9B9E565B532D8879DF7155C0B686CBEBBCA36570D12545984A"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\finite-plan-adaptation.json",
+    "bytes": 178617,
+    "sha256": "F82B79EF2026464D7171FD02D4A88E313C34757AD819349653ABAC451AECDB52"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-manifest-plan.json",
+    "bytes": 378545,
+    "sha256": "E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"
+  },
+  "source_author": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\source-plan-author.py",
+    "bytes": 21918,
+    "sha256": "24087B0D29B0636D35A19A2086977356B1676F0EF2726A816DE7EABF6EB160AF"
+  },
+  "author_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\source-proof.json",
+    "bytes": 170872,
+    "sha256": "71458C161214F8C3F5F9F9A60F436EB569FB22E9B81EBD3B2488D342430FF824"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\peer.json",
+    "bytes": 6670,
+    "sha256": "F937DC6A109FFC2869084BA106A2DD68DE80479F541259C4E4D3ABEA7EE5C68E"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\source-check.py",
+    "bytes": 26139,
+    "sha256": "7996E4B4B3BBF324EB90B4B2C5296FC5554A0D4311652EDA8A4D207849BC477F"
+  },
+  "independent_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\source-proof.json",
+    "bytes": 239255,
+    "sha256": "19808F88A061E803E58DF9EF6CB5FD7E96C28C89183EAE3865D8128C592080EB"
+  },
+  "selected_build_donor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-linkage-build-successor-sourceonly-20261022\\projected\\build.zig",
+    "bytes": 514105,
+    "sha256": "594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF"
+  },
+  "selected_fixture_donor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\successor-v2\\projected\\src\\native_node_fs_request_owner_test.zig",
+    "bytes": 57891,
+    "sha256": "FD337AA09700EA151943ED06A86CE5623C37210FA57637B892DCB6AB797C02D6"
+  },
+  "selected_linkage_Root_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending20-shutdown-linkage-build-successor-source-acceptance-20261022.json",
+    "bytes": 16990,
+    "sha256": "2FCDC2953B9D8C980D66D5F10D760DBB31C63E58A6B666888128B05E7FC32D17"
+  },
+  "selected_adapter_Root_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending20-strengthened-intake-adapter-v2-source-acceptance-20261022.json",
+    "bytes": 6683,
+    "sha256": "039E21F5F5A82E7AFEC2AD549DF8E27BDF7729BF8D1E8E4015B4E9C06B99B738"
+  },
+  "selected_unresolved_adapter": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py",
+    "bytes": 23634,
+    "sha256": "8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985"
+  },
+  "fixture_Root_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-fs-request-pump-escrow-source-acceptance-20261022.json",
+    "bytes": 6387,
+    "sha256": "905A69C83F4802963A5D035E076F3F910CDB64ED3D364516325E64C1B60E3ACE"
+  },
+  "fixture_independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v38-fs-request-pump-escrow-source-peer-20261022\\peer.json",
+    "bytes": 6574,
+    "sha256": "C55A1B8277B69A6107B6A994F9A69F2C347E4A735E75B835A0F158D6A04A40F4"
+  },
+  "actual_original_negative_Root_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-retry1-original-negative-runtime-acceptance-20261022.json",
+    "bytes": 5667,
+    "sha256": "2F26F9A1CD8FB66B1AC2330F7D2BBD6E5B30F5E842346B21BC8FFAD683D361E4"
+  },
+  "actual_original_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-control-20261022-134223\\independent-negative-runtime-closure.json",
+    "bytes": 232840,
+    "sha256": "C1BA83DB4C8A70DDF1C9170458D44E0CADCAF1F10C85E9898B55736D31663CB9"
+  },
+  "root_review": {
+    "full_author_source_handoff_and_README_read": true,
+    "full_independent_checker_and_peer_read": true,
+    "all111_operations_independently_replayed": true,
+    "complete_raw_forward_inverse_verified": true,
+    "all329_author_input_versions_independently_rehashed": true,
+    "root_distinct_versions_on_independent_replay": 339,
+    "all348_peer_input_versions_rehashed": true,
+    "old223_physical_rows_and248_logical_prefixes_exact": true,
+    "only_original_source_change": "build868F to594A",
+    "one_source_row_added": "FS fixtureFD337",
+    "other19_source_rows_exact": true,
+    "nine_raw014_Git_preimages_and_modes_verified": true,
+    "all331_current_planned_paths_and_prefixes_checked": true,
+    "all7_core_packet_memberships_reenumerated": true,
+    "all_primary_donors_and_logical_aliases_full_bytes_checked": true,
+    "source_order_and_exclusions_preserved": true
+  },
+  "core_counts": {
+    "source_paths": 21,
+    "source_replacements": 9,
+    "source_additions": 12,
+    "immutable_archive_donors": 329,
+    "archive_copy_paths": 302,
+    "core_copy_rows": 323,
+    "core_plus_final_manifest_paths": 324,
+    "archive_bytes_before_content_dedup": 46959127,
+    "archive_bytes_to_copy": 37463076,
+    "duplicate_archive_copies_removed": 27,
+    "archive_bytes_saved": 9496051,
+    "physical_rows_added_after_old243": 80,
+    "logical_records_after_old268": 82,
+    "future_plan_review_receipt_paths_not_yet_in_core_count": true
+  },
+  "current_planned_counts": {
+    "source_paths": 21,
+    "source_replacements": 9,
+    "source_additions": 12,
+    "archive_physical_paths": 309,
+    "archive_logical_donors": 336,
+    "physical_copy_rows_excluding_manifest": 330,
+    "total_with_separate_manifest": 331,
+    "new_paths_including_manifest": 322,
+    "duplicate_archive_copies_removed": 27
+  },
+  "current_supplemental_rows": [
+    {
+      "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/copy-manifest-plan.json.raw",
+      "kind": "immutable_evidence_archive",
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+        "bytes": 530121,
+        "sha256": "B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC"
+      },
+      "preimage": null,
+      "logical_donors": [
+        {
+          "donor": {
+            "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+            "bytes": 530121,
+            "sha256": "B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC"
+          },
+          "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/copy-manifest-plan.json.raw",
+          "reference_sites": [
+            {
+              "from": "this handoff",
+              "ref": "explicit separately sealed copy-plan evidence"
+            }
+          ],
+          "historical_reference_aliases": []
+        }
+      ]
+    },
+    {
+      "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/finite-plan-adaptation.json.raw",
+      "kind": "immutable_evidence_archive",
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\finite-plan-adaptation.json",
+        "bytes": 178617,
+        "sha256": "F82B79EF2026464D7171FD02D4A88E313C34757AD819349653ABAC451AECDB52"
+      },
+      "preimage": null,
+      "logical_donors": [
+        {
+          "donor": {
+            "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\finite-plan-adaptation.json",
+            "bytes": 178617,
+            "sha256": "F82B79EF2026464D7171FD02D4A88E313C34757AD819349653ABAC451AECDB52"
+          },
+          "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/finite-plan-adaptation.json.raw",
+          "reference_sites": [
+            {
+              "from": "this handoff",
+              "ref": "explicit separately sealed copy-plan evidence"
+            }
+          ],
+          "historical_reference_aliases": []
+        }
+      ]
+    },
+    {
+      "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/source-proof.json.raw",
+      "kind": "immutable_evidence_archive",
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\source-proof.json",
+        "bytes": 170872,
+        "sha256": "71458C161214F8C3F5F9F9A60F436EB569FB22E9B81EBD3B2488D342430FF824"
+      },
+      "preimage": null,
+      "logical_donors": [
+        {
+          "donor": {
+            "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\source-proof.json",
+            "bytes": 170872,
+            "sha256": "71458C161214F8C3F5F9F9A60F436EB569FB22E9B81EBD3B2488D342430FF824"
+          },
+          "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/source-proof.json.raw",
+          "reference_sites": [
+            {
+              "from": "this handoff",
+              "ref": "explicit separately sealed copy-plan evidence"
+            }
+          ],
+          "historical_reference_aliases": []
+        }
+      ]
+    },
+    {
+      "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/source-plan-author.py.raw",
+      "kind": "immutable_evidence_archive",
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\source-plan-author.py",
+        "bytes": 21918,
+        "sha256": "24087B0D29B0636D35A19A2086977356B1676F0EF2726A816DE7EABF6EB160AF"
+      },
+      "preimage": null,
+      "logical_donors": [
+        {
+          "donor": {
+            "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\source-plan-author.py",
+            "bytes": 21918,
+            "sha256": "24087B0D29B0636D35A19A2086977356B1676F0EF2726A816DE7EABF6EB160AF"
+          },
+          "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/source-plan-author.py.raw",
+          "reference_sites": [
+            {
+              "from": "this handoff",
+              "ref": "explicit separately sealed copy-plan evidence"
+            }
+          ],
+          "historical_reference_aliases": []
+        }
+      ]
+    },
+    {
+      "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/authoring/part1.txt.raw",
+      "kind": "immutable_evidence_archive",
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\authoring\\part1.txt",
+        "bytes": 10890,
+        "sha256": "9342C54A9782F60BB76ED00BB54932F33CA66D0294B341CCAECC2B3874BF31FE"
+      },
+      "preimage": null,
+      "logical_donors": [
+        {
+          "donor": {
+            "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\authoring\\part1.txt",
+            "bytes": 10890,
+            "sha256": "9342C54A9782F60BB76ED00BB54932F33CA66D0294B341CCAECC2B3874BF31FE"
+          },
+          "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/authoring/part1.txt.raw",
+          "reference_sites": [
+            {
+              "from": "this handoff",
+              "ref": "explicit separately sealed copy-plan evidence"
+            }
+          ],
+          "historical_reference_aliases": []
+        }
+      ]
+    },
+    {
+      "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/authoring/part2.txt.raw",
+      "kind": "immutable_evidence_archive",
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\authoring\\part2.txt",
+        "bytes": 11028,
+        "sha256": "D83B41C84A9827CE49D0A1B3409D120518D9AD1EAF476068BF87737EF7CBCFEB"
+      },
+      "preimage": null,
+      "logical_donors": [
+        {
+          "donor": {
+            "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\authoring\\part2.txt",
+            "bytes": 11028,
+            "sha256": "D83B41C84A9827CE49D0A1B3409D120518D9AD1EAF476068BF87737EF7CBCFEB"
+          },
+          "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/authoring/part2.txt.raw",
+          "reference_sites": [
+            {
+              "from": "this handoff",
+              "ref": "explicit separately sealed copy-plan evidence"
+            }
+          ],
+          "historical_reference_aliases": []
+        }
+      ]
+    },
+    {
+      "relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/README.md.raw",
+      "kind": "immutable_evidence_archive",
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\README.md",
+        "bytes": 5836,
+        "sha256": "D22EF377FF3E5EA3D7D3D09EAB7C2334B9FA627A2A04060CE519B22DFD4AF958"
+      },
+      "preimage": null,
+      "logical_donors": [
+        {
+          "donor": {
+            "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\README.md",
+            "bytes": 5836,
+            "sha256": "D22EF377FF3E5EA3D7D3D09EAB7C2334B9FA627A2A04060CE519B22DFD4AF958"
+          },
+          "logical_archive_relative_path": "verification/native-shutdown-latin1-buffer-intake-20261021/archive/successor-20261022/copy-plan/README.md.raw",
+          "reference_sites": [
+            {
+              "from": "this handoff",
+              "ref": "explicit separately sealed copy-plan evidence"
+            }
+          ],
+          "historical_reference_aliases": []
+        }
+      ]
+    }
+  ],
+  "later_observed_authorities_do_not_mutate_core_nulls": true,
+  "remaining_work": [
+    "Keep B490 and922C unchanged. Bind actual V38 negative archive/progress commit and Root acceptance after they exist.",
+    "Append explicitly reviewed final archive rows for the later fixture peer/Root acceptance, this plan peer/Root acceptance, and any final handoff records; recompute the exact final path count.",
+    "Serialize a distinct create-only final manifest and bind the selected adapter BASIS, manifest path/hash/count only after actual released head is observed.",
+    "Run the separately authorized full current donor/alias/preimage/absence, five-attribute/config provenance, raw/path Git ID and mode preflight for every final path including manifest before any write.",
+    "Revalidate attributes/config after copies; compare exact staged and committed raw bytes/modes, complete path set and parent list under a separate Root release.",
+    "Future source catalog and metadata/runtime results must come from the actual committed successor; the321/320/1/964 original negative is never promoted."
+  ],
+  "scope_limits": [
+    "This is a source-copy plan, not a final manifest or intake release.",
+    "Full historical repository source graphs and validation directories remain external where the accepted bounded archive does not select them.",
+    "No current Main filesystem, attributes/index, process or native state was queried."
+  ],
+  "preserved_inspection_negatives": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-copy-plan-inventory-serialization-observation-20261022.json",
+      "bytes": 9147,
+      "sha256": "3CFE9706D0FB4D3A40B5C82A5BF92DD47E5DD3AF397E645CC6BC656DE5529297"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022\\initial-readout-scalar-negative.json",
+      "bytes": 2492,
+      "sha256": "CA6899C851E0764B0F11DADC9518FD793FAC8B205EAB68C97E406F23CF074E5C"
+    }
+  ],
+  "source_only": true,
+  "final_manifest_issued": false,
+  "source_intake_authorized": false,
+  "source_mutation_hold_released": false,
+  "configuration_issued": false,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "application_qualified": false,
+  "Main_or_index_mutated": false
+}

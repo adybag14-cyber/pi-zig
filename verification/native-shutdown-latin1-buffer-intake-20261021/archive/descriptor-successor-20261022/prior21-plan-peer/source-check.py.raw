@@ -1,0 +1,318 @@
+"""Independent inert21 plan review. Reads immutable evidence and raw014 Git only.
+Does not evaluate any donor script or candidate and has no Main/index/target access.
+"""
+from pathlib import Path
+import ast,copy,datetime,hashlib,json,re,subprocess
+B=Path(r'C:\Users\adyba\pi-zig')
+E=B/'evidence'
+W=B/'worktrees/modules-io-resume-20261018'
+S=B/'worktrees/sdk-owners-resume-20261018'
+D=W/'verification/unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022'
+O=E/'independent-shutdown-latin1-buffer-fs-fixture21-copy-plan-peer-20261022'
+H='014062f2d139254acab4b985b4ae343db637166f'
+seen={};raws={};checks=[]
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def norm(p):return str(p).replace('/','\\').casefold()
+def allowed(p):
+ s=norm(p)
+ return s.startswith(norm(E)+'\\') or (s.startswith(norm(B/'worktrees')+'\\') and '\\verification\\' in s) or s in {norm(B/'toolchain/zig-x86_64-windows-0.16.0/lib/std/Build.zig'),norm(B/'toolchain/zig-x86_64-windows-0.16.0/lib/std/Build/Module.zig')}
+def raw(p):
+ p=Path(p);assert allowed(p),('forbidden read',str(p))
+ k=norm(p)
+ if k not in raws:
+  v=p.read_bytes();raws[k]=v;seen[k]={'path':str(p),'bytes':len(v),'sha256':sha(v)}
+ return raws[k]
+def pin(p,n=None,h=None):
+ v=raw(p);r=seen[norm(p)]
+ if n is not None:assert len(v)==n,(str(p),len(v),n)
+ if h is not None:assert sha(v)==h,(str(p),sha(v),h)
+ return dict(r)
+def verify(r):
+ assert {'path','bytes','sha256'}<=set(r),r
+ return pin(r['path'],r['bytes'],r['sha256'])
+def obj(r):verify(r);return json.loads(raw(r['path']))
+def fixed(name,n,h):return {'path':str(D/name),'bytes':n,'sha256':h}
+def wire(x):return (json.dumps(x,indent=2)+'\n').encode()
+def at(t,path):
+ for k in path:t=t[k]
+ return t
+def parent(t,path):return at(t,path[:-1]),path[-1]
+def put(name,data):
+ p=O/name;assert p.parent==O
+ with p.open('xb')as f:f.write(data)
+ assert p.read_bytes()==data
+ return {'path':str(p),'bytes':len(data),'sha256':sha(data)}
+PLAN=fixed('copy-manifest-plan.json',530121,'B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC')
+FINITE=fixed('finite-plan-adaptation.json',178617,'F82B79EF2026464D7171FD02D4A88E313C34757AD819349653ABAC451AECDB52')
+HAND=fixed('handoff.json',20300,'922C5187B64C7F9B9E565B532D8879DF7155C0B686CBEBBCA36570D12545984A')
+AUTHOR=fixed('source-plan-author.py',21918,'24087B0D29B0636D35A19A2086977356B1676F0EF2726A816DE7EABF6EB160AF')
+PROOF=fixed('source-proof.json',170872,'71458C161214F8C3F5F9F9A60F436EB569FB22E9B81EBD3B2488D342430FF824')
+p=obj(PLAN);f=obj(FINITE);h=obj(HAND);mp=obj(PROOF);verify(AUTHOR)
+assert h['selected_plan']==PLAN and h['finite_adaptation']==FINITE and h['source_proof']==PROOF and h['source_author_and_checker']==AUTHOR
+assert raw(AUTHOR['path'])==raw(D/'authoring/part1.txt')+raw(D/'authoring/part2.txt')
+ast.parse(raw(AUTHOR['path'])) # parsing only; never compile/eval/import it
+basepin=h['predecessor_plan'];assert basepin['sha256']=='E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74' and basepin['bytes']==378545
+b=obj(basepin);assert wire(b)==raw(basepin['path']) and wire(p)==raw(PLAN['path'])
+assert f['baseline']==basepin and f['selected']==PLAN and len(f['operations'])==111
+assert f['original_raw_bytes_recovered']==basepin['bytes'] and f['original_raw_sha256']==basepin['sha256']
+nonarchive=[
+ ['source_rows',16,'donor'],['source_rows'],['status'],['author'],['created_utc_date'],['predecessor_plan'],['predecessor_plan_handoff'],
+ ['selected_linkage_Root_acceptance'],['selected_intake_adapter_Root_acceptance'],['fixture_correction_handoff'],['fixture_independent_peer'],
+ ['fixture_Root_source_acceptance'],['source_order_and_scope','selected_build_sha256'],['source_order_and_scope','selected_build_successor'],
+ ['source_order_and_scope','fixture_correction'],['source_order_and_scope','explicitly_excluded'],['deduplication','canonical_archive_target'],
+ ['coverage','new_sealed_packet_inventories'],['coverage','new_Root_source_acceptance_count'],['coverage','fixture_independent_review_pending'],
+ ['coverage','all_new_authoring_and_checker_negatives_retained'],['coverage','new_reference_sites_already_covered'],
+ ['coverage','new_toolchain_snapshot_bindings'],['coverage','external_references_addendum'],['future_admission_requirements'],
+ ['git_byte_preflight','scope'],['git_byte_preflight','preconditions'],['selected_adapter_contract'],['counts'],['preserved_predecessor_accounting']]
+assert [x['path']for x in f['operations']if x['path'][0]!='archive_rows']==nonarchive
+assert sum(x['path'][0]=='archive_rows'for x in f['operations'])==81
+state=copy.deepcopy(b);steps=[]
+for i,x in enumerate(f['operations']):
+ before=sha(wire(state))
+ if x['op']=='append':
+  a=at(state,x['path']);assert isinstance(a,list) and len(a)==x['index'];a.append(copy.deepcopy(x['after']))
+ else:
+  a,k=parent(state,x['path'])
+  if x['op']=='replace':assert a[k]==x['before']
+  else:assert x['op']=='add' and k not in a and x['before'] is None
+  a[k]=copy.deepcopy(x['after'])
+ steps.append({'index':i,'op':x['op'],'path':x['path'],'before_sha256':before,'after_sha256':sha(wire(state))})
+assert state==p and wire(state)==raw(PLAN['path'])
+for x in reversed(f['operations']):
+ if x['op']=='append':
+  a=at(state,x['path']);assert len(a)==x['index']+1 and a[-1]==x['after'];a.pop()
+ else:
+  a,k=parent(state,x['path']);assert a[k]==x['after']
+  if x['op']=='replace':a[k]=copy.deepcopy(x['before'])
+  else:del a[k]
+assert wire(state)==raw(basepin['path'])
+assert p['source_rows'][:16]==b['source_rows'][:16] and p['source_rows'][17:20]==b['source_rows'][17:20]
+assert {k:v for k,v in p['source_rows'][16].items()if k!='donor'}=={k:v for k,v in b['source_rows'][16].items()if k!='donor'}
+assert len(p['source_rows'])==21 and p['source_rows'][16]['relative_path']=='build.zig'
+assert p['source_rows'][-1]['relative_path']=='src/native_node_fs_request_owner_test.zig'
+assert p['source_rows'][16]['donor']==h['selected_build_donor'] and p['source_rows'][-1]['donor']==h['selected_fixture_donor']
+assert h['selected_build_donor']['sha256']=='594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF'
+assert h['selected_fixture_donor']['sha256']=='FD337AA09700EA151943ED06A86CE5623C37210FA57637B892DCB6AB797C02D6'
+lr=obj(p['selected_linkage_Root_acceptance']);ar=obj(p['selected_intake_adapter_Root_acceptance']);fh=obj(p['fixture_correction_handoff'])
+assert lr['source_accepted'] is True and ar['source_accepted'] is True
+assert lr['selected_build']==h['selected_build_donor'] and lr['accepted_original_build']==b['source_rows'][16]['donor']
+assert fh['selected_source']==h['selected_fixture_donor'] and fh['original_source']==p['source_rows'][-1]['preimage']
+assert p['selected_adapter_contract']['source']==ar['selected_source']
+assert ar['selected_source']['sha256']=='8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985'
+assert len(b['archive_rows'])==223 and sum(len(x['logical_donors'])for x in b['archive_rows'])==248
+for old,now in zip(b['archive_rows'],p['archive_rows']):
+ assert {k:v for k,v in old.items()if k!='logical_donors'}=={k:v for k,v in now.items()if k!='logical_donors'}
+ assert now['logical_donors'][:len(old['logical_donors'])]==old['logical_donors']
+assert p['retained_negative_and_rejected_versions']==b['retained_negative_and_rejected_versions']
+supp=h['explicit_supplemental_archive_rows'];assert len(supp)==7
+allarc=p['archive_rows']+supp
+logical={};physical={};dedups=[];historical=[]
+for row in allarc:
+ assert row['kind']=='immutable_evidence_archive' and row['preimage'] is None and row['relative_path'].endswith('.raw')
+ d=row['donor'];verify(d);v=raw(d['path']);key=(len(v),sha(v))
+ assert key not in physical,('duplicate physical archive bytes',row['relative_path'],physical.get(key))
+ physical[key]=row['relative_path']
+ assert row['logical_donors']
+ for alias in row['logical_donors']:
+  z=alias['donor'];verify(z);assert raw(z['path'])==v
+  identity=(norm(z['path']),z['bytes'],z['sha256'])
+  assert identity not in logical,('duplicate logical identity',z)
+  logical[identity]=(row['relative_path'],alias)
+  assert alias['logical_archive_relative_path'].startswith(p['archive_prefix']+'/archive/')
+  if norm(z['path'])!=norm(d['path']):dedups.append({'physical':row['relative_path'],'donor':z,'logical_target':alias['logical_archive_relative_path']})
+  for a in alias['historical_reference_aliases']:
+   ref=a.get('reference',a.get('historical_pin'));assert (ref['bytes'],ref['sha256'])==(d['bytes'],d['sha256'])
+   if 'immutable_snapshot'in a:assert a['immutable_snapshot']==z and a['exact_original_bytes'] is True
+   historical.append({'physical':row['relative_path'],'reference':ref,'snapshot':z})
+assert len(p['archive_rows'])==302 and sum(len(x['logical_donors'])for x in p['archive_rows'])==329
+assert len(allarc)==309 and len(logical)==336 and len(dedups)==27
+for row in p['source_rows']:
+ verify(row['donor'])
+ assert row['reviewed_immutable_head']==H and row['actual_future_preimage_and_absence_check_required'] is True
+ if row['preimage']:verify(row['preimage']);assert row['kind']=='source_replacement'
+ else:assert row['kind']=='source_addition'
+# Every old selected/rejected version remains an independently rehashed immutable archive.
+for z in p['retained_negative_and_rejected_versions']:
+ row=next(x for x in p['archive_rows']if x['relative_path']==z['archive_relative_path'])
+ assert (row['donor']['bytes'],row['donor']['sha256'])==(z['bytes'],z['sha256'])
+assert any(a['donor']['sha256']=='868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7'for _,a in logical.values())
+# Independently recover complete declared packet membership and new logical identities.
+labels=['predecessor-plan','predecessor-plan-peer','linkage','linkage-peer','adapter','adapter-peer','fs-fixture']
+sizes=[4,7,14,12,13,7,15];groups=p['coverage']['new_sealed_packet_inventories'];assert [z['label']for z in groups]==labels
+newentries=[];membership=[]
+prefix=p['archive_prefix']+'/archive/successor-20261022/'
+for g,expected in zip(groups,sizes):
+ directory=Path(g['directory']);assert allowed(directory/'x')
+ actual=sorted(x.relative_to(directory).as_posix()for x in directory.rglob('*')if x.is_file())
+ declared=sorted(x['relative_path']for x in g['rows']);assert actual==declared and len(actual)==expected
+ for row in g['rows']:
+  assert Path(row['path'])==directory/row['relative_path'];verify(row)
+  r={k:row[k]for k in ['path','bytes','sha256']}
+  newentries.append((prefix+g['label']+'/'+row['relative_path']+'.raw',r))
+ membership.append({'label':g['label'],'directory':str(directory),'count':len(actual),'paths':actual})
+contract=obj(p['selected_adapter_contract']['contract'])
+extras=[
+ ('root-copy-plan-acceptance.json',E/'root-shutdown-latin1-buffer-unissued-copy-plan-acceptance-20261021.json'),
+ ('root-linkage-acceptance.json',Path(p['selected_linkage_Root_acceptance']['path'])),
+ ('root-adapter-acceptance.json',Path(p['selected_intake_adapter_Root_acceptance']['path'])),
+ ('adapter-accepted-baseline.py',Path(ar['baseline']['path'])),
+ ('observed-original63-buildquery-acceptance.json',Path(lr['compiler_authority']['path']))]
+for key in ['gap_map','historical_git_capability']:
+ verify(contract[key]);extras.append(('adapter-'+key+'.json',Path(contract[key]['path'])))
+for name,path in extras:newentries.append((prefix+'authorities/'+name+'.raw',pin(path)))
+for row in p['coverage']['new_toolchain_snapshot_bindings']:
+ verify(row['snapshot']);verify(row['historical_pin'])
+ assert raw(row['snapshot']['path'])==raw(row['historical_pin']['path'])
+ newentries.append((prefix+'authority/'+Path(row['snapshot']['path']).name+'.raw',row['snapshot']))
+assert len(newentries)==81 and p['coverage']['new_reference_sites_already_covered']==[]
+oldident={(norm(a['donor']['path']),a['donor']['bytes'],a['donor']['sha256'])for x in b['archive_rows']for a in x['logical_donors']}
+newident=set(logical)-oldident-{(norm(x['donor']['path']),x['donor']['bytes'],x['donor']['sha256'])for x in supp}
+expectedident={(norm(z['path']),z['bytes'],z['sha256'])for _,z in newentries}
+assert newident==expectedident and len(newident)==81
+# Simulate byte-only archive dedup independently; every prior physical destination is stable.
+expected_rows=copy.deepcopy(b['archive_rows'])
+for target,z in sorted(newentries,key=lambda x:(x[0].casefold(),x[0])):
+ k=(norm(z['path']),z['bytes'],z['sha256'])
+ physical_target,alias=logical[k];assert alias['logical_archive_relative_path']==target
+ match=[q for q in expected_rows if raw(q['donor']['path'])==raw(z['path'])]
+ if match:assert physical_target==match[0]['relative_path']
+ else:
+  assert physical_target==target
+  expected_rows.append({'relative_path':target,'donor':z})
+assert [(x['relative_path'],x['donor'])for x in expected_rows]==[(x['relative_path'],x['donor'])for x in p['archive_rows']]
+# Pin every author proof input; historical donor references are never followed into Main.
+assert len(mp['input_pins'])==329
+for z in mp['input_pins']:verify(z)
+assert mp['finite_operation_count']==111 and mp['selected_plan']==PLAN and mp['finite_adaptation']==FINITE
+assert p['source_order_and_scope']['Transfer_must_precede_Shutdown'] is True
+assert p['source_order_and_scope']['Transfer_Shutdown_commutation_claimed'] is False
+assert p['source_order_and_scope']['protected_make_callback_sha256']=='972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2'
+for k in ['new_roots','declared_new_controls','actual_future_metadata_count']:
+ assert p['source_order_and_scope'][k]==b['source_order_and_scope'][k]
+assert p['source_order_and_scope']['declared_new_controls']==38 and p['source_order_and_scope']['actual_future_metadata_count'] is None
+assert p['source_order_and_scope']['explicitly_excluded'][:len(b['source_order_and_scope']['explicitly_excluded'])]==b['source_order_and_scope']['explicitly_excluded']
+# Handoff's seven supplemental files are exact complete current packet outputs, with no self-cycle.
+inv=h['packet_inventory_excluding_this_handoff']
+actual=sorted(x.relative_to(D).as_posix()for x in D.rglob('*')if x.is_file() and x.name!='handoff.json')
+assert actual==sorted(z['relative_path']for z in inv)
+for z in inv:pin(D/z['relative_path'],z['bytes'],z['sha256'])
+inventory_bytes=json.dumps(inv,sort_keys=True,separators=(',',':')).encode()
+assert len(inventory_bytes)==1185 and sha(inventory_bytes)==h['packet_inventory_sha256']
+assert len(actual)==9 and all(x['donor']['path']!=str(D/'handoff.json')for x in supp)
+assert {Path(x['donor']['path']).relative_to(D).as_posix()for x in supp}==set(actual)-{'authority/zig-Build.zig','authority/zig-Module.zig'}
+# Canonical planned Windows prefixes, existing immutable Git spellings and exact nine preimages.
+tree=subprocess.check_output(['git','--no-optional-locks','-C',str(W),'ls-tree','-rz',H])
+tracked={}
+for item in tree.split(b'\0'):
+ if item:
+  meta,name=item.split(b'\t',1);mode,typ,oid=meta.decode().split();tracked[name.decode()]={'mode':mode,'type':typ,'oid':oid}
+paths=[x['relative_path']for x in p['source_rows']+allarc]+[p['manifest_target']]
+assert len(paths)==331
+folded={};prefixes={}
+for q in tracked:
+ parts=q.split('/')
+ for i in range(1,len(parts)+1):
+  sub='/'.join(parts[:i]);k=sub.casefold();assert k not in prefixes or prefixes[k]==sub
+  prefixes[k]=sub
+for q in paths:
+ assert q.isascii() and not q.startswith(('/','\\')) and not any(x in q for x in '\\:\0')
+ parts=q.split('/')
+ for x in parts:
+  assert x not in ('','.','..') and not x.endswith(('.',' ')) and x.casefold()not in ('.git','.gitattributes')
+  assert not re.fullmatch(r'(?i)(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?',x)
+ assert q.casefold()not in folded;folded[q.casefold()]=q
+ for i in range(1,len(parts)+1):
+  sub='/'.join(parts[:i]);k=sub.casefold();assert k not in prefixes or prefixes[k]==sub,('prefix alias',sub,prefixes.get(k))
+  prefixes[k]=sub
+for q in paths:
+ for i in range(1,len(q.split('/'))):
+  parentq='/'.join(q.split('/')[:i]);assert parentq.casefold()not in folded and parentq not in tracked
+replace=[x for x in p['source_rows']if x['preimage']];assert len(replace)==9
+requests=''.join(H+':'+x['relative_path']+'\n'for x in replace).encode()
+result=subprocess.check_output(['git','--no-optional-locks','-C',str(W),'cat-file','--batch'],input=requests)
+pos=0;git=[]
+for row in replace:
+ end=result.index(b'\n',pos);oid,typ,n=result[pos:end].decode().split();n=int(n);pos=end+1;v=result[pos:pos+n];pos+=n
+ assert result[pos:pos+1]==b'\n';pos+=1;assert typ=='blob' and raw(row['preimage']['path'])==v
+ meta=tracked[row['relative_path']];assert meta=={'mode':'100644','type':'blob','oid':oid}
+ assert hashlib.sha1(('blob '+str(n)+'\0').encode()+v).hexdigest()==oid
+ git.append({'relative_path':row['relative_path'],**meta,'bytes':n,'sha256':sha(v)})
+assert pos==len(result) and git==[{k:v for k,v in z.items()if k!='head'}for z in mp['nine_immutable_preimages']]
+replaced={r['relative_path']for r in replace}
+absences=[q for q in paths if q not in replaced]
+assert len(absences)==322 and all(q not in tracked for q in absences)
+assert p['manifest_target']in absences
+# Complete future byte-conversion/stage/commit rules are preserved; no preflight is claimed here.
+for key,value in b['git_byte_preflight'].items():
+ if key not in {'scope','preconditions'}:assert p['git_byte_preflight'][key]==value
+assert p['git_byte_preflight']['attributes_argv'][-5:]==['text','eol','filter','working-tree-encoding','ident']
+assert p['git_byte_preflight']['status']=='required_future_Root_action_not_run'
+assert p['selected_adapter_contract']['future_bound_fields']==['BASIS','MANIFESTS.fixture.path','MANIFESTS.fixture.sha256','MANIFESTS.fixture.count']
+assert p['selected_adapter_contract']['requires_manifest_in_all_Git_byte_mode_stage_commit_gates'] is True
+assert p['actual_released_head'] is None and all(x is False for x in p['authority'].values())
+future=p['future_admission_requirements']
+for key,value in future.items():
+ if key.startswith('required_') and key not in {'required_actual_original63_buildquery_closure','required_finite_intake_adapter'}:assert value is None,key
+assert future['all_execution_authorities_unissued'] is True
+for key in ['fixture_independent_peer','fixture_Root_source_acceptance']:assert p[key]is None and h[key]is None
+assert all(value is None for value in h['unresolved_final_bindings'].values())
+assert h['complete_current_planned_counts']=={'source_paths':21,'source_replacements':9,'source_additions':12,'archive_physical_paths':309,'archive_logical_donors':336,'physical_copy_rows_excluding_manifest':330,'total_with_separate_manifest':331,'new_paths_including_manifest':322,'duplicate_archive_copies_removed':27}
+logical_bytes=sum(x['donor']['bytes']for r in p['archive_rows']for x in r['logical_donors'])
+physical_bytes=sum(r['donor']['bytes']for r in p['archive_rows'])
+assert (logical_bytes,physical_bytes,logical_bytes-physical_bytes)==(46959127,37463076,9496051)
+assert p['counts']==h['core_counts']==mp['selected_counts']
+# Later observed actual negative and fixture source acceptance remain external; no core null is mutated.
+post=h['observed_after_core_plan_seal'];neg=obj(post['Root_acceptance']);verify(post['actual_negative_closure'])
+assert neg['independent_negative_closure']==post['actual_negative_closure']
+assert neg['negative_closure_accepted'] is True and neg['runtime_qualification'] is False and neg['source_mutation_hold_released'] is False
+assert (neg['attempted_groups'],neg['runtime_completed'],neg['runtime_passed'],neg['runtime_failed'],neg['runtime_unstarted'])==(17,321,320,1,964)
+fixture_root={'path':str(E/'root-v38-fs-request-pump-escrow-source-acceptance-20261022.json'),'bytes':6387,'sha256':'905A69C83F4802963A5D035E076F3F910CDB64ED3D364516325E64C1B60E3ACE'}
+fr=obj(fixture_root);fp=obj(fr['independent_peer'])
+assert fr['source_accepted'] and fr['selected_source']==h['selected_fixture_donor'] and fr['original_source']==replace[-1]['preimage']
+assert fp['no_bounded_source_blocker'] and fp['selected_source']==h['selected_fixture_donor']
+assert fr['root_original_negative_acceptance']==post['Root_acceptance']
+for key in ['source_intake_authorized','native_execution_authorized','runtime_qualification','application_qualified']:assert fr[key]is False
+for key in ['independent_checker','independent_proof']:verify(fr[key])
+root_inventory_observation={'path':str(E/'root-pending21-copy-plan-inventory-serialization-observation-20261022.json'),'bytes':9147,'sha256':'3CFE9706D0FB4D3A40B5C82A5BF92DD47E5DD3AF397E645CC6BC656DE5529297'}
+verify(root_inventory_observation)
+negative_pin=pin(O/'initial-readout-scalar-negative.json')
+selfpin=pin(Path(__file__))
+proof={'schema':1,'status':'independent_inert21_copy_plan_source_checks_passed','basis_head':H,'source_only':True,
+ 'selected_plan':PLAN,'handoff':HAND,'finite':FINITE,'checker':selfpin,'full111_forward_and_raw_inverse':True,'finite_steps':steps,
+ 'only_old_source_change':'build donor868F to594A','appended_source':'FS request fixtureFD337','old19_sources_exact':True,'old223_archive_rows_and248_logical_prefixes_exact':True,
+ 'source_rows':p['source_rows'],'selected_counts':h['complete_current_planned_counts'],'core_counts':p['counts'],
+ 'immutable_Git_preimages':git,'immutable014_absences':absences,'all331_planned_paths_and_existing_prefix_spellings_exact':True,
+ 'deduplicated_full_byte_aliases':dedups,'historical_reference_aliases':historical,'seven_complete_packet_memberships':membership,
+ 'all329_core_and7_supplemental_logical_donors_rehashed':True,'all_27_duplicate_aliases_full_byte_equal':True,
+ 'old_rejected_versions_preserved':p['retained_negative_and_rejected_versions'],'selected_adapter':p['selected_adapter_contract'],
+ 'future_Git_preflight':p['git_byte_preflight'],'unresolved_future_admission':future,'post_core_negative_observations':post,
+ 'post_core_fixture_peer':fr['independent_peer'],'post_core_fixture_Root_source_acceptance':fixture_root,'post_core_receipts_do_not_bind_or_mutate_plan':True,
+ 'root_inventory_serialization_observation':root_inventory_observation,'inventory_digest_formula':'SHA256(json.dumps(inventory,sort_keys=True,separators=(comma,colon)).encode()), no LF','inventory_digest_bytes':len(inventory_bytes),'readout_negative':negative_pin,'input_pins':list(seen.values()),'input_versions':len(seen),
+ 'candidate_or_prefix_executed':False,'Main_or_index_accessed':False,'future_conversion_preflight_executed':False,'intake_or_configuration_issued':False,
+ 'native_execution_authorized':False,'source_mutation_hold_released':False,'runtime_qualification':False,'application_qualified':False}
+proofpin=put('source-proof.json',wire(proof))
+peer={'schema':1,'status':'independently_accepted_inert_21_source_copy_plan_with_unresolved_intake_authority','reviewer':'/root/handover_review',
+ 'reviewed_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'source_only':True,'selected_plan':PLAN,'author_handoff':HAND,
+ 'source_checker':selfpin,'decisive_proof':proofpin,'finite_adaptation':FINITE,'baseline':basepin,'no_bounded_source_blocker':True,
+ 'finite_operations':111,'complete_raw_forward_inverse':True,'only_changed_original_source_row':'build.zig donor868F to594A',
+ 'new_source_row':'src/native_node_fs_request_owner_test.zig donorFD337','other19_source_rows_exact':True,
+ 'source_counts':{'paths':21,'replacements':9,'additions':12},'archives':{'core_physical':302,'core_logical':329,'supplemental_physical':7,'all_physical':309,'all_logical':336,'full_byte_duplicate_aliases':27},
+ 'current_inert_paths_including_manifest':331,'nine_014_raw_preimages_and100644_modes':True,'immutable014_new_path_absences':322,
+ 'all_old223_physical_and248_logical_archive_prefixes_exact':True,'source_order_and_exclusions_preserved':True,
+ 'all_current_331_path_prefix_spellings_checked':True,'preserved_future_attribute_and_Git_byte_contract':True,
+ 'selected_unresolved_adapter':p['selected_adapter_contract']['source'],'post_core_fixture_peer':fr['independent_peer'],
+ 'post_core_fixture_Root_source_acceptance':fixture_root,'post_core_original_negative_Root_acceptance':post['Root_acceptance'],
+ 'post_core_original_negative_closure':post['actual_negative_closure'],
+ 'remaining_finite_intake_work':[
+  'Keep B490 and922C unchanged. Bind actual V38 negative archive/progress commit and Root acceptance after they exist.',
+  'Append explicitly reviewed final archive rows for the later fixture peer/Root acceptance, this plan peer/Root acceptance, and any final handoff records; recompute the exact final path count.',
+  'Serialize a distinct create-only final manifest and bind the selected adapter BASIS, manifest path/hash/count only after actual released head is observed.',
+  'Run the separately authorized full current donor/alias/preimage/absence, five-attribute/config provenance, raw/path Git ID and mode preflight for every final path including manifest before any write.',
+  'Revalidate attributes/config after copies; compare exact staged and committed raw bytes/modes, complete path set and parent list under a separate Root release.',
+  'Future source catalog and metadata/runtime results must come from the actual committed successor; the321/320/1/964 original negative is never promoted.'],
+ 'scope_limits':['This is a source-copy plan, not a final manifest or intake release.','Full historical repository source graphs and validation directories remain external where the accepted bounded archive does not select them.','No current Main filesystem, attributes/index, process or native state was queried.'],
+ 'root_inventory_serialization_observation':root_inventory_observation,'readout_negative':negative_pin,'candidate_or_prefix_executed':False,'adapter_executed':False,'Main_or_index_accessed':False,
+ 'source_intake_authorized':False,'configuration_issued':False,'native_execution_authorized':False,'source_mutation_hold_released':False,
+ 'runtime_qualification':False,'application_qualified':False}
+peerpin=put('peer.json',wire(peer))
+print(json.dumps({'status':'independent_inert21_copy_plan_peer_passed','checker':selfpin,'proof':proofpin,'peer':peerpin,'input_versions':len(seen),'finite_operations':111,'paths':331,'archives':309,'logical_archive_donors':336}))

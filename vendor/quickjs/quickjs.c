@@ -5666,6 +5666,18 @@ static JSValue string_buffer_end(StringBuffer *s)
     return JS_MKPTR(JS_TAG_STRING, str);
 }
 
+/* Raw one-byte string construction for native Node OneByteString callers.
+   Every byte denotes the same Latin-1 code unit, including embedded NUL.
+   Signed length selection and Node/V8 fatal policy belong to that caller. */
+JSValue JS_PiNewStringLatin1(JSContext *ctx, const uint8_t *buf, size_t len)
+{
+    if (len == 0)
+        return js_empty_string(ctx->rt);
+    if (len > JS_STRING_LEN_MAX)
+        return JS_ThrowRangeError(ctx, "string too long");
+    return js_new_string8_len(ctx, (const char *)buf, (int)len);
+}
+
 /* create a string from a UTF-8 buffer */
 JSValue JS_NewStringLen(JSContext *ctx, const char *buf, size_t buf_len)
 {
@@ -67631,6 +67643,34 @@ static JSValue js_dataview_get_byteOffset(JSContext *ctx, JSValueConst this_val)
         return JS_ThrowTypeErrorArrayBufferOOB(ctx);
     ta = p->u.typed_array;
     return js_uint32(ta->offset);
+}
+
+/* Intrinsic Buffer::Data projection: borrow the actual ArrayBufferView's
+   native address without consulting guest properties or acquiring storage.
+   V8 ByteOffset is zero only for detached views. A live out-of-bounds RAB
+   view retains its stored offset even though ByteLength is zero. Do address
+   arithmetic as uintptr_t so that merely observing such an address does not
+   form an out-of-allocation C pointer by pointer arithmetic. The result must
+   not be dereferenced beyond the separately observed usable byte length.
+   No context, allocation, ownership, or pending-completion operation occurs. */
+uint8_t *JS_PiArrayBufferViewData(JSValueConst view)
+{
+    JSObject *p;
+    JSTypedArray *ta;
+    JSArrayBuffer *abuf;
+
+    if (JS_VALUE_GET_TAG(view) != JS_TAG_OBJECT)
+        return NULL;
+    p = JS_VALUE_GET_OBJ(view);
+    if (!is_typed_array(p->class_id) && p->class_id != JS_CLASS_DATAVIEW)
+        return NULL;
+    ta = p->u.typed_array;
+    if (!ta)
+        return NULL;
+    abuf = ta->buffer->u.array_buffer;
+    if (abuf->detached)
+        return NULL;
+    return (uint8_t *)((uintptr_t)abuf->data + (uintptr_t)ta->offset);
 }
 
 /* Intrinsic V8 ArrayBufferView::ByteLength projection. Borrow the actual view;

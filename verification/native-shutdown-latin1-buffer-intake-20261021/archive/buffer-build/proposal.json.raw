@@ -1,0 +1,374 @@
+{
+  "schema": "pi-zig.raw-view-data-build-naming-successor.v1",
+  "status": "finite_source_only_successor_unissued",
+  "source_only": true,
+  "basis_main_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "relative_path": "build.zig",
+  "preserved_original_manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\production-proposal.json",
+    "bytes": 43670,
+    "sha256": "978981A96D6CDD2791FF6B90DDBC575235A83E9C3B678CD3961389AB6866AF12"
+  },
+  "preserved_original_inventory_rows": 72,
+  "preserved_original_build_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\build\\proposal.json",
+    "bytes": 4359,
+    "sha256": "AD344119A626BB53199DB10991521D2B21A7D464D4EBE68265CECF929A9CA89C"
+  },
+  "original_build_naming_is_not_selected_for_future_intake": true,
+  "causal_finding": "The original custom addTest.name changes both cached executable and PDB names, incompatible with unchanged strict driver test.exe/test.pdb. Omit only that .name and select the public executable destination explicitly.",
+  "original_block": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\install-only-block.zig.txt",
+    "bytes": 748,
+    "sha256": "FB4A10A7214C73651AA6681E48092C8E63A04E49337A03EF81E11FD3F8ECB6D7"
+  },
+  "corrected_block": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\install-only-block.zig.txt",
+    "bytes": 812,
+    "sha256": "A294A6F8CA4D868376BE9DF89B5F8C0C51638FD5E7E4C53DB769D63B37810EC3"
+  },
+  "exact_two_block_edits": [
+    {
+      "label": "canonical default test cache name",
+      "before": "            .name = \"native-vm-array-buffer-view-data\",\n",
+      "after": "",
+      "byte_offset": 139,
+      "before_sha256": "FB4A10A7214C73651AA6681E48092C8E63A04E49337A03EF81E11FD3F8ECB6D7",
+      "after_sha256": "BE44747F2FE9760AA60596DF50BAD1AB5F09482E1AA7002C91D0B858D8A93346"
+    },
+    {
+      "label": "exact public installed executable basename",
+      "before": "        b.step(\"build-native-vm-array-buffer-view-data\", \"Install actual borrowed ArrayBufferView address controls without execution\").dependOn(&b.addInstallArtifact(vm_array_buffer_view_data_tests, .{}).step);\n",
+      "after": "        b.step(\"build-native-vm-array-buffer-view-data\", \"Install actual borrowed ArrayBufferView address controls without execution\").dependOn(&b.addInstallArtifact(vm_array_buffer_view_data_tests, .{ .dest_sub_path = b.fmt(\"native-vm-array-buffer-view-data{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n",
+      "byte_offset": 475,
+      "before_sha256": "BE44747F2FE9760AA60596DF50BAD1AB5F09482E1AA7002C91D0B858D8A93346",
+      "after_sha256": "A294A6F8CA4D868376BE9DF89B5F8C0C51638FD5E7E4C53DB769D63B37810EC3"
+    }
+  ],
+  "original_projected_comparison": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\c764-with-original-buffer.zig",
+    "bytes": 504188,
+    "sha256": "2D046B3325B617146658B82B2BC12F58A8A811EC50403F91F9135553849C1DAE"
+  },
+  "corrected_projected_comparison": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\c764-with-corrected-buffer.zig",
+    "bytes": 504252,
+    "sha256": "FE532CFA7EFBB474D6B4E84ACE2AF563A019282CDD043D836EF824DED854724F"
+  },
+  "exact_two_whole_file_edits": [
+    {
+      "label": "canonical default test cache name",
+      "before": "            .name = \"native-vm-array-buffer-view-data\",\n",
+      "after": "",
+      "byte_offset": 195173,
+      "before_sha256": "2D046B3325B617146658B82B2BC12F58A8A811EC50403F91F9135553849C1DAE",
+      "after_sha256": "4351DBFA110B3D5697832AB7DC2EB6B16A962D04E7D8FF8775E1231586D3B008"
+    },
+    {
+      "label": "exact public installed executable basename",
+      "before": "        b.step(\"build-native-vm-array-buffer-view-data\", \"Install actual borrowed ArrayBufferView address controls without execution\").dependOn(&b.addInstallArtifact(vm_array_buffer_view_data_tests, .{}).step);\n",
+      "after": "        b.step(\"build-native-vm-array-buffer-view-data\", \"Install actual borrowed ArrayBufferView address controls without execution\").dependOn(&b.addInstallArtifact(vm_array_buffer_view_data_tests, .{ .dest_sub_path = b.fmt(\"native-vm-array-buffer-view-data{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n",
+      "byte_offset": 195509,
+      "before_sha256": "4351DBFA110B3D5697832AB7DC2EB6B16A962D04E7D8FF8775E1231586D3B008",
+      "after_sha256": "FE532CFA7EFBB474D6B4E84ACE2AF563A019282CDD043D836EF824DED854724F"
+    }
+  ],
+  "two_edit_whole_inverse_exact": true,
+  "all_bytes_outside_the_original_Buffer_block_unchanged": true,
+  "current_head_projection": {
+    "original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\current79-build.zig",
+      "bytes": 509023,
+      "sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55"
+    },
+    "projected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\current79-with-buffer.zig",
+      "bytes": 509835,
+      "sha256": "51AC4EEFEE7E09507C9ECFBA6052B9378D7E5335789A44E3421618BB1D7FBF4B"
+    },
+    "edit": {
+      "label": "corrected Buffer install-only insertion on frozen79c19",
+      "before": "    if (target.result.os.tag == .windows or target.result.os.tag == .linux) {\n        const native_backing_store_tests = b.addTest(.{\n",
+      "after": "    if (target.result.os.tag == .windows or target.result.os.tag == .linux) {\n        const vm_array_buffer_view_data_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_array_buffer_view_data_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"VM view data\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, vm_array_buffer_view_data_tests.root_module, quickjs, sqlite_lib_dir);\n        b.step(\"build-native-vm-array-buffer-view-data\", \"Install actual borrowed ArrayBufferView address controls without execution\").dependOn(&b.addInstallArtifact(vm_array_buffer_view_data_tests, .{ .dest_sub_path = b.fmt(\"native-vm-array-buffer-view-data{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n    }\n    if (target.result.os.tag == .windows or target.result.os.tag == .linux) {\n        const native_backing_store_tests = b.addTest(.{\n",
+      "byte_offset": 195034,
+      "before_sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55",
+      "after_sha256": "51AC4EEFEE7E09507C9ECFBA6052B9378D7E5335789A44E3421618BB1D7FBF4B"
+    },
+    "whole_forward_inverse_exact": true,
+    "raw_git_and_current_checkout_equal": true
+  },
+  "selected_shutdown_composition": {
+    "accepted_projection": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-current-head-composition-20261020\\projection.json",
+      "bytes": 26005,
+      "sha256": "B0919FB27FB4825C57CAC6FCE0BE074DD58945ED42DA3D7781B8241FAAFFF92D"
+    },
+    "original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\current79-with-shutdown.zig",
+      "bytes": 513195,
+      "sha256": "ED75E6415A6BA63B4E4F51D7620818D7CAB494971D373F8C2CF3DB8F2E4E026E"
+    },
+    "projected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\current79-with-shutdown-and-buffer.zig",
+      "bytes": 514007,
+      "sha256": "868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+    },
+    "buffer_after_shutdown_edit": {
+      "label": "corrected Buffer insertion after selected Shutdown",
+      "before": "    if (target.result.os.tag == .windows or target.result.os.tag == .linux) {\n        const native_backing_store_tests = b.addTest(.{\n",
+      "after": "    if (target.result.os.tag == .windows or target.result.os.tag == .linux) {\n        const vm_array_buffer_view_data_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_array_buffer_view_data_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"VM view data\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, vm_array_buffer_view_data_tests.root_module, quickjs, sqlite_lib_dir);\n        b.step(\"build-native-vm-array-buffer-view-data\", \"Install actual borrowed ArrayBufferView address controls without execution\").dependOn(&b.addInstallArtifact(vm_array_buffer_view_data_tests, .{ .dest_sub_path = b.fmt(\"native-vm-array-buffer-view-data{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n    }\n    if (target.result.os.tag == .windows or target.result.os.tag == .linux) {\n        const native_backing_store_tests = b.addTest(.{\n",
+      "byte_offset": 195034,
+      "before_sha256": "ED75E6415A6BA63B4E4F51D7620818D7CAB494971D373F8C2CF3DB8F2E4E026E",
+      "after_sha256": "868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+    },
+    "shutdown_after_buffer_edit": {
+      "label": "unchanged selected Shutdown insertion after Buffer",
+      "before": "        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "after": "        const node_stream_shutdown = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_stream_shutdown_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native Stream shutdown\", \"native StreamReq Done\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_stream_shutdown.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_stream_shutdown.root_module, typescript_parser);\n        linkSqlite(node_stream_shutdown.root_module, sqlite_lib_dir, sqlite_library);\n        node_stream_shutdown.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_stream_shutdown.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_stream_shutdown.root_module.addIncludePath(b.path(\"src/extensions\"));\n        node_stream_shutdown.root_module.linkLibrary(network);\n        // This target owns one TLS implementation and one V8 fatal owner.\n        // The selected network library contains neither translation unit.\n        node_stream_shutdown.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context.c\"),\n            .flags = &.{\"-std=gnu11\"},\n        });\n        node_stream_shutdown.root_module.addCSourceFiles(.{\n            .files = &.{\n                \"src/extensions/native_v8_base_fatal.cpp\",\n                \"src/extensions/native_node_one_byte_string_diagnostics.cpp\",\n            },\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        if (target.result.os.tag == .windows) {\n            node_stream_shutdown.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_stream_shutdown.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-stream-shutdown\", \"Install 18 concrete source controls without execution\").dependOn(&b.addInstallArtifact(node_stream_shutdown, .{ .dest_sub_path = b.fmt(\"native-node-stream-shutdown{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const node_one_byte_string = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_one_byte_string_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native OneByteString\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_one_byte_string.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_one_byte_string.root_module, typescript_parser);\n        linkSqlite(node_one_byte_string.root_module, sqlite_lib_dir, sqlite_library);\n        node_one_byte_string.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_one_byte_string.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_one_byte_string.root_module.addIncludePath(b.path(\"src/extensions\"));\n        node_one_byte_string.root_module.linkLibrary(network);\n        // This target owns one TLS implementation and one V8 fatal owner.\n        // The selected network library contains neither translation unit.\n        node_one_byte_string.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context.c\"),\n            .flags = &.{\"-std=gnu11\"},\n        });\n        node_one_byte_string.root_module.addCSourceFiles(.{\n            .files = &.{\n                \"src/extensions/native_v8_base_fatal.cpp\",\n                \"src/extensions/native_node_one_byte_string_diagnostics.cpp\",\n            },\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        if (target.result.os.tag == .windows) {\n            node_one_byte_string.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_one_byte_string.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-one-byte-string\", \"Install 8 concrete source controls without execution\").dependOn(&b.addInstallArtifact(node_one_byte_string, .{ .dest_sub_path = b.fmt(\"native-node-one-byte-string{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "byte_offset": 220174,
+      "before_sha256": "51AC4EEFEE7E09507C9ECFBA6052B9378D7E5335789A44E3421618BB1D7FBF4B",
+      "after_sha256": "868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+    },
+    "original_shutdown_edit": {
+      "label": "unchanged selected Shutdown insertion after existing Transfer",
+      "before": "        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "after": "        const node_stream_shutdown = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_stream_shutdown_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native Stream shutdown\", \"native StreamReq Done\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_stream_shutdown.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_stream_shutdown.root_module, typescript_parser);\n        linkSqlite(node_stream_shutdown.root_module, sqlite_lib_dir, sqlite_library);\n        node_stream_shutdown.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_stream_shutdown.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_stream_shutdown.root_module.addIncludePath(b.path(\"src/extensions\"));\n        node_stream_shutdown.root_module.linkLibrary(network);\n        // This target owns one TLS implementation and one V8 fatal owner.\n        // The selected network library contains neither translation unit.\n        node_stream_shutdown.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context.c\"),\n            .flags = &.{\"-std=gnu11\"},\n        });\n        node_stream_shutdown.root_module.addCSourceFiles(.{\n            .files = &.{\n                \"src/extensions/native_v8_base_fatal.cpp\",\n                \"src/extensions/native_node_one_byte_string_diagnostics.cpp\",\n            },\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        if (target.result.os.tag == .windows) {\n            node_stream_shutdown.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_stream_shutdown.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-stream-shutdown\", \"Install 18 concrete source controls without execution\").dependOn(&b.addInstallArtifact(node_stream_shutdown, .{ .dest_sub_path = b.fmt(\"native-node-stream-shutdown{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const node_one_byte_string = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_one_byte_string_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native OneByteString\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_one_byte_string.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_one_byte_string.root_module, typescript_parser);\n        linkSqlite(node_one_byte_string.root_module, sqlite_lib_dir, sqlite_library);\n        node_one_byte_string.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_one_byte_string.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_one_byte_string.root_module.addIncludePath(b.path(\"src/extensions\"));\n        node_one_byte_string.root_module.linkLibrary(network);\n        // This target owns one TLS implementation and one V8 fatal owner.\n        // The selected network library contains neither translation unit.\n        node_one_byte_string.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context.c\"),\n            .flags = &.{\"-std=gnu11\"},\n        });\n        node_one_byte_string.root_module.addCSourceFiles(.{\n            .files = &.{\n                \"src/extensions/native_v8_base_fatal.cpp\",\n                \"src/extensions/native_node_one_byte_string_diagnostics.cpp\",\n            },\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        if (target.result.os.tag == .windows) {\n            node_one_byte_string.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_one_byte_string.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-one-byte-string\", \"Install 8 concrete source controls without execution\").dependOn(&b.addInstallArtifact(node_one_byte_string, .{ .dest_sub_path = b.fmt(\"native-node-one-byte-string{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "byte_offset": 219362,
+      "before_sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55",
+      "after_sha256": "ED75E6415A6BA63B4E4F51D7620818D7CAB494971D373F8C2CF3DB8F2E4E026E"
+    },
+    "Buffer_before_or_after_selected_Shutdown_byte_equal": true,
+    "both_whole_inverse_orders_exact": true,
+    "Transfer_then_Shutdown_order_preserved": true,
+    "Transfer_and_Shutdown_mutual_order_is_not_claimed_commutative": true
+  },
+  "accepted_Error_naming_preserved": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\proposal.json",
+    "bytes": 12811,
+    "sha256": "262AFAA489DC7620FECE7D077FCB1C7A4904E6B65BC420A8A697B6C2341A158A"
+  },
+  "canonical_Error_block_preserved_exact": true,
+  "target": {
+    "build_step": "build-native-vm-array-buffer-view-data",
+    "root_source": "src/native_vm_array_buffer_view_data_test.zig",
+    "filter": "VM view data",
+    "cached_executable_windows": "test.exe",
+    "cached_pdb_windows": "test.pdb",
+    "installed_executable_windows": "native-vm-array-buffer-view-data.exe",
+    "installed_pdb_windows": "test.pdb",
+    "installed_executable_non_windows": "native-vm-array-buffer-view-data",
+    "declared_named_controls": 12,
+    "actual_future_metadata": null
+  },
+  "naming_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\zig-naming-authority.json",
+    "bytes": 11751,
+    "sha256": "F972718987A310E725142A598637E08FDC688639B6EA5AA53B0E3F1E97F13CDD"
+  },
+  "verified_authority_excerpts": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build.zig",
+        "bytes": 102991,
+        "sha256": "DFFB5A172899D660C370C6CDECA04C073468C64F28B9BB6FCE919E71D1D5326D"
+      },
+      "first_line": 858,
+      "last_line": 888,
+      "sha256": "EE9C4706DB5E9801729FEF37049B457991792A3BBB7BB238CD8CC2D80EC7750E"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\Compile.zig",
+        "bytes": 84912,
+        "sha256": "6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84"
+      },
+      "first_line": 381,
+      "last_line": 410,
+      "sha256": "2829D2CC11C0A63DF639AC88BAF76F55F704CB58B90377B076696975AC527F62"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\Compile.zig",
+        "bytes": 84912,
+        "sha256": "6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84"
+      },
+      "first_line": 1484,
+      "last_line": 1485,
+      "sha256": "95F4A3364C03246EBE12D0CAD19805A012E152766A4C24A626B58856848B5500"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\Compile.zig",
+        "bytes": 84912,
+        "sha256": "6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84"
+      },
+      "first_line": 1810,
+      "last_line": 1813,
+      "sha256": "DF19F568321B9B44BE85EAA24A46EEE9C3C9BFD83F42C809B6898BA1E8265FEA"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\Compile.zig",
+        "bytes": 84912,
+        "sha256": "6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84"
+      },
+      "first_line": 1836,
+      "last_line": 1850,
+      "sha256": "F43BD1DAC664A97ECA873FFD5B0A7E950A2507F13CD73B60BEB38285DF81533A"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\InstallArtifact.zig",
+        "bytes": 8841,
+        "sha256": "6008437F2DF91E09396B0732B5E10094EF2DF5BE21AA6ABA53F08926FEF685A0"
+      },
+      "first_line": 78,
+      "last_line": 82,
+      "sha256": "49796C6EB2DE6B1F05DF62C3F55554636C03C238A981E2BA6C11129A3E5F3310"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\InstallArtifact.zig",
+        "bytes": 8841,
+        "sha256": "6008437F2DF91E09396B0732B5E10094EF2DF5BE21AA6ABA53F08926FEF685A0"
+      },
+      "first_line": 104,
+      "last_line": 108,
+      "sha256": "DBEC95C5551721D4A24EDBF7CD3A73FFDA38F4D10BBE2D04D33C730085025D25"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\InstallArtifact.zig",
+        "bytes": 8841,
+        "sha256": "6008437F2DF91E09396B0732B5E10094EF2DF5BE21AA6ABA53F08926FEF685A0"
+      },
+      "first_line": 162,
+      "last_line": 165,
+      "sha256": "C2F5D1D19869A33D6B0E30246B0DD14FF76501CABF4B24D3A9938E09EFD5FBE9"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\zig.zig",
+        "bytes": 44987,
+        "sha256": "5445596331AD810FC60057FCE5555477E9317441FB36F69C632F37F0D1DA0824"
+      },
+      "first_line": 156,
+      "last_line": 161,
+      "sha256": "2B17AA1AFF55A298739007ADAD77C9CEBECFEFCC59B4D405237F3D0A1B4134AC"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\zig.zig",
+        "bytes": 44987,
+        "sha256": "5445596331AD810FC60057FCE5555477E9317441FB36F69C632F37F0D1DA0824"
+      },
+      "first_line": 979,
+      "last_line": 1010,
+      "sha256": "761905ECF83F8ECA5F1D272DC28760FB3C624617A1364C9CAC1CB10B1D560398"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Target.zig",
+        "bytes": 117251,
+        "sha256": "B830BAC98558E0E6B83AF9917F3FF492452F57F608C3C54F009384C793A6F345"
+      },
+      "first_line": 100,
+      "last_line": 111,
+      "sha256": "FB3565975603188D5A62814B5F18A31550AB9CE075A4AF978F247DAAEDA0E512"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Target.zig",
+        "bytes": 117251,
+        "sha256": "B830BAC98558E0E6B83AF9917F3FF492452F57F608C3C54F009384C793A6F345"
+      },
+      "first_line": 2119,
+      "last_line": 2121,
+      "sha256": "008316C2EA8A3E808300C8A90C3F5630E1799FE1346A85772112D06C81BA58DA"
+    }
+  ],
+  "unchanged_driver": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v34-prepared-20261020\\Run-CombinedNativeBatch.ps1",
+    "bytes": 60094,
+    "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+  },
+  "unchanged_metadata_auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v34-prepared-20261020\\Audit-CombinedNativeBatch.py",
+    "bytes": 17691,
+    "sha256": "1436211CABD8D2D2C0A31DB4005C05BA3451E50E381F7EC3AFF8ACC094CAE98B"
+  },
+  "control_snapshot_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+    "bytes": 22131,
+    "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+  },
+  "control_live_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_vm_array_buffer_view_data_test.zig",
+    "bytes": 22131,
+    "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+  },
+  "all12_names_and_assertions_unchanged": true,
+  "source_compile_link_filter_guard_scope_unchanged": true,
+  "run_steps_added": 0,
+  "production_or_control_changes": 0,
+  "own_VM_and_corrected_Latin1_composition_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\latin1-successor-composition.json",
+    "bytes": 7587,
+    "sha256": "F992DA49E1550C3E46769D2B1D57DA239391B3D05743BC3C64CCCEC022A8D807"
+  },
+  "limits": [
+    "Only a build proposal; no Main intake or execution authority.",
+    "All original Buffer raw borrow, brand CHECK, V8 materialization and future listener/bootstrap limitations remain.",
+    "Optional Shutdown keeps its full independent source/fatal/TLS prerequisites; this build composition does not close them."
+  ],
+  "compiler_native_reference_generator_execution": false,
+  "Main_changed": false,
+  "runtime_qualified": false,
+  "output_snapshots": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\install-only-block.zig.txt",
+      "bytes": 748,
+      "sha256": "FB4A10A7214C73651AA6681E48092C8E63A04E49337A03EF81E11FD3F8ECB6D7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\install-only-block.zig.txt",
+      "bytes": 812,
+      "sha256": "A294A6F8CA4D868376BE9DF89B5F8C0C51638FD5E7E4C53DB769D63B37810EC3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\c764-with-original-buffer.zig",
+      "bytes": 504188,
+      "sha256": "2D046B3325B617146658B82B2BC12F58A8A811EC50403F91F9135553849C1DAE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\c764-with-corrected-buffer.zig",
+      "bytes": 504252,
+      "sha256": "FE532CFA7EFBB474D6B4E84ACE2AF563A019282CDD043D836EF824DED854724F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\current79-build.zig",
+      "bytes": 509023,
+      "sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\current79-with-buffer.zig",
+      "bytes": 509835,
+      "sha256": "51AC4EEFEE7E09507C9ECFBA6052B9378D7E5335789A44E3421618BB1D7FBF4B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\original\\current79-with-shutdown.zig",
+      "bytes": 513195,
+      "sha256": "ED75E6415A6BA63B4E4F51D7620818D7CAB494971D373F8C2CF3DB8F2E4E026E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\current79-with-shutdown-and-buffer.zig",
+      "bytes": 514007,
+      "sha256": "868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+    }
+  ],
+  "builder": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\prepare-proposal.py",
+    "bytes": 11634,
+    "sha256": "AE03BA7DB4A6AE37D987A35ACBBAA1DF384A9F9BF16AC194D02BBB4B7E98B041"
+  }
+}

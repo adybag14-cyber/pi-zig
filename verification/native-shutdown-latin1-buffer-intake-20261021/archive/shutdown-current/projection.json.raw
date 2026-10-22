@@ -1,0 +1,372 @@
+{
+  "schema": "pi-zig.shutdown-current-head-build-composition.v1",
+  "source_only": true,
+  "basis_main_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "immutable_shutdown_manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production-proposal.json",
+    "bytes": 38512,
+    "sha256": "C75EDD403EA03303A55CF64C903F2193EA74CBFAE843196DA7096C8AC3A7CAA0"
+  },
+  "immutable_shutdown_build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\build\\proposal.json",
+    "bytes": 7512,
+    "sha256": "2B7888AFCD7DB29A98FB2329D0668ADA6ECA15F818E29B15F834C1C006D17F86"
+  },
+  "accepted_transfer_build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\build\\proposal.json",
+    "bytes": 4151,
+    "sha256": "D662D5DF7D2C21CD8376666E120CAEEA8BB46E0518C5B3560E6A97522D6BB212"
+  },
+  "accepted_error_naming": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\proposal.json",
+    "bytes": 12811,
+    "sha256": "262AFAA489DC7620FECE7D077FCB1C7A4904E6B65BC420A8A697B6C2341A158A"
+  },
+  "old_build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\build\\original-build.zig",
+    "bytes": 506940,
+    "sha256": "399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52"
+  },
+  "current_build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-current-head-composition-20261020\\original\\build.zig",
+    "bytes": 509023,
+    "sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55",
+    "raw_git_blob": "79c19fc30c886e85b71aca75d1a025397db04fec:build.zig",
+    "live_main_equal": true
+  },
+  "projected_build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-current-head-composition-20261020\\projected\\build.zig",
+    "bytes": 513195,
+    "sha256": "ED75E6415A6BA63B4E4F51D7620818D7CAB494971D373F8C2CF3DB8F2E4E026E"
+  },
+  "old_to_current_exact_edits": [
+    {
+      "label": "accepted TransferData insertion D662D5DF",
+      "byte_offset": 217279,
+      "before": "        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "after": "        const node_file_handle_transfer = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_file_handle_transfer_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native FileHandle transfer\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_file_handle_transfer.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_file_handle_transfer.root_module, typescript_parser);\n        linkSqlite(node_file_handle_transfer.root_module, sqlite_lib_dir, sqlite_library);\n        node_file_handle_transfer.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_file_handle_transfer.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_file_handle_transfer.root_module.linkLibrary(network);\n        // One actual TLS diagnostic owner in this selected native artifact.\n        // This new owner is compiled directly; no production bootstrap is implied.\n        node_file_handle_transfer.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context.c\"),\n            .flags = &.{\"-std=gnu11\"},\n        });\n        node_file_handle_transfer.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_file_handle_transfer.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        if (target.result.os.tag == .windows) {\n            node_file_handle_transfer.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_file_handle_transfer.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-file-handle-transfer\", \"Install thirteen actual FileHandle descriptor transfer controls without execution\").dependOn(&b.addInstallArtifact(node_file_handle_transfer, .{ .dest_sub_path = b.fmt(\"native-node-file-handle-transfer{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "before_sha256": "399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52",
+      "after_sha256": "DB9BEE3C8B7C8FF817F1FB2AE761F7A7400EA3250CDD7AF7AFBAA4118FD13909"
+    },
+    {
+      "label": "accepted Error naming use_canonical_default_test_cache_name",
+      "byte_offset": 196443,
+      "before": "        .name = \"native-vm-error-constructor-name\",\n",
+      "after": "",
+      "before_sha256": "DB9BEE3C8B7C8FF817F1FB2AE761F7A7400EA3250CDD7AF7AFBAA4118FD13909",
+      "after_sha256": "833BAFA1EF25D53D14F7ECCBE4AFA5BDFA1BAA1331521C78334C5FF2B7A4995C"
+    },
+    {
+      "label": "accepted Error naming preserve_public_installed_executable_basename",
+      "byte_offset": 196782,
+      "before": "    b.step(\"build-native-vm-error-constructor-name\", \"Install actual native Error constructor provenance controls without execution\").dependOn(&b.addInstallArtifact(native_error_constructor_name_tests, .{}).step);\n",
+      "after": "    b.step(\"build-native-vm-error-constructor-name\", \"Install actual native Error constructor provenance controls without execution\").dependOn(&b.addInstallArtifact(native_error_constructor_name_tests, .{ .dest_sub_path = b.fmt(\"native-vm-error-constructor-name{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n",
+      "before_sha256": "833BAFA1EF25D53D14F7ECCBE4AFA5BDFA1BAA1331521C78334C5FF2B7A4995C",
+      "after_sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55"
+    }
+  ],
+  "old_to_current_whole_inverse": true,
+  "current_shutdown_edits": [
+    {
+      "label": "unchanged Shutdown/Latin1 insertion 2B7888AF",
+      "byte_offset": 219362,
+      "before": "        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "after": "        const node_stream_shutdown = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_stream_shutdown_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native Stream shutdown\", \"native StreamReq Done\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_stream_shutdown.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_stream_shutdown.root_module, typescript_parser);\n        linkSqlite(node_stream_shutdown.root_module, sqlite_lib_dir, sqlite_library);\n        node_stream_shutdown.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_stream_shutdown.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_stream_shutdown.root_module.addIncludePath(b.path(\"src/extensions\"));\n        node_stream_shutdown.root_module.linkLibrary(network);\n        // This target owns one TLS implementation and one V8 fatal owner.\n        // The selected network library contains neither translation unit.\n        node_stream_shutdown.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context.c\"),\n            .flags = &.{\"-std=gnu11\"},\n        });\n        node_stream_shutdown.root_module.addCSourceFiles(.{\n            .files = &.{\n                \"src/extensions/native_v8_base_fatal.cpp\",\n                \"src/extensions/native_node_one_byte_string_diagnostics.cpp\",\n            },\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        if (target.result.os.tag == .windows) {\n            node_stream_shutdown.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_stream_shutdown.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-stream-shutdown\", \"Install 18 concrete source controls without execution\").dependOn(&b.addInstallArtifact(node_stream_shutdown, .{ .dest_sub_path = b.fmt(\"native-node-stream-shutdown{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const node_one_byte_string = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_one_byte_string_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native OneByteString\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_one_byte_string.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_one_byte_string.root_module, typescript_parser);\n        linkSqlite(node_one_byte_string.root_module, sqlite_lib_dir, sqlite_library);\n        node_one_byte_string.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_one_byte_string.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_one_byte_string.root_module.addIncludePath(b.path(\"src/extensions\"));\n        node_one_byte_string.root_module.linkLibrary(network);\n        // This target owns one TLS implementation and one V8 fatal owner.\n        // The selected network library contains neither translation unit.\n        node_one_byte_string.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context.c\"),\n            .flags = &.{\"-std=gnu11\"},\n        });\n        node_one_byte_string.root_module.addCSourceFiles(.{\n            .files = &.{\n                \"src/extensions/native_v8_base_fatal.cpp\",\n                \"src/extensions/native_node_one_byte_string_diagnostics.cpp\",\n            },\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        if (target.result.os.tag == .windows) {\n            node_one_byte_string.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_one_byte_string.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-one-byte-string\", \"Install 8 concrete source controls without execution\").dependOn(&b.addInstallArtifact(node_one_byte_string, .{ .dest_sub_path = b.fmt(\"native-node-one-byte-string{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "before_sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55",
+      "after_sha256": "ED75E6415A6BA63B4E4F51D7620818D7CAB494971D373F8C2CF3DB8F2E4E026E"
+    }
+  ],
+  "current_shutdown_whole_inverse": true,
+  "exact_original_shutdown_edit_reused": true,
+  "source_admission": [
+    {
+      "relative_path": "src/extensions/native_node_async_wrap_state.zig",
+      "current_status": "present; exact accepted preimage",
+      "current_bytes": 28133,
+      "current_sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_async_wrap_state.zig",
+        "bytes": 34046,
+        "sha256": "1530C4043859CFF37D7F157F5557E4597E68972C1F1A1B82D208978F47E3D67A"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_async_wrap.zig",
+      "current_status": "present; exact accepted preimage",
+      "current_bytes": 19741,
+      "current_sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_async_wrap.zig",
+        "bytes": 20655,
+        "sha256": "F2BEC62AC7817F16EE57E50B80D903ECCB0F8D60AFCB8B61FED920245918CC27"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_stream_resource.zig",
+      "current_status": "present; exact accepted preimage",
+      "current_bytes": 5762,
+      "current_sha256": "6CA4CF5CD5E71EAD8C9E6F4FCF0D0075190C853E26978B497389F7D29EBE0AC6",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_stream_resource.zig",
+        "bytes": 6847,
+        "sha256": "39255A86BA9631F95E9CBD13B85AE7264A30A015EF4454F10B2D64BD643F2D8A"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_stream_base.zig",
+      "current_status": "present; exact accepted preimage",
+      "current_bytes": 10864,
+      "current_sha256": "0A3F4EB5133BC9543D5AD77DC33F4753ABEC866EB721BCE0A8F08C16BECD5ABF",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_stream_base.zig",
+        "bytes": 12321,
+        "sha256": "F85721695F41998E3676C196B4791D295EA62C8DE89FD83159F05BACDEF7716E"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_owner.zig",
+      "current_status": "present; exact accepted preimage",
+      "current_bytes": 16629,
+      "current_sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 17650,
+        "sha256": "F2672292FBEBEEF74B35C32C38203E3D1E1D259052E7AB5AFB34DA29840B544D"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.c",
+      "current_status": "present; exact accepted preimage",
+      "current_bytes": 2403205,
+      "current_sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403730,
+        "sha256": "BC772BEE8794ADBD59385DA98F037310730704DFB9D251EA258862B1C887E454"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.h",
+      "current_status": "present; exact accepted preimage",
+      "current_bytes": 114656,
+      "current_sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114822,
+        "sha256": "4728F93F8CC0D51FB6066E31502BE87920FE7B395BB57DED6D4E80BD1543222C"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_shutdown.zig",
+      "current_status": "absent; new path in immutable C75 proposal",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_shutdown.zig",
+        "bytes": 9800,
+        "sha256": "D88164C9B392F9A5A0906DF2166129204A88A0936C83D3FA1DFF008484EC94F2"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_one_byte_string.zig",
+      "current_status": "absent; new path in immutable C75 proposal",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_one_byte_string.zig",
+        "bytes": 2658,
+        "sha256": "2387DDE54B2B079BC0F78490602E4CF150F4A1E46FFC3FC05D7EF3CB5CEE4507"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+      "current_status": "absent; new path in immutable C75 proposal",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_one_byte_string_diagnostics.cpp",
+        "bytes": 2695,
+        "sha256": "3E61B1FDD631E80B31F51F5B130D203C4C01BD41FF4EE4FD2831C27074459B53"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_one_byte_string_diagnostics.h",
+      "current_status": "absent; new path in immutable C75 proposal",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_one_byte_string_diagnostics.h",
+        "bytes": 576,
+        "sha256": "687E51133E348B90B4C7CF5CBEB53C2098CF6988A5C3915F68DF008D0A9E1C88"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_stream_request.zig",
+      "current_status": "absent; new path in immutable C75 proposal",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_stream_request.zig",
+        "bytes": 6970,
+        "sha256": "654816139FC110560BA21BDBBEA35744468B1E6C52154448D30CEDC3656A6E8B"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_stream_shutdown.zig",
+      "current_status": "absent; new path in immutable C75 proposal",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_stream_shutdown.zig",
+        "bytes": 11021,
+        "sha256": "2BEE67EE76015C0549729F3F3B12CD4BBBF32C5DBF5A28D8CEE3F111E0C86D7E"
+      }
+    },
+    {
+      "relative_path": "src/native_node_one_byte_string_test.zig",
+      "current_status": "absent; new path in immutable C75 proposal",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_one_byte_string_test.zig",
+        "bytes": 5064,
+        "sha256": "AC3E1AD12FB0F48905EC8B561094F54DD93653AD7C8DC5DD7CC0EBB54959C461"
+      }
+    },
+    {
+      "relative_path": "src/native_node_stream_shutdown_test.zig",
+      "current_status": "absent; new path in immutable C75 proposal",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17019,
+        "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+      }
+    },
+    {
+      "relative_path": "src/native_node_stream_shutdown_test_support.zig",
+      "current_status": "absent; new path in immutable C75 proposal",
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10312,
+        "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+      }
+    }
+  ],
+  "source_prerequisites": [
+    {
+      "relative_path": "src/extensions/native_v8_base_fatal.h",
+      "current_status": "absent; separate reviewed fatal source intake still required",
+      "required": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\dependencies\\src\\extensions\\native_v8_base_fatal.h",
+        "bytes": 7727,
+        "sha256": "C5B2D6E6F7B8DA0E8C9D70E8934392B10BB638DA5C209870385FCE1AC71D3CBF"
+      },
+      "raw_5059d6a_equal": true
+    },
+    {
+      "relative_path": "src/extensions/native_v8_base_fatal.cpp",
+      "current_status": "absent; separate reviewed fatal source intake still required",
+      "required": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\dependencies\\src\\extensions\\native_v8_base_fatal.cpp",
+        "bytes": 7723,
+        "sha256": "1C83C0523655ACD3FF64CA067AE2CB5131C98B36A2E60910AEF4C64699BD3BBC"
+      },
+      "raw_5059d6a_equal": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_diagnostic_context.c",
+      "current_status": "present; bytes equal selected dependency",
+      "required": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\dependencies\\src\\extensions\\native_node_diagnostic_context.c",
+        "bytes": 789,
+        "sha256": "AC01853D724253740008E26D2663545D2F564A6E59DE91AA8CE2C8777C7B832C"
+      },
+      "raw_5059d6a_equal": false
+    },
+    {
+      "relative_path": "src/extensions/native_node_diagnostic_context.h",
+      "current_status": "present; bytes equal selected dependency",
+      "required": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\dependencies\\src\\extensions\\native_node_diagnostic_context.h",
+        "bytes": 775,
+        "sha256": "4D8E43A6527FED6AA19F86A2A51CD490E5DDEAC6CCC323635B700ED4E8B798C0"
+      },
+      "raw_5059d6a_equal": false
+    },
+    {
+      "relative_path": "src/extensions/native_node_diagnostic_context.hpp",
+      "current_status": "present; bytes equal selected dependency",
+      "required": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\dependencies\\src\\extensions\\native_node_diagnostic_context.hpp",
+        "bytes": 914,
+        "sha256": "7EA7700F4EDCC6ED5C27DF98574BE27A572AFF01E151B9F39667E6737ACC30B9"
+      },
+      "raw_5059d6a_equal": false
+    }
+  ],
+  "translation_unit_recipe": {
+    "network_raw_blob": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-current-head-composition-20261020\\original\\tools\\build_native_node_network.zig",
+      "bytes": 5905,
+      "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    "native_memory_raw_blob": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-current-head-composition-20261020\\original\\tools\\build_native_node_memory.zig",
+      "bytes": 1030,
+      "sha256": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17"
+    },
+    "per_new_executable": [
+      "src/extensions/native_node_diagnostic_context.c",
+      "src/extensions/native_v8_base_fatal.cpp",
+      "src/extensions/native_node_one_byte_string_diagnostics.cpp"
+    ],
+    "none_in_network_or_memory": true,
+    "tls_is_direct_per_artifact_not_global": true,
+    "fatal_source_present_in_main": false,
+    "linkQuickJs_libcpp_true": true,
+    "DEBUG_defined": false,
+    "OFFICIAL_BUILD_defined": false,
+    "admitted_network_targets": [
+      "windows",
+      "linux"
+    ]
+  },
+  "source_block_order": {
+    "selected": "Existing Transfer block, then new Shutdown/Latin1 block, then original FS request-owner anchor.",
+    "same_anchor": true,
+    "naive_reverse_insertions_byte_commute": false,
+    "reverse_order_sha256": "03A5A78EA130375EF6F0AD4FF190A8520F136AF577C8601C0F6FC733A5A2E467",
+    "reverse_order_bytes": 513195,
+    "whole_reverse_order_inverse": true,
+    "removing_both_exact_blocks_leaves_identical_bytes": true,
+    "note": "No rewrite of either predecessor. Current-head replay is authoritative; do not claim both original insertion orders produce equal bytes."
+  },
+  "new_roots": [
+    {
+      "root_source": "src/native_node_stream_shutdown_test.zig",
+      "filters": [
+        "native Stream shutdown",
+        "native StreamReq Done"
+      ],
+      "target": "build-native-node-stream-shutdown",
+      "artifact_basename": "native-node-stream-shutdown",
+      "declared_source_controls": 18
+    },
+    {
+      "root_source": "src/native_node_one_byte_string_test.zig",
+      "filters": [
+        "native OneByteString"
+      ],
+      "target": "build-native-node-one-byte-string",
+      "artifact_basename": "native-node-one-byte-string",
+      "declared_source_controls": 8
+    }
+  ],
+  "declared_new_controls": 26,
+  "future_actual_metadata_count": null,
+  "run_steps_added": 0,
+  "preservation": {
+    "sealed_C75_inventory_rows_rehashed": 90,
+    "sealed_C75_bytes_unchanged": true,
+    "live_Main_files_read_not_changed": true,
+    "no_git_mutation": true
+  },
+  "execution": {
+    "compiler": false,
+    "native": false,
+    "Node_reference": false,
+    "generator": false
+  },
+  "limits": [
+    "This supplement is an exact source/build projection, not a build, linkage, target or runtime result.",
+    "Fatal H/CPP 5059d6a must be admitted separately before these targets are buildable.",
+    "Native bootstrap hook installation, full public FileHandle/StreamBase template and process trace remain separate.",
+    "No Main intake or source-publication authority is implied."
+  ]
+}

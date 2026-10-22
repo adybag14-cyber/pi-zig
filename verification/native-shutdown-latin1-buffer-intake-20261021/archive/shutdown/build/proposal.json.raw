@@ -1,0 +1,76 @@
+{
+  "schema": "pi-zig.shutdown-latin1-install-only-build-proposal.v1",
+  "basis_combined_projection": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projection.json",
+    "bytes": 25832,
+    "sha256": "E1C3AE19CE38CF7FB6B21043F9B154B4DC4AE0952A9B149BD6BE792AFAC7C3B3"
+  },
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\build\\original-build.zig",
+    "bytes": 506940,
+    "sha256": "399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\build\\projected-build.zig",
+    "bytes": 511112,
+    "sha256": "8CBCA84B70EB6B95DC6CB350FF10B6F3ADDD635BA120376FE2F5319F3BD3D407"
+  },
+  "block": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\build\\install-only-block.zig.txt",
+    "bytes": 4172,
+    "sha256": "84A361CB3F0B7CF81136BB6B5DAD73994478C41614A171CB18E40AA7926CF106"
+  },
+  "edits": [
+    {
+      "before": "        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "after": "        const node_stream_shutdown = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_stream_shutdown_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native Stream shutdown\", \"native StreamReq Done\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_stream_shutdown.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_stream_shutdown.root_module, typescript_parser);\n        linkSqlite(node_stream_shutdown.root_module, sqlite_lib_dir, sqlite_library);\n        node_stream_shutdown.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_stream_shutdown.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_stream_shutdown.root_module.addIncludePath(b.path(\"src/extensions\"));\n        node_stream_shutdown.root_module.linkLibrary(network);\n        // This target owns one TLS implementation and one V8 fatal owner.\n        // The selected network library contains neither translation unit.\n        node_stream_shutdown.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context.c\"),\n            .flags = &.{\"-std=gnu11\"},\n        });\n        node_stream_shutdown.root_module.addCSourceFiles(.{\n            .files = &.{\n                \"src/extensions/native_v8_base_fatal.cpp\",\n                \"src/extensions/native_node_one_byte_string_diagnostics.cpp\",\n            },\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        if (target.result.os.tag == .windows) {\n            node_stream_shutdown.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_stream_shutdown.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-stream-shutdown\", \"Install 18 concrete source controls without execution\").dependOn(&b.addInstallArtifact(node_stream_shutdown, .{ .dest_sub_path = b.fmt(\"native-node-stream-shutdown{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const node_one_byte_string = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_one_byte_string_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native OneByteString\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_one_byte_string.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_one_byte_string.root_module, typescript_parser);\n        linkSqlite(node_one_byte_string.root_module, sqlite_lib_dir, sqlite_library);\n        node_one_byte_string.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_one_byte_string.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_one_byte_string.root_module.addIncludePath(b.path(\"src/extensions\"));\n        node_one_byte_string.root_module.linkLibrary(network);\n        // This target owns one TLS implementation and one V8 fatal owner.\n        // The selected network library contains neither translation unit.\n        node_one_byte_string.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context.c\"),\n            .flags = &.{\"-std=gnu11\"},\n        });\n        node_one_byte_string.root_module.addCSourceFiles(.{\n            .files = &.{\n                \"src/extensions/native_v8_base_fatal.cpp\",\n                \"src/extensions/native_node_one_byte_string_diagnostics.cpp\",\n            },\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        if (target.result.os.tag == .windows) {\n            node_one_byte_string.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_one_byte_string.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-one-byte-string\", \"Install 8 concrete source controls without execution\").dependOn(&b.addInstallArtifact(node_one_byte_string, .{ .dest_sub_path = b.fmt(\"native-node-one-byte-string{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "occurrences_before": 1,
+      "occurrences_after": 1
+    }
+  ],
+  "whole_forward_exact": true,
+  "whole_inverse_exact": true,
+  "new_roots": [
+    {
+      "root_source": "src/native_node_stream_shutdown_test.zig",
+      "filters": [
+        "native Stream shutdown",
+        "native StreamReq Done"
+      ],
+      "target": "build-native-node-stream-shutdown",
+      "artifact_basename": "native-node-stream-shutdown",
+      "declared_source_controls": 18
+    },
+    {
+      "root_source": "src/native_node_one_byte_string_test.zig",
+      "filters": [
+        "native OneByteString"
+      ],
+      "target": "build-native-node-one-byte-string",
+      "artifact_basename": "native-node-one-byte-string",
+      "declared_source_controls": 8
+    }
+  ],
+  "declared_source_controls": 26,
+  "future_actual_metadata_count": null,
+  "install_only": true,
+  "run_steps_added": 0,
+  "native_translation_unit_ownership": {
+    "per_root": [
+      "src/extensions/native_node_diagnostic_context.c",
+      "src/extensions/native_v8_base_fatal.cpp",
+      "src/extensions/native_node_one_byte_string_diagnostics.cpp"
+    ],
+    "selected_network_contains_none_of_these": true,
+    "fatal_source_intake_prerequisite": "5059d6a reviewed source-only owner; not silently added to Main by this packet",
+    "tls_source_intake": "existing accepted source; selected network does not compile it",
+    "link_libcpp": "linkQuickJs sets true; genuine std::string/stringstream DEBUG path retained",
+    "compile_mode": "Neither DEBUG nor OFFICIAL_BUILD is defined by this selected recipe, including Zig Debug. Native Debug/official parity and bootstrap hook installation are not claimed.",
+    "admitted_network_targets": [
+      "windows",
+      "linux"
+    ]
+  },
+  "main_changed": false,
+  "compiler_native_execution": false
+}

@@ -1,0 +1,232 @@
+"""Independent immutable-source replay of the paused Shutdown/Latin1/Buffer union.
+Reads saved donors and Git objects through the authorized Module worktree only.
+Writes only this peer's proof. Never executes candidate/prefix/generator/native.
+"""
+from pathlib import Path,PurePosixPath
+import hashlib,json,re,subprocess,sys
+B=Path(r"C:\Users\adyba\pi-zig");E=B/"evidence";R=B/"worktrees/modules-io-resume-20261018"
+O=E/"independent-shutdown-latin1-buffer-union014-source-peer-20261021"
+HEAD="014062f2d139254acab4b985b4ae343db637166f"
+assert Path(__file__).resolve()==O/"source-check.py"and sys.argv[1:]==[]
+seen={};replays=[];git_reads=[]
+def need(ok,msg):
+ if not ok:raise AssertionError(msg)
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def p3(row):return {k:row[k]for k in ("path","bytes","sha256")}
+def read(row):
+ row=p3(row);p=Path(row["path"])
+ need(p.is_absolute()and p.is_relative_to(B)and not p.is_relative_to(B/"main"),"evidence/snapshot reads only; never Main")
+ need(type(row["bytes"])is int and re.fullmatch("[0-9A-F]{64}",row["sha256"]),"exact raw pin")
+ raw=p.read_bytes();need((len(raw),sha(raw))==(row["bytes"],row["sha256"]),"current immutable input "+str(p))
+ key=str(p).casefold();need(key not in seen or seen[key]==row,"consistent input version");seen[key]=row
+ return raw
+def doc(row):return json.loads(read(row))
+def pin(path):
+ p=Path(path);raw=p.read_bytes();return dict(path=str(p),bytes=len(raw),sha256=sha(raw))
+def fixed(name,n,h):return dict(path=str(E/name),bytes=n,sha256=h)
+def git(*args):
+ need(args and args[0]in("rev-parse","ls-tree","cat-file"),"read-only immutable object command")
+ return subprocess.check_output(["git","--no-optional-locks","-C",str(R),*args],stderr=subprocess.PIPE)
+def blob(commit,path):
+ need(re.fullmatch("[0-9a-f]{40}",commit)and not path.startswith("/")and ".."not in PurePosixPath(path).parts,"fixed immutable object identity")
+ oid=git("rev-parse",commit+":"+path).decode("ascii").strip()
+ need(re.fullmatch("[0-9a-f]{40}",oid),"exact Git object id");raw=git("cat-file","blob",oid)
+ git_reads.append(dict(commit=commit,relative_path=path,git_blob=oid,bytes=len(raw),sha256=sha(raw)))
+ return raw
+PAUSED=fixed("unissued-shutdown-latin1-buffer-source-intake-20261020/paused-resolved-inputs.json",14121,"83F392D93DB3E4EC59721BD728275B0A9312EF97261E30939FB2E43EDC95C48E")
+u=doc(PAUSED)
+need(u["status"]=="paused_unissued_source_union_draft_before_independent_replay"and u["candidate_head"]=="79c19fc30c886e85b71aca75d1a025397db04fec","immutable original paused identity")
+need(u["source_path_count"]==20 and u["existing_replacements"]==8 and u["new_paths"]==12,"exact paused union counts")
+need(u["explicitly_excluded"]==["pending runtime template identity","full CustomBuffer listener"],"scope exclusions exact")
+refs=[doc(x)for x in u["root_accepted_references"]]
+need(len(refs)==5 and refs[0]["source_semantics_accepted"]is True and refs[4]["source_acceptance"]is True,"five original Root source acceptances")
+srow=refs[0]["inputs"][0];crow=refs[1]["projection"];brow=refs[2]["proposal"];nrow=refs[3]["proposal"]
+s,c,b,n=map(doc,(srow,crow,brow,nrow))
+need(srow["sha256"]==u["selected_shutdown_proposal"]and brow["sha256"]==u["selected_buffer_proposal"]and nrow["sha256"]==u["selected_buffer_naming"],"exact accepted selected owners")
+shared=doc(s["selected_shared_proposal"]);correction=doc(s["selected_c_successor"]);sb=doc(s["selected_build_proposal"])
+vm=doc(b["selected_vm_proposal"]);composition=doc(b["optional_corrected_latin1_composition"]["proposal"]);buffer_binding=doc(b["selected_controls_binding"]);bb=doc(b["install_only_build"])
+need(s["shared_edit_count"]==shared["edit_count"]==37 and len(shared["files"])==7 and len(shared["edits"])==37,"all original shared edits")
+need(correction["parent_projection"]==s["selected_shared_proposal"]and len(correction["edits"])==2,"exact two-expression Latin1 successor")
+need(n["selected_shutdown_composition"]["accepted_projection"]==crow and composition["module_final_manifest"]==srow and composition["raw_buffer_proposal"]==b["selected_vm_proposal"],"accepted composition chain")
+# The sealed packet inventories are immutable data, not scripts to evaluate.
+for row in s["inventory"]:
+ read(dict(path=str(Path(srow["path"]).parent/row["relative_path"]),bytes=row["bytes"],sha256=row["sha256"]))
+need(len(s["inventory"])==90 and sha(json.dumps(s["inventory"],sort_keys=True,separators=(",",":")).encode())==s["inventory_sha256"],"all 90 original Shutdown inventory entries")
+for row in b["frozen_packet_inventory"]:read(row)
+need(len(b["frozen_packet_inventory"])==72,"all 72 immutable Buffer inventory rows")
+for row in n["output_snapshots"]:read(row)
+for row in refs[0]["inputs"]:read(row)
+for key in ("manifest","full_read_checker"):read(refs[1][key])
+for key in ("source_map","source_proof","dependency_inventory","closure"):read(refs[2][key])
+for row in refs[4]["reviews"]:read(row)
+read(refs[4]["preserved_preflight_negative"])
+read(s["required_predecessors"]["v8_fatal_owner_manifest"])
+# Independently replay declared edits as raw bytes and record the full inverse.
+def normalize(e):
+ before=e.get("before",e.get("old_text"));after=e.get("after",e.get("new_text"))
+ need(isinstance(before,str)and isinstance(after,str),"exact finite replacement strings")
+ pos=e.get("byte_offset",e.get("offset",e.get("offset_in_predecessor")))
+ ih=e.get("before_sha256",e.get("input_sha256"));oh=e.get("after_sha256",e.get("output_sha256"))
+ return before.encode(),after.encode(),pos,ih,oh
+def replay(label,original,edits,expected=None,declared_hashes=True):
+ work=original;steps=[]
+ for i,e in enumerate(edits,1):
+  before,after,pos,ih,oh=normalize(e)
+  need(before and work.count(before)==1,"unique finite preimage: "+label)
+  at=work.index(before);need(pos is None or not declared_hashes or pos==at,"exact declared current offset: "+label)
+  pre=sha(work)
+  if declared_hashes and ih is not None:need(pre==ih,"declared intermediate input: "+label)
+  work=work[:at]+after+work[at+len(before):]
+  if declared_hashes and oh is not None:need(sha(work)==oh,"declared intermediate output: "+label)
+  steps.append(dict(index=i,offset=at,before_bytes=len(before),after_bytes=len(after),before_sha256=sha(before),after_sha256=sha(after),input_sha256=pre,output_sha256=sha(work),before=before.decode(),after=after.decode()))
+ if expected is not None:need(work==expected,"entire saved projection: "+label)
+ inverse=work
+ for e in reversed(steps):
+  at=e["offset"];before=e["before"].encode();after=e["after"].encode()
+  need(sha(inverse)==e["output_sha256"]and inverse[at:at+len(after)]==after,"exact reverse postimage: "+label)
+  inverse=inverse[:at]+before+inverse[at+len(after):]
+  need(sha(inverse)==e["input_sha256"],"every reverse intermediate: "+label)
+ need(inverse==original,"whole byte inverse: "+label)
+ replays.append(dict(label=label,original_bytes=len(original),original_sha256=sha(original),projected_bytes=len(work),projected_sha256=sha(work),declared_intermediate_hashes_checked=declared_hashes,steps=steps,complete_forward_and_inverse_exact=True))
+ return work
+shared_raw={}
+for f in shared["files"]:
+ old=read(f["original"]);new=read(f["projected"]);es=[e for e in shared["edits"]if e["path"]==f["relative_path"]]
+ shared_raw[f["relative_path"]]=(old,replay("Shutdown shared "+f["relative_path"],old,es,new))
+need(sum(len(x["steps"])for x in replays)==37,"every original shared edit replayed")
+latin_c=replay("corrected Latin1 C argument types",read(correction["original"]),correction["edits"],read(correction["projected"]))
+need(correction["original"]==next(x["projected"]for x in shared["files"]if x["relative_path"]=="vendor/quickjs/quickjs.c"),"correction starts at immutable original Latin1 output")
+vm_projected={}
+for f in vm["files"]:
+ old=read(f["original"]);need(old==read(f["basis"])==shared_raw[f["path"]][0],"common exact Error VM basis")
+ vm_projected[f["path"]]=replay("Buffer VM "+f["path"],old,[e for e in vm["edits"]if e["path"]==f["path"]],read(f["projected"]))
+need(len(vm["edits"])==2,"only two Buffer VM insertions")
+combined={}
+for f in composition["files"]:
+ rp=f["relative_path"];original=read(f["common_predecessor"]);wanted=read(f["combined"])
+ latin_es=[e for e in shared["edits"]if e["path"]==rp];buffer_es=[e for e in vm["edits"]if e["path"]==rp]
+ added=correction["edits"]if rp.endswith(".c")else[]
+ need(original==shared_raw[rp][0],"common C/H composition original")
+ latin=replay("composition corrected Latin1 alone "+rp,original,latin_es+added,read(f["selected_latin1_projected"]),declared_hashes=False)
+ first=replay("corrected Latin1 then Buffer "+rp,latin,buffer_es,wanted,declared_hashes=False)
+ buffer=read(f["raw_buffer_projected"]);need(buffer==vm_projected[rp],"actual Buffer-only branch")
+ second=replay("Buffer then corrected Latin1 "+rp,buffer,latin_es+added,wanted,declared_hashes=False)
+ need(first==second,"both complete selected VM orders equal")
+ # Independently invert both entire paths back to the common original by
+ # replaying them as one recorded sequence, not just trusting branch booleans.
+ replay("whole Latin1-Buffer path "+rp,original,latin_es+added+buffer_es,wanted,declared_hashes=False)
+ replay("whole Buffer-Latin1 path "+rp,original,buffer_es+latin_es+added,wanted,declared_hashes=False)
+ prior=read(f["preserved_prior_combined"])
+ replay("additive correction on preserved combined "+rp,prior,f["additive_successor_edits"],wanted)
+ combined[rp]=wanted
+# Original and current-head build composition, including both preserved names.
+old_build=read(c["old_build"]);base_build=read(c["current_build"]);selected_build=read(c["projected_build"])
+need(old_build==read(sb["original"]),"same original build basis")
+replay("original Shutdown install-only build",old_build,sb["edits"],read(sb["projected"]))
+replay("original build plus accepted Transfer and Error naming",old_build,c["old_to_current_exact_edits"],base_build)
+replay("current build plus unchanged Shutdown",base_build,c["current_shutdown_edits"],selected_build)
+need(sb["edits"][0]["before"]==c["current_shutdown_edits"][0]["before"]and sb["edits"][0]["after"]==c["current_shutdown_edits"][0]["after"],"original exact Shutdown insertion retained")
+transfer=doc(c["accepted_transfer_build"]);error_naming=doc(c["accepted_error_naming"])
+# Bind the accepted Transfer block and the finite Error naming authority.
+transfer_block=read(transfer["block"])
+need(transfer_block in c["old_to_current_exact_edits"][0]["after"].encode()and base_build.count(transfer_block)==1,"exact prior Transfer block retained once")
+read(n["accepted_Error_naming_preserved"]);need(n["accepted_Error_naming_preserved"]==c["accepted_error_naming"],"same canonical Error correction")
+ob=read(n["original_block"]);nb=read(n["corrected_block"])
+replay("Buffer corrected canonical block",ob,n["exact_two_block_edits"],nb)
+replay("Buffer corrected canonical comparison file",read(n["original_projected_comparison"]),n["exact_two_whole_file_edits"],read(n["corrected_projected_comparison"]))
+replay("Buffer original install-only comparison",read(bb["original"]),[bb["edit"]],read(bb["projected"]))
+need(read(bb["block"])==ob and read(bb["projected"])==read(n["original_projected_comparison"]),"rejected naming predecessor preserved exactly")
+cur=n["current_head_projection"];both=n["selected_shutdown_composition"]
+need(read(cur["original"])==base_build and read(both["original"])==selected_build,"actual current-head build bases")
+with_buffer=replay("current build then corrected Buffer",base_build,[cur["edit"]],read(cur["projected"]))
+after_shutdown=replay("Shutdown then corrected Buffer",selected_build,[both["buffer_after_shutdown_edit"]],read(both["projected"]))
+after_buffer=replay("corrected Buffer then Shutdown",with_buffer,[both["shutdown_after_buffer_edit"]],read(both["projected"]))
+need(after_shutdown==after_buffer,"only Buffer/selected-Shutdown byte commutation")
+replay("whole current Shutdown-Buffer path",base_build,c["current_shutdown_edits"]+[both["buffer_after_shutdown_edit"]],after_shutdown)
+replay("whole current Buffer-Shutdown path",base_build,[cur["edit"],both["shutdown_after_buffer_edit"]],after_buffer)
+shutdown_block=read(sb["block"]);need(after_shutdown.count(shutdown_block)==1 and after_shutdown.count(nb)==1 and after_shutdown.count(transfer_block)==1,"each complete selected build block exactly once")
+need(after_shutdown.index(transfer_block)<after_shutdown.index(shutdown_block),"Transfer before Shutdown preserved")
+need(after_shutdown.replace(shutdown_block,b"",1).replace(nb,b"",1)==base_build,"all current build bytes outside two additions unchanged")
+# Explicitly reproduce the recorded NON-commutation of Transfer and Shutdown.
+prior_without_transfer=replay("historical Error naming before insertions",old_build,c["old_to_current_exact_edits"][1:],declared_hashes=False)
+selected_order=replay("historical Transfer then Shutdown",prior_without_transfer,[c["old_to_current_exact_edits"][0],c["current_shutdown_edits"][0]],selected_build,declared_hashes=False)
+reverse_order=replay("historical Shutdown then Transfer",prior_without_transfer,[c["current_shutdown_edits"][0],c["old_to_current_exact_edits"][0]],declared_hashes=False)
+need(selected_order!=reverse_order and sha(reverse_order)==c["source_block_order"]["reverse_order_sha256"]and len(reverse_order)==c["source_block_order"]["reverse_order_bytes"],"do not claim Transfer/Shutdown byte commutation")
+need(reverse_order.replace(transfer_block,b"",1).replace(shutdown_block,b"",1)==prior_without_transfer,"both predecessor blocks and all other bytes preserved")
+# Check all exact eight preimages and twelve absences using immutable Git only.
+need(git("rev-parse",HEAD+"^{commit}").decode().strip()==HEAD,"exact authorized immutable 014 object")
+paths=[x["relative_path"]for x in u["source_paths"]]
+need(len(paths)==len(set(p.casefold()for p in paths))==20,"unique Windows target identities")
+need(all(not PurePosixPath(p).is_absolute()and ".."not in PurePosixPath(p).parts and "\\"not in p for p in paths),"canonical relative target paths")
+tree=git("ls-tree","-r","-z",HEAD,"--",*paths);entries={}
+for record in tree.split(b"\0"):
+ if not record:continue
+ info,path=record.split(b"\t",1);mode,kind,oid=info.decode().split();name=path.decode()
+ need(kind=="blob"and mode=="100644","regular source blob target");entries[name]=oid
+need(len(entries)==8,"exact eight current target blobs; twelve new targets absent")
+mapping=[]
+for row in u["source_paths"]:
+ rp=row["relative_path"];wanted=read(row["selected"]);pre=row["current_preimage"]
+ if pre is None:
+  need(rp not in entries,"new path absent at immutable014");kind="new";original=None
+ else:
+  original=read(pre);need(rp in entries and blob(HEAD,rp)==original,"whole preimage equals raw014 blob "+rp);kind="replace"
+ if rp in combined:need(wanted==combined[rp],"selected combined VM donor")
+ elif rp=="build.zig":need(wanted==after_shutdown,"selected combined current build donor")
+ elif rp in shared_raw:need(wanted==shared_raw[rp][1],"selected unchanged shared projection")
+ else:
+  matches=[x for x in s["source_build_paths"]if x["relative_path"]==rp]
+  if matches:need(matches[0]["selected"]==row["selected"],"exact accepted new Shutdown/control donor")
+  elif rp=="src/native_vm_array_buffer_view_data_test.zig":need(row["selected"]==buffer_binding["snapshot"]==n["control_snapshot_unchanged"],"same accepted Buffer controls")
+  else:need(rp in s["required_predecessors"]["fatal_exact_required_source_paths"],"only two explicitly required fatal additions")
+ mapping.append(dict(relative_path=rp,kind=kind,selected=row["selected"],preimage=pre,raw_git_blob=entries.get(rp),full_replacement_inverse=(sha(original)if original is not None else None),inverse_rule="restore exact pinned preimage"if pre else"remove this newly introduced path only; no prior blob existed"))
+# Fatal owner and existing TLS/network/memory prerequisites are original bytes.
+fatal_commit=git("rev-parse","5059d6a^{commit}").decode().strip();need(re.fullmatch("[0-9a-f]{40}",fatal_commit),"full fatal predecessor commit")
+prerequisites=[]
+for row in c["source_prerequisites"]:
+ rp=row["relative_path"];raw=read(row["required"])
+ if rp in s["required_predecessors"]["fatal_exact_required_source_paths"]:
+  need(raw==blob(fatal_commit,rp)and rp not in entries,"explicit new raw5059 fatal donor");state="new explicit source inclusion"
+ else:
+  need(raw==blob(HEAD,rp),"existing exact014 TLS prerequisite");state="already present exact immutable014"
+ prerequisites.append(dict(relative_path=rp,state=state,required=row["required"]))
+for key,rp in (("network_raw_blob","tools/build_native_node_network.zig"),("native_memory_raw_blob","tools/build_native_node_memory.zig")):
+ raw=read(c["translation_unit_recipe"][key]);need(raw==blob(HEAD,rp),"current raw library recipe prerequisite")
+ for source in c["translation_unit_recipe"]["per_new_executable"]:need(Path(source).name.encode()not in raw,"no duplicate TLS/fatal/onebyte translation-unit in library recipe")
+for label,var in (("shutdown","node_stream_shutdown"),("onebyte","node_one_byte_string")):
+ # Each separate target owns one occurrence of all three required sources.
+ start=shutdown_block.index(("const "+var+" = b.addTest").encode())
+ end=shutdown_block.find(b"        const ",start+1)
+ fragment=shutdown_block[start:]if end<0 else shutdown_block[start:end]
+ for rp in c["translation_unit_recipe"]["per_new_executable"]:need(fragment.count(('"'+rp+'"').encode())==1,"one translation unit per "+label)
+ need(b".name ="not in fragment and b".dest_sub_path"in fragment,"canonical cache basename and explicit installed artifact "+label)
+need(b".name ="not in nb and b".dest_sub_path"in nb and b"b.addRunArtifact"not in nb+shutdown_block,"install-only canonical new targets")
+# Original cached test.exe/PDB naming authority is read as data, never compiled.
+authority=doc(n["naming_authority"]);excerpt_checks=[]
+for x in n["verified_authority_excerpts"]:
+ raw=read(x["source"]);snippet=b"".join(raw.splitlines(keepends=True)[x["first_line"]-1:x["last_line"]])
+ # The pinned excerpt retains its final newline and original line bytes.
+ need(sha(snippet)==x["sha256"],"exact retained Zig naming excerpt")
+ excerpt_checks.append(x)
+# Preserve exact new named controls and exclusions.
+controls=[]
+for root in s["new_roots"]:
+ target=next(x for x in u["source_paths"]if x["relative_path"]==root["root_source"]);raw=read(target["selected"])
+ names=re.findall(rb'\btest\s+"((?:[^"\\]|\\.)*)"',raw)
+ need(len(names)==root["declared_source_controls"]and len(set(names))==len(names),"all named Shutdown/Latin1 source controls")
+ controls.append(dict(root_source=root["root_source"],target=root["target"],declared_controls=len(names),names=[x.decode()for x in names],actual_metadata_count=None))
+raw=read(buffer_binding["snapshot"]);names=re.findall(rb'\btest\s+"((?:[^"\\]|\\.)*)"',raw)
+need(len(names)==12 and [x.decode()for x in names]==buffer_binding["names"]==b["declared_control_names"],"all twelve exact Buffer names")
+controls.append(dict(root_source=n["target"]["root_source"],target=n["target"]["build_step"],declared_controls=12,names=[x.decode()for x in names],actual_metadata_count=None))
+need(sum(x["declared_controls"]for x in controls)==38 and len(controls)==3,"three install-only roots and38 declarations, actual unknown")
+need(not any("template_identity"in p or "custom_buffer_listener"in p for p in paths),"excluded larger assemblies absent")
+callback=s["required_predecessors"]["callback_correction_unchanged"]
+need(sha(blob(HEAD,callback["relative_path"]))==callback["sha256"],"protected972B callback untouched")
+# Re-read all saved donors/authorities; no live source or index is consulted.
+for row in list(seen.values()):read(row)
+report=dict(schema=1,status="independently_replayed_20_path_shutdown_latin1_buffer_union_on_immutable014",reviewer="/root/handover_review",source_only=True,paused_record=PAUSED,original_paused_head=u["candidate_head"],reviewed_immutable_head=HEAD,Git_read_worktree=str(R),root_accepted_references=u["root_accepted_references"],checker=pin(__file__),source_path_count=20,existing_replacements=8,new_paths=12,source_mapping=mapping,all_eight_preimages_equal_raw014=True,all_twelve_new_paths_absent_at014=True,no_rebase_required_for_selected_source_bytes=True,shared_original_edits=37,selected_Latin1_argument_edits=2,Buffer_VM_edits=2,replays=replays,replay_sequences=len(replays),all_declared_offsets_hashes_and_whole_inverses_exact=True,corrected_VM_both_orders_identical=True,Buffer_Shutdown_both_orders_identical=True,Transfer_Shutdown_commutative=False,selected_order="Transfer then Shutdown/Latin1; Buffer commutes with that selected Shutdown insertion.",selected_combined={p:u["source_paths"][paths.index(p)]["selected"]for p in ("vendor/quickjs/quickjs.c","vendor/quickjs/quickjs.h","build.zig")},fatal_donor_commit=fatal_commit,source_prerequisites=prerequisites,translation_unit_recipe=c["translation_unit_recipe"],naming_excerpts=excerpt_checks,new_control_roots=controls,declared_new_controls=38,actual_future_metadata_count=None,protected_callback_sha256=callback["sha256"],historical_negatives_preserved=True,packet_inventory_rows={"Shutdown":90,"Buffer":72},input_versions=len(seen),inputs=sorted(seen.values(),key=lambda x:x["path"].casefold()),immutable_Git_reads=git_reads,remaining_finite_intake_work=["Create a separate immutable final source/evidence manifest against the actual eventual Root-released head, retaining the eight exact preimages and twelve absence requirements.","Choose and deduplicate the exact proof/authority/archive donor copy paths, preserve all original rejected projections and reviews, and use raw suffixes where Git conversion would alter historical bytes.","Review the finite intake adapter and verify actual Git attribute/filter/encoding byte behavior for every final donor including the manifest before any index/source write.","After current validation closes, Root alone may issue a distinct source release and apply the exact reviewed manifest; current V38 artifacts/results cannot qualify this pending union.","Prepare fresh complete source/dependency/catalog bindings and later native qualification for the three new roots; their actual compiler metadata remains unknown."],scope_limits=["Finite raw source composition/prerequisites only; prior Root/peer semantic acceptance retained, not reissued as runtime proof.","No full public StreamBase/FileHandle bootstrap, production trace/hook policy, runtime-template identity or complete CustomBuffer listener is included.","No new qualification of inherited platform/toolchain or transitive native library graphs is asserted."],explicitly_excluded=u["explicitly_excluded"],Main_accessed=False,index_changed=False,existing_packet_changed=False,candidate_executed=False,prefix_executed=False,source_generator_executed=False,compiler_executed=False,native_executed=False,intake_manifest_issued=False,configuration_issued=False,source_release=False,runtime_qualified=False,application_qualified=False)
+out=O/"source-proof.json";need(not out.exists(),"own immutable proof create-only")
+data=(json.dumps(report,indent=2)+"\n").encode("ascii")
+with out.open("xb")as f:f.write(data)
+need(out.read_bytes()==data,"proof exact roundtrip")
+print(json.dumps(dict(checker=pin(__file__),proof=pin(out),source_paths=20,replay_sequences=len(replays),input_versions=len(seen),Git_blob_reads=len(git_reads),new_roots=3,declared_controls=38,Main_accessed=False)))

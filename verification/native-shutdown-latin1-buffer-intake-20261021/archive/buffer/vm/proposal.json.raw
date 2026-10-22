@@ -1,0 +1,74 @@
+{
+  "schema": "native-array-buffer-view-data-vm-projection-v1",
+  "basis_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "source_only": true,
+  "compiler_native_test_execution": false,
+  "existing_live_source_mutations": false,
+  "required_predecessor": "Accepted Error constructor production proposal B1C179FE, selected VM successor 64DB11E1 C5C7468/H7FBD84. The separate Module Latin-1 projection remains independently owned and must compose exactly before any combined intake.",
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "basis": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\successor\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404353,
+        "sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003"
+      }
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "basis": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114656,
+        "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+      },
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\original\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114656,
+        "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 115180,
+        "sha256": "9F63BF26C91440A8C9B3D5F1FF06AB387D6E76630ADEC6D4CAA745179DB46978"
+      }
+    }
+  ],
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "offset_in_predecessor": 2283975,
+      "old_text": "/* Intrinsic V8 ArrayBufferView::ByteLength projection.",
+      "new_text": "/* Intrinsic Buffer::Data projection: borrow the actual ArrayBufferView's\n   native address without consulting guest properties or acquiring storage.\n   V8 ByteOffset is zero only for detached views. A live out-of-bounds RAB\n   view retains its stored offset even though ByteLength is zero. Do address\n   arithmetic as uintptr_t so that merely observing such an address does not\n   form an out-of-allocation C pointer by pointer arithmetic. The result must\n   not be dereferenced beyond the separately observed usable byte length.\n   No context, allocation, ownership, or pending-completion operation occurs. */\nuint8_t *JS_PiArrayBufferViewData(JSValueConst view)\n{\n    JSObject *p;\n    JSTypedArray *ta;\n    JSArrayBuffer *abuf;\n\n    if (JS_VALUE_GET_TAG(view) != JS_TAG_OBJECT)\n        return NULL;\n    p = JS_VALUE_GET_OBJ(view);\n    if (!is_typed_array(p->class_id) && p->class_id != JS_CLASS_DATAVIEW)\n        return NULL;\n    ta = p->u.typed_array;\n    if (!ta)\n        return NULL;\n    abuf = ta->buffer->u.array_buffer;\n    if (abuf->detached)\n        return NULL;\n    return (uint8_t *)((uintptr_t)abuf->data + (uintptr_t)ta->offset);\n}\n\n/* Intrinsic V8 ArrayBufferView::ByteLength projection.",
+      "before_sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464",
+      "after_sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003",
+      "whole_file_inverse_exact": true
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "offset_in_predecessor": 73214,
+      "old_text": "JS_EXTERN size_t JS_PiArrayBufferViewByteLength(JSValueConst view);\n",
+      "new_text": "JS_EXTERN size_t JS_PiArrayBufferViewByteLength(JSValueConst view);\n/* Borrow an actual TypedArray/DataView's backing address plus stored byte\n   offset. Detached views and invalid brands return NULL. Live RAB OOB views\n   retain their offset; consult ByteLength before any dereference. No JS root,\n   native backing entitlement, allocation, guest operation, or pending-state\n   change occurs. The caller supplies the actual view/storage lifetime; this\n   VM-owner-thread borrow is not an asynchronous or cross-thread lease. */\nJS_EXTERN uint8_t *JS_PiArrayBufferViewData(JSValueConst view);\n",
+      "before_sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952",
+      "after_sha256": "9F63BF26C91440A8C9B3D5F1FF06AB387D6E76630ADEC6D4CAA745179DB46978",
+      "whole_file_inverse_exact": true
+    }
+  ],
+  "edit_count": 2,
+  "whole_file_inverse_exact": true,
+  "contract": {
+    "returns": "Borrowed backing address plus original stored byte offset; detached and invalid brands return null.",
+    "not_an_entitlement": "No JS root or backing reference is acquired; callers retain actual view/storage according to the original native method contract.",
+    "rab": "A live out-of-bounds view retains its offset; zero ByteLength does not make the data pointer null. Address-only observation uses uintptr_t arithmetic.",
+    "pending": "No context or VM allocation operation; current ordinary, uncatchable and private termination completion state is untouched."
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "status": "independent_source_peer_accepted_bounded_shutdown_invalid_descriptor_fixture_successor",
+  "reviewer": "sdk_environment_port",
+  "reviewed_date": "2026-10-22",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\proposal.json",
+    "bytes": 26590,
+    "sha256": "331C9A44BA5543C9676324CCB30EC04E79E6DD1A36D23103C59331DEDE851C10"
+  },
+  "selected_candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+    "bytes": 17039,
+    "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+  },
+  "retained_original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test.zig",
+    "bytes": 17019,
+    "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\handoff.json",
+    "bytes": 5769,
+    "sha256": "9E3CCC745B51917D2BEA16761D853563BFAD875D72093EC5E902EF2E5CE5F951"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022\\source-audit.py",
+    "bytes": 10606,
+    "sha256": "673BDDD874D94FB663AEDCBCA8674BE36FF8A6FF365397E0ECA552FF674D780B"
+  },
+  "independent_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022\\source-proof.json",
+    "bytes": 49890,
+    "sha256": "028C99E547AFBAAA5C057881B13A4D5AB7167CE14074A0A55A8AC33B7C2B421D"
+  },
+  "accepted_prior_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-source-acceptance-20261021.json",
+    "bytes": 5656,
+    "sha256": "9896A0FDAE942CF2F579555E602EB23CD4E07BBFD8FFEAAF50787A21A9FBAD85"
+  },
+  "accepted_prior_authority_inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs-v2.json",
+    "bytes": 16810,
+    "sha256": "B97468E1DD34137C80A6199BABE6E227FEBDB5BD3FD0654B31EA3F05CF8C123F"
+  },
+  "accepted_prior_causal_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\causal-proof.json",
+    "bytes": 83979,
+    "sha256": "39DF95F9780D1A663A6CAC9542B1F7656AAD5EE6CDCCD4761219142295E81C5D"
+  },
+  "preserved_predecessor_copy_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 530121,
+    "sha256": "B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC"
+  },
+  "result": {
+    "concrete_bounded_blocker": null,
+    "source_only": true,
+    "edits": 1,
+    "full_raw_forward_and_inverse": true,
+    "current_input_versions": 46,
+    "raw_Git_objects": 5,
+    "exact_authority_excerpts": 24,
+    "declarations_preserved": 18,
+    "new3_declarations_preserved": 38,
+    "other_source_donors_preserved": 20,
+    "all_assertions_guest_expressions_helpers_imports_and_remaining_bytes_preserved": true
+  },
+  "causal_review": [
+    "The original f.create(-2) call selects an open native FileHandle whose real ShutdownReq.dispatch rejects only the -1 owner sentinel. The pinned Windows fs__close similarly rejects -1, then returns success for fd <= 2. Thus -2 contradicts the existing UV_EBADF assertion.",
+    "The replacement uses the existing std import and exactly std.math.maxInt(c_int), the accepted V37 spelling. On the selected Windows source contract this is 2147483647. It exceeds the pinned UCRT lowio bound of 8192, avoids the owner sentinel, and cannot become a live descriptor through close/reuse timing.",
+    "Every FS INIT calls uv__once_init; the real service also initializes its loop before publishing the worker. Pinned win/core.c installs its returning invalid-parameter handler. The selected _mingw.h defaults __MSVCRT_VERSION__ to 0xE00 and _UCRT; the actual network recipe includes core.c/fs.c without overriding that branch.",
+    "The contained SDK close source validates the descriptor bound before table access; its invalid-parameter routine returns after the installed global handler, supporting the unchanged -1/EBADF propagation. This is source inference using the preserved accepted V37 authority, not a new observation of loaded DLL bytes or a runtime result.",
+    "The complete selected fixture, Shutdown request and owner bodies were read. The fixture forwards the actual c_int; dispatch performs the genuine native close. Completion still traces the real result, performs AfterClose, cleans the request, and calls Done with the unchanged negative result. No callback, queue, root or guard changed.",
+    "The exact UV_EBADF, closed/fd=-1, negative JS status, real native flags and request-retirement assertions remain byte-identical. The test still requires the same actual asynchronous request and cleanup.",
+    "The remaining new3 selection census is consistent: live descriptors are required above 2; createClosed(-1) calls real Release/AfterClose before the closed fast path; OneByteString's -2 is a string length; the raw Buffer controls select no descriptor."
+  ],
+  "finite_boundary": {
+    "line": 105,
+    "byte_offset": 5720,
+    "before": "-2",
+    "after": "std.math.maxInt(c_int)",
+    "unchanged_prefix_bytes": 5720,
+    "unchanged_suffix_bytes": 11297,
+    "original_bytes": 17019,
+    "candidate_bytes": 17039,
+    "original_11AA_and_B490_immutable": true,
+    "CC33_selection_requires_separate_accepted_plan_successor": true
+  },
+  "scope_limits": [
+    "Production files and all other 20 source donors remain exact; no complete FileHandle/template/bootstrap qualification is implied.",
+    "No candidate, donor checker, prefix, compiler, preparer, metadata auditor, reference program or native test was executed. The independent checker only read immutable files and five raw Git objects through the owned SDK worktree, and created its own proof.",
+    "The static discovery is inspection provenance and does not add a native attempt. Actual future metadata/runtime remain unknown. Source intake and validation still require Root's separate exact release.",
+    "The first bounded read request exceeded the connector's byte-cap argument and was rejected before host work; the smaller successful read changed no source or evidence."
+  ],
+  "author_proof_preserved": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\source-proof.json",
+    "bytes": 56676,
+    "sha256": "3D3E8B670F048A7A07AEDABF8ECCF897694855CD4149646E861E3FE35DBD8757"
+  },
+  "source_accepted": true,
+  "Main_accessed": false,
+  "native_execution_authorized": false,
+  "source_intake_authorized": false,
+  "application_qualified": false,
+  "actual_future_metadata": null,
+  "actual_future_runtime": null
+}

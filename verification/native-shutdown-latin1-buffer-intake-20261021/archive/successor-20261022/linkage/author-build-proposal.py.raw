@@ -1,0 +1,115 @@
+from pathlib import Path
+import hashlib,json,re
+W=Path(r"C:\Users\adyba\pi-zig\worktrees\modules-io-resume-20261018")
+B=W.parents[1]
+D=W/"verification/native-node-shutdown-linkage-build-successor-sourceonly-20261022"
+sha=lambda b:hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ r=p.read_bytes();return {"path":str(p),"bytes":len(r),"sha256":sha(r)}
+plan_p=B/"evidence/unissued-shutdown-latin1-buffer-union014-intake-plan-20261021/copy-manifest-plan.json"
+plan_raw=plan_p.read_bytes()
+assert sha(plan_raw)=="E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"
+plan=json.loads(plan_raw)
+rows=plan["source_rows"];assert len(rows)==20
+selected={r["relative_path"]:r for r in rows};assert len(selected)==20
+for r in rows:
+ p=r["donor"];raw=Path(p["path"]).read_bytes()
+ assert len(raw)==p["bytes"] and sha(raw)==p["sha256"],r["relative_path"]
+source=Path(selected["build.zig"]["donor"]["path"]);original=source.read_bytes()
+assert len(original)==514007 and sha(original)=="868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+assert b"\r" not in original
+library=b'''        // Base.init retains the reporter that calls OneByteString diagnostics.
+        // These consumers share one native TLS, V8 fatal, and string owner.
+        const node_one_byte_diagnostics = b.addLibrary(.{
+            .name = "pi-node-one-byte-string-diagnostics",
+            .linkage = .static,
+            .root_module = b.createModule(.{
+                .target = target,
+                .optimize = optimize,
+                .link_libc = true,
+                .link_libcpp = true,
+            }),
+        });
+        node_one_byte_diagnostics.root_module.addIncludePath(b.path("src/extensions"));
+        node_one_byte_diagnostics.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_diagnostic_context.c"),
+            .flags = &.{"-std=gnu11"},
+        });
+        node_one_byte_diagnostics.root_module.addCSourceFiles(.{
+            .files = &.{
+                "src/extensions/native_v8_base_fatal.cpp",
+                "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+            },
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+'''
+specs=[("define_shared_native_owner",b"        const node_stream_read = b.addTest(.{\n",library+b"        const node_stream_read = b.addTest(.{\n")]
+variables=["node_stream_read","node_file_handle_read","node_fs_callback_template","node_file_handle_owner","node_fs_before_hook_continuation","node_file_handle_transfer","node_stream_shutdown","node_one_byte_string"]
+for name in variables[:5]:
+ before=f"        {name}.root_module.linkLibrary(network);\n".encode()
+ after=before+f"        {name}.root_module.linkLibrary(node_one_byte_diagnostics);\n".encode()
+ specs.append(("link_"+name,before,after))
+transfer=b'''        // One actual TLS diagnostic owner in this selected native artifact.
+        // This new owner is compiled directly; no production bootstrap is implied.
+        node_file_handle_transfer.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_diagnostic_context.c"),
+            .flags = &.{"-std=gnu11"},
+        });
+'''
+specs.append(("replace_transfer_direct_tls",transfer,b"        node_file_handle_transfer.root_module.linkLibrary(node_one_byte_diagnostics);\n"))
+for name in variables[-2:]:
+ before=f'''        // This target owns one TLS implementation and one V8 fatal owner.
+        // The selected network library contains neither translation unit.
+        {name}.root_module.addCSourceFile(.{{
+            .file = b.path("src/extensions/native_node_diagnostic_context.c"),
+            .flags = &.{{"-std=gnu11"}},
+        }});
+        {name}.root_module.addCSourceFiles(.{{
+            .files = &.{{
+                "src/extensions/native_v8_base_fatal.cpp",
+                "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+            }},
+            .flags = &.{{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" }},
+        }});
+'''.encode()
+ specs.append(("replace_"+name+"_direct_trio",before,f"        {name}.root_module.linkLibrary(node_one_byte_diagnostics);\n".encode()))
+assert len(specs)==9
+current=original;steps=[]
+for i,(label,before,after) in enumerate(specs,1):
+ assert current.count(before)==1,(label,current.count(before))
+ pos=current.index(before);next_raw=current[:pos]+after+current[pos+len(before):]
+ assert next_raw[:pos]+before+next_raw[pos+len(after):]==current
+ steps.append({"index":i,"label":label,"offset":pos,"before_utf8":before.decode(),"after_utf8":after.decode(),"before_bytes":len(before),"after_bytes":len(after),"input_bytes":len(current),"input_sha256":sha(current),"output_bytes":len(next_raw),"output_sha256":sha(next_raw),"inverse_exact":True})
+ current=next_raw
+inverse=current
+for step in reversed(steps):
+ pos=step["offset"];before=step["before_utf8"].encode();after=step["after_utf8"].encode()
+ assert inverse[pos:pos+len(after)]==after
+ inverse=inverse[:pos]+before+inverse[pos+len(after):]
+ assert len(inverse)==step["input_bytes"] and sha(inverse)==step["input_sha256"]
+assert inverse==original
+for name in variables:assert current.count(f"{name}.root_module.linkLibrary(node_one_byte_diagnostics);".encode())==1
+assert current.count(b".linkLibrary(node_one_byte_diagnostics);")==8
+assert current.count(b'"src/extensions/native_node_diagnostic_context.c"')==2
+for path in ["native_v8_base_fatal.cpp","native_node_one_byte_string_diagnostics.cpp"]:
+ assert current.count(path.encode())==1
+# All original source roots, target names/filters/installation and existing
+# C/C++ flags survive byte-exact outside the nine disclosed replacements.
+token_re=re.compile(rb'//[^\n]*|"(?:\\.|[^"\\])*"')
+def selected_lines(raw,needle):return [line for line in raw.splitlines(keepends=True)if needle in line]
+for needle in [b".root_source_file",b".filters",b"b.step(",b".addInstallArtifact",b".use_llvm",b".root_module.addImport("]:
+ assert selected_lines(original,needle)==selected_lines(current,needle),needle
+# The dedicated diagnostic test keeps its single direct TLS owner and support.
+a=original.index(b"    const native_diagnostic_context_tests = b.addTest(")
+z=original.index(b'\n}',a)
+unchanged_diagnostic_block=original[a:z]
+assert unchanged_diagnostic_block in current
+paths={"original":D/"original/build.zig","projected":D/"projected/build.zig","proposal":D/"build-proposal.json"}
+for p in paths.values():assert not p.exists(),str(p)
+preserved=[{"relative_path":r["relative_path"],"donor":r["donor"]}for r in rows if r["relative_path"]!="build.zig"]
+proposal={"schema":1,"status":"source_only_pending20_build_linkage_successor","basis_head":"014062f2d139254acab4b985b4ae343db637166f","accepted_copy_plan":pin(plan_p),"original_donor":pin(source),"original_snapshot":{"path":str(paths["original"]),"bytes":len(original),"sha256":sha(original)},"projected":{"path":str(paths["projected"]),"bytes":len(current),"sha256":sha(current)},"changed_source_paths":["build.zig"],"preserved_other19_donors":preserved,"steps":steps,"entire_inverse_exact":True,"untouched_original_bytes_exact":True,"consumer_variables":variables,"native_library":{"name":"pi-node-one-byte-string-diagnostics","condition":"existing if (native_node_network) |network| block","source_members":["src/extensions/native_node_diagnostic_context.c","src/extensions/native_v8_base_fatal.cpp","src/extensions/native_node_one_byte_string_diagnostics.cpp"],"direct_definitions_per_consumer":0,"archive_membership_per_consumer":1,"flags_preserved":True},"source_only":True,"Main_accessed":False,"main_applied":False,"intake_authorized":False,"native_execution_authorized":False,"application_qualified":False,"limits":["Finite source composition only; no compiler, preprocessor, linker, native runtime, or platform qualification.","No public FileHandle/template/ApiFailure/bootstrap or broader tracing dependency is claimed.","The accepted twenty-path packet and every other selected donor remain unchanged; this proposes only a replacement build donor."]}
+for key,raw in [("original",original),("projected",current),("proposal",(json.dumps(proposal,indent=2)+"\n").encode())]:
+ p=paths[key];p.parent.mkdir(parents=True,exist_ok=True)
+ with p.open("xb")as f:f.write(raw)
+ assert p.read_bytes()==raw
+print(json.dumps({"outputs":{k:pin(p)for k,p in paths.items()},"edits":len(steps),"consumers":len(variables),"preserved_other_donors":len(preserved),"full_inverse_exact":True}))

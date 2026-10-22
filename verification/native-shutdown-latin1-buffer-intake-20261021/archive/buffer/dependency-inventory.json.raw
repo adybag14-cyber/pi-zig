@@ -1,0 +1,1228 @@
+{
+  "schema": "pi-zig.raw-view-data-finite-source-dependencies.v1",
+  "basis_main_commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "root": {
+    "path": "src/native_vm_array_buffer_view_data_test.zig",
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+      "bytes": 22131,
+      "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+    },
+    "repo_literal_zig_modules": [
+      "src/native_vm_array_buffer_view_data_test.zig"
+    ],
+    "external_imports": [
+      "std"
+    ],
+    "c_includes": [
+      "engine_abi.h"
+    ],
+    "declared_names": [
+      "VM view data every typed-array width and DataView expose the physical backing offset",
+      "VM view data live empty views retain their exact end pointer",
+      "VM view data bypasses getters and rejects forged live and revoked proxy brands",
+      "VM view data detached typed and DataView addresses are null while lease acquisition still throws",
+      "VM view data fixed resizable views preserve stored offsets while out of bounds and after regrowth",
+      "VM view data tracking resizable views keep the address independently of rounded usable length",
+      "VM view data shared aliases expose one native address across real runtime growth",
+      "VM view data allocates nothing under the actual VM memory limit",
+      "VM view data preserves actual ordinary uncatchable and private termination completions",
+      "VM view data borrows without keeping the actual view or native backing alive",
+      "VM view data observes unmanaged external storage without adding a lease or changing cleanup",
+      "VM view data follows real ArrayBuffer transfer detachment and the receiving physical storage"
+    ],
+    "declared_count": 12,
+    "repo_literal_anonymous_count": 0,
+    "compiler_selected_metadata": null
+  },
+  "native_direct_roots": [
+    "vendor/quickjs/dtoa.c",
+    "vendor/quickjs/libregexp.c",
+    "vendor/quickjs/libunicode.c",
+    "vendor/quickjs/quickjs.c",
+    "src/extensions/engine_abi.c",
+    "src/durable/process_probe.c",
+    "src/extensions/engine_abi.h"
+  ],
+  "quoted_include_dirs": [
+    "vendor/quickjs",
+    "src/extensions",
+    "src/durable",
+    "vendor/libfyaml",
+    "vendor/photon-native"
+  ],
+  "quoted_include_reachable_paths": [
+    "src/durable/process_probe.c",
+    "src/extensions/engine_abi.c",
+    "src/extensions/engine_abi.h",
+    "src/extensions/native_vm_error_constructor_name.c.inc",
+    "vendor/quickjs/builtin-array-fromasync.h",
+    "vendor/quickjs/builtin-iterator-zip-keyed.h",
+    "vendor/quickjs/builtin-iterator-zip.h",
+    "vendor/quickjs/cutils.h",
+    "vendor/quickjs/dtoa.c",
+    "vendor/quickjs/dtoa.h",
+    "vendor/quickjs/libregexp-opcode.h",
+    "vendor/quickjs/libregexp.c",
+    "vendor/quickjs/libregexp.h",
+    "vendor/quickjs/libunicode-table.h",
+    "vendor/quickjs/libunicode.c",
+    "vendor/quickjs/libunicode.h",
+    "vendor/quickjs/list.h",
+    "vendor/quickjs/quickjs-atom.h",
+    "vendor/quickjs/quickjs-c-atomics.h",
+    "vendor/quickjs/quickjs-opcode.h",
+    "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+    "vendor/quickjs/quickjs-pi-link-sort.inc",
+    "vendor/quickjs/quickjs-pi-module-link.inc",
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h"
+  ],
+  "quoted_include_edges": [
+    {
+      "from": "src/extensions/engine_abi.c",
+      "literal": "engine_abi.h",
+      "line": 1,
+      "to": "src/extensions/engine_abi.h"
+    },
+    {
+      "from": "src/extensions/engine_abi.h",
+      "literal": "quickjs.h",
+      "line": 5,
+      "to": "vendor/quickjs/quickjs.h"
+    },
+    {
+      "from": "vendor/quickjs/dtoa.c",
+      "literal": "cutils.h",
+      "line": 34,
+      "to": "vendor/quickjs/cutils.h"
+    },
+    {
+      "from": "vendor/quickjs/dtoa.c",
+      "literal": "dtoa.h",
+      "line": 36,
+      "to": "vendor/quickjs/dtoa.h"
+    },
+    {
+      "from": "vendor/quickjs/libregexp.c",
+      "literal": "cutils.h",
+      "line": 30,
+      "to": "vendor/quickjs/cutils.h"
+    },
+    {
+      "from": "vendor/quickjs/libregexp.c",
+      "literal": "libregexp.h",
+      "line": 32,
+      "to": "vendor/quickjs/libregexp.h"
+    },
+    {
+      "from": "vendor/quickjs/libregexp.c",
+      "literal": "libunicode.h",
+      "line": 33,
+      "to": "vendor/quickjs/libunicode.h"
+    },
+    {
+      "from": "vendor/quickjs/libregexp.c",
+      "literal": "libregexp-opcode.h",
+      "line": 66,
+      "to": "vendor/quickjs/libregexp-opcode.h"
+    },
+    {
+      "from": "vendor/quickjs/libregexp.c",
+      "literal": "libregexp-opcode.h",
+      "line": 164,
+      "to": "vendor/quickjs/libregexp-opcode.h"
+    },
+    {
+      "from": "vendor/quickjs/libregexp.h",
+      "literal": "libunicode.h",
+      "line": 29,
+      "to": "vendor/quickjs/libunicode.h"
+    },
+    {
+      "from": "vendor/quickjs/libunicode.c",
+      "literal": "cutils.h",
+      "line": 29,
+      "to": "vendor/quickjs/cutils.h"
+    },
+    {
+      "from": "vendor/quickjs/libunicode.c",
+      "literal": "libunicode.h",
+      "line": 31,
+      "to": "vendor/quickjs/libunicode.h"
+    },
+    {
+      "from": "vendor/quickjs/libunicode.c",
+      "literal": "libunicode-table.h",
+      "line": 32,
+      "to": "vendor/quickjs/libunicode-table.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "cutils.h",
+      "line": 44,
+      "to": "vendor/quickjs/cutils.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "list.h",
+      "line": 46,
+      "to": "vendor/quickjs/list.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "quickjs.h",
+      "line": 47,
+      "to": "vendor/quickjs/quickjs.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "libregexp.h",
+      "line": 48,
+      "to": "vendor/quickjs/libregexp.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "dtoa.h",
+      "line": 49,
+      "to": "vendor/quickjs/dtoa.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "quickjs-c-atomics.h",
+      "line": 76,
+      "to": "vendor/quickjs/quickjs-c-atomics.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "quickjs-atom.h",
+      "line": 1391,
+      "to": "vendor/quickjs/quickjs-atom.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "quickjs-atom.h",
+      "line": 1400,
+      "to": "vendor/quickjs/quickjs-atom.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "quickjs-opcode.h",
+      "line": 1407,
+      "to": "vendor/quickjs/quickjs-opcode.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "quickjs-opcode.h",
+      "line": 1416,
+      "to": "vendor/quickjs/quickjs-opcode.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "quickjs-opcode.h",
+      "line": 1427,
+      "to": "vendor/quickjs/quickjs-opcode.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "builtin-array-fromasync.h",
+      "line": 10747,
+      "to": "vendor/quickjs/builtin-array-fromasync.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "builtin-iterator-zip-keyed.h",
+      "line": 10749,
+      "to": "vendor/quickjs/builtin-iterator-zip-keyed.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "builtin-iterator-zip.h",
+      "line": 10750,
+      "to": "vendor/quickjs/builtin-iterator-zip.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "quickjs-opcode.h",
+      "line": 20363,
+      "to": "vendor/quickjs/quickjs-opcode.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "quickjs-opcode.h",
+      "line": 26067,
+      "to": "vendor/quickjs/quickjs-opcode.h"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "quickjs-pi-link-sort.inc",
+      "line": 35072,
+      "to": "vendor/quickjs/quickjs-pi-link-sort.inc"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "quickjs-pi-module-link.inc",
+      "line": 35685,
+      "to": "vendor/quickjs/quickjs-pi-module-link.inc"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "quickjs-pi-cjs-compiler.inc",
+      "line": 42590,
+      "to": "vendor/quickjs/quickjs-pi-cjs-compiler.inc"
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "../../src/extensions/native_vm_error_constructor_name.c.inc",
+      "line": 71238,
+      "to": "src/extensions/native_vm_error_constructor_name.c.inc"
+    }
+  ],
+  "unresolved_quoted_includes": [],
+  "standard_or_external_angle_includes": [
+    {
+      "from": "src/durable/process_probe.c",
+      "literal": "errno.h",
+      "line": 5
+    },
+    {
+      "from": "src/durable/process_probe.c",
+      "literal": "stdint.h",
+      "line": 6
+    },
+    {
+      "from": "src/durable/process_probe.c",
+      "literal": "string.h",
+      "line": 7
+    },
+    {
+      "from": "src/durable/process_probe.c",
+      "literal": "sys/wait.h",
+      "line": 8
+    },
+    {
+      "from": "src/durable/process_probe.c",
+      "literal": "sys/stat.h",
+      "line": 9
+    },
+    {
+      "from": "src/extensions/engine_abi.c",
+      "literal": "stddef.h",
+      "line": 2
+    },
+    {
+      "from": "src/extensions/engine_abi.c",
+      "literal": "stdint.h",
+      "line": 3
+    },
+    {
+      "from": "src/extensions/engine_abi.c",
+      "literal": "stdatomic.h",
+      "line": 4
+    },
+    {
+      "from": "src/extensions/engine_abi.c",
+      "literal": "stdlib.h",
+      "line": 5
+    },
+    {
+      "from": "src/extensions/engine_abi.c",
+      "literal": "string.h",
+      "line": 6
+    },
+    {
+      "from": "src/extensions/engine_abi.c",
+      "literal": "windows.h",
+      "line": 14
+    },
+    {
+      "from": "src/extensions/engine_abi.c",
+      "literal": "sys/mman.h",
+      "line": 16
+    },
+    {
+      "from": "src/extensions/engine_abi.c",
+      "literal": "unistd.h",
+      "line": 17
+    },
+    {
+      "from": "vendor/quickjs/builtin-array-fromasync.h",
+      "literal": "inttypes.h",
+      "line": 2
+    },
+    {
+      "from": "vendor/quickjs/builtin-iterator-zip-keyed.h",
+      "literal": "inttypes.h",
+      "line": 2
+    },
+    {
+      "from": "vendor/quickjs/builtin-iterator-zip.h",
+      "literal": "inttypes.h",
+      "line": 2
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "assert.h",
+      "line": 27
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "stdio.h",
+      "line": 29
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "stdarg.h",
+      "line": 30
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "time.h",
+      "line": 31
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "sys/time.h",
+      "line": 33
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "mach-o/dyld.h",
+      "line": 36
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "stdbool.h",
+      "line": 38
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "stdlib.h",
+      "line": 39
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "string.h",
+      "line": 40
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "inttypes.h",
+      "line": 41
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "math.h",
+      "line": 42
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "malloc.h",
+      "line": 49
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "malloc/malloc.h",
+      "line": 54
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "malloc.h",
+      "line": 56
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "malloc_np.h",
+      "line": 58
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "winsock2.h",
+      "line": 60
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "windows.h",
+      "line": 61
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "process.h",
+      "line": 62
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "errno.h",
+      "line": 65
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "pthread.h",
+      "line": 66
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "limits.h",
+      "line": 69
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "unistd.h",
+      "line": 70
+    },
+    {
+      "from": "vendor/quickjs/cutils.h",
+      "literal": "sal.h",
+      "line": 115
+    },
+    {
+      "from": "vendor/quickjs/dtoa.c",
+      "literal": "stdlib.h",
+      "line": 24
+    },
+    {
+      "from": "vendor/quickjs/dtoa.c",
+      "literal": "stdio.h",
+      "line": 25
+    },
+    {
+      "from": "vendor/quickjs/dtoa.c",
+      "literal": "stdarg.h",
+      "line": 26
+    },
+    {
+      "from": "vendor/quickjs/dtoa.c",
+      "literal": "inttypes.h",
+      "line": 27
+    },
+    {
+      "from": "vendor/quickjs/dtoa.c",
+      "literal": "string.h",
+      "line": 28
+    },
+    {
+      "from": "vendor/quickjs/dtoa.c",
+      "literal": "assert.h",
+      "line": 29
+    },
+    {
+      "from": "vendor/quickjs/dtoa.c",
+      "literal": "ctype.h",
+      "line": 30
+    },
+    {
+      "from": "vendor/quickjs/dtoa.c",
+      "literal": "math.h",
+      "line": 32
+    },
+    {
+      "from": "vendor/quickjs/libregexp.c",
+      "literal": "stdlib.h",
+      "line": 24
+    },
+    {
+      "from": "vendor/quickjs/libregexp.c",
+      "literal": "stdio.h",
+      "line": 25
+    },
+    {
+      "from": "vendor/quickjs/libregexp.c",
+      "literal": "stdarg.h",
+      "line": 26
+    },
+    {
+      "from": "vendor/quickjs/libregexp.c",
+      "literal": "inttypes.h",
+      "line": 27
+    },
+    {
+      "from": "vendor/quickjs/libregexp.c",
+      "literal": "string.h",
+      "line": 28
+    },
+    {
+      "from": "vendor/quickjs/libregexp.c",
+      "literal": "assert.h",
+      "line": 29
+    },
+    {
+      "from": "vendor/quickjs/libregexp.h",
+      "literal": "stdbool.h",
+      "line": 26
+    },
+    {
+      "from": "vendor/quickjs/libregexp.h",
+      "literal": "stddef.h",
+      "line": 28
+    },
+    {
+      "from": "vendor/quickjs/libunicode-table.h",
+      "literal": "stdint.h",
+      "line": 45
+    },
+    {
+      "from": "vendor/quickjs/libunicode.c",
+      "literal": "stdlib.h",
+      "line": 24
+    },
+    {
+      "from": "vendor/quickjs/libunicode.c",
+      "literal": "stdio.h",
+      "line": 25
+    },
+    {
+      "from": "vendor/quickjs/libunicode.c",
+      "literal": "stdarg.h",
+      "line": 26
+    },
+    {
+      "from": "vendor/quickjs/libunicode.c",
+      "literal": "string.h",
+      "line": 27
+    },
+    {
+      "from": "vendor/quickjs/libunicode.c",
+      "literal": "assert.h",
+      "line": 28
+    },
+    {
+      "from": "vendor/quickjs/libunicode.h",
+      "literal": "stdbool.h",
+      "line": 26
+    },
+    {
+      "from": "vendor/quickjs/libunicode.h",
+      "literal": "stddef.h",
+      "line": 28
+    },
+    {
+      "from": "vendor/quickjs/libunicode.h",
+      "literal": "inttypes.h",
+      "line": 29
+    },
+    {
+      "from": "vendor/quickjs/list.h",
+      "literal": "stddef.h",
+      "line": 28
+    },
+    {
+      "from": "vendor/quickjs/quickjs-c-atomics.h",
+      "literal": "stdatomic.h",
+      "line": 53
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "stdlib.h",
+      "line": 27
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "stdio.h",
+      "line": 28
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "stdarg.h",
+      "line": 29
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "inttypes.h",
+      "line": 30
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "string.h",
+      "line": 31
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "assert.h",
+      "line": 32
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "sys/time.h",
+      "line": 34
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "timezoneapi.h",
+      "line": 36
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "intrin.h",
+      "line": 40
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "time.h",
+      "line": 42
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "math.h",
+      "line": 43
+    },
+    {
+      "from": "vendor/quickjs/quickjs.c",
+      "literal": "alloca.h",
+      "line": 68
+    },
+    {
+      "from": "vendor/quickjs/quickjs.h",
+      "literal": "stdbool.h",
+      "line": 29
+    },
+    {
+      "from": "vendor/quickjs/quickjs.h",
+      "literal": "stdio.h",
+      "line": 31
+    },
+    {
+      "from": "vendor/quickjs/quickjs.h",
+      "literal": "stdint.h",
+      "line": 32
+    },
+    {
+      "from": "vendor/quickjs/quickjs.h",
+      "literal": "string.h",
+      "line": 33
+    },
+    {
+      "from": "vendor/quickjs/quickjs.h",
+      "literal": "math.h",
+      "line": 34
+    },
+    {
+      "from": "vendor/quickjs/quickjs.h",
+      "literal": "sal.h",
+      "line": 123
+    }
+  ],
+  "entries": [
+    {
+      "relative_path": "build.zig",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "20341cb6d916c63ad2659f8990c65217e00f5fbd",
+      "bytes": 503440,
+      "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\build.zig",
+        "bytes": 503440,
+        "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+      }
+    },
+    {
+      "relative_path": "src/durable/process_probe.c",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "e1b59be4a455adb6b6584c2ce32e58c21b30d1ef",
+      "bytes": 757,
+      "sha256": "9BB5885B60A4FF273E62CBEFC0667FB5B922FB70A24E82FA79BA72A40D602743",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\src\\durable\\process_probe.c",
+        "bytes": 757,
+        "sha256": "9BB5885B60A4FF273E62CBEFC0667FB5B922FB70A24E82FA79BA72A40D602743"
+      }
+    },
+    {
+      "relative_path": "src/extensions/engine_abi.c",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "b741af68d25eec16d125afeb19346dc0ed8e3fdb",
+      "bytes": 18016,
+      "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\src\\extensions\\engine_abi.c",
+        "bytes": 18016,
+        "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+      }
+    },
+    {
+      "relative_path": "src/extensions/engine_abi.h",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "996756d01126328f997e10892baaa2d08ceb4cc3",
+      "bytes": 2003,
+      "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\src\\extensions\\engine_abi.h",
+        "bytes": 2003,
+        "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_vm_error_constructor_name.c.inc",
+      "origin": "selected immutable source",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+        "bytes": 8944,
+        "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+      },
+      "bytes": 8944,
+      "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+    },
+    {
+      "relative_path": "src/native_vm_array_buffer_view_data_test.zig",
+      "origin": "selected immutable source",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "bytes": 22131,
+      "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+    },
+    {
+      "relative_path": "tools/build_native_icu.zig",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "28dfeb319aa20aa135e65dad217e41d020ca9f0f",
+      "bytes": 2485,
+      "sha256": "936E9E6B84C4C8F31AA5D547FE28A3AD7C0E4174E9912043E25B1A26AE9EE1C7",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\tools\\build_native_icu.zig",
+        "bytes": 2485,
+        "sha256": "936E9E6B84C4C8F31AA5D547FE28A3AD7C0E4174E9912043E25B1A26AE9EE1C7"
+      }
+    },
+    {
+      "relative_path": "tools/build_native_node_memory.zig",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "3d4cf52a55ea2cec0e123a47a1f10179701d3f4c",
+      "bytes": 1030,
+      "sha256": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\tools\\build_native_node_memory.zig",
+        "bytes": 1030,
+        "sha256": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17"
+      }
+    },
+    {
+      "relative_path": "tools/build_native_node_network.zig",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "f13440e90d4b6d65a2e6b61c0f3d285f09be8c8a",
+      "bytes": 5905,
+      "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\tools\\build_native_node_network.zig",
+        "bytes": 5905,
+        "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+      }
+    },
+    {
+      "relative_path": "tools/build_native_package_json.zig",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "551b8b80243d81d8f880f5056dcde659363746d4",
+      "bytes": 1596,
+      "sha256": "517AC416D7CE82BC2AED11B34038187EE456B3C599B6DFBE058D303873A2EC73",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\tools\\build_native_package_json.zig",
+        "bytes": 1596,
+        "sha256": "517AC416D7CE82BC2AED11B34038187EE456B3C599B6DFBE058D303873A2EC73"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/builtin-array-fromasync.h",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "f2b568af5fb91f263a87a0a09c4b2caeff2186fb",
+      "bytes": 5639,
+      "sha256": "F41EB2EB028832CFF9A5F8D8D2CB438C27771A9D7D85C30DFD16AA78F34FE6DE",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\builtin-array-fromasync.h",
+        "bytes": 5639,
+        "sha256": "F41EB2EB028832CFF9A5F8D8D2CB438C27771A9D7D85C30DFD16AA78F34FE6DE"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/builtin-iterator-zip-keyed.h",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "471c6bf2135894c42781542eec1c340ce878a3d6",
+      "bytes": 15993,
+      "sha256": "24446C6157A043CFEB0B0255C7892F5146809BD3098C70028BFA1EE5311B91F4",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\builtin-iterator-zip-keyed.h",
+        "bytes": 15993,
+        "sha256": "24446C6157A043CFEB0B0255C7892F5146809BD3098C70028BFA1EE5311B91F4"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/builtin-iterator-zip.h",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "b69844655afa8254bbfcd2abaaa5103e3dc9f43a",
+      "bytes": 16213,
+      "sha256": "FDAEF760ECCE82C1F8B62DCA8D0D424AE05EF88A0037E32221858AB7AC8994C9",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\builtin-iterator-zip.h",
+        "bytes": 16213,
+        "sha256": "FDAEF760ECCE82C1F8B62DCA8D0D424AE05EF88A0037E32221858AB7AC8994C9"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/cutils.h",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "d441bba5e781f1817453aae5435ff6a223cbd18e",
+      "bytes": 54740,
+      "sha256": "DFFEC8BEA17F08108DA5A91C1178804754698BBBB6202DC100268E78E8C5B770",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\cutils.h",
+        "bytes": 54740,
+        "sha256": "DFFEC8BEA17F08108DA5A91C1178804754698BBBB6202DC100268E78E8C5B770"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/dtoa.c",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "a89e824f9263ab9d1c47b22d955f48d950719d96",
+      "bytes": 44854,
+      "sha256": "A8D2CF2D04DB406E0C16ACDD95AB0E709D309902865722F41DAC07A1BA5676AF",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\dtoa.c",
+        "bytes": 44854,
+        "sha256": "A8D2CF2D04DB406E0C16ACDD95AB0E709D309902865722F41DAC07A1BA5676AF"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/dtoa.h",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "85be040698c99e73e4b8e53af9edffbf7acd1aa2",
+      "bytes": 3357,
+      "sha256": "1C4A4540C0038632C8A4C225472FBC21BD476FB35C4DA4A857A11965B58231B9",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\dtoa.h",
+        "bytes": 3357,
+        "sha256": "1C4A4540C0038632C8A4C225472FBC21BD476FB35C4DA4A857A11965B58231B9"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/libregexp-opcode.h",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "b3d7b6fdf3a574004fe5e586d1f246b088bcbc07",
+      "bytes": 2887,
+      "sha256": "2A98D646089F3A72F25480116297C5FDB5B28FD9F815447273951F4ADE4A115E",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\libregexp-opcode.h",
+        "bytes": 2887,
+        "sha256": "2A98D646089F3A72F25480116297C5FDB5B28FD9F815447273951F4ADE4A115E"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/libregexp.c",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "2d99ce03aba574eb5c6167cb00d67b0a32d4c5f8",
+      "bytes": 127825,
+      "sha256": "05F00B2B94BCFDCD2049C5D11FAE7A1090D5BBD87CB08931ECD5906E9C124E1E",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\libregexp.c",
+        "bytes": 127825,
+        "sha256": "05F00B2B94BCFDCD2049C5D11FAE7A1090D5BBD87CB08931ECD5906E9C124E1E"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/libregexp.h",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "b1ae5c98c75c85c816729c457d0ed09c47c26329",
+      "bytes": 4769,
+      "sha256": "AA8DF9CD9B47216801E1AA7C066FC6F720C0CF629C733659AD20B584A78D66E3",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\libregexp.h",
+        "bytes": 4769,
+        "sha256": "AA8DF9CD9B47216801E1AA7C066FC6F720C0CF629C733659AD20B584A78D66E3"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/libunicode-table.h",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "f1cf304187c437d935fbee8633806c92d5a60a94",
+      "bytes": 251190,
+      "sha256": "5840A921AC11664B505EE37B1219F518FFF2A04972FE848B4BDF1E85C5A0BD83",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\libunicode-table.h",
+        "bytes": 251190,
+        "sha256": "5840A921AC11664B505EE37B1219F518FFF2A04972FE848B4BDF1E85C5A0BD83"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/libunicode.c",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "6d539331e995f81310fefdcde0ac758b7b3b71ce",
+      "bytes": 61406,
+      "sha256": "D755606498FF707DC3A93826713C749F77B9222D8A6B066621D72A308460BF2D",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\libunicode.c",
+        "bytes": 61406,
+        "sha256": "D755606498FF707DC3A93826713C749F77B9222D8A6B066621D72A308460BF2D"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/libunicode.h",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "66c0b3865e8f57472a7dbb11a66685f8fdd9ea2b",
+      "bytes": 5278,
+      "sha256": "AD13F66AAEA3FAB1616E84B9C048F2A315E1BDBAB628B966617A7A3E55BCBA2B",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\libunicode.h",
+        "bytes": 5278,
+        "sha256": "AD13F66AAEA3FAB1616E84B9C048F2A315E1BDBAB628B966617A7A3E55BCBA2B"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/list.h",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "b8dd716814f541a6de030b099890ca32398b3434",
+      "bytes": 3177,
+      "sha256": "CB6E24E8EE54BCCDD66234FE54CD702D1160B9841DB2B9B9ADEB5003AFE301D5",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\list.h",
+        "bytes": 3177,
+        "sha256": "CB6E24E8EE54BCCDD66234FE54CD702D1160B9841DB2B9B9ADEB5003AFE301D5"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs-atom.h",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "6b8dde84f1e222b850cb618db3c48089ffa9654b",
+      "bytes": 8234,
+      "sha256": "66654AE6533D15073EA527979C453709D7ED83162142C656095A10DCEF737A60",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\quickjs-atom.h",
+        "bytes": 8234,
+        "sha256": "66654AE6533D15073EA527979C453709D7ED83162142C656095A10DCEF737A60"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs-c-atomics.h",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "8fc6b720309cd4da980fe2a12126007b45926119",
+      "bytes": 2305,
+      "sha256": "29883C742A5C512278FCE54D19B1B9AF949006E1D7DFC9FFA2E0946B184D8C5C",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\quickjs-c-atomics.h",
+        "bytes": 2305,
+        "sha256": "29883C742A5C512278FCE54D19B1B9AF949006E1D7DFC9FFA2E0946B184D8C5C"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs-opcode.h",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "8dc4a88c6991b00e71f3b5ae28feba45635980c8",
+      "bytes": 15841,
+      "sha256": "194F1AE899FF525FEAE54265369720E767494130A9CE31E4E3ABC00E9C1E9181",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\quickjs-opcode.h",
+        "bytes": 15841,
+        "sha256": "194F1AE899FF525FEAE54265369720E767494130A9CE31E4E3ABC00E9C1E9181"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "212aca9fccfe2615885a9bd128c65af4f9181215",
+      "bytes": 17263,
+      "sha256": "4FBF487CC09627A2176815995AF3246E88274A7D1AD1A952802AC01AF478BCE5",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\quickjs-pi-cjs-compiler.inc",
+        "bytes": 17263,
+        "sha256": "4FBF487CC09627A2176815995AF3246E88274A7D1AD1A952802AC01AF478BCE5"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs-pi-link-sort.inc",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "94ae933a5592fb7453996daaa88f5560b63e1446",
+      "bytes": 4297,
+      "sha256": "42EF528B8D8BC18B02FB863558D2EB2D3A6778E3AD78540048C101988F4EDA14",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\quickjs-pi-link-sort.inc",
+        "bytes": 4297,
+        "sha256": "42EF528B8D8BC18B02FB863558D2EB2D3A6778E3AD78540048C101988F4EDA14"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs-pi-module-link.inc",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "8b1ab9986e566cf4027500a5b10471b78791671c",
+      "bytes": 14986,
+      "sha256": "18103F5A384110A32523EC2B9713EB31F230E33BF12ED28CACBED740E3C8F70A",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\vendor\\quickjs\\quickjs-pi-module-link.inc",
+        "bytes": 14986,
+        "sha256": "18103F5A384110A32523EC2B9713EB31F230E33BF12ED28CACBED740E3C8F70A"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.c",
+      "origin": "selected immutable source",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404353,
+        "sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003"
+      },
+      "bytes": 2404353,
+      "sha256": "3B4474CFE4BE5A4AFC850220012AD31F288B6ADFD46C4A0AA61BB216E6D50003"
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.h",
+      "origin": "selected immutable source",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 115180,
+        "sha256": "9F63BF26C91440A8C9B3D5F1FF06AB387D6E76630ADEC6D4CAA745179DB46978"
+      },
+      "bytes": 115180,
+      "sha256": "9F63BF26C91440A8C9B3D5F1FF06AB387D6E76630ADEC6D4CAA745179DB46978"
+    }
+  ],
+  "inherited_native_recipes": [
+    {
+      "relative_path": "build.zig",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "20341cb6d916c63ad2659f8990c65217e00f5fbd",
+      "bytes": 503440,
+      "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\build.zig",
+        "bytes": 503440,
+        "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+      }
+    },
+    {
+      "relative_path": "tools/build_native_icu.zig",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "28dfeb319aa20aa135e65dad217e41d020ca9f0f",
+      "bytes": 2485,
+      "sha256": "936E9E6B84C4C8F31AA5D547FE28A3AD7C0E4174E9912043E25B1A26AE9EE1C7",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\tools\\build_native_icu.zig",
+        "bytes": 2485,
+        "sha256": "936E9E6B84C4C8F31AA5D547FE28A3AD7C0E4174E9912043E25B1A26AE9EE1C7"
+      }
+    },
+    {
+      "relative_path": "tools/build_native_node_memory.zig",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "3d4cf52a55ea2cec0e123a47a1f10179701d3f4c",
+      "bytes": 1030,
+      "sha256": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\tools\\build_native_node_memory.zig",
+        "bytes": 1030,
+        "sha256": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17"
+      }
+    },
+    {
+      "relative_path": "tools/build_native_node_network.zig",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "f13440e90d4b6d65a2e6b61c0f3d285f09be8c8a",
+      "bytes": 5905,
+      "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\tools\\build_native_node_network.zig",
+        "bytes": 5905,
+        "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+      }
+    },
+    {
+      "relative_path": "tools/build_native_package_json.zig",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\main",
+      "commit": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "git_blob": "551b8b80243d81d8f880f5056dcde659363746d4",
+      "bytes": 1596,
+      "sha256": "517AC416D7CE82BC2AED11B34038187EE456B3C599B6DFBE058D303873A2EC73",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependencies\\main-c764\\tools\\build_native_package_json.zig",
+        "bytes": 1596,
+        "sha256": "517AC416D7CE82BC2AED11B34038187EE456B3C599B6DFBE058D303873A2EC73"
+      }
+    }
+  ],
+  "corrected_optional_vm_composition": [
+    {
+      "relative_path": "vendor/quickjs/quickjs.c",
+      "selected_combined": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\combined-with-latin1-successor\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404878,
+        "sha256": "091E5BE0C22F35CE2029852DEA8D8B017B3784013ED93EDB9F1545A49D8D275F"
+      },
+      "both_forward_orders": true,
+      "both_complete_inverses": true
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.h",
+      "selected_combined": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\combined-with-latin1-successor\\vendor\\quickjs\\quickjs.h",
+        "bytes": 115346,
+        "sha256": "05AA4DF250CB642536077C5DF80C08C92C1C40BAA347C18140AFB577B583B0EB"
+      },
+      "both_forward_orders": true,
+      "both_complete_inverses": true
+    }
+  ],
+  "source_include_sets_unchanged": true,
+  "limits": [
+    "This is a conservative literal quoted-C include graph and the one repository Zig root; conditional preprocessor branches are not evaluated.",
+    "Standard/toolchain angle includes and transitive native ICU, YAML, SQLite, photon, package JSON, network/libuv libraries remain inherited dependencies of the immutable common build. Their compiler-selected closure is not newly qualified.",
+    "Actual compiler-selected anonymous/standard tests and runtime metadata are unknown; no executable was produced."
+  ]
+}

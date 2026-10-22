@@ -1,0 +1,709 @@
+{
+  "schema": 1,
+  "status": "independent_bounded_shutdown_descriptor_source_check_passed",
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022\\source-audit.py",
+    "bytes": 10606,
+    "sha256": "673BDDD874D94FB663AEDCBCA8674BE36FF8A6FF365397E0ECA552FF674D780B"
+  },
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\proposal.json",
+    "bytes": 26590,
+    "sha256": "331C9A44BA5543C9676324CCB30EC04E79E6DD1A36D23103C59331DEDE851C10"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\handoff.json",
+    "bytes": 5769,
+    "sha256": "9E3CCC745B51917D2BEA16761D853563BFAD875D72093EC5E902EF2E5CE5F951"
+  },
+  "author_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\source-proof.json",
+    "bytes": 56676,
+    "sha256": "3D3E8B670F048A7A07AEDABF8ECCF897694855CD4149646E861E3FE35DBD8757"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+    "bytes": 17039,
+    "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+  },
+  "one_exact_expression": {
+    "byte_offset": 5720,
+    "line": 105,
+    "before": "-2",
+    "after": "std.math.maxInt(c_int)"
+  },
+  "complete_forward_and_raw_inverse": true,
+  "all18_names_assertions_helpers_and_imports_exact": true,
+  "unchanged_prefix": {
+    "bytes": 5720,
+    "sha256": "1693A1F243E4C02F4E46AF933E2D08E4FB7EEF6D17C66E17C9F49BB84F6A1517"
+  },
+  "unchanged_suffix": {
+    "bytes": 11297,
+    "sha256": "048AFD18BF8D276BF54A3C75C0132BBBD6CB9D77396C554CE575078606835FF9"
+  },
+  "remaining20_source_donors_unchanged": true,
+  "new3_declarations": 38,
+  "source_inference": {
+    "selected_c_int_max": 2147483647,
+    "UCRT_lowio_hard_limit": 8192,
+    "selected_header_default": "__MSVCRT_VERSION__ 0xE00 / _UCRT",
+    "libuv_handler": "returning global invalid-parameter handler installed before worker publication and by every FS INIT",
+    "scope": "Pinned source and selected recipe inference; no new loaded-DLL or runtime outcome assertion."
+  },
+  "five_raw_Git_bindings": [
+    {
+      "head": "014062f2d139254acab4b985b4ae343db637166f",
+      "relative_path": "vendor/node-v24.13.0/uv/src/win/fs.c",
+      "mode": "100644",
+      "blob": "27248f644f381bbdeeef7c65401c74ab9474d0ad",
+      "bytes": 105366,
+      "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693"
+    },
+    {
+      "head": "014062f2d139254acab4b985b4ae343db637166f",
+      "relative_path": "vendor/node-v24.13.0/uv/src/win/core.c",
+      "mode": "100644",
+      "blob": "5f41c87ad5ed137c51b43e4941414c89ddff5216",
+      "bytes": 18494,
+      "sha256": "3026F2888B3360E65A2E2662508EEF6BA9B1AF17735391CA6F79DC06887B8B23"
+    },
+    {
+      "head": "014062f2d139254acab4b985b4ae343db637166f",
+      "relative_path": "src/extensions/native_uv_tcp.c",
+      "mode": "100644",
+      "blob": "c98a4b198caab394546808ffa6b2ce1c16a09020",
+      "bytes": 46648,
+      "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2"
+    },
+    {
+      "head": "014062f2d139254acab4b985b4ae343db637166f",
+      "relative_path": "tools/build_native_node_network.zig",
+      "mode": "100644",
+      "blob": "f13440e90d4b6d65a2e6b61c0f3d285f09be8c8a",
+      "bytes": 5905,
+      "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    {
+      "head": "014062f2d139254acab4b985b4ae343db637166f",
+      "relative_path": "src/native_node_file_handle_owner_test_support.zig",
+      "mode": "100644",
+      "blob": "715f662079efe62d704b8f4ab97e8ebc1fa86ee6",
+      "bytes": 33411,
+      "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+    }
+  ],
+  "exact24_source_excerpts": [
+    {
+      "source": "014062f2d139254acab4b985b4ae343db637166f:vendor/node-v24.13.0/uv/src/win/fs.c",
+      "first_line": 74,
+      "last_line": 97,
+      "bytes": 1705,
+      "sha256": "98230F70A513B1700FA3E2927FADBB8B2F742D005CAA2AAA9A2A9A61E5F551EE",
+      "text": "#define INIT(subtype)                                                         \\\n  do {                                                                        \\\n    if (req == NULL)                                                          \\\n      return UV_EINVAL;                                                       \\\n    uv__fs_req_init(loop, req, subtype, cb);                                  \\\n  }                                                                           \\\n  while (0)\n\n#define POST                                                                  \\\n  do {                                                                        \\\n    if (cb != NULL) {                                                         \\\n      uv__req_register(loop);                                                 \\\n      uv__work_submit(loop,                                                   \\\n                      &req->work_req,                                         \\\n                      UV__WORK_FAST_IO,                                       \\\n                      uv__fs_work,                                            \\\n                      uv__fs_done);                                           \\\n      return 0;                                                               \\\n    } else {                                                                  \\\n      uv__fs_work(&req->work_req);                                            \\\n      return req->result;                                                     \\\n    }                                                                         \\\n  }                                                                           \\\n  while (0)\n"
+    },
+    {
+      "source": "014062f2d139254acab4b985b4ae343db637166f:vendor/node-v24.13.0/uv/src/win/fs.c",
+      "first_line": 117,
+      "last_line": 122,
+      "bytes": 394,
+      "sha256": "02F2A4176CF4D6FC04AA1FD6284975A305F89B182E0ACB68F54D27AE67A2EA8B",
+      "text": "#define VERIFY_FD(fd, req)                                                  \\\n  if (fd == -1) {                                                           \\\n    req->result = UV_EBADF;                                                 \\\n    req->sys_errno_ = ERROR_INVALID_HANDLE;                                 \\\n    return;                                                                 \\\n  }\n"
+    },
+    {
+      "source": "014062f2d139254acab4b985b4ae343db637166f:vendor/node-v24.13.0/uv/src/win/fs.c",
+      "first_line": 397,
+      "last_line": 410,
+      "bytes": 360,
+      "sha256": "8DCF1A52FE9D25FCD6364D601BB3C5CF0F8AE2B220B5C4EEA5C9735CE0988FA6",
+      "text": "INLINE static void uv__fs_req_init(uv_loop_t* loop, uv_fs_t* req,\n    uv_fs_type fs_type, const uv_fs_cb cb) {\n  uv__once_init();\n  UV_REQ_INIT(req, UV_FS);\n  req->loop = loop;\n  req->flags = 0;\n  req->fs_type = fs_type;\n  req->sys_errno_ = 0;\n  req->result = 0;\n  req->ptr = NULL;\n  req->path = NULL;\n  req->cb = cb;\n  memset(&req->fs, 0, sizeof(req->fs));\n}\n"
+    },
+    {
+      "source": "014062f2d139254acab4b985b4ae343db637166f:vendor/node-v24.13.0/uv/src/win/fs.c",
+      "first_line": 668,
+      "last_line": 695,
+      "bytes": 590,
+      "sha256": "36324C09E28C987C9414AFCE5558D245D34B607B7CD10F2F7A35541A4C358D08",
+      "text": "void fs__close(uv_fs_t* req) {\n  int fd = req->file.fd;\n  int result;\n  struct uv__fd_info_s fd_info;\n\n  VERIFY_FD(fd, req);\n\n  if (uv__fd_hash_remove(fd, &fd_info)) {\n    if (fd_info.mapping != INVALID_HANDLE_VALUE) {\n      CloseHandle(fd_info.mapping);\n    }\n  }\n\n  if (fd > 2)\n    result = _close(fd);\n  else\n    result = 0;\n\n  /* _close doesn't set _doserrno on failure, but it does always set errno\n   * to EBADF on failure.\n   */\n  if (result == -1) {\n    assert(errno == EBADF);\n    SET_REQ_UV_ERROR(req, UV_EBADF, ERROR_INVALID_HANDLE);\n  } else {\n    SET_REQ_RESULT(req, 0);\n  }\n}\n"
+    },
+    {
+      "source": "014062f2d139254acab4b985b4ae343db637166f:vendor/node-v24.13.0/uv/src/win/fs.c",
+      "first_line": 3241,
+      "last_line": 3245,
+      "bytes": 126,
+      "sha256": "689115A4D2A2CEF51FA528EFDBB2CC8807D6269B1907585D9242FE26B4437C67",
+      "text": "int uv_fs_close(uv_loop_t* loop, uv_fs_t* req, uv_file fd, uv_fs_cb cb) {\n  INIT(UV_FS_CLOSE);\n  req->file.fd = fd;\n  POST;\n}\n"
+    },
+    {
+      "source": "014062f2d139254acab4b985b4ae343db637166f:vendor/node-v24.13.0/uv/src/win/core.c",
+      "first_line": 73,
+      "last_line": 79,
+      "bytes": 250,
+      "sha256": "4A1C8585608BC880E93C9D95B873DF89717F4508583CABC52CD4BD3DC5B1F4D0",
+      "text": "#if !defined(__MINGW32__) || __MSVCRT_VERSION__ >= 0x800\nstatic void uv__crt_invalid_parameter_handler(const wchar_t* expression,\n    const wchar_t* function, const wchar_t * file, unsigned int line,\n    uintptr_t reserved) {\n  /* No-op. */\n}\n#endif\n"
+    },
+    {
+      "source": "014062f2d139254acab4b985b4ae343db637166f:vendor/node-v24.13.0/uv/src/win/core.c",
+      "first_line": 179,
+      "last_line": 198,
+      "bytes": 847,
+      "sha256": "4230B3E3BD2E581D7589C522862E3649EEAE0F15FE6D7ACCBC3AA42E4711FA03",
+      "text": "static void uv__init(void) {\n  /* Tell Windows that we will handle critical errors. */\n  SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX |\n               SEM_NOOPENFILEERRORBOX);\n\n  /* Tell the CRT to not exit the application when an invalid parameter is\n   * passed. The main issue is that invalid FDs will trigger this behavior.\n   */\n#if !defined(__MINGW32__) || __MSVCRT_VERSION__ >= 0x800\n  _set_invalid_parameter_handler(uv__crt_invalid_parameter_handler);\n#endif\n\n  /* We also need to setup our debug report handler because some CRT\n   * functions (eg _get_osfhandle) raise an assert when called with invalid\n   * FDs even though they return the proper error code in the release build.\n   */\n#if defined(_DEBUG) && (defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR))\n  _CrtSetReportHook(uv__crt_dbg_report_handler);\n#endif\n\n"
+    },
+    {
+      "source": "014062f2d139254acab4b985b4ae343db637166f:vendor/node-v24.13.0/uv/src/win/core.c",
+      "first_line": 227,
+      "last_line": 238,
+      "bytes": 360,
+      "sha256": "7397D74DD27E0C5C4788BCCD5DAAD2D515DF602032C8F2B8C649D6FE4E3A83A2",
+      "text": "int uv_loop_init(uv_loop_t* loop) {\n  uv__loop_internal_fields_t* lfields;\n  struct heap* timer_heap;\n  int err;\n\n  /* Initialize libuv itself first */\n  uv__once_init();\n\n  /* Create an I/O completion port */\n  loop->iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 1);\n  if (loop->iocp == NULL)\n    return uv_translate_sys_error(GetLastError());\n"
+    },
+    {
+      "source": "014062f2d139254acab4b985b4ae343db637166f:vendor/node-v24.13.0/uv/src/win/core.c",
+      "first_line": 332,
+      "last_line": 334,
+      "bytes": 67,
+      "sha256": "C50E47B545C4B3A230BB8A4777DC8EC375437F01E25E0020B2EA210EE1486E30",
+      "text": "void uv__once_init(void) {\n  uv_once(&uv_init_guard_, uv__init);\n}\n"
+    },
+    {
+      "source": "014062f2d139254acab4b985b4ae343db637166f:src/extensions/native_uv_tcp.c",
+      "first_line": 676,
+      "last_line": 697,
+      "bytes": 1043,
+      "sha256": "B13A6A5563D60059EA05999E7A399CDF110859D27AB374B7A7D79BC07072EB18",
+      "text": "    int status = uv_mutex_init(&service->command_mutex);\n    if (status < 0) goto fail_service;\n    status = uv_cond_init(&service->command_condition);\n    if (status < 0) goto fail_command_mutex;\n    status = uv_mutex_init(&service->event_mutex);\n    if (status < 0) goto fail_condition;\n    status = uv_loop_init(&service->loop);\n    if (status < 0) goto fail_event_mutex;\n    status = uv_async_init(&service->loop, &service->command_async, pi_uv_command_ready);\n    if (status < 0) goto fail_loop;\n    service->command_async.data = service;\n    pi_uv_service_retain(service);\n    status = uv_thread_create(&service->thread, pi_uv_thread_main, service);\n    if (status < 0) {\n        /* No worker exists. Close only the already initialized native async. */\n        atomic_fetch_sub_explicit(&service->references, 1, memory_order_relaxed);\n        uv_close((uv_handle_t *)&service->command_async, NULL);\n        (void)uv_run(&service->loop, UV_RUN_DEFAULT);\n        goto fail_loop;\n    }\n    *result = service;\n    return pi_uv_result(0, 0);\n"
+    },
+    {
+      "source": "014062f2d139254acab4b985b4ae343db637166f:tools/build_native_node_network.zig",
+      "first_line": 9,
+      "last_line": 29,
+      "bytes": 1417,
+      "sha256": "B624CF3DAB7FBCD70AFEF0FCAE3D232BBC28D22E6DAEE209617E33C4BE04D0AF",
+      "text": "    const library = b.addLibrary(.{\n        .name = \"pi-node-network\",\n        .linkage = .static,\n        .root_module = b.createModule(.{ .target = target, .optimize = optimize, .link_libc = true, .link_libcpp = native_memory != null }),\n    });\n    const module = library.root_module;\n    module.addIncludePath(b.path(uv_root ++ \"/include\"));\n    module.addIncludePath(b.path(uv_root ++ \"/src\"));\n    module.addIncludePath(b.path(llhttp_root ++ \"/include\"));\n    module.addIncludePath(b.path(\"src/extensions\"));\n    module.addIncludePath(b.path(\"vendor/quickjs\"));\n    const flags: []const []const u8 = switch (target.result.os.tag) {\n        .windows => &.{ \"-std=gnu11\", \"-D_WIN32_WINNT=0x0602\", \"-D_GNU_SOURCE\", \"-fno-strict-aliasing\" },\n        .linux => &.{ \"-std=gnu11\", \"-D_GNU_SOURCE\", \"-D_LARGEFILE_SOURCE\", \"-D_FILE_OFFSET_BITS=64\", \"-fno-strict-aliasing\" },\n        else => std.debug.panic(\"The real Node TCP backend has no admitted source set for {s}\", .{@tagName(target.result.os.tag)}),\n    };\n    module.addCSourceFiles(.{ .root = b.path(uv_root), .files = &common_sources, .flags = flags });\n    switch (target.result.os.tag) {\n        .windows => {\n            module.addCSourceFiles(.{ .root = b.path(uv_root), .files = &windows_sources, .flags = flags });\n            inline for (.{ \"advapi32\", \"dbghelp\", \"ole32\", \"iphlpapi\", \"psapi\", \"shell32\", \"user32\", \"userenv\", \"uuid\", \"ws2_32\" }) |name|\n"
+    },
+    {
+      "source": "014062f2d139254acab4b985b4ae343db637166f:tools/build_native_node_network.zig",
+      "first_line": 83,
+      "last_line": 90,
+      "bytes": 575,
+      "sha256": "7689005C0B811D6900C20285C6E866754CA94B41705176B4388912C739746112",
+      "text": "const windows_sources = [_][]const u8{\n    \"src/win/async.c\", \"src/win/core.c\", \"src/win/detect-wakeup.c\", \"src/win/dl.c\",\n    \"src/win/error.c\", \"src/win/fs.c\", \"src/win/fs-event.c\", \"src/win/getaddrinfo.c\",\n    \"src/win/getnameinfo.c\", \"src/win/handle.c\", \"src/win/loop-watcher.c\", \"src/win/pipe.c\",\n    \"src/win/thread.c\", \"src/win/poll.c\", \"src/win/process.c\", \"src/win/process-stdio.c\",\n    \"src/win/signal.c\", \"src/win/snprintf.c\", \"src/win/stream.c\", \"src/win/tcp.c\",\n    \"src/win/tty.c\", \"src/win/udp.c\", \"src/win/util.c\", \"src/win/winapi.c\", \"src/win/winsock.c\",\n};\n"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-close.cpp",
+      "first_line": 50,
+      "last_line": 77,
+      "bytes": 961,
+      "sha256": "7035050B9FF621720805D9A2D0B9EB754BAFD8D9E61ADE88193DA5E6D38EAA65",
+      "text": "// Closes the file associated with the given file handle.  On success, returns 0.\r\n// On failure, returns -1 and sets errno.\r\nextern \"C\" int __cdecl _close_internal(int const fh, __crt_cached_ptd_host& ptd)\r\n{\r\n    _UCRT_CHECK_FH_CLEAR_OSSERR_RETURN(ptd, fh, EBADF, -1);\r\n    _UCRT_VALIDATE_CLEAR_OSSERR_RETURN(ptd, (fh >= 0 && (unsigned)fh < (unsigned)_nhandle), EBADF, -1);\r\n    _UCRT_VALIDATE_CLEAR_OSSERR_RETURN(ptd, (_osfile(fh) & FOPEN), EBADF, -1);\r\n\r\n    return __acrt_lowio_lock_fh_and_call(fh, [&]()\r\n    {\r\n        if (_osfile(fh) & FOPEN)\r\n        {\r\n            return _close_nolock_internal(fh, ptd);\r\n        }\r\n        else\r\n        {\r\n            ptd.get_errno().set(EBADF);\r\n            _ASSERTE((\"Invalid file descriptor. File possibly closed by a different thread\",0));\r\n            return -1;\r\n        }\r\n    });\r\n}\r\n\r\nextern \"C\" int __cdecl _close(int const fh)\r\n{\r\n    __crt_cached_ptd_host ptd;\r\n    return _close_internal(fh, ptd);\r\n}\r\n"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-corecrt-internal-lowio.h",
+      "first_line": 110,
+      "last_line": 129,
+      "bytes": 743,
+      "sha256": "99DDFEFD7ED34A1A02EC500568DCEDD63A37A4D068B5212E56516CE1D0B6CD86",
+      "text": "// The log-base-2 of the number of elements in each array of lowio file objects\r\n#define IOINFO_L2E          6\r\n\r\n// The number of elements in each array of lowio file objects\r\n#define IOINFO_ARRAY_ELTS   (1 << IOINFO_L2E)\r\n\r\n// The hard maximum number of arrays of lowio file objects that may be allocated\r\n#define IOINFO_ARRAYS       128\r\n\r\n// The maximum number of lowio file objects that may be allocated at any one time\r\n#define _NHANDLE_           (IOINFO_ARRAYS * IOINFO_ARRAY_ELTS)\r\n\r\n\r\n\r\n#define STDIO_HANDLES_COUNT       3\r\n/*\r\n * Access macros for getting at an __crt_lowio_handle_data struct and its fields from a\r\n * file handle\r\n */\r\n#define _pioinfo(i)          (__pioinfo[(i) >> IOINFO_L2E] + ((i) & (IOINFO_ARRAY_ELTS - 1)))\r\n"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-corecrt-internal-lowio.h",
+      "first_line": 150,
+      "last_line": 166,
+      "bytes": 639,
+      "sha256": "09F5329CA8053173D097D97C3C24B4FF8F4FA426C988379EF4BB2875479B5930",
+      "text": "typedef __crt_lowio_handle_data* __crt_lowio_handle_data_array[IOINFO_ARRAYS];\r\n\r\n// Special, static lowio file object used only for more graceful handling\r\n// of a C file handle value of -1 (results from common errors at the stdio\r\n// level).\r\nextern __crt_lowio_handle_data __badioinfo;\r\n\r\n// The umask value\r\nextern int _umaskval;\r\n\r\n// Global array of pointers to the arrays of lowio file objects.\r\nextern __crt_lowio_handle_data_array __pioinfo;\r\n\r\n// The number of handles for which file objects have been allocated.  This\r\n// number is such that for any fh in [0, _nhandle), _pioinfo(fh) is well-\r\n// formed.\r\nextern int _nhandle;\r\n"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-invalid-parameter.cpp",
+      "first_line": 99,
+      "last_line": 114,
+      "bytes": 595,
+      "sha256": "628D5B5C28447B07928433A3C1B484186E0DD0052FCEBE62A0310823D7D8E137",
+      "text": "    __acrt_ptd * const raw_ptd = ptd.get_raw_ptd_noexit();\r\n    if (raw_ptd && raw_ptd->_thread_local_iph)\r\n    {\r\n        raw_ptd->_thread_local_iph(expression, function_name, file_name, line_number, reserved);\r\n        return;\r\n    }\r\n\r\n    _invalid_parameter_handler const global_handler = __crt_fast_decode_pointer(__acrt_invalid_parameter_handler.value(ptd));\r\n    if (global_handler)\r\n    {\r\n        global_handler(expression, function_name, file_name, line_number, reserved);\r\n        return;\r\n    }\r\n\r\n    _invoke_watson(expression, function_name, file_name, line_number, reserved);\r\n}\r\n"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\_mingw.h",
+      "first_line": 229,
+      "last_line": 247,
+      "bytes": 537,
+      "sha256": "A3528E66941A02FF45DADBFF1085E5A264E6E2F97E10045ABD86A48A9DCF2388",
+      "text": "#ifndef __MSVCRT_VERSION__\n/*  High byte is the major version, low byte is the minor. */\n# if defined(__CRTDLL__)\n#  define __MSVCRT_VERSION__ 0x00\n# elif defined(_UCRT)\n#  define __MSVCRT_VERSION__ 0xE00\n# else\n#  define __MSVCRT_VERSION__ 0xE00\n# endif\n#endif\n\n#if !defined(__CRTDLL__) && __MSVCRT_VERSION__ == 0x00\n#define __CRTDLL__\n#endif\n\n#if !defined(_UCRT) && ((__MSVCRT_VERSION__ >= 0x1400) || (__MSVCRT_VERSION__ >= 0xE00 && __MSVCRT_VERSION__ < 0x1000))\n/* Allow both 0x1400 and 0xE00 to identify UCRT */\n#define _UCRT\n#endif\n"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test.zig",
+      "first_line": 33,
+      "last_line": 40,
+      "bytes": 318,
+      "sha256": "660F11FA1F26B2CB0E5CDA919BEF0657FA220A253B66A9672A085AD8F9F4112E",
+      "text": "}\nfn ordinaryFile(f: *Fixture, file: *File) !*t.Handle {\n    try file.init();\n    // The selected ordinary descriptor must not be a Windows CRT std handle:\n    // libuv intentionally treats fd <= 2 differently from an ordinary file.\n    try std.testing.expect(file.descriptor > 2);\n    return f.create(file.take());\n}\n"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test.zig",
+      "first_line": 103,
+      "last_line": 114,
+      "bytes": 719,
+      "sha256": "6FE1621595D77A25F96822131913E60A1B5B06F27E20E93657AB7213A3460D3F",
+      "text": "test \"native Stream shutdown real accepted bad descriptor still performs AfterClose and reports negative status\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const handle = try f.create(-2);\n    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper);\n    try f.publishRequest(wrapper);\n    try std.testing.expectEqual(@as(c_int, 0), try f.run(wrapper));\n    try f.base.pumpIo();\n    try std.testing.expectEqual(@as(c_int, t.uv.UV_EBADF), f.end_result);\n    try std.testing.expect(handle.read_state.closed and handle.read_state.fd == -1);\n    try f.base.expect(\"shutdownCalls.length===1 && shutdownCalls[0][1]<0 && shutdownCalls[0][4]===1\");\n    try f.expectRetired(wrapper);\n}\n"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+      "first_line": 103,
+      "last_line": 114,
+      "bytes": 739,
+      "sha256": "90DB0148632D943F0823D0DF23ACB0B481BA1D42463923BA8360AA2EB52784B8",
+      "text": "test \"native Stream shutdown real accepted bad descriptor still performs AfterClose and reports negative status\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const handle = try f.create(std.math.maxInt(c_int));\n    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper);\n    try f.publishRequest(wrapper);\n    try std.testing.expectEqual(@as(c_int, 0), try f.run(wrapper));\n    try f.base.pumpIo();\n    try std.testing.expectEqual(@as(c_int, t.uv.UV_EBADF), f.end_result);\n    try std.testing.expect(handle.read_state.closed and handle.read_state.fd == -1);\n    try f.base.expect(\"shutdownCalls.length===1 && shutdownCalls[0][1]<0 && shutdownCalls[0][4]===1\");\n    try f.expectRetired(wrapper);\n}\n"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test_support.zig",
+      "first_line": 56,
+      "last_line": 75,
+      "bytes": 1088,
+      "sha256": "6F46AD47DD56A18162A739F03A79E5EF8E1DCA93E6BD79BCA196A50FB172516B",
+      "text": "    pub fn create(self: *Fixture, descriptor: c_int) !*Handle {\n        const handle = try self.base.create(descriptor, null, null);\n        const bindings: streams.ShutdownBindings = .{\n            .template_owner = self.base.template_owner.?,\n            .error_string = self.error_key.?, .oncomplete_string = self.oncomplete_key.?,\n        };\n        handle.stream.operations.shutdown = bindings;\n        handle.stream_operations.shutdown = bindings;\n        handle.close_trace = .{ .raw = self, .begin_sync = beginSync,\n            .end_sync = endSync, .begin_async = beginAsync, .end_async = endAsync };\n        try self.base.expose(\"shutdownHandle\", self.base.primary_wrapper.?);\n        return handle;\n    }\n    pub fn createClosed(self: *Fixture) !*Handle {\n        const handle = try self.create(-1);\n        // Use the real release/AfterClose operation to produce closed_, rather\n        // than patching constructor fields or introducing a pretend descriptor.\n        try std.testing.expectEqual(@as(c_int, -1), try self.base.releaseDescriptor());\n        return handle;\n    }\n"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_shutdown.zig",
+      "first_line": 135,
+      "last_line": 161,
+      "bytes": 1280,
+      "sha256": "AA3A0EF8C01C88F390E209476F806DFCA43F2FB53597B95120050A0E16FD1B2B",
+      "text": "        pub fn dispatch(s: *a.Scope, handle: *Handle,\n            request: *requests.Shutdown) anyerror!c_int\n        {\n            const state = handle.getReadState();\n            if (state.closing or state.closed) {\n                request.request.done(0, null) catch |err| {\n                    requests.recordFailure(s, err);\n                    if (err != error.JavaScriptException or s.boundary.isFatal()) return err;\n                };\n                return 1;\n            }\n            const self = fromShutdown(request);\n            state.closing = true;\n            if (state.fd == -1) check.assertion(s.engine, .{\n                .file_line = \"src/node_file.cc:681\",\n                .message = \"(fd_) != (-1)\",\n                .function = \"node::fs::FileHandle::DoShutdown\",\n            });\n            self.trace.begin_async(self.trace.raw, self);\n            // Source deliberately ignores an immediate negative Dispatch. It\n            // leaves closing_ and the real request alone, then returns zero.\n            _ = try handle.getReadInputs().controller.dispatchRawClose(s,\n                &self.entry, self.actual.?, state.fd, completed);\n            return 0;\n        }\n\n        fn completed(entry: *request_state.Entry, actual_raw: *anyopaque) anyerror!void {\n"
+    },
+    {
+      "source": "014062f2d139254acab4b985b4ae343db637166f:src/native_node_file_handle_owner_test_support.zig",
+      "first_line": 435,
+      "last_line": 453,
+      "bytes": 742,
+      "sha256": "E41EFE080C8F0A25600EE925CF0657B6B1D3FCA876C455F80E6C4C6083B7F8BE",
+      "text": "    pub fn releaseDescriptor(self: *Fixture) !c_int {\n        var result: c_int = undefined;\n        const ignored = try a.expression(self.engine, struct {\n            fn body(s: *a.Scope, f: *Fixture, output: *c_int) !c.JSValue {\n                output.* = try (try f.handle()).releaseDescriptor(s);\n                return c.pi_js_undefined();\n            }\n        }.body, .{ self, &result });\n        self.engine.freeValue(ignored);\n        return result;\n    }\n    pub fn collectHandle(self: *Fixture) void {\n        self.drop(&self.primary_wrapper);\n        c.JS_RunGC(self.engine.runtime);\n    }\n    pub fn dropBindingTarget(self: *Fixture) void {\n        self.drop(&self.binding_target);\n        c.JS_RunGC(self.engine.runtime);\n    }\n"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_file_handle_owner.zig",
+      "first_line": 314,
+      "last_line": 332,
+      "bytes": 719,
+      "sha256": "36CAA080F95A093B894BB5AC3FE3EB225A070E1932380B4DF047B17CA6D4C42B",
+      "text": "    pub fn releaseDescriptor(self: *Handle, s: *Scope) !c_int {\n        const descriptor = self.getFD();\n        self.afterClose() catch |err| {\n            record(s, err);\n            if (!canContinue(s, err)) return err;\n        };\n        return descriptor;\n    }\n};\n\nfn int32(s: *Scope, value: c.JSValue) !i32 {\n    if (!c.JS_IsNumber(value)) invalidDescriptor(s);\n    const number = try numberValue(s, value);\n    const negative_zero = number == 0 and (@as(u64, @bitCast(number)) >> 63) != 0;\n    if (!std.math.isFinite(number) or @trunc(number) != number or\n        number < std.math.minInt(i32) or number > std.math.maxInt(i32) or negative_zero)\n        invalidDescriptor(s);\n    return @intFromFloat(number);\n}\n"
+    }
+  ],
+  "remaining_descriptor_census": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17019,
+        "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+      },
+      "declarations": 18,
+      "selection_lines": [
+        {
+          "line": 36,
+          "text": "    // The selected ordinary descriptor must not be a Windows CRT std handle:"
+        },
+        {
+          "line": 38,
+          "text": "    try std.testing.expect(file.descriptor > 2);"
+        },
+        {
+          "line": 39,
+          "text": "    return f.create(file.take());"
+        },
+        {
+          "line": 59,
+          "text": "    _ = try f.createClosed();"
+        },
+        {
+          "line": 79,
+          "text": "    const descriptor = handle.read_state.fd;"
+        },
+        {
+          "line": 96,
+          "text": "    try std.testing.expect(File.status(descriptor) < 0);"
+        },
+        {
+          "line": 103,
+          "text": "test \"native Stream shutdown real accepted bad descriptor still performs AfterClose and reports negative status\" {"
+        },
+        {
+          "line": 105,
+          "text": "    const handle = try f.create(-2);"
+        },
+        {
+          "line": 110,
+          "text": "    try std.testing.expectEqual(@as(c_int, t.uv.UV_EBADF), f.end_result);"
+        },
+        {
+          "line": 118,
+          "text": "    _ = try f.createClosed();"
+        },
+        {
+          "line": 149,
+          "text": "    _ = try f.createClosed();"
+        },
+        {
+          "line": 162,
+          "text": "    _ = try f.createClosed();"
+        },
+        {
+          "line": 173,
+          "text": "    _ = try f.createClosed();"
+        },
+        {
+          "line": 215,
+          "text": "    const handle = try f.createClosed();"
+        },
+        {
+          "line": 232,
+          "text": "    _ = try f.createClosed();"
+        },
+        {
+          "line": 249,
+          "text": "    _ = try f.createClosed();"
+        },
+        {
+          "line": 268,
+          "text": "    _ = try f.createClosed();"
+        },
+        {
+          "line": 283,
+          "text": "    _ = try f.createClosed();"
+        },
+        {
+          "line": 307,
+          "text": "    const handle = try f.createClosed();"
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_one_byte_string_test.zig",
+        "bytes": 5064,
+        "sha256": "AC3E1AD12FB0F48905EC8B561094F54DD93653AD7C8DC5DD7CC0EBB54959C461"
+      },
+      "declarations": 8,
+      "selection_lines": [
+        {
+          "line": 9,
+          "text": "fn create(engine: *Engine, bytes: [*c]const u8, length: c_int) !c.JSValue {"
+        },
+        {
+          "line": 35,
+          "text": "    const value = try create(engine, &bytes, bytes.len); defer engine.freeValue(value);"
+        },
+        {
+          "line": 42,
+          "text": "    const value = try create(engine, &bytes, bytes.len); defer engine.freeValue(value);"
+        },
+        {
+          "line": 49,
+          "text": "    const value = try create(engine, &bytes, bytes.len); defer engine.freeValue(value);"
+        },
+        {
+          "line": 56,
+          "text": "    const value = try create(engine, &bytes, -1); defer engine.freeValue(value);"
+        },
+        {
+          "line": 62,
+          "text": "    const value = try create(engine, null, 0); defer engine.freeValue(value);"
+        },
+        {
+          "line": 69,
+          "text": "    const first = try create(engine, &bytes, -1); defer engine.freeValue(first);"
+        },
+        {
+          "line": 70,
+          "text": "    const second = try create(engine, &bytes, -2); defer engine.freeValue(second);"
+        },
+        {
+          "line": 78,
+          "text": "    const value = try create(engine, &bytes, 2); defer engine.freeValue(value);"
+        },
+        {
+          "line": 85,
+          "text": "    const value = try create(engine, &bytes, bytes.len); defer engine.freeValue(value);"
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "declarations": 12,
+      "selection_lines": [
+        {
+          "line": 162,
+          "text": "        \"Object.create(Uint8Array.prototype)\", \"Object.create(DataView.prototype)\", \"null\", \"undefined\", \"1\", \"'text'\" }) |expression| {"
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10312,
+        "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+      },
+      "declarations": 0,
+      "selection_lines": [
+        {
+          "line": 56,
+          "text": "    pub fn create(self: *Fixture, descriptor: c_int) !*Handle {"
+        },
+        {
+          "line": 57,
+          "text": "        const handle = try self.base.create(descriptor, null, null);"
+        },
+        {
+          "line": 69,
+          "text": "    pub fn createClosed(self: *Fixture) !*Handle {"
+        },
+        {
+          "line": 70,
+          "text": "        const handle = try self.create(-1);"
+        },
+        {
+          "line": 72,
+          "text": "        // than patching constructor fields or introducing a pretend descriptor."
+        }
+      ]
+    }
+  ],
+  "current_input_versions": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-causal-review-20261021.json",
+      "bytes": 21711,
+      "sha256": "776422BCBEFAC73EF451B3B33A8A0894C9217CCE15BC4FA7CF1B3BF134C43A22"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-source-acceptance-20261021.json",
+      "bytes": 5656,
+      "sha256": "9896A0FDAE942CF2F579555E602EB23CD4E07BBFD8FFEAAF50787A21A9FBAD85"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\_close.md",
+      "bytes": 2050,
+      "sha256": "A8D0AFB0CCDBF82FFC426F5CD12DE4D5051FDB6DE36CCD1B02119119CCB419DD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\_setmaxstdio.md",
+      "bytes": 2790,
+      "sha256": "367035800B397585FA213D7B45D6EEA4937700894B9AD3E9FCDBD45C6FEA0578"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\native-hermes-primary-fetch.json",
+      "bytes": 9887,
+      "sha256": "9CE71D3BE82597741722A7CDF47A75707C76646E0655DD9DFE7F7B6AD41E9B08"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\_mingw.h",
+      "bytes": 19371,
+      "sha256": "9DAA9C8670CB7E5D73E2290A020D8CBEBF55BC19FD4C5E2F27E661C98827C3B6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\README.md",
+      "bytes": 3428,
+      "sha256": "99AF4CECD80E643006FBCCBBDF84B134E194A148A747A463396ACCB3CF1257B5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\fixture.patch",
+      "bytes": 576,
+      "sha256": "2A2F3A84492565B89780C5FBF0947A45974B90EB05C6E7E04FA2BECE81309C87"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\handoff.json",
+      "bytes": 5769,
+      "sha256": "9E3CCC745B51917D2BEA16761D853563BFAD875D72093EC5E902EF2E5CE5F951"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test.zig",
+      "bytes": 17019,
+      "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+      "bytes": 17039,
+      "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\proposal.json",
+      "bytes": 26590,
+      "sha256": "331C9A44BA5543C9676324CCB30EC04E79E6DD1A36D23103C59331DEDE851C10"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\source-audit.py",
+      "bytes": 12234,
+      "sha256": "69612CEEAC78BFE456918FA9F876084F3063BF6A6216845C16C5F06B82C6F617"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\source-proof.json",
+      "bytes": 56676,
+      "sha256": "3D3E8B670F048A7A07AEDABF8ECCF897694855CD4149646E861E3FE35DBD8757"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022\\static-discovery.json",
+      "bytes": 1375,
+      "sha256": "65AE7506A49E9849AF6BB83B7B878E46B4E429FA7C1F95E0A9229AF6B4FFF82D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-linkage-build-successor-sourceonly-20261022\\projected\\build.zig",
+      "bytes": 514105,
+      "sha256": "594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_one_byte_string_test.zig",
+      "bytes": 5064,
+      "sha256": "AC3E1AD12FB0F48905EC8B561094F54DD93653AD7C8DC5DD7CC0EBB54959C461"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test.zig",
+      "bytes": 17019,
+      "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test_support.zig",
+      "bytes": 10312,
+      "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\dependencies\\src\\extensions\\native_v8_base_fatal.cpp",
+      "bytes": 7723,
+      "sha256": "1C83C0523655ACD3FF64CA067AE2CB5131C98B36A2E60910AEF4C64699BD3BBC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\dependencies\\src\\extensions\\native_v8_base_fatal.h",
+      "bytes": 7727,
+      "sha256": "C5B2D6E6F7B8DA0E8C9D70E8934392B10BB638DA5C209870385FCE1AC71D3CBF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_shutdown.zig",
+      "bytes": 9800,
+      "sha256": "D88164C9B392F9A5A0906DF2166129204A88A0936C83D3FA1DFF008484EC94F2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_one_byte_string.zig",
+      "bytes": 2658,
+      "sha256": "2387DDE54B2B079BC0F78490602E4CF150F4A1E46FFC3FC05D7EF3CB5CEE4507"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_one_byte_string_diagnostics.cpp",
+      "bytes": 2695,
+      "sha256": "3E61B1FDD631E80B31F51F5B130D203C4C01BD41FF4EE4FD2831C27074459B53"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_one_byte_string_diagnostics.h",
+      "bytes": 576,
+      "sha256": "687E51133E348B90B4C7CF5CBEB53C2098CF6988A5C3915F68DF008D0A9E1C88"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_stream_request.zig",
+      "bytes": 6970,
+      "sha256": "654816139FC110560BA21BDBBEA35744468B1E6C52154448D30CEDC3656A6E8B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production\\src\\extensions\\native_node_stream_shutdown.zig",
+      "bytes": 11021,
+      "sha256": "2BEE67EE76015C0549729F3F3B12CD4BBBF32C5DBF5A28D8CEE3F111E0C86D7E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_async_wrap.zig",
+      "bytes": 20655,
+      "sha256": "F2BEC62AC7817F16EE57E50B80D903ECCB0F8D60AFCB8B61FED920245918CC27"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_async_wrap_state.zig",
+      "bytes": 34046,
+      "sha256": "1530C4043859CFF37D7F157F5557E4597E68972C1F1A1B82D208978F47E3D67A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_file_handle_owner.zig",
+      "bytes": 17650,
+      "sha256": "F2672292FBEBEEF74B35C32C38203E3D1E1D259052E7AB5AFB34DA29840B544D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_stream_base.zig",
+      "bytes": 12321,
+      "sha256": "F85721695F41998E3676C196B4791D295EA62C8DE89FD83159F05BACDEF7716E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_stream_resource.zig",
+      "bytes": 6847,
+      "sha256": "39255A86BA9631F95E9CBD13B85AE7264A30A015EF4454F10B2D64BD643F2D8A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+      "bytes": 530121,
+      "sha256": "B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\peer.json",
+      "bytes": 9273,
+      "sha256": "9CB321CDEC59D5FE1A616B13FBCB4EB07D14D663F8CF445462F1E4A9A2C5B703"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\source-audit.json",
+      "bytes": 101785,
+      "sha256": "74591C1609D2A07397D44585C0BD92C1BEDB406AC9663AFF77161D4449CA9512"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\successor-v2\\projected\\src\\native_node_fs_request_owner_test.zig",
+      "bytes": 57891,
+      "sha256": "FD337AA09700EA151943ED06A86CE5623C37210FA57637B892DCB6AB797C02D6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+      "bytes": 22131,
+      "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\combined-with-latin1-successor\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2404878,
+      "sha256": "091E5BE0C22F35CE2029852DEA8D8B017B3784013ED93EDB9F1545A49D8D275F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\combined-with-latin1-successor\\vendor\\quickjs\\quickjs.h",
+      "bytes": 115346,
+      "sha256": "05AA4DF250CB642536077C5DF80C08C92C1C40BAA347C18140AFB577B583B0EB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-invalid-descriptor-independent-peer-20261022\\source-audit.py",
+      "bytes": 10606,
+      "sha256": "673BDDD874D94FB663AEDCBCA8674BE36FF8A6FF365397E0ECA552FF674D780B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs-v2.json",
+      "bytes": 16810,
+      "sha256": "B97468E1DD34137C80A6199BABE6E227FEBDB5BD3FD0654B31EA3F05CF8C123F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-corecrt-internal-lowio.h",
+      "bytes": 11985,
+      "sha256": "1465B3388C22524A779C19DCD709EEFF116993D21A0068E639281181DDB2A751"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-close.cpp",
+      "bytes": 2884,
+      "sha256": "66EF4CA9584690771768589C039BA04E024AD6FA5758958473E6BCE4209603F3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-invalid-parameter.cpp",
+      "bytes": 10714,
+      "sha256": "B09696292D181B0D51D360377F933763B7B1BE796557AB3334F481800B0C3F2E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\causal-proof.json",
+      "bytes": 83979,
+      "sha256": "39DF95F9780D1A663A6CAC9542B1F7656AAD5EE6CDCCD4761219142295E81C5D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28576,
+      "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+    }
+  ],
+  "candidate_or_donor_checker_or_prefix_executed": false,
+  "Main_accessed": false,
+  "native_execution_authorized": false,
+  "source_intake_authorized": false,
+  "application_qualified": false
+}

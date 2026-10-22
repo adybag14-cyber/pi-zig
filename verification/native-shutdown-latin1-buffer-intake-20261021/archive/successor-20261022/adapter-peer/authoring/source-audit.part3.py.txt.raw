@@ -1,0 +1,56 @@
+# Reproducible source evidence, not an execution or intake receipt.
+unique={}
+for pin in checked:
+ key=pin["path"].casefold()
+ assert key not in unique or unique[key]==pin,(key,unique.get(key),pin)
+ unique[key]=pin
+semantic_review=[
+ {"topic":"release_and_future_binding","finding":"Exactly four unresolved literal values and separate release/self/hash/branch/pin admission are retained. The draft rejects unresolved bindings and disabled assertions before repository admission."},
+ {"topic":"original_negative_and_v2","finding":"The preserved 1DD predecessor checks only original committed prefix spellings. The selected v2 adds a distinct combined planned map before any copy; original existing-only absence checks remain exact."},
+ {"topic":"paths_and_modes","finding":"Every row including the synthetic manifest uses canonical target, reparse, mode and absence/preimage gates. V2 validates both existing and newly planned prefix spellings before donor/attribute admission completes."},
+ {"topic":"donor_aliases","finding":"All explicit logical aliases are separately pinned and compared byte-for-byte to their physical row; primary donor membership and duplicate identities are checked. Completeness of the final reviewed manifest remains a separate Root/manifest-peer obligation."},
+ {"topic":"attribute_admission","finding":"All five attributes are captured for the full target list. Filter, working-tree-encoding and ident must be unset or unspecified before any path-aware hash. Configuration origins/scope and system/global/info/root/ancestor attribute bytes or absence are retained."},
+ {"topic":"object_identity","finding":"Repository object format selects the independent raw blob digest. Binary donor bytes must agree with Git no-filter and path-aware IDs without object writes. The project BASIS contract remains forty-hex SHA-1; no broader commit-format support is claimed."},
+ {"topic":"before_copy","finding":"Full donor/preimage/alias/path/attribute/dual-ID checks and repeated provenance/head/clean/no-hook gates precede all Main/index writes. The immutable preflight is saved before copying."},
+ {"topic":"copy_stage_commit","finding":"Copied bytes and unchanged conversion provenance are checked before literal NUL-list staging. Exact stage-zero modes/IDs/raw blobs, full commit parent list, changed-path set, committed modes/IDs/raw bytes and final provenance/clean gates remain mandatory."},
+ {"topic":"failure_preservation","finding":"After release and receipt-namespace admission, a create-only negative records stage, write-start state and exception without rollback. Earlier admission failures deliberately require Root to retain the original tool/job evidence."},
+ {"topic":"authority_boundary","finding":"This peer does not issue the four bindings, final manifest/release, complete native-process closure or application qualification. Retained-target linkage and the exact later source/build union remain separately reviewed work."}
+]
+proof={
+ "schema":1,"status":"independent_static_peer_passed_for_selected_v2_after_preserved_predecessor_finding",
+ "checker":describe(Path(__file__),Path(__file__).read_bytes()),
+ "selected_source":describe(D/"Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py",selected),
+ "preserved_predecessor":describe(D/"Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py",old),
+ "baseline":PINS[0],"direct_pinned_inputs":PINS,"all_unique_inputs_rehashed":list(unique.values()),
+ "packet_reference_occurrences_checked":reference_rows,"input_rehash_occurrences":len(checked),
+ "predecessor_20_sequential_edits":steps,"all_intermediate_raw_hashes_and_spans_verified":True,
+ "full_20_step_forward_and_inverse_exact":True,
+ "selected_one_hunk":{"offset":at,"before_bytes":len(a),"after_bytes":len(b),
+ "full_forward_exact":True,"full_inverse_exact":True,"untouched_prefix_bytes":at,
+ "untouched_suffix_bytes":len(old)-at-len(a),"untouched_prefix_sha256":digest(old[:at]),
+ "untouched_suffix_sha256":digest(old[at+len(a):])},
+ "whole_selected_inverse_to_baseline_exact":True,"full_baseline_fragments":fragments,
+ "full_baseline_replaced_ranges":ranges,"all_9719_baseline_bytes_accounted":True,
+ "full_5897_byte_tail_accounting":tail_proof,"helpers":helpers,
+ "inherited_helpers_unchanged":11,"all_predecessor_helpers_unchanged_in_v2":22,
+ "new_helper_bodies_read":11,"source_imports":imports,"release_fields":release_fields,
+ "four_future_literal_bindings":contract["future_literal_bindings"],
+ "ordered_source_barriers":barriers,"predecessor_finding":finding,
+ "actual_E2B_inventory":e2b,"semantic_review":semantic_review,
+ "authority":{"source_only":True,"candidate_or_prefix_executed":False,
+ "author_checker_executed":False,"Git_command_executed":False,"Main_accessed":False,
+ "index_accessed":False,"source_intake_or_config_issued":False,"compiler_or_native_executed":False,
+ "actual_conversion_or_commit_claimed":False,"application_qualified":False}}
+# FINAL CREATE-ONLY REVIEW OUTPUTS. Everything above reads data and parses syntax only.
+outputs=[OUT/"static-proof.json",OUT/"predecessor-finding.json"]
+assert all(not p.exists() for p in outputs)
+OUT.mkdir(parents=True,exist_ok=True)
+pins=[]
+for p,value in zip(outputs,[proof,finding]):
+ raw=(json.dumps(value,indent=2,ensure_ascii=False)+"\n").encode("utf-8")
+ with p.open("xb") as stream:stream.write(raw)
+ assert p.read_bytes()==raw
+ pins.append(describe(p,raw))
+print(json.dumps({"outputs":pins,"selected_sha256":digest(selected),"steps":21,"helpers_unchanged_in_v2":22,
+ "unique_inputs":len(unique),"alias_rows_verified":len(alias_rows),"Main_accessed":False,
+ "candidate_or_prefix_executed":False}))

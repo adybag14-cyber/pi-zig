@@ -1,0 +1,101 @@
+{
+  "schema": "pi-zig.root-shutdown-latin1-source-review.v1",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-20T22:01:09.681129+00:00",
+  "current_main_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\production-proposal.json",
+      "bytes": 38512,
+      "sha256": "C75EDD403EA03303A55CF64C903F2193EA74CBFAE843196DA7096C8AC3A7CAA0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-sdk-peer-sourceonly-20261020\\peer.json",
+      "bytes": 25480,
+      "sha256": "B73696405B70DB729280F38E79A5EF7B75479A1790EE70572AA64D8A8EEC9189"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-shutdown-sdk-peer-sourceonly-20261020\\independent-source-replay.json",
+      "bytes": 13031,
+      "sha256": "AF77B6B17A468DE855C0988621BD773D5020CDCC6AF3F69111105C307DC1E9AD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\source-proof.json",
+      "bytes": 31491,
+      "sha256": "098091FBDCEEA8B87AD9F2C655BB09937222DBF2F3C731C6FACD0A91285A8F68"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\source-map.json",
+      "bytes": 88169,
+      "sha256": "2B78DFAA1C4CF44784AEE4F837B76F9B09ABAB265E79F053AF342B5B27D3A448"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\source-map-successor.json",
+      "bytes": 4913,
+      "sha256": "7B883EF61A24846E9847A8BFAC41D36DFF5C6E4201572EB46946A0F9BF94DB3F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\proposal.json",
+      "bytes": 2900,
+      "sha256": "11FA3C2397945908756CB487FE2F22E8762B56AF7187CD87AF8275678905F9F1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\dependency-inventory.json",
+      "bytes": 2079317,
+      "sha256": "B141BD5D0E85A45EAB5A9588F895AF3AEF01FED8580B51F362A0D136BBFC5677"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\closure-and-preservation.json",
+      "bytes": 63794,
+      "sha256": "A9E33FF285C889D48F06F41859FE6B5472C7BE6FE6E1F777F8D247485B2F68D2"
+    }
+  ],
+  "full_read_scope": {
+    "new_production_files": 6,
+    "new_control_fixture_support_files": 3,
+    "control_declarations": 26,
+    "shared_finite_edits": 37,
+    "c_successor_expression_edits": 2,
+    "build_install_only_insertion": 1,
+    "original_source_excerpts": 43,
+    "private_helper_signature_bindings": 4,
+    "read_only_audit_prefixes_fully_read": 3
+  },
+  "independent_reproduction": {
+    "entire_peer_proof_bytes": 13031,
+    "entire_peer_proof_sha256": "AF77B6B17A468DE855C0988621BD773D5020CDCC6AF3F69111105C307DC1E9AD",
+    "entire_source_proof_reproduced_exact": true,
+    "entire_dependency_and_closure_outputs_reproduced_exact": true,
+    "all_intermediate_hashes_and_whole_inverses": true,
+    "inventory_rows": 90,
+    "selected_dependency_entries": 961,
+    "literal_module_union": 709,
+    "literal_embed_union": 242,
+    "C195_E228_both_orders_and_whole_inverses": true
+  },
+  "assessment": "No additional concrete source blocker found in the corrected finite native shutdown/Latin1 slice. This accepts the reviewed source semantics, not an intake or execution.",
+  "causal_review": [
+    "Independent request and BaseObject slots; actual retain-before-check semantics and final-release destruction; no request/state access after final release.",
+    "Original HandleScope, request pointer and trigger restoration order; closed/closing Done(0) and return1 with outer retained pointer; actual physical close trace/AfterClose/result/cleanup/Done order.",
+    "Actual live listener and Has.FromJust versus ordinary Get/nonfunction distinctions; ordinary exception escrow preserves native continuation and disposes requests; throwing error Set returns before OnDone while false nonwritable Set continues.",
+    "Real raw Latin1 byte copies and empty string; signed length and strlen paths; exact guarded helper parameter types; native diagnostic TLS is synchronous borrowed scope.",
+    "All26 controls use actual VM/native storage, physical descriptors and queue; observations are not production trace/hooks."
+  ],
+  "remaining_prerequisites": [
+    "Selected build still requires a current79c19 composition supplement after Transfer insertion and Error artifact naming; original build2B7888AF remains immutable.",
+    "Main contains exact accepted diagnostic-context C/H/HPP, but native_v8_base_fatal.h and native_v8_base_fatal.cpp are absent. Separate reviewed5059d6a source intake and exactly one native TLS/fatal translation unit remain required.",
+    "Full public StreamBase JSMethod receiver/liveness/template signature and public FileHandle/bootstrap/worker/trace assembly remain separate.",
+    "Native fatal branches are source-bound only; compiler/metadata/runtime/target validation remains separately required."
+  ],
+  "preserved_original_negatives": {
+    "latin1_sdk_negative_sha256": "5D95C40F4F21DF511E0F929912B385EBA0875A9F78EAD65EEDAE569252984243",
+    "original_C58_projection_preserved": true,
+    "all_prior_root_runtime_negatives_preserved": true
+  },
+  "source_semantics_accepted": true,
+  "main_intake_authorized": false,
+  "native_execution_authorized": false,
+  "actual_future_metadata_count": null,
+  "application_or_runtime_qualified": false,
+  "Main_written": false
+}

@@ -1,0 +1,142 @@
+{
+  "schema": 1,
+  "status": "source_only_declared_sequential_edits",
+  "offset_unit": "Unicode characters in each current intermediate; proof converts to raw UTF-8 byte offsets",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+    "bytes": 9719,
+    "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-20261022.py",
+    "bytes": 23554,
+    "sha256": "1DD560CF741A4737DEC710F778A90B9F1CD5A3B8F41FD2E73F517744E5C84010",
+    "lines": 373,
+    "complete": true,
+    "AST_parse_only": true,
+    "candidate_executed": false
+  },
+  "edits": [
+    {
+      "label": "description",
+      "offset": 0,
+      "before": "\"\"\"Exact V37 fixture Main source intake; no compiler, runtime, generator or push.\"\"\"",
+      "after": "\"\"\"Unissued pending20 exact source intake with complete Git byte provenance; no native execution.\"\"\""
+    },
+    {
+      "label": "imports_and_assertion_mode",
+      "offset": 141,
+      "before": "import datetime, hashlib, json, os, subprocess, sys\n",
+      "after": "import base64, datetime, hashlib, json, os, re, stat, subprocess, sys, traceback\nif not __debug__: raise RuntimeError(\"This reviewed intake requires Python assertions enabled\")\n"
+    },
+    {
+      "label": "unresolved_future_head",
+      "offset": 371,
+      "before": "BASIS=\"b13be24e44cc1bbc361639eb35900a368ae60eac\"",
+      "after": "BASIS=\"UNRESOLVED_PENDING20_RELEASED_HEAD______\""
+    },
+    {
+      "label": "unresolved_manifest_identity",
+      "offset": 475,
+      "before": " \"fixture\":(\"evidence/pending-v37-filehandle-runtime-fixtures-main-intake-20261021/manifest.json\",\"236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9\",44,\"Correct FileHandle callback resource and invalid descriptor fixtures\"),",
+      "after": " \"fixture\":(\"evidence/UNRESOLVED-PENDING20-FINAL-MANIFEST/manifest.json\",\"UNRESOLVED_PENDING20_FINAL_MANIFEST_SHA256______________________\",0,\"Integrate independently reviewed Shutdown Latin1 and Buffer source\"),"
+    },
+    {
+      "label": "new_strict_byte_contract_helpers",
+      "offset": 2575,
+      "before": "assert len(sys.argv)==4,\"phase release-path release-sha256\"\n",
+      "after": "\n# These guards strengthen byte preservation without changing the11 inherited helpers.\nBYTE_CONTRACT=\"pending20_exact_git_bytes_attributes_aliases_modes_v1\"\nATTR_NAMES=(\"text\",\"eol\",\"filter\",\"working-tree-encoding\",\"ident\")\nFAILURE_STATE={\"stage\":\"release_admission\",\"Main_or_index_writes_started\":False}\ndef fail_record(exc_type,exc,tb):\n try:\n  stamp=datetime.datetime.now(datetime.timezone.utc).strftime(\"%Y%m%dT%H%M%S%fZ\")\n  name=phase+\"-negative-\"+stamp+\"-\"+os.urandom(6).hex()+\".json\"\n  value={\"status\":\"preserved_exact_intake_failure\",\"utc\":datetime.datetime.now(datetime.timezone.utc).isoformat(),\n   \"phase\":phase,\"release_path\":str(release_path),\"release_sha256\":release_sha,\n   \"executor_sha256\":self_sha,\"state\":dict(FAILURE_STATE),\n   \"exception_type\":exc_type.__name__,\"exception\":str(exc),\n   \"traceback\":\"\".join(traceback.format_exception(exc_type,exc,tb)),\n   \"native_execution_authorized\":False,\"application_qualified\":False,\"rollback_or_cleanup_performed\":False}\n  new_json(proof/name,value)\n except BaseException as capture_error:\n  print(\"Immutable failure receipt could not be saved: \"+repr(capture_error),file=sys.stderr)\n sys.__excepthook__(exc_type,exc,tb)\ndef target_name(rel):\n assert isinstance(rel,str) and rel and str(PurePosixPath(rel))==rel,rel\n assert not PurePosixPath(rel).is_absolute() and \"\\\\\" not in rel and \":\" not in rel,rel\n assert not any(ord(c)<32 or ord(c)==127 or c in '<>\"|?*' for c in rel),rel\n for part in rel.split(\"/\"):\n  assert part not in (\"\",\".\",\"..\") and part[-1] not in \". \",rel\n  lower=part.casefold()\n  assert lower not in (\".git\",\".gitattributes\"),rel\n  stem=lower.split(\".\",1)[0]\n  assert not re.fullmatch(r\"(con|prn|aux|nul|clock\\$|conin\\$|conout\\$|com[1-9¹²³]|lpt[1-9¹²³])\",stem),rel\n assert rel==\"build.zig\" or rel.startswith((\"src/\",\"vendor/quickjs/\",\"verification/\")),rel\n return rel\ndef no_reparse_target(rel):\n current=MAIN\n assert current.is_dir() and not current.is_symlink(),str(current)\n for part in [None,*PurePosixPath(rel).parts]:\n  if part is not None: current=current/part\n  if os.path.lexists(current):\n   info=current.lstat()\n   assert not current.is_symlink() and not (getattr(info,\"st_file_attributes\",0)&0x400),str(current)\n   assert stat.S_ISDIR(info.st_mode) if current!=MAIN/rel else stat.S_ISREG(info.st_mode),str(current)\n inside(MAIN/rel,MAIN)\ndef oid_text(output,object_format):\n value=output.decode(\"ascii\").strip()\n length={\"sha1\":40,\"sha256\":64}[object_format]\n assert re.fullmatch(\"[0-9a-f]{\"+str(length)+\"}\",value),value\n return value\ndef raw_oid(b,object_format):\n return hashlib.new(object_format,b\"blob \"+str(len(b)).encode(\"ascii\")+b\"\\0\"+b).hexdigest()\ndef repository_identity():\n unsafe={\"GIT_DIR\",\"GIT_WORK_TREE\",\"GIT_COMMON_DIR\",\"GIT_INDEX_FILE\",\"GIT_OBJECT_DIRECTORY\",\n  \"GIT_ALTERNATE_OBJECT_DIRECTORIES\",\"GIT_NAMESPACE\",\"GIT_ATTR_NOSYSTEM\",\"GIT_ATTR_SOURCE\",\"GIT_CONFIG\",\n  \"GIT_LITERAL_PATHSPECS\",\"GIT_GLOB_PATHSPECS\",\"GIT_NOGLOB_PATHSPECS\",\"GIT_ICASE_PATHSPECS\"}\n present=sorted(k for k in os.environ if k in unsafe or k.startswith(\"GIT_CONFIG_\"))\n assert not present,(\"unreviewed_git_environment_override_names\",present)\n top=Path(gout(\"rev-parse\",\"--show-toplevel\")).resolve()\n assert top==MAIN.resolve() and top==MAIN.absolute(),(\"canonical_repository_root\",str(top))\n assert gout(\"rev-parse\",\"--is-bare-repository\")==\"false\"\n assert gout(\"rev-parse\",\"--is-inside-work-tree\")==\"true\"\n object_format=gout(\"rev-parse\",\"--show-object-format\")\n assert object_format in (\"sha1\",\"sha256\") and object_format==release[\"expected_git_object_format\"]\n assert re.fullmatch(\"[0-9a-f]{\"+str({\"sha1\":40,\"sha256\":64}[object_format])+\"}\",BASIS)\n return {\"canonical_root\":str(top),\"git_dir\":gout(\"rev-parse\",\"--absolute-git-dir\"),\n  \"common_dir\":gout(\"rev-parse\",\"--path-format=absolute\",\"--git-common-dir\"),\n  \"object_format\":object_format,\"git_version\":gout(\"--version\"),\"rejected_override_names_present\":present}\ndef conversion_provenance(names):\n # Only conversion/attribute configuration and origins are captured.\n pattern=r\"^(core\\.(autocrlf|eol|safecrlf|attributesfile|checkroundtripencoding|filemode|ignorecase|symlinks|protectntfs|protecthfs)|extensions\\.objectformat)$\"\n args=(\"config\",\"--includes\",\"--show-origin\",\"--show-scope\",\"--null\",\"--get-regexp\",pattern)\n config=git(*args,check=False);assert config.returncode in (0,1)\n sources={}\n def add(path,role):\n  p=Path(path)\n  if not p.is_absolute(): p=MAIN/p\n  k=str(p.absolute()).casefold()\n  if k not in sources: sources[k]={\"path\":str(p.absolute()),\"roles\":[]}\n  if role not in sources[k][\"roles\"]: sources[k][\"roles\"].append(role)\n for variable in (\"GIT_ATTR_SYSTEM\",\"GIT_ATTR_GLOBAL\"):\n  value=gout(\"var\",variable);assert value and \"\\n\" not in value and \"\\r\" not in value,variable\n  add(value,variable)\n add(gout(\"rev-parse\",\"--path-format=absolute\",\"--git-path\",\"info/attributes\"),\"repository_info_attributes\")\n add(MAIN/\".gitattributes\",\"root_attributes\")\n for rel in names:\n  parts=PurePosixPath(rel).parts\n  for depth in range(1,len(parts)):\n   add(MAIN.joinpath(*parts[:depth])/\".gitattributes\",\"target_ancestor_attributes\")\n files=[]\n for source in sorted(sources.values(),key=lambda x:x[\"path\"].casefold()):\n  path=Path(source[\"path\"]);present=os.path.lexists(path)\n  record={**source,\"exists\":present,\"resolved_path\":str(path.resolve())}\n  if present:\n   assert path.is_file(),str(path)\n   b=raw(path);record.update(bytes=len(b),sha256=sha(b),raw_base64=base64.b64encode(b).decode(\"ascii\"),\n    is_symlink=path.is_symlink())\n  files.append(record)\n return {\"repository\":repository_identity(),\"configuration\":{\"argv\":list(args),\"exit_code\":config.returncode,\n  \"stdout_base64\":base64.b64encode(config.stdout).decode(\"ascii\"),\"stdout_sha256\":sha(config.stdout),\n  \"stderr_base64\":base64.b64encode(config.stderr).decode(\"ascii\")},\"attribute_sources\":files}\ndef effective_attributes(names):\n request=b\"\\0\".join(rel.encode(\"utf-8\") for rel in names)+b\"\\0\"\n output=git(\"check-attr\",\"-z\",\"--stdin\",*ATTR_NAMES,input=request).stdout\n assert output.endswith(b\"\\0\")\n fields=output.split(b\"\\0\")[:-1];assert len(fields)==len(names)*len(ATTR_NAMES)*3\n result={rel:{} for rel in names}\n for i in range(0,len(fields),3):\n  rel,key,value=(v.decode(\"utf-8\") for v in fields[i:i+3])\n  assert rel in result and key in ATTR_NAMES and key not in result[rel],(rel,key)\n  result[rel][key]=value\n for rel,values in result.items():\n  assert set(values)==set(ATTR_NAMES),rel\n  for key in (\"filter\",\"working-tree-encoding\",\"ident\"):\n   assert values[key] in (\"unset\",\"unspecified\"),(\"disallowed_conversion_attribute\",rel,key,values[key])\n return result\ndef tree_entries(revision):\n result={}\n for line in git(\"ls-tree\",\"-r\",\"--full-tree\",\"-z\",revision).stdout.split(b\"\\0\"):\n  if not line: continue\n  header,path=line.split(b\"\\t\",1);mode,kind,oid=header.decode(\"ascii\").split()\n  rel=path.decode(\"utf-8\");assert rel not in result,rel\n  result[rel]={\"mode\":mode,\"type\":kind,\"oid\":oid}\n return result\ndef index_entries():\n result={}\n for line in git(\"ls-files\",\"--stage\",\"-z\").stdout.split(b\"\\0\"):\n  if not line: continue\n  header,path=line.split(b\"\\t\",1);mode,oid,stage=header.decode(\"ascii\").split()\n  rel=path.decode(\"utf-8\");assert stage==\"0\" and rel not in result,(\"nonzero_or_duplicate_index_stage\",rel,stage)\n  result[rel]={\"mode\":mode,\"oid\":oid,\"stage\":0}\n return result\ndef assert_conversion_unchanged(names,attributes,provenance,label):\n actual_attributes=effective_attributes(names)\n actual_provenance=conversion_provenance(names)\n assert actual_attributes==attributes,(label,\"effective_attributes_changed\")\n assert actual_provenance==provenance,(label,\"configuration_or_attribute_sources_changed\")\n return {\"stage\":label,\"effective_attributes_unchanged\":True,\"conversion_provenance_unchanged\":True,\n  \"provenance_sha256\":sha((json.dumps(provenance,sort_keys=True,separators=(\",\",\":\"))).encode(\"utf-8\"))}\n\nassert re.fullmatch(r\"[0-9a-f]{40}\",BASIS),\"Future released source head is unresolved\"\nassert all(re.fullmatch(r\"[0-9A-F]{64}\",value[1]) and value[2]>0 for value in MANIFESTS.values()),\"Future manifest bindings are unresolved\"\nassert len(sys.argv)==4,\"phase release-path release-sha256\"\n"
+    },
+    {
+      "label": "explicit_contract_and_failure_observation",
+      "offset": 11458,
+      "before": "assert not receipt_path.exists()\nassert gout(\"branch\",\"--show-current\")==BRANCH\n",
+      "after": "assert not receipt_path.exists()\nassert release[\"git_byte_preflight_contract\"]==BYTE_CONTRACT\nsys.excepthook=fail_record\nFAILURE_STATE[\"stage\"]=\"repository_admission\"\nrepository=repository_identity()\nobject_format=repository[\"object_format\"]\nassert gout(\"branch\",\"--show-current\")==BRANCH\n"
+    },
+    {
+      "label": "manifest_containment",
+      "offset": 11889,
+      "before": "manifest_path=ROOT/manifest_rel; manifest_raw=pinned(manifest_path,manifest_sha)",
+      "after": "manifest_path=inside(ROOT/manifest_rel,ROOT/\"evidence\"); manifest_raw=pinned(manifest_path,manifest_sha)"
+    },
+    {
+      "label": "explicit_synthetic_manifest_mode",
+      "offset": 12371,
+      "before": "allrows=[*rows,{\"target\":target_manifest,\"source\":str(manifest_path),\"bytes\":len(manifest_raw),\"sha256\":manifest_sha,\"before\":None,\"role\":\"exact_intake_manifest\"}]",
+      "after": "allrows=[*rows,{\"target\":target_manifest,\"source\":str(manifest_path),\"bytes\":len(manifest_raw),\"sha256\":manifest_sha,\"before\":None,\"role\":\"exact_intake_manifest\",\"mode\":\"100644\"}]"
+    },
+    {
+      "label": "canonical_paths_modes_and_complete_alias_inventory",
+      "offset": 12578,
+      "before": "names=[]; contents=[]; preimages=[]; basis_paths=tree_paths(BASIS); head_paths=tree_paths(head)\nfor row in allrows:\n rel=row[\"target\"]; pp=PurePosixPath(rel)\n assert not pp.is_absolute() and \"\\\\\" not in rel and \":\" not in rel and all(x not in (\"..\",\".\") for x in pp.parts),rel\n assert rel==\"build.zig\" or rel.startswith((\"src/\",\"vendor/quickjs/\",\"verification/\")),rel\n target=inside(MAIN/rel,MAIN); donor=inside(row[\"source\"],ROOT)\n b=pinned(donor,row[\"sha256\"]); assert len(b)==row[\"bytes\"]\n names.append(rel); contents.append(b)\n before=row[\"before\"]\n if before is None:\n  assert not target.exists() and rel not in basis_paths and rel not in head_paths,rel\n else:\n  old=pinned(target,before[\"sha256\"]); assert len(old)==before[\"bytes\"]\n  assert rel in basis_paths and rel in head_paths,rel\n  preimages.append((row,old))\nassert len(set(x.casefold() for x in names))==count\n",
+      "after": "FAILURE_STATE.update(stage=\"complete_donor_path_and_preimage_admission\",before_head=head)\nnames=[]; contents=[]; preimages=[]; basis_paths=tree_paths(BASIS); head_paths=tree_paths(head)\nprior_entries=tree_entries(head);assert set(prior_entries)==head_paths==basis_paths\nexisting_spelling={}\nfor rel in head_paths:\n parts=rel.split(\"/\")\n for depth in range(1,len(parts)+1):\n  value=\"/\".join(parts[:depth]);key=value.casefold()\n  assert key not in existing_spelling or existing_spelling[key]==value,(\"existing_case_alias\",value)\n  existing_spelling[key]=value\nfor row in allrows:\n rel=target_name(row[\"target\"]);no_reparse_target(rel)\n assert row[\"mode\"] in (\"100644\",\"100755\"),(rel,row[\"mode\"])\n parts=rel.split(\"/\")\n for depth in range(1,len(parts)+1):\n  value=\"/\".join(parts[:depth]);key=value.casefold()\n  assert key not in existing_spelling or existing_spelling[key]==value,(\"target_existing_case_alias\",value)\n target=inside(MAIN/rel,MAIN); donor=inside(row[\"source\"],ROOT)\n assert MAIN.resolve() not in donor.parents and donor!=MAIN.resolve(),(\"donor_must_be_outside_Main\",str(donor))\n b=pinned(donor,row[\"sha256\"]); assert len(b)==row[\"bytes\"]\n names.append(rel); contents.append(b)\n before=row[\"before\"]\n if before is None:\n  assert row[\"mode\"]==\"100644\",(\"new_regular_source_or_archive_mode\",rel)\n  assert not os.path.lexists(target) and rel.casefold() not in existing_spelling,rel\n  assert rel not in basis_paths and rel not in head_paths,rel\n else:\n  assert before[\"mode\"]==row[\"mode\"],(\"source_intake_does_not_change_existing_mode\",rel)\n  assert prior_entries[rel][\"type\"]==\"blob\" and prior_entries[rel][\"mode\"]==before[\"mode\"],rel\n  old=pinned(target,before[\"sha256\"]); assert len(old)==before[\"bytes\"]\n  assert rel in basis_paths and rel in head_paths,rel\n  assert prior_entries[rel][\"oid\"]==raw_oid(old,object_format),(\"preimage_object_id\",rel)\n  preimages.append((row,old))\nassert len(set(x.casefold() for x in names))==count\nfolded_names={x.casefold() for x in names}\nfor rel in names:\n parts=rel.split(\"/\")\n assert not any(\"/\".join(parts[:depth]).casefold() in folded_names for depth in range(1,len(parts))),(\"file_directory_target_collision\",rel)\nlogical_aliases=manifest[\"logical_donor_aliases\"]\nassert len(logical_aliases)==release[\"authorized_phases\"][phase][\"logical_donor_alias_count\"]\nphysical={row[\"target\"]:(row,b) for row,b in zip(allrows,contents)}\nalias_records=[];alias_keys=set()\nfor alias in logical_aliases:\n rel=alias[\"target\"];assert rel in physical and rel!=target_manifest,rel\n row,b=physical[rel];donor=inside(alias[\"source\"],ROOT)\n assert MAIN.resolve() not in donor.parents and donor!=MAIN.resolve(),str(donor)\n alias_bytes=pinned(donor,alias[\"sha256\"])\n assert len(alias_bytes)==alias[\"bytes\"] and alias_bytes==b,(\"logical_donor_alias_bytes\",rel,str(donor))\n key=(rel,str(donor).casefold(),alias[\"bytes\"],alias[\"sha256\"])\n assert key not in alias_keys,(\"duplicate_logical_donor_identity\",key)\n alias_keys.add(key)\n alias_records.append({**alias,\"canonical_donor\":str(donor),\"same_physical_bytes\":True})\nfor row in rows:\n key=(row[\"target\"],str(inside(row[\"source\"],ROOT)).casefold(),row[\"bytes\"],row[\"sha256\"])\n assert key in alias_keys,(\"physical_donor_missing_from_logical_inventory\",row[\"target\"])\nalias_records.append({\"target\":target_manifest,\"source\":str(manifest_path),\"bytes\":len(manifest_raw),\n \"sha256\":manifest_sha,\"canonical_donor\":str(manifest_path),\"same_physical_bytes\":True,\"synthetic_manifest\":True})\n"
+    },
+    {
+      "label": "both_git_ids_and_complete_conversion_provenance",
+      "offset": 16371,
+      "before": "attribute_output=git(\"check-attr\",\"-z\",\"--stdin\",\"filter\",\"working-tree-encoding\",\"ident\",input=b\"\\0\".join(x.encode(\"utf-8\") for x in names)+b\"\\0\").stdout.split(b\"\\0\")[:-1]\nassert len(attribute_output)==9*count\nfor index in range(0,len(attribute_output),3):\n assert attribute_output[index].decode(\"utf-8\") in names\n assert attribute_output[index+1].decode(\"utf-8\") in (\"filter\",\"working-tree-encoding\",\"ident\")\n assert attribute_output[index+2] in (b\"unspecified\",b\"unset\"),attribute_output[index:index+3]\nfor rel,b in zip(names,contents):\n expected_blob=hashlib.sha1(b\"blob \"+str(len(b)).encode(\"ascii\")+b\"\\0\"+b).hexdigest()\n actual_blob=git(\"hash-object\",\"--path=\"+rel,\"--stdin\",input=b).stdout.decode(\"ascii\").strip()\n assert actual_blob==expected_blob,(\"git_filter_would_change_exact_bytes\",rel,expected_blob,actual_blob)\nfor rel in names:\n parts=PurePosixPath(rel).parts\n for depth in range(1,len(parts)):\n  parent=MAIN.joinpath(*parts[:depth])\n  assert not parent.is_symlink(),str(parent)\nassert gout(\"rev-parse\",\"HEAD\")==head and git(\"status\",\"--porcelain=v1\",\"--untracked-files=all\").stdout==b\"\"\n",
+      "after": "FAILURE_STATE[\"stage\"]=\"complete_attribute_and_git_object_preflight\"\nattributes=effective_attributes(names)\nprovenance=conversion_provenance(names)\nassert provenance[\"repository\"]==repository\nbyte_rows=[];expected_ids={}\nfor row,b in zip(allrows,contents):\n rel=row[\"target\"];expected_blob=raw_oid(b,object_format)\n raw_git=oid_text(git(\"hash-object\",\"--no-filters\",\"--stdin\",input=b).stdout,object_format)\n assert raw_git==expected_blob,(\"raw_git_object_disagrees_with_independent_digest\",rel,expected_blob,raw_git)\n # Disallowed attributes were rejected for every path before this first filter-capable call.\n path_git=oid_text(git(\"hash-object\",\"--path=\"+rel,\"--stdin\",input=b).stdout,object_format)\n assert path_git==raw_git,(\"git_conversion_would_change_exact_bytes\",rel,raw_git,path_git)\n expected_ids[rel]=raw_git\n byte_rows.append({\"target\":rel,\"donor\":row[\"source\"],\"bytes\":len(b),\"sha256\":sha(b),\n  \"expected_mode\":row[\"mode\"],\"object_format\":object_format,\"computed_raw_blob\":expected_blob,\n  \"git_raw_blob\":raw_git,\"git_path_blob\":path_git,\"effective_attributes\":attributes[rel]})\nfor rel in names: no_reparse_target(rel)\nbefore_copy_revalidation=assert_conversion_unchanged(names,attributes,provenance,\"all_hashes_complete_before_copy\")\nassert gout(\"rev-parse\",\"HEAD\")==head and git(\"status\",\"--porcelain=v1\",\"--untracked-files=all\").stdout==b\"\"\nno_hooks()\n"
+    },
+    {
+      "label": "expanded_preflight_receipt",
+      "offset": 17780,
+      "before": "preflight={\"phase\":phase,\"utc\":datetime.datetime.now(datetime.timezone.utc).isoformat(),\"before_head\":head,\"basis_head\":BASIS,\"release\":str(release_path),\"release_sha256\":release_sha,\"executor_sha256\":self_sha,\"manifest\":str(manifest_path),\"manifest_sha256\":manifest_sha,\"path_count\":count,\"all_donors_live_preimages_and_committed_basis_verified\":True,\"rows\":[{k:r[k] for k in (\"target\",\"role\",\"bytes\",\"sha256\",\"before\")} for r in allrows],\"native_execution_authorized\":False,\"qualification\":False}",
+      "after": "preflight={\"phase\":phase,\"utc\":datetime.datetime.now(datetime.timezone.utc).isoformat(),\n \"before_head\":head,\"basis_head\":BASIS,\"release\":str(release_path),\"release_sha256\":release_sha,\n \"executor_sha256\":self_sha,\"manifest\":str(manifest_path),\"manifest_sha256\":manifest_sha,\n \"path_count\":count,\"git_byte_preflight_contract\":BYTE_CONTRACT,\"repository\":repository,\n \"all_donors_live_preimages_and_committed_basis_verified\":True,\n \"rows\":[{k:r[k] for k in (\"target\",\"source\",\"role\",\"bytes\",\"sha256\",\"before\",\"mode\")} for r in allrows],\n \"logical_donor_aliases\":alias_records,\"logical_alias_count_excluding_manifest\":len(logical_aliases),\n \"byte_rows\":byte_rows,\"effective_attributes\":attributes,\"conversion_provenance\":provenance,\n \"before_copy_revalidation\":before_copy_revalidation,\"native_execution_authorized\":False,\"qualification\":False}"
+    },
+    {
+      "label": "accurate_source_commit_narrative",
+      "offset": 18857,
+      "before": "Source-reviewed intake only. Native runtime and full application qualification remain pending.",
+      "after": "Source-reviewed intake only. This commit grants no native execution or full application qualification."
+    },
+    {
+      "label": "copy_stage_failure_boundary_and_path_recheck",
+      "offset": 18981,
+      "before": "for index,(row,b) in enumerate(zip(allrows,contents)):\n target=MAIN/row[\"target\"]; before=row[\"before\"]\n",
+      "after": "FAILURE_STATE.update(stage=\"copying_exact_reviewed_rows\",Main_or_index_writes_started=True)\nfor index,(row,b) in enumerate(zip(allrows,contents)):\n FAILURE_STATE[\"current_target\"]=row[\"target\"]\n no_reparse_target(row[\"target\"])\n target=MAIN/row[\"target\"]; before=row[\"before\"]\n"
+    },
+    {
+      "label": "post_copy_before_literal_staging",
+      "offset": 19485,
+      "before": "git(\"add\",\"--pathspec-from-file=\"+str(pathspec),\"--pathspec-file-nul\")",
+      "after": "FAILURE_STATE[\"stage\"]=\"post_copy_pre_staging_revalidation\"\npost_copy_revalidation=assert_conversion_unchanged(names,attributes,provenance,\"after_copy_before_staging\")\nfor rel,b in zip(names,contents):\n no_reparse_target(rel);assert raw(MAIN/rel)==b,(\"post_copy_exact_bytes\",rel)\nassert gout(\"rev-parse\",\"HEAD\")==head\nnew_json(proof/(phase+\"-post-copy.json\"),post_copy_revalidation)\nFAILURE_STATE[\"stage\"]=\"staging_exact_literal_path_list\"\ngit(\"--literal-pathspecs\",\"add\",\"--pathspec-from-file=\"+str(pathspec),\"--pathspec-file-nul\")"
+    },
+    {
+      "label": "explicit_index_modes_and_ids",
+      "offset": 20297,
+      "before": "for rel,b,blob in zip(names,contents,blob_many([\":\"+rel for rel in names])):\n assert b==blob,(\"index\",rel)\n",
+      "after": "index=index_entries();staged_rows=[]\nfor row,b,blob in zip(allrows,contents,blob_many([\":\"+rel for rel in names])):\n rel=row[\"target\"];entry=index[rel]\n assert b==blob,(\"index\",rel)\n assert entry[\"mode\"]==row[\"mode\"] and entry[\"oid\"]==expected_ids[rel] and entry[\"stage\"]==0,(\"exact_index_mode_oid\",rel,entry)\n staged_rows.append({\"target\":rel,**entry,\"bytes\":len(b),\"sha256\":sha(b)})\n"
+    },
+    {
+      "label": "staged_receipt_and_pre_commit_revalidation",
+      "offset": 20720,
+      "before": "new_json(proof/(phase+\"-staged.json\"),{\"before_head\":head,\"path_count\":count,\"exact_index_blob_bytes_verified\":True,\"manifest_sha256\":manifest_sha,\"executor_sha256\":self_sha,\"release_sha256\":release_sha})\ncommit=git(\"commit\",\"--file=\"+str(message))",
+      "after": "pre_commit_revalidation=assert_conversion_unchanged(names,attributes,provenance,\"after_staging_before_commit\")\nno_hooks()\nnew_json(proof/(phase+\"-staged.json\"),{\"before_head\":head,\"path_count\":count,\"exact_index_blob_bytes_verified\":True,\"exact_modes_and_preflight_ids_verified\":True,\"rows\":staged_rows,\"pre_commit_revalidation\":pre_commit_revalidation,\"manifest_sha256\":manifest_sha,\"executor_sha256\":self_sha,\"release_sha256\":release_sha})\nFAILURE_STATE[\"stage\"]=\"committing_exact_reviewed_index\"\ncommit=git(\"commit\",\"--file=\"+str(message))"
+    },
+    {
+      "label": "complete_parent_list",
+      "offset": 21294,
+      "before": "assert after!=head and gout(\"rev-parse\",after+\"^\")==head",
+      "after": "parents=gout(\"show\",\"-s\",\"--format=%P\",after).split()\nassert after!=head and parents==[head],(\"complete_single_parent_relation\",after,parents,head)\nFAILURE_STATE.update(stage=\"committed_blob_and_mode_verification\",after_head=after)"
+    },
+    {
+      "label": "committed_modes_ids_and_final_provenance",
+      "offset": 21708,
+      "before": "for rel,b,blob in zip(names,contents,blob_many([after+\":\"+rel for rel in names])):\n assert b==blob and raw(MAIN/rel)==b,(\"committed\",rel)\n",
+      "after": "committed=tree_entries(after);committed_rows=[]\nfor row,b,blob in zip(allrows,contents,blob_many([after+\":\"+rel for rel in names])):\n rel=row[\"target\"];entry=committed[rel]\n assert b==blob and raw(MAIN/rel)==b,(\"committed\",rel)\n assert entry[\"type\"]==\"blob\" and entry[\"mode\"]==row[\"mode\"] and entry[\"oid\"]==expected_ids[rel],(\"committed_mode_oid\",rel,entry)\n committed_rows.append({\"target\":rel,**entry,\"bytes\":len(b),\"sha256\":sha(b)})\nfinal_revalidation=assert_conversion_unchanged(names,attributes,provenance,\"after_commit\")\n"
+    },
+    {
+      "label": "expanded_final_receipt",
+      "offset": 22631,
+      "before": "\"path_count\":count,\"staged_and_committed_bytes_match\":True,\"clean_worktree\":True,",
+      "after": "\"path_count\":count,\"staged_and_committed_bytes_match\":True,\"git_byte_preflight_contract\":BYTE_CONTRACT,\"repository\":repository,\"complete_commit_parents\":parents,\"staged_rows\":staged_rows,\"committed_rows\":committed_rows,\"logical_alias_count_excluding_manifest\":len(logical_aliases),\"all_raw_and_path_git_ids_equal\":True,\"all_expected_modes_verified\":True,\"final_conversion_revalidation\":final_revalidation,\"clean_worktree\":True,"
+    },
+    {
+      "label": "completion_state_before_success_print",
+      "offset": 23251,
+      "before": "new_json(receipt_path,receipt)\nprint(json.dumps(",
+      "after": "new_json(receipt_path,receipt)\nFAILURE_STATE.update(stage=\"completed\",receipt_path=str(receipt_path))\nprint(json.dumps("
+    }
+  ],
+  "candidate_or_prefix_executed": false
+}

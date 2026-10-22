@@ -1,0 +1,89 @@
+"""Read-only source proof until the final output marker; never invokes the product."""
+from pathlib import Path
+import json,hashlib,re
+P=Path(r'C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018\verification\native-node-custom-buffer-sourceonly-20261020')
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ p=Path(p);b=p.read_bytes();return {'path':str(p),'bytes':len(b),'sha256':sha(b)}
+def js(p):return json.loads(Path(p).read_text(encoding='utf-8'))
+def checked(r):
+ b=Path(r['path']).read_bytes();assert len(b)==r['bytes'] and sha(b)==r['sha256'].upper(),r['path'];return b
+def serialize(x):return (json.dumps(x,indent=2)+'\n').encode()
+builder=P/'prepare-closure.py';script=builder.read_text(encoding='utf-8')
+marker='# FINAL OUTPUT PHASE: only new immutable source-review artifacts.'
+assert script.count(marker)==1
+ns={}
+exec(compile(script.split(marker)[0],str(builder)+' [read-only prefix]','exec'),ns)
+reproduced=[]
+for name in ['inventory','closure']:
+ file=P/('dependency-inventory.json' if name=='inventory' else 'closure-and-preservation.json')
+ assert serialize(ns[name])==file.read_bytes();reproduced.append(pin(file))
+for file,b in ns['copies']:assert file.read_bytes()==b
+m=js(P/'source-map.json')
+assert pin(P/'source-map.json')['sha256']=='73E9599B832ADF1694650E8D04DF8A2D5DA4D012D6D19BB63748C7C987790D28'
+seen={}
+def visit(x):
+ if isinstance(x,dict):
+  if set(['path','bytes','sha256'])<=set(x):
+   key=(x['path'].lower(),x['sha256'])
+   if key not in seen:checked(x);seen[key]={'path':x['path'],'bytes':x['bytes'],'sha256':x['sha256']}
+  for v in x.values():visit(v)
+ elif isinstance(x,list):
+  for v in x:visit(v)
+for obj in [m,ns['inventory'],ns['closure'],js(P/'vm/proposal.json'),js(P/'vm/latin1-successor-composition.json'),js(P/'build/proposal.json'),js(P/'build/shutdown-composition.json')]:visit(obj)
+excerpts=[]
+for e in m['excerpts']:
+ raw=checked(e['source']);b=b''.join(raw.splitlines(keepends=True)[e['start_line']-1:e['end_line']])
+ assert len(b)==e['bytes'] and sha(b)==e['sha256'] and b.decode('utf-8')==e['text']
+ excerpts.append({'id':e['id'],'source_sha256':e['source']['sha256'],'start_line':e['start_line'],'end_line':e['end_line'],'sha256':sha(b)})
+control=js(P/'controls/binding.json')
+controls=[]
+for x in m['controls']:
+ raw=checked(x['source']);b=b''.join(raw.splitlines(keepends=True)[x['start_line']-1:x['end_line']])
+ assert len(b)==x['body_bytes'] and sha(b)==x['body_sha256']
+ assert b.startswith(('test "'+x['name']+'"').encode())
+ controls.append({'index':x['index'],'name':x['name'],'body_sha256':sha(b)})
+assert [x['name'] for x in controls]==control['names']
+fp=m['fixture_prefix'];b=b''.join(checked(fp['source']).splitlines(keepends=True)[fp['start_line']-1:fp['end_line']])
+assert len(b)==fp['bytes'] and sha(b)==fp['sha256']
+csrc=next(e['text'] for e in m['excerpts'] if e['id']=='selected_raw_address_body')
+# Classify this complete finite body's parenthesized identifiers explicitly.
+# This lexical inventory is not a general C effect proof: return (cast) is a keyword,
+# the exported name is a declaration, and the three helpers/macros were source-read.
+tokens=re.findall(r'\b([A-Za-z_]\w*)\s*\(',csrc)
+assert set(tokens)=={'JS_PiArrayBufferViewData','if','return','JS_VALUE_GET_TAG','JS_VALUE_GET_OBJ','is_typed_array'}
+classified={'declaration':['JS_PiArrayBufferViewData'],'C_keywords':['if','return'],'helper_or_macro_invocations':['JS_VALUE_GET_OBJ','JS_VALUE_GET_TAG','is_typed_array']}
+assert set(tokens)==set(sum(classified.values(),[]))
+assert 'JSContext' not in csrc
+assert '(uintptr_t)abuf->data + (uintptr_t)ta->offset' in csrc
+assert csrc.index('abuf->detached')<csrc.index('(uintptr_t)abuf->data')
+header=checked(m['sources']['vm_header']).decode('utf-8')
+assert header.count('JS_EXTERN uint8_t *JS_PiArrayBufferViewData(JSValueConst view);')==1
+abi=checked(m['sources']['engine_header']).decode('utf-8');assert '#include "quickjs.h"' in abi
+bindings=js(P/'authority/node-buffer-commit-bindings.json')
+for r in bindings['rows']:
+ assert checked(r['snapshot']) is not None and r['body_sha256']==r['snapshot']['sha256'] and r['decoded_bytes']==r['snapshot']['bytes'] and r['http_status']==200
+new_v8=js(P/'authority/v8-array-buffer-acquisition.json');visit(new_v8)
+assert new_v8['upstream_commit']=='def0bdf8abee441cfcbf793a8dc24a6f3b899573'
+proof={
+ 'schema':'pi-zig.raw-view-data-final-source-proof.v2','source_only':True,
+ 'selected_audit_inspector':pin(P/'source-audit-successor.py'),'preserved_inspector_negative':pin(P/'source-audit-preflight-negative.json'),
+ 'source_map':pin(P/'source-map.json'),'closure_builder':pin(builder),'reproduced_closure_outputs':reproduced,
+ 'verified_unique_file_versions':len(seen),'verified_files':sorted(seen.values(),key=lambda x:(x['path'].lower(),x['sha256'])),
+ 'all_34_original_host_and_selected_excerpts_exact':excerpts,'all_12_control_body_bindings_exact':controls,
+ 'fixture_prefix_exact':fp,'actual_native_abi':'uint8_t *JS_PiArrayBufferViewData(JSValueConst), through engine_abi.h -> quickjs.h',
+ 'finite_complete_body_parenthesized_identifier_inventory':sorted(set(tokens)),'finite_complete_body_identifier_classification':classified,'current_pending_allocation_or_refcount_operation_in_new_body':False,
+ 'vm_whole_inverse_exact':True,'corrected_latin1_both_orders_and_whole_inverses_exact':True,
+ 'original_bad_latin1_snapshot_preserved':True,
+ 'install_only_build_inverse_and_fixed_order_four_packet_composition_exact':True,
+ 'preserved_prior_sdk_source_count':len(ns['protected']),
+ 'repo_zig_roots':1,'quoted_C_reachable_files':len(ns['seen']),'quoted_C_edges':len(ns['edges']),'inventory_entries':len(ns['cache']),
+ 'standard_toolchain_transitive_source_selection_qualified':False,
+ 'declared_named_controls':12,'future_actual_metadata':None,
+ 'remaining_original_policy':['Node Buffer::Data caller brand CHECK','V8 JSTypedArray::GetBuffer on-heap materialization/allocator policy','Actual CustomBuffer listener/public receiver/liveness/argument admission and complete FileHandle assembly'],
+ 'Main_changed':False,'existing_production_changed':False,'compiler_native_reference_generator_executed':False,'runtime_qualified':False}
+# FINAL PROOF OUTPUT: new immutable metadata only.
+target=P/'source-only-checks.json'
+with target.open('xb') as f:f.write(serialize(proof))
+print(json.dumps(pin(target)))
+print(json.dumps({'verified':len(seen),'excerpts':len(excerpts),'controls':len(controls),'dependencies':len(ns['cache'])}))

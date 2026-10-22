@@ -1992,6 +1992,14 @@ pub fn build(b: *std.Build) void {
         b.step("build-native-vm-array-buffer-view-length", "Install intrinsic ArrayBufferView byteLength controls without execution").dependOn(&b.addInstallArtifact(vm_array_buffer_view_length_tests, .{}).step);
     }
     if (target.result.os.tag == .windows or target.result.os.tag == .linux) {
+        const vm_array_buffer_view_data_tests = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_array_buffer_view_data_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"VM view data"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, vm_array_buffer_view_data_tests.root_module, quickjs, sqlite_lib_dir);
+        b.step("build-native-vm-array-buffer-view-data", "Install actual borrowed ArrayBufferView address controls without execution").dependOn(&b.addInstallArtifact(vm_array_buffer_view_data_tests, .{ .dest_sub_path = b.fmt("native-vm-array-buffer-view-data{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    }
+    if (target.result.os.tag == .windows or target.result.os.tag == .linux) {
         const native_backing_store_tests = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_backing_store_adoption_test.zig"), .target = target, .optimize = optimize }),
             .filters = &.{"VM native backing store"}, .use_llvm = use_llvm,
@@ -2138,6 +2146,30 @@ pub fn build(b: *std.Build) void {
             node_stream_fields.root_module.linkSystemLibrary("userenv", .{});
         }
         b.step("build-native-node-stream-fields", "Install ten actual StreamBase internal-field owner controls without execution").dependOn(&b.addInstallArtifact(node_stream_fields, .{ .dest_sub_path = b.fmt("native-node-stream-fields{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        // Base.init retains the reporter that calls OneByteString diagnostics.
+        // These consumers share one native TLS, V8 fatal, and string owner.
+        const node_one_byte_diagnostics = b.addLibrary(.{
+            .name = "pi-node-one-byte-string-diagnostics",
+            .linkage = .static,
+            .root_module = b.createModule(.{
+                .target = target,
+                .optimize = optimize,
+                .link_libc = true,
+                .link_libcpp = true,
+            }),
+        });
+        node_one_byte_diagnostics.root_module.addIncludePath(b.path("src/extensions"));
+        node_one_byte_diagnostics.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_diagnostic_context.c"),
+            .flags = &.{"-std=gnu11"},
+        });
+        node_one_byte_diagnostics.root_module.addCSourceFiles(.{
+            .files = &.{
+                "src/extensions/native_v8_base_fatal.cpp",
+                "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+            },
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
         const node_stream_read = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_stream_read_test.zig"), .target = target, .optimize = optimize }),
             .filters = &.{"Node StreamBase read"}, .use_llvm = use_llvm,
@@ -2148,6 +2180,7 @@ pub fn build(b: *std.Build) void {
         node_stream_read.root_module.addImport("catalog_tool", catalog_tool);
         node_stream_read.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
         node_stream_read.root_module.linkLibrary(network);
+        node_stream_read.root_module.linkLibrary(node_one_byte_diagnostics);
         if (target.result.os.tag == .windows) {
             node_stream_read.root_module.linkSystemLibrary("advapi32", .{});
             node_stream_read.root_module.linkSystemLibrary("userenv", .{});
@@ -2178,6 +2211,7 @@ pub fn build(b: *std.Build) void {
         node_file_handle_read.root_module.addImport("catalog_tool", catalog_tool);
         node_file_handle_read.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
         node_file_handle_read.root_module.linkLibrary(network);
+        node_file_handle_read.root_module.linkLibrary(node_one_byte_diagnostics);
         if (target.result.os.tag == .windows) {
             node_file_handle_read.root_module.linkSystemLibrary("advapi32", .{});
             node_file_handle_read.root_module.linkSystemLibrary("userenv", .{});
@@ -2193,6 +2227,7 @@ pub fn build(b: *std.Build) void {
         node_fs_callback_template.root_module.addImport("catalog_tool", catalog_tool);
         node_fs_callback_template.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
         node_fs_callback_template.root_module.linkLibrary(network);
+        node_fs_callback_template.root_module.linkLibrary(node_one_byte_diagnostics);
         if (target.result.os.tag == .windows) {
             node_fs_callback_template.root_module.linkSystemLibrary("advapi32", .{});
             node_fs_callback_template.root_module.linkSystemLibrary("userenv", .{});
@@ -2208,6 +2243,7 @@ pub fn build(b: *std.Build) void {
         node_file_handle_owner.root_module.addImport("catalog_tool", catalog_tool);
         node_file_handle_owner.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
         node_file_handle_owner.root_module.linkLibrary(network);
+        node_file_handle_owner.root_module.linkLibrary(node_one_byte_diagnostics);
         if (target.result.os.tag == .windows) {
             node_file_handle_owner.root_module.linkSystemLibrary("advapi32", .{});
             node_file_handle_owner.root_module.linkSystemLibrary("userenv", .{});
@@ -2223,6 +2259,7 @@ pub fn build(b: *std.Build) void {
         node_fs_before_hook_continuation.root_module.addImport("catalog_tool", catalog_tool);
         node_fs_before_hook_continuation.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
         node_fs_before_hook_continuation.root_module.linkLibrary(network);
+        node_fs_before_hook_continuation.root_module.linkLibrary(node_one_byte_diagnostics);
         if (target.result.os.tag == .windows) {
             node_fs_before_hook_continuation.root_module.linkSystemLibrary("advapi32", .{});
             node_fs_before_hook_continuation.root_module.linkSystemLibrary("userenv", .{});
@@ -2238,12 +2275,7 @@ pub fn build(b: *std.Build) void {
         node_file_handle_transfer.root_module.addImport("catalog_tool", catalog_tool);
         node_file_handle_transfer.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
         node_file_handle_transfer.root_module.linkLibrary(network);
-        // One actual TLS diagnostic owner in this selected native artifact.
-        // This new owner is compiled directly; no production bootstrap is implied.
-        node_file_handle_transfer.root_module.addCSourceFile(.{
-            .file = b.path("src/extensions/native_node_diagnostic_context.c"),
-            .flags = &.{"-std=gnu11"},
-        });
+        node_file_handle_transfer.root_module.linkLibrary(node_one_byte_diagnostics);
         node_file_handle_transfer.root_module.addCSourceFile(.{
             .file = b.path("src/extensions/native_node_file_handle_transfer.cpp"),
             .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
@@ -2253,6 +2285,40 @@ pub fn build(b: *std.Build) void {
             node_file_handle_transfer.root_module.linkSystemLibrary("userenv", .{});
         }
         b.step("build-native-node-file-handle-transfer", "Install thirteen actual FileHandle descriptor transfer controls without execution").dependOn(&b.addInstallArtifact(node_file_handle_transfer, .{ .dest_sub_path = b.fmt("native-node-file-handle-transfer{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        const node_stream_shutdown = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_stream_shutdown_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native Stream shutdown", "native StreamReq Done"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_stream_shutdown.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_stream_shutdown.root_module, typescript_parser);
+        linkSqlite(node_stream_shutdown.root_module, sqlite_lib_dir, sqlite_library);
+        node_stream_shutdown.root_module.addImport("catalog_tool", catalog_tool);
+        node_stream_shutdown.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        node_stream_shutdown.root_module.addIncludePath(b.path("src/extensions"));
+        node_stream_shutdown.root_module.linkLibrary(network);
+        node_stream_shutdown.root_module.linkLibrary(node_one_byte_diagnostics);
+        if (target.result.os.tag == .windows) {
+            node_stream_shutdown.root_module.linkSystemLibrary("advapi32", .{});
+            node_stream_shutdown.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-stream-shutdown", "Install 18 concrete source controls without execution").dependOn(&b.addInstallArtifact(node_stream_shutdown, .{ .dest_sub_path = b.fmt("native-node-stream-shutdown{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        const node_one_byte_string = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_one_byte_string_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native OneByteString"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_one_byte_string.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_one_byte_string.root_module, typescript_parser);
+        linkSqlite(node_one_byte_string.root_module, sqlite_lib_dir, sqlite_library);
+        node_one_byte_string.root_module.addImport("catalog_tool", catalog_tool);
+        node_one_byte_string.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        node_one_byte_string.root_module.addIncludePath(b.path("src/extensions"));
+        node_one_byte_string.root_module.linkLibrary(network);
+        node_one_byte_string.root_module.linkLibrary(node_one_byte_diagnostics);
+        if (target.result.os.tag == .windows) {
+            node_one_byte_string.root_module.linkSystemLibrary("advapi32", .{});
+            node_one_byte_string.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-one-byte-string", "Install 8 concrete source controls without execution").dependOn(&b.addInstallArtifact(node_one_byte_string, .{ .dest_sub_path = b.fmt("native-node-one-byte-string{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
         const native_node_fs_request_owner_tests = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_fs_request_owner_test.zig"), .target = target, .optimize = optimize }),
             .filters = &.{"native FS request owner"}, .use_llvm = use_llvm,

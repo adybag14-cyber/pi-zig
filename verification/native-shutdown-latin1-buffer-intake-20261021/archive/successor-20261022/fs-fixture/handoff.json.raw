@@ -1,0 +1,194 @@
+{
+  "schema": "pi-zig.fixture-completion-source-handoff.v1",
+  "status": "ready_for_independent_bounded_source_review",
+  "source_only": true,
+  "candidate_executed": false,
+  "main_read_or_written": false,
+  "main_applied": false,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "basis": {
+    "head": "014062f2d139254acab4b985b4ae343db637166f",
+    "read_via": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018",
+    "source": "src/native_node_fs_request_owner_test.zig"
+  },
+  "selected_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\successor-v2\\proposal.json",
+    "bytes": 6844,
+    "sha256": "B24664CA4DADD2B96EA581710A244050EB6F963C3AC0DD11F4BD5D04DBF83106"
+  },
+  "selected_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\successor-v2\\projected\\src\\native_node_fs_request_owner_test.zig",
+    "bytes": 57891,
+    "sha256": "FD337AA09700EA151943ED06A86CE5623C37210FA57637B892DCB6AB797C02D6"
+  },
+  "original_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\original\\src\\native_node_fs_request_owner_test.zig",
+    "bytes": 57263,
+    "sha256": "402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\static-source-check-v2.py",
+    "bytes": 16444,
+    "sha256": "D86F14112C229D8FF1B2EFFDFC3885F9E9139499D9A59E795751247E658608C8"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\source-proof.json",
+    "bytes": 130180,
+    "sha256": "11851D8D9B92BDD123EB0D515B4F117FF48ECB79A932DDDF3393A662013503ED"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\fixture.patch",
+    "bytes": 1694,
+    "sha256": "96B8E74D5884F2AA015F646CF70F6F53EFE38BF8923565058C1ED3A38FAA6973"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\README.md",
+    "bytes": 8669,
+    "sha256": "6A6F331738DEB6996DB17BBF7156EFD34835DB8D70ACFF709F5E6163CED8B1E2"
+  },
+  "preserved_negatives": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\source-authoring-negative.json",
+      "bytes": 1121,
+      "sha256": "D6F273FC834D16CEE2BEED1B3C9111F6C5323D8FBC08535EFD348A4968F93192"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\static-checker-range-negative.json",
+      "bytes": 2182,
+      "sha256": "FFB7005BD1337CEAB11C74A24F558A56A3764B73EB355D48EDE1107A21574EDF"
+    }
+  ],
+  "scope": {
+    "production_files_changed": 0,
+    "fixture_files_projected": 1,
+    "finite_edit_count": 1,
+    "new_private_helper": "pumpPendingBody",
+    "poll_loop_bytes_unchanged": 721,
+    "named_test_bodies_unchanged": 25,
+    "test_import_assertion_bytes_unchanged": true,
+    "whole_forward_inverse": true,
+    "original_outer_init_helper_unchanged": true
+  },
+  "review_findings": [
+    "The actual Promise getter exception reaches the native completion boundary; old fixture teardown then retires its captured reason as success diagnostic DATA.",
+    "Selected wrapper begins and starts its stable Scope before the producer, captures an explicit failed pump outcome before outer teardown, then finishes that outcome after exactly one deinit.",
+    "Existing production and original Node Get/destructor semantics remain unchanged.",
+    "Current accepted FileHandle finishImmediate is the existing fixture pattern; this wrapper explicitly starts before its producer.",
+    "Remaining 46 root census found no copy/import of this private pumpPending helper. No unstarted-test outcome is inferred."
+  ],
+  "checks": {
+    "evidence_inputs": 20,
+    "immutable_git_inputs": 76,
+    "pinned_source_excerpts": 31,
+    "cohort_root_count": 63,
+    "attempted_prefix_count": 17,
+    "remaining_root_count": 46
+  },
+  "original_negative": {
+    "runtime.stderr.log": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223\\groups\\native-node-fs-request-owner\\runtime.stderr.log",
+      "bytes": 486,
+      "sha256": "8933D2F8ED52C54071D20E3C8A21983C7A14CCA6D8EE1198C6F6EFE965B54196"
+    },
+    "runtime.stdout.bin": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223\\groups\\native-node-fs-request-owner\\runtime.stdout.bin",
+      "bytes": 742,
+      "sha256": "16910F179BEF779C537314F442CE1A12A5A6632EAA3243FC0928500E257A5860"
+    },
+    "runtime.results.json": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223\\groups\\native-node-fs-request-owner\\runtime.results.json",
+      "bytes": 2582,
+      "sha256": "C7EED6EDADEADD1C7FDB5E3196612EC878F12D3A554C47178508EFF39BAD8FC2"
+    },
+    "runtime.json": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-134223\\groups\\native-node-fs-request-owner\\runtime.json",
+      "bytes": 1244,
+      "sha256": "1DC9124F80AC08C083764B11B629C9EF9C7B2C28699DFBE8C482C7ED17E598D2"
+    }
+  },
+  "historical_reference_limits": {
+    "fsreqpromise_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+    "fsreqpromise_acquisition": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\acquisition.json",
+      "bytes": 1500,
+      "sha256": "B0F81C989F8A965BD16A6500759B69A20556D4A7A74A637915FCC2FCBCB7ACA4"
+    },
+    "callback_scope_provenance": "Exact inherited Node v24.13 body is bound by the accepted 08F45 authority table and its unchanged previous-packet source; this packet does not invent a new acquisition receipt.",
+    "required_semantics": "Failed live promise Get returns from Resolve/Reject, while the native callback-scope destructor still closes/pops and the original error propagates."
+  },
+  "packet_inventory_excluding_this_handoff": [
+    {
+      "relative_path": "after.txt",
+      "bytes": 1677,
+      "sha256": "1CBCF6A1AD97DBFC40A017925E9A490BCC6E6462416182843725587396327214"
+    },
+    {
+      "relative_path": "before.txt",
+      "bytes": 1441,
+      "sha256": "9B5B2AD82DBC42FA4A78D24877E4B9D71104A5E0392996116FB4B9778A6EB207"
+    },
+    {
+      "relative_path": "fixture.patch",
+      "bytes": 1694,
+      "sha256": "96B8E74D5884F2AA015F646CF70F6F53EFE38BF8923565058C1ED3A38FAA6973"
+    },
+    {
+      "relative_path": "original/src/native_node_fs_request_owner_test.zig",
+      "bytes": 57263,
+      "sha256": "402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81"
+    },
+    {
+      "relative_path": "projected/src/native_node_fs_request_owner_test.zig",
+      "bytes": 57499,
+      "sha256": "AC46016E60CCCAAAC03A19C9852708B758BA2CA0A69858CBB5FD408AE87E4375"
+    },
+    {
+      "relative_path": "proposal.json",
+      "bytes": 5200,
+      "sha256": "CC5EF57CD091051AC373A6351515BF6EB1F5893CFAA896D2E2181CEBADC208E2"
+    },
+    {
+      "relative_path": "README.md",
+      "bytes": 8669,
+      "sha256": "6A6F331738DEB6996DB17BBF7156EFD34835DB8D70ACFF709F5E6163CED8B1E2"
+    },
+    {
+      "relative_path": "source-authoring-negative.json",
+      "bytes": 1121,
+      "sha256": "D6F273FC834D16CEE2BEED1B3C9111F6C5323D8FBC08535EFD348A4968F93192"
+    },
+    {
+      "relative_path": "source-proof.json",
+      "bytes": 130180,
+      "sha256": "11851D8D9B92BDD123EB0D515B4F117FF48ECB79A932DDDF3393A662013503ED"
+    },
+    {
+      "relative_path": "static-checker-range-negative.json",
+      "bytes": 2182,
+      "sha256": "FFB7005BD1337CEAB11C74A24F558A56A3764B73EB355D48EDE1107A21574EDF"
+    },
+    {
+      "relative_path": "static-source-check-v2.py",
+      "bytes": 16444,
+      "sha256": "D86F14112C229D8FF1B2EFFDFC3885F9E9139499D9A59E795751247E658608C8"
+    },
+    {
+      "relative_path": "static-source-check.py",
+      "bytes": 16444,
+      "sha256": "DEA937FAAD0592E0F6D1475A1379CF18D89FEB8ABBDF7499BA41C219086F17B2"
+    },
+    {
+      "relative_path": "successor-v2/projected/src/native_node_fs_request_owner_test.zig",
+      "bytes": 57891,
+      "sha256": "FD337AA09700EA151943ED06A86CE5623C37210FA57637B892DCB6AB797C02D6"
+    },
+    {
+      "relative_path": "successor-v2/proposal.json",
+      "bytes": 6844,
+      "sha256": "B24664CA4DADD2B96EA581710A244050EB6F963C3AC0DD11F4BD5D04DBF83106"
+    }
+  ],
+  "packet_inventory_sha256": "EFF6B73875E924D139C76E37A4E7307B63F82BD8AFBA2698D23F59CE940BA023",
+  "next": "Independent source review, then Root-only exact intake and separately granted fresh native validation. No additional repair is asserted for the analogous successful settle helper."
+}

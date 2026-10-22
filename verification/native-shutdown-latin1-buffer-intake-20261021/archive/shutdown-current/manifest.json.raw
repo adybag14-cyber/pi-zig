@@ -1,0 +1,60 @@
+{
+  "schema": "pi-zig.shutdown-current-head-composition-manifest.v1",
+  "source_only": true,
+  "projection": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-current-head-composition-20261020\\projection.json",
+    "bytes": 26005,
+    "sha256": "B0919FB27FB4825C57CAC6FCE0BE074DD58945ED42DA3D7781B8241FAAFFF92D"
+  },
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-current-head-composition-20261020\\prepare-projection.py",
+    "bytes": 10246,
+    "sha256": "09A27B07F03FB177A67F0A2AB056E5B29737B66460C91342AD7736351D47F885"
+  },
+  "prior_root_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-source-review-20261020.json",
+    "bytes": 6030,
+    "sha256": "77DBEF1F44375E4E8A4F940DE59AC090D07DC161D16633D6A72488104FBC927F"
+  },
+  "inventory": [
+    {
+      "relative_path": "original/build.zig",
+      "bytes": 509023,
+      "sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55"
+    },
+    {
+      "relative_path": "original/tools/build_native_node_memory.zig",
+      "bytes": 1030,
+      "sha256": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17"
+    },
+    {
+      "relative_path": "original/tools/build_native_node_network.zig",
+      "bytes": 5905,
+      "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    {
+      "relative_path": "prepare-projection.py",
+      "bytes": 10246,
+      "sha256": "09A27B07F03FB177A67F0A2AB056E5B29737B66460C91342AD7736351D47F885"
+    },
+    {
+      "relative_path": "projected/build.zig",
+      "bytes": 513195,
+      "sha256": "ED75E6415A6BA63B4E4F51D7620818D7CAB494971D373F8C2CF3DB8F2E4E026E"
+    },
+    {
+      "relative_path": "projection.json",
+      "bytes": 26005,
+      "sha256": "B0919FB27FB4825C57CAC6FCE0BE074DD58945ED42DA3D7781B8241FAAFFF92D"
+    },
+    {
+      "relative_path": "README.md",
+      "bytes": 3461,
+      "sha256": "1669B79EE80680ABFEA5B3BE5FA2F837433F066F50146E59D6C4C468A0C5F017"
+    }
+  ],
+  "inventory_sha256": "16E5C28FDF075D84280FB43B58B87C8F44A60BA9482300E1846E45FD106087E6",
+  "Main_changed": false,
+  "native_compiler_generator_execution": false,
+  "qualification": false
+}

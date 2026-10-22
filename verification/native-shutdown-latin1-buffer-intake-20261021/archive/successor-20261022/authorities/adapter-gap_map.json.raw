@@ -1,0 +1,551 @@
+{
+  "schema": "finite_intake_adapter_reuse_plan_v1",
+  "status": "inert_source_only_reuse_inventory",
+  "conclusion": "Reuse the accepted V37 progress adapter for a future V38 progress/archive intake. The accepted V37 fixture adapter is an equally capable mixed source/addition base for the pending twenty-source union; their eleven helpers and entire rows-to-end tail are identical. The union's accepted stronger byte-conversion contract needs a separately reviewed bounded successor, not only identity literal changes.",
+  "recommendations": [
+    {
+      "purpose": "V38 archive/progress",
+      "baseline": "Apply-ExactV37ProgressNegativeIntake-20261021.py",
+      "minimal_future_changes": [
+        "Docstring/version description",
+        "BASIS to actual Root-released head",
+        "The single MANIFESTS tuple: actual manifest path/hash/count/subject"
+      ],
+      "unchanged_phase": "progress",
+      "note": "No actual V38 output manifest, release, future count, or actual original63 outcome is asserted here. Preserve accepted history/gzip/source proofs in the final manifest and required_current_pins."
+    },
+    {
+      "purpose": "Pending twenty-source Shutdown/Latin1/Buffer union",
+      "baseline": "Apply-ExactV37FixtureSourceIntake-20261021.py",
+      "minimal_future_changes": [
+        "Docstring/phase description",
+        "BASIS to actual Root-released head",
+        "MANIFESTS tuple with actual final manifest/hash/count/subject",
+        "If phase changes from fixture, update both dictionary key and explicit predecessor phase assertion"
+      ],
+      "additional_contract_work": "Implement or explicitly bind an independently reviewed complete preflight/stage/commit successor meeting the accepted E2B copy-plan contract listed below. Do not represent the existing adapter as already recording every promised field."
+    }
+  ],
+  "consumed_release_schema": {
+    "cli": "python <exact-adapter> <phase> <absolute-release-path> <exact-release-sha256>",
+    "release_must_be_within": "C:\\Users\\adyba\\pi-zig\\evidence",
+    "fields": {
+      "executor_sha256": "exact hash of __file__",
+      "basis_main_head": "exact hard-coded BASIS",
+      "branch": "work/pi-zig-consolidated-20261016",
+      "source_intake_authorized": true,
+      "native_execution_authorized": false,
+      "application_qualified": false,
+      "authorized_phases": "Object keyed by phase; selected record binds manifest_sha256 and total_commit_paths",
+      "required_current_pins": "Array of {path,bytes,sha256}; every path inside project ROOT and each exact byte version rehashed",
+      "receipt_directory": "New receipt namespace inside ROOT/evidence; selected phase-receipt.json must not exist"
+    },
+    "distinction": "These are the fields consumed by the existing source, not an exact-key JSON schema. Historical Root releases also carry reviewer/time/scope/executor and qualification metadata. This plan is not a release."
+  },
+  "consumed_manifest_schema": {
+    "root_fields": [
+      "rows",
+      "target_manifest OR manifest_target"
+    ],
+    "row_fields": {
+      "target": "relative forward-slash path",
+      "source": "absolute pinned donor inside project ROOT",
+      "bytes": "raw donor length",
+      "sha256": "uppercase raw SHA-256",
+      "before": "null for addition; otherwise {bytes,sha256}",
+      "role": "preserved in preflight"
+    },
+    "manifest_self_row": "The adapter appends the manifest as one synthetic row using the externally pinned raw manifest hash. The manifest does not self-hash.",
+    "total_count": "MANIFESTS count and release total_commit_paths include that synthetic manifest row.",
+    "allowed_target_prefixes": [
+      "build.zig",
+      "src/",
+      "vendor/quickjs/",
+      "verification/"
+    ],
+    "additional_metadata": "Comparison bases, archive maps, history inverses, qualification fields and other semantic proof remain in the exact reviewed manifest or separately pinned evidence; the generic adapter does not rederive those semantics."
+  },
+  "existing_gates": [
+    {
+      "stage": "Release and repository admission",
+      "checks": [
+        "Exact release bytes, adapter self hash, BASIS, branch, source-only authority and selected manifest/count",
+        "Rehash every required_current_pin before Main/index mutation",
+        "Exact branch; empty status including untracked files; receipt absent",
+        "No core.hooksPath override or non-sample hook files; core.autocrlf must be literal false",
+        "Current HEAD equals hard-coded BASIS"
+      ]
+    },
+    {
+      "stage": "Finite donor and preimage admission",
+      "checks": [
+        "All paths including synthetic manifest are checked; case-fold duplicate targets rejected",
+        "Target resolves inside Main; donor resolves inside project ROOT; accepted target prefixes only",
+        "Every donor exact length/SHA-256",
+        "Addition absent on disk and basis/head trees",
+        "Replacement exact raw live bytes and exact committed basis/head cat-file bytes",
+        "Existing parent symlink check; HEAD and complete clean status rechecked before writes"
+      ]
+    },
+    {
+      "stage": "Existing byte-conversion gate",
+      "checks": [
+        "Exact NUL-delimited all-target list passed to check-attr for filter, working-tree-encoding and ident",
+        "Those three attributes must be unset or unspecified before path-aware hashing",
+        "Per donor: compute SHA-1 Git blob header+bytes digest in Python; compare with git hash-object --path=<relative-target> --stdin over exact binary input, without -w",
+        "Manifest, archives and source/build paths all participate; .raw is not exempt"
+      ],
+      "limits": [
+        "Hard-coded SHA-1; no object-format query",
+        "No explicit --no-filters Git hash result or recorded per-path pair",
+        "text/eol and attribute/config provenance are not captured in the existing preflight"
+      ]
+    },
+    {
+      "stage": "Copy and stage",
+      "checks": [
+        "All listed preflight checks complete before first Main or index write",
+        "Create-only preflight/pathspec/commit-message evidence",
+        "Additions use xb; replacements use newly created temporary donor bytes plus os.replace",
+        "Read back every target exactly",
+        "git add only the exact NUL pathspec; exact staged changed-name set/count; no unstaged diff or untracked files",
+        "Every raw stage-zero blob equals donor bytes; HEAD still unchanged"
+      ],
+      "limits": [
+        "No explicit stage mode inventory",
+        "No attribute/config revalidation after copy in existing source"
+      ]
+    },
+    {
+      "stage": "Commit and final receipt",
+      "checks": [
+        "Ordinary git commit with pinned subject/message and hooks admission",
+        "Commit differs; its first parent equals the prior HEAD",
+        "Exact changed-name set/count",
+        "Every committed raw blob and checkout file equals donor bytes",
+        "Final clean status and create-only receipt recording actual head, manifest, adapter and release hashes plus raw commit output"
+      ],
+      "limits": [
+        "The source checks after^, not an explicit complete parent list",
+        "No explicit committed mode inventory",
+        "No push or native execution"
+      ]
+    }
+  ],
+  "pending_union_contract_differences": [
+    {
+      "requirement": "Canonical final repository and paths",
+      "existing": "Checks configured branch/head, inside resolution, relative path basics, casefold uniqueness and parent symlinks.",
+      "needed": "Record canonical repository root and object format; enforce the accepted Windows canonical-path/device/.git/trailing-dot-space/ancestor-collision contract for the complete final target list."
+    },
+    {
+      "requirement": "All logical aliases",
+      "existing": "Physical row donors and release required_current_pins are rehashed.",
+      "needed": "Put every exact logical donor/dedup alias into required_current_pins or an equally strict pinned complete alias preflight. Deduplication does not drop an authority."
+    },
+    {
+      "requirement": "Full effective attributes and provenance",
+      "existing": "Checks filter, working-tree-encoding and ident only.",
+      "needed": "Capture text/eol as well as the three disallowed attributes, plus relevant configuration/attribute provenance. Keep disallowed attributes rejected before any filter-capable hash call."
+    },
+    {
+      "requirement": "Two Git IDs and raw algorithm",
+      "existing": "Python SHA-1 raw blob compared to path-aware Git ID.",
+      "needed": "Query repository object format; independently compute that raw digest and compare both read-only git hash-object --no-filters --stdin and --path=<target> --stdin IDs. Record sizes/SHA-256/IDs/attributes/donor/target for every path including manifest."
+    },
+    {
+      "requirement": "After-copy invariance",
+      "existing": "Reads back exact target bytes.",
+      "needed": "Revalidate effective target attributes/configuration before staging and preserve the original preflight values."
+    },
+    {
+      "requirement": "Index and commit identity",
+      "existing": "Exact name sets and raw blob equality.",
+      "needed": "Record stage-zero modes and IDs, reject unexpected modes; compare index and committed IDs with the preflight raw IDs and assert the complete one-parent relation."
+    },
+    {
+      "requirement": "Mismatch preservation",
+      "existing": "Assertions stop the adapter; Root may preserve the failed job externally.",
+      "needed": "Retain every mismatch as a distinct immutable negative through the reviewed failure-observation mechanism; never normalize bytes or relax attributes/preimages to continue."
+    }
+  ],
+  "future_manifest_translation": {
+    "pending20": "Translate source_rows and physical archive_rows into target/source/bytes/sha256/before/role rows without touching donor bytes. Keep logical donor identities, historical aliases, preserved negatives and external-reference limits in the exact manifest/archive map. Add the manifest itself through the common synthetic-row logic.",
+    "current_planned_count": "247 including manifest and Handover's three plan/checker/proof supplemental archives: eight replacements and 239 additions. This is the accepted inert plan count, not a final issued intake count. Any later peer/release archive additions require explicit enumeration and count/hash changes.",
+    "v38_archive": "Use the separately reviewed prepared archive/progress rows. Only existing progress replacement plus explicit new archives/maps/manifest; preserve all historical prefixes, old full checkpoint and raw inverse, raw UTC100ns records, original F846 audit negative and corrected A73A distinction. Deterministic gzip and all history checks belong to the preparer/semantic peer and its pinned outputs, not to an implicit generic-adapter claim.",
+    "commit_message": "The inherited generic message says native runtime remains pending. A V38 archive should use accurate source-commit wording that grants no new native authority or full-application qualification, without contradicting native outcomes already accepted and archived."
+  },
+  "future_work_unresolved": {
+    "exact_released_head": null,
+    "final_manifest": null,
+    "final_path_count": null,
+    "finite_successor_adapter": null,
+    "independent_adapter_manifest_peer": null,
+    "Root_source_release": null,
+    "note": "No future head/hash/count/outcome/issued time is fabricated. Preserve old adapters and prove all changed spans/intermediate bytes/full inverse in a new finite successor. No source/build rebase may enter by changing only the BASIS literal."
+  },
+  "authority": {
+    "source_only": true,
+    "plan_issued": false,
+    "source_intake_authorized": false,
+    "configuration_issued": false,
+    "Main_accessed": false,
+    "Main_changed": false,
+    "index_changed": false,
+    "adapter_or_prefix_executed": false,
+    "generator_or_native_executed": false,
+    "runtime_qualified": false,
+    "application_qualified": false
+  },
+  "input_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+      "bytes": 9719,
+      "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37ProgressNegativeIntake-20261021.py",
+      "bytes": 9721,
+      "sha256": "3991CF3DD80DDE51C551417644CF1E2AF376BDAF538DC8C7F7D6135538FAE5AC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-20261021\\fixture-receipt.json",
+      "bytes": 6347,
+      "sha256": "5010977B7618E5E79DFFF90FC1D8EDD59E49A9CD7E5E32E6C97669C18587ABE7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-release-20261021.json",
+      "bytes": 4783,
+      "sha256": "EFD306E15D960868B57C7314E09DE108F0A363CF0B972F471EB7E37E71EE7ABC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\manifest.json",
+      "bytes": 20679,
+      "sha256": "236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-negative-intake-20261021\\progress-receipt.json",
+      "bytes": 36797,
+      "sha256": "F5DF0B66044F51CA326D8F8A3EBA4A69E953111E86C0CBB076825EE9456DD062"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-negative-intake-release-20261021.json",
+      "bytes": 5806,
+      "sha256": "86519BA3A3D73FFB30E2CBD8F1F45186EB3FEB9B89EC2FC32C71C8B875863C0C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\manifest.json",
+      "bytes": 134632,
+      "sha256": "345F3E3F5B71F6FA14618E402F9D7116AE841BDCD0B534D0E1BEB95933A3D878"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-manifest-plan.json",
+      "bytes": 378545,
+      "sha256": "E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\handoff.json",
+      "bytes": 8845,
+      "sha256": "5B673525420F88F9DAEAF811F478A2E596ABFB10CAD48B4863A050AA97DEBE5F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-buffer-unissued-copy-plan-acceptance-20261021.json",
+      "bytes": 7059,
+      "sha256": "4B97947A3A185D0D6E9ED282B2FC4E19621BD792AED4F18F4A0D7E594A682788"
+    }
+  ],
+  "independently_recomputed_source_comparison": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+        "bytes": 9719,
+        "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+      },
+      "helper_count": 11,
+      "helpers": [
+        {
+          "name": "sha",
+          "lines": [
+            11,
+            11
+          ],
+          "bytes": 57,
+          "sha256": "4FC52FB70BB0793D472938E4324857597433C1E7DDBB15063EE372297676A588"
+        },
+        {
+          "name": "raw",
+          "lines": [
+            12,
+            12
+          ],
+          "bytes": 40,
+          "sha256": "0674AD6317F2AE8EB96A5F56EFBC878FF39C90C68C99C8F4C9978F7A23316A26"
+        },
+        {
+          "name": "pinned",
+          "lines": [
+            13,
+            14
+          ],
+          "bytes": 73,
+          "sha256": "5DF7EDACFCE2ED39EB6DC75D1A5F85E312FDDFB88E50861484072351D188F54B"
+        },
+        {
+          "name": "git",
+          "lines": [
+            15,
+            18
+          ],
+          "bytes": 260,
+          "sha256": "FC6515AF1843269E597434A172257CA17ABBD50C611145B8D12A50030C9D6F91"
+        },
+        {
+          "name": "gout",
+          "lines": [
+            19,
+            19
+          ],
+          "bytes": 66,
+          "sha256": "D4BED77E98D7E0410BF8A6950089ECF30E6E537B8ADFE7B2A7249DF93CD6FEB1"
+        },
+        {
+          "name": "inside",
+          "lines": [
+            20,
+            23
+          ],
+          "bytes": 134,
+          "sha256": "BC7F1D1F13B1AC08CB47D2ECC8EEC9D015E9D5509C90D7E82AE778A30CFDA777"
+        },
+        {
+          "name": "new_file",
+          "lines": [
+            24,
+            27
+          ],
+          "bytes": 140,
+          "sha256": "A4CF95E3648B13330AAA4B9D1CCA39CB3EDA7D34C70738A6801D61E9F950D66A"
+        },
+        {
+          "name": "new_json",
+          "lines": [
+            28,
+            28
+          ],
+          "bytes": 96,
+          "sha256": "72B0BE02D4C073A234A09E2AEDF42D5451679590CC88BBCD1588A719F16DAA9C"
+        },
+        {
+          "name": "blob_many",
+          "lines": [
+            29,
+            40
+          ],
+          "bytes": 541,
+          "sha256": "5C5894AA029CC5F735A97EF61E00D8759C94D09386C65454A06F66CCE87E4F9B"
+        },
+        {
+          "name": "tree_paths",
+          "lines": [
+            41,
+            42
+          ],
+          "bytes": 139,
+          "sha256": "C33D511D519C1F80C2CC3EF6D508C6A113624CBC9C08A10BE63A825AC26C0C23"
+        },
+        {
+          "name": "no_hooks",
+          "lines": [
+            43,
+            48
+          ],
+          "bytes": 339,
+          "sha256": "7D17240FF95A97C6347339D55C052EE66A7744D034501DD353282E1B6476A115"
+        }
+      ],
+      "rows_to_end": {
+        "bytes": 5897,
+        "sha256": "E8CAF87944A614D7BAC12EF745B79D83314DD7CFAF94F06B99231E4D008A2F8E",
+        "start_line": 77,
+        "end_line": 151
+      },
+      "source_markers": {
+        "assert len(sys.argv)==4": 49,
+        "rows=manifest[\"rows\"]": 77,
+        "for row in allrows:": 83,
+        "attribute_output=git(": 103,
+        "for rel,b in zip(names,contents):": 109,
+        "proof.mkdir(": 119,
+        "for index,(row,b) in enumerate(": 124,
+        "git(\"add\",": 132,
+        "commit=git(": 141,
+        "receipt={": 149
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37ProgressNegativeIntake-20261021.py",
+        "bytes": 9721,
+        "sha256": "3991CF3DD80DDE51C551417644CF1E2AF376BDAF538DC8C7F7D6135538FAE5AC"
+      },
+      "helper_count": 11,
+      "helpers": [
+        {
+          "name": "sha",
+          "lines": [
+            11,
+            11
+          ],
+          "bytes": 57,
+          "sha256": "4FC52FB70BB0793D472938E4324857597433C1E7DDBB15063EE372297676A588"
+        },
+        {
+          "name": "raw",
+          "lines": [
+            12,
+            12
+          ],
+          "bytes": 40,
+          "sha256": "0674AD6317F2AE8EB96A5F56EFBC878FF39C90C68C99C8F4C9978F7A23316A26"
+        },
+        {
+          "name": "pinned",
+          "lines": [
+            13,
+            14
+          ],
+          "bytes": 73,
+          "sha256": "5DF7EDACFCE2ED39EB6DC75D1A5F85E312FDDFB88E50861484072351D188F54B"
+        },
+        {
+          "name": "git",
+          "lines": [
+            15,
+            18
+          ],
+          "bytes": 260,
+          "sha256": "FC6515AF1843269E597434A172257CA17ABBD50C611145B8D12A50030C9D6F91"
+        },
+        {
+          "name": "gout",
+          "lines": [
+            19,
+            19
+          ],
+          "bytes": 66,
+          "sha256": "D4BED77E98D7E0410BF8A6950089ECF30E6E537B8ADFE7B2A7249DF93CD6FEB1"
+        },
+        {
+          "name": "inside",
+          "lines": [
+            20,
+            23
+          ],
+          "bytes": 134,
+          "sha256": "BC7F1D1F13B1AC08CB47D2ECC8EEC9D015E9D5509C90D7E82AE778A30CFDA777"
+        },
+        {
+          "name": "new_file",
+          "lines": [
+            24,
+            27
+          ],
+          "bytes": 140,
+          "sha256": "A4CF95E3648B13330AAA4B9D1CCA39CB3EDA7D34C70738A6801D61E9F950D66A"
+        },
+        {
+          "name": "new_json",
+          "lines": [
+            28,
+            28
+          ],
+          "bytes": 96,
+          "sha256": "72B0BE02D4C073A234A09E2AEDF42D5451679590CC88BBCD1588A719F16DAA9C"
+        },
+        {
+          "name": "blob_many",
+          "lines": [
+            29,
+            40
+          ],
+          "bytes": 541,
+          "sha256": "5C5894AA029CC5F735A97EF61E00D8759C94D09386C65454A06F66CCE87E4F9B"
+        },
+        {
+          "name": "tree_paths",
+          "lines": [
+            41,
+            42
+          ],
+          "bytes": 139,
+          "sha256": "C33D511D519C1F80C2CC3EF6D508C6A113624CBC9C08A10BE63A825AC26C0C23"
+        },
+        {
+          "name": "no_hooks",
+          "lines": [
+            43,
+            48
+          ],
+          "bytes": 339,
+          "sha256": "7D17240FF95A97C6347339D55C052EE66A7744D034501DD353282E1B6476A115"
+        }
+      ],
+      "rows_to_end": {
+        "bytes": 5897,
+        "sha256": "E8CAF87944A614D7BAC12EF745B79D83314DD7CFAF94F06B99231E4D008A2F8E",
+        "start_line": 77,
+        "end_line": 151
+      },
+      "source_markers": {
+        "assert len(sys.argv)==4": 49,
+        "rows=manifest[\"rows\"]": 77,
+        "for row in allrows:": 83,
+        "attribute_output=git(": 103,
+        "for rel,b in zip(names,contents):": 109,
+        "proof.mkdir(": 119,
+        "for index,(row,b) in enumerate(": 124,
+        "git(\"add\",": 132,
+        "commit=git(": 141,
+        "receipt={": 149
+      }
+    }
+  ],
+  "observed_historical_applications": [
+    {
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-20261021\\fixture-receipt.json",
+        "bytes": 6347,
+        "sha256": "5010977B7618E5E79DFFF90FC1D8EDD59E49A9CD7E5E32E6C97669C18587ABE7"
+      },
+      "status": "exact_source_intake_committed",
+      "phase": "fixture",
+      "before_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+      "after_head": "f878aa40ab4bc4629f2cf57b281fcd2e7329473b",
+      "path_count": 44,
+      "executor_sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4",
+      "release_sha256": "EFD306E15D960868B57C7314E09DE108F0A363CF0B972F471EB7E37E71EE7ABC",
+      "staged_and_committed_bytes_match": true,
+      "clean_worktree": true,
+      "native_execution_authorized": false,
+      "application_qualified": false
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-negative-intake-20261021\\progress-receipt.json",
+        "bytes": 36797,
+        "sha256": "F5DF0B66044F51CA326D8F8A3EBA4A69E953111E86C0CBB076825EE9456DD062"
+      },
+      "status": "exact_source_intake_committed",
+      "phase": "progress",
+      "before_head": "f878aa40ab4bc4629f2cf57b281fcd2e7329473b",
+      "after_head": "014062f2d139254acab4b985b4ae343db637166f",
+      "path_count": 215,
+      "executor_sha256": "3991CF3DD80DDE51C551417644CF1E2AF376BDAF538DC8C7F7D6135538FAE5AC",
+      "release_sha256": "86519BA3A3D73FFB30E2CBD8F1F45186EB3FEB9B89EC2FC32C71C8B875863C0C",
+      "staged_and_committed_bytes_match": true,
+      "clean_worktree": true,
+      "native_execution_authorized": false,
+      "application_qualified": false
+    }
+  ]
+}

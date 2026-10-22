@@ -1,0 +1,32 @@
+{
+  "schema": "pinned-original-commit-body-bindings-v1",
+  "commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "transport": "Hermes native public web_fetch; raw body length and digest match the already preserved tag snapshots.",
+  "rows": [
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_buffer.h",
+      "http_status": 200,
+      "body_sha256": "48077ADE87E863A88E75A74C61FD948CB9AE16D7546CC5D61E1207FC95A7AC48",
+      "decoded_bytes": 3684,
+      "validated_at": "2026-10-20T21:59:58.077Z",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\node_buffer.v24.13.h",
+        "bytes": 3684,
+        "sha256": "48077ADE87E863A88E75A74C61FD948CB9AE16D7546CC5D61E1207FC95A7AC48"
+      }
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_buffer.cc",
+      "http_status": 200,
+      "body_sha256": "FD7D9A333F4C3DF886E39D6B6A7455D81AD57B109EF81AD8612A8C041422E36F",
+      "decoded_bytes": 57035,
+      "validated_at": "2026-10-20T21:59:58.312Z",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\node_buffer.v24.13.cc",
+        "bytes": 57035,
+        "sha256": "FD7D9A333F4C3DF886E39D6B6A7455D81AD57B109EF81AD8612A8C041422E36F"
+      }
+    }
+  ],
+  "source_only": true
+}

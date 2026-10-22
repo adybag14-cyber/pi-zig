@@ -1,0 +1,23 @@
+# Shutdown invalid descriptor fixture successor
+
+The pending Shutdown bad-descriptor control supplied -2 to the genuine FileHandle shutdown request. The pinned Windows libuv fs__close rejects -1, then calls _close only for descriptors above 2. Thus -2 follows its successful-close branch, which contradicts this control's retained UV_EBADF and negative callback-status assertions.
+
+This source-only successor changes exactly that one argument expression to std.math.maxInt(c_int), the expression already accepted in the V37 FileHandle fixture correction. It uses the existing std import. On the selected Windows source/CRT contract the value is 2147483647, above the pinned UCRT lowio table limit of 8192. The real libuv initialization installs its returning invalid-parameter handler before worker publication and before every FS request, allowing the actual CRT invalid-descriptor result to propagate through the unchanged close completion.
+
+## Exact scope
+
+Only src/native_node_stream_shutdown_test.zig changes: 17,019 bytes / 11AA5059 becomes 17,039 bytes / CC33A814. The complete raw inverse restores the original bytes. All 18 declarations, all assertions and guest expressions, every helper, literal imports and every other byte remain exact. The other 20 source donors in the sealed B490 plan are rehashed unchanged. Production files and build recipes are unchanged.
+
+The static checker binds five immutable Git source objects through the owned worktree, 42 current evidence/donor versions, and 24 exact source excerpts. Its evidence reuses the accepted V37 CRT/source/PE review without rerunning that earlier checker or making a new claim about the loaded DLL's bytes.
+
+## Remaining new3 descriptor selections
+
+The Shutdown helper's live-file path requires a descriptor above 2 before transferring it. Its createClosed helper constructs with the existing -1 sentinel and invokes the real releaseDescriptor/AfterClose operation before any closed-fast-path request; it does not dispatch the invalid descriptor to libuv. The selected owner dispatch returns before its fd CHECK or submission when already closed.
+
+OneByteString's other -2 is a signed string length in its intentional negative-length/strlen control. It is unrelated to file descriptors. The ArrayBuffer view-data root has no descriptor or FS-close fixture input. All 38 declarations across the three pending roots remain unchanged.
+
+## Preservation and authority
+
+The original11AA donor and B490 plan remain unchanged. static-discovery.json records this as a source observation, not a native attempt. The original V37 failures and accepted correction remain historical evidence. The earlier readonly packet-path lookup error and bounded display omission are recorded separately; neither changed source or proof. One attempted handoff orchestration had an unescaped Markdown backtick and was rejected by the JavaScript parser before a host call; no file was written, and the successful handoff contains no source correction.
+
+No compiler, target, candidate, prefix, native process, preparer, or Main/index operation was executed. Root and independent source review are still required. Only after separate source acceptance may an explicit finite 21-source copy-plan successor select this donor and append its immutable evidence. The path count remains 21. Future metadata, runtime outcomes, source head, intake, and application qualification are unresolved.

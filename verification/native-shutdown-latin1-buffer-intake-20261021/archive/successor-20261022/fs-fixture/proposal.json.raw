@@ -1,0 +1,44 @@
+{
+  "schema": "pi-zig.source-only.fixture-ownership-projection.v1",
+  "source_only": true,
+  "candidate_executed": false,
+  "main_applied": false,
+  "native_execution_authorized": false,
+  "qualification": "Static source proposal only; original runtime negative is unchanged.",
+  "basis": {
+    "head": "014062f2d139254acab4b985b4ae343db637166f",
+    "read_via": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018",
+    "source": "src/native_node_fs_request_owner_test.zig"
+  },
+  "scope": "Only fixture pumpPending owns its real failed completion before outer callback-scope teardown. No production mutation.",
+  "files": [
+    {
+      "relative_path": "src/native_node_fs_request_owner_test.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\original\\src\\native_node_fs_request_owner_test.zig",
+        "bytes": 57263,
+        "sha256": "402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-fs-request-pump-escrow-sourceonly-20261022\\projected\\src\\native_node_fs_request_owner_test.zig",
+        "bytes": 57499,
+        "sha256": "AC46016E60CCCAAAC03A19C9852708B758BA2CA0A69858CBB5FD408AE87E4375"
+      },
+      "edits": [
+        {
+          "offset": 14129,
+          "before": "    fn pumpPending(self: *Fixture) !void {\n        var outer_scope: callbacks.Scope = undefined;\n        try self.outer(&outer_scope, self.target);\n        defer if (!outer_scope.deinitialized) {\n            outer_scope.markFailed();\n            outer_scope.deinit() catch {};\n        };\n        const until = physical.uv_hrtime() + 10 * std.time.ns_per_s;\n        while (self.env().requests.waiting != 0) {\n            // This control explicitly selects nested callback settlement, not\n            // the separately unfinished production microtask checkpoint.\n            if (c.JS_IsJobPending(self.engine.runtime))\n                return error.UnselectedFSReadControlTaskQueue;\n            const pump = self.engine.native_env_pump orelse return error.ActualFSReadHubRequired;\n            _ = try pump(self.engine);\n            if (self.env().requests.waiting == 0) break;\n            if (physical.uv_hrtime() >= until) return error.ActualFSReadCompletionTimeout;\n            physical.uv_sleep(1);\n        }\n        try outer_scope.deinit();\n    }\n    fn waitQueued(self: *Fixture, count: usize) !void {\n        const service = self.controller.?.service;\n        const until = physical.uv_hrtime() + 10 * std.time.ns_per_s;\n        while (uv.pi_uv_service_snapshot(service).queued_events < count) {\n            if (physical.uv_hrtime() >= until) return error.ActualFSReadCompletionTimeout;\n            physical.uv_sleep(1);\n        }\n    }\n",
+          "after": "    fn pumpPending(self: *Fixture) !void {\n        var outer_scope: callbacks.Scope = undefined;\n        try self.outer(&outer_scope, self.target);\n        // Keep the actual pump outcome owned before outer callback cleanup.\n        // Start at this stable address before any nested native producer.\n        var handles = a.Scope.init(self.engine);\n        handles.boundary.start();\n        var failure: ?anyerror = null;\n        self.pumpPendingBody() catch |err| {\n            handles.boundary.escaping();\n            failure = err;\n            outer_scope.markFailed();\n        };\n        outer_scope.deinit() catch |err| {\n            handles.boundary.escaping();\n            if (failure == null) failure = err;\n        };\n        const ignored = try handles.finish(if (failure) |err|\n            @as(anyerror!c.JSValue, err) else c.pi_js_undefined());\n        self.engine.freeValue(ignored);\n    }\n    fn pumpPendingBody(self: *Fixture) !void {\n        const until = physical.uv_hrtime() + 10 * std.time.ns_per_s;\n        while (self.env().requests.waiting != 0) {\n            // This control explicitly selects nested callback settlement, not\n            // the separately unfinished production microtask checkpoint.\n            if (c.JS_IsJobPending(self.engine.runtime))\n                return error.UnselectedFSReadControlTaskQueue;\n            const pump = self.engine.native_env_pump orelse return error.ActualFSReadHubRequired;\n            _ = try pump(self.engine);\n            if (self.env().requests.waiting == 0) break;\n            if (physical.uv_hrtime() >= until) return error.ActualFSReadCompletionTimeout;\n            physical.uv_sleep(1);\n        }\n    }\n",
+          "before_sha256": "9B5B2AD82DBC42FA4A78D24877E4B9D71104A5E0392996116FB4B9778A6EB207",
+          "after_sha256": "1CBCF6A1AD97DBFC40A017925E9A490BCC6E6462416182843725587396327214",
+          "whole_inverse": true
+        }
+      ]
+    }
+  ],
+  "unchanged_poll_loop": {
+    "bytes": 721,
+    "sha256": "CDBB385F3D419AD7154DC731F319A80B98DEA82064695B73F66FC551200762F8"
+  },
+  "next": "Add bounded static proof, original authority binding, ownership explanation and remaining-cohort census; no execution qualification."
+}

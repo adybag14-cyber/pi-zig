@@ -18,6 +18,8 @@ const stream_base = @import("native_node_stream_base.zig");
 const read = @import("native_node_file_handle_read.zig");
 const close_request = @import("native_node_file_handle_close_request.zig");
 const gc_close = @import("native_node_file_handle_gc_close.zig");
+const stream_requests = @import("native_node_stream_request.zig");
+const shutdown_request = @import("native_node_file_handle_shutdown.zig");
 const immediates = @import("native_node_native_immediates.zig");
 const io = @import("native_node_fs_request_io.zig");
 const check = @import("native_node_check_failure.zig");
@@ -36,6 +38,7 @@ pub const Inputs = struct {
 pub const Handle = struct {
     pub const Reader = read.Type(@This());
     pub const CloseReq = close_request.Type(@This());
+    pub const ShutdownReq = shutdown_request.Type(@This());
 
     // Original bases and native members. The single Reader.State supplies all
     // fd/closed/closing/reading/offset/length/current_read_ members.
@@ -61,6 +64,22 @@ pub const Handle = struct {
     fn streamWrap(base: *stream_base.Base) ?*native.State {
         const self: *Handle = @alignCast(@fieldParentPtr("stream", base));
         return &self.wrap;
+    }
+    fn createShutdown(base: *stream_base.Base, s: *Scope,
+        wrapper: c.JSValue) anyerror!?*stream_requests.Shutdown
+    {
+        const self: *Handle = @fieldParentPtr("stream", base);
+        return &((try ShutdownReq.create(s, self, wrapper)).shutdown);
+    }
+    fn doShutdown(base: *stream_base.Base, s: *Scope,
+        request: ?*stream_requests.Shutdown) anyerror!c_int
+    {
+        const self: *Handle = @fieldParentPtr("stream", base);
+        return ShutdownReq.dispatch(s, self, request orelse
+            return error.ActualFileHandleShutdownRequestRequired);
+    }
+    pub fn shutdown(self: *Handle, s: *Scope, wrapper: ?c.JSValue) anyerror!c_int {
+        return self.stream.shutdownRequest(s, wrapper);
     }
     pub fn fromObject(registry: *native.Registry, wrapper: c.JSValue) !*Handle {
         if (c.JS_GetClassID(wrapper) != registry.classId(.filehandle))
@@ -161,7 +180,9 @@ pub const Handle = struct {
         };
         self.attached = true;
         try self.stream.init(data.environment,
-            .{ .get_async_wrap = streamWrap }, self.stream_operations);
+            .{ .get_async_wrap = streamWrap,
+                .create_shutdown = createShutdown, .do_shutdown = doShutdown },
+            self.stream_operations);
         self.stream_initialized = true;
         self.read_state.fd = descriptor;
         try data.retainNative();

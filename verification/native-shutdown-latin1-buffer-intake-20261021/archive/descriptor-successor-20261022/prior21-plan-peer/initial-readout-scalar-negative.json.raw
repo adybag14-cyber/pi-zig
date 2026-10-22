@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "status": "retained_independent_readout_scalar_schema_negative",
+  "reviewer": "/root/handover_review",
+  "scope": "Inline immutable-JSON readout only, before writing or executing own static checker.",
+  "selected_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\unissued-shutdown-latin1-buffer-fs-fixture21-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 530121,
+    "sha256": "B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC"
+  },
+  "actual_error": "Traceback (most recent call last):\r\n  File \"<string>\", line 5, in <module>\r\n    c=p['coverage'];print(json.dumps({'coverage':{k:v for k,v in c.items() if k not in ['shutdown_frozen_inventory','buffer_frozen_inventory','accepted_independent_replay_inputs','historical_nonselected_external_references','new_sealed_packet_inventories','new_reference_sites_already_covered']},'old_coverage_shapes':{k:(type(c[k]).__name__,list(c[k])[:3] if isinstance(c[k],dict)else len(c[k]))for k in ['shutdown_frozen_inventory','buffer_frozen_inventory','accepted_independent_replay_inputs','historical_nonselected_external_references']},'new_inventory_groups':[{'label':r['label'],'directory':r['directory'],'count':len(r['rows']),'names':[z['relative_path']for z in r['rows']]}for r in c['new_sealed_packet_inventories']],'already_covered':c['new_reference_sites_already_covered'],'aliases':[{'target':r['relative_path'],'alias':a}for r in p['archive_rows']for a in r['logical_donors']if a['historical_reference_aliases']],'proof_input_prefixes':sorted(set('\\u005c'.join(r['path'].split('\\u005c')[:7])for r in q['input_pins']))}))\r\n                                                                                                                                                                                                                                                                                                                                                                                                  ~~~^^^^^^\r\nTypeError: object of type 'int' has no len()\r\n",
+  "actual_exit_code": 1,
+  "concrete_cause": "The readout called len() on coverage.accepted_independent_replay_inputs, which is the scalar 202. The corrected readout prints a scalar directly and list/dictionary lengths explicitly.",
+  "selected_plan_or_author_changed": false,
+  "candidate_or_prefix_executed": false,
+  "Main_or_index_accessed": false
+}
