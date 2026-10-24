@@ -1229,6 +1229,19 @@ static inline const char *JS_ToCString(JSContext *ctx, JSValueConst val1)
 {
     return JS_ToCStringLen2(ctx, NULL, val1, 0);
 }
+/* Borrowed native code-unit view over a genuine flat primitive String.
+   The caller first uses JS_ToString on its checked primitive String to flatten
+   any rope, and retains that returned value through the complete borrow.
+   This accessor performs no coercion, allocation, guest call or event change.
+   str8/str16 also resolve sliced/indirect storage kept alive by that value. */
+typedef struct JSPiStringView {
+    const uint8_t *data8;
+    const uint16_t *data16;
+    size_t length;
+} JSPiStringView;
+/* Returns 1 for a flat String, 0 for rope/nonstring; failure clears output. */
+JS_EXTERN int JS_PiBorrowFlatStringView(JSValueConst value, JSPiStringView *out);
+
 // returns a utf-16 version of the string in native endianness; the
 // string is not nul terminated and can contain unmatched surrogates
 // |*plen| is in uint16s, not code points; a surrogate pair such as
@@ -1281,6 +1294,16 @@ JS_EXTERN bool JS_IsWeakMap(JSValueConst val);
 JS_EXTERN int JS_PiReadWeakMapEntry(JSContext *ctx, JSValueConst map,
                                   JSValueConst key, JSValue *value);
 JS_EXTERN bool JS_IsDataView(JSValueConst val);
+
+/* Actual native External value: a fresh non-extensible, null-prototype object
+   with an authenticated VM class and a borrowed non-null pointer. No stream,
+   native owner, JS value or backing store is retained or finalized. The pointer
+   is meaningful only while its independently owned native target is alive.
+   Recognition/extraction do not unwrap proxies, coerce, allocate or dereference
+   the stored pointer; non-External input extracts NULL. */
+JS_EXTERN JSValue JS_PiNewExternal(JSContext *ctx, void *pointer);
+JS_EXTERN bool JS_PiIsExternal(JSValueConst value);
+JS_EXTERN void *JS_PiExternalValue(JSValueConst value);
 
 JS_EXTERN JSValue JS_NewArray(JSContext *ctx);
 // takes ownership of the values

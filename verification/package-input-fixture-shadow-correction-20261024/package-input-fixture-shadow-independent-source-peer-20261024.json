@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "reviewer": "handover_review",
+  "created_utc": "2026-10-24T18:13:51.690096+00:00",
+  "verdict": "accepted_source_only_no_concrete_blocker",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-input-fixture-shadow-correction-sourceonly-20261024\\source-intake.json",
+    "bytes": 4071,
+    "sha256": "E5651DFE6852CBFDF7AE31E6DDAAD1FDD02857286E1C03469C1AC47CA4B0CC88"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_module_package_inputs_test.zig",
+    "bytes": 17595,
+    "sha256": "4D777A401B7D7F4BD941E84B83D72D0E8E715D2F86D4FDC8B931BFCD9B6219BE"
+  },
+  "selected_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-input-fixture-shadow-correction-sourceonly-20261024\\projected\\src\\native_node_module_package_inputs_test.zig",
+    "bytes": 17613,
+    "sha256": "540F3AF4828DB693266169079FC808C7351177A5145A71A3ECA3824EEAE5717D"
+  },
+  "exact_patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-input-fixture-shadow-correction-sourceonly-20261024\\package-input-fixture-local-name.patch",
+    "bytes": 1146,
+    "sha256": "ED5EF4E6781E236A009FDCC7F97FCFA7291D9E1DC897B125F4FEAAB0152BCB8B"
+  },
+  "checks": {
+    "seven_referenced_artifacts_rehashed": true,
+    "complete_forward_and_raw_inverse_of_exact_two_local_edits": true,
+    "exact_unified_patch_reconstructed": true,
+    "new_identifier_occurs_exactly_twice_and_has_no_declaration_collision": true,
+    "all_six_declared_test_names_and_entire_test_bodies_byte_identical": true,
+    "actualPackageRead_property_callback_arity_and_flags_unchanged": true,
+    "Fixture_read_method_and_all_production_bytes_unchanged": true,
+    "compiler_diagnostic_explicitly_identifies_same_local116_and_method128": true,
+    "original_failed_job_observation_hash_and_terminal_exit1_read": true
+  },
+  "semantic_review": "Only the local function-value binding and its one use change read to read_function. The actual callback remains readCallback, JavaScript property remains actualPackageRead, and Fixture.read stays intact. This removes the reported local-declaration shadow without weakening an assertion or changing production behavior.",
+  "observed_original_negative_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v41-new2-buildquery-20261024-180122\\result.json",
+    "bytes": 28758,
+    "sha256": "54F8057CCBBF3193AF7D2862A2C18D8A0FE007DB24B279C6829BAB1FBA961EDA"
+  },
+  "observed_original_job_status": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v41-new2-control-20261024-180122\\independent-observed-job-status.json",
+    "bytes": 1522,
+    "sha256": "C05FEE29A26C52E109AE323BCE1F698B342FD75E6CC318D2EC12DBB25E47044D"
+  },
+  "limits": {
+    "original_failed_batch_remains_nonadmissible": true,
+    "requires_independent_negative_buildquery_closure_before_Main_intake": true,
+    "candidate_compiled": false,
+    "candidate_metadata_or_runtime": false,
+    "native_commands_executed": false,
+    "Main_written": false,
+    "source_declared_controls": 6,
+    "actual_metadata_count": null,
+    "product_completion_claim": false
+  }
+}

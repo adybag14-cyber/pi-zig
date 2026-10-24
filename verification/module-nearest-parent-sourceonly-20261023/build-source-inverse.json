@@ -1,0 +1,16 @@
+{
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-physical-inputs-sourceonly-20261023\\projected\\build.zig",
+    "bytes": 517481,
+    "sha256": "258F00510D7FD50FF9D16F068E2F5A7FB068F7A619D734C471E091F78D556378"
+  },
+  "output": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-nearest-parent-sourceonly-20261023\\projected\\build.zig",
+    "bytes": 519011,
+    "sha256": "0E5D183AE116AC68016A0D6C66734BB690ACCBDC4650959B293C027382C07C06"
+  },
+  "anchor": "        const native_environment_map_tests = b.addTest(.{\n",
+  "insertion": "        // Private nearest-parent consumer with actual native path/permission inputs.\n        // Install only; native admission and runtime remain separately owned by Root.\n        const native_module_nearest_parent = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_module_nearest_parent_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native module nearest\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_module_nearest_parent.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, native_module_nearest_parent.root_module, typescript_parser);\n        linkSqlite(native_module_nearest_parent.root_module, sqlite_lib_dir, sqlite_library);\n        native_module_nearest_parent.root_module.addImport(\"catalog_tool\", catalog_tool);\n        native_module_nearest_parent.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        if (target.result.os.tag == .windows) {\n            native_module_nearest_parent.root_module.linkSystemLibrary(\"advapi32\", .{});\n            native_module_nearest_parent.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-module-nearest-parent\", \"Install eight declared private Module nearest-parent controls without execution\").dependOn(&b.addInstallArtifact(native_module_nearest_parent, .{ .dest_sub_path = b.fmt(\"native-node-module-nearest-parent{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n",
+  "exact_inverse": true,
+  "install_only": true
+}

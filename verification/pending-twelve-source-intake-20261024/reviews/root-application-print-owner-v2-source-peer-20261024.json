@@ -1,0 +1,142 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T17:04:34.321644+00:00",
+  "reviewer": "Root",
+  "status": "source_only_independent_peer_accepted",
+  "head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\source-intake-v2.json",
+    "bytes": 41108,
+    "sha256": "A032066CC1C5657D54C2F289AE7A543CEF91CB1833F91E6433B233682DE63CFB"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\application-print-owner-successor-v2.patch",
+    "bytes": 23268,
+    "sha256": "4CBA1D9983C279036377E814BD4659D3CB03416B54B0F433FFAAE39E6F1707D4"
+  },
+  "selected_sources": [
+    {
+      "target": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+        "bytes": 11938,
+        "sha256": "E54A8CD8294F774593EFACBA87C301453E3C95A4F7C5BB72A7AC9EF27AF28FD8"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected-v2\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+        "bytes": 14363,
+        "sha256": "AD2C8AFEBA8DA041AB6470EA29C5C018EDE67E2C85F14511138B6F3AD624425F"
+      }
+    },
+    {
+      "target": "src/extensions/native_sdk_application_owner.zig",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_application_owner.zig",
+        "bytes": 14283,
+        "sha256": "7873435867712B9BDFCAFF7A8702022101F632318175327B2BC36D0AD6D4F85E"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_application_owner.zig",
+        "bytes": 14704,
+        "sha256": "7AFB0ABC565B118D8B0C22D06CD5C0B4D2FBE83EDCEDE1F2D9EBBA5694DBD544"
+      }
+    },
+    {
+      "target": "src/native_sdk_application_owner_controls.zig",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_application_owner_controls.zig",
+        "bytes": 4556,
+        "sha256": "11AF2557EBA0919CEF414B658BDE4381B3FBAD7CD72C40A9EA1F41F5AF7BF602"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected\\src\\native_sdk_application_owner_controls.zig",
+        "bytes": 4956,
+        "sha256": "9D65D2182F8DB4E35B9D24D5C99086004ED5BCAFFB8AA8BAEF67515652059D20"
+      }
+    },
+    {
+      "target": "src/native_sdk_application_print_owner_test.zig",
+      "kind": "new",
+      "before": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected-v2\\src\\native_sdk_application_print_owner_test.zig",
+        "bytes": 16310,
+        "sha256": "13A86E424A5C252DB4EE847595DC93ACE9BB75232A46FC3A2C825881A679BF93"
+      }
+    },
+    {
+      "target": "build.zig",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 515962,
+        "sha256": "7AB122A962019B935EB08EE6042BFFDDCB6F7AF6BE6405F47E06A6CF591B7D4F"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 517045,
+        "sha256": "B788031DC179133519891A7CD8A290583E42C455D37D20DDA8A500A1E2E9BC95"
+      }
+    }
+  ],
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\build-addition.txt",
+    "bytes": 1083,
+    "sha256": "4145F71297F4FC46B84C4C10192B366E27E2E13D26FC51CF4CB5BD838739F7FD"
+  },
+  "independent_static_checks": {
+    "pin_versions_rehashed": 53,
+    "exact_unified_patch_reconstructed": true,
+    "exact_raw_inverses": 5,
+    "v1_to_v2_auth_replacement_exact": true,
+    "v1_test_prefix_unchanged": true,
+    "v2_test_append_bytes": 1394,
+    "combined_build_must_apply_addition_only": true,
+    "build_anchor_is_actual_newline": true,
+    "literal_import_occurrences_including_std": 61,
+    "literal_relative_import_occurrences": 57,
+    "distinct_relative_import_rows": 51,
+    "all_direct_import_rows_match_selected_or_main": true,
+    "declared_controls": 7,
+    "main_clean_at_review": true
+  },
+  "root_manual_read_scope": [
+    "Full proposed print-owner patch and all seven controls.",
+    "Existing auth runtime owner, actual application owner gate and public print module creation.",
+    "Actual frontend retirement, runtime imports, shell owner and output guard source context.",
+    "Original Main print entry and mode ordering source context.",
+    "Full v2 shell-identity correction and its ordinary pending/error propagation."
+  ],
+  "findings": [
+    "The actual cached pi-native:sdk-shell value is retained before reading the mutable runtime_imports.shell carrier; strict identity is required before downstream constructor access.",
+    "Retained output guard fields and runtime imports protect the synchronous guest boundary; no host owner fields are accessed after the shell getter can retire it.",
+    "Owned completion is recorded before scope cleanup, preserving ordinary and fatal pending events and existing native entry suppression.",
+    "Print module construction delegates to the existing genuine public print implementation and does not implicitly take over stdout.",
+    "Seven controls use actual engine/platform/frontend/auth owners; the negative runtimeHost input tests the genuine async error path without pretending to be a successful session."
+  ],
+  "qualification_limits": [
+    "Not compiled or executed by this peer review.",
+    "No full application startup, mode run, RPC/theme assembly, stdout lifecycle, bridge removal or behavioral parity qualification.",
+    "Physical frontend lifetime remains the caller responsibility; no permission to invoke after physical frontend teardown is established.",
+    "A later composition must re-resolve changed selected imports against its actual intake HEAD and apply the additive build hunk to the composed build."
+  ],
+  "native_execution_authorized": false,
+  "main_intake_authorized": false,
+  "source_mutation_hold_released": false,
+  "actual_metadata_count": null,
+  "product_qualification": false,
+  "historical_draft_preserved": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\source-intake.json",
+    "bytes": 37862,
+    "sha256": "76DE5724F241E51F05648EF2A55BA2B49790ED5469F2BD6B6F4FB70F83EFCD95"
+  },
+  "explicitly_unclosed": [
+    "Production native worker still needs actual canonical node:module publication and application Owner integration.",
+    "Original Main's cwd/trust-aware runtime factory and mode entry routing remain unconnected.",
+    "This packet does not qualify a full print or RPC application start, provide a full coding-agent virtual namespace, or implement RPC/theme assembly.",
+    "No native, Node capture, source generator, formatter, runtime, or Main mutation occurred."
+  ]
+}

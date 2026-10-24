@@ -1,0 +1,159 @@
+{
+  "schema": "pi-zig.independent-source-peer.v1",
+  "created_at_utc": "2026-10-24T14:05:22.790743+00:00",
+  "reviewer": "catalog_review",
+  "verdict": "No concrete source blocker found within the private preselected CommonJS read scope.",
+  "source_only": true,
+  "intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-commonjs-read-sourceonly-20261024\\source-intake.json",
+    "bytes": 22002,
+    "sha256": "BE84DF9E50B6DF5EBBCADD4E73BF5E789E51861F7BA6903CBF1B4610D0613184"
+  },
+  "source_diff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-commonjs-read-sourceonly-20261024\\source-diff.patch",
+    "bytes": 39203,
+    "sha256": "6C25943EBDBC2C45A1C5F12AF8770767B69A377D8C69030065DA6A2E166F9C41"
+  },
+  "selected_changes": [
+    {
+      "intended_relative_path": "src/extensions/native_node_permission_error.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-commonjs-read-sourceonly-20261024\\projected\\src\\extensions\\native_node_permission_error.zig",
+        "bytes": 4187,
+        "sha256": "843EDF0598E3009FC2A7498230A4A019CA884AA1AB9F65F0050D73E0BDE4917D"
+      },
+      "operation": "add complete private source"
+    },
+    {
+      "intended_relative_path": "src/extensions/native_node_module_commonjs_read.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-commonjs-read-sourceonly-20261024\\projected\\src\\extensions\\native_node_module_commonjs_read.zig",
+        "bytes": 5761,
+        "sha256": "F179CCE672AFC0CB31A39E477697E6DD67E4816185251A8D4E0CA4EC392C2A59"
+      },
+      "operation": "add complete private source"
+    },
+    {
+      "intended_relative_path": "src/native_node_module_commonjs_read_test.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-commonjs-read-sourceonly-20261024\\projected\\src\\native_node_module_commonjs_read_test.zig",
+        "bytes": 25944,
+        "sha256": "9B349DA7726BF3062A4D4BBF3D411DAF49F4AC7471279612086D7AB4A7ADCCFE"
+      },
+      "operation": "add complete private source"
+    },
+    {
+      "intended_relative_path": "build.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-nearest-parent-sourceonly-20261023\\projected\\build.zig",
+        "bytes": 519011,
+        "sha256": "0E5D183AE116AC68016A0D6C66734BB690ACCBDC4650959B293C027382C07C06"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-commonjs-read-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 520533,
+        "sha256": "E75651064E9C18F4AAB624CF23A49AF9C442A8022B1B28E7F5337519194D688F"
+      },
+      "operation": "apply exact recorded 16-line insertion"
+    }
+  ],
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-commonjs-read-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 2263,
+    "sha256": "D28094A5E79E256838D6B0C5E4DEC21D93DD9BDF6BDC8886027D8F9910E31C5D"
+  },
+  "original_error_factory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-file-handle-error-intake-20261020\\sdk\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-errors.v24.13.h",
+    "bytes": 23394,
+    "sha256": "396CC9AE4323EC0E9FB8E4B5E6912C0603E86410D5588802B5B1F2C0F7048CC4"
+  },
+  "observed_main": {
+    "head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+    "porcelain_empty": true,
+    "reviewer_modified": false
+  },
+  "independent_static_checks": {
+    "intake_direct_unique_pins_rehashed": 32,
+    "additional_unique_nearest_dependency_versions_rehashed": 30,
+    "manifest_union_unique_versions_rehashed": 62,
+    "complete_original_node_errors_body_rehashed_separately": true,
+    "new_production_sources_read_in_full": 2,
+    "test_root_read_in_full": true,
+    "direct_literal_source_imports_reconciled": 20,
+    "full_patch_reconstructed_from_exact_four_source_pairs": true,
+    "build_bytes_added": 1522,
+    "build_lines_added": 16,
+    "forward_and_inverse_build_comparisons_exact": true,
+    "fixture_helpers_exact_byte_inverses": [
+      "Capture",
+      "NativePolicy",
+      "Disk"
+    ],
+    "declared_tests_reconciled": 8,
+    "compiler_metadata_count": null,
+    "runtime_result": null
+  },
+  "authority_read": [
+    {
+      "pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-environment-os-sourceonly-20261020\\authority\\permission.h.v24.13.txt",
+        "bytes": 6418,
+        "sha256": "4E3D00379FEC7252A2DE67E0DF6F6FE6003DF84716E36359F8A77BDA61BBDF18"
+      },
+      "lines": "30-41 and 91-98",
+      "behavior": "The actual policy is always called; its own disabled branch grants permission. Denial creates an access error then returns."
+    },
+    {
+      "pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-environment-os-sourceonly-20261020\\authority\\permission.cc.v24.13.txt",
+        "bytes": 6776,
+        "sha256": "DE63A54C60EC53734DF9376C8236AF99044D9394A37EC2B2C75DD0E4D7A32C40"
+      },
+      "lines": "109-153",
+      "behavior": "Native suggestion/message, intrinsic Error factory, both permission/resource conversions before ordinary Sets, IsNothing short-circuit and superseding setter exceptions."
+    },
+    {
+      "pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\cjs-fs-inputs-sourceonly-20261018\\authority\\node_modules.cc.txt",
+        "bytes": 26843,
+        "sha256": "26C1741820F992983DE87A5EDBE8274B9FFDFF348F988E4D44586B8809EAA414"
+      },
+      "lines": "257-293",
+      "behavior": "Actual argument CHECKs, full BufferValue input, selected CommonJS null ErrorContext, permission before namespace/cache, absent undefined result and fresh serialization."
+    },
+    {
+      "pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-file-handle-error-intake-20261020\\sdk\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-errors.v24.13.h",
+        "bytes": 23394,
+        "sha256": "396CC9AE4323EC0E9FB8E4B5E6912C0603E86410D5588802B5B1F2C0F7048CC4"
+      },
+      "lines": "ERR_ACCESS_DENIED row and 140-164",
+      "behavior": "Intrinsic Error type and exact code/message/Error/code-Set.Check factory order."
+    }
+  ],
+  "findings": [
+    "Native read acquires the actual typed Registry BindingData, verifies its Engine and roots the weak-slot wrapper before native path allocation or an inherited Error setter can reenter. Owned UTF8 path bytes survive the entire synchronous read; the borrowed genuine Permission/EnvironmentPathAccess/private MapKVStore/debug/trace/context owners must remain live through return.",
+    "The complete original UTF8 resource is passed to the actual native Permission owner before ToNamespacedPath or cache access. Lone surrogate replacement and embedded NUL retention come from the existing pinned native BufferValue conversion. This exact-file consumer does not apply nearest-parent traversal or its trailing-separator restoration.",
+    "The access error uses the intrinsic Error, own message definition and original ordinary code Set.Check semantics, then converts both permission and resource strings before their ordinary Set.IsNothing operations. Present false results continue; permission/resource setter exceptions preserve the pending reason and prevent replacement by the access error. Resource conversion uses the full owned native span.",
+    "The native package cache is the existing accepted BindingData cache with null ErrorContext. A missing exact path returns undefined; a valid cached Config serializes a fresh intrinsic six-element result. Invalid configs remain governed by the accepted context-free error/disposal path.",
+    "Eight focused declarations exercise actual physical files, actual native policy and namespace/cache owners, Error setter reentry with a real permission change, both superseding setter branches, false Set results, negative exact-path caching, fresh cached serialization and invalid-config repair. Their three native fixture helpers are byte-identical to the separately reviewed nearest-parent controls.",
+    "The only existing-file change is the exact sixteen-line install-only build insertion. Integration must compose this insertion with Root's current combined build rather than replace that build with the standalone projection."
+  ],
+  "scope_and_remaining": [
+    "This leaf requires the caller to have selected is_esm=false; it intentionally does not register or impersonate the general ReadPackageJSON callback.",
+    "General ESM dispatch and native Ada/FileURLToPath error context, unified Environment/bootstrap ownership, actual canonical Module binding registration and production application assembly remain separate work.",
+    "The nearest-parent C ABI symbol must exist in a freshly built native owner library before eventual linking. This review performs no native admission, build, metadata query or runtime qualification.",
+    "Fatal argument/code-Set CHECK branches remain source-preserved; these eight in-process controls do not claim to execute fatal negative child cases.",
+    "Public Module/application qualification, Main mutation, native/Node/generator execution and default-backend changes are not claimed."
+  ],
+  "claims": {
+    "sealed_inputs_changed": false,
+    "main_changed": false,
+    "source_executed": false,
+    "native_executed": false,
+    "runtime_qualified": false
+  }
+}

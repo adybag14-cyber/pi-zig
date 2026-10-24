@@ -3,8 +3,8 @@
 //! and the fd/bytesRead/bytesWritten accessors from Node v24.13 stream_base.cc.
 //!
 //! These are callback bodies over the actual wrapper slots and native stream.
-//! Public AddMethods/template publication remains a separate owner: the write
-//! methods and external_stream must exist before publishing that whole surface.
+//! Public AddMethods/template publication still requires its complete original
+//! signature/accessor/constructor owner before that surface can be exposed.
 //! The caller supplies its existing Scope; no extra HandleScope is introduced.
 const a = @import("native_node_argument_values.zig");
 const wraps = @import("native_node_async_wrap_state.zig");
@@ -12,10 +12,17 @@ const streams = @import("native_node_stream_base.zig");
 const resources = @import("native_node_stream_resource.zig");
 const custom = @import("native_node_custom_buffer_listener.zig");
 const shutdown = @import("native_node_stream_shutdown.zig");
+const writes = @import("native_node_stream_write.zig");
+const string_writes = @import("native_node_stream_write_string.zig");
+const vector_writes = @import("native_node_stream_writev.zig");
+const external = @import("native_node_external_value.zig");
 const check = @import("native_node_check_failure.zig");
 const c = a.c;
 
-pub const Method = enum { read_start, read_stop, shutdown, use_user_buffer };
+pub const Method = enum {
+    read_start, read_stop, shutdown, use_user_buffer, write_buffer, writev,
+    write_ascii_string, write_latin1_string, write_utf8_string, write_ucs2_string,
+};
 
 /// Source JSMethod returns without setting ReturnValue when FromObject is null.
 /// In particular, do not apply argument CHECKs, inspect virtuals, or enter the
@@ -75,7 +82,24 @@ fn invoke(s: *a.Scope, stream: *streams.Base, method: Method,
             break :blk try shutdown.run(s, stream, request);
         },
         .use_user_buffer => custom.useUserBuffer(stream, a.arg(args, 0)),
+        .write_buffer => writes.writeBuffer(s, stream, args),
+        .writev => vector_writes.writev(s, stream, args),
+        .write_ascii_string => string_writes.writeString(s, stream, args, .ascii),
+        .write_latin1_string => string_writes.writeString(s, stream, args, .latin1),
+        .write_utf8_string => string_writes.writeString(s, stream, args, .utf8),
+        .write_ucs2_string => string_writes.writeString(s, stream, args, .ucs2),
     };
+}
+
+/// Original GetExternal returns a fresh External for any remaining native
+/// stream, including a closed one. It does not consult IsAlive, cache the value,
+/// enter a trigger scope, or acquire a native pointer/JS wrapper keepalive.
+pub fn getExternal(s: *a.Scope, registry: *wraps.Registry,
+    receiver: c.JSValue) !c.JSValue
+{
+    const stream = streams.Base.fromObject(registry, receiver) orelse
+        return c.pi_js_undefined();
+    return a.duplicate(s.engine, try external.create(s, @ptrCast(stream)));
 }
 
 /// GetFD uses the same FromObject and IsAlive guards, but has no trigger scope.

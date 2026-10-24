@@ -1,0 +1,32 @@
+[
+  {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_environment_paths.h",
+      "bytes": 3358,
+      "sha256": "E504065537C5D669EF793D3F8F65BC9FB31DFB211F96091DC20EA87F42373B31"
+    },
+    "output": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-nearest-parent-sourceonly-20261023\\projected\\src\\extensions\\native_node_environment_paths.h",
+      "bytes": 3908,
+      "sha256": "B52577A71C23BD65AA7938FA2C74AA2C35264A9AAC53190844C68B32A309B7AE"
+    },
+    "insertion": "/* Native path.cc ToNamespacedPath over this actual Environment's PathResolve,\n * MapKVStore and diagnostics. The full input span includes embedded NUL.\n * The output is borrowed through exactly one synchronous visitor call. */\nvoid pi_node_environment_path_to_namespaced(\n    const PiNodeEnvironmentPaths* paths, void* memory_owner,\n    struct JSContext* context, PiNodeEnvironmentMap* map,\n    const PiNodeEnvironmentTrace* trace,\n    const PiNodeEnvironmentPathSpan* input,\n    PiNodeEnvironmentValueVisitor visitor, void* user) PI_PATH_NOEXCEPT;\n",
+    "anchor": "int pi_node_environment_safe_getenv(",
+    "exact_inverse": true
+  },
+  {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_environment_paths.cpp",
+      "bytes": 15087,
+      "sha256": "B2E838D216E858D7F3DF31347A71C0AFACD0C4AC507CBE5E5E1191460572A395"
+    },
+    "output": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-nearest-parent-sourceonly-20261023\\projected\\src\\extensions\\native_node_environment_paths.cpp",
+      "bytes": 16626,
+      "sha256": "66EAA33A16F71733244009BAF97B0D76CB0C265CC7C07F7C78E3FE6D21686E44"
+    },
+    "insertion": "// path.cc:282-327. Native String storage replaces BufferValue's owned byte\n// buffer; every original ToNamespacedPath branch uses the actual PathResolve.\nextern \"C\" void pi_node_environment_path_to_namespaced(\n    const PiNodeEnvironmentPaths* paths, void* memory_owner, JSContext* context,\n    PiNodeEnvironmentMap* map, const PiNodeEnvironmentTrace* trace,\n    const PiNodeEnvironmentPathSpan* input,\n    PiNodeEnvironmentValueVisitor visitor, void* user) noexcept {\n  pi_node::AllocationScope allocation(memory_owner);\n  String path(input->data, input->length);\n#ifdef _WIN32\n  if (!path.empty()) {\n    const pi_node::EnvironmentPathAccess access{paths, map, context, trace};\n    pi_node::EnvironmentPathViews parts;\n    parts.emplace_back(path.data(), path.size());\n    String resolved_path = pi_node::PathResolve(&access, parts);\n    if (resolved_path.size() > 2) {\n      if (resolved_path[0] == '\\\\' && resolved_path[1] == '\\\\' &&\n          resolved_path[2] != '?' && resolved_path[2] != '.') {\n        path.assign(R\"(\\\\?\\UNC\\)\");\n        path.append(resolved_path.data() + 2, resolved_path.size() - 2);\n      } else if (pi_node::IsWindowsDeviceRoot(resolved_path[0]) &&\n                 resolved_path[1] == ':' && resolved_path[2] == '\\\\') {\n        path.assign(R\"(\\\\?\\)\");\n        path.append(resolved_path.data(), resolved_path.size());\n      } else {\n        path = std::move(resolved_path);\n      }\n    }\n  }\n#else\n  (void)paths;\n  (void)context;\n  (void)map;\n  (void)trace;\n#endif\n  visitor(user, path.data(), path.size());\n}\n",
+    "anchor": "extern \"C\" int pi_node_environment_safe_getenv(",
+    "exact_inverse": true
+  }
+]

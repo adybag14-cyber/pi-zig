@@ -1,6 +1,6 @@
 // Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
 //! Actual Node24 Module._load body over the canonical Module lexical owner.
-//! Real resolver/hooks/builtin/circular helpers remain required dependencies.
+//! Real resolver/hooks/builtin bindings remain required; circular helpers are native.
 const std = @import("std");
 const v = @import("native_ai_provider_values.zig");
 const c = v.c;
@@ -13,9 +13,8 @@ pub const Inputs = struct {
     load_builtin_with_hooks: c.JSValue,
     normalize_requirable_id: c.JSValue,
     can_require_without_scheme: c.JSValue,
-    circular_exports: c.JSValue,
-    circular_warning_proxy: c.JSValue,
-    should_report_required_modules: c.JSValue,
+    /// Actual internalBinding('module_wrap').kEvaluated, supplied by its owner.
+    k_evaluated: c.JSValue,
 };
 fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < args.len) args[index] else c.pi_js_undefined(); }
 pub fn create(engine: *v.em.Engine, module: c.JSValue, inputs: Inputs) !c.JSValue {
@@ -23,15 +22,22 @@ pub fn create(engine: *v.em.Engine, module: c.JSValue, inputs: Inputs) !c.JSValu
     const owner = try s.own(try constructor.commonJSState(engine, module));
     if (c.JS_IsUndefined(owner)) return error.ActualCommonJSLexicalOwnerRequired;
     const state = try lexical.known(engine, owner);
-    if (!c.JS_IsObject(inputs.process) or !c.JS_IsProxy(inputs.circular_warning_proxy)) return error.ActualCommonJSLoadDependencyRequired;
+    const module_environment = try s.own(try constructor.loaderEnvironment(engine, module));
+    if (!s.equal(inputs.process, try s.get(module_environment, "process"))) return error.DifferentActualCommonJSProcess;
+    if (!c.JS_IsObject(inputs.process) or !c.JS_IsNumber(inputs.k_evaluated)) return error.ActualCommonJSLoadDependencyRequired;
     if (!c.JS_IsUndefined(try s.get(state.roots, "relativeResolveCache"))) return error.CommonJSLoadAlreadyCreated;
     inline for (std.meta.fields(Inputs)) |field| {
         const value = @field(inputs, field.name);
-        if (comptime !std.mem.eql(u8, field.name, "process") and !std.mem.eql(u8, field.name, "circular_warning_proxy")) {
+        if (comptime !std.mem.eql(u8, field.name, "process") and !std.mem.eql(u8, field.name, "k_evaluated")) {
             if (!c.JS_IsFunction(engine.context, value)) return error.ActualCommonJSLoadDependencyRequired;
         }
         try s.put(state.roots, field.name, value);
     }
+    const circular_graph = try s.own(try @import("native_node_commonjs_circular.zig").create(engine, module, inputs.k_evaluated));
+    try s.put(state.roots, "circular_exports", try s.get(circular_graph, "getExportsForCircularRequire"));
+    try s.put(state.roots, "circular_warning_proxy", try s.get(circular_graph, "CircularRequirePrototypeWarningProxy"));
+    const reporting = try s.own(try @import("native_node_commonjs_watch.zig").acquire(engine, module));
+    try s.put(state.roots, "report_module", try s.get(reporting, "reportModuleToWatchMode"));
     try s.put(state.roots, "relativeResolveCache", try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()))));
     const empty = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
     if (c.JS_FreezeObject(engine.context, empty) < 0) return v.js.capture(engine);
@@ -68,15 +74,7 @@ fn updateChildren(s: *Scope, state: *lexical.State, parent: c.JSValue, child: c.
     }
 }
 fn report(s: *Scope, state: *lexical.State, filename: c.JSValue) !void {
-    if (!s.truthy(try s.call(try s.get(state.roots, "should_report_required_modules"), c.pi_js_undefined(), &.{}))) return;
-    const process = try s.get(state.roots, "process");
-    if (!s.truthy(try s.get(process, "send"))) return;
-    const send = try s.get(process, "send");
-    const record = try s.object();
-    const list = try s.array();
-    try s.index(list, 0, filename);
-    try s.put(record, "watch:require", list);
-    _ = try s.call(send, process, &.{record});
+    _ = try s.call(try s.get(state.roots, "report_module"), c.pi_js_undefined(), &.{filename});
 }
 fn circular(s: *Scope, state: *lexical.State, module: c.JSValue) !c.JSValue { return s.call(try s.get(state.roots, "circular_exports"), c.pi_js_undefined(), &.{module}); }
 fn failedCleanup(s: *Scope, state: *lexical.State, module: c.JSValue, parent: c.JSValue, filename: c.JSValue, relative: c.JSValue) !void {

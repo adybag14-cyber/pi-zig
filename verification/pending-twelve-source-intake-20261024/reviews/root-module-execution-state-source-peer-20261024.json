@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-24T17:15:10.877017+00:00",
+  "status": "independent_source_peer_accepted",
+  "base_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\source-intake.json",
+    "bytes": 19517,
+    "sha256": "CD76917625C0727B50DA6CB18651FD6C1A40C2925763EC5351649CEC1A715E71"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\module-execution-state-successor.patch",
+    "bytes": 18605,
+    "sha256": "1C2CF40AD1E0A608304BA0CC60160BEAACC76B9771E1A322371AF635EF5D141A"
+  },
+  "selected_changes": [
+    {
+      "target": "src/extensions/native_node_module_execution_state.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\projected\\src\\extensions\\native_node_module_execution_state.zig",
+        "bytes": 4529,
+        "sha256": "DB89D2C84814FBD64F6DB2E8EF62EBA5C0ACCAB7302B8A3308FDB9BE9D99FDD4"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_commonjs_prototype.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_prototype.zig",
+        "bytes": 12210,
+        "sha256": "56F7D9B276D997A3028D6B7967D4152AE53A29698F50B1395F3C2DAF1C0B1468"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\projected\\src\\extensions\\native_node_commonjs_prototype.zig",
+        "bytes": 12549,
+        "sha256": "BB69BF6D87AF3B80FF1EB33852129C8AC760EC8CAE47147CE00BF964668C9C99"
+      }
+    },
+    {
+      "target": "src/native_node_module_execution_state_test.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\projected\\src\\native_node_module_execution_state_test.zig",
+        "bytes": 10245,
+        "sha256": "0648B77FCA2C7AEC5E0547EEF7E24567252B5716A256C9F73F06EF27DD8863D5"
+      }
+    },
+    {
+      "target": "build.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 515962,
+        "sha256": "7AB122A962019B935EB08EE6042BFFDDCB6F7AF6BE6405F47E06A6CF591B7D4F"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 517040,
+        "sha256": "88ADF2EFF151CDBB367ED54D5E4E3973655F8CAE78B7E084B2EC6DC415E8886E"
+      }
+    }
+  ],
+  "root_manual_read_scope": [
+    "Full4529-byte execution-state owner and full10245-byte seven-control source.",
+    "Exact prototype input-removal/capture delta against previously read complete177-line prototype.",
+    "Full existing module callable, CommonJS lexical owner and private publication owners.",
+    "All three original helpers/compile excerpts, independently matched to their pinned raw source ranges."
+  ],
+  "static_checks": {
+    "manifest_pin_versions": 21,
+    "exact_full_patch": true,
+    "exact_prototype_forward_inverse": true,
+    "exact_additive_build_forward_inverse": true,
+    "authority_excerpts_verified": 3,
+    "direct_relative_import_rows": 13,
+    "all_control_names_exact": 7
+  },
+  "findings": [
+    "The two independent native boolean cells preserve the original false initial values and monotone setter behavior.",
+    "The four ordinary nonconstructible zero-argument callables retain the same actual per-Engine cell through existing traced native captures; receiver and arguments are unused.",
+    "Cold and warm acquisitions honor native pending entry; publication occurs after expression-owned temporary retirement.",
+    "The prototype captures the actual private helper setter in place of the external Inputs field; the original compile-body call and its ordering remain unchanged.",
+    "Native cell allocation/free follows the existing aggregate memory ownership pattern and finalization lifetime."
+  ],
+  "declared_controls": 7,
+  "actual_metadata_count": null,
+  "native_execution_authorized": false,
+  "main_intake_authorized": false,
+  "source_mutation_hold_released": false,
+  "product_qualification": false,
+  "remaining_canonical_inputs": [
+    "wrap_module_load with actual debugWithTimer/tracingChannel behavior",
+    "actual wrap_safe supplier closure",
+    "strip_typescript_module_types",
+    "load_esm_from_cjs",
+    "call_and_pause_on_start and real inspector bootstrap",
+    "full canonical Module publication and original Main runtime-factory assembly"
+  ],
+  "limits": [
+    "Source review only; no native build, metadata, runtime or complete Module prototype invocation was performed.",
+    "Actual ESM evaluation and complete canonical Module/public startup suppliers remain separately required.",
+    "Compose this later packet against actual selected dependencies and add only its build hunk to the composed build."
+  ]
+}

@@ -1,0 +1,16 @@
+--- a/src/native_node_module_package_inputs_test.zig
++++ b/src/native_node_module_package_inputs_test.zig
+@@ -113,11 +113,11 @@
+         const object_prototype = try s.get(try s.get(global, "Object"), "prototype");
+         self.target = self.keep(a.duplicate(s.engine, try shape.newInstance(s, object_prototype)));
+         self.data = try bindings.BindingData.create(s, shape, self.target, self.template_owner);
+-        const read = try s.own(try functions.create(s.engine, "actualPackageRead", 1,
++        const read_function = try s.own(try functions.create(s.engine, "actualPackageRead", 1,
+             false, readCallback, &.{}));
+         const repair = try s.own(try functions.create(s.engine, "actualPackageRepair", 0,
+             false, repairCallback, &.{}));
+-        try s.define(global, "actualPackageRead", read, c.JS_PROP_C_W_E);
++        try s.define(global, "actualPackageRead", read_function, c.JS_PROP_C_W_E);
+         try s.define(global, "actualPackageRepair", repair, c.JS_PROP_C_W_E);
+         try s.define(global, "actualPackagePath", try s.text(self.disk.path), c.JS_PROP_C_W_E);
+         return c.pi_js_undefined();

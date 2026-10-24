@@ -1,0 +1,361 @@
+{
+  "schema": "pi-zig-module-execution-state-source-intake-v1",
+  "date_utc": "2026-10-24",
+  "main_base_commit": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "scope": "Actual internal/modules/helpers CJS/ESM execution-start lexical owner; bind canonical CommonJS prototype to the real CJS setter.",
+  "status": "immutable_source_candidate_pending_independent_peer",
+  "changes": [
+    {
+      "target": "src/extensions/native_node_module_execution_state.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\projected\\src\\extensions\\native_node_module_execution_state.zig",
+        "bytes": 4529,
+        "sha256": "DB89D2C84814FBD64F6DB2E8EF62EBA5C0ACCAB7302B8A3308FDB9BE9D99FDD4"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_commonjs_prototype.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_prototype.zig",
+        "bytes": 12210,
+        "sha256": "56F7D9B276D997A3028D6B7967D4152AE53A29698F50B1395F3C2DAF1C0B1468"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\projected\\src\\extensions\\native_node_commonjs_prototype.zig",
+        "bytes": 12549,
+        "sha256": "BB69BF6D87AF3B80FF1EB33852129C8AC760EC8CAE47147CE00BF964668C9C99"
+      }
+    },
+    {
+      "target": "src/native_node_module_execution_state_test.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\projected\\src\\native_node_module_execution_state_test.zig",
+        "bytes": 10245,
+        "sha256": "0648B77FCA2C7AEC5E0547EEF7E24567252B5716A256C9F73F06EF27DD8863D5"
+      }
+    },
+    {
+      "target": "build.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 515962,
+        "sha256": "7AB122A962019B935EB08EE6042BFFDDCB6F7AF6BE6405F47E06A6CF591B7D4F"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 517040,
+        "sha256": "88ADF2EFF151CDBB367ED54D5E4E3973655F8CAE78B7E084B2EC6DC415E8886E"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\module-execution-state-successor.patch",
+    "bytes": 18605,
+    "sha256": "1C2CF40AD1E0A608304BA0CC60160BEAACC76B9771E1A322371AF635EF5D141A"
+  },
+  "original_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__helpers.js.txt",
+      "bytes": 15131,
+      "sha256": "A6DC622FC53AC9D7D99EE95B54E7EC146384F3B35A6DFFFE22D828FA98C1565D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+      "bytes": 72050,
+      "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+    }
+  ],
+  "authority_excerpts": [
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__helpers.js.txt",
+      "lines": [
+        327,
+        337
+      ],
+      "bytes": 672,
+      "sha256": "DDC3BE407CDE685B95813478B36C71043B315116C14A89F97BFFED8D242A73B4",
+      "text": "// Whether we have started executing any user-provided CJS code.\n// This is set right before we call the wrapped CJS code (not after,\n// in case we are half-way in the execution when internals check this).\n// Used for internal assertions.\nlet _hasStartedUserCJSExecution = false;\n// Similar to _hasStartedUserCJSExecution but for ESM. This is set\n// right before ESM evaluation in the default ESM loader. We do not\n// update this during vm SourceTextModule execution because at that point\n// some user code must already have been run to execute code via vm\n// there is little value checking whether any user JS code is run anyway.\nlet _hasStartedUserESMExecution = false;\n"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__helpers.js.txt",
+      "lines": [
+        478,
+        489
+      ],
+      "bytes": 318,
+      "sha256": "E21C7905DB7E403B899DF3D0D3236BE2E0A2E954328F815AF2163C893F1B4940",
+      "text": "  hasStartedUserCJSExecution() {\n    return _hasStartedUserCJSExecution;\n  },\n  setHasStartedUserCJSExecution() {\n    _hasStartedUserCJSExecution = true;\n  },\n  hasStartedUserESMExecution() {\n    return _hasStartedUserESMExecution;\n  },\n  setHasStartedUserESMExecution() {\n    _hasStartedUserESMExecution = true;\n  },\n"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+      "lines": [
+        1796,
+        1817
+      ],
+      "bytes": 814,
+      "sha256": "B8D91080C077B857BCB4DB94148A71C85F72E8E0DBA51AA326B95A6A5551A7B7",
+      "text": "  }\n\n  const dirname = path.dirname(filename);\n  const require = makeRequireFunction(this, redirects);\n  let result;\n  const exports = this.exports;\n  const thisValue = exports;\n  const module = this;\n  if (requireDepth === 0) { statCache = new SafeMap(); }\n  setHasStartedUserCJSExecution();\n  this[kIsExecuting] = true;\n  if (this[kIsMainSymbol] && getOptionValue('--inspect-brk')) {\n    const { callAndPauseOnStart } = internalBinding('inspector');\n    result = callAndPauseOnStart(compiledWrapper, thisValue, exports,\n                                 require, module, filename, dirname);\n  } else {\n    result = FunctionPrototypeCall(compiledWrapper, thisValue, exports, require, module, filename, dirname);\n  }\n  this[kIsExecuting] = false;\n  if (requireDepth === 0) { statCache = null; }\n  return result;\n};\n"
+    }
+  ],
+  "semantic_accounting": [
+    "Two private native booleans have the original false initial values; each Source setter sets exactly one to true and returns undefined, and each getter returns the corresponding boolean.",
+    "All four methods are real ordinary nonconstructible zero-argument callables with original names. Receiver/arguments are ignored without property access or coercion.",
+    "The actual per-Engine private cache retains one helper carrier and shared cell. Acquiring it again returns the same methods without resetting facts. Native cell and callable captures are charged and traced/finalized through existing owners.",
+    "Canonical prototype Inputs no longer accepts set_started_user_cjs. Its real bootstrap captures setHasStartedUserCJSExecution from this helper owner; the original compile-body call remains byte-for-byte at the same point before wrapper execution.",
+    "The ESM sibling getter/setter are complete original lexical operations only. No ESM evaluation, inspector, permission policy, diagnostics channel or loader publication is synthesized."
+  ],
+  "prototype_inverse": {
+    "removed_input_line": "    set_started_user_cjs: c.JSValue,\n",
+    "added_capture": "    // Original internal/modules/helpers owns this lexical fact. It is shared\n    // with its getters/ESM sibling and is not supplied by the embedding caller.\n    const execution_state = try s.own(try @import(\"native_node_module_execution_state.zig\").acquire(engine));\n    try s.put(roots, \"set_started_user_cjs\", try s.get(execution_state, \"setHasStartedUserCJSExecution\"));\n",
+    "anchor": "    inline for (.{ .{ \"kFormat\", constructor.LoaderKey.format }",
+    "forward_exact": true,
+    "inverse_exact": true,
+    "require_load_compile_tail_unchanged": true,
+    "unchanged_tail_sha256": "3D654B2C4A5E0A57AC0B290C94EFC26DB2DCC318F5FF40E847F091951119D826",
+    "no_other_main_src_input_field_consumers_found": true
+  },
+  "build_inverse": {
+    "base": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+      "bytes": 515962,
+      "sha256": "7AB122A962019B935EB08EE6042BFFDDCB6F7AF6BE6405F47E06A6CF591B7D4F"
+    },
+    "candidate": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 517040,
+      "sha256": "88ADF2EFF151CDBB367ED54D5E4E3973655F8CAE78B7E084B2EC6DC415E8886E"
+    },
+    "addition": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\build-addition.txt",
+      "bytes": 1078,
+      "sha256": "5B393CC4826930BD30917EA38160745D61D4CCEB7954048373A7F3F1761FE694"
+    },
+    "anchor": "    const public_rpc_jsonl_tests = b.addTest(.{\n",
+    "addition_bytes": 1078,
+    "addition_lines": 13,
+    "exact_forward_and_inverse": true,
+    "compose_addition_only": true
+  },
+  "direct_import_resolutions": [
+    {
+      "from": "src/extensions/native_node_module_execution_state.zig",
+      "operand": "native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_module_execution_state.zig",
+      "operand": "native_node_fs_private_publication.zig",
+      "target": "src/extensions/native_node_fs_private_publication.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_private_publication.zig",
+        "bytes": 1033,
+        "sha256": "F118D857DB722708344B87083608FEFEB769183BC0DB0F09C05D1CDCF87AB307"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_module_execution_state.zig",
+      "operand": "native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_prototype.zig",
+      "operand": "native_ai_provider_values.zig",
+      "target": "src/extensions/native_ai_provider_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_ai_provider_values.zig",
+        "bytes": 2689,
+        "sha256": "2D64F3F5E408790DC0BD374E13F1A9C69EB21E1D62944DAE9C913B87F13629EB"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_prototype.zig",
+      "operand": "native_node_commonjs_converted_provider.zig",
+      "target": "src/extensions/native_node_commonjs_converted_provider.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_converted_provider.zig",
+        "bytes": 5239,
+        "sha256": "B07763D8C4B1C8F596C043D119158EAAACAD55E3056B428958C71978B0E6A05C"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_prototype.zig",
+      "operand": "native_node_commonjs_interrupt.zig",
+      "target": "src/extensions/native_node_commonjs_interrupt.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_interrupt.zig",
+        "bytes": 1877,
+        "sha256": "7501E2EDA766BD831320F2878547C39083DEF09D21124D85E55545C342532B6C"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_prototype.zig",
+      "operand": "native_node_commonjs_state.zig",
+      "target": "src/extensions/native_node_commonjs_state.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_state.zig",
+        "bytes": 2830,
+        "sha256": "FD1FCE7037F7D3B50E6DB6095B2463B8949B1D897910EAA1125DE9C6C26FDDA9"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_prototype.zig",
+      "operand": "native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_prototype.zig",
+      "operand": "native_node_module_constructor.zig",
+      "target": "src/extensions/native_node_module_constructor.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_constructor.zig",
+        "bytes": 29849,
+        "sha256": "7D61665F890E56E73F921D4A4B6B9F8A70D75AD21BF75AE665EFC9C98C73BB07"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_prototype.zig",
+      "operand": "native_node_module_execution_state.zig",
+      "target": "src/extensions/native_node_module_execution_state.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\projected\\src\\extensions\\native_node_module_execution_state.zig",
+        "bytes": 4529,
+        "sha256": "DB89D2C84814FBD64F6DB2E8EF62EBA5C0ACCAB7302B8A3308FDB9BE9D99FDD4"
+      }
+    },
+    {
+      "from": "src/native_node_module_execution_state_test.zig",
+      "operand": "extensions/engine.zig",
+      "target": "src/extensions/engine.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      }
+    },
+    {
+      "from": "src/native_node_module_execution_state_test.zig",
+      "operand": "extensions/native_js_values.zig",
+      "target": "src/extensions/native_js_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_js_values.zig",
+        "bytes": 9122,
+        "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+      }
+    },
+    {
+      "from": "src/native_node_module_execution_state_test.zig",
+      "operand": "extensions/native_node_module_execution_state.zig",
+      "target": "src/extensions/native_node_module_execution_state.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\projected\\src\\extensions\\native_node_module_execution_state.zig",
+        "bytes": 4529,
+        "sha256": "DB89D2C84814FBD64F6DB2E8EF62EBA5C0ACCAB7302B8A3308FDB9BE9D99FDD4"
+      }
+    }
+  ],
+  "retained_ownership_primitives": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_state.zig",
+      "bytes": 2830,
+      "sha256": "FD1FCE7037F7D3B50E6DB6095B2463B8949B1D897910EAA1125DE9C6C26FDDA9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+      "bytes": 12781,
+      "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_private_publication.zig",
+      "bytes": 1033,
+      "sha256": "F118D857DB722708344B87083608FEFEB769183BC0DB0F09C05D1CDCF87AB307"
+    }
+  ],
+  "controls": {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-execution-state-sourceonly-20261024\\projected\\src\\native_node_module_execution_state_test.zig",
+      "bytes": 10245,
+      "sha256": "0648B77FCA2C7AEC5E0547EEF7E24567252B5716A256C9F73F06EF27DD8863D5"
+    },
+    "build_step": "build-native-node-module-execution-state",
+    "filter": "native module execution state",
+    "declared_count": 7,
+    "names": [
+      "native module execution state original methods preserve metadata and independent monotone facts",
+      "native module execution state ignores receiver and arguments and rejects construction without setting",
+      "native module execution state cached acquisition retains exact methods and never resets a started fact",
+      "native module execution state belongs to each actual Engine rather than process globals",
+      "native module execution state pending cold entry wins before any native allocation or publication",
+      "native module execution state pending event prevents setter mutation without hiding the original reason",
+      "native module execution state retained methods own their native cell through cache retirement and collection"
+    ],
+    "coverage": [
+      "Original metadata and two independent monotone execution facts",
+      "No receiver/argument coercion; constructor attempts do not set facts",
+      "Warm owner/method identity and no state reset",
+      "Isolation across two actual Engines",
+      "Raw pending cold entry precedes native allocation and publication",
+      "Raw pending setter does not change the flag and preserves reason identity",
+      "Retained actual method captures keep the charged native cell alive through deliberate cache retirement/GC, then release it exactly"
+    ],
+    "actual_metadata_count": null,
+    "executed": false,
+    "limitation": "The seven controls exercise the real flag owner. Full canonical Module.prototype._compile still requires its other genuine suppliers; this packet does not fabricate them to run an aggregate control."
+  },
+  "remaining_canonical_inputs": [
+    "wrap_module_load with actual debugWithTimer/tracingChannel behavior",
+    "actual wrap_safe supplier closure",
+    "strip_typescript_module_types",
+    "load_esm_from_cjs",
+    "call_and_pause_on_start and real inspector bootstrap",
+    "full canonical Module publication and original Main runtime-factory assembly"
+  ],
+  "composition": {
+    "distinct_from_sealed_print_and_six_packets": true,
+    "source_files_overlap_with_those_packets": false,
+    "build": "Apply the exact additive insertion to Root's composed build. This standalone projection is based on frozen Main and must not replace newer combined source.",
+    "future_head": null
+  },
+  "not_executed": {
+    "native_build": true,
+    "metadata_query": true,
+    "runtime": true,
+    "node_capture": true,
+    "source_generator": true,
+    "formatter_or_parser": true,
+    "main_mutation": true
+  },
+  "claims": {
+    "complete_flag_owner_source": true,
+    "canonical_loader_complete": false,
+    "public_module_or_helpers_namespace": false,
+    "esm_loader_qualification": false,
+    "whole_application_startup": false
+  }
+}

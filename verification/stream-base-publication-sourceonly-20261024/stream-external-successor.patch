@@ -1,0 +1,344 @@
+diff --git a/vendor/quickjs/quickjs.h b/vendor/quickjs/quickjs.h
+--- a/vendor/quickjs/quickjs.h
++++ b/vendor/quickjs/quickjs.h
+@@ -1295,6 +1295,16 @@
+                                   JSValueConst key, JSValue *value);
+ JS_EXTERN bool JS_IsDataView(JSValueConst val);
+ 
++/* Actual native External value: a fresh non-extensible, null-prototype object
++   with an authenticated VM class and a borrowed non-null pointer. No stream,
++   native owner, JS value or backing store is retained or finalized. The pointer
++   is meaningful only while its independently owned native target is alive.
++   Recognition/extraction do not unwrap proxies, coerce, allocate or dereference
++   the stored pointer; non-External input extracts NULL. */
++JS_EXTERN JSValue JS_PiNewExternal(JSContext *ctx, void *pointer);
++JS_EXTERN bool JS_PiIsExternal(JSValueConst value);
++JS_EXTERN void *JS_PiExternalValue(JSValueConst value);
++
+ JS_EXTERN JSValue JS_NewArray(JSContext *ctx);
+ // takes ownership of the values
+ JS_EXTERN JSValue JS_NewArrayFrom(JSContext *ctx, int count,
+diff --git a/vendor/quickjs/quickjs.c b/vendor/quickjs/quickjs.c
+--- a/vendor/quickjs/quickjs.c
++++ b/vendor/quickjs/quickjs.c
+@@ -193,6 +193,8 @@
+     JS_CLASS_DOM_EXCEPTION,
+     JS_CLASS_CALL_SITE,
+     JS_CLASS_RAWJSON,
++
++    JS_CLASS_PI_EXTERNAL, /* borrowed native External, no target ownership */
+ 
+     JS_CLASS_INIT_COUNT, /* last entry for predefined classes */
+ };
+@@ -2605,6 +2607,10 @@
+     { JS_ATOM_DisposableStack, js_disposable_stack_finalizer, js_disposable_stack_mark }, /* JS_CLASS_DISPOSABLE_STACK */
+ };
+ 
++static JSClassShortDef const js_pi_external_class_def[] = {
++    { JS_ATOM_Object, NULL, NULL }, /* JS_CLASS_PI_EXTERNAL */
++};
++
+ static int init_class_range(JSRuntime *rt, JSClassShortDef const *tab,
+                             int start, int count)
+ {
+@@ -2698,6 +2704,9 @@
+     /* create the object, array and function classes */
+     if (init_class_range(rt, js_std_class_def, JS_CLASS_OBJECT,
+                          countof(js_std_class_def)) < 0)
++        goto fail;
++    if (init_class_range(rt, js_pi_external_class_def, JS_CLASS_PI_EXTERNAL,
++                         countof(js_pi_external_class_def)) < 0)
+         goto fail;
+     rt->class_array[JS_CLASS_ARGUMENTS].exotic = &js_arguments_exotic_methods;
+     rt->class_array[JS_CLASS_MAPPED_ARGUMENTS].exotic = &js_arguments_exotic_methods;
+@@ -14087,6 +14096,30 @@
+     if (p->class_id != class_id)
+         return NULL;
+     return p->u.opaque;
++}
++
++/* V8 External::New / JSExternalObject: only the value object is owned.
++   The native address carries no keepalive and is never dereferenced here. */
++JSValue JS_PiNewExternal(JSContext *ctx, void *pointer)
++{
++    JSValue value;
++    assert(pointer != NULL);
++    value = JS_NewObjectProtoClass(ctx, JS_NULL, JS_CLASS_PI_EXTERNAL);
++    if (JS_IsException(value))
++        return value;
++    JS_SetOpaqueInternal(value, pointer);
++    JS_VALUE_GET_OBJ(value)->extensible = false;
++    return value;
++}
++
++bool JS_PiIsExternal(JSValueConst value)
++{
++    return JS_GetClassID(value) == JS_CLASS_PI_EXTERNAL;
++}
++
++void *JS_PiExternalValue(JSValueConst value)
++{
++    return JS_GetOpaque(value, JS_CLASS_PI_EXTERNAL);
+ }
+ 
+ void *JS_GetOpaque2(JSContext *ctx, JSValueConst obj, JSClassID class_id)
+diff --git a/src/extensions/native_node_external_value.zig b/src/extensions/native_node_external_value.zig
+--- /dev/null
++++ b/src/extensions/native_node_external_value.zig
+@@ -0,0 +1,20 @@
++// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
++//! Genuine native External values over the VM's private External class.
++//! Only the JS value is owned. The original native address is borrowed; there is
++//! no BaseObjectPtr, persistent wrapper, native reference, or disposal callback.
++const a = @import("native_node_argument_values.zig");
++const c = a.c;
++
++/// Returns a local handle owned by s. Duplicate it only when escaping the scope.
++pub fn create(s: *a.Scope, pointer: *anyopaque) !c.JSValue {
++    const generation = try s.beforeAllocation();
++    return s.checkedAllocation(c.JS_PiNewExternal(s.engine.context, pointer), generation);
++}
++pub fn isExternal(candidate: c.JSValue) bool {
++    return c.JS_PiIsExternal(candidate);
++}
++/// This authenticates the VM class without dereferencing the borrowed address.
++/// The consumer must independently know the target's native lifetime.
++pub fn value(candidate: c.JSValue) ?*anyopaque {
++    return c.JS_PiExternalValue(candidate);
++}
+diff --git a/src/extensions/native_node_stream_js_dispatch.zig b/src/extensions/native_node_stream_js_dispatch.zig
+--- a/src/extensions/native_node_stream_js_dispatch.zig
++++ b/src/extensions/native_node_stream_js_dispatch.zig
+@@ -3,8 +3,8 @@
+ //! and the fd/bytesRead/bytesWritten accessors from Node v24.13 stream_base.cc.
+ //!
+ //! These are callback bodies over the actual wrapper slots and native stream.
+-//! Public AddMethods/template publication still requires external_stream and
+-//! the complete original publication owner before that surface can be exposed.
++//! Public AddMethods/template publication still requires its complete original
++//! signature/accessor/constructor owner before that surface can be exposed.
+ //! The caller supplies its existing Scope; no extra HandleScope is introduced.
+ const a = @import("native_node_argument_values.zig");
+ const wraps = @import("native_node_async_wrap_state.zig");
+@@ -15,6 +15,7 @@
+ const writes = @import("native_node_stream_write.zig");
+ const string_writes = @import("native_node_stream_write_string.zig");
+ const vector_writes = @import("native_node_stream_writev.zig");
++const external = @import("native_node_external_value.zig");
+ const check = @import("native_node_check_failure.zig");
+ const c = a.c;
+ 
+@@ -90,6 +91,17 @@
+     };
+ }
+ 
++/// Original GetExternal returns a fresh External for any remaining native
++/// stream, including a closed one. It does not consult IsAlive, cache the value,
++/// enter a trigger scope, or acquire a native pointer/JS wrapper keepalive.
++pub fn getExternal(s: *a.Scope, registry: *wraps.Registry,
++    receiver: c.JSValue) !c.JSValue
++{
++    const stream = streams.Base.fromObject(registry, receiver) orelse
++        return c.pi_js_undefined();
++    return a.duplicate(s.engine, try external.create(s, @ptrCast(stream)));
++}
++
+ /// GetFD uses the same FromObject and IsAlive guards, but has no trigger scope.
+ /// The virtual default is the original -1; concrete streams provide their fd.
+ pub fn getFD(s: *a.Scope, registry: *wraps.Registry,
+diff --git a/src/native_node_stream_external_test.zig b/src/native_node_stream_external_test.zig
+--- /dev/null
++++ b/src/native_node_stream_external_test.zig
+@@ -0,0 +1,161 @@
++//! Actual External/GetExternal controls; source-only, not executed.
++//! Uses real VM native classes, concrete FileHandle and independent native refs.
++const std = @import("std");
++const support = @import("native_node_file_handle_owner_test_support.zig");
++const a = support.a;
++const c = a.c;
++const external = @import("extensions/native_node_external_value.zig");
++const dispatch = @import("extensions/native_node_stream_js_dispatch.zig");
++
++fn make(f: *support.Fixture, pointer: *anyopaque) !c.JSValue {
++    return a.expression(f.engine, struct {
++        fn body(s: *a.Scope, raw: *anyopaque) !c.JSValue {
++            return a.duplicate(s.engine, try external.create(s, raw));
++        }
++    }.body, .{pointer});
++}
++fn get(f: *support.Fixture, receiver: c.JSValue) !c.JSValue {
++    return a.expression(f.engine, struct {
++        fn body(s: *a.Scope, fx: *support.Fixture, object: c.JSValue) !c.JSValue {
++            return dispatch.getExternal(s, fx.registry(), object);
++        }
++    }.body, .{f, receiver});
++}
++fn closed(f: *support.Fixture) !*support.Handle {
++    const handle = try f.create(-1, null, null);
++    try std.testing.expectEqual(@as(c_int,-1),try f.releaseDescriptor());
++    return handle;
++}
++
++test "native Stream external actual VM class stores a borrowed nonnull address" {
++    var f: support.Fixture=undefined; try f.init(); defer f.deinit();
++    var marker: u64=0x12345678;
++    const value=try make(&f,@ptrCast(&marker)); defer f.engine.freeValue(value);
++    try std.testing.expect(external.isExternal(value));
++    try std.testing.expect(c.JS_IsObject(value));
++    try std.testing.expect(!c.JS_IsFunction(f.engine.context,value));
++    try std.testing.expect(!c.JS_IsConstructor(f.engine.context,value));
++    try std.testing.expect(external.value(value)==@as(*anyopaque,@ptrCast(&marker)));
++    try std.testing.expectEqual(@as(u64,0x12345678),marker);
++}
++
++test "native Stream external null prototype nonextensibility and native object shape match original" {
++    var f: support.Fixture=undefined; try f.init(); defer f.deinit();
++    var marker: u8=1;
++    const value=try make(&f,@ptrCast(&marker)); defer f.engine.freeValue(value);
++    try f.expose("actualExternal",value);
++    try f.expect("typeof actualExternal==='object' && Object.getPrototypeOf(actualExternal)===null" ++
++        " && Reflect.ownKeys(actualExternal).length===0 && !Object.isExtensible(actualExternal)" ++
++        " && Object.isSealed(actualExternal) && Object.isFrozen(actualExternal)" ++
++        " && Object.prototype.toString.call(actualExternal)==='[object Object]' && JSON.stringify(actualExternal)==='{}'");
++    try f.expect("Reflect.set(actualExternal,'added',1)===false" ++
++        " && Reflect.defineProperty(actualExternal,'added',{value:1})===false" ++
++        " && Reflect.setPrototypeOf(actualExternal,Object.prototype)===false" ++
++        " && Reflect.setPrototypeOf(actualExternal,null)===true" ++
++        " && (()=>{try{String(actualExternal);return false;}catch(e){return e instanceof TypeError;}})()");
++}
++
++test "native Stream external fresh getter identities carry the same actual live StreamBase address" {
++    var file:support.File=undefined; try file.init(); defer file.deinit();
++    var f:support.Fixture=undefined; try f.init(); defer f.deinit();
++    const handle=try f.create(file.take(),null,null);
++    const first=try get(&f,f.primary_wrapper.?); defer f.engine.freeValue(first);
++    const second=try get(&f,f.primary_wrapper.?); defer f.engine.freeValue(second);
++    try std.testing.expect(external.isExternal(first) and external.isExternal(second));
++    try std.testing.expect(!c.JS_IsStrictEqual(f.engine.context,first,second));
++    const pointer:*anyopaque=@ptrCast(&handle.stream);
++    try std.testing.expect(external.value(first)==pointer and external.value(second)==pointer);
++    file.descriptor=try f.releaseDescriptor();
++}
++
++test "native Stream external closed streams still expose the native address without IsAlive filtering" {
++    var f:support.Fixture=undefined; try f.init(); defer f.deinit();
++    const handle=try closed(&f);
++    try std.testing.expect(!handle.isAlive());
++    const value=try get(&f,f.primary_wrapper.?); defer f.engine.freeValue(value);
++    try std.testing.expect(external.isExternal(value));
++    try std.testing.expect(external.value(value)==@as(*anyopaque,@ptrCast(&handle.stream)));
++}
++
++test "native Stream external getter does not acquire native or registry references or trigger scope" {
++    var f:support.Fixture=undefined; try f.init(); defer f.deinit();
++    const handle=try closed(&f);
++    const native_before=handle.wrap.native_references;
++    const registry_before=f.registry().references;
++    f.env().uidField(.default_trigger).*=811;
++    const value=try get(&f,f.primary_wrapper.?); defer f.engine.freeValue(value);
++    try std.testing.expectEqual(native_before,handle.wrap.native_references);
++    try std.testing.expectEqual(registry_before,f.registry().references);
++    try std.testing.expectEqual(@as(f64,811),f.env().uidField(.default_trigger).*);
++}
++
++test "native Stream external missing and foreign receiver bodies return undefined without user traps" {
++    var f:support.Fixture=undefined; try f.init(); defer f.deinit(); _=try closed(&f);
++    try f.expose("externalHandle",f.primary_wrapper.?);
++    try f.evaluate("globalThis.externalTraps=0;");
++    inline for (.{
++        "({})", "Object.create(Object.getPrototypeOf(externalHandle))",
++        "new Proxy(externalHandle,{get(){externalTraps++;throw 1;}})",
++    }) |source| {
++        const receiver=try f.value(source); defer f.engine.freeValue(receiver);
++        const value=try get(&f,receiver); defer f.engine.freeValue(value);
++        try std.testing.expect(c.JS_IsUndefined(value));
++    }
++    try f.expect("externalTraps===0");
++}
++
++test "native Stream external authentic recognition rejects structural copies and proxies without coercion" {
++    var f:support.Fixture=undefined; try f.init(); defer f.deinit();
++    var marker:u8=1;
++    const value=try make(&f,@ptrCast(&marker)); defer f.engine.freeValue(value);
++    try f.expose("authenticExternal",value);
++    try f.evaluate("globalThis.externalTraps=0;");
++    inline for (.{
++        "Object.preventExtensions(Object.create(null))",
++        "new Proxy(authenticExternal,{get(){externalTraps++;throw 1;}})",
++        "({[Symbol.toPrimitive](){externalTraps++;throw 1;}})", "null", "Symbol('external')",
++    }) |source| {
++        const wrong=try f.value(source); defer f.engine.freeValue(wrong);
++        try std.testing.expect(!external.isExternal(wrong));
++        try std.testing.expect(external.value(wrong)==null);
++        try std.testing.expect(!c.JS_HasException(f.engine.context));
++    }
++    try f.expect("externalTraps===0");
++}
++
++test "native Stream external public native opaque setter cannot overwrite its private class slot" {
++    var f:support.Fixture=undefined; try f.init(); defer f.deinit();
++    var first:u8=1; var other:u8=2;
++    const value=try make(&f,@ptrCast(&first)); defer f.engine.freeValue(value);
++    try std.testing.expectEqual(@as(c_int,-1),c.JS_SetOpaque(value,@ptrCast(&other)));
++    try std.testing.expect(external.value(value)==@as(*anyopaque,@ptrCast(&first)));
++    try std.testing.expect(!c.JS_HasException(f.engine.context));
++}
++
++test "native Stream external freeing the value does not dispose or close its independently owned stream" {
++    var file:support.File=undefined; try file.init(); defer file.deinit();
++    var f:support.Fixture=undefined; try f.init(); defer f.deinit();
++    const fd=file.take(); const handle=try f.create(fd,null,null);
++    const value=try get(&f,f.primary_wrapper.?);
++    f.engine.freeValue(value); c.JS_RunGC(f.engine.runtime);
++    try std.testing.expect(handle.isAlive() and support.File.status(fd)==0);
++    try std.testing.expect(f.registry().unwrap(f.primary_wrapper.?)==&handle.wrap);
++    file.descriptor=try f.releaseDescriptor();
++}
++
++test "native Stream external value survives target retirement as a borrowed address with no keepalive" {
++    var f:support.Fixture=undefined; try f.init(); defer f.deinit();
++    const handle=try closed(&f);
++    const pointer:*anyopaque=@ptrCast(&handle.stream);
++    const value=try get(&f,f.primary_wrapper.?); defer f.engine.freeValue(value);
++    try std.testing.expectEqual(@as(usize,0),handle.wrap.native_references);
++    try handle.wrap.retire(false);
++    // The address is now stale, exactly like the original External. Recognition
++    // and extraction must not dereference it or resurrect/retain the old owner.
++    try std.testing.expect(f.registry().unwrap(f.primary_wrapper.?)==null);
++    c.JS_RunGC(f.engine.runtime);
++    try std.testing.expect(external.isExternal(value));
++    try std.testing.expect(external.value(value)==pointer);
++    const after=try get(&f,f.primary_wrapper.?); defer f.engine.freeValue(after);
++    try std.testing.expect(c.JS_IsUndefined(after));
++}
+diff --git a/build.zig b/build.zig
+--- a/build.zig
++++ b/build.zig
+@@ -2344,6 +2344,27 @@
+             node_stream_js_dispatch.root_module.linkSystemLibrary("userenv", .{});
+         }
+         b.step("build-native-node-stream-js-dispatch", "Install 13 actual StreamBase JS dispatch controls without execution").dependOn(&b.addInstallArtifact(node_stream_js_dispatch, .{ .dest_sub_path = b.fmt("native-node-stream-js-dispatch{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
++        const node_stream_external = b.addTest(.{
++            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_stream_external_test.zig"), .target = target, .optimize = optimize }),
++            .filters = &.{"native Stream external"}, .use_llvm = use_llvm,
++        });
++        linkQuickJs(b, node_stream_external.root_module, quickjs, sqlite_lib_dir);
++        linkTypeScriptParser(b, node_stream_external.root_module, typescript_parser);
++        linkSqlite(node_stream_external.root_module, sqlite_lib_dir, sqlite_library);
++        node_stream_external.root_module.addImport("catalog_tool", catalog_tool);
++        node_stream_external.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
++        node_stream_external.root_module.addIncludePath(b.path("src/extensions"));
++        node_stream_external.root_module.linkLibrary(network);
++        node_stream_external.root_module.linkLibrary(node_one_byte_diagnostics);
++        node_stream_external.root_module.addCSourceFile(.{
++            .file = b.path("src/extensions/native_node_custom_buffer_listener_allocation.cpp"),
++            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
++        });
++        if (target.result.os.tag == .windows) {
++            node_stream_external.root_module.linkSystemLibrary("advapi32", .{});
++            node_stream_external.root_module.linkSystemLibrary("userenv", .{});
++        }
++        b.step("build-native-node-stream-external", "Install declared StreamBase native External controls without execution").dependOn(&b.addInstallArtifact(node_stream_external, .{ .dest_sub_path = b.fmt("native-node-stream-external{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+         const node_stream_writev = b.addTest(.{
+             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_stream_writev_test.zig"), .target = target, .optimize = optimize }),
+             .filters = &.{"native Stream vector write"}, .use_llvm = use_llvm,

@@ -1,6 +1,6 @@
 //! Actual Node24.13 AsyncWrap and request FunctionTemplate owners.
 //! This private graph supplies real template instances and the three native
-//! AsyncWrap API methods. FileHandle's callback/StreamBase template is separate.
+//! AsyncWrap API methods and complete FileHandle template with real native inputs.
 const std = @import("std");
 const a = @import("native_node_argument_values.zig");
 const native = @import("native_node_async_wrap_state.zig");
@@ -8,6 +8,9 @@ const callable = @import("native_node_module_callable.zig");
 const publication = @import("native_node_fs_private_publication.zig");
 const fs_io = @import("native_node_fs_request_io.zig");
 const fs_callback = @import("native_node_fs_request_callback.zig");
+const file_template = @import("native_node_file_handle_template.zig");
+const file_binding = @import("native_node_fs_binding_data.zig");
+const one_byte = @import("native_node_one_byte_string.zig");
 const check = @import("native_node_check_failure.zig");
 const c = a.c;
 pub const Engine = native.Engine;
@@ -16,15 +19,17 @@ pub const Registry = native.Registry;
 pub const State = native.State;
 pub const Kind = native.Kind;
 pub const Provider = native.Provider;
+pub const FileHandleInputs = file_template.Inputs;
 const Scope = a.Scope;
 const cache_key = "\x00native.node.AsyncWrap.actual-templates.v24.13";
 
 const Bundle = struct {
     engine: *Engine,
     registry: *Registry,
-    constructors: [6]?c.JSValue = .{ null, null, null, null, null, null },
-    cached_instances: [6]?c.JSValue = .{ null, null, null, null, null, null },
+    constructors: [7]?c.JSValue = .{ null, null, null, null, null, null, null },
+    cached_instances: [7]?c.JSValue = .{ null, null, null, null, null, null, null },
     fs_callback_controller: ?*fs_io.Controller = null,
+    file_handle_owner: ?*file_template.Owner = null,
     constructor_class: c.JSClassID = 0,
 };
 const Constructor = struct {
@@ -51,6 +56,10 @@ fn bundleFinalizer(runtime: ?*c.JSRuntime, owner: c.JSValue) callconv(.c) void {
         slot.* = null;
         c.JS_FreeValueRT(runtime, value);
     };
+    if (self.file_handle_owner) |configured| {
+        self.file_handle_owner = null;
+        configured.destroy(runtime);
+    }
     if (self.fs_callback_controller) |controller| {
         self.fs_callback_controller = null;
         controller.release();
@@ -62,6 +71,7 @@ fn bundleMark(runtime: ?*c.JSRuntime, owner: c.JSValue, marker: ?*const c.JS_Mar
     const self: *Bundle = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return));
     for (self.cached_instances) |slot| if (slot) |value| c.JS_MarkValue(runtime, value, marker);
     for (self.constructors) |slot| if (slot) |value| c.JS_MarkValue(runtime, value, marker);
+    if (self.file_handle_owner) |configured| configured.mark(runtime, marker);
 }
 fn constructorFinalizer(runtime: ?*c.JSRuntime, function: c.JSValue) callconv(.c) void {
     const self: *Constructor = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)) orelse return));
@@ -82,11 +92,11 @@ fn callConstructor(_: ?*c.JSContext, function: c.JSValue, receiver_or_target: c.
     const engine = self.registry.environment.requireEngine() catch return c.pi_js_exception();
     var scope = Scope.init(engine);
     return scope.finish(constructorBody(&scope, self, function, receiver_or_target,
-        if (argc > 0) argv[0] else c.pi_js_undefined(),
+        if (argc > 0) argv[0..@intCast(argc)] else &.{},
         flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0)) catch |err| callable.failure(engine, err, 0);
 }
 fn constructorBody(s: *Scope, self: *Constructor, function: c.JSValue,
-    receiver_or_target: c.JSValue, first_argument: c.JSValue,
+    receiver_or_target: c.JSValue, args: []const c.JSValue,
     constructing: bool) !c.JSValue
 {
     try s.pending();
@@ -101,11 +111,16 @@ fn constructorBody(s: *Scope, self: *Constructor, function: c.JSValue,
             // instance-template operation above did not invoke it.
             const controller = owner.fs_callback_controller orelse
                 return error.ActualFSReqCallbackControllerRequired;
+            const first_argument = a.arg(args, 0);
             const use_bigint = c.JS_IsBool(first_argument) and
                 c.JS_ToBool(s.engine.context, first_argument) == 1;
             try fs_callback.Request.construct(s, owner.registry, controller,
                 receiver, use_bigint);
-        } else if (self.kind == .shutdownwrap) {
+        } else if (self.kind == .filehandle) {
+            const configured = owner.file_handle_owner orelse
+                return error.ActualFileHandleCallbackTemplateRequired;
+            try configured.construct(s, receiver, args);
+        } else if (self.kind == .shutdownwrap or self.kind == .writewrap) {
             // IsConstructCallCallback has no return assignment; constructor
             // invocation returns its actual receiver after ResetObject.
             try owner.registry.resetRequestObject(receiver);
@@ -115,13 +130,19 @@ fn constructorBody(s: *Scope, self: *Constructor, function: c.JSValue,
     // InvokeApiFunction converts its receiver before the present callback's
     // CHECK, including the primitive-boxing/global-receiver branches.
     const receiver = try convertedReceiver(s, receiver_or_target);
+    if (self.kind == .filehandle)
+        check.assertion(s.engine, .{
+            .file_line = "src/node_file.cc:252",
+            .message = "args.IsConstructCall()",
+            .function = "node::fs::FileHandle::New",
+        });
     if (self.kind == .fsreqcallback)
         check.assertion(s.engine, .{
             .file_line = "src/node_file.cc:727",
             .message = "args.IsConstructCall()",
             .function = "node::fs::NewFSReqCallback",
         });
-    if (self.kind == .shutdownwrap)
+    if (self.kind == .shutdownwrap or self.kind == .writewrap)
         check.assertion(s.engine, .{
             .file_line = "src/stream_wrap.cc:62",
             .message = "args.IsConstructCall()",
@@ -148,10 +169,12 @@ fn name(kind: Kind) [:0]const u8 {
         .filehandle => "FileHandle",
         .fsreqcallback => "FSReqCallback",
         .shutdownwrap => "ShutdownWrap",
+        .writewrap => "WriteWrap",
     };
 }
 fn requireTemplate(owner: *Bundle, kind: Kind) !void {
-    if (kind == .filehandle) return error.ActualFileHandleCallbackTemplateRequired;
+    if (kind == .filehandle and owner.file_handle_owner == null)
+        return error.ActualFileHandleCallbackTemplateRequired;
     if (kind == .fsreqcallback and owner.fs_callback_controller == null)
         return error.ActualFSReqCallbackControllerRequired;
 }
@@ -226,6 +249,8 @@ fn createConstructor(s: *Scope, owner: *Bundle, owner_value: c.JSValue, kind: Ki
         try addMethod(s, prototype, owner_value, "asyncReset", asyncReset);
         try addMethod(s, prototype, owner_value, "getProviderType", getProviderType);
     } else {
+        if (kind == .filehandle)
+            try file_template.installPrototype(s, prototype, owner_value);
         const parent = try ensureConstructor(s, owner, owner_value, .async_wrap);
         const parent_prototype = try s.get(parent, "prototype");
         if (!c.JS_IsObject(parent_prototype) and !c.JS_IsNull(parent_prototype))
@@ -385,4 +410,82 @@ pub fn newFSReqCallbackInstance(s: *Scope, known_owner: c.JSValue) !c.JSValue {
 pub fn newShutdownWrapInstance(s: *Scope, known_owner: c.JSValue) !c.JSValue {
     return instantiate(s, try bundleOf(s.engine, known_owner),
         known_owner, .shutdownwrap, null);
+}
+
+/// env->write_wrap_template() is the genuine WriteWrap InstanceTemplate. Unlike
+/// ShutdownWrap it has no own oncomplete/callback/handle data fields.
+pub fn newWriteWrapInstance(s: *Scope, known_owner: c.JSValue) !c.JSValue {
+    return instantiate(s, try bundleOf(s.engine, known_owner),
+        known_owner, .writewrap, null);
+}
+
+/// The real fs assembler supplies its already-acquired native collaborators
+/// after BindingData and before any FileHandle constructor or stored instance
+/// template is exposed. Reconfiguration cannot replace live lifetime owners.
+pub fn configureFileHandle(engine: *Engine, known_owner: c.JSValue,
+    inputs: FileHandleInputs) !void
+{
+    const result = try a.expression(engine, configureFileHandleBody, .{ known_owner, inputs });
+    engine.freeValue(result);
+}
+fn configureFileHandleBody(s: *Scope, known_owner: c.JSValue,
+    inputs: FileHandleInputs) !c.JSValue
+{
+    try s.engine.checkNativeEntry();
+    const owner = try bundleOf(s.engine, known_owner);
+    if (owner.registry.environment != inputs.controller.environment or
+        inputs.immediate_queue.engine != s.engine)
+        return error.ActualFileHandleTemplateEnvironmentMismatch;
+    if (owner.file_handle_owner) |existing| {
+        if (!existing.matches(inputs)) return error.ActualFileHandleTemplateInputsMismatch;
+        return c.pi_js_undefined();
+    }
+    const candidate = try file_template.Owner.create(s, owner.registry, known_owner, inputs);
+    // Primitive/native allocations may reenter through VM finalization. A
+    // completed winner keeps its original collaborators; never overwrite it.
+    if (owner.file_handle_owner) |existing| {
+        const same = existing.matches(inputs);
+        candidate.destroy(s.engine.runtime);
+        if (!same) return error.ActualFileHandleTemplateInputsMismatch;
+        return c.pi_js_undefined();
+    }
+    owner.file_handle_owner = candidate;
+    return c.pi_js_undefined();
+}
+
+/// SetConstructorFunction on the EXISTING actual fs BindingData target. This
+/// installs the complete FileHandle class only; it does not manufacture or
+/// publish a partial internalBinding('fs') namespace or select a runtime factory.
+pub fn publishFileHandle(engine: *Engine, known_owner: c.JSValue,
+    actual_fs_target: c.JSValue) !void
+{
+    const result = try a.expression(engine, publishFileHandleBody,
+        .{ known_owner, actual_fs_target });
+    engine.freeValue(result);
+}
+fn publishFileHandleBody(s: *Scope, known_owner: c.JSValue,
+    actual_fs_target: c.JSValue) !c.JSValue
+{
+    const owner = try bundleOf(s.engine, known_owner);
+    try requireTemplate(owner, .filehandle);
+    const configured = owner.file_handle_owner.?;
+    const data = file_binding.get(owner.registry) orelse
+        return error.ActualFileHandleRealmBindingDataRequired;
+    if (!c.JS_IsStrictEqual(s.engine.context, data.template_owner, known_owner) or
+        !c.JS_IsStrictEqual(s.engine.context, data.wrapper orelse
+            return error.ActualFileHandleFSBindingTargetRequired, actual_fs_target))
+        return error.ActualFileHandleFSBindingTargetRequired;
+    const target = try s.own(a.duplicate(s.engine, actual_fs_target));
+    const key = try one_byte.fromCString(s, "FileHandle", configured.inputs.heap_diagnostics);
+    // util.cc:705 uses GetFunction(...).ToLocalChecked(), then ordinary
+    // target.Set(...).Check(). A false Set is accepted; an empty Maybe is fatal.
+    const function = ensureConstructor(s, owner, known_owner, .filehandle) catch
+        check.fatal(s.engine, "v8::ToLocalChecked", "Empty MaybeLocal",
+            configured.inputs.heap_diagnostics);
+    try s.pending();
+    const status = c.JS_SetPropertyValue(s.engine.context, target,
+        a.duplicate(s.engine, key), a.duplicate(s.engine, function), 0);
+    if (status < 0) check.maybeCheck(s.engine, configured.inputs.heap_diagnostics);
+    try s.pending();
+    return c.pi_js_undefined();
 }

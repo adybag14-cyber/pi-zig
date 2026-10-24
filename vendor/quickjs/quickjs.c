@@ -194,6 +194,8 @@ enum {
     JS_CLASS_CALL_SITE,
     JS_CLASS_RAWJSON,
 
+    JS_CLASS_PI_EXTERNAL, /* borrowed native External, no target ownership */
+
     JS_CLASS_INIT_COUNT, /* last entry for predefined classes */
 };
 
@@ -2605,6 +2607,10 @@ static JSClassShortDef const js_std_class_def[] = {
     { JS_ATOM_DisposableStack, js_disposable_stack_finalizer, js_disposable_stack_mark }, /* JS_CLASS_DISPOSABLE_STACK */
 };
 
+static JSClassShortDef const js_pi_external_class_def[] = {
+    { JS_ATOM_Object, NULL, NULL }, /* JS_CLASS_PI_EXTERNAL */
+};
+
 static int init_class_range(JSRuntime *rt, JSClassShortDef const *tab,
                             int start, int count)
 {
@@ -2698,6 +2704,9 @@ JSRuntime *JS_NewRuntime2(const JSMallocFunctions *mf, void *opaque)
     /* create the object, array and function classes */
     if (init_class_range(rt, js_std_class_def, JS_CLASS_OBJECT,
                          countof(js_std_class_def)) < 0)
+        goto fail;
+    if (init_class_range(rt, js_pi_external_class_def, JS_CLASS_PI_EXTERNAL,
+                         countof(js_pi_external_class_def)) < 0)
         goto fail;
     rt->class_array[JS_CLASS_ARGUMENTS].exotic = &js_arguments_exotic_methods;
     rt->class_array[JS_CLASS_MAPPED_ARGUMENTS].exotic = &js_arguments_exotic_methods;
@@ -5912,6 +5921,26 @@ static void copy_str16(uint16_t *dst, JSString *p, int offset, int len)
         for(i = 0; i < len; i++)
             dst[i] = src1[i];
     }
+}
+
+int JS_PiBorrowFlatStringView(JSValueConst value, JSPiStringView *out)
+{
+    JSString *p;
+
+    if (!out)
+        return 0;
+    out->data8 = NULL;
+    out->data16 = NULL;
+    out->length = 0;
+    if (JS_VALUE_GET_TAG(value) != JS_TAG_STRING)
+        return 0;
+    p = JS_VALUE_GET_STRING(value);
+    out->length = p->len;
+    if (p->is_wide_char)
+        out->data16 = str16(p);
+    else
+        out->data8 = str8(p);
+    return 1;
 }
 
 const uint16_t *JS_ToCStringLenUTF16(JSContext *ctx, size_t *plen,
@@ -14067,6 +14096,30 @@ void *JS_GetOpaque(JSValueConst obj, JSClassID class_id)
     if (p->class_id != class_id)
         return NULL;
     return p->u.opaque;
+}
+
+/* V8 External::New / JSExternalObject: only the value object is owned.
+   The native address carries no keepalive and is never dereferenced here. */
+JSValue JS_PiNewExternal(JSContext *ctx, void *pointer)
+{
+    JSValue value;
+    assert(pointer != NULL);
+    value = JS_NewObjectProtoClass(ctx, JS_NULL, JS_CLASS_PI_EXTERNAL);
+    if (JS_IsException(value))
+        return value;
+    JS_SetOpaqueInternal(value, pointer);
+    JS_VALUE_GET_OBJ(value)->extensible = false;
+    return value;
+}
+
+bool JS_PiIsExternal(JSValueConst value)
+{
+    return JS_GetClassID(value) == JS_CLASS_PI_EXTERNAL;
+}
+
+void *JS_PiExternalValue(JSValueConst value)
+{
+    return JS_GetOpaque(value, JS_CLASS_PI_EXTERNAL);
 }
 
 void *JS_GetOpaque2(JSContext *ctx, JSValueConst obj, JSClassID class_id)

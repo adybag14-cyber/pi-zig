@@ -1,0 +1,874 @@
+{
+  "schema": "pi-zig-application-print-owner-source-only-intake-v2",
+  "created_utc": "2026-10-24",
+  "source_basis_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "status": "immutable_v2_source_with_carrier_authentication_correction_pending_root_peer",
+  "scope": "Bind the actual public print module to the genuine application/auth/frontend owner using existing native output guard and cached native shell. No policy or guest callback is supplied by the caller.",
+  "production_changes": [
+    "Auth Owner.createPrintMode validates the real owner/stream lease, enters the existing native invocation boundary, owns all concrete guard fields and runtime carrier before any guest read, then calls the unchanged native public print constructor with the actual shell. The shell carrier must exactly match the retained real cached shell owner.",
+    "Application Owner.createPrintMode validates its existing input owner and delegates to its own auth owner; canonical Module prerequisite remains unchanged.",
+    "Existing genuine aggregate-owner callable profile checks the exported real async function. It still requires actual frontend/loader/config/canonical Module inputs and is not replaced by a fake successful graph."
+  ],
+  "retained_semantics": [
+    "Existing per-Engine public print module cache/body unchanged.",
+    "Original stdout takeover/restore remains at the real Source mode transition; construction does not take over output.",
+    "Recorded body outcome precedes Scope retirement; ordinary pending, typed native fatal, and cleanup precedence use the existing completion/invocation machinery.",
+    "No self fields are read after the guest-mutable shell read, which can reenter retirement.",
+    "Frontend capabilities remain borrowed; retaining JS roots does not own or extend a native frontend pointer."
+  ],
+  "source_changes": [
+    {
+      "target": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+        "bytes": 11938,
+        "sha256": "E54A8CD8294F774593EFACBA87C301453E3C95A4F7C5BB72A7AC9EF27AF28FD8"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected-v2\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+        "bytes": 14363,
+        "sha256": "AD2C8AFEBA8DA041AB6470EA29C5C018EDE67E2C85F14511138B6F3AD624425F"
+      }
+    },
+    {
+      "target": "src/extensions/native_sdk_application_owner.zig",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_application_owner.zig",
+        "bytes": 14283,
+        "sha256": "7873435867712B9BDFCAFF7A8702022101F632318175327B2BC36D0AD6D4F85E"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_application_owner.zig",
+        "bytes": 14704,
+        "sha256": "7AFB0ABC565B118D8B0C22D06CD5C0B4D2FBE83EDCEDE1F2D9EBBA5694DBD544"
+      }
+    },
+    {
+      "target": "src/native_sdk_application_owner_controls.zig",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_application_owner_controls.zig",
+        "bytes": 4556,
+        "sha256": "11AF2557EBA0919CEF414B658BDE4381B3FBAD7CD72C40A9EA1F41F5AF7BF602"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected\\src\\native_sdk_application_owner_controls.zig",
+        "bytes": 4956,
+        "sha256": "9D65D2182F8DB4E35B9D24D5C99086004ED5BCAFFB8AA8BAEF67515652059D20"
+      }
+    },
+    {
+      "target": "src/native_sdk_application_print_owner_test.zig",
+      "kind": "new",
+      "before": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected-v2\\src\\native_sdk_application_print_owner_test.zig",
+        "bytes": 16310,
+        "sha256": "13A86E424A5C252DB4EE847595DC93ACE9BB75232A46FC3A2C825881A679BF93"
+      }
+    },
+    {
+      "target": "build.zig",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 515962,
+        "sha256": "7AB122A962019B935EB08EE6042BFFDDCB6F7AF6BE6405F47E06A6CF591B7D4F"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 517045,
+        "sha256": "B788031DC179133519891A7CD8A290583E42C455D37D20DDA8A500A1E2E9BC95"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\application-print-owner-successor-v2.patch",
+    "bytes": 23268,
+    "sha256": "4CBA1D9983C279036377E814BD4659D3CB03416B54B0F433FFAAE39E6F1707D4"
+  },
+  "raw_inverse_proof": [
+    {
+      "target": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "additive_hunks": [
+        {
+          "old_start_line_0": 66,
+          "old_end_line_0": 66,
+          "new_start_line_0": 66,
+          "new_end_line_0": 71,
+          "inserted_bytes": 258,
+          "inserted_sha256": "44AB3FD7F45E78CC8311C54511C4322B178F14EEC8A6458442EF76A36723EFD6"
+        },
+        {
+          "old_start_line_0": 98,
+          "old_end_line_0": 98,
+          "new_start_line_0": 103,
+          "new_end_line_0": 139,
+          "inserted_bytes": 2167,
+          "inserted_sha256": "087BAEF3CABA6A13DDA08F5668020ADDC82E748DA07B66A597E4A96A07C765DB"
+        }
+      ],
+      "exact_raw_inverse": true
+    },
+    {
+      "target": "src/extensions/native_sdk_application_owner.zig",
+      "additive_hunks": [
+        {
+          "old_start_line_0": 65,
+          "old_end_line_0": 65,
+          "new_start_line_0": 65,
+          "new_end_line_0": 72,
+          "inserted_bytes": 421,
+          "inserted_sha256": "BCF64290A866C77BF4285E9D78C0416EF9B3CE5D89ACE3B83702846FA11C32CB"
+        }
+      ],
+      "exact_raw_inverse": true
+    },
+    {
+      "target": "src/native_sdk_application_owner_controls.zig",
+      "additive_hunks": [
+        {
+          "old_start_line_0": 33,
+          "old_end_line_0": 33,
+          "new_start_line_0": 33,
+          "new_end_line_0": 38,
+          "inserted_bytes": 400,
+          "inserted_sha256": "FCF74D88186BA1CE441DD7EC12F283DA2474FBAF28D6B3B296549049BD6DC5BF"
+        }
+      ],
+      "exact_raw_inverse": true
+    },
+    {
+      "target": "src/native_sdk_application_print_owner_test.zig",
+      "additive_hunks": [
+        {
+          "old_start_line_0": 0,
+          "old_end_line_0": 0,
+          "new_start_line_0": 0,
+          "new_end_line_0": 267,
+          "inserted_bytes": 16310,
+          "inserted_sha256": "13A86E424A5C252DB4EE847595DC93ACE9BB75232A46FC3A2C825881A679BF93"
+        }
+      ],
+      "exact_raw_inverse": true
+    },
+    {
+      "target": "build.zig",
+      "additive_hunks": [
+        {
+          "old_start_line_0": 1834,
+          "old_end_line_0": 1834,
+          "new_start_line_0": 1834,
+          "new_end_line_0": 1847,
+          "inserted_bytes": 1083,
+          "inserted_sha256": "4145F71297F4FC46B84C4C10192B366E27E2E13D26FC51CF4CB5BD838739F7FD"
+        }
+      ],
+      "exact_raw_inverse": true
+    }
+  ],
+  "build_composition": {
+    "selected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 517045,
+      "sha256": "B788031DC179133519891A7CD8A290583E42C455D37D20DDA8A500A1E2E9BC95"
+    },
+    "addition": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\build-addition.txt",
+      "bytes": 1083,
+      "sha256": "4145F71297F4FC46B84C4C10192B366E27E2E13D26FC51CF4CB5BD838739F7FD"
+    },
+    "anchor": "    const public_rpc_jsonl_tests = b.addTest(.{\n",
+    "finite_insertions": 1,
+    "baseline_build_preserved": true,
+    "application": "Apply the additive hunk to Root's composed build, never replace a newer combined build with this standalone projection."
+  },
+  "direct_imports": [
+    {
+      "source": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "operand": "engine.zig",
+      "target": "src/extensions/engine.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "operand": "native_child_process_sdk_transport.zig",
+      "target": "src/extensions/native_child_process_sdk_transport.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_child_process_sdk_transport.zig",
+        "bytes": 6926,
+        "sha256": "03266DB466308027DAB8F116EB37826848E4689FC22A86914A9E4C8875E66FDC"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "operand": "native_js_values.zig",
+      "target": "src/extensions/native_js_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_js_values.zig",
+        "bytes": 9122,
+        "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "operand": "native_process_streams.zig",
+      "target": "src/extensions/native_process_streams.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process_streams.zig",
+        "bytes": 23962,
+        "sha256": "7BF622A1263B1E93A680B5D11936DB0A12BB0922DC973DF505ADC86DA9B4F6A8"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "operand": "native_public_print_mode.zig",
+      "target": "src/extensions/native_public_print_mode.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_print_mode.zig",
+        "bytes": 36873,
+        "sha256": "A7A55D8AFAB656BB540B359C7CF02A38DCFEA31530727F2F8C37A59C1DB8B125"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "operand": "native_sdk.zig",
+      "target": "src/extensions/native_sdk.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk.zig",
+        "bytes": 164658,
+        "sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "operand": "native_sdk_guest_operation.zig",
+      "target": "src/extensions/native_sdk_guest_operation.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_guest_operation.zig",
+        "bytes": 7009,
+        "sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "operand": "native_sdk_output_guard.zig",
+      "target": "src/extensions/native_sdk_output_guard.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_output_guard.zig",
+        "bytes": 26627,
+        "sha256": "63A902E3908DC0264A52F6D68DBD7D1E758A72C3967B3596082F954520914964"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "operand": "native_sdk_owned_completion.zig",
+      "target": "src/extensions/native_sdk_owned_completion.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+        "bytes": 15176,
+        "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "operand": "native_sdk_prompt_scope.zig",
+      "target": "src/extensions/native_sdk_prompt_scope.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_prompt_scope.zig",
+        "bytes": 3430,
+        "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "operand": "native_sdk_runtime_imports.zig",
+      "target": "src/extensions/native_sdk_runtime_imports.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_runtime_imports.zig",
+        "bytes": 4593,
+        "sha256": "B9E44DAF0B32BF49E0C7CD454D377005197245B83970F0D256A6C504DDDDB0E4"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "engine.zig",
+      "target": "src/extensions/engine.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_agent_af_values.zig",
+      "target": "src/extensions/native_agent_af_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_agent_af_values.zig",
+        "bytes": 8615,
+        "sha256": "3836B2F939A7443861BDCF2250C343E8F343EEE381DED4DC62BF2154E2A54656"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_child_process_frontend_inputs.zig",
+      "target": "src/extensions/native_child_process_frontend_inputs.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_child_process_frontend_inputs.zig",
+        "bytes": 10324,
+        "sha256": "97BAF30FD7EC482CE5EB7F80C98681EF8E21A8CE0FA913ACA0D124EE3B4DD327"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_js_values.zig",
+      "target": "src/extensions/native_js_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_js_values.zig",
+        "bytes": 9122,
+        "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_minimatch_namespace.zig",
+      "target": "src/extensions/native_minimatch_namespace.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_minimatch_namespace.zig",
+        "bytes": 9572,
+        "sha256": "CE1087B236F92D108AA4F9463A514B139D98F39BBAA0F8D27901B84D30FBCD66"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_node_crypto_hash.zig",
+      "target": "src/extensions/native_node_crypto_hash.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_crypto_hash.zig",
+        "bytes": 14185,
+        "sha256": "91FBAD6661EE2345F64E5F3166A27C6C0870278DEA5072E2DA79CF70F34C7487"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_node_module_constructor.zig",
+      "target": "src/extensions/native_node_module_constructor.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_constructor.zig",
+        "bytes": 29849,
+        "sha256": "7D61665F890E56E73F921D4A4B6B9F8A70D75AD21BF75AE665EFC9C98C73BB07"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk.zig",
+      "target": "src/extensions/native_sdk.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk.zig",
+        "bytes": 164658,
+        "sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk_application_bootstrap.zig",
+      "target": "src/extensions/native_sdk_application_bootstrap.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_application_bootstrap.zig",
+        "bytes": 8333,
+        "sha256": "7697315CAB586223A2393D2598C34F278B8CF7549BDEA68C49774BF546C3A6F8"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk_auth_runtime_owner.zig",
+      "target": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected-v2\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+        "bytes": 14363,
+        "sha256": "AD2C8AFEBA8DA041AB6470EA29C5C018EDE67E2C85F14511138B6F3AD624425F"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk_chalk.zig",
+      "target": "src/extensions/native_sdk_chalk.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_chalk.zig",
+        "bytes": 15131,
+        "sha256": "3789CF7E66DB2F8D554403792E297166EA5EC6B3B5B389D7F68492D4CBFFF135"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk_exec.zig",
+      "target": "src/extensions/native_sdk_exec.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_exec.zig",
+        "bytes": 9961,
+        "sha256": "12CE747D63A1401A99850ED3AC641413642D25863B2059536BA657B8451A5AE4"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk_extension_lazy_imports.zig",
+      "target": "src/extensions/native_sdk_extension_lazy_imports.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_extension_lazy_imports.zig",
+        "bytes": 8532,
+        "sha256": "7A06BD43FD00AB273B618A9C4AB31B503B93DCAEC4530EC100D072CEEB721338"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk_extension_loader_assembly.zig",
+      "target": "src/extensions/native_sdk_extension_loader_assembly.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_extension_loader_assembly.zig",
+        "bytes": 4194,
+        "sha256": "706CE8ECC7091511086415479CE51A9AB5292858CE98415DAF5FBBADB2DCF763"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk_git_url.zig",
+      "target": "src/extensions/native_sdk_git_url.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_git_url.zig",
+        "bytes": 17240,
+        "sha256": "E1732C981589BAAD3A808C7D832E7BBB5BB65E7BA24577D4A050C9831AF6393F"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk_guest_operation.zig",
+      "target": "src/extensions/native_sdk_guest_operation.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_guest_operation.zig",
+        "bytes": 7009,
+        "sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk_ignore708.zig",
+      "target": "src/extensions/native_sdk_ignore708.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_ignore708.zig",
+        "bytes": 18667,
+        "sha256": "3578F3653AF9F96525A674A6BA0C39C20976A9246B2A41B8354E0C8A48300AED"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk_mcp_config.zig",
+      "target": "src/extensions/native_sdk_mcp_config.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_mcp_config.zig",
+        "bytes": 19715,
+        "sha256": "76EBC570920FECB0E08497DAE6963887CF6293890D847AADA12B30BA50F66E38"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk_model_text_production.zig",
+      "target": "src/extensions/native_sdk_model_text_production.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_model_text_production.zig",
+        "bytes": 3027,
+        "sha256": "A2EECD557A7DF9963D873911DCE4FA962A1114954CAB17E63A91E951C9799FB5"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk_owned_completion.zig",
+      "target": "src/extensions/native_sdk_owned_completion.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+        "bytes": 15176,
+        "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk_package_assembly.zig",
+      "target": "src/extensions/native_sdk_package_assembly.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_package_assembly.zig",
+        "bytes": 9572,
+        "sha256": "EB44844CEA433C9B5CEAC22C25A19BB6862F63C5A3B3C82CFB6BECE7C00A0F94"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk_path_utilities_namespace.zig",
+      "target": "src/extensions/native_sdk_path_utilities_namespace.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_path_utilities_namespace.zig",
+        "bytes": 12112,
+        "sha256": "7C0AF64A22183B5919169A5C4F3EF150CD4FB03B25555A001BA71B9153D6309E"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_sdk_prompt_scope.zig",
+      "target": "src/extensions/native_sdk_prompt_scope.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_prompt_scope.zig",
+        "bytes": 3430,
+        "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_semver785.zig",
+      "target": "src/extensions/native_semver785.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_semver785.zig",
+        "bytes": 8663,
+        "sha256": "F957F00DB3ADC94BE1B47EF20C9A9F9BD015797DB5AACA8AB3ED6C713B115418"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_application_owner.zig",
+      "operand": "native_stdio_frontend.zig",
+      "target": "src/extensions/native_stdio_frontend.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_stdio_frontend.zig",
+        "bytes": 18922,
+        "sha256": "AA57272C2F719418E201F6F9409A04F37F683C843F47AF7A6B01BE939C758796"
+      }
+    },
+    {
+      "source": "src/native_sdk_application_owner_controls.zig",
+      "operand": "extensions/engine.zig",
+      "target": "src/extensions/engine.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      }
+    },
+    {
+      "source": "src/native_sdk_application_owner_controls.zig",
+      "operand": "extensions/native_agent_af_values.zig",
+      "target": "src/extensions/native_agent_af_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_agent_af_values.zig",
+        "bytes": 8615,
+        "sha256": "3836B2F939A7443861BDCF2250C343E8F343EEE381DED4DC62BF2154E2A54656"
+      }
+    },
+    {
+      "source": "src/native_sdk_application_owner_controls.zig",
+      "operand": "extensions/native_js_values.zig",
+      "target": "src/extensions/native_js_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_js_values.zig",
+        "bytes": 9122,
+        "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+      }
+    },
+    {
+      "source": "src/native_sdk_application_owner_controls.zig",
+      "operand": "extensions/native_sdk_application_owner.zig",
+      "target": "src/extensions/native_sdk_application_owner.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_application_owner.zig",
+        "bytes": 14704,
+        "sha256": "7AFB0ABC565B118D8B0C22D06CD5C0B4D2FBE83EDCEDE1F2D9EBBA5694DBD544"
+      }
+    },
+    {
+      "source": "src/native_sdk_application_owner_controls.zig",
+      "operand": "extensions/native_sdk_owned_completion.zig",
+      "target": "src/extensions/native_sdk_owned_completion.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+        "bytes": 15176,
+        "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+      }
+    },
+    {
+      "source": "src/native_sdk_application_owner_controls.zig",
+      "operand": "extensions/native_sdk_prompt_scope.zig",
+      "target": "src/extensions/native_sdk_prompt_scope.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_prompt_scope.zig",
+        "bytes": 3430,
+        "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E"
+      }
+    },
+    {
+      "source": "src/native_sdk_application_print_owner_test.zig",
+      "operand": "extensions/native_child_process_frontend_inputs.zig",
+      "target": "src/extensions/native_child_process_frontend_inputs.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_child_process_frontend_inputs.zig",
+        "bytes": 10324,
+        "sha256": "97BAF30FD7EC482CE5EB7F80C98681EF8E21A8CE0FA913ACA0D124EE3B4DD327"
+      }
+    },
+    {
+      "source": "src/native_sdk_application_print_owner_test.zig",
+      "operand": "extensions/native_js_values.zig",
+      "target": "src/extensions/native_js_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_js_values.zig",
+        "bytes": 9122,
+        "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+      }
+    },
+    {
+      "source": "src/native_sdk_application_print_owner_test.zig",
+      "operand": "extensions/native_node_internal_builtin_require.zig",
+      "target": "src/extensions/native_node_internal_builtin_require.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_internal_builtin_require.zig",
+        "bytes": 8889,
+        "sha256": "E5C93743C8285705C646875C42F3EAD46C1750244BE3F8A7989F1607EA30B1EA"
+      }
+    },
+    {
+      "source": "src/native_sdk_application_print_owner_test.zig",
+      "operand": "extensions/native_public_print_mode.zig",
+      "target": "src/extensions/native_public_print_mode.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_print_mode.zig",
+        "bytes": 36873,
+        "sha256": "A7A55D8AFAB656BB540B359C7CF02A38DCFEA31530727F2F8C37A59C1DB8B125"
+      }
+    },
+    {
+      "source": "src/native_sdk_application_print_owner_test.zig",
+      "operand": "extensions/native_public_values.zig",
+      "target": "src/extensions/native_public_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_values.zig",
+        "bytes": 13939,
+        "sha256": "0B1BB422A9C89E7CE8146B32413B27E42D8DFB65285C3245B89EED8AF222022E"
+      }
+    },
+    {
+      "source": "src/native_sdk_application_print_owner_test.zig",
+      "operand": "extensions/native_sdk.zig",
+      "target": "src/extensions/native_sdk.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk.zig",
+        "bytes": 164658,
+        "sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3"
+      }
+    },
+    {
+      "source": "src/native_sdk_application_print_owner_test.zig",
+      "operand": "extensions/native_sdk_application_bootstrap.zig",
+      "target": "src/extensions/native_sdk_application_bootstrap.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_application_bootstrap.zig",
+        "bytes": 8333,
+        "sha256": "7697315CAB586223A2393D2598C34F278B8CF7549BDEA68C49774BF546C3A6F8"
+      }
+    },
+    {
+      "source": "src/native_sdk_application_print_owner_test.zig",
+      "operand": "extensions/native_sdk_auth_runtime_owner.zig",
+      "target": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected-v2\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+        "bytes": 14363,
+        "sha256": "AD2C8AFEBA8DA041AB6470EA29C5C018EDE67E2C85F14511138B6F3AD624425F"
+      }
+    },
+    {
+      "source": "src/native_sdk_application_print_owner_test.zig",
+      "operand": "extensions/native_stdio_frontend.zig",
+      "target": "src/extensions/native_stdio_frontend.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_stdio_frontend.zig",
+        "bytes": 18922,
+        "sha256": "AA57272C2F719418E201F6F9409A04F37F683C843F47AF7A6B01BE939C758796"
+      }
+    }
+  ],
+  "direct_import_occurrences": 61,
+  "authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\main.ts",
+      "bytes": 35444,
+      "sha256": "BC76D755332764FC80EDDC9C1BFB84F70E70C2B55D958E44F98000B05F08930C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\agent-session-runtime.ts",
+      "bytes": 15027,
+      "sha256": "B163CE35D2B6E3BA1FC080C0674044A3F1CD9FAEC93CC2ED015E31B69780BF4A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi\\packages\\coding-agent\\src\\config.ts",
+      "bytes": 23328,
+      "sha256": "B3B77644910D3FAC28A06625E90F993A8C1BC6C9458F148C723E64E0C99EB23E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi\\packages\\coding-agent\\package.json",
+      "bytes": 3762,
+      "sha256": "83C3BB7619F590C213CC96A24216EB29A819A3EF6DC548607CC037ED276E8DC5"
+    }
+  ],
+  "retained_control_and_owner_basis": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_public_print_mode_test.zig",
+      "bytes": 16038,
+      "sha256": "CD58CE69CF6689DC924F8FD595C52543811EEDF8C5F56CF883E2C4EFB840E286"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_auth_runtime_owner_controls.zig",
+      "bytes": 11173,
+      "sha256": "20F8B9DE10459405B2E3D49BFCB432483CA68B2AE6D8333D1A3FE73FF2CF39DB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_print_mode.zig",
+      "bytes": 36873,
+      "sha256": "A7A55D8AFAB656BB540B359C7CF02A38DCFEA31530727F2F8C37A59C1DB8B125"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_output_guard.zig",
+      "bytes": 26627,
+      "sha256": "63A902E3908DC0264A52F6D68DBD7D1E758A72C3967B3596082F954520914964"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_runtime_imports.zig",
+      "bytes": 4593,
+      "sha256": "B9E44DAF0B32BF49E0C7CD454D377005197245B83970F0D256A6C504DDDDB0E4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_guest_operation.zig",
+      "bytes": 7009,
+      "sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+      "bytes": 15176,
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_child_process_frontend_inputs.zig",
+      "bytes": 10324,
+      "sha256": "97BAF30FD7EC482CE5EB7F80C98681EF8E21A8CE0FA913ACA0D124EE3B4DD327"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_stdio_frontend.zig",
+      "bytes": 18922,
+      "sha256": "AA57272C2F719418E201F6F9409A04F37F683C843F47AF7A6B01BE939C758796"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_env_io.zig",
+      "bytes": 8014,
+      "sha256": "4BC66694AB6B22FC9A51A0943192BDCD61F0213C6846B0A69E0B459C26EF120E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process_streams.zig",
+      "bytes": 23962,
+      "sha256": "7BF622A1263B1E93A680B5D11936DB0A12BB0922DC973DF505ADC86DA9B4F6A8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    }
+  ],
+  "authority_anchors": {
+    "main": "Original main.ts imports runPrintMode and invokes it with the real AgentSessionRuntime at987-992; stdout restore/exit result handling follows993-998.",
+    "runtimeHost": "Original agent-session-runtime.ts420-437 owns the supplied actual createRuntime callback and initial session/services, not a bare session.",
+    "existing_mode": "native_public_print_mode.zig609-635 constructs/caches the genuine runPrintMode async export from concrete guard and shell; this implementation is unchanged."
+  },
+  "focused_controls": {
+    "root": "src/native_sdk_application_print_owner_test.zig",
+    "build_step": "build-native-sdk-application-print-owner",
+    "filter": "Application print owner",
+    "declared_count": 7,
+    "names": [
+      "Application print owner actual cached module shares guard and survives owner retirement",
+      "Application print owner retains actual inputs through shell getter retirement",
+      "Application print owner ordinary pending shell event stops downstream construction",
+      "Application print owner actual fatal shell event survives root retirement",
+      "Application print owner pending entry precedes carrier reads and module publication",
+      "Application print owner retired host cannot reacquire an already cached public module",
+      "Application print owner rejects a shape compatible foreign shell before downstream access"
+    ],
+    "covers": [
+      "Real cold/cache identity and no implicit stdout takeover; real exported body remains alive after owner retirement.",
+      "Shell getter retires the actual auth host handle; owned inputs allow genuine module construction to finish.",
+      "Ordinary raw pending shell getter preserves reason identity and prevents downstream constructor reads/publication.",
+      "New fatal raw event remains authoritative through retained-root cleanup.",
+      "Pending native entry wins before carrier reads or publication.",
+      "Retired real owner cannot reacquire an already cached public module.",
+      "A shape-compatible foreign shell carrier is rejected by strict original-owner identity before downstream property access or mode publication."
+    ],
+    "meaning": "All seven declarations construct actual platform, native frontend, private builtin require and real auth/runtime owner. The negative runtimeHost input intentionally throws before session creation, testing genuine async entry without a fabricated successful session.",
+    "additional_profile": "native_sdk_application_owner_controls.verifyActualOwner now verifies the same method with the complete real application graph supplied by the qualification caller.",
+    "actual_metadata_count": null,
+    "execution": false
+  },
+  "critical_path_receipt": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\application-print-rpc-critical-path-20261024.json",
+    "bytes": 18308,
+    "sha256": "352E929B9E9653C1480BB5BC7F41C15F814FA1E5A1BEEB650C7DC7C6D1DA4E6A"
+  },
+  "explicitly_unclosed": [
+    "Production native worker still needs actual canonical node:module publication and application Owner integration.",
+    "Original Main's cwd/trust-aware runtime factory and mode entry routing remain unconnected.",
+    "This packet does not qualify a full print or RPC application start, provide a full coding-agent virtual namespace, or implement RPC/theme assembly.",
+    "No native, Node capture, source generator, formatter, runtime, or Main mutation occurred."
+  ],
+  "composition_scope": "Separate successor after the already sealed first23 and pending-six plans. Those packets are unchanged. This packet is not appended to either accepted source intake or catalog implicitly.",
+  "validation": {
+    "static_file_authoring_only": true,
+    "exact_finite_source_and_build_inverses": true,
+    "direct_import_paths_resolved": true,
+    "git_head_read_only": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+    "future_head": null,
+    "native_qualification": false,
+    "public_activation": false
+  },
+  "previous_unaccepted_draft": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\source-intake.json",
+    "bytes": 37862,
+    "sha256": "76DE5724F241E51F05648EF2A55BA2B49790ED5469F2BD6B6F4FB70F83EFCD95"
+  },
+  "root_review_gap_and_correction": "V1 trusted the guest-mutable imports.shell carrier without authentication. V2 retains the actual pi-native:sdk-shell cached owner before that read and requires strict identity afterward, before the public mode constructor; a seventh control proves a foreign shape-compatible carrier cannot reach its kill getter. V1 and its evidence are preserved.",
+  "successor_inverse_proof": {
+    "auth_v1": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+      "bytes": 14056,
+      "sha256": "9FB3ACA3B1DB7D13DAB6F64C9D26963A27653938373921C3E91D2EE89B69520F"
+    },
+    "auth_v2": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected-v2\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+      "bytes": 14363,
+      "sha256": "AD2C8AFEBA8DA041AB6470EA29C5C018EDE67E2C85F14511138B6F3AD624425F"
+    },
+    "one_exact_replacement": true,
+    "before_text": "    const imports = try o.own(c.JS_DupValue(engine.context, self.runtime_imports));\n    const shell = try o.get(imports, \"shell\");\n",
+    "after_text": "    const imports = try o.own(c.JS_DupValue(engine.context, self.runtime_imports));\n    const shell_owner = engine.native_module_values.get(\"pi-native:sdk-shell\") orelse return error.RequiredGenuineSdkShellModuleOwner;\n    const expected_shell = try o.own(c.JS_DupValue(engine.context, shell_owner));\n    const shell = try o.get(imports, \"shell\");\n    if (!scope.equal(shell, expected_shell)) return error.ActualSdkShellNamespaceChanged;\n",
+    "inverse_exact": true,
+    "test_v1": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected\\src\\native_sdk_application_print_owner_test.zig",
+      "bytes": 14916,
+      "sha256": "D5B6EC24DBDB61438CB6359A746E7C210C92C568A95CF22B6A09D29C97A8FE2F"
+    },
+    "test_v2": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-print-owner-sourceonly-20261024\\projected-v2\\src\\native_sdk_application_print_owner_test.zig",
+      "bytes": 16310,
+      "sha256": "13A86E424A5C252DB4EE847595DC93ACE9BB75232A46FC3A2C825881A679BF93"
+    },
+    "test_addition_bytes": 1394,
+    "test_addition_sha256": "D3D52980AC8667AB18D51B24DF44262F5DE42588966B4386299B8CFDDF58C0EA",
+    "test_inverse_exact": true
+  }
+}

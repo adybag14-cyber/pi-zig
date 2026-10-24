@@ -1,0 +1,104 @@
+{
+  "schema": "pi-zig-independent-source-peer-v1",
+  "reviewer": "handover_review",
+  "created_at_utc": "2026-10-23T19:39:31.926255+00:00",
+  "scope": "Compact independent CommonJS circular-export source peer; source-only.",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-circular-sourceonly-20261023\\source-accounting.json",
+    "bytes": 29042,
+    "sha256": "4D0DBDD37B47F32547F3EC5C67F5FF3E5D477C2BE5CE118282B3D42A84EC8EFB"
+  },
+  "selected_targets": [
+    {
+      "target": "src/extensions/native_node_commonjs_circular.zig",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-circular-sourceonly-20261023\\projected-v2\\src\\extensions\\native_node_commonjs_circular.zig",
+        "bytes": 10266,
+        "sha256": "F1583B145A1E3AE9EEDB5BACEE3C68DC1447A443B84F258ADB2E7BC792701213"
+      },
+      "base": null
+    },
+    {
+      "target": "src/extensions/native_node_commonjs_load.zig",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-circular-sourceonly-20261023\\projected-v2\\src\\extensions\\native_node_commonjs_load.zig",
+        "bytes": 15177,
+        "sha256": "D2141BB53FF6CA3A5A395E21AC3FD3CE8DA398580181EC2F1D5D465146DF0C38"
+      },
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_load.zig",
+        "bytes": 14580,
+        "sha256": "87DAE18EDB347EBCFEE9B36A66B4C567348B1C1F01971B33E55A6B7E4C452AE4"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_module_constructor.zig",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-circular-sourceonly-20261023\\projected-v2\\src\\extensions\\native_node_module_constructor.zig",
+        "bytes": 30551,
+        "sha256": "0C494B59B1DB195C057F9ABCB0296882DCA34D77DDDFF6F633E138416494C7AE"
+      },
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_constructor.zig",
+        "bytes": 29849,
+        "sha256": "7D61665F890E56E73F921D4A4B6B9F8A70D75AD21BF75AE665EFC9C98C73BB07"
+      }
+    },
+    {
+      "target": "src/native_node_commonjs_circular_test.zig",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-circular-sourceonly-20261023\\projected-v3\\src\\native_node_commonjs_circular_test.zig",
+        "bytes": 13863,
+        "sha256": "092DD60AE6CFE147EFA956BD58BE3DE4BF243FFE70780F6A05B1F4504E85FA75"
+      },
+      "base": null
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-circular-sourceonly-20261023\\application-commonjs-circular-source.patch",
+    "bytes": 31393,
+    "sha256": "D1164A0DC88D975EE54EE6ED628768D7F5B5103AEFB100806F91F59BB466FE2D"
+  },
+  "base_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "verdict": "no_concrete_source_blocker_found",
+  "checks": {
+    "unique_recorded_file_pins_rehashed": 38,
+    "exact_existing_source_inverses": 2,
+    "standalone_patch_reconstructed_byte_for_byte": true,
+    "add_only_build_inverse_verified": true,
+    "source_named_control_declarations": 9,
+    "native_metadata_count": null,
+    "prior_helpers_preserved_by_complete_raw_inverses": 85,
+    "main_mutated": false,
+    "all_selected_new_owner_and_control_source_read": true
+  },
+  "findings": [
+    "Retained Node loader.js 974-1035 and internal/errors.js 1690 agree with the native proxy traps, inherited in versus own-descriptor tests, __esModule exception, and ERR_REQUIRE_CYCLE_MODULE string registration.",
+    "The live process.emitWarning callee is read before String(prop), preserving the receiver and coercion/throw order. Each separate exports Get remains at its original occurrence; the plain-object path has six Gets.",
+    "Canonical Module capture retains Object prototype, hasOwnProperty, descriptor/prototype operations and String before guest execution. Later collaborator creation uses loaderEnvironment and loaderKey from that same validated constructor.",
+    "The required ESM status remains a borrowed actual module_wrap input with strict equality; private last-parent access uses the existing canonical owner. No status enum or public Module substitute is invented.",
+    "Native Module callables duplicate and trace their roots. The graph owns the proxy and callback; proxy target/handler are borrowed by JS_NewProxy, and JS expression scopes plus the lexical frame preserve required/message/parent lifetimes and pending completion handling.",
+    "The canonical _load.create source removes both caller-supplied circular policies, validates process identity against the Module lexical environment, creates this real collaborator and retains its function/proxy. Its loader/cache/cleanup bodies are byte-identical.",
+    "Nine focused declarations cover proxy identity and property behavior, exclusions, six Gets, actual Node cycle error/private parent, status abrupt completion, warning/prototype failures, primordial capture after mutation, and rejected foreign/missing owners."
+  ],
+  "integration_limits": [
+    "The nine controls were read, not parsed, compiled, enumerated or run; no runtime or allocation/fatal qualification is claimed.",
+    "The controls directly exercise the circular collaborator. Canonical _load wiring was reviewed as source; full loader assembly still requires the real hooks/builtin and module_wrap owners.",
+    "Compose only the 1190-byte build-addition into a newer combined build. Do not replace a combined build with this standalone projection.",
+    "Public Module publication, native application activation and production bridge removal remain separate unfinished integration gates."
+  ],
+  "executed": [
+    "bounded Python file reads/hash/diff checks and create-only peer record",
+    "targeted rg source reads"
+  ],
+  "not_executed": [
+    "Zig parser or formatter",
+    "compiler",
+    "metadata",
+    "native runtime",
+    "Node capture",
+    "candidate source",
+    "source generator"
+  ],
+  "blockers": []
+}

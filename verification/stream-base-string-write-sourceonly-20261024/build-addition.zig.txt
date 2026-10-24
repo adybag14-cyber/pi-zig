@@ -1,0 +1,21 @@
+        const node_stream_write_string = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_stream_write_string_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native Stream string write"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_stream_write_string.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_stream_write_string.root_module, typescript_parser);
+        linkSqlite(node_stream_write_string.root_module, sqlite_lib_dir, sqlite_library);
+        node_stream_write_string.root_module.addImport("catalog_tool", catalog_tool);
+        node_stream_write_string.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        node_stream_write_string.root_module.addIncludePath(b.path("src/extensions"));
+        node_stream_write_string.root_module.linkLibrary(network);
+        node_stream_write_string.root_module.linkLibrary(node_one_byte_diagnostics);
+        node_stream_write_string.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_custom_buffer_listener_allocation.cpp"),
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+        if (target.result.os.tag == .windows) {
+            node_stream_write_string.root_module.linkSystemLibrary("advapi32", .{});
+            node_stream_write_string.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-stream-write-string", "Install declared StreamBase string-write controls without execution").dependOn(&b.addInstallArtifact(node_stream_write_string, .{ .dest_sub_path = b.fmt("native-node-stream-write-string{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);

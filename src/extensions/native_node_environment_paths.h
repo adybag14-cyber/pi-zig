@@ -57,6 +57,15 @@ void pi_node_environment_path_resolve(const PiNodeEnvironmentPaths* paths,
     const PiNodeEnvironmentTrace* trace,
     const PiNodeEnvironmentPathSpan* parts, size_t count,
     PiNodeEnvironmentValueVisitor visitor, void* user) PI_PATH_NOEXCEPT;
+/* Native path.cc ToNamespacedPath over this actual Environment's PathResolve,
+ * MapKVStore and diagnostics. The full input span includes embedded NUL.
+ * The output is borrowed through exactly one synchronous visitor call. */
+void pi_node_environment_path_to_namespaced(
+    const PiNodeEnvironmentPaths* paths, void* memory_owner,
+    struct JSContext* context, PiNodeEnvironmentMap* map,
+    const PiNodeEnvironmentTrace* trace,
+    const PiNodeEnvironmentPathSpan* input,
+    PiNodeEnvironmentValueVisitor visitor, void* user) PI_PATH_NOEXCEPT;
 int pi_node_environment_safe_getenv(void* memory_owner,
     struct JSContext* context, PiNodeEnvironmentMap* map,
     const PiNodeEnvironmentTrace* trace, const char* key,

@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-write-buffer-sourceonly-20261023\\projected\\src\\extensions\\native_node_stream_js_dispatch.zig",
+  "candidate": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\projected\\src\\extensions\\native_node_stream_js_dispatch.zig",
+  "edits": [
+    {
+      "before": "const writes = @import(\"native_node_stream_write.zig\");\n",
+      "after": "const writes = @import(\"native_node_stream_write.zig\");\nconst string_writes = @import(\"native_node_stream_write_string.zig\");\n"
+    },
+    {
+      "before": "pub const Method = enum { read_start, read_stop, shutdown, use_user_buffer, write_buffer };",
+      "after": "pub const Method = enum {\n    read_start, read_stop, shutdown, use_user_buffer, write_buffer,\n    write_ascii_string, write_latin1_string, write_utf8_string, write_ucs2_string,\n};"
+    },
+    {
+      "before": "        .write_buffer => writes.writeBuffer(s, stream, args),\n",
+      "after": "        .write_buffer => writes.writeBuffer(s, stream, args),\n        .write_ascii_string => string_writes.writeString(s, stream, args, .ascii),\n        .write_latin1_string => string_writes.writeString(s, stream, args, .latin1),\n        .write_utf8_string => string_writes.writeString(s, stream, args, .utf8),\n        .write_ucs2_string => string_writes.writeString(s, stream, args, .ucs2),\n"
+    },
+    {
+      "before": "//! Public AddMethods/template publication requires the remaining vector/string\n//! writers and external_stream before that whole surface can be published.",
+      "after": "//! Public AddMethods/template publication requires the remaining vector writer\n//! and external_stream before that whole surface can be published."
+    }
+  ],
+  "inverse_exact": true
+}

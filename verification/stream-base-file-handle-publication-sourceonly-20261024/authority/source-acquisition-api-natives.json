@@ -1,0 +1,8 @@
+{
+  "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-file-handle-publication-sourceonly-20261024\\authority\\deps__v8__src__api__api-natives.cc.txt",
+  "source": "deps/v8/src/api/api-natives.cc",
+  "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/api/api-natives.cc",
+  "bytes": 27716,
+  "sha256": "103316A825D58AE72CE9F97AA741878F84EFA3C7D3167ADE3D5458C664E75B0A",
+  "executed": false
+}

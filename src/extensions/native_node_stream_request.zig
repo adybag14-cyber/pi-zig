@@ -1,7 +1,10 @@
 // Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
-//! Genuine StreamReq / ShutdownWrap native state and completion lifetime.
+//! Genuine StreamReq / ShutdownWrap / WriteWrap state and completion lifetime.
 //! The stream pointer is borrowed. This owner introduces no FileHandle root.
+const std = @import("std");
 const a = @import("native_node_argument_values.zig");
+const managed = @import("native_node_managed_buffers.zig");
+const check = @import("native_node_check_failure.zig");
 const wraps = @import("native_node_async_wrap_state.zig");
 const streams = @import("native_node_stream_base.zig");
 const latin1 = @import("native_node_one_byte_string.zig");
@@ -9,6 +12,7 @@ const c = a.c;
 
 pub const Request = struct {
     stream: *streams.Base,
+    bindings: ?streams.RequestBindings = null,
     get_async_wrap: *const fn (*Request) *wraps.State,
     on_done: *const fn (*Request, c_int) anyerror!void,
 
@@ -51,7 +55,7 @@ pub const Request = struct {
 
     fn setErrorBody(s: *a.Scope, self: *Request, text: [*:0]const u8) anyerror!c.JSValue {
         const stream = self.stream;
-        const bindings = stream.operations.shutdown orelse
+        const bindings = self.bindings orelse stream.operations.shutdown orelse
             return error.ActualStreamShutdownBindingsRequired;
         const wrapper = self.object() orelse
             return error.ActualStreamRequestObjectRequired;
@@ -132,6 +136,67 @@ pub const Shutdown = struct {
             if (failure == null) failure = err;
         };
         // Dispose can destroy self when no surrounding native pointer remains.
+        const ignored = try scope.finish(if (failure) |err|
+            @as(anyerror!c.JSValue, err) else c.pi_js_undefined());
+        engine.freeValue(ignored);
+    }
+};
+
+
+/// A unique native backing token is transferred only by the source write-string
+/// and write-vector paths that allocate one. WriteBuffer does not acquire it.
+pub const Write = struct {
+    request: Request = undefined,
+    backing_store: ?managed.Token = null,
+
+    pub fn init(self: *Write, stream: *streams.Base, registry: *wraps.Registry,
+        wrapper: c.JSValue,
+        get_async_wrap: *const fn (*Request) *wraps.State) anyerror!void
+    {
+        const bindings = stream.operations.write orelse
+            return error.ActualStreamWriteBindingsRequired;
+        try self.request.init(stream, registry, wrapper, get_async_wrap, onDone);
+        self.request.bindings = bindings.request;
+    }
+    pub fn fromRequest(request: *Request) *Write {
+        return @fieldParentPtr("request", request);
+    }
+    pub fn fromObject(registry: *const wraps.Registry, object: c.JSValue) ?*Write {
+        return fromRequest(Request.fromObject(registry, object) orelse return null);
+    }
+    pub fn setBackingStore(self: *Write, owned: *managed.Token) void {
+        if (self.backing_store != null) check.assertion(
+            self.request.asyncWrap().registry.environment.engine, .{
+                .file_line = "src/stream_base-inl.h:158",
+                .message = "!backing_store_",
+                .function = "node::WriteWrap::SetBackingStore",
+            });
+        self.backing_store = if (owned.owner == null) null else owned.*;
+        owned.* = std.mem.zeroes(managed.Token);
+    }
+    /// The concrete derived destructor calls this at actual native retirement,
+    /// after its final BaseObjectPtr is released, never at logical Dispose.
+    pub fn deinit(self: *Write) void {
+        if (self.backing_store) |*owned| c.JS_PiReleaseArrayBufferBackingStore(owned);
+        self.backing_store = null;
+    }
+    fn onDone(request: *Request, status: c_int) anyerror!void {
+        const self = fromRequest(request);
+        const environment = request.asyncWrap().registry.environment.retain();
+        defer environment.release();
+        const engine = try environment.requireEngine();
+        var scope = a.Scope.init(engine);
+        var failure: ?anyerror = null;
+        request.stream.resource.emitAfterWrite(self, status) catch |err| {
+            recordFailure(&scope, err);
+            failure = err;
+        };
+        // Original void completion can throw or destroy the stream. Dispose
+        // still follows; no stream or listener access is made after emission.
+        request.dispose() catch |err| {
+            recordFailure(&scope, err);
+            if (failure == null) failure = err;
+        };
         const ignored = try scope.finish(if (failure) |err|
             @as(anyerror!c.JSValue, err) else c.pi_js_undefined());
         engine.freeValue(ignored);

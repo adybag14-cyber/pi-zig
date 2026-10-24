@@ -1,0 +1,34 @@
+{
+  "vm_header": {
+    "anchor": "JS_EXTERN bool JS_IsDataView(JSValueConst val);\n",
+    "addition": "\n/* Actual native External value: a fresh non-extensible, null-prototype object\n   with an authenticated VM class and a borrowed non-null pointer. No stream,\n   native owner, JS value or backing store is retained or finalized. The pointer\n   is meaningful only while its independently owned native target is alive.\n   Recognition/extraction do not unwrap proxies, coerce, allocate or dereference\n   the stored pointer; non-External input extracts NULL. */\nJS_EXTERN JSValue JS_PiNewExternal(JSContext *ctx, void *pointer);\nJS_EXTERN bool JS_PiIsExternal(JSValueConst value);\nJS_EXTERN void *JS_PiExternalValue(JSValueConst value);\n"
+  },
+  "vm_c": {
+    "edits": [
+      {
+        "before": "    JS_CLASS_INIT_COUNT, /* last entry for predefined classes */",
+        "after": "    JS_CLASS_PI_EXTERNAL, /* borrowed native External, no target ownership */\n\n    JS_CLASS_INIT_COUNT, /* last entry for predefined classes */"
+      },
+      {
+        "before": "static int init_class_range(JSRuntime *rt, JSClassShortDef const *tab,",
+        "after": "static JSClassShortDef const js_pi_external_class_def[] = {\n    { JS_ATOM_Object, NULL, NULL }, /* JS_CLASS_PI_EXTERNAL */\n};\n\nstatic int init_class_range(JSRuntime *rt, JSClassShortDef const *tab,"
+      },
+      {
+        "before": "    rt->class_array[JS_CLASS_ARGUMENTS].exotic = &js_arguments_exotic_methods;",
+        "after": "    if (init_class_range(rt, js_pi_external_class_def, JS_CLASS_PI_EXTERNAL,\n                         countof(js_pi_external_class_def)) < 0)\n        goto fail;\n    rt->class_array[JS_CLASS_ARGUMENTS].exotic = &js_arguments_exotic_methods;"
+      },
+      {
+        "before": "void *JS_GetOpaque2(JSContext *ctx, JSValueConst obj, JSClassID class_id)\n",
+        "after": "/* V8 External::New / JSExternalObject: only the value object is owned.\n   The native address carries no keepalive and is never dereferenced here. */\nJSValue JS_PiNewExternal(JSContext *ctx, void *pointer)\n{\n    JSValue value;\n    assert(pointer != NULL);\n    value = JS_NewObjectProtoClass(ctx, JS_NULL, JS_CLASS_PI_EXTERNAL);\n    if (JS_IsException(value))\n        return value;\n    JS_SetOpaqueInternal(value, pointer);\n    JS_VALUE_GET_OBJ(value)->extensible = false;\n    return value;\n}\n\nbool JS_PiIsExternal(JSValueConst value)\n{\n    return JS_GetClassID(value) == JS_CLASS_PI_EXTERNAL;\n}\n\nvoid *JS_PiExternalValue(JSValueConst value)\n{\n    return JS_GetOpaque(value, JS_CLASS_PI_EXTERNAL);\n}\n\nvoid *JS_GetOpaque2(JSContext *ctx, JSValueConst obj, JSClassID class_id)\n"
+      }
+    ]
+  },
+  "dispatcher": {
+    "import_before": "const vector_writes = @import(\"native_node_stream_writev.zig\");",
+    "import_after": "const vector_writes = @import(\"native_node_stream_writev.zig\");\nconst external = @import(\"native_node_external_value.zig\");",
+    "insert_before": "/// GetFD uses the same FromObject and IsAlive guards, but has no trigger scope.\n",
+    "addition": "/// Original GetExternal returns a fresh External for any remaining native\n/// stream, including a closed one. It does not consult IsAlive, cache the value,\n/// enter a trigger scope, or acquire a native pointer/JS wrapper keepalive.\npub fn getExternal(s: *a.Scope, registry: *wraps.Registry,\n    receiver: c.JSValue) !c.JSValue\n{\n    const stream = streams.Base.fromObject(registry, receiver) orelse\n        return c.pi_js_undefined();\n    return a.duplicate(s.engine, try external.create(s, @ptrCast(stream)));\n}\n\n",
+    "comment_before": "//! Public AddMethods/template publication still requires external_stream and\n//! the complete original publication owner before that surface can be exposed.",
+    "comment_after": "//! Public AddMethods/template publication still requires its complete original\n//! signature/accessor/constructor owner before that surface can be exposed."
+  }
+}

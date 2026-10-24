@@ -1,0 +1,18 @@
+[
+  {
+    "source": "src/api/encoding.cc",
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/api/encoding.cc",
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\authority\\src__api__encoding.cc.txt",
+    "bytes": 5371,
+    "sha256": "83BDF541F5F835716291B01B4B31C51FEEA0A2D5A760E5BE274AB95E4CC9C664",
+    "executed": false
+  },
+  {
+    "source": "deps/nbytes/include/nbytes.h",
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/nbytes/include/nbytes.h",
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\authority\\deps__nbytes__include__nbytes.h.txt",
+    "bytes": 29695,
+    "sha256": "AFAEE2994D484007CA7061D1D1FCEEF98A878AEDAFD62619A1DBC60F01A39DEC",
+    "executed": false
+  }
+]

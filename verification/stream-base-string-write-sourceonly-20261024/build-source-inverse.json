@@ -1,0 +1,16 @@
+{
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-write-buffer-sourceonly-20261023\\projected\\build.zig",
+    "bytes": 519458,
+    "sha256": "4757193E24AE71E9940AEB6F988EE08B5937E63F9845547BCF16DE59096A4C6B"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 521275,
+    "sha256": "BFD38FBB83398BF6602E7A11CBB2FF30224774DD1C1C3DCFF0BADF8D1464A973"
+  },
+  "anchor": "        const node_stream_write = b.addTest(.{\n",
+  "insertion": "        const node_stream_write_string = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_stream_write_string_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native Stream string write\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_stream_write_string.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_stream_write_string.root_module, typescript_parser);\n        linkSqlite(node_stream_write_string.root_module, sqlite_lib_dir, sqlite_library);\n        node_stream_write_string.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_stream_write_string.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_stream_write_string.root_module.addIncludePath(b.path(\"src/extensions\"));\n        node_stream_write_string.root_module.linkLibrary(network);\n        node_stream_write_string.root_module.linkLibrary(node_one_byte_diagnostics);\n        node_stream_write_string.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_custom_buffer_listener_allocation.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        if (target.result.os.tag == .windows) {\n            node_stream_write_string.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_stream_write_string.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-stream-write-string\", \"Install declared StreamBase string-write controls without execution\").dependOn(&b.addInstallArtifact(node_stream_write_string, .{ .dest_sub_path = b.fmt(\"native-node-stream-write-string{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n",
+  "inverse_exact": true,
+  "install_only": true
+}

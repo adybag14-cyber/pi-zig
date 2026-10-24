@@ -13,6 +13,7 @@ const async_callback = @import("native_node_async_wrap_make_callback.zig");
 const check = @import("native_node_check_failure.zig");
 const requests = @import("native_node_stream_request.zig");
 const shutdown = @import("native_node_stream_shutdown.zig");
+const writes = @import("native_node_stream_write.zig");
 const c = a.c;
 const uv = managed.uv;
 
@@ -31,10 +32,16 @@ pub const Allocation = struct {
 /// Borrowed actual Environment template/key roots. Their embedding owner must
 /// retain them through every native stream/request completion; this record is
 /// not an installation hook or a substitute template/key allocator.
-pub const ShutdownBindings = struct {
+pub const RequestBindings = struct {
     template_owner: c.JSValue,
     error_string: c.JSValue,
     oncomplete_string: c.JSValue,
+};
+
+pub const ShutdownBindings = RequestBindings;
+pub const WriteBindings = struct {
+    request: RequestBindings,
+    handle_string: c.JSValue,
 };
 
 pub const Operations = struct {
@@ -44,6 +51,10 @@ pub const Operations = struct {
     // the original report-disabled configuration; it is not a guest callback.
     heap_diagnostics: ?*const check.Diagnostics,
     shutdown: ?ShutdownBindings = null,
+    write: ?WriteBindings = null,
+    // A concrete IPC HandleWrap owner must supply its actual unwrap/GetHandle.
+    // FileHandle's original IsIPCPipe=false never selects this operation.
+    unwrap_send_handle: ?*const fn (*a.Scope, c.JSValue) anyerror!?*uv.uv_stream_t = null,
 };
 
 pub const Virtuals = struct {
@@ -60,6 +71,12 @@ pub const Virtuals = struct {
     clear_error: *const fn (*Base) void = defaultClearError,
     create_shutdown: *const fn (*Base, *a.Scope, c.JSValue) anyerror!?*requests.Shutdown = shutdown.createDefault,
     do_shutdown: ?*const fn (*Base, *a.Scope, ?*requests.Shutdown) anyerror!c_int = null,
+    create_write: *const fn (*Base, *a.Scope, c.JSValue) anyerror!*requests.Write = writes.createDefault,
+    do_write: ?*const fn (*Base, *a.Scope, *requests.Write, []uv.uv_buf_t,
+        ?*uv.uv_stream_t) anyerror!c_int = null,
+    has_do_try_write: *const fn (*const Base) bool = defaultFalse,
+    do_try_write: *const fn (*Base, *a.Scope, *[]uv.uv_buf_t) anyerror!c_int = defaultDoTryWrite,
+    is_ipc_pipe: *const fn (*const Base) bool = defaultFalse,
 };
 fn defaultGetObject(stream: *Base) ?c.JSValue {
     const wrap = stream.virtuals.get_async_wrap(stream) orelse return null;
@@ -68,6 +85,8 @@ fn defaultGetObject(stream: *Base) ?c.JSValue {
 // These are the original StreamResource virtual default bodies.
 fn defaultError(_: *Base) ?[*:0]const u8 { return null; }
 fn defaultClearError(_: *Base) void {}
+fn defaultFalse(_: *const Base) bool { return false; }
+fn defaultDoTryWrite(_: *Base, _: *a.Scope, _: *[]uv.uv_buf_t) anyerror!c_int { return 0; }
 // Original StreamBase::GetFD default, distinct from a failed receiver guard.
 fn defaultGetFD(_: *Base) c_int { return -1; }
 pub const ReadChecks = enum { check_nread, skip_nread_checks };
@@ -91,7 +110,8 @@ pub const Base = struct {
             .resource = resources.Resource.init(engine),
             .environment = environment,
             .default_listener = .{ .read_methods = &default_read_methods,
-                .after_shutdown = shutdown.reportAfterShutdown },
+                .after_shutdown = shutdown.reportAfterShutdown,
+                .after_write = shutdown.reportAfterWrite },
             .virtuals = virtuals,
             .operations = operations,
             .initialized = true,
@@ -122,6 +142,13 @@ pub const Base = struct {
         wrapper: ?c.JSValue) anyerror!c_int
     {
         return shutdown.run(s, self, wrapper);
+    }
+
+    pub fn writeRequest(self: *Base, s: *a.Scope, buffers: []uv.uv_buf_t,
+        send_handle: ?*uv.uv_stream_t, wrapper: ?c.JSValue,
+        skip_try_write: bool) anyerror!writes.Result
+    {
+        return writes.run(s, self, buffers, send_handle, wrapper, skip_try_write);
     }
 
     /// No new HandleScope: the Source Local result and selected onread remain

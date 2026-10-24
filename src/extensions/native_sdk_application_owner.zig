@@ -64,6 +64,13 @@ pub const Owner = struct {
         try self.check();
         return if (self.auth) |*value| value.authStorage() else error.ActualSdkApplicationAuthRetired;
     }
+    /// Owned actual public print module bound to this application's existing
+    /// shell and stdout owner. The caller supplies only the real runtimeHost
+    /// and Source print options when invoking its runPrintMode export.
+    pub fn createPrintMode(self: *Owner) !c.JSValue {
+        try self.check();
+        return if (self.auth) |*value| value.createPrintMode() else error.ActualSdkApplicationAuthRetired;
+    }
     /// Explicit Source mode transitions. Call only at the actual noninteractive
     /// or RPC transition, never infer takeover from TTY state or a mode boolean.
     pub fn takeOverStdout(self: *Owner) !void { return stdoutTransition(self, false); }

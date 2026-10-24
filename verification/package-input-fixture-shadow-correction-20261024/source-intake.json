@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "status": "source_only_local_identifier_shadow_correction",
+  "reviewer": "Root",
+  "created_utc": "2026-10-24T18:13:13.940783+00:00",
+  "base_head": "eeb59f314c834ed8a060da178251e380a50d0a62",
+  "observed_original_negative_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v41-new2-buildquery-20261024-180122\\result.json",
+    "bytes": 28758,
+    "sha256": "54F8057CCBBF3193AF7D2862A2C18D8A0FE007DB24B279C6829BAB1FBA961EDA"
+  },
+  "observed_failed_compile": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v41-new2-buildquery-20261024-180122\\groups\\native-node-module-package-inputs\\compile.json",
+    "bytes": 2308,
+    "sha256": "951B1DC0D3559019D1DFF0272090850A633879242A537B7295D908C98C90BF1D"
+  },
+  "observed_compile_stderr": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v41-new2-buildquery-20261024-180122\\groups\\native-node-module-package-inputs\\compile.stderr.log",
+    "bytes": 20920,
+    "sha256": "EE4551AF0C20778D19A6C675A440FCFF4F24EDE56656327FC6577E2255B9A1C5"
+  },
+  "observed_original_job_status": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v41-new2-control-20261024-180122\\independent-observed-job-status.json",
+    "bytes": 1522,
+    "sha256": "C05FEE29A26C52E109AE323BCE1F698B342FD75E6CC318D2EC12DBB25E47044D"
+  },
+  "changes": [
+    {
+      "destination_relative_path": "src/native_node_module_package_inputs_test.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_module_package_inputs_test.zig",
+        "bytes": 17595,
+        "sha256": "4D777A401B7D7F4BD941E84B83D72D0E8E715D2F86D4FDC8B931BFCD9B6219BE"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-input-fixture-shadow-correction-sourceonly-20261024\\projected\\src\\native_node_module_package_inputs_test.zig",
+        "bytes": 17613,
+        "sha256": "540F3AF4828DB693266169079FC808C7351177A5145A71A3ECA3824EEAE5717D"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-input-fixture-shadow-correction-sourceonly-20261024\\package-input-fixture-local-name.patch",
+    "bytes": 1146,
+    "sha256": "ED5EF4E6781E236A009FDCC7F97FCFA7291D9E1DC897B125F4FEAAB0152BCB8B"
+  },
+  "edits": [
+    {
+      "before": "        const read = try s.own(try functions.create(s.engine, \"actualPackageRead\", 1,",
+      "after": "        const read_function = try s.own(try functions.create(s.engine, \"actualPackageRead\", 1,"
+    },
+    {
+      "before": "        try s.define(global, \"actualPackageRead\", read, c.JS_PROP_C_W_E);",
+      "after": "        try s.define(global, \"actualPackageRead\", read_function, c.JS_PROP_C_W_E);"
+    }
+  ],
+  "complete_raw_inverse": true,
+  "unchanged_control_names": [
+    "native module package input returns fresh intrinsic arrays from one physical cached Config",
+    "native module package input negative physical cache remains missing after the file appears",
+    "native module package input invalid Config stays uncached through native Error setter reentry",
+    "native module package input native Error nonthrowing false code Set preserves repairability",
+    "native module package input borrowed native Config remains stable across real cache growth",
+    "native module package input realm retirement clears its typed binding and releases native owners"
+  ],
+  "source_declared_controls": 6,
+  "new_declarations": 0,
+  "actual_metadata_count": null,
+  "explanation": "Zig0.16 rejected the Fixture.bootstrap local const read because it shadows Fixture.read. Rename that local and its single use to read_function; retain the actualPackageRead JS name, callback, all method declarations, production source and assertions byte-identically.",
+  "main_mutated": false,
+  "native_execution": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "requires_closed_original_negative_before_Main_intake": true
+}

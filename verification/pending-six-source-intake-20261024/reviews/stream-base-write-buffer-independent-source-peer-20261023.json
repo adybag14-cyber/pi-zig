@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "created_at_utc": "2026-10-23T19:34:45.423128+00:00",
+  "verdict": "No additional source blocker found in the bounded Write/WriteBuffer successor. Accept for Root source intake and later independent native qualification.",
+  "scope": "Independent source and exact-byte review only. No compiler, parser, metadata query, runtime or Node capture.",
+  "base_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-write-buffer-sourceonly-20261023\\inputs-and-outputs.json",
+    "bytes": 16178,
+    "sha256": "2D40BCB18CE4F8936425E1B68735ABD39C84F9BCDCF116A41FF4EA1559F1B655"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-write-buffer-sourceonly-20261023\\stream-base-write-buffer-successor.patch",
+    "bytes": 73097,
+    "sha256": "DBFF3ECBB5459E136103BC2CF74C4CD9A3E8107A2CC54EAAE57FECDE667E1B84"
+  },
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-write-buffer-sourceonly-20261023\\build-addition.zig.txt",
+    "bytes": 1692,
+    "sha256": "8DA5FDB9FB23C66BB3E4078EB2776B0553990FDFC81A3E919E25A3C7C6BBF960"
+  },
+  "verified_unique_manifest_pins": 33,
+  "verified_target_count": 12,
+  "checks": {
+    "all_manifest_input_output_authority_and_preserved_prior_pins_rehashed": true,
+    "patch_regenerates_exactly_from_all_ten_inputs_and_twelve_outputs": true,
+    "build_addition_removal_recovers_exact_first_packet_build": true,
+    "literal_relative_imports_resolved": 84,
+    "new_write_owner_Scope_methods_verified": [
+      "beforeAllocation",
+      "checkedAllocation",
+      "own",
+      "pending"
+    ],
+    "original_WRITEWRAP_provider_index": 52,
+    "all_twenty_control_declarations_match_manifest_and_build_filter": true,
+    "actual_FileHandle_public_template_gate_unchanged": true
+  },
+  "source_findings": [
+    "Write accounts all attempted bytes before DoTryWrite; partial vectors leave that original total unchanged. Both skip_try_write and non-null send handle bypass the original try-write path.",
+    "Native result owns the retained BaseObjectPtr separately from its exposed WriteWrap pointer. Synchronous Dispose clears the request slot but the returned result retains the native state until release.",
+    "The error-property IsNothing path retires the local pointer before restoring the default trigger and returns EBUSY with zero result bytes. Accepted asynchronous requests are not spuriously disposed by a later setter exception.",
+    "The actual WriteWrap template has separate request/native fields, the real AsyncWrap prototype and provider 52, and lacks the three own ShutdownWrap data fields. Existing Shutdown bindings retain their prior fallback timing.",
+    "Original ordinary init-hook exceptions preserve the completed native request and continue through MakeWeak and DoWrite; fatal/port failures stay failures.",
+    "WriteBuffer uses the real Uint8Array predicate/view pointer/byte length, intrinsic TypeError and original observable code Set. It publishes shared Int32 result fields before retiring the local result pointer.",
+    "Default and CustomBuffer listeners use the shared actual completion reporter. Write completion still disposes after a callback throw and does not reread the stream/listener afterward.",
+    "Backing-store ownership transfers once and remains alive through logical Dispose. State retirement clears AsyncWrap/BaseObject ownership before the derived destroy releases the WriteWrap backing token, matching reverse base destruction.",
+    "The FileHandle adapter is the retained original UV_ENOSYS body; it does not claim an OS write. The first packet receiver/alive/default-trigger guards remain before argument checks."
+  ],
+  "authority_ranges_read": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.cc.v24.13.txt",
+      "ranges": [
+        "83-139",
+        "175-178",
+        "297-333",
+        "482-484",
+        "664-678",
+        "757-815",
+        "855-865"
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.h.v24.13.txt",
+      "ranges": [
+        "42-110",
+        "458-471"
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base-inl.h.v24.13.txt",
+      "ranges": [
+        "14-53",
+        "82-89",
+        "111-119",
+        "135-167"
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-lstat-sourceonly-20261017\\authority\\node-file.cc.txt",
+      "ranges": [
+        "287-292"
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-shutdown-latin1-buffer-intake-20261021\\archive\\shutdown\\authority\\stream_wrap.cc.raw",
+      "ranges": [
+        "61-100"
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\async_wrap.h.v24.13.txt",
+      "ranges": [
+        "35-88"
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-file-handle-error-intake-20261020\\sdk\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-errors.v24.13.h",
+      "ranges": [
+        "140-174"
+      ]
+    }
+  ],
+  "additional_current_owner_inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33411,
+      "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_async_providers.zig",
+      "bytes": 1780,
+      "sha256": "5C66F18156086D2C00A4AEE22C62F46E1C6DED84624A410F5900C49D2FECA4CA"
+    }
+  ],
+  "controls": {
+    "authored_named_declarations": 20,
+    "compiled_metadata_count": null,
+    "executed": false,
+    "observed_coverage": "Read complete test fixture and all 20 cases, including physical descriptor/ENOSYS, request-slot versus native-pointer lifetime, try-write totals and bypass, real warning/error ordering, ordinary init-hook throw, live completion forwarding, disabled JS, backing token, receiver guards, and accepted async with later setter failure."
+  },
+  "integration": "Apply after the first JS-dispatch packet. Compose only the 1692-byte additive build hunk with the accepted combined Module/first-StreamBase build; do not overwrite that composed build with this standalone projection.",
+  "remaining_scope": [
+    "Vector/string write callbacks and external_stream are still required for full AddMethods/public FileHandle publication.",
+    "The separate IPC branch requires a concrete HandleWrap unwrap/GetHandle owner; FileHandle is non-IPC.",
+    "Embedding template/key, trace, allocation and event-loop owners remain required.",
+    "Native compilation, actual metadata/runtime evidence and application bridge removal are not claimed."
+  ],
+  "mutations": {
+    "Main": false,
+    "donor_packets": false,
+    "native_execution": false,
+    "review_record_only": true
+  }
+}

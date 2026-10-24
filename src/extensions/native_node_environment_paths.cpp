@@ -437,6 +437,43 @@ extern "C" void pi_node_environment_path_resolve(
   }
   visitor(user, result.data(), result.size());
 }
+// path.cc:282-327. Native String storage replaces BufferValue's owned byte
+// buffer; every original ToNamespacedPath branch uses the actual PathResolve.
+extern "C" void pi_node_environment_path_to_namespaced(
+    const PiNodeEnvironmentPaths* paths, void* memory_owner, JSContext* context,
+    PiNodeEnvironmentMap* map, const PiNodeEnvironmentTrace* trace,
+    const PiNodeEnvironmentPathSpan* input,
+    PiNodeEnvironmentValueVisitor visitor, void* user) noexcept {
+  pi_node::AllocationScope allocation(memory_owner);
+  String path(input->data, input->length);
+#ifdef _WIN32
+  if (!path.empty()) {
+    const pi_node::EnvironmentPathAccess access{paths, map, context, trace};
+    pi_node::EnvironmentPathViews parts;
+    parts.emplace_back(path.data(), path.size());
+    String resolved_path = pi_node::PathResolve(&access, parts);
+    if (resolved_path.size() > 2) {
+      if (resolved_path[0] == '\\' && resolved_path[1] == '\\' &&
+          resolved_path[2] != '?' && resolved_path[2] != '.') {
+        path.assign(R"(\\?\UNC\)");
+        path.append(resolved_path.data() + 2, resolved_path.size() - 2);
+      } else if (pi_node::IsWindowsDeviceRoot(resolved_path[0]) &&
+                 resolved_path[1] == ':' && resolved_path[2] == '\\') {
+        path.assign(R"(\\?\)");
+        path.append(resolved_path.data(), resolved_path.size());
+      } else {
+        path = std::move(resolved_path);
+      }
+    }
+  }
+#else
+  (void)paths;
+  (void)context;
+  (void)map;
+  (void)trace;
+#endif
+  visitor(user, path.data(), path.size());
+}
 extern "C" int pi_node_environment_safe_getenv(
     void* memory_owner, JSContext* context, PiNodeEnvironmentMap* map,
     const PiNodeEnvironmentTrace* trace, const char* key,

@@ -1,0 +1,114 @@
+{
+  "schema": "pi-zig-independent-source-peer-v1",
+  "reviewer": "handover_review",
+  "created_at_utc": "2026-10-23T19:43:00.317529+00:00",
+  "scope": "Compact independent Module nearest-parent source peer; native borrowed-owner lifetime, permission order, original normalization, source/API inspection and focused controls.",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-nearest-parent-sourceonly-20261023\\source-intake.json",
+    "bytes": 26750,
+    "sha256": "C2B82AFB8A03CF1195ED2A1D7B9476ABA2D26983264E8F1CD4D24B41E78F4E7D"
+  },
+  "selected_changes": [
+    {
+      "intended_relative_path": "src/extensions/native_node_environment_paths.h",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_environment_paths.h",
+        "bytes": 3358,
+        "sha256": "E504065537C5D669EF793D3F8F65BC9FB31DFB211F96091DC20EA87F42373B31"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-nearest-parent-sourceonly-20261023\\projected\\src\\extensions\\native_node_environment_paths.h",
+        "bytes": 3908,
+        "sha256": "B52577A71C23BD65AA7938FA2C74AA2C35264A9AAC53190844C68B32A309B7AE"
+      },
+      "operation": "apply exact recorded insertion"
+    },
+    {
+      "intended_relative_path": "src/extensions/native_node_environment_paths.cpp",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_environment_paths.cpp",
+        "bytes": 15087,
+        "sha256": "B2E838D216E858D7F3DF31347A71C0AFACD0C4AC507CBE5E5E1191460572A395"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-nearest-parent-sourceonly-20261023\\projected\\src\\extensions\\native_node_environment_paths.cpp",
+        "bytes": 16626,
+        "sha256": "66EAA33A16F71733244009BAF97B0D76CB0C265CC7C07F7C78E3FE6D21686E44"
+      },
+      "operation": "apply exact recorded insertion"
+    },
+    {
+      "intended_relative_path": "build.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-physical-inputs-sourceonly-20261023\\projected\\build.zig",
+        "bytes": 517481,
+        "sha256": "258F00510D7FD50FF9D16F068E2F5A7FB068F7A619D734C471E091F78D556378"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-nearest-parent-sourceonly-20261023\\projected\\build.zig",
+        "bytes": 519011,
+        "sha256": "0E5D183AE116AC68016A0D6C66734BB690ACCBDC4650959B293C027382C07C06"
+      },
+      "operation": "apply exact recorded insertion"
+    },
+    {
+      "intended_relative_path": "src/extensions/native_node_module_nearest_parent.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-nearest-parent-sourceonly-20261023\\projected\\src\\extensions\\native_node_module_nearest_parent.zig",
+        "bytes": 8936,
+        "sha256": "4E4DDF1ADA564554227F1BB05B824D1DAD9D30704B0E42DC673C5E4D43DBF10E"
+      },
+      "operation": "add complete new source"
+    },
+    {
+      "intended_relative_path": "src/native_node_module_nearest_parent_test.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-nearest-parent-sourceonly-20261023\\projected\\src\\native_node_module_nearest_parent_test.zig",
+        "bytes": 23375,
+        "sha256": "EB4B3A5D8FF329D0E5CACC8AEFBCB692A7598F4880CEEFE32AAB2A1FB3CA2BFE"
+      },
+      "operation": "add complete new source"
+    }
+  ],
+  "source_diff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-nearest-parent-sourceonly-20261023\\source-diff.patch",
+    "bytes": 38446,
+    "sha256": "ABA573A7B456B278853D1301C2383AC9B89E7CCCFB3C5ABFE1ACD55BCEF62AAD"
+  },
+  "retained_binding_data": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-physical-inputs-sourceonly-20261023\\projected\\src\\extensions\\native_node_modules_binding_data.zig",
+    "bytes": 12397,
+    "sha256": "3CF4292A826730575E79A091FDC5558308DCD78DFC131CB9EEEFBF2C6CF1505E"
+  },
+  "verdict": "no_concrete_source_blocker_found",
+  "checks": {
+    "unique_intake_pins_rehashed": 49,
+    "native_header_and_cpp_insertions_inverse_exact": true,
+    "six_control_build_successor_insertion_inverse_exact": true,
+    "exact_patch_reconstructed_byte_for_byte": true,
+    "complete_new_owner_and_controls_read": true,
+    "source_named_control_declarations": 8,
+    "native_metadata_count": null,
+    "main_or_donor_mutations": false
+  },
+  "findings": [
+    "node_modules.cc 295-391 agrees with the parent-first traversal, terminal-root exclusion, once-captured permission-enabled flag, live native FS-read admission before node_modules boundary and package lookup, and immediate stop on invalid Config.",
+    "NormalizePath tests only the native preferred trailing separator before ToNamespacedPath and restores the empty final component afterward. The selected native path helpers preserve the native and generic spelling required at the permission/read sites.",
+    "The new C ABI leaf follows path.cc 282-327: empty and short Windows results preserve the original input, ordinary UNC and device roots gain the original namespace prefixes, other Windows results keep actual PathResolve output, and POSIX input stays unchanged.",
+    "The C++ output String is alive through exactly one synchronous visitor invocation. NamespaceCapture copies its full byte span into charged cache-allocator storage before the native String dies; normalized input remains owned through every parent/read operation.",
+    "NativeInputs requires the real Permission and co-owned Environment borrow, exact Engine context, paths, private Map, trace and process Debug operations. Borrowing through synchronous return and callback reentry is explicit; no process-global environment, public path policy or allow default is substituted.",
+    "The typed weak BindingData lookup is immediately followed by retention of its actual wrapper before path work. Cache entries are individually allocated and stable. Reentrant invalid-config handling keeps the failed Config independent and uncached until the native Error setter/throw finishes.",
+    "The complete eight controls use actual native Permission/Map/path/Debug and BindingData/cache owners. They cover intrinsic fresh serialization, preferred trailing separator, node_modules stop, denied cached hits, permitted subtree/denied ancestor, negative cache stability, native Error repair/reentry and hard-coded private-drive/UNC or POSIX results.",
+    "The narrow C declaration reaches Zig through existing permission/header imports; C++ allocator/String/PathResolve/IsWindowsDeviceRoot declarations are present in the same translation unit. No concrete source compile pitfall was found by static inspection."
+  ],
+  "integration_limits": [
+    "Source-only: no Zig parser/formatter, compiler, metadata query, native control or Node reference execution was performed.",
+    "The Environment/Permission lifetime remains an explicit actual-bootstrap caller obligation. This private leaf does not assemble or publish the complete binding/Module graph.",
+    "The changed environment_paths.cpp and header require a fresh native owner library for the new C ABI symbol. Existing binaries cannot qualify this source.",
+    "Compose only the recorded 16-line build insertion into a newer combined build; the standalone candidate is based on the prior six-control packet.",
+    "Full startup, public Module namespace, Jiti/ESM integration and production bridge removal remain outside this bounded source slice."
+  ],
+  "blockers": []
+}

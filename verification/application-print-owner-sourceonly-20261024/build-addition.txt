@@ -1,0 +1,13 @@
+    const application_print_owner_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_application_print_owner_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Application print owner"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, application_print_owner_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, application_print_owner_tests.root_module, typescript_parser);
+    linkSqlite(application_print_owner_tests.root_module, sqlite_lib_dir, sqlite_library);
+    application_print_owner_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        application_print_owner_tests.root_module.linkSystemLibrary("advapi32", .{});
+        application_print_owner_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-application-print-owner", "Install actual application print owner assembly controls without execution").dependOn(&b.addInstallArtifact(application_print_owner_tests, .{}).step);

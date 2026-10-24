@@ -28,6 +28,20 @@ pub const Listener = struct {
     read_methods: ?*const ReadMethods = null,
     after_shutdown: *const fn (*Listener, *requests.Shutdown, c_int) anyerror!void = forwardAfterShutdown,
 
+    after_write: *const fn (*Listener, *requests.Write, c_int) anyerror!void = forwardAfterWrite,
+
+    fn forwardAfterWrite(self: *Listener, request: *requests.Write,
+        status: c_int) anyerror!void
+    {
+        const previous = self.previous_listener orelse check.assertion(
+            if (self.stream) |stream| stream.engine else null, .{
+                .file_line = "src/stream_base.cc:813",
+                .message = "(previous_listener_) != nullptr",
+                .function = "node::StreamListener::OnStreamAfterWrite",
+            });
+        return previous.after_write(previous, request, status);
+    }
+
     fn forwardAfterShutdown(self: *Listener, request: *requests.Shutdown,
         status: c_int) anyerror!void
     {
@@ -135,6 +149,13 @@ pub const Resource = struct {
     {
         const selected = self.listener.?;
         return selected.after_shutdown(selected, request, status);
+    }
+
+    pub fn emitAfterWrite(self: *Resource, request: *requests.Write,
+        status: c_int) anyerror!void
+    {
+        const selected = self.listener.?;
+        return selected.after_write(selected, request, status);
     }
 
     /// Actual StreamResource::~StreamResource. OnStreamDestroy may unlink and

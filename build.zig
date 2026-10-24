@@ -1832,6 +1832,32 @@ pub fn build(b: *std.Build) void {
         public_print_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-public-print-mode", "Install actual c268 public print and JSON mode controls without execution").dependOn(&b.addInstallArtifact(public_print_tests, .{}).step);
+    const application_print_owner_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_application_print_owner_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Application print owner"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, application_print_owner_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, application_print_owner_tests.root_module, typescript_parser);
+    linkSqlite(application_print_owner_tests.root_module, sqlite_lib_dir, sqlite_library);
+    application_print_owner_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        application_print_owner_tests.root_module.linkSystemLibrary("advapi32", .{});
+        application_print_owner_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-application-print-owner", "Install actual application print owner assembly controls without execution").dependOn(&b.addInstallArtifact(application_print_owner_tests, .{}).step);
+    const module_execution_state_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_execution_state_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native module execution state"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, module_execution_state_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, module_execution_state_tests.root_module, typescript_parser);
+    linkSqlite(module_execution_state_tests.root_module, sqlite_lib_dir, sqlite_library);
+    module_execution_state_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        module_execution_state_tests.root_module.linkSystemLibrary("advapi32", .{});
+        module_execution_state_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-module-execution-state", "Install actual Module helper execution-state controls without execution").dependOn(&b.addInstallArtifact(module_execution_state_tests, .{}).step);
     const public_rpc_jsonl_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_public_rpc_jsonl_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"Public RPC JSONL actual"}, .use_llvm = use_llvm,
@@ -2344,6 +2370,111 @@ pub fn build(b: *std.Build) void {
             node_stream_js_dispatch.root_module.linkSystemLibrary("userenv", .{});
         }
         b.step("build-native-node-stream-js-dispatch", "Install 13 actual StreamBase JS dispatch controls without execution").dependOn(&b.addInstallArtifact(node_stream_js_dispatch, .{ .dest_sub_path = b.fmt("native-node-stream-js-dispatch{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        const node_stream_external = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_stream_external_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native Stream external"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_stream_external.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_stream_external.root_module, typescript_parser);
+        linkSqlite(node_stream_external.root_module, sqlite_lib_dir, sqlite_library);
+        node_stream_external.root_module.addImport("catalog_tool", catalog_tool);
+        node_stream_external.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        node_stream_external.root_module.addIncludePath(b.path("src/extensions"));
+        node_stream_external.root_module.linkLibrary(network);
+        node_stream_external.root_module.linkLibrary(node_one_byte_diagnostics);
+        node_stream_external.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_custom_buffer_listener_allocation.cpp"),
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+        if (target.result.os.tag == .windows) {
+            node_stream_external.root_module.linkSystemLibrary("advapi32", .{});
+            node_stream_external.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-stream-external", "Install declared StreamBase native External controls without execution").dependOn(&b.addInstallArtifact(node_stream_external, .{ .dest_sub_path = b.fmt("native-node-stream-external{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        const node_file_handle_template = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_file_handle_template_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native FileHandle template"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_file_handle_template.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_file_handle_template.root_module, typescript_parser);
+        linkSqlite(node_file_handle_template.root_module, sqlite_lib_dir, sqlite_library);
+        node_file_handle_template.root_module.addImport("catalog_tool", catalog_tool);
+        node_file_handle_template.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        node_file_handle_template.root_module.addIncludePath(b.path("src/extensions"));
+        node_file_handle_template.root_module.linkLibrary(network);
+        node_file_handle_template.root_module.linkLibrary(node_one_byte_diagnostics);
+        node_file_handle_template.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_custom_buffer_listener_allocation.cpp"),
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+        if (target.result.os.tag == .windows) {
+            node_file_handle_template.root_module.linkSystemLibrary("advapi32", .{});
+            node_file_handle_template.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-file-handle-template", "Install declared complete FileHandle template controls without execution").dependOn(&b.addInstallArtifact(node_file_handle_template, .{ .dest_sub_path = b.fmt("native-node-file-handle-template{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        const node_stream_writev = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_stream_writev_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native Stream vector write"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_stream_writev.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_stream_writev.root_module, typescript_parser);
+        linkSqlite(node_stream_writev.root_module, sqlite_lib_dir, sqlite_library);
+        node_stream_writev.root_module.addImport("catalog_tool", catalog_tool);
+        node_stream_writev.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        node_stream_writev.root_module.addIncludePath(b.path("src/extensions"));
+        node_stream_writev.root_module.linkLibrary(network);
+        node_stream_writev.root_module.linkLibrary(node_one_byte_diagnostics);
+        node_stream_writev.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_custom_buffer_listener_allocation.cpp"),
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+        if (target.result.os.tag == .windows) {
+            node_stream_writev.root_module.linkSystemLibrary("advapi32", .{});
+            node_stream_writev.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-stream-writev", "Install declared StreamBase vector-write controls without execution").dependOn(&b.addInstallArtifact(node_stream_writev, .{ .dest_sub_path = b.fmt("native-node-stream-writev{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        const node_stream_write_string = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_stream_write_string_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native Stream string write"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_stream_write_string.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_stream_write_string.root_module, typescript_parser);
+        linkSqlite(node_stream_write_string.root_module, sqlite_lib_dir, sqlite_library);
+        node_stream_write_string.root_module.addImport("catalog_tool", catalog_tool);
+        node_stream_write_string.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        node_stream_write_string.root_module.addIncludePath(b.path("src/extensions"));
+        node_stream_write_string.root_module.linkLibrary(network);
+        node_stream_write_string.root_module.linkLibrary(node_one_byte_diagnostics);
+        node_stream_write_string.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_custom_buffer_listener_allocation.cpp"),
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+        if (target.result.os.tag == .windows) {
+            node_stream_write_string.root_module.linkSystemLibrary("advapi32", .{});
+            node_stream_write_string.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-stream-write-string", "Install declared StreamBase string-write controls without execution").dependOn(&b.addInstallArtifact(node_stream_write_string, .{ .dest_sub_path = b.fmt("native-node-stream-write-string{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        const node_stream_write = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_stream_write_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native Stream write"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_stream_write.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_stream_write.root_module, typescript_parser);
+        linkSqlite(node_stream_write.root_module, sqlite_lib_dir, sqlite_library);
+        node_stream_write.root_module.addImport("catalog_tool", catalog_tool);
+        node_stream_write.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        node_stream_write.root_module.addIncludePath(b.path("src/extensions"));
+        node_stream_write.root_module.linkLibrary(network);
+        node_stream_write.root_module.linkLibrary(node_one_byte_diagnostics);
+        node_stream_write.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_custom_buffer_listener_allocation.cpp"),
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+        if (target.result.os.tag == .windows) {
+            node_stream_write.root_module.linkSystemLibrary("advapi32", .{});
+            node_stream_write.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-stream-write", "Install 20 actual StreamBase write controls without execution").dependOn(&b.addInstallArtifact(node_stream_write, .{ .dest_sub_path = b.fmt("native-node-stream-write{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
         const node_one_byte_string = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_one_byte_string_test.zig"), .target = target, .optimize = optimize }),
             .filters = &.{"native OneByteString"}, .use_llvm = use_llvm,
@@ -4535,6 +4666,11 @@ pub fn build(b: *std.Build) void {
     cjs_metadata_tests.root_module.addImport("catalog_tool", catalog_tool);
     cjs_metadata_tests.root_module.addCSourceFile(.{ .file = b.path("src/native_cjs_allocator_controls.c"), .flags = &.{"-std=gnu11"} });
     b.step("build-native-cjs-source-metadata", "Compile actual lexer metadata and dual-origin ownership controls").dependOn(&b.addInstallArtifact(cjs_metadata_tests, .{}).step);
+    const module_compile_info_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_compile_info_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native module compile info"}, .use_llvm = use_llvm });
+    linkQuickJs(b, module_compile_info_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(module_compile_info_tests.root_module, sqlite_lib_dir, sqlite_library);
+    module_compile_info_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-node-module-compile-info", "Install actual compiler-info completion ownership controls").dependOn(&b.addInstallArtifact(module_compile_info_tests, .{}).step);
     const cjs_raw_provider_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_commonjs_body_compiler_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native CJS raw provider"}, .use_llvm = use_llvm });
     linkQuickJs(b, cjs_raw_provider_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(cjs_raw_provider_tests.root_module, sqlite_lib_dir, sqlite_library);
@@ -5200,6 +5336,38 @@ pub fn build(b: *std.Build) void {
     }
 
     if (native_node_network != null) {
+        const commonjs_circular = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_commonjs_circular_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native actual CommonJS circular"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, commonjs_circular.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, commonjs_circular.root_module, typescript_parser);
+        linkSqlite(commonjs_circular.root_module, sqlite_lib_dir, sqlite_library);
+        commonjs_circular.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            commonjs_circular.root_module.linkSystemLibrary("advapi32", .{});
+            commonjs_circular.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-commonjs-circular", "Install nine actual CommonJS circular controls without execution").dependOn(&b.addInstallArtifact(commonjs_circular, .{ .dest_sub_path = b.fmt("native-node-commonjs-circular{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    }
+
+    if (native_node_network != null) {
+        const commonjs_watch = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_commonjs_watch_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native actual CommonJS watch"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, commonjs_watch.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, commonjs_watch.root_module, typescript_parser);
+        linkSqlite(commonjs_watch.root_module, sqlite_lib_dir, sqlite_library);
+        commonjs_watch.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            commonjs_watch.root_module.linkSystemLibrary("advapi32", .{});
+            commonjs_watch.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-commonjs-watch", "Install eleven actual CommonJS watch controls without execution").dependOn(&b.addInstallArtifact(commonjs_watch, .{ .dest_sub_path = b.fmt("native-node-commonjs-watch{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    }
+
+    if (native_node_network != null) {
         const native_corruption_probe = b.addExecutable(.{
             .name = "test",
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_corruption_probe.zig"), .target = target, .optimize = optimize }),
@@ -5260,6 +5428,38 @@ pub fn build(b: *std.Build) void {
             native_module_package_inputs.root_module.linkSystemLibrary("userenv", .{});
         }
         b.step("build-native-node-module-package-inputs", "Install six declared private Module package-input controls without execution").dependOn(&b.addInstallArtifact(native_module_package_inputs, .{ .dest_sub_path = b.fmt("native-node-module-package-inputs{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        // Private nearest-parent consumer with actual native path/permission inputs.
+        // Install only; native admission and runtime remain separately owned by Root.
+        const native_module_nearest_parent = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_nearest_parent_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native module nearest"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, native_module_nearest_parent.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, native_module_nearest_parent.root_module, typescript_parser);
+        linkSqlite(native_module_nearest_parent.root_module, sqlite_lib_dir, sqlite_library);
+        native_module_nearest_parent.root_module.addImport("catalog_tool", catalog_tool);
+        native_module_nearest_parent.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        if (target.result.os.tag == .windows) {
+            native_module_nearest_parent.root_module.linkSystemLibrary("advapi32", .{});
+            native_module_nearest_parent.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-module-nearest-parent", "Install eight declared private Module nearest-parent controls without execution").dependOn(&b.addInstallArtifact(native_module_nearest_parent, .{ .dest_sub_path = b.fmt("native-node-module-nearest-parent{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        // Private native CommonJS package read with actual Permission and Errors.
+        // Install only; actual metadata and native execution remain Root-owned.
+        const native_module_commonjs_read = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_commonjs_read_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native module CommonJS read"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, native_module_commonjs_read.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, native_module_commonjs_read.root_module, typescript_parser);
+        linkSqlite(native_module_commonjs_read.root_module, sqlite_lib_dir, sqlite_library);
+        native_module_commonjs_read.root_module.addImport("catalog_tool", catalog_tool);
+        native_module_commonjs_read.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        if (target.result.os.tag == .windows) {
+            native_module_commonjs_read.root_module.linkSystemLibrary("advapi32", .{});
+            native_module_commonjs_read.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-module-commonjs-read", "Install eight declared private native CommonJS package-read controls without execution").dependOn(&b.addInstallArtifact(native_module_commonjs_read, .{ .dest_sub_path = b.fmt("native-node-module-commonjs-read{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
         const native_environment_map_tests = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_environment_map_test.zig"), .target = target, .optimize = optimize }),
             .filters = &.{"native environment map"}, .use_llvm = use_llvm,

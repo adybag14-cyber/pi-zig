@@ -1,0 +1,1389 @@
+--- a/build.zig
++++ b/build.zig
+@@ -2344,6 +2344,27 @@
+             node_stream_js_dispatch.root_module.linkSystemLibrary("userenv", .{});
+         }
+         b.step("build-native-node-stream-js-dispatch", "Install 13 actual StreamBase JS dispatch controls without execution").dependOn(&b.addInstallArtifact(node_stream_js_dispatch, .{ .dest_sub_path = b.fmt("native-node-stream-js-dispatch{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
++        const node_stream_write = b.addTest(.{
++            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_stream_write_test.zig"), .target = target, .optimize = optimize }),
++            .filters = &.{"native Stream write"}, .use_llvm = use_llvm,
++        });
++        linkQuickJs(b, node_stream_write.root_module, quickjs, sqlite_lib_dir);
++        linkTypeScriptParser(b, node_stream_write.root_module, typescript_parser);
++        linkSqlite(node_stream_write.root_module, sqlite_lib_dir, sqlite_library);
++        node_stream_write.root_module.addImport("catalog_tool", catalog_tool);
++        node_stream_write.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
++        node_stream_write.root_module.addIncludePath(b.path("src/extensions"));
++        node_stream_write.root_module.linkLibrary(network);
++        node_stream_write.root_module.linkLibrary(node_one_byte_diagnostics);
++        node_stream_write.root_module.addCSourceFile(.{
++            .file = b.path("src/extensions/native_node_custom_buffer_listener_allocation.cpp"),
++            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
++        });
++        if (target.result.os.tag == .windows) {
++            node_stream_write.root_module.linkSystemLibrary("advapi32", .{});
++            node_stream_write.root_module.linkSystemLibrary("userenv", .{});
++        }
++        b.step("build-native-node-stream-write", "Install 20 actual StreamBase write controls without execution").dependOn(&b.addInstallArtifact(node_stream_write, .{ .dest_sub_path = b.fmt("native-node-stream-write{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+         const node_one_byte_string = b.addTest(.{
+             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_one_byte_string_test.zig"), .target = target, .optimize = optimize }),
+             .filters = &.{"native OneByteString"}, .use_llvm = use_llvm,
+--- a/src/extensions/native_node_async_wrap.zig
++++ b/src/extensions/native_node_async_wrap.zig
+@@ -22,8 +22,8 @@
+ const Bundle = struct {
+     engine: *Engine,
+     registry: *Registry,
+-    constructors: [6]?c.JSValue = .{ null, null, null, null, null, null },
+-    cached_instances: [6]?c.JSValue = .{ null, null, null, null, null, null },
++    constructors: [7]?c.JSValue = .{ null, null, null, null, null, null, null },
++    cached_instances: [7]?c.JSValue = .{ null, null, null, null, null, null, null },
+     fs_callback_controller: ?*fs_io.Controller = null,
+     constructor_class: c.JSClassID = 0,
+ };
+@@ -105,7 +105,7 @@
+                 c.JS_ToBool(s.engine.context, first_argument) == 1;
+             try fs_callback.Request.construct(s, owner.registry, controller,
+                 receiver, use_bigint);
+-        } else if (self.kind == .shutdownwrap) {
++        } else if (self.kind == .shutdownwrap or self.kind == .writewrap) {
+             // IsConstructCallCallback has no return assignment; constructor
+             // invocation returns its actual receiver after ResetObject.
+             try owner.registry.resetRequestObject(receiver);
+@@ -121,7 +121,7 @@
+             .message = "args.IsConstructCall()",
+             .function = "node::fs::NewFSReqCallback",
+         });
+-    if (self.kind == .shutdownwrap)
++    if (self.kind == .shutdownwrap or self.kind == .writewrap)
+         check.assertion(s.engine, .{
+             .file_line = "src/stream_wrap.cc:62",
+             .message = "args.IsConstructCall()",
+@@ -148,6 +148,7 @@
+         .filehandle => "FileHandle",
+         .fsreqcallback => "FSReqCallback",
+         .shutdownwrap => "ShutdownWrap",
++        .writewrap => "WriteWrap",
+     };
+ }
+ fn requireTemplate(owner: *Bundle, kind: Kind) !void {
+@@ -386,3 +387,10 @@
+     return instantiate(s, try bundleOf(s.engine, known_owner),
+         known_owner, .shutdownwrap, null);
+ }
++
++/// env->write_wrap_template() is the genuine WriteWrap InstanceTemplate. Unlike
++/// ShutdownWrap it has no own oncomplete/callback/handle data fields.
++pub fn newWriteWrapInstance(s: *Scope, known_owner: c.JSValue) !c.JSValue {
++    return instantiate(s, try bundleOf(s.engine, known_owner),
++        known_owner, .writewrap, null);
++}
+--- a/src/extensions/native_node_async_wrap_state.zig
++++ b/src/extensions/native_node_async_wrap_state.zig
+@@ -11,7 +11,7 @@
+ pub const LocalScope = a.Scope;
+ pub const Environment = callbacks.Environment;
+ 
+-pub const Kind = enum { async_wrap, fsreqpromise, filehandleclosereq, filehandle, fsreqcallback, shutdownwrap };
++pub const Kind = enum { async_wrap, fsreqpromise, filehandleclosereq, filehandle, fsreqcallback, shutdownwrap, writewrap };
+ pub const Provider = struct {
+     pub const none: u32 = 0;
+     pub const filehandle: u32 = 4;
+@@ -19,6 +19,7 @@
+     pub const fsreqcallback: u32 = 8;
+     pub const fsreqpromise: u32 = 9;
+     pub const shutdownwrap: u32 = 35;
++    pub const writewrap: u32 = 52;
+ };
+ /// Native CHECK sites belong to the shared Environment's actual terminal owner.
+ pub const Check = callbacks.Check;
+@@ -78,7 +79,7 @@
+ pub const Registry = struct {
+     environment: *Environment,
+     references: usize = 1,
+-    class_ids: [6]c.JSClassID = .{ 0, 0, 0, 0, 0, 0 },
++    class_ids: [7]c.JSClassID = .{ 0, 0, 0, 0, 0, 0, 0 },
+     head: ?*BaseEntry = null,
+     tail: ?*BaseEntry = null,
+     fs_binding_data: ?WeakBindingSlot = null,
+@@ -107,16 +108,16 @@
+             environment.allocator().destroy(self);
+             environment.release();
+         }
+-        inline for (.{ "AsyncWrap", "FSReqPromise", "FileHandleCloseReq", "FileHandle", "FSReqCallback", "ShutdownWrap" }, 0..) |name, index| {
++        inline for (.{ "AsyncWrap", "FSReqPromise", "FileHandleCloseReq", "FileHandle", "FSReqCallback", "ShutdownWrap", "WriteWrap" }, 0..) |name, index| {
+             const generation = try s.beforeAllocation();
+             if (c.JS_NewClassID(s.engine.runtime, &self.class_ids[index]) == 0)
+                 return error.OutOfMemory;
+             const definition: c.JSClassDef = .{
+                 .class_name = name,
+                 .finalizer = if (index == @intFromEnum(Kind.filehandle)) streamWrapperFinalizer
+-                    else if (index == @intFromEnum(Kind.shutdownwrap)) requestWrapperFinalizer else wrapperFinalizer,
++                    else if (index == @intFromEnum(Kind.shutdownwrap) or index == @intFromEnum(Kind.writewrap)) requestWrapperFinalizer else wrapperFinalizer,
+                 .gc_mark = if (index == @intFromEnum(Kind.filehandle)) streamWrapperMark
+-                    else if (index == @intFromEnum(Kind.shutdownwrap)) requestWrapperMark else wrapperMark,
++                    else if (index == @intFromEnum(Kind.shutdownwrap) or index == @intFromEnum(Kind.writewrap)) requestWrapperMark else wrapperMark,
+             };
+             const status = c.JS_NewClass(s.engine.runtime, self.class_ids[index], &definition);
+             try s.boundary.checkPendingSince(generation);
+@@ -160,6 +161,10 @@
+         for (self.class_ids) |known| if (id == known) return true;
+         return false;
+     }
++    fn isRequestClass(self: *const Registry, value: c.JSValue) bool {
++        const id = c.JS_GetClassID(value);
++        return id == self.classId(.shutdownwrap) or id == self.classId(.writewrap);
++    }
+     /// Brand survives clearing the native pointer, as with a retained V8
+     /// template instance after its BaseObject has been deleted.
+     pub fn unwrap(self: *const Registry, value: c.JSValue) ?*State {
+@@ -168,7 +173,7 @@
+             const fields = self.streamFields(value) orelse return null;
+             return fields.state;
+         }
+-        if (c.JS_GetClassID(value) == self.classId(.shutdownwrap)) {
++        if (self.isRequestClass(value)) {
+             const fields = self.requestFields(value) orelse return null;
+             return fields.state;
+         }
+@@ -183,8 +188,8 @@
+         return if (fields.registry == self) fields else null;
+     }
+     fn requestFields(self: *const Registry, wrapper: c.JSValue) ?*RequestFields {
+-        if (c.JS_GetClassID(wrapper) != self.classId(.shutdownwrap)) return null;
+-        const raw = c.JS_GetOpaque(wrapper, self.classId(.shutdownwrap)) orelse return null;
++        if (!self.isRequestClass(wrapper)) return null;
++        const raw = c.JS_GetOpaque(wrapper, c.JS_GetClassID(wrapper)) orelse return null;
+         const fields: *RequestFields = @ptrCast(@alignCast(raw));
+         return if (fields.registry == self) fields else null;
+     }
+@@ -217,7 +222,7 @@
+             const fields = self.streamFields(wrapper) orelse return false;
+             return fields.state == null;
+         }
+-        if (c.JS_GetClassID(wrapper) == self.classId(.shutdownwrap)) {
++        if (self.isRequestClass(wrapper)) {
+             const fields = self.requestFields(wrapper) orelse return false;
+             return fields.state == null;
+         }
+@@ -228,7 +233,7 @@
+             const fields = self.streamFields(wrapper).?;
+             std.debug.assert(fields.state == null);
+             fields.state = state;
+-        } else if (c.JS_GetClassID(wrapper) == self.classId(.shutdownwrap)) {
++        } else if (self.isRequestClass(wrapper)) {
+             const fields = self.requestFields(wrapper).?;
+             std.debug.assert(fields.state == null);
+             fields.state = state;
+@@ -241,7 +246,7 @@
+             const fields = self.streamFields(wrapper).?;
+             std.debug.assert(fields.state == state);
+             fields.state = null;
+-        } else if (c.JS_GetClassID(wrapper) == self.classId(.shutdownwrap)) {
++        } else if (self.isRequestClass(wrapper)) {
+             const fields = self.requestFields(wrapper).?;
+             std.debug.assert(fields.state == state);
+             fields.state = null;
+@@ -314,7 +319,7 @@
+             self.release();
+         };
+         var request_fields: ?*RequestFields = null;
+-        if (kind == .shutdownwrap) {
++        if (kind == .shutdownwrap or kind == .writewrap) {
+             const created = try self.environment.allocator().create(RequestFields);
+             created.* = .{ .registry = self.retain() };
+             request_fields = created;
+--- a/src/extensions/native_node_custom_buffer_listener.zig
++++ b/src/extensions/native_node_custom_buffer_listener.zig
+@@ -38,6 +38,7 @@
+                 .on_destroy = onDestroy,
+                 .read_methods = &read_methods,
+                 .after_shutdown = shutdown.reportAfterShutdown,
++                .after_write = shutdown.reportAfterWrite,
+             },
+             .buffer = buffer,
+         };
+--- a/src/extensions/native_node_file_handle_owner.zig
++++ b/src/extensions/native_node_file_handle_owner.zig
+@@ -25,6 +25,7 @@
+ const check = @import("native_node_check_failure.zig");
+ const c = a.c;
+ const Scope = a.Scope;
++const uv = @import("native_node_managed_buffers.zig").uv;
+ 
+ pub const Inputs = struct {
+     controller: *io.Controller,
+@@ -93,6 +94,13 @@
+         const self: *Handle = @fieldParentPtr("stream", base);
+         return ShutdownReq.dispatch(s, self, request orelse
+             return error.ActualFileHandleShutdownRequestRequired);
++    }
++    /// Exact node_file.cc:287-292. This is the original unsupported write
++    /// virtual, not a missing implementation converted to success.
++    fn doWrite(_: *stream_base.Base, _: *Scope, _: *stream_requests.Write,
++        _: []uv.uv_buf_t, _: ?*uv.uv_stream_t) anyerror!c_int
++    {
++        return uv.UV_ENOSYS;
+     }
+     pub fn shutdown(self: *Handle, s: *Scope, wrapper: ?c.JSValue) anyerror!c_int {
+         return self.stream.shutdownRequest(s, wrapper);
+@@ -199,7 +207,8 @@
+             .{ .get_async_wrap = streamWrap,
+                 .is_alive = streamIsAlive, .get_fd = streamGetFD,
+                 .read_start = streamReadStart, .read_stop = streamReadStop,
+-                .create_shutdown = createShutdown, .do_shutdown = doShutdown },
++                .create_shutdown = createShutdown, .do_shutdown = doShutdown,
++                .do_write = doWrite },
+             self.stream_operations);
+         self.stream_initialized = true;
+         self.read_state.fd = descriptor;
+--- a/src/extensions/native_node_stream_base.zig
++++ b/src/extensions/native_node_stream_base.zig
+@@ -13,6 +13,7 @@
+ const check = @import("native_node_check_failure.zig");
+ const requests = @import("native_node_stream_request.zig");
+ const shutdown = @import("native_node_stream_shutdown.zig");
++const writes = @import("native_node_stream_write.zig");
+ const c = a.c;
+ const uv = managed.uv;
+ 
+@@ -31,10 +32,16 @@
+ /// Borrowed actual Environment template/key roots. Their embedding owner must
+ /// retain them through every native stream/request completion; this record is
+ /// not an installation hook or a substitute template/key allocator.
+-pub const ShutdownBindings = struct {
++pub const RequestBindings = struct {
+     template_owner: c.JSValue,
+     error_string: c.JSValue,
+     oncomplete_string: c.JSValue,
++};
++
++pub const ShutdownBindings = RequestBindings;
++pub const WriteBindings = struct {
++    request: RequestBindings,
++    handle_string: c.JSValue,
+ };
+ 
+ pub const Operations = struct {
+@@ -44,6 +51,10 @@
+     // the original report-disabled configuration; it is not a guest callback.
+     heap_diagnostics: ?*const check.Diagnostics,
+     shutdown: ?ShutdownBindings = null,
++    write: ?WriteBindings = null,
++    // A concrete IPC HandleWrap owner must supply its actual unwrap/GetHandle.
++    // FileHandle's original IsIPCPipe=false never selects this operation.
++    unwrap_send_handle: ?*const fn (*a.Scope, c.JSValue) anyerror!?*uv.uv_stream_t = null,
+ };
+ 
+ pub const Virtuals = struct {
+@@ -60,6 +71,12 @@
+     clear_error: *const fn (*Base) void = defaultClearError,
+     create_shutdown: *const fn (*Base, *a.Scope, c.JSValue) anyerror!?*requests.Shutdown = shutdown.createDefault,
+     do_shutdown: ?*const fn (*Base, *a.Scope, ?*requests.Shutdown) anyerror!c_int = null,
++    create_write: *const fn (*Base, *a.Scope, c.JSValue) anyerror!*requests.Write = writes.createDefault,
++    do_write: ?*const fn (*Base, *a.Scope, *requests.Write, []uv.uv_buf_t,
++        ?*uv.uv_stream_t) anyerror!c_int = null,
++    has_do_try_write: *const fn (*const Base) bool = defaultFalse,
++    do_try_write: *const fn (*Base, *a.Scope, *[]uv.uv_buf_t) anyerror!c_int = defaultDoTryWrite,
++    is_ipc_pipe: *const fn (*const Base) bool = defaultFalse,
+ };
+ fn defaultGetObject(stream: *Base) ?c.JSValue {
+     const wrap = stream.virtuals.get_async_wrap(stream) orelse return null;
+@@ -68,6 +85,8 @@
+ // These are the original StreamResource virtual default bodies.
+ fn defaultError(_: *Base) ?[*:0]const u8 { return null; }
+ fn defaultClearError(_: *Base) void {}
++fn defaultFalse(_: *const Base) bool { return false; }
++fn defaultDoTryWrite(_: *Base, _: *a.Scope, _: *[]uv.uv_buf_t) anyerror!c_int { return 0; }
+ // Original StreamBase::GetFD default, distinct from a failed receiver guard.
+ fn defaultGetFD(_: *Base) c_int { return -1; }
+ pub const ReadChecks = enum { check_nread, skip_nread_checks };
+@@ -91,7 +110,8 @@
+             .resource = resources.Resource.init(engine),
+             .environment = environment,
+             .default_listener = .{ .read_methods = &default_read_methods,
+-                .after_shutdown = shutdown.reportAfterShutdown },
++                .after_shutdown = shutdown.reportAfterShutdown,
++                .after_write = shutdown.reportAfterWrite },
+             .virtuals = virtuals,
+             .operations = operations,
+             .initialized = true,
+@@ -122,6 +142,13 @@
+         wrapper: ?c.JSValue) anyerror!c_int
+     {
+         return shutdown.run(s, self, wrapper);
++    }
++
++    pub fn writeRequest(self: *Base, s: *a.Scope, buffers: []uv.uv_buf_t,
++        send_handle: ?*uv.uv_stream_t, wrapper: ?c.JSValue,
++        skip_try_write: bool) anyerror!writes.Result
++    {
++        return writes.run(s, self, buffers, send_handle, wrapper, skip_try_write);
+     }
+ 
+     /// No new HandleScope: the Source Local result and selected onread remain
+--- a/src/extensions/native_node_stream_js_dispatch.zig
++++ b/src/extensions/native_node_stream_js_dispatch.zig
+@@ -3,8 +3,8 @@
+ //! and the fd/bytesRead/bytesWritten accessors from Node v24.13 stream_base.cc.
+ //!
+ //! These are callback bodies over the actual wrapper slots and native stream.
+-//! Public AddMethods/template publication remains a separate owner: the write
+-//! methods and external_stream must exist before publishing that whole surface.
++//! Public AddMethods/template publication requires the remaining vector/string
++//! writers and external_stream before that whole surface can be published.
+ //! The caller supplies its existing Scope; no extra HandleScope is introduced.
+ const a = @import("native_node_argument_values.zig");
+ const wraps = @import("native_node_async_wrap_state.zig");
+@@ -12,10 +12,11 @@
+ const resources = @import("native_node_stream_resource.zig");
+ const custom = @import("native_node_custom_buffer_listener.zig");
+ const shutdown = @import("native_node_stream_shutdown.zig");
++const writes = @import("native_node_stream_write.zig");
+ const check = @import("native_node_check_failure.zig");
+ const c = a.c;
+ 
+-pub const Method = enum { read_start, read_stop, shutdown, use_user_buffer };
++pub const Method = enum { read_start, read_stop, shutdown, use_user_buffer, write_buffer };
+ 
+ /// Source JSMethod returns without setting ReturnValue when FromObject is null.
+ /// In particular, do not apply argument CHECKs, inspect virtuals, or enter the
+@@ -75,6 +76,7 @@
+             break :blk try shutdown.run(s, stream, request);
+         },
+         .use_user_buffer => custom.useUserBuffer(stream, a.arg(args, 0)),
++        .write_buffer => writes.writeBuffer(s, stream, args),
+     };
+ }
+ 
+--- a/src/extensions/native_node_stream_request.zig
++++ b/src/extensions/native_node_stream_request.zig
+@@ -1,7 +1,10 @@
+ // Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
+-//! Genuine StreamReq / ShutdownWrap native state and completion lifetime.
++//! Genuine StreamReq / ShutdownWrap / WriteWrap state and completion lifetime.
+ //! The stream pointer is borrowed. This owner introduces no FileHandle root.
++const std = @import("std");
+ const a = @import("native_node_argument_values.zig");
++const managed = @import("native_node_managed_buffers.zig");
++const check = @import("native_node_check_failure.zig");
+ const wraps = @import("native_node_async_wrap_state.zig");
+ const streams = @import("native_node_stream_base.zig");
+ const latin1 = @import("native_node_one_byte_string.zig");
+@@ -9,6 +12,7 @@
+ 
+ pub const Request = struct {
+     stream: *streams.Base,
++    bindings: ?streams.RequestBindings = null,
+     get_async_wrap: *const fn (*Request) *wraps.State,
+     on_done: *const fn (*Request, c_int) anyerror!void,
+ 
+@@ -51,7 +55,7 @@
+ 
+     fn setErrorBody(s: *a.Scope, self: *Request, text: [*:0]const u8) anyerror!c.JSValue {
+         const stream = self.stream;
+-        const bindings = stream.operations.shutdown orelse
++        const bindings = self.bindings orelse stream.operations.shutdown orelse
+             return error.ActualStreamShutdownBindingsRequired;
+         const wrapper = self.object() orelse
+             return error.ActualStreamRequestObjectRequired;
+@@ -138,6 +142,67 @@
+     }
+ };
+ 
++
++/// A unique native backing token is transferred only by the source write-string
++/// and write-vector paths that allocate one. WriteBuffer does not acquire it.
++pub const Write = struct {
++    request: Request = undefined,
++    backing_store: ?managed.Token = null,
++
++    pub fn init(self: *Write, stream: *streams.Base, registry: *wraps.Registry,
++        wrapper: c.JSValue,
++        get_async_wrap: *const fn (*Request) *wraps.State) anyerror!void
++    {
++        const bindings = stream.operations.write orelse
++            return error.ActualStreamWriteBindingsRequired;
++        try self.request.init(stream, registry, wrapper, get_async_wrap, onDone);
++        self.request.bindings = bindings.request;
++    }
++    pub fn fromRequest(request: *Request) *Write {
++        return @fieldParentPtr("request", request);
++    }
++    pub fn fromObject(registry: *const wraps.Registry, object: c.JSValue) ?*Write {
++        return fromRequest(Request.fromObject(registry, object) orelse return null);
++    }
++    pub fn setBackingStore(self: *Write, owned: *managed.Token) void {
++        if (self.backing_store != null) check.assertion(
++            self.request.asyncWrap().registry.environment.engine, .{
++                .file_line = "src/stream_base-inl.h:158",
++                .message = "!backing_store_",
++                .function = "node::WriteWrap::SetBackingStore",
++            });
++        self.backing_store = if (owned.owner == null) null else owned.*;
++        owned.* = std.mem.zeroes(managed.Token);
++    }
++    /// The concrete derived destructor calls this at actual native retirement,
++    /// after its final BaseObjectPtr is released, never at logical Dispose.
++    pub fn deinit(self: *Write) void {
++        if (self.backing_store) |*owned| c.JS_PiReleaseArrayBufferBackingStore(owned);
++        self.backing_store = null;
++    }
++    fn onDone(request: *Request, status: c_int) anyerror!void {
++        const self = fromRequest(request);
++        const environment = request.asyncWrap().registry.environment.retain();
++        defer environment.release();
++        const engine = try environment.requireEngine();
++        var scope = a.Scope.init(engine);
++        var failure: ?anyerror = null;
++        request.stream.resource.emitAfterWrite(self, status) catch |err| {
++            recordFailure(&scope, err);
++            failure = err;
++        };
++        // Original void completion can throw or destroy the stream. Dispose
++        // still follows; no stream or listener access is made after emission.
++        request.dispose() catch |err| {
++            recordFailure(&scope, err);
++            if (failure == null) failure = err;
++        };
++        const ignored = try scope.finish(if (failure) |err|
++            @as(anyerror!c.JSValue, err) else c.pi_js_undefined());
++        engine.freeValue(ignored);
++    }
++};
++
+ /// V8 Object::Set selects kDontThrow: a false write result is not an empty
+ /// Maybe. Preserve the real pending exception from a setter/proxy, while a
+ /// non-writable data property permits the native continuation.
+--- a/src/extensions/native_node_stream_resource.zig
++++ b/src/extensions/native_node_stream_resource.zig
+@@ -27,6 +27,20 @@
+     on_destroy: *const fn (*Listener) void = defaultOnDestroy,
+     read_methods: ?*const ReadMethods = null,
+     after_shutdown: *const fn (*Listener, *requests.Shutdown, c_int) anyerror!void = forwardAfterShutdown,
++
++    after_write: *const fn (*Listener, *requests.Write, c_int) anyerror!void = forwardAfterWrite,
++
++    fn forwardAfterWrite(self: *Listener, request: *requests.Write,
++        status: c_int) anyerror!void
++    {
++        const previous = self.previous_listener orelse check.assertion(
++            if (self.stream) |stream| stream.engine else null, .{
++                .file_line = "src/stream_base.cc:813",
++                .message = "(previous_listener_) != nullptr",
++                .function = "node::StreamListener::OnStreamAfterWrite",
++            });
++        return previous.after_write(previous, request, status);
++    }
+ 
+     fn forwardAfterShutdown(self: *Listener, request: *requests.Shutdown,
+         status: c_int) anyerror!void
+@@ -137,6 +151,13 @@
+         return selected.after_shutdown(selected, request, status);
+     }
+ 
++    pub fn emitAfterWrite(self: *Resource, request: *requests.Write,
++        status: c_int) anyerror!void
++    {
++        const selected = self.listener.?;
++        return selected.after_write(selected, request, status);
++    }
++
+     /// Actual StreamResource::~StreamResource. OnStreamDestroy may unlink and
+     /// free its own listener or alter the native chain. After that callback,
+     /// use only the saved pointer identity until the live head is established.
+--- a/src/extensions/native_node_stream_shutdown.zig
++++ b/src/extensions/native_node_stream_shutdown.zig
+@@ -181,6 +181,12 @@
+     return reportAfterRequest(listener, &request.request, status);
+ }
+ 
++pub fn reportAfterWrite(listener: *resources.Listener,
++    request: *requests.Write, status: c_int) anyerror!void
++{
++    return reportAfterRequest(listener, &request.request, status);
++}
++
+ pub fn reportAfterRequest(listener: *resources.Listener,
+     request: *requests.Request, status: c_int) anyerror!void
+ {
+@@ -195,12 +201,12 @@
+     const engine = try environment.requireEngine();
+     const state = request.asyncWrap();
+     var locals = a.Scope.init(engine);
+-    const ignored = try locals.finish(reportBody(&locals, stream, state, status));
++    const ignored = try locals.finish(reportBody(&locals, stream, state, request.bindings, status));
+     engine.freeValue(ignored);
+ }
+ 
+ fn reportBody(s: *a.Scope, stream: *streams.Base, state: *wraps.State,
+-    status: c_int) anyerror!c.JSValue
++    request_bindings: ?streams.RequestBindings, status: c_int) anyerror!c.JSValue
+ {
+     const wrapper = state.object() orelse check.assertion(s.engine, .{
+         .file_line = "src/stream_base.cc:763",
+@@ -215,7 +221,7 @@
+         try s.own(a.duplicate(s.engine, stream_object)),
+         c.pi_js_undefined(),
+     };
+-    const bindings = stream.operations.shutdown orelse
++    const bindings = request_bindings orelse stream.operations.shutdown orelse
+         return error.ActualStreamShutdownBindingsRequired;
+     const diagnostics = stream.operations.heap_diagnostics;
+     if (stream.virtuals.error_string(stream)) |message| {
+--- /dev/null
++++ b/src/extensions/native_node_stream_write.zig
+@@ -0,0 +1,298 @@
++// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
++//! Native StreamBase::Write, WriteBuffer, and SimpleWriteWrap<AsyncWrap>.
++//! The original FileHandle DoWrite returns UV_ENOSYS. Successful native writes
++//! require a concrete stream's DoWrite/try-write owner; none is synthesized here.
++const a = @import("native_node_argument_values.zig");
++const wraps = @import("native_node_async_wrap_state.zig");
++const templates = @import("native_node_async_wrap.zig");
++const streams = @import("native_node_stream_base.zig");
++const resources = @import("native_node_stream_resource.zig");
++const requests = @import("native_node_stream_request.zig");
++const callbacks = @import("native_node_callback_scope.zig");
++const latin1 = @import("native_node_one_byte_string.zig");
++const check = @import("native_node_check_failure.zig");
++const c = a.c;
++const uv = resources.uv;
++
++/// This is an owning native result. Its BaseObjectPtr remains alive even after
++/// a synchronous DoWrite error disposed/cleared the public request pointer.
++/// Release exactly once, at the source result's destructor point.
++pub const Result = struct {
++    is_async: bool = false,
++    err: c_int = uv.UV_EBUSY,
++    wrap: ?*requests.Write = null,
++    bytes: usize = 0,
++    wrap_obj: ?*wraps.State = null,
++
++    pub fn release(self: *Result, s: *a.Scope) anyerror!void {
++        const pointer = self.wrap_obj orelse return;
++        self.wrap_obj = null;
++        self.wrap = null;
++        pointer.releaseNative() catch |err| {
++            requests.recordFailure(s, err);
++            return err;
++        };
++    }
++};
++
++/// The attempted-byte counter advances before try-write, template creation, or
++/// DoWrite. A partial try-write changes the slice passed onward, not that total.
++/// skip_try_write and a non-null send handle independently bypass DoTryWrite.
++pub fn run(parent: *a.Scope, stream: *streams.Base, input_buffers: []uv.uv_buf_t,
++    send_handle: ?*uv.uv_stream_t, input: ?c.JSValue,
++    skip_try_write: bool) anyerror!Result
++{
++    const environment = stream.environment.retain();
++    defer environment.release();
++    if ((try environment.requireEngine()) != parent.engine)
++        return error.ActualStreamWriteEnvironmentMismatch;
++    var total_bytes: usize = 0;
++    for (input_buffers) |buffer| total_bytes +%= @as(usize, buffer.len);
++    stream.resource.bytes_written +%= @as(u64, total_bytes);
++    var buffers = input_buffers;
++    if (send_handle == null and stream.virtuals.has_do_try_write(stream) and
++        !skip_try_write)
++    {
++        const status = try stream.virtuals.do_try_write(stream, parent, &buffers);
++        if (status != 0 or buffers.len == 0)
++            return .{ .err = status, .bytes = total_bytes };
++    }
++
++    var locals = a.Scope.init(parent.engine);
++    var pointer: ?*wraps.State = null;
++    var saved_trigger: ?f64 = null;
++    var result: Result = .{};
++    var failure: ?anyerror = null;
++    runBody(&locals, stream, buffers, send_handle, input, total_bytes,
++        &pointer, &saved_trigger, &result) catch |err|
++    {
++        requests.recordFailure(&locals, err);
++        failure = err;
++    };
++    if (failure == null) {
++        // Source moves this BaseObjectPtr into its returned StreamWriteResult.
++        result.wrap_obj = pointer;
++        pointer = null;
++    }
++    // Write declares HandleScope, trigger scope, then BaseObjectPtr. On the
++    // early error-set path its pointer retires BEFORE trigger restoration.
++    if (pointer) |state| state.releaseNative() catch |err| {
++        requests.recordFailure(&locals, err);
++        if (failure == null) failure = err;
++    };
++    if (saved_trigger) |old| environment.uidField(.default_trigger).* = old;
++    const ignored = locals.finish(if (failure) |err|
++        @as(anyerror!c.JSValue, err) else c.pi_js_undefined()) catch |err|
++    {
++        requests.recordFailure(parent, err);
++        // Original void constructor/hook work can leave a pending JS reason
++        // while Write still returns its native result to the caller.
++        if (err == error.JavaScriptException and !parent.boundary.isFatal())
++            return result;
++        result.release(parent) catch {};
++        return err;
++    };
++    parent.engine.freeValue(ignored);
++    return result;
++}
++
++fn runBody(s: *a.Scope, stream: *streams.Base, buffers: []uv.uv_buf_t,
++    send_handle: ?*uv.uv_stream_t, input: ?c.JSValue, total_bytes: usize,
++    pointer: *?*wraps.State, saved_trigger: *?f64, result: *Result) anyerror!void
++{
++    const bindings = stream.operations.write orelse
++        return error.ActualStreamWriteBindingsRequired;
++    const environment = stream.environment;
++    const registry = try templates.registry(s.engine, bindings.request.template_owner);
++    if (registry.environment != environment)
++        return error.ActualStreamWriteTemplateEnvironmentMismatch;
++    const do_write = stream.virtuals.do_write orelse
++        return error.ActualStreamWriteImplementationRequired;
++    const object = if (input) |value|
++        try s.own(a.duplicate(s.engine, value))
++    else blk: {
++        const created = try templates.newWriteWrapInstance(s, bindings.request.template_owner);
++        try registry.resetRequestObject(created);
++        break :blk created;
++    };
++
++    const stream_wrap = stream.virtuals.get_async_wrap(stream) orelse
++        return error.ActualStreamAsyncWrapRequired;
++    if (environment.field(.check).* > 0 and !(stream_wrap.async_id >= 0))
++        check.assertion(s.engine, .{
++            .file_line = "src/env.cc:268",
++            .message = "(default_trigger_async_id) >= (0)",
++            .function = "node::AsyncHooks::DefaultTriggerAsyncIdScope",
++        });
++    saved_trigger.* = environment.uidField(.default_trigger).*;
++    environment.uidField(.default_trigger).* = stream_wrap.async_id;
++    var request: ?*requests.Write = try stream.virtuals.create_write(stream, s, object);
++    pointer.* = request.?.request.asyncWrap();
++    // retainNative increments before its possible port ownership check.
++    try pointer.*.?.retainNative();
++    const status = try do_write(stream, s, request.?, buffers, send_handle);
++    const is_async = status == 0;
++    if (!is_async) {
++        request.?.request.dispose() catch |err| {
++            requests.recordFailure(s, err);
++            if (err != error.JavaScriptException or s.boundary.isFatal()) return err;
++        };
++        request = null;
++    }
++    if (stream.virtuals.error_string(stream)) |message| {
++        const value = try latin1.fromCString(s, message, stream.operations.heap_diagnostics);
++        // IsNothing returns {false, UV_EBUSY, null, 0, {}} before ClearError.
++        try requests.setError(s, object, bindings.request.error_string, value);
++        stream.virtuals.clear_error(stream);
++    }
++    result.* = .{ .is_async = is_async, .err = status, .wrap = request,
++        .bytes = total_bytes };
++}
++
++pub fn setResult(environment: *callbacks.Environment, result: *const Result) void {
++    environment.streamBaseField(.bytes_written).* =
++        @bitCast(@as(u32, @truncate(result.bytes)));
++    environment.streamBaseField(.last_write_was_async).* = @intFromBool(result.is_async);
++}
++
++/// Original callback body after JSMethod's real receiver/alive/trigger guards.
++/// Invalid input retains the TypeError and returns native 0 without touching
++/// shared write-result state. A failed IPC handle Set returns native -1.
++pub fn writeBuffer(s: *a.Scope, stream: *streams.Base,
++    args: []const c.JSValue) anyerror!c_int
++{
++    const object = a.arg(args, 0);
++    if (!c.JS_IsObject(object)) check.assertion(s.engine, .{
++        .file_line = "src/stream_base.cc:298",
++        .message = "args[0]->IsObject()",
++        .function = "node::StreamBase::WriteBuffer",
++    });
++    const value = a.arg(args, 1);
++    if (c.JS_GetTypedArrayType(value) != c.JS_TYPED_ARRAY_UINT8) {
++        try invalidBuffer(s, stream.operations.heap_diagnostics);
++        return 0;
++    }
++    var buffer: [1]uv.uv_buf_t = .{.{
++        .base = @ptrCast(c.JS_PiArrayBufferViewData(value)),
++        // Source directly assigns uv_buf_t.len, which is 32-bit on Windows.
++        .len = @truncate(c.JS_PiArrayBufferViewByteLength(value)),
++    }};
++    var send_handle: ?*uv.uv_stream_t = null;
++    const handle_object = a.arg(args, 2);
++    if (c.JS_IsObject(handle_object) and stream.virtuals.is_ipc_pipe(stream)) {
++        const unwrap = stream.operations.unwrap_send_handle orelse
++            return error.ActualStreamIPCHandleWrapRequired;
++        send_handle = try unwrap(s, handle_object) orelse return uv.UV_EINVAL;
++        const bindings = stream.operations.write orelse
++            return error.ActualStreamWriteBindingsRequired;
++        requests.setError(s, object, bindings.handle_string, handle_object) catch |err| {
++            requests.recordFailure(s, err);
++            if (err == error.JavaScriptException and !s.boundary.isFatal()) return -1;
++            return err;
++        };
++    }
++    const environment = stream.environment.retain();
++    defer environment.release();
++    var result = try run(s, stream, &buffer, send_handle, object, false);
++    setResult(environment, &result);
++    const status = result.err;
++    result.release(s) catch |err| {
++        requests.recordFailure(s, err);
++        if (err != error.JavaScriptException or s.boundary.isFatal()) return err;
++    };
++    return status;
++}
++
++fn invalidBuffer(s: *a.Scope, diagnostics: ?*const check.Diagnostics) anyerror!void {
++    // node_errors.h ERRORS_WITH_CODE: intrinsic TypeError plus ordinary
++    // kDontThrow Set(code). A prototype setter is intentionally observable.
++    const code = try latin1.fromCString(s, "ERR_INVALID_ARG_TYPE", diagnostics);
++    const generation = try s.beforeAllocation();
++    const occurrence = c.JS_PiOutOfMemoryOccurrence(s.engine.runtime);
++    const raw = c.JS_NewTypeError(s.engine.context, "Second argument must be a buffer");
++    if (c.JS_IsException(raw)) {
++        if (c.JS_PiOutOfMemoryOccurrence(s.engine.runtime) != occurrence)
++            check.heapOutOfMemory(s.engine, diagnostics);
++        check.fatal(s.engine, "v8::ToLocalChecked", "Empty MaybeLocal", diagnostics);
++    }
++    const reason = try s.checkedAllocation(raw, generation);
++    const key = try latin1.fromCString(s, "code", diagnostics);
++    requests.setError(s, reason, key, code) catch
++        check.maybeCheck(s.engine, diagnostics);
++    _ = a.raise(s, reason);
++}
++
++pub fn createDefault(stream: *streams.Base, s: *a.Scope,
++    object: c.JSValue) anyerror!*requests.Write
++{
++    return &((try Simple.create(s, stream, object)).write);
++}
++
++const Simple = struct {
++    write: requests.Write = .{},
++    wrap: wraps.State = undefined,
++    request_attached: bool = false,
++    state_attached: bool = false,
++
++    fn fromRequest(request: *requests.Request) *Simple {
++        return @fieldParentPtr("write", requests.Write.fromRequest(request));
++    }
++    fn getAsyncWrap(request: *requests.Request) *wraps.State {
++        return &fromRequest(request).wrap;
++    }
++    fn fromWrap(state: *wraps.State) *Simple {
++        return @fieldParentPtr("wrap", state);
++    }
++    fn mark(_: ?*c.JSRuntime, _: *wraps.State, _: ?*const c.JS_MarkFunc) void {}
++    fn retire(_: *wraps.State, _: *a.Scope) anyerror!void {}
++    fn destroy(state: *wraps.State) void {
++        const self = fromWrap(state);
++        // SimpleWriteWrap inherits WriteWrap, then AsyncWrap. Base destruction
++        // runs in reverse: State's AsyncWrap/BaseObject retirement and pointer
++        // clearing finish before WriteWrap's unique backing-store destructor.
++        self.write.deinit();
++        state.registry.environment.allocator().destroy(self);
++    }
++    const derived: wraps.Derived = .{ .mark = mark, .retire = retire, .destroy = destroy };
++
++    fn create(s: *a.Scope, stream: *streams.Base, object: c.JSValue) anyerror!*Simple {
++        const stream_wrap = stream.virtuals.get_async_wrap(stream) orelse
++            return error.ActualStreamAsyncWrapRequired;
++        const registry = stream_wrap.registry;
++        if (registry.environment != stream.environment)
++            return error.ActualStreamWriteEnvironmentMismatch;
++        try s.pending();
++        const self = try registry.environment.allocator().create(Simple);
++        self.* = .{};
++        initialize(self, s, stream, registry, object) catch |err| {
++            var completion = a.owned.Completion.initVoid(s.engine, err);
++            if (self.request_attached) registry.clearRequestPointer(object) catch {};
++            if (self.state_attached) self.wrap.retire(false) catch {}
++            else registry.environment.allocator().destroy(self);
++            try completion.finishVoid();
++            unreachable;
++        };
++        return self;
++    }
++    fn initialize(self: *Simple, s: *a.Scope, stream: *streams.Base,
++        registry: *wraps.Registry, object: c.JSValue) anyerror!void
++    {
++        try self.write.init(stream, registry, object, getAsyncWrap);
++        self.request_attached = true;
++        self.wrap.initialize(registry, object, derived, wraps.Provider.writewrap, -1) catch |err| {
++            self.state_attached = registry.unwrap(object) == &self.wrap;
++            requests.recordFailure(s, err);
++            // The original constructor continues after a completed ordinary
++            // AsyncReset/init-hook rethrow, exactly as SimpleShutdownWrap.
++            if (!self.state_attached or !self.wrap.init_hook_ran or
++                err != error.JavaScriptException or s.boundary.isFatal()) return err;
++        };
++        self.state_attached = true;
++        self.wrap.makeWeak() catch |err| {
++            requests.recordFailure(s, err);
++            // MakeWeak is an original void native operation. An inherited
++            // ordinary init-hook reason cannot discard the completed wrapper.
++            if (err != error.JavaScriptException or s.boundary.isFatal()) return err;
++        };
++    }
++};
+--- /dev/null
++++ b/src/native_node_stream_write_test.zig
+@@ -0,0 +1,552 @@
++//! Focused controls for the retained Node24 StreamBase write path.
++//! No compiler, metadata query, native runtime, or Node capture was run here.
++const std = @import("std");
++const support = @import("native_node_file_handle_owner_test_support.zig");
++const a = support.a;
++const c = a.c;
++const templates = support.templates;
++const writes = @import("extensions/native_node_stream_write.zig");
++const requests = @import("extensions/native_node_stream_request.zig");
++const streams = @import("extensions/native_node_stream_base.zig");
++const resources = @import("extensions/native_node_stream_resource.zig");
++const dispatch = @import("extensions/native_node_stream_js_dispatch.zig");
++const custom = @import("extensions/native_node_custom_buffer_listener.zig");
++const managed = @import("extensions/native_node_managed_buffers.zig");
++const uv = resources.uv;
++
++const Fixture = struct {
++    base: support.Fixture = undefined,
++    ready: bool = false,
++    error_key: ?c.JSValue = null,
++    complete_key: ?c.JSValue = null,
++    observed_request: ?c.JSValue = null,
++    result: ?writes.Result = null,
++    last_status: c_int = -99999,
++    write_status: c_int = uv.UV_EIO,
++    write_calls: usize = 0,
++    write_count: usize = 0,
++    write_first_length: usize = 0,
++    write_provider: u32 = 0,
++    write_trigger: f64 = -1,
++    write_send: ?*uv.uv_stream_t = null,
++    try_calls: usize = 0,
++    try_status: c_int = 0,
++    try_drop: usize = 0,
++    try_counter: u64 = 0,
++    message: bool = false,
++    error_clears: usize = 0,
++
++    fn init(self: *Fixture) !void {
++        self.* = .{};
++        try self.base.init();
++        self.ready = true;
++        errdefer self.deinit();
++        const ignored = try a.expression(self.base.engine, struct {
++            fn body(s: *a.Scope, f: *Fixture) !c.JSValue {
++                f.error_key = a.duplicate(s.engine, try s.text("error"));
++                f.complete_key = a.duplicate(s.engine, try s.text("oncomplete"));
++                return c.pi_js_undefined();
++            }
++        }.body, .{self});
++        self.base.engine.freeValue(ignored);
++        try self.base.engine.bindFunction("writeNativeState", nativeState, 1);
++        try self.base.evaluate("globalThis.writeCalls=[];globalThis.writeReason={};");
++    }
++    fn create(self: *Fixture, fd: c_int) !*support.Handle {
++        const handle = try self.base.create(fd, null, null);
++        // Deliberately supply only write bindings. Shared completion must not
++        // accidentally depend on an unrelated Shutdown template being bound.
++        const bindings: streams.WriteBindings = .{ .request = .{
++            .template_owner = self.base.template_owner.?,
++            .error_string = self.error_key.?, .oncomplete_string = self.complete_key.?,
++        }, .handle_string = handle.handle_string };
++        handle.stream.operations.write = bindings;
++        handle.stream_operations.write = bindings;
++        try self.base.expose("writeHandle", self.base.primary_wrapper.?);
++        return handle;
++    }
++    fn closed(self: *Fixture) !*support.Handle {
++        const handle = try self.create(-1);
++        try std.testing.expectEqual(@as(c_int, -1), try self.base.releaseDescriptor());
++        return handle;
++    }
++    fn request(self: *Fixture) !c.JSValue {
++        return a.expression(self.base.engine, struct {
++            fn body(s: *a.Scope, f: *Fixture) !c.JSValue {
++                return a.duplicate(s.engine,
++                    try templates.newWriteWrapInstance(s, f.base.template_owner.?));
++            }
++        }.body, .{self});
++    }
++    fn publish(self: *Fixture, wrapper: c.JSValue) !void {
++        try self.base.expose("writeRequest", wrapper);
++        try self.base.evaluate(
++            "writeRequest.oncomplete=function(status,stream,error){" ++
++            "writeCalls.push([this,status,stream,error,writeNativeState(this)]);};");
++    }
++    fn run(self: *Fixture, buffers: []uv.uv_buf_t, input: ?c.JSValue,
++        skip: bool, send: ?*uv.uv_stream_t) !void
++    {
++        std.debug.assert(self.result == null);
++        const ignored = try a.expression(self.base.engine, struct {
++            fn body(s: *a.Scope, f: *Fixture, b: []uv.uv_buf_t,
++                object: ?c.JSValue, skip_try: bool, send_handle: ?*uv.uv_stream_t) !c.JSValue
++            {
++                f.result = try writes.run(s, &(try f.base.handle()).stream,
++                    b, send_handle, object, skip_try);
++                return c.pi_js_undefined();
++            }
++        }.body, .{self, buffers, input, skip, send});
++        self.base.engine.freeValue(ignored);
++    }
++    fn release(self: *Fixture) !void {
++        if (self.result == null) return;
++        defer self.result = null;
++        const ignored = try a.expression(self.base.engine, struct {
++            fn body(s: *a.Scope, f: *Fixture) !c.JSValue {
++                try f.result.?.release(s);
++                return c.pi_js_undefined();
++            }
++        }.body, .{self});
++        self.base.engine.freeValue(ignored);
++    }
++    fn buffer(self: *Fixture, wrapper: c.JSValue, value: c.JSValue) !c_int {
++        self.last_status = -99999;
++        const ignored = try a.expression(self.base.engine, struct {
++            fn body(s: *a.Scope, f: *Fixture, w: c.JSValue, v: c.JSValue) !c.JSValue {
++                f.last_status = try writes.writeBuffer(s, &(try f.base.handle()).stream, &.{w, v});
++                return c.pi_js_undefined();
++            }
++        }.body, .{self, wrapper, value});
++        self.base.engine.freeValue(ignored);
++        return self.last_status;
++    }
++    fn publicCall(self: *Fixture, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
++        return a.expression(self.base.engine, struct {
++            fn body(s: *a.Scope, f: *Fixture, r: c.JSValue, argv: []const c.JSValue) !c.JSValue {
++                return dispatch.jsMethod(s, f.base.registry(), r, .write_buffer, argv);
++            }
++        }.body, .{self, receiver, args});
++    }
++    fn retired(self: *Fixture, wrapper: c.JSValue) !void {
++        try std.testing.expect(self.base.registry().unwrap(wrapper) == null);
++        try std.testing.expect(requests.Request.fromObject(self.base.registry(), wrapper) == null);
++        try std.testing.expectEqual(@as(c_int, 0), self.base.env().requests.waiting);
++    }
++    fn sameReason(self: *Fixture) !void {
++        const reason = try self.base.takeCaught();
++        defer self.base.engine.freeValue(reason);
++        const expected = try self.base.global("writeReason");
++        defer self.base.engine.freeValue(expected);
++        try std.testing.expect(c.JS_IsStrictEqual(self.base.engine.context, reason, expected));
++        try std.testing.expect(!c.JS_IsUncatchableError(reason));
++    }
++    fn installError(self: *Fixture) !void {
++        const handle = try self.base.handle();
++        handle.stream.virtuals.error_string = errorString;
++        handle.stream.virtuals.clear_error = clearError;
++        self.message = true;
++    }
++    fn deinit(self: *Fixture) void {
++        if (!self.ready) return;
++        self.release() catch @panic("write result pointer retirement failed");
++        self.base.stopIo();
++        for ([_]*?c.JSValue{ &self.error_key, &self.complete_key, &self.observed_request }) |slot| {
++            if (slot.*) |value| { slot.* = null; self.base.engine.freeValue(value); }
++        }
++        self.base.deinit();
++        self.ready = false;
++    }
++};
++
++fn fixture(engine: *support.em.Engine) *Fixture {
++    const base: *support.Fixture = @ptrCast(@alignCast(engine.host_control_context.?));
++    return @fieldParentPtr("base", base);
++}
++fn writeProbe(stream: *streams.Base, _: *a.Scope, request: *requests.Write,
++    buffers: []uv.uv_buf_t, send: ?*uv.uv_stream_t) anyerror!c_int
++{
++    const f = fixture(stream.resource.engine);
++    f.write_calls += 1;
++    f.write_count = buffers.len;
++    f.write_first_length = if (buffers.len == 0) 0 else buffers[0].len;
++    f.write_provider = request.request.asyncWrap().provider;
++    f.write_trigger = stream.environment.uidField(.default_trigger).*;
++    f.write_send = send;
++    if (f.observed_request) |old| stream.resource.engine.freeValue(old);
++    f.observed_request = a.duplicate(stream.resource.engine, request.request.object().?);
++    return f.write_status;
++}
++fn hasTry(_: *const streams.Base) bool { return true; }
++fn tryProbe(stream: *streams.Base, _: *a.Scope, buffers: *[]uv.uv_buf_t) anyerror!c_int {
++    const f = fixture(stream.resource.engine);
++    f.try_calls += 1;
++    f.try_counter = stream.resource.bytes_written;
++    buffers.* = buffers.*[f.try_drop..];
++    return f.try_status;
++}
++fn errorString(stream: *streams.Base) ?[*:0]const u8 {
++    return if (fixture(stream.resource.engine).message) "native-\x80\xff" else null;
++}
++fn clearError(stream: *streams.Base) void {
++    const f = fixture(stream.resource.engine);
++    f.message = false;
++    f.error_clears += 1;
++}
++fn nativeState(context: ?*c.JSContext, _: c.JSValue, argc: c_int,
++    argv: [*c]c.JSValue) callconv(.c) c.JSValue
++{
++    const engine = support.em.Engine.fromContext(context.?);
++    const registry = fixture(engine).base.registry();
++    const object = if (argc > 0) argv[0] else c.pi_js_undefined();
++    const request = requests.Request.fromObject(registry, object) orelse
++        return c.JS_NewInt32(context, 0);
++    return c.JS_NewInt32(context, @intFromBool(
++        registry.unwrap(object) == request.asyncWrap() and !request.asyncWrap().detached));
++}
++fn smallBuffers(bytes: *[5]u8) [2]uv.uv_buf_t {
++    return .{ uv.uv_buf_init(@ptrCast(bytes.ptr), 2),
++        uv.uv_buf_init(@ptrCast(bytes.ptr + 2), 3) };
++}
++
++test "native Stream write actual WriteWrap template has independent empty slots and no Shutdown fields" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    const constructor = try templates.constructor(f.base.engine, f.base.template_owner.?, .writewrap);
++    defer f.base.engine.freeValue(constructor);
++    try f.base.expose("ActualWriteWrap", constructor);
++    try f.base.evaluate("globalThis.writeRequest=new ActualWriteWrap();");
++    try f.base.expect("Object.keys(writeRequest).length===0 && " ++
++        "Object.getPrototypeOf(writeRequest)===ActualWriteWrap.prototype && " ++
++        "typeof writeRequest.getAsyncId==='function' && " ++
++        "!Object.hasOwn(writeRequest,'oncomplete') && !Object.hasOwn(writeRequest,'handle')");
++    const wrapper = try f.base.global("writeRequest"); defer f.base.engine.freeValue(wrapper);
++    try f.retired(wrapper);
++    const shutdown = try templates.newInstance(f.base.engine, f.base.template_owner.?, .shutdownwrap);
++    defer f.base.engine.freeValue(shutdown);
++    try f.base.expose("otherRequest", shutdown);
++    try f.base.expect("Object.keys(otherRequest).join(',')==='oncomplete,callback,handle'");
++}
++
++test "native Stream write FileHandle WriteBuffer preserves ENOSYS attempted bytes live descriptor and trigger" {
++    var file: support.File = .{}; defer file.deinit(); try file.init();
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    const handle = try f.create(file.take());
++    const fd = handle.getFD();
++    const native_refs = handle.wrap.native_references;
++    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper);
++    const value = try f.base.value("new Uint8Array([0,1,2,3,4]).subarray(1,4)");
++    defer f.base.engine.freeValue(value);
++    try f.base.installInitRecorder();
++    try f.base.expose("writeHandleId", c.JS_NewFloat64(f.base.engine.context, handle.wrap.async_id));
++    f.base.env().uidField(.default_trigger).* = 91;
++    const result = try f.publicCall(f.base.primary_wrapper.?, &.{wrapper, value});
++    defer f.base.engine.freeValue(result);
++    var status: i32 = 0; try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt32(f.base.engine.context, &status, result));
++    try std.testing.expectEqual(@as(i32, uv.UV_ENOSYS), status);
++    try std.testing.expectEqual(@as(u64, 3), handle.stream.resource.bytes_written);
++    try std.testing.expectEqual(@as(i32, 3), f.base.env().streamBaseField(.bytes_written).*);
++    try std.testing.expectEqual(@as(i32, 0), f.base.env().streamBaseField(.last_write_was_async).*);
++    try std.testing.expectEqual(@as(f64, 91), f.base.env().uidField(.default_trigger).*);
++    try std.testing.expectEqual(native_refs, handle.wrap.native_references);
++    try std.testing.expect(handle.isAlive() and support.File.status(fd) == 0);
++    try f.base.expect("ownerInitEvents.length===1 && ownerInitEvents[0][0]==='WRITEWRAP' && ownerInitEvents[0][2]===writeHandleId");
++    try f.retired(wrapper);
++    file.descriptor = try f.base.releaseDescriptor();
++}
++
++test "native Stream write immediate failure clears request before returned native pointer retires" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); _ = try f.closed();
++    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper);
++    var bytes: [5]u8 = .{1,2,3,4,5}; var buffers = smallBuffers(&bytes);
++    try f.run(&buffers, wrapper, false, null);
++    try std.testing.expect(!f.result.?.is_async and f.result.?.wrap == null);
++    try std.testing.expectEqual(@as(c_int, uv.UV_ENOSYS), f.result.?.err);
++    try std.testing.expectEqual(@as(usize, 5), f.result.?.bytes);
++    const state = f.result.?.wrap_obj.?;
++    try std.testing.expectEqual(@as(usize, 1), state.native_references);
++    try std.testing.expect(state.detached and f.base.registry().unwrap(wrapper) == state);
++    try std.testing.expect(requests.Request.fromObject(f.base.registry(), wrapper) == null);
++    try f.release(); try f.retired(wrapper);
++}
++
++test "native Stream write async result keeps native request through live forwarded completion and Dispose" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); const handle = try f.closed();
++    handle.stream.virtuals.do_write = writeProbe; f.write_status = 0;
++    var listener: resources.Listener = .{}; handle.stream.resource.push(&listener);
++    defer listener.deinit();
++    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper); try f.publish(wrapper);
++    var bytes: [5]u8 = .{1,2,3,4,5}; var buffers = smallBuffers(&bytes);
++    try f.run(&buffers, wrapper, false, null);
++    try std.testing.expect(f.result.?.is_async and f.result.?.wrap != null);
++    try std.testing.expectEqual(@as(u32, 52), f.write_provider);
++    const state = f.result.?.wrap_obj.?;
++    try f.result.?.wrap.?.request.done(0, null);
++    try f.base.expect("writeCalls.length===1 && writeCalls[0][0]===writeRequest && " ++
++        "writeCalls[0][1]===0 && writeCalls[0][2]===writeHandle && writeCalls[0][3]===undefined && writeCalls[0][4]===1");
++    try std.testing.expect(requests.Request.fromObject(f.base.registry(), wrapper) == null);
++    try std.testing.expect(state.detached and f.base.registry().unwrap(wrapper) == state);
++    try f.release(); try f.retired(wrapper);
++}
++
++test "native Stream write complete try-write bypasses absent request template and keeps original total" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); const handle = try f.closed();
++    handle.stream.operations.write = null; handle.stream.virtuals.do_write = null;
++    handle.stream.virtuals.has_do_try_write = hasTry; handle.stream.virtuals.do_try_write = tryProbe;
++    f.try_drop = 2;
++    var bytes: [5]u8 = .{1,2,3,4,5}; var buffers = smallBuffers(&bytes);
++    try f.run(&buffers, null, false, null);
++    try std.testing.expectEqual(@as(usize, 1), f.try_calls);
++    try std.testing.expectEqual(@as(u64, 5), f.try_counter);
++    try std.testing.expect(!f.result.?.is_async and f.result.?.err == 0 and f.result.?.bytes == 5);
++    try std.testing.expect(f.result.?.wrap == null and f.result.?.wrap_obj == null);
++    try std.testing.expectEqual(@as(usize, 0), f.write_calls);
++}
++
++test "native Stream write partial try-write forwards remaining vectors while counting attempted total" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); const handle = try f.closed();
++    handle.stream.virtuals.has_do_try_write = hasTry; handle.stream.virtuals.do_try_write = tryProbe;
++    handle.stream.virtuals.do_write = writeProbe; f.try_drop = 1;
++    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper);
++    var bytes: [5]u8 = .{1,2,3,4,5}; var buffers = smallBuffers(&bytes);
++    try f.run(&buffers, wrapper, false, null);
++    try std.testing.expectEqual(@as(usize, 1), f.write_count);
++    try std.testing.expectEqual(@as(usize, 3), f.write_first_length);
++    try std.testing.expectEqual(@as(usize, 5), f.result.?.bytes);
++    try std.testing.expectEqual(@as(u64, 5), f.try_counter);
++    try std.testing.expectEqual(@as(u64, 5), handle.stream.resource.bytes_written);
++    try std.testing.expectEqual(handle.wrap.async_id, f.write_trigger);
++}
++
++test "native Stream write try failure has no request and explicit skip bypasses try-write" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); const handle = try f.closed();
++    handle.stream.virtuals.has_do_try_write = hasTry; handle.stream.virtuals.do_try_write = tryProbe;
++    handle.stream.virtuals.do_write = writeProbe; f.try_status = uv.UV_EPIPE;
++    var bytes: [5]u8 = .{1,2,3,4,5}; var buffers = smallBuffers(&bytes);
++    try f.run(&buffers, null, false, null);
++    try std.testing.expectEqual(@as(c_int, uv.UV_EPIPE), f.result.?.err);
++    try std.testing.expect(f.result.?.wrap_obj == null and f.result.?.bytes == 5);
++    try std.testing.expectEqual(@as(usize, 0), f.write_calls);
++    try f.release();
++    try f.run(&buffers, null, true, null);
++    try std.testing.expectEqual(@as(usize, 1), f.try_calls);
++    try std.testing.expectEqual(@as(usize, 1), f.write_calls);
++    try std.testing.expectEqual(@as(u64, 10), handle.stream.resource.bytes_written);
++}
++
++test "native Stream write nonnull borrowed send handle bypasses try-write and preserves pointer identity" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); const handle = try f.closed();
++    handle.stream.virtuals.has_do_try_write = hasTry; handle.stream.virtuals.do_try_write = tryProbe;
++    handle.stream.virtuals.do_write = writeProbe;
++    // No libuv operation dereferences this opaque input in the selected probe;
++    // this control observes the native branch/identity, not IPC handle creation.
++    var borrowed: uv.uv_stream_t = std.mem.zeroes(uv.uv_stream_t);
++    var bytes: [5]u8 = .{1,2,3,4,5}; var buffers = smallBuffers(&bytes);
++    try f.run(&buffers, null, false, &borrowed);
++    try std.testing.expectEqual(@as(usize, 0), f.try_calls);
++    try std.testing.expectEqual(@as(usize, 1), f.write_calls);
++    try std.testing.expect(f.write_send == &borrowed);
++}
++
++test "native Stream write invalid buffer types throw intrinsic TypeError without updating result slots" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); const handle = try f.closed();
++    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper);
++    f.base.env().streamBaseField(.bytes_written).* = 73;
++    f.base.env().streamBaseField(.last_write_was_async).* = 74;
++    for ([_][]const u8{"undefined", "null", "{}", "new Int8Array(2)", "new Uint8ClampedArray(2)",
++        "new DataView(new ArrayBuffer(2))", "new ArrayBuffer(2)", "new Proxy(new Uint8Array(2),{})"}) |input|
++    {
++        const value = try f.base.value(input); defer f.base.engine.freeValue(value);
++        try std.testing.expectError(error.JavaScriptException, f.buffer(wrapper, value));
++        try std.testing.expectEqual(@as(c_int, 0), f.last_status);
++        const reason = try f.base.takeCaught(); defer f.base.engine.freeValue(reason);
++        try f.base.expose("writeTypeError", reason);
++        try f.base.expect("writeTypeError instanceof TypeError && writeTypeError.code==='ERR_INVALID_ARG_TYPE' && " ++
++            "writeTypeError.message==='Second argument must be a buffer'");
++        try std.testing.expectEqual(@as(i32, 73), f.base.env().streamBaseField(.bytes_written).*);
++        try std.testing.expectEqual(@as(i32, 74), f.base.env().streamBaseField(.last_write_was_async).*);
++        try std.testing.expectEqual(@as(u64, 0), handle.stream.resource.bytes_written);
++        try f.retired(wrapper);
++    }
++}
++
++test "native Stream write invalid type uses intrinsic error and original observable code Set" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); _ = try f.closed();
++    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper);
++    try f.base.evaluate("globalThis.OriginalTypeError=TypeError;globalThis.codeSet=[];" ++
++        "Object.defineProperty(OriginalTypeError.prototype,'code',{configurable:true,set(v){codeSet.push([this,v]);}});" ++
++        "globalThis.TypeError=function(){throw writeReason;};");
++    try std.testing.expectError(error.JavaScriptException, f.buffer(wrapper, c.pi_js_undefined()));
++    const reason = try f.base.takeCaught(); defer f.base.engine.freeValue(reason);
++    try f.base.expose("writeTypeError", reason);
++    try f.base.expect("writeTypeError instanceof OriginalTypeError && codeSet.length===1 && " ++
++        "codeSet[0][0]===writeTypeError && codeSet[0][1]==='ERR_INVALID_ARG_TYPE' && !Object.hasOwn(writeTypeError,'code')");
++}
++
++test "native Stream write error setter throw returns EBUSY zero result and preserves reason and uncleared error" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); const handle = try f.closed();
++    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper); try f.publish(wrapper);
++    try f.installError(); f.base.env().uidField(.default_trigger).* = 113;
++    try f.base.evaluate("Object.defineProperty(writeRequest,'error',{set(v){throw writeReason;}})");
++    var bytes: [5]u8 = .{1,2,3,4,5}; var buffers = smallBuffers(&bytes);
++    try std.testing.expectError(error.JavaScriptException, f.run(&buffers, wrapper, false, null));
++    try f.sameReason();
++    try std.testing.expect(f.result != null and f.result.?.err == uv.UV_EBUSY and f.result.?.bytes == 0);
++    try std.testing.expect(f.result.?.wrap == null and f.result.?.wrap_obj == null and !f.result.?.is_async);
++    try std.testing.expect(f.message and f.error_clears == 0);
++    try std.testing.expectEqual(@as(u64, 5), handle.stream.resource.bytes_written);
++    try std.testing.expectEqual(@as(f64, 113), f.base.env().uidField(.default_trigger).*);
++    try f.retired(wrapper);
++}
++
++test "native Stream write false error Set permits continuation and clears the original error" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); _ = try f.closed();
++    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper); try f.publish(wrapper);
++    try f.installError();
++    try f.base.evaluate("Object.defineProperty(writeRequest,'error',{value:'fixed',writable:false})");
++    var bytes: [5]u8 = .{1,2,3,4,5}; var buffers = smallBuffers(&bytes);
++    try f.run(&buffers, wrapper, false, null);
++    try std.testing.expectEqual(@as(c_int, uv.UV_ENOSYS), f.result.?.err);
++    try std.testing.expectEqual(@as(usize, 5), f.result.?.bytes);
++    try std.testing.expect(!f.message and f.error_clears == 1);
++    try f.base.expect("writeRequest.error==='fixed'");
++}
++
++test "native Stream write ordinary init-hook throw preserves completed WriteWrap and DoWrite result" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); const handle = try f.closed();
++    handle.stream.virtuals.do_write = writeProbe;
++    try f.base.installInitRecorder();
++    try f.base.evaluate("ownerInitHook=function(id,type,trigger,resource){throw writeReason;}");
++    const hook = try f.base.global("ownerInitHook"); defer f.base.engine.freeValue(hook);
++    try f.base.env().installHooks(.{ .init = hook, .before = hook, .after = hook,
++        .destroy = hook, .promise_resolve = hook }, f.base.binding_target.?);
++    f.base.env().uidField(.default_trigger).* = 117;
++    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper);
++    var bytes: [5]u8 = .{1,2,3,4,5}; var buffers = smallBuffers(&bytes);
++    try std.testing.expectError(error.JavaScriptException, f.run(&buffers, wrapper, false, null));
++    try f.sameReason();
++    try std.testing.expectEqual(@as(usize, 1), f.write_calls);
++    try std.testing.expect(f.result != null and f.result.?.err == uv.UV_EIO and f.result.?.bytes == 5);
++    try std.testing.expectEqual(@as(f64, 117), f.base.env().uidField(.default_trigger).*);
++    try f.release(); try f.retired(wrapper);
++}
++
++test "native Stream write completion throw still disposes and custom listener uses shared actual reporter" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); const handle = try f.closed();
++    handle.stream.virtuals.do_write = writeProbe; f.write_status = 0;
++    const view = try f.base.value("new Uint8Array(4)"); defer f.base.engine.freeValue(view);
++    try std.testing.expectEqual(@as(c_int, 0), custom.useUserBuffer(&handle.stream, view));
++    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper); try f.publish(wrapper);
++    try f.base.evaluate("writeRequest.oncomplete=function(){writeCalls.push(writeNativeState(this));throw writeReason;}");
++    var bytes: [5]u8 = .{1,2,3,4,5}; var buffers = smallBuffers(&bytes);
++    try f.run(&buffers, wrapper, false, null);
++    const state = f.result.?.wrap_obj.?;
++    try std.testing.expectError(error.JavaScriptException, f.result.?.wrap.?.request.done(uv.UV_EIO, null));
++    try f.sameReason();
++    try f.base.expect("writeCalls.length===1 && writeCalls[0]===1");
++    try std.testing.expect(state.detached and requests.Request.fromObject(f.base.registry(), wrapper) == null);
++    try f.release(); try f.retired(wrapper);
++}
++
++test "native Stream write absent native request uses actual instance template and completion suppresses disabled JS" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); const handle = try f.closed();
++    handle.stream.virtuals.do_write = writeProbe; f.write_status = 0;
++    var bytes: [5]u8 = .{1,2,3,4,5}; var buffers = smallBuffers(&bytes);
++    try f.run(&buffers, null, false, null);
++    const observed = f.observed_request.?;
++    try std.testing.expectEqual(f.base.registry().classId(.writewrap), c.JS_GetClassID(observed));
++    try f.publish(observed);
++    f.base.env().can_call_into_js = false;
++    try f.result.?.wrap.?.request.done(0, null);
++    f.base.env().can_call_into_js = true;
++    try f.base.expect("writeCalls.length===0");
++    try f.release(); try f.retired(observed);
++}
++
++test "native Stream write unsigned attempted counter wraps and shared Int32 result truncates exactly" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); const handle = try f.closed();
++    handle.stream.virtuals.do_write = writeProbe;
++    handle.stream.resource.bytes_written = std.math.maxInt(u64) - 1;
++    var byte: u8 = 0;
++    // This integer-boundary control performs no data access or OS write.
++    var buffers: [2]uv.uv_buf_t = .{
++        .{ .base = @ptrCast(&byte), .len = std.math.maxInt(u32) },
++        .{ .base = @ptrCast(&byte), .len = 2 },
++    };
++    try f.run(&buffers, null, false, null);
++    try std.testing.expectEqual(@as(usize, std.math.maxInt(u32)) + 2, f.result.?.bytes);
++    try std.testing.expectEqual(@as(u64, std.math.maxInt(u32)), handle.stream.resource.bytes_written);
++    writes.setResult(f.base.env(), &f.result.?);
++    try std.testing.expectEqual(@as(i32, 1), f.base.env().streamBaseField(.bytes_written).*);
++    try std.testing.expectEqual(@as(i32, 0), f.base.env().streamBaseField(.last_write_was_async).*);
++}
++
++test "native Stream write backing token transfers once and survives Dispose until native pointer retirement" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); const handle = try f.closed();
++    handle.stream.virtuals.do_write = writeProbe; f.write_status = 0;
++    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper);
++    var bytes: [5]u8 = .{1,2,3,4,5}; var buffers = smallBuffers(&bytes);
++    try f.run(&buffers, wrapper, false, null);
++    const request = f.result.?.wrap.?;
++    var empty: managed.Token = std.mem.zeroes(managed.Token);
++    request.setBackingStore(&empty);
++    try std.testing.expect(request.backing_store == null);
++    var token = handle.stream.operations.allocation.new_backing_store(
++        handle.stream.operations.allocation.raw, f.base.env(), 4, .zero_initialized);
++    defer c.JS_PiReleaseArrayBufferBackingStore(&token);
++    const pointer = c.JS_PiArrayBufferBackingStoreData(&token);
++    pointer[0] = 37;
++    request.setBackingStore(&token);
++    try std.testing.expect(c.JS_PiArrayBufferBackingStoreData(&token) == null);
++    try request.request.dispose();
++    try std.testing.expect(request.backing_store != null);
++    try std.testing.expect(c.JS_PiArrayBufferBackingStoreData(&request.backing_store.?) == pointer);
++    try std.testing.expectEqual(@as(u8, 37), pointer[0]);
++    try f.release(); try f.retired(wrapper);
++}
++
++test "native Stream write JSMethod absent and closed receiver guards run before buffer argument CHECK" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); const handle = try f.closed();
++    const plain = try f.base.value("({})"); defer f.base.engine.freeValue(plain);
++    const absent = try f.publicCall(plain, &.{}); defer f.base.engine.freeValue(absent);
++    try std.testing.expect(c.JS_IsUndefined(absent));
++    const dead = try f.publicCall(f.base.primary_wrapper.?, &.{}); defer f.base.engine.freeValue(dead);
++    var status: i32 = 0; try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt32(f.base.engine.context, &status, dead));
++    try std.testing.expectEqual(@as(i32, uv.UV_EINVAL), status);
++    try std.testing.expectEqual(@as(u64, 0), handle.stream.resource.bytes_written);
++}
++
++test "native Stream write WriteBuffer publishes async result before releasing its local native pointer" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); const handle = try f.closed();
++    handle.stream.virtuals.do_write = writeProbe; f.write_status = 0;
++    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper); try f.publish(wrapper);
++    const view = try f.base.value("new Uint8Array(4)"); defer f.base.engine.freeValue(view);
++    try std.testing.expectEqual(@as(c_int, 0), try f.buffer(wrapper, view));
++    try std.testing.expectEqual(@as(i32, 4), f.base.env().streamBaseField(.bytes_written).*);
++    try std.testing.expectEqual(@as(i32, 1), f.base.env().streamBaseField(.last_write_was_async).*);
++    const request = requests.Write.fromObject(f.base.registry(), wrapper).?;
++    try std.testing.expectEqual(@as(usize, 0), request.request.asyncWrap().native_references);
++    try request.request.done(0, null);
++    try f.base.expect("writeCalls.length===1 && writeCalls[0][1]===0 && writeCalls[0][4]===1");
++    try f.retired(wrapper);
++}
++
++test "native Stream write accepted async request survives later error Set failure until its real completion" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); const handle = try f.closed();
++    handle.stream.virtuals.do_write = writeProbe; f.write_status = 0;
++    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper); try f.publish(wrapper);
++    try f.installError();
++    try f.base.evaluate("Object.defineProperty(writeRequest,'error',{set(v){throw writeReason;}})");
++    var bytes: [5]u8 = .{1,2,3,4,5}; var buffers = smallBuffers(&bytes);
++    try std.testing.expectError(error.JavaScriptException, f.run(&buffers, wrapper, false, null));
++    try f.sameReason();
++    try std.testing.expect(f.result.?.err == uv.UV_EBUSY and f.result.?.bytes == 0 and
++        f.result.?.wrap == null and f.result.?.wrap_obj == null);
++    const request = requests.Write.fromObject(f.base.registry(), wrapper).?;
++    try std.testing.expect(!request.request.asyncWrap().detached);
++    try std.testing.expectEqual(@as(usize, 0), request.request.asyncWrap().native_references);
++    try std.testing.expect(f.message and f.error_clears == 0);
++    try request.request.done(0, null);
++    try f.base.expect("writeCalls.length===1 && writeCalls[0][1]===0 && writeCalls[0][3]==='native-\\x80\\xff'");
++    try std.testing.expect(!f.message and f.error_clears == 1);
++    try f.retired(wrapper);
++}

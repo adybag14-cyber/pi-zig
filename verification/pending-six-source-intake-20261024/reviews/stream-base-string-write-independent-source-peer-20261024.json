@@ -1,0 +1,192 @@
+{
+  "schema": "pi-zig.independent-source-peer.v1",
+  "created_at_utc": "2026-10-24T16:34:32.406285+00:00",
+  "reviewer": "catalog_review",
+  "verdict": "accepted_source_only_no_concrete_blocker",
+  "intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\source-intake.json",
+    "bytes": 32588,
+    "sha256": "146FD4EA6FA44793195C5A158B47EFC5E99F45FB56D4BBF1FB16EE1C9CC17DF3"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\stream-base-write-string-successor.patch",
+    "bytes": 48405,
+    "sha256": "64C5FFE43E8DD8809EBA4CA4399D14D94085470105D8C79BB9C05F8888B33E32"
+  },
+  "selected_changes": [
+    {
+      "target": "vendor/quickjs/quickjs.h",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+        "bytes": 115346,
+        "sha256": "05AA4DF250CB642536077C5DF80C08C92C1C40BAA347C18140AFB577B583B0EB"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\projected-v2\\vendor\\quickjs\\quickjs.h",
+        "bytes": 116017,
+        "sha256": "4E33B0F27BA25178F1ED19A3C030F2037542E9D7C5731D909E5E0938783DCABF"
+      }
+    },
+    {
+      "target": "vendor/quickjs/quickjs.c",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2404878,
+        "sha256": "091E5BE0C22F35CE2029852DEA8D8B017B3784013ED93EDB9F1545A49D8D275F"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\projected-v2\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2405312,
+        "sha256": "749D971CE7902D6B1E0FFCC597FB30652D57F24725D4484F6E9E8FC1FEEBA931"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_stream_write_string.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_stream_write_string.zig",
+        "bytes": 9939,
+        "sha256": "3FA14A3B2904E51E7505276C06A81D57D1E490E44D1D175254D0FA27C8020C47"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_stream_js_dispatch.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-write-buffer-sourceonly-20261023\\projected\\src\\extensions\\native_node_stream_js_dispatch.zig",
+        "bytes": 5748,
+        "sha256": "86B7F09317CEBCE667E327136723690F5B34FC7496A007866A20E2FB755C3A8B"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\projected\\src\\extensions\\native_node_stream_js_dispatch.zig",
+        "bytes": 6228,
+        "sha256": "7FEFF3C4EF7320CB980EF3753F934C9977A59B59D56A10F00A1FF4006D75754F"
+      }
+    },
+    {
+      "target": "src/native_node_stream_write_string_test.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\projected-v3\\src\\native_node_stream_write_string_test.zig",
+        "bytes": 31099,
+        "sha256": "6316A714C3B80C82E3F114040E0796658CF1801F1A7B652AF6920A712E77BBF1"
+      }
+    },
+    {
+      "target": "build.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-write-buffer-sourceonly-20261023\\projected\\build.zig",
+        "bytes": 519458,
+        "sha256": "4757193E24AE71E9940AEB6F988EE08B5937E63F9845547BCF16DE59096A4C6B"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 521275,
+        "sha256": "BFD38FBB83398BF6602E7A11CBB2FF30224774DD1C1C3DCFF0BADF8D1464A973"
+      }
+    }
+  ],
+  "prior_write_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-base-write-buffer-independent-source-peer-20261023.json",
+    "bytes": 7778,
+    "sha256": "5C9B8920A7096A6412FC54C02174D5DCA7850AA7ABD88785D7F17429D5D896F3"
+  },
+  "source_proofs": {
+    "vm_insertions": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\borrowed-flat-string-view-inverses.json",
+      "bytes": 2636,
+      "sha256": "CE0AE24457BCA24954CAE4E74E679AC7770C2B28BC7F2AB366625CF023C41345"
+    },
+    "dispatcher_inverse": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\dispatcher-source-inverse.json",
+      "bytes": 1886,
+      "sha256": "6F98AD8322342E5F35B4682BB9297317633F710346494B87F6D07F69A5CEE4FD"
+    },
+    "build_inverse": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\build-source-inverse.json",
+      "bytes": 2574,
+      "sha256": "596F26DE7E2C02EE1E33D9B0AFCE959D0104754700E0B68A8BD3013FDDF476C1"
+    },
+    "build_addition": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\build-addition.zig.txt",
+      "bytes": 1817,
+      "sha256": "4800E99C83777A3B692978D64997AD97B3A710146E4FC4F1BE2BAC420EDD4AE5"
+    }
+  },
+  "authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.cc.v24.13.txt",
+      "bytes": 28310,
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.h.v24.13.txt",
+      "bytes": 18488,
+      "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base-inl.h.v24.13.txt",
+      "bytes": 5052,
+      "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\authority\\string_bytes.cc.def0.txt",
+      "bytes": 22325,
+      "sha256": "8F82BE9BAD066C42DDDAA25504E864427C8AA4D5B251C039FDF8666F1E000B16"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\authority\\string_bytes.h.def0.txt",
+      "bytes": 4324,
+      "sha256": "35D2FD2C9EE89331C2789561FFFBDBA16FAF17EA9CAE3433FF086807587B501F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\authority\\source-acquisition.json",
+      "bytes": 1049,
+      "sha256": "3DC09D3356128C31A21C33CF92F3A6DF1C18F37CB43B1FEAC042A331F89494B7"
+    }
+  ],
+  "source_review": {
+    "selected_owners": "Only the manifest-selected v2 C/header/string owner, v3 test root, and projected dispatcher/build are accepted. Earlier drafts remain unselected and unchanged.",
+    "primitive_admission": "Actual JS_IsString accepts both flat and rope tags. Primitive JS_ToString duplicates a flat value or calls the existing genuine rope linearizer. CHECK admission prevents guest ToPrimitive/ToString; the checked owned result stays in the callback Scope through every later allocation/hook/callback.",
+    "borrowed_view": "The added C accessor rejects nonflat tags, clears the result on failure, and resolves actual normal/sliced/indirect JSString storage through the existing str8/str16 helpers. It performs no allocation, coercion, guest call or failure-generation mutation. The owned flat string keeps the referenced bytes/code units alive.",
+    "encoding": "ASCII and LATIN1 retain the low byte of every UTF16 unit, including high bits, NUL and surrogates. UTF8 joins valid pairs, replaces lone surrogates, and preserves NUL. UCS2 emits every code unit in little-endian order without replacement. The narrow leaf is supplied the complete fixed-encoding StorageSize; it does not claim Writev/base64/hex semantics.",
+    "sizing": "The code preserves the original long-UTF8 boolean expression: successful Size is followed by StorageSize, yielding three bytes per unit for capacity. INT_MAX guard and the 16 KiB direct-try test use that capacity, while result byte counts use actual encoded bytes.",
+    "partial_accounting": "Direct try records only consumed bytes in the stream counter. Immediate success/error reports the complete encoded size. Partial success copies exactly the remaining byte suffix into a genuine backing token, invokes existing Write with skip_try_write=true, then adds the synchronous prefix to the returned result.",
+    "ownership": "The Environment and flat string remain retained through synchronous work. The backing token moves only to the actually returned WriteWrap. Native result pointer retirement happens before any untransferred backing token retires, matching source destructor order. An ordinary init-hook reason still allows the existing accepted native Write result/backing transfer to finish.",
+    "ipc": "The selected callback keeps the original IsIPCPipe/object guard, genuine HandleWrap unwrap/GetHandle requirement and ordinary handle Set exception behavior. The missing actual IPC HandleWrap owner is explicit; no synthesized success path is admitted.",
+    "dispatcher": "Exact four textual edits add the new import, enum entries and encoding branches plus a scope comment. Existing receiver lookup, alive guards, trigger lifetime and callback completion logic are byte-preserved.",
+    "controls": "Read all eighteen controls and actual fixture plumbing. Tests exercise actual FileHandle ENOSYS/provider52, real request/backing/Environment owners, four encodings, rope and flat/slice views, native virtual observation points for direct/partial/async paths, backing survival through input release/Dispose/native retirement, cutoff capacities, empty input, nonIPC handle bypass, setter failure, pending init exception and absent/dead receivers."
+  },
+  "independent_static_checks": {
+    "intake_unique_pinned_versions_rehashed": 50,
+    "union_with_accepted_write_prerequisites_rehashed": 55,
+    "header_addition_bytes": 671,
+    "header_addition_lines": 13,
+    "c_addition_bytes": 434,
+    "c_addition_lines": 20,
+    "c_and_header_forward_and_raw_inverse_exact": true,
+    "dispatcher_edits_forward_and_raw_inverse_exact": 4,
+    "build_addition_bytes": 1817,
+    "build_addition_lines": 21,
+    "build_forward_and_inverse_exact": true,
+    "complete_six_target_patch_reconstructed": true,
+    "literal_imports_and_selected_mappings_reconciled": 22,
+    "control_names_reconciled": 18,
+    "compiled_metadata_count": null,
+    "runtime_result": null
+  },
+  "remaining": [
+    "Root must compose only the recorded additive build insertion after the Write prerequisite; never replace a newer combined build with this standalone projection.",
+    "The new JS_PiBorrowFlatStringView ABI requires a freshly built QuickJS library before native linking and qualification.",
+    "Eighteen control declarations are authored and reviewed only; no native build, metadata query, formatter/parser, runtime, Node or generator execution occurred.",
+    "Actual IPC HandleWrap/GetHandle, Writev, external_stream, full AddMethods/public FileHandle publication, production Environment/event-loop assembly and whole-application bridge removal remain separate work.",
+    "Existing fatal CHECK/OOM branches and the ENOBUFS upper bound are source-reviewed, not claimed as executed negative child controls."
+  ],
+  "claims": {
+    "main_modified": false,
+    "sealed_inputs_modified": false,
+    "source_executed": false,
+    "native_executed": false,
+    "public_constructor_qualified": false,
+    "whole_application_qualified": false
+  }
+}

@@ -1,0 +1,366 @@
+{
+  "schema": 1,
+  "date_utc": "2026-10-24T18:14:50.837588+00:00",
+  "main_base_commit": "eeb59f314c834ed8a060da178251e380a50d0a62",
+  "scope": "Actual CommonJS compiler-info owner; v2 corrects only private parameter identifiers shadowing the public script entry",
+  "status": "source_only_reviewable_candidate",
+  "changes": [
+    {
+      "destination_relative_path": "src/extensions/native_node_commonjs_compile_info.zig",
+      "operation": "add",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024-v2\\projected\\src\\extensions\\native_node_commonjs_compile_info.zig",
+        "bytes": 5784,
+        "sha256": "9F6957753B97394694BF19101768032357A07CD139B47AEBB20BD33F4A520081"
+      },
+      "baseline": null
+    },
+    {
+      "destination_relative_path": "src/native_node_module_compile_info_test.zig",
+      "operation": "add",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024\\projected\\src\\native_node_module_compile_info_test.zig",
+        "bytes": 21614,
+        "sha256": "BE909772CD488531C4EFECF0E91AA1E7BB29ABB90F1BE677A6B7A7A152508174"
+      },
+      "baseline": null
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024\\projected-v2\\build.zig",
+        "bytes": 519996,
+        "sha256": "FBF336EBFF6FAB1502889270E0B17D80E11228175E8AD10FC8861AFA76844F01"
+      },
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 519285,
+        "sha256": "183B59A721E0C0CBEC9604A860E75F2DB7AE8FDEA49675B2AC038F96767A7668"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024-v2\\module-compile-info-v2-successor.patch",
+    "bytes": 29624,
+    "sha256": "93201DC465F68D8310E860A6C4C98064BF65AE82ED336CBDB04385F764132C08"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024-v2\\README.md",
+    "bytes": 1226,
+    "sha256": "F5285EF9D37C9410A4735D77016D67CE1648FABEB45BFE1315EB8F1EDD17D6D8"
+  },
+  "static_checks": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024-v2\\static-source-checks.json",
+    "bytes": 1796,
+    "sha256": "D9EFFDC3C3E099D26A45140A760B1D4DB6B128CC072509B075DAF03CE6C30B85"
+  },
+  "original_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+    "bytes": 72050,
+    "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+  },
+  "authority_excerpts": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+        "bytes": 72050,
+        "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+      },
+      "first_line": 1701,
+      "last_line": 1751,
+      "bytes": 2026,
+      "sha256": "766FB6781E1B938DC018A694E94D3ACAD6B27F5C1B778DE87ABF592896E20195",
+      "meaning": "wrapSafe needs real compiled function/script metadata and source-map handling; this packet supplies only the actual compiler-info completion owner."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs-pi-cjs-compiler.inc",
+        "bytes": 17263,
+        "sha256": "4FBF487CC09627A2176815995AF3246E88274A7D1AD1A952802AC01AF478BCE5"
+      },
+      "first_line": 1,
+      "last_line": 74,
+      "bytes": 3351,
+      "sha256": "FC6B4EAFCEAD7633217C4665D3F39016DBB7A557687EB33F3BBDD55AEFF24FDA",
+      "meaning": "Real compiler admission checks primitive strings, physical filename bytes and native capture-only Error ownership."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs-pi-cjs-compiler.inc",
+        "bytes": 17263,
+        "sha256": "4FBF487CC09627A2176815995AF3246E88274A7D1AD1A952802AC01AF478BCE5"
+      },
+      "first_line": 113,
+      "last_line": 246,
+      "bytes": 5827,
+      "sha256": "85A074C06F9343D598D644290F31CA7CD2B0827B4B5F83CEBAD25EF1F174E25B",
+      "meaning": "Actual five-parameter ordinary function and owned lexer-derived source URLs; genuine syntax classification and cleanup."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs-pi-cjs-compiler.inc",
+        "bytes": 17263,
+        "sha256": "4FBF487CC09627A2176815995AF3246E88274A7D1AD1A952802AC01AF478BCE5"
+      },
+      "first_line": 249,
+      "last_line": 307,
+      "bytes": 2668,
+      "sha256": "9CA46F3C804BB07AA01415F5A6EBB8D009592B0CC14627B1A716012FC97FA200",
+      "meaning": "Actual compile-only script with lexer-derived metadata; this packet does not replace its compiler or parser."
+    }
+  ],
+  "retained_historical_owner": {
+    "commit": "e9fe2de0c548fd00cc920dfd0670b0498b54845d",
+    "relative_path": "src/extensions/native_node_commonjs_compile_info.zig",
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024\\retained\\native_node_commonjs_compile_info-e9fe.zig",
+      "bytes": 5412,
+      "sha256": "4C2431AB3B4E851EC6DE5B51D78C8A5EF660F5789095EE68020552AA47689DE7"
+    },
+    "readiness": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-cjs-wrapsafe-native-prepared-20261017\\source-readiness-v2.json",
+      "bytes": 6385,
+      "sha256": "D82CB9AE9A84AF753AEE43312A2B58F36006A4820E64DC71E3531E481B616A6B"
+    },
+    "source_only_no_pass_transferred": true
+  },
+  "source_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024-v2\\parameter-rename-inverse.json",
+    "bytes": 4030,
+    "sha256": "8D640F07983CB6AA45E438BA2EF25AD492316CF5164CFC7A3CBA8C421387DC6C"
+  },
+  "current_linked_compiler": {
+    "implementation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs-pi-cjs-compiler.inc",
+      "bytes": 17263,
+      "sha256": "4FBF487CC09627A2176815995AF3246E88274A7D1AD1A952802AC01AF478BCE5"
+    },
+    "public_header": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 115346,
+      "sha256": "05AA4DF250CB642536077C5DF80C08C92C1C40BAA347C18140AFB577B583B0EB"
+    },
+    "translation_unit": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2404878,
+      "sha256": "091E5BE0C22F35CE2029852DEA8D8B017B3784013ED93EDB9F1545A49D8D275F"
+    },
+    "symbols": [
+      "JS_PiCompileCJSFunctionInfo",
+      "JS_PiCompileCommonJSScriptInfo",
+      "JS_EvalFunction"
+    ],
+    "ABI_addition": false,
+    "metadata_synthesized": false
+  },
+  "direct_import_resolutions": [
+    {
+      "consumer": "src/extensions/native_node_commonjs_compile_info.zig",
+      "literal": "native_ai_provider_values.zig",
+      "resolved_relative_path": "src/extensions/native_ai_provider_values.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_ai_provider_values.zig",
+        "bytes": 2689,
+        "sha256": "2D64F3F5E408790DC0BD374E13F1A9C69EB21E1D62944DAE9C913B87F13629EB"
+      },
+      "basis": "unchanged_actual_Main"
+    },
+    {
+      "consumer": "src/extensions/native_node_commonjs_compile_info.zig",
+      "literal": "native_node_commonjs_body_compiler.zig",
+      "resolved_relative_path": "src/extensions/native_node_commonjs_body_compiler.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_body_compiler.zig",
+        "bytes": 6917,
+        "sha256": "A1E7A9A4953E5C2581DC2539A86B627BE5CBFAEE5BDFAF7F342DB6CE90A605FC"
+      },
+      "basis": "unchanged_actual_Main"
+    },
+    {
+      "consumer": "src/extensions/native_node_commonjs_compile_info.zig",
+      "literal": "native_async_body.zig",
+      "resolved_relative_path": "src/extensions/native_async_body.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_async_body.zig",
+        "bytes": 5615,
+        "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+      },
+      "basis": "unchanged_actual_Main"
+    },
+    {
+      "consumer": "src/extensions/native_node_commonjs_compile_info.zig",
+      "literal": "native_node_commonjs_owned_boundary.zig",
+      "resolved_relative_path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+        "bytes": 9934,
+        "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA"
+      },
+      "basis": "unchanged_actual_Main"
+    },
+    {
+      "consumer": "src/native_node_module_compile_info_test.zig",
+      "literal": "extensions/engine.zig",
+      "resolved_relative_path": "src/extensions/engine.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      },
+      "basis": "unchanged_actual_Main"
+    },
+    {
+      "consumer": "src/native_node_module_compile_info_test.zig",
+      "literal": "extensions/native_node_commonjs_compile_info.zig",
+      "resolved_relative_path": "src/extensions/native_node_commonjs_compile_info.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024-v2\\projected\\src\\extensions\\native_node_commonjs_compile_info.zig",
+        "bytes": 5784,
+        "sha256": "9F6957753B97394694BF19101768032357A07CD139B47AEBB20BD33F4A520081"
+      },
+      "basis": "selected_packet_source"
+    },
+    {
+      "consumer": "src/native_node_module_compile_info_test.zig",
+      "literal": "extensions/native_node_commonjs_body_compiler.zig",
+      "resolved_relative_path": "src/extensions/native_node_commonjs_body_compiler.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_body_compiler.zig",
+        "bytes": 6917,
+        "sha256": "A1E7A9A4953E5C2581DC2539A86B627BE5CBFAEE5BDFAF7F342DB6CE90A605FC"
+      },
+      "basis": "unchanged_actual_Main"
+    }
+  ],
+  "package_imports": [
+    {
+      "consumer": "src/native_node_module_compile_info_test.zig",
+      "literal": "std"
+    }
+  ],
+  "retained_ownership_primitives": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+      "bytes": 9934,
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_async_body.zig",
+      "bytes": 5615,
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    }
+  ],
+  "semantic_accounting": {
+    "before_compile": "Boundary.checkCurrent starts the actual stable invocation and checks both raw pending and independently retained current native producers before either actual compiler.",
+    "before_run": "The same stable invocation exists before JS_EvalFunction and remains through returned value/diagnostic retirement.",
+    "output_lifetime": "Owned function/script, source URL, map URL or syntax reason transfer only after Boundary.finishMany. No fake contextify record or eager script execution.",
+    "diagnostics": "Captured-only stale/new Promise diagnostics remain DATA; actual pending and recorded native producers alone can override completion."
+  },
+  "controls": {
+    "target": "build-native-node-module-compile-info",
+    "test_filter": "native module compile info",
+    "source_declared": 11,
+    "names": [
+      "native module compile info returns genuine function and lexer metadata before any body execution",
+      "native module compile info patched script preserves actual metadata and raw Promise through compile run and GC",
+      "native module compile info preserves physical fallback and full logical NUL from the actual lexer",
+      "native module compile info retains actual syntax reason categories separately from stale captured diagnostics",
+      "native module compile info rejects internal nonstrings without coercion and does not truncate physical NUL",
+      "native module compile info pending entry precedes both compiler forms and preserves the exact reason under quota",
+      "native module compile info retained native producer is checked before invoking the syntax compiler",
+      "native module compile info retained native producer prevents actual script side effects before run",
+      "native module compile info run owns a stable invocation before a native producer clears its raw slot",
+      "native module compile info retires actual returned and prior diagnostic carriers under the same first fatal owner",
+      "native module compile info successful script keeps newly captured rejected flagged Promise data nonfatal"
+    ],
+    "actual_metadata_count": null,
+    "executed": false
+  },
+  "build_composition": {
+    "baseline": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+      "bytes": 519285,
+      "sha256": "183B59A721E0C0CBEC9604A860E75F2DB7AE8FDEA49675B2AC038F96767A7668"
+    },
+    "selected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024\\projected-v2\\build.zig",
+      "bytes": 519996,
+      "sha256": "FBF336EBFF6FAB1502889270E0B17D80E11228175E8AD10FC8861AFA76844F01"
+    },
+    "insertion": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024\\build-insertion.txt",
+      "bytes": 711,
+      "sha256": "4110734998422DA10231C5B74C4FEC20038B5B0A543B6DAFD34D331BE3A94F5A"
+    },
+    "anchor": "    const cjs_raw_provider_tests = b.addTest(.{",
+    "replacement_count": 1,
+    "complete_raw_inverse": true,
+    "insert_only_when_composing_with_other_packets": true,
+    "earlier_projection_unselected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 516673,
+      "sha256": "011BF3093C89368F90EAD0AFA80A7C6545668E09B395100185A3FA6B8A5779E3"
+    }
+  },
+  "remaining_canonical_inputs": [
+    "Canonical wrapSafe still requires actual maybeCacheSourceMap/source-map owner and real loader option/detection policy; no source-map cache supplier was found in current Main.",
+    "The richer compileFunctionForCJSLoader record, ESM probing/loader handoff, import-meta/dynamic-import policy, TypeScript transform, code-cache/snapshot and inspector suppliers are not created or defaulted here.",
+    "The canonical Module constructor/prototype factory still needs real diagnostics tracingChannel, debugWithTimer and wrap_module_load wiring.",
+    "Production print/RPC native worker startup and default backend switch remain outside this isolated prerequisite; no application qualification is claimed."
+  ],
+  "not_executed": [
+    "native build",
+    "native metadata query",
+    "native runtime",
+    "Node/reference capture",
+    "Zig parser/formatter",
+    "source generator",
+    "Main integration or commit"
+  ],
+  "claims": {
+    "source_only": true,
+    "original_retained_owner_reused": true,
+    "no_new_production_bridge": true,
+    "Main_mutated": false,
+    "native_execution": false,
+    "runtime_qualification": false,
+    "application_qualification": false,
+    "default_backend_changed": false,
+    "complete_wrapSafe": false,
+    "public_Module_namespace": false
+  },
+  "predecessor_source_packet": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024\\source-intake.json",
+    "bytes": 16431,
+    "sha256": "810273D34A62A554FEA647BD0238E587842372A18796BCFFF780A06DBE3EAB95"
+  },
+  "predecessor_root_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-module-compile-info-source-peer-20261024.json",
+    "bytes": 14892,
+    "sha256": "77F55D0A2717C3D436233620581C30B5C5C8E27D1CA64B4E7D841FD41A0AF5A7"
+  },
+  "predecessor_static_checks": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024\\static-source-checks.json",
+    "bytes": 2848,
+    "sha256": "70A621BB2CDF2D5680C9402E41A6AF07AD60261DAC01BDE50BEF21DD53DE6933"
+  },
+  "correction": {
+    "kind": "local_identifier_shadowing",
+    "renamed_parameters": [
+      "perform.script",
+      "performBody.script"
+    ],
+    "replacement_identifier": "script_mode",
+    "identifier_occurrences": 5,
+    "tests_changed": false,
+    "test_declarations": 11,
+    "build_changed": false,
+    "runtime_semantics_changed": false
+  }
+}

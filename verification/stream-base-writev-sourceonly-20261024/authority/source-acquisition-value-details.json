@@ -1,0 +1,18 @@
+[
+  {
+    "source": "deps/v8/src/strings/unicode-inl.h",
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/strings/unicode-inl.h",
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\authority\\deps__v8__src__strings__unicode-inl.h.txt",
+    "bytes": 9086,
+    "sha256": "635E17FFABC4849EE64B0F52F109FF301C922DD896C9E40C1468AF146B1D116B",
+    "executed": false
+  },
+  {
+    "source": "src/util.cc",
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/util.cc",
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\authority\\src__util.cc.txt",
+    "bytes": 32300,
+    "sha256": "5CCCE50BA4570EE147C259F45C30E16A81E33EC896332BE25E8BE9B0FD20563B",
+    "executed": false
+  }
+]

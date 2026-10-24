@@ -1,0 +1,23 @@
+{
+  "donor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 524748,
+    "sha256": "47C7D43DDBD0FA482F4D8221BFB17F71CB4342A4C86F4F44C0439229A6E3C1E3"
+  },
+  "output": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-file-handle-publication-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 526586,
+    "sha256": "EAD8D7D92D34FF509B6D119296F7D1DBEBF423DD45760BDACA2685CDD4FE9D8A"
+  },
+  "addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-file-handle-publication-sourceonly-20261024\\build-addition.zig.txt",
+    "bytes": 1838,
+    "sha256": "D4A44E20088A1C59043BE6ABBC50C4609928975A2026DF73561AE322DD4F6CAD"
+  },
+  "after_exact_prior_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\build-addition.zig.txt",
+    "bytes": 1752,
+    "sha256": "48218F2739871D11AC013E1B330A30DA7A47FDC12E3069AB0A51FB62AE27D360"
+  },
+  "inverse_exact": true
+}

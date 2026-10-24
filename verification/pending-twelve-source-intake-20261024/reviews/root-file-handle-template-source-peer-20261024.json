@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "status": "Root_independent_source_peer_accepted_complete_FileHandle_template",
+  "reviewer": "Root",
+  "created_utc": "2026-10-24T17:51:42.661474+00:00",
+  "source_packet": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-file-handle-publication-sourceonly-20261024\\source-intake.json",
+    "bytes": 44765,
+    "sha256": "DB105FC471420E0C2D8305E26D27456E8DA92043AACA788481FBCF30E243E1EC"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-file-handle-publication-sourceonly-20261024\\file-handle-template-successor.patch",
+    "bytes": 61785,
+    "sha256": "C98A34EF69FEA014B1D419E9E134EBCAD57D83BBEC57194CFA245956F59BFEBC"
+  },
+  "predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\source-intake.json",
+    "bytes": 27819,
+    "sha256": "5D14CD9857AED0F02EC9C5D413C5A7669987C487103B05BF3451C37BC05820C2"
+  },
+  "predecessor_root_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-external-source-acceptance-20261024.json",
+    "bytes": 7993,
+    "sha256": "6FEDE3B54232BDF49EAE8CC32FB864E740DBEC920575C4F1F6B885EC48699994"
+  },
+  "targets": [
+    {
+      "target": "src/extensions/native_node_file_handle_template.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-file-handle-publication-sourceonly-20261024\\projected\\src\\extensions\\native_node_file_handle_template.zig",
+        "bytes": 15371,
+        "sha256": "2ECE2AAD43392EDC15132C7506E54E0966BA61D4BA33909E1C6084551123243D"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_async_wrap.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-write-buffer-sourceonly-20261023\\projected\\src\\extensions\\native_node_async_wrap.zig",
+        "bytes": 21090,
+        "sha256": "4B9D3A2333005B1456F09DD68C9BB93A39AF8E5F9D0481A079A4B625B0940621"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-file-handle-publication-sourceonly-20261024\\projected\\src\\extensions\\native_node_async_wrap.zig",
+        "bytes": 25866,
+        "sha256": "1785211A09CBAF5010361E7E0697D92F8B7A711EDCD69FAD3156BD267D77D10C"
+      }
+    },
+    {
+      "target": "src/native_node_file_handle_template_test.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-file-handle-publication-sourceonly-20261024\\projected-v2\\src\\native_node_file_handle_template_test.zig",
+        "bytes": 32581,
+        "sha256": "01EC6BD4C5423ED5EE15567BA154BEDEA55ECEBB8C6C744C7E3FB22355FE7230"
+      }
+    },
+    {
+      "target": "build.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 524748,
+        "sha256": "47C7D43DDBD0FA482F4D8221BFB17F71CB4342A4C86F4F44C0439229A6E3C1E3"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-file-handle-publication-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 526586,
+        "sha256": "EAD8D7D92D34FF509B6D119296F7D1DBEBF423DD45760BDACA2685CDD4FE9D8A"
+      }
+    }
+  ],
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-file-handle-publication-sourceonly-20261024\\build-addition.zig.txt",
+    "bytes": 1838,
+    "sha256": "D4A44E20088A1C59043BE6ABBC50C4609928975A2026DF73561AE322DD4F6CAD"
+  },
+  "declared_controls": 25,
+  "actual_metadata_count": null,
+  "review_scope": {
+    "full61785_byte_patch_read_including_all25_controls": true,
+    "all_changed_production_code_read": true,
+    "constructor_cache_and_lifetime_context_read": true,
+    "original_Node_AddMethods_New_Close_ReleaseFD_util_and_wrapper_slot_authority_read": true,
+    "original_V8_prototype_parent_and_accessor_identity_authority_read": true,
+    "all70_packet_pin_versions_rehashed": true,
+    "exact_four_output_patch_reproduced": true,
+    "fourteen_AsyncWrap_edits_forward_inverse_replayed": true,
+    "additive1838_build_hunk_forward_inverse_replayed": true,
+    "all25_declarations_order_names_unique_verified": true,
+    "forty_three_import_resolution_rows_pinned": true
+  },
+  "findings": [
+    "No concrete source blocker found in the complete FileHandle template over its required native collaborators.",
+    "Actual Controller and immediate Queue are retained once; Bundle owns the configuration, its borrowed back-pointer adds no duplicate GC edge, and marked primitive keys remain owned through actual Handle/BindingData lifetimes.",
+    "Constructor takes the complete argument slice, retains Number-only optional offsets and original constructing/Int32 checks, and uses existing authentic instance/derived-constructor/cache behavior.",
+    "Own prototype methods/accessors precede the live AsyncWrap parent prototype lookup; Node property order, attributes, function lengths and empty accessor names match retained source.",
+    "Receiver conversion precedes authentic concrete FileHandle class admission; Proxy/prototype impostors do not enter callbacks; onread wrapper fields remain valid after native Handle retirement.",
+    "Public releaseFD intentionally discards native descriptor and returns undefined; read/write/shutdown dispatch delegates to original concrete owners, including FileHandle UV_ENOSYS writes.",
+    "Publication uses the existing exact BindingData target and ordinary Set, permits false Set, and reserves original fatal handling for empty Maybe or GetFunction failures."
+  ],
+  "interfaces": {
+    "configure": "native_node_async_wrap.configureFileHandle(engine, known_template_owner, FileHandleInputs)",
+    "publish": "native_node_async_wrap.publishFileHandle(engine, known_template_owner, actual_fs_binding_target)",
+    "native_inputs": "Controller, native immediate Queue, read/close/async traces, original backing-store allocator, optional native diagnostics",
+    "ownership": "Bundle owns configuration; Controller/Queue and primitive keys retained; borrowed Bundle back-pointer is neither a strong root nor a duplicate mark edge; real Handles retain original BindingData",
+    "gate": "No constructor or stored FileHandle instance template before complete native configuration",
+    "publication": "Exact actual current BindingData target only; original ordinary Set, false result accepted, empty Maybe remains native fatal"
+  },
+  "original_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.cc.v24.13.txt",
+      "bytes": 28310,
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-file-handle-transfer-intake-20261020\\sdk\\authority\\node_file.v24.13.cc",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-file-handle-transfer-intake-20261020\\sdk\\authority\\base_object-inl.v24.13.h",
+      "bytes": 10023,
+      "sha256": "AFC8EFE0A4562F49FD7B543CA82A855511345177466D0B8F0E4CF8188FA4CEC6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\authority\\src__util.cc.txt",
+      "bytes": 32300,
+      "sha256": "5CCCE50BA4570EE147C259F45C30E16A81E33EC896332BE25E8BE9B0FD20563B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-file-handle-publication-sourceonly-20261024\\authority\\deps__v8__src__api__api-natives.cc.txt",
+      "bytes": 27716,
+      "sha256": "103316A825D58AE72CE9F97AA741878F84EFA3C7D3167ADE3D5458C664E75B0A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-file-handle-publication-sourceonly-20261024\\authority\\deps__v8__src__objects__objects.cc.txt",
+      "bytes": 272859,
+      "sha256": "81E1D4EDFCE90BC1409DDF1B16966F2931E8DC947BF7429DFED6959708211BFC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-file-handle-publication-sourceonly-20261024\\authority\\source-acquisition-api-natives.json",
+      "bytes": 497,
+      "sha256": "A781567956C316C413539D34FF65C0BD3FDA8B6917785977DAC865C5814045C4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-file-handle-publication-sourceonly-20261024\\authority\\source-acquisition-accessor-pair.json",
+      "bytes": 431,
+      "sha256": "D5E896F5F2CDB4A37FA4DF07E0E10B1A6C5B98AA22AC98554E734548992B6D14"
+    }
+  ],
+  "limits": [
+    "Source review is not compiler, link, metadata, runtime, fatal-case or whole-application qualification.",
+    "This packet requires the exact accepted Dispatch/Write/StringWrite/Writev/External source chain and a fresh linked C library before runtime qualification.",
+    "Only compose the1838-byte build insertion with the later combined build; never overwrite newer Module/application additions with the standalone projection.",
+    "Actual production fs/bootstrap collaborator assembly and complete namespace publication remain separate work.",
+    "Accessor debug metadata and V8 heap/lazy-template materialization equivalence are not claimed."
+  ],
+  "main_inspected_at_review": "eeb59f314c834ed8a060da178251e380a50d0a62",
+  "source_candidate_base": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "main_mutated": false,
+  "native_execution": false,
+  "source_intake_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false
+}

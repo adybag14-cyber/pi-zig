@@ -1,0 +1,452 @@
+--- /dev/null
++++ b/src/extensions/native_node_commonjs_circular.zig
+@@ -0,0 +1,171 @@
++// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
++//! Actual loader.js circular exports and its shared warning prototype.
++//! The canonical Module supplies its private parent/symbol and real process.
++//! k_evaluated is the actual internalBinding('module_wrap') value, never inferred.
++const a = @import("native_node_argument_values.zig");
++const c = a.c;
++const Scope = a.Scope;
++const modules = @import("native_node_module_constructor.zig");
++const functions = @import("native_node_module_callable.zig");
++const registration = @import("native_node_string_error_registration.zig");
++const Frame = a.frames.Frame(enum { required_esm, message, parent });
++const Root = enum(usize) {
++    module, required_symbol, evaluated, proxy, object_prototype,
++    get_prototype, set_prototype, cycle_error,
++};
++fn root(roots: []const c.JSValue, comptime selected: Root) c.JSValue {
++    return roots[@intFromEnum(selected)];
++}
++fn adoptPrepared(s: *Scope, prepared: @import("native_node_argument_bootstrap.zig").Prepared) !void {
++    var values = [_]c.JSValue{
++        prepared.internal_inspect, prepared.assert_function,
++        prepared.arguments.invalid_arg_type, prepared.arguments.hidden_invalid_arg_type,
++        prepared.arguments.invalid_arg_value, prepared.arguments.internal_assertion,
++        prepared.arguments.validate_string,
++    };
++    for (&values, 0..) |*slot, position| {
++        const incoming = slot.*;
++        slot.* = c.pi_js_undefined();
++        _ = s.own(incoming) catch |err| {
++            for (values[position + 1 ..]) |*remaining| s.boundary.release(remaining);
++            return err;
++        };
++    }
++}
++fn cycleError(s: *Scope) !c.JSValue {
++    const prepared = try @import("native_node_argument_bootstrap.zig").prepare(s.engine);
++    try adoptPrepared(s, prepared);
++    const core = try s.own(a.duplicate(s.engine, try @import("native_node_stream.zig").owner(s.engine)));
++    const system = try s.own(a.duplicate(s.engine, try @import("native_node_system_errors.zig").registry(s.engine)));
++    const errors = @import("native_node_argument_errors.zig");
++    return registration.register(s, try s.get(core, "Error"), "ERR_REQUIRE_CYCLE_MODULE", "%s",
++        try s.get(system, "marker"), prepared.assert_function,
++        try s.own(try errors.reflectApply(s.engine)), prepared.internal_inspect,
++        try s.own(try errors.arrayUnshift(s.engine)));
++}
++/// One actual loader module creates this graph before user modules run. No
++/// public node:module, substitute Module, ESM status or require cache is made.
++pub fn create(engine: *a.v.em.Engine, module: c.JSValue, k_evaluated: c.JSValue) !c.JSValue {
++    try engine.checkNativeEntry();
++    return a.expression(engine, createBody, .{ module, k_evaluated });
++}
++fn createBody(s: *Scope, module: c.JSValue, k_evaluated: c.JSValue) !c.JSValue {
++    try s.pending();
++    if (!c.JS_IsNumber(k_evaluated)) return error.ActualModuleWrapEvaluatedStatusRequired;
++    // This validates the genuine, already-created constructor; mutable
++    // Module.Module and properties of a replacement constructor are not used.
++    const lexical = try s.own(try modules.loaderEnvironment(s.engine, module));
++    const process = try s.get(lexical, "process");
++    const required = try s.own(try modules.loaderKey(s.engine, module, .required_module));
++    // These are the exact primordial imports captured by the same canonical
++    // Module before guest execution, even if this leaf is linked later.
++    const object_prototype = try s.get(lexical, "circularObjectPrototype");
++    const string = try s.get(lexical, "circularString");
++    const has_own = try s.get(lexical, "circularHasOwnProperty");
++    const get_descriptor = try s.get(lexical, "circularGetOwnPropertyDescriptor");
++    const get_prototype = try s.get(lexical, "circularGetPrototypeOf");
++    const set_prototype = try s.get(lexical, "circularSetPrototypeOf");
++    const error_constructor = try cycleError(s);
++    // Source new Proxy({}, { __proto__: null, get, getOwnPropertyDescriptor }).
++    const target = try s.object();
++    const handler = try s.objectProto(c.pi_js_null());
++    try s.put(handler, "get", try s.own(try functions.create(s.engine, "get", 2, false,
++        getTrap, &.{ process, string })));
++    try s.put(handler, "getOwnPropertyDescriptor", try s.own(try functions.create(s.engine,
++        "getOwnPropertyDescriptor", 2, false, descriptorTrap, &.{ process, string, has_own, get_descriptor })));
++    const generation = try s.beforeAllocation();
++    const proxy = try s.checkedAllocation(c.JS_NewProxy(s.engine.context, target, handler), generation);
++    const get_exports = try s.own(try functions.create(s.engine, "getExportsForCircularRequire", 1, true,
++        getExports, &.{ module, required, k_evaluated, proxy, object_prototype,
++            get_prototype, set_prototype, error_constructor }));
++    const result = try s.objectProto(c.pi_js_null());
++    try s.put(result, "getExportsForCircularRequire", get_exports);
++    try s.put(result, "CircularRequirePrototypeWarningProxy", proxy);
++    return a.duplicate(s.engine, result);
++}
++fn warn(s: *Scope, process: c.JSValue, string: c.JSValue, property: c.JSValue) !void {
++    // Member callee is read before String(prop), exactly as the Source call.
++    const emit = try s.get(process, "emitWarning");
++    const name = try s.call(string, c.pi_js_undefined(), &.{property});
++    var message = try a.add(s, try s.text("Accessing non-existent property '"), name);
++    message = try a.add(s, message, try s.text("' of module exports inside circular dependency"));
++    _ = try s.call(emit, process, &.{message});
++}
++fn getTrap(engine: *a.v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, getTrapBody, .{ a.arg(args, 0), a.arg(args, 1), roots });
++}
++fn getTrapBody(s: *Scope, target: c.JSValue, property: c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    if (try s.hasKey(target, property) or s.equal(property, try s.text("__esModule")))
++        return a.duplicate(s.engine, try s.getKey(target, property));
++    try warn(s, roots[0], roots[1], property);
++    return c.pi_js_undefined();
++}
++fn descriptorTrap(engine: *a.v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, descriptorTrapBody, .{ a.arg(args, 0), a.arg(args, 1), roots });
++}
++fn descriptorTrapBody(s: *Scope, target: c.JSValue, property: c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    if (s.truthy(try s.call(roots[2], target, &.{property})) or s.equal(property, try s.text("__esModule")))
++        return a.duplicate(s.engine, try s.call(roots[3], c.pi_js_undefined(), &.{ target, property }));
++    try warn(s, roots[0], roots[1], property);
++    return c.pi_js_undefined();
++}
++fn requiredModule(s: *Scope, module: c.JSValue, key: c.JSValue) !c.JSValue {
++    return a.duplicate(s.engine, try s.getKey(module, key));
++}
++fn unevaluated(s: *Scope, required: c.JSValue, evaluated: c.JSValue) !c.JSValue {
++    return a.boolean(s, !s.equal(try s.call(try s.get(required, "getStatus"), required, &.{}), evaluated));
++}
++fn cycleMessage(s: *Scope, module: c.JSValue) !c.JSValue {
++    var message = try a.add(s, try s.text("Cannot require() ES Module "),
++        try s.own(try a.fieldText(s.engine, module, "id")));
++    message = try a.add(s, message, try s.text(" in a cycle."));
++    return a.duplicate(s.engine, message);
++}
++fn parentMessage(s: *Scope, message: c.JSValue, parent: c.JSValue) !c.JSValue {
++    var value = try a.add(s, message, try s.text(" (from "));
++    value = try a.add(s, value, try s.own(try a.fieldText(s.engine, parent, "filename")));
++    return a.duplicate(s.engine, try a.add(s, value, try s.text(")")));
++}
++fn nonProxy(s: *Scope, module: c.JSValue) !c.JSValue {
++    return a.boolean(s, !c.JS_IsProxy(try s.get(module, "exports")));
++}
++fn plainExports(s: *Scope, module: c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.boolean(s, s.equal(try s.call(root(roots, .get_prototype), c.pi_js_undefined(),
++        &.{try s.get(module, "exports")}), root(roots, .object_prototype)));
++}
++fn notEsModule(s: *Scope, module: c.JSValue) !c.JSValue {
++    return a.boolean(s, !s.truthy(try s.get(try s.get(module, "exports"), "__esModule")));
++}
++fn setWarningPrototype(s: *Scope, module: c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    _ = try s.call(root(roots, .set_prototype), c.pi_js_undefined(),
++        &.{ try s.get(module, "exports"), root(roots, .proxy) });
++    return c.pi_js_undefined();
++}
++fn getExports(engine: *a.v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    var s = Scope.init(engine);
++    const frame = Frame.create(&s.values) catch |err| return s.finish(err);
++    return a.finishFrame(&s, frame, getExportsBody(&s, frame, a.arg(args, 0), roots));
++}
++fn getExportsBody(s: *Scope, frame: *Frame, module: c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    try frame.take(.required_esm, a.expression(s.engine, requiredModule, .{ module, root(roots, .required_symbol) }));
++    if (s.truthy(frame.get(.required_esm)) and
++        try a.condition(s.engine, unevaluated, .{ frame.get(.required_esm), root(roots, .evaluated) }))
++    {
++        try frame.take(.message, a.expression(s.engine, cycleMessage, .{module}));
++        try frame.take(.parent, modules.lastParent(s.engine, root(roots, .module), module));
++        if (s.truthy(frame.get(.parent)))
++            try frame.take(.message, a.expression(s.engine, parentMessage, .{ frame.get(.message), frame.get(.parent) }));
++        const reason = try s.construct(root(roots, .cycle_error), &.{frame.get(.message)});
++        return a.raise(s, reason);
++    }
++    // Preserve every separate Source module.exports Get (six on the plain
++    // object path). A getter may replace it between these expressions.
++    if (try a.condition(s.engine, a.fieldTruthy, .{ module, @as([*:0]const u8, "exports") }) and
++        try a.condition(s.engine, nonProxy, .{module}) and
++        try a.condition(s.engine, plainExports, .{ module, roots }) and
++        try a.condition(s.engine, notEsModule, .{module}))
++    {
++        _ = try a.expression(s.engine, setWarningPrototype, .{ module, roots });
++    }
++    return a.field(s.engine, module, "exports");
++}
+--- a/src/extensions/native_node_commonjs_load.zig
++++ b/src/extensions/native_node_commonjs_load.zig
+@@ -1,6 +1,6 @@
+ // Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
+ //! Actual Node24 Module._load body over the canonical Module lexical owner.
+-//! Real resolver/hooks/builtin/circular helpers remain required dependencies.
++//! Real resolver/hooks/builtin bindings remain required; circular helpers are native.
+ const std = @import("std");
+ const v = @import("native_ai_provider_values.zig");
+ const c = v.c;
+@@ -13,8 +13,8 @@
+     load_builtin_with_hooks: c.JSValue,
+     normalize_requirable_id: c.JSValue,
+     can_require_without_scheme: c.JSValue,
+-    circular_exports: c.JSValue,
+-    circular_warning_proxy: c.JSValue,
++    /// Actual internalBinding('module_wrap').kEvaluated, supplied by its owner.
++    k_evaluated: c.JSValue,
+     should_report_required_modules: c.JSValue,
+ };
+ fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < args.len) args[index] else c.pi_js_undefined(); }
+@@ -23,15 +23,20 @@
+     const owner = try s.own(try constructor.commonJSState(engine, module));
+     if (c.JS_IsUndefined(owner)) return error.ActualCommonJSLexicalOwnerRequired;
+     const state = try lexical.known(engine, owner);
+-    if (!c.JS_IsObject(inputs.process) or !c.JS_IsProxy(inputs.circular_warning_proxy)) return error.ActualCommonJSLoadDependencyRequired;
++    const module_environment = try s.own(try constructor.loaderEnvironment(engine, module));
++    if (!s.equal(inputs.process, try s.get(module_environment, "process"))) return error.DifferentActualCommonJSProcess;
++    if (!c.JS_IsObject(inputs.process) or !c.JS_IsNumber(inputs.k_evaluated)) return error.ActualCommonJSLoadDependencyRequired;
+     if (!c.JS_IsUndefined(try s.get(state.roots, "relativeResolveCache"))) return error.CommonJSLoadAlreadyCreated;
+     inline for (std.meta.fields(Inputs)) |field| {
+         const value = @field(inputs, field.name);
+-        if (comptime !std.mem.eql(u8, field.name, "process") and !std.mem.eql(u8, field.name, "circular_warning_proxy")) {
++        if (comptime !std.mem.eql(u8, field.name, "process") and !std.mem.eql(u8, field.name, "k_evaluated")) {
+             if (!c.JS_IsFunction(engine.context, value)) return error.ActualCommonJSLoadDependencyRequired;
+         }
+         try s.put(state.roots, field.name, value);
+     }
++    const circular_graph = try s.own(try @import("native_node_commonjs_circular.zig").create(engine, module, inputs.k_evaluated));
++    try s.put(state.roots, "circular_exports", try s.get(circular_graph, "getExportsForCircularRequire"));
++    try s.put(state.roots, "circular_warning_proxy", try s.get(circular_graph, "CircularRequirePrototypeWarningProxy"));
+     try s.put(state.roots, "relativeResolveCache", try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()))));
+     const empty = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
+     if (c.JS_FreezeObject(engine.context, empty) < 0) return v.js.capture(engine);
+--- a/src/extensions/native_node_module_constructor.zig
++++ b/src/extensions/native_node_module_constructor.zig
+@@ -132,7 +132,14 @@
+     const safe_set = try s.own(try @import("native_node_fs_collections.zig").acquireSafeSet(s.engine));
+     try define(s, owner, "safeMap", safe_map);
+     try define(s, owner, "safeSet", safe_set);
+-    try define(s, owner, "objectFreeze", try method(s, try global(s, "Object"), "freeze"));
++    const object_constructor = try global(s, "Object");
++    try define(s, owner, "objectFreeze", try method(s, object_constructor, "freeze"));
++    const object_prototype = try s.get(object_constructor, "prototype");
++    try define(s, owner, "circularObjectPrototype", object_prototype);
++    try define(s, owner, "circularHasOwnProperty", try method(s, object_prototype, "hasOwnProperty"));
++    inline for (.{ .{ "circularGetOwnPropertyDescriptor", "getOwnPropertyDescriptor" },
++        .{ "circularGetPrototypeOf", "getPrototypeOf" }, .{ "circularSetPrototypeOf", "setPrototypeOf" } }) |entry|
++        try define(s, owner, entry[0], try method(s, object_constructor, entry[1]));
+     const map = try global(s, "Map");
+     try define(s, owner, "mapConstructor", map);
+     const map_prototype = try s.get(map, "prototype");
+@@ -153,7 +160,9 @@
+     inline for (.{ 115, 101, 108, 117, 100, 111, 109, 95, 101, 100, 111, 110 }, 0..) |value, position|
+         try a.index(s, nm_chars, @intCast(position), c.JS_NewInt32(s.engine.context, value));
+     try define(s, owner, "nmChars", nm_chars);
+-    const string_prototype = try s.get(try global(s, "String"), "prototype");
++    const string_constructor = try global(s, "String");
++    try define(s, owner, "circularString", string_constructor);
++    const string_prototype = try s.get(string_constructor, "prototype");
+     try define(s, owner, "charCodeAt", try method(s, string_prototype, "charCodeAt"));
+     try define(s, owner, "stringSlice", try method(s, string_prototype, "slice"));
+     inline for (.{ .{"stringCharAt", "charAt"}, .{"stringStartsWith", "startsWith"}, .{"stringSplit", "split"} }) |entry|
+--- /dev/null
++++ b/src/native_node_commonjs_circular_test.zig
+@@ -0,0 +1,177 @@
++//! Focused controls for real canonical Module circular-export declarations.
++//! Controlled module_wrap status values exercise this leaf's comparison; they
++//! do not claim a complete ESM binding, public loader, worker or SDK bootstrap.
++const std = @import("std");
++const a = @import("extensions/native_node_argument_values.zig");
++const c = a.c;
++const core = @import("extensions/native_node_commonjs_module_core.zig");
++const modules = @import("extensions/native_node_module_constructor.zig");
++const circular = @import("extensions/native_node_commonjs_circular.zig");
++
++const Fixture = struct {
++    engine: *a.v.em.Engine,
++    environment: std.process.Environ.Map,
++    module: ?c.JSValue = null,
++    graph: ?c.JSValue = null,
++
++    fn init(self: *Fixture) !void {
++        self.* = .{ .engine = undefined, .environment = .init(std.testing.allocator) };
++        errdefer self.environment.deinit();
++        self.engine = try a.v.em.Engine.init(std.testing.allocator, .{});
++        errdefer self.engine.deinit();
++        try @import("extensions/timers.zig").install(self.engine, std.testing.io);
++        try @import("extensions/native_process.zig").install(self.engine, std.testing.io,
++            &self.environment, &.{"actual-commonjs-circular-controls"});
++        try @import("extensions/node_path.zig").install(self.engine, std.testing.io);
++        try @import("extensions/node_url.zig").install(self.engine);
++        const process = (try self.engine.requireBuiltin("node:process")) orelse
++            return error.ActualCircularProcessRequired;
++        defer self.engine.freeValue(process);
++        try @import("extensions/node_fs.zig").installWithStreams(self.engine, std.testing.io, process);
++        self.module = try core.create(self.engine);
++    }
++    fn complete(self: *Fixture) !void {
++        // Deliberately a controlled phase datum, not a claimed V8/VM enum.
++        self.graph = try circular.create(self.engine, self.module.?, c.JS_NewInt32(self.engine.context, 71));
++        _ = try a.expression(self.engine, publish, .{ self.module.?, self.graph.? });
++    }
++    fn publish(s: *a.Scope, module: c.JSValue, graph: c.JSValue) !c.JSValue {
++        const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));
++        const proxy = try s.get(graph, "CircularRequirePrototypeWarningProxy");
++        const marker_owner = try @import("extensions/native_node_system_errors.zig").registry(s.engine);
++        try s.define(global, "ActualCircularModule", module, c.JS_PROP_C_W_E);
++        try s.define(global, "actualCircularExports", try s.get(graph, "getExportsForCircularRequire"), c.JS_PROP_C_W_E);
++        try s.define(global, "actualCircularProxy", proxy, c.JS_PROP_C_W_E);
++        try s.define(global, "actualCircularHandler", try s.checked(c.JS_GetProxyHandler(s.engine.context, proxy)), c.JS_PROP_C_W_E);
++        try s.define(global, "actualCircularRequired", try s.own(try modules.loaderKey(s.engine, module, .required_module)), c.JS_PROP_C_W_E);
++        try s.define(global, "actualCircularNodeMarker", try s.get(marker_owner, "marker"), c.JS_PROP_C_W_E);
++        try s.define(global, "actualCircularEvaluated", c.JS_NewInt32(s.engine.context, 71), c.JS_PROP_C_W_E);
++        return c.pi_js_undefined();
++    }
++    fn run(self: *Fixture, source: []const u8) !void {
++        const result = try self.engine.eval(source, "actual-commonjs-circular-control.js", c.JS_EVAL_TYPE_GLOBAL);
++        self.engine.freeValue(result);
++    }
++    fn deinit(self: *Fixture) void {
++        if (self.graph) |value| self.engine.freeValue(value);
++        if (self.module) |value| self.engine.freeValue(value);
++        self.engine.deinit();
++        self.environment.deinit();
++    }
++};
++
++test "native actual CommonJS circular owner creates real proxy and function without public Module publication" {
++    var fixture: Fixture = undefined;
++    try fixture.init();
++    defer fixture.deinit();
++    try fixture.complete();
++    try std.testing.expect(!fixture.engine.native_module_names.contains("node:module"));
++    const proxy = try a.field(fixture.engine, fixture.graph.?, "CircularRequirePrototypeWarningProxy");
++    defer fixture.engine.freeValue(proxy);
++    try std.testing.expect(c.JS_IsProxy(proxy));
++    try fixture.run(
++        \\if(actualCircularExports.name!=="getExportsForCircularRequire"||actualCircularExports.length!==1)throw Error("declaration metadata");
++        \\if(Object.getPrototypeOf(actualCircularHandler)!==null||actualCircularHandler.get.length!==2||actualCircularHandler.getOwnPropertyDescriptor.length!==2)throw Error("actual proxy handler");
++        \\const m=new ActualCircularModule("/plain.cjs");const value=m.exports;
++        \\if(actualCircularExports(m)!==value||Object.getPrototypeOf(value)!==actualCircularProxy)throw Error("shared native proxy");
++    );
++}
++
++test "native actual CommonJS circular warning proxy distinguishes inherited reads own descriptors and esModule" {
++    var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit(); try fixture.complete();
++    try fixture.run(
++        \\const warnings=[];process.emitWarning=function(message){if(this!==process)throw Error("warning receiver");warnings.push(message)};
++        \\if(actualCircularProxy.toString!==Object.prototype.toString||actualCircularProxy.__esModule!==undefined||Object.getOwnPropertyDescriptor(actualCircularProxy,"__esModule")!==undefined)throw Error("allowed accesses");
++        \\if(warnings.length!==0)throw Error("unexpected allowed warning");
++        \\actualCircularProxy.missing;Object.getOwnPropertyDescriptor(actualCircularProxy,"toString");actualCircularProxy[Symbol("observed")];
++        \\Object.defineProperty(actualCircularProxy,"owned",{value:19,configurable:true});if(actualCircularProxy.owned!==19||Object.getOwnPropertyDescriptor(actualCircularProxy,"owned").value!==19)throw Error("own read");
++        \\const expected=["Accessing non-existent property 'missing' of module exports inside circular dependency","Accessing non-existent property 'toString' of module exports inside circular dependency","Accessing non-existent property 'Symbol(observed)' of module exports inside circular dependency"];
++        \\if(JSON.stringify(warnings)!==JSON.stringify(expected))throw Error("warning sequence "+JSON.stringify(warnings));
++    );
++}
++
++test "native actual CommonJS circular exports preserves primitive proxy array class and transpiled module exclusions" {
++    var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit(); try fixture.complete();
++    try fixture.run(
++        \\const plain={};const marked={__esModule:true};const proxied=new Proxy({},{});class SourceClass{};const values=[null,undefined,0,false,"",42,"text",[],function(){},new SourceClass(),Object.create(null),marked,proxied];
++        \\for(const value of values){const m=new ActualCircularModule("/excluded.cjs");m.exports=value;const before=value!==null&&(typeof value==="object"||typeof value==="function")?Object.getPrototypeOf(value):null;
++        \\if(actualCircularExports(m)!==value)throw Error("export identity");
++        \\if(before!==null&&Object.getPrototypeOf(value)!==before)throw Error("excluded prototype changed")}
++        \\const m=new ActualCircularModule("/plain.cjs");m.exports=plain;actualCircularExports(m);if(Object.getPrototypeOf(plain)!==actualCircularProxy)throw Error("plain prototype unchanged");
++    );
++}
++
++test "native actual CommonJS circular exports rereads the Source getter at all six original occurrences" {
++    var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit(); try fixture.complete();
++    try fixture.run(
++        \\const m=new ActualCircularModule("/getter.cjs");const rows=[{n:1},{n:2},{n:3},{n:4},{n:5},{n:6}];let reads=0;
++        \\Object.defineProperty(m,"exports",{get(){return rows[reads++]},configurable:true});
++        \\if(actualCircularExports(m)!==rows[5]||reads!==6)throw Error("exports occurrence count "+reads);
++        \\if(Object.getPrototypeOf(rows[4])!==actualCircularProxy)throw Error("wrong fifth target");
++        \\for(const i of [0,1,2,3,5])if(Object.getPrototypeOf(rows[i])!==Object.prototype)throw Error("other target changed");
++    );
++}
++
++test "native actual CommonJS circular unevaluated ESM branch uses actual Node error and private last parent" {
++    var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit(); try fixture.complete();
++    try fixture.run(
++        \\const parent=new ActualCircularModule("/parent.cjs");parent.filename="/actual/parent.cjs";
++        \\const m=new ActualCircularModule("/cycle.mjs",parent);let status=0,exportsReads=0;
++        \\m[actualCircularRequired]={getStatus(){status++;return actualCircularEvaluated-1}};
++        \\Object.defineProperty(m,"exports",{get(){exportsReads++;throw Error("exports evaluated after cycle")},configurable:true});
++        \\let caught;try{actualCircularExports(m)}catch(error){caught=error}
++        \\if(!(caught instanceof Error)||caught.code!=="ERR_REQUIRE_CYCLE_MODULE"||caught[actualCircularNodeMarker]!==true||caught.constructor!==Error)throw Error("real Node error");
++        \\if(caught.message!=="Cannot require() ES Module /cycle.mjs in a cycle. (from /actual/parent.cjs)"||status!==1||exportsReads!==0)throw Error("cycle message/order");
++    );
++}
++
++test "native actual CommonJS circular ESM status completed and abrupt values keep original identity and order" {
++    var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit(); try fixture.complete();
++    try fixture.run(
++        \\const m=new ActualCircularModule("/status.mjs");let reads=0;m[actualCircularRequired]={getStatus(){reads++;if(this!==m[actualCircularRequired])throw Error("status receiver");return actualCircularEvaluated}};
++        \\const value=m.exports;if(actualCircularExports(m)!==value||reads!==1)throw Error("completed status");
++        \\const reason={original:true};Object.defineProperty(m[actualCircularRequired],"getStatus",{get(){throw reason},configurable:true});
++        \\let caught;try{actualCircularExports(m)}catch(error){caught=error}if(caught!==reason)throw Error("status throw identity");
++    );
++}
++
++test "native actual CommonJS circular warning resolves emitWarning before message String coercion and stops on throws" {
++    var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit(); try fixture.complete();
++    try fixture.run(
++        \\const events=[];let conversions=0;const property={toString(){conversions++;events.push("coerce"+conversions);if(conversions===2)Object.defineProperty(process,"emitWarning",{value(){throw Error("late callee")},writable:true,configurable:true});return "absent"}};
++        \\Object.defineProperty(process,"emitWarning",{get(){events.push("callee");return function(message){if(this!==process||!message.includes("'absent'"))throw Error("call");events.push("emit")}},configurable:true});
++        \\actualCircularHandler.get({},property);if(events.join(",")!=="coerce1,callee,coerce2,emit")throw Error("warning order "+events);
++        \\const reason={warning:true};process.emitWarning=function(){throw reason};let caught;try{actualCircularProxy.absent}catch(error){caught=error}if(caught!==reason)throw Error("warning throw identity");
++        \\const frozen=new ActualCircularModule("/frozen.cjs");frozen.exports=Object.freeze({});caught=undefined;try{actualCircularExports(frozen)}catch(error){caught=error}if(!(caught instanceof TypeError))throw Error("prototype failure");
++    );
++}
++
++test "native actual CommonJS circular owner uses Module-captured primordials even when linked after guest mutation" {
++    var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit();
++    try fixture.run(
++        \\globalThis.circularOriginal={String,Object,getPrototypeOf:Object.getPrototypeOf,setPrototypeOf:Object.setPrototypeOf,getOwnPropertyDescriptor:Object.getOwnPropertyDescriptor,hasOwnProperty:Object.prototype.hasOwnProperty};
++        \\globalThis.String=function(){throw Error("patched String")};Object.getPrototypeOf=Object.setPrototypeOf=Object.getOwnPropertyDescriptor=Object.prototype.hasOwnProperty=function(){throw Error("patched Object primitive")};
++    );
++    try fixture.complete();
++    try fixture.run(
++        \\try{const warnings=[];process.emitWarning=message=>warnings.push(message);const m=new ActualCircularModule("/captured.cjs");
++        \\if(actualCircularExports(m)!==m.exports||Reflect.getPrototypeOf(m.exports)!==actualCircularProxy)throw Error("captured prototype");
++        \\actualCircularProxy[Symbol("retained")];if(warnings.length!==1||!warnings[0].includes("Symbol(retained)"))throw Error("captured String");
++        \\if(actualCircularHandler.getOwnPropertyDescriptor({x:1},"x").value!==1)throw Error("captured descriptor");
++        \\}finally{globalThis.String=circularOriginal.String;Object.getPrototypeOf=circularOriginal.getPrototypeOf;Object.setPrototypeOf=circularOriginal.setPrototypeOf;Object.getOwnPropertyDescriptor=circularOriginal.getOwnPropertyDescriptor;Object.prototype.hasOwnProperty=circularOriginal.hasOwnProperty}
++    );
++}
++
++test "native actual CommonJS circular helper rejects missing actual status and foreign Module without publication" {
++    var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit();
++    try std.testing.expectError(error.ActualModuleWrapEvaluatedStatusRequired,
++        circular.create(fixture.engine, fixture.module.?, c.pi_js_undefined()));
++    const foreign = try fixture.engine.checked(c.JS_NewObject(fixture.engine.context));
++    defer fixture.engine.freeValue(foreign);
++    const attempt = circular.create(fixture.engine, foreign, c.JS_NewInt32(fixture.engine.context, 71));
++    if (attempt) |value| {
++        fixture.engine.freeValue(value);
++        return error.ForeignModuleAccepted;
++    } else |_| {}
++    try std.testing.expect(!fixture.engine.native_module_names.contains("node:module"));
++}
+--- a/build.zig
++++ b/build.zig
+@@ -5179,6 +5179,22 @@
+     }
+ 
+     if (native_node_network != null) {
++        const commonjs_circular = b.addTest(.{
++            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_commonjs_circular_test.zig"), .target = target, .optimize = optimize }),
++            .filters = &.{"native actual CommonJS circular"}, .use_llvm = use_llvm,
++        });
++        linkQuickJs(b, commonjs_circular.root_module, quickjs, sqlite_lib_dir);
++        linkTypeScriptParser(b, commonjs_circular.root_module, typescript_parser);
++        linkSqlite(commonjs_circular.root_module, sqlite_lib_dir, sqlite_library);
++        commonjs_circular.root_module.addImport("catalog_tool", catalog_tool);
++        if (target.result.os.tag == .windows) {
++            commonjs_circular.root_module.linkSystemLibrary("advapi32", .{});
++            commonjs_circular.root_module.linkSystemLibrary("userenv", .{});
++        }
++        b.step("build-native-node-commonjs-circular", "Install nine actual CommonJS circular controls without execution").dependOn(&b.addInstallArtifact(commonjs_circular, .{ .dest_sub_path = b.fmt("native-node-commonjs-circular{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
++    }
++
++    if (native_node_network != null) {
+         const native_corruption_probe = b.addExecutable(.{
+             .name = "test",
+             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_corruption_probe.zig"), .target = target, .optimize = optimize }),

@@ -1,0 +1,16 @@
+{
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-nearest-parent-sourceonly-20261023\\projected\\build.zig",
+    "bytes": 519011,
+    "sha256": "0E5D183AE116AC68016A0D6C66734BB690ACCBDC4650959B293C027382C07C06"
+  },
+  "output": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-commonjs-read-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 520533,
+    "sha256": "E75651064E9C18F4AAB624CF23A49AF9C442A8022B1B28E7F5337519194D688F"
+  },
+  "anchor": "        const native_environment_map_tests = b.addTest(.{\n",
+  "insertion": "        // Private native CommonJS package read with actual Permission and Errors.\n        // Install only; actual metadata and native execution remain Root-owned.\n        const native_module_commonjs_read = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_module_commonjs_read_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native module CommonJS read\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_module_commonjs_read.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, native_module_commonjs_read.root_module, typescript_parser);\n        linkSqlite(native_module_commonjs_read.root_module, sqlite_lib_dir, sqlite_library);\n        native_module_commonjs_read.root_module.addImport(\"catalog_tool\", catalog_tool);\n        native_module_commonjs_read.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        if (target.result.os.tag == .windows) {\n            native_module_commonjs_read.root_module.linkSystemLibrary(\"advapi32\", .{});\n            native_module_commonjs_read.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-module-commonjs-read\", \"Install eight declared private native CommonJS package-read controls without execution\").dependOn(&b.addInstallArtifact(native_module_commonjs_read, .{ .dest_sub_path = b.fmt(\"native-node-module-commonjs-read{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n",
+  "exact_inverse": true,
+  "install_only": true
+}

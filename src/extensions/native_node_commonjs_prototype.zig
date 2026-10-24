@@ -20,7 +20,6 @@ pub const Inputs = struct {
     wrap_safe: c.JSValue,
     load_esm_from_cjs: c.JSValue,
     make_require_function: c.JSValue,
-    set_started_user_cjs: c.JSValue,
     call_and_pause_on_start: c.JSValue,
     inspect_brk: bool,
 };
@@ -44,6 +43,10 @@ pub fn create(engine: *v.em.Engine, inputs: Inputs) !Graph {
             try s.put(roots, field.name, value);
         }
     }
+    // Original internal/modules/helpers owns this lexical fact. It is shared
+    // with its getters/ESM sibling and is not supplied by the embedding caller.
+    const execution_state = try s.own(try @import("native_node_module_execution_state.zig").acquire(engine));
+    try s.put(roots, "set_started_user_cjs", try s.get(execution_state, "setHasStartedUserCJSExecution"));
     inline for (.{ .{ "kFormat", constructor.LoaderKey.format }, .{ "kIsMainSymbol", constructor.LoaderKey.is_main }, .{ "kIsExecuting", constructor.LoaderKey.is_executing }, .{ "kURL", constructor.LoaderKey.url }, .{ "kIsCachedByESMLoader", constructor.LoaderKey.cached_by_esm } }) |entry| try s.put(roots, entry[0], try s.own(try constructor.loaderKey(engine, inputs.module_constructor, entry[1])));
     // Private Module export snapshot is not a public Symbol property. A VM
     // WeakMap provides the matching non-enumerable, GC-aware private relation.

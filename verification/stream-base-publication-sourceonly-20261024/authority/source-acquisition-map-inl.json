@@ -1,0 +1,8 @@
+{
+  "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\authority\\deps__v8__src__objects__map-inl.h.txt",
+  "source": "deps/v8/src/objects/map-inl.h",
+  "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/objects/map-inl.h",
+  "bytes": 39724,
+  "sha256": "6BDD3F667EE982CAD4E5566B1E6BE56B07D760C51FA6278DE5508A9AE13D4A5E",
+  "executed": false
+}

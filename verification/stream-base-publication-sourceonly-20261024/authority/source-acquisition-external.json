@@ -1,0 +1,18 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\authority\\deps__v8__src__heap__factory.cc.txt",
+    "source": "deps/v8/src/heap/factory.cc",
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/heap/factory.cc",
+    "bytes": 203216,
+    "sha256": "895D8A6E8BEDE5FF80EA97DE37F765EE54F13D20E449968841C288596B851FC6",
+    "executed": false
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\authority\\deps__v8__src__init__bootstrapper.cc.txt",
+    "source": "deps/v8/src/init/bootstrapper.cc",
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/init/bootstrapper.cc",
+    "bytes": 336314,
+    "sha256": "0991594530BB8FAF3836C747E547F43BB091D0AFA74E16B4B1814F68458D172A",
+    "executed": false
+  }
+]

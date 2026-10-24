@@ -38,6 +38,7 @@ pub const CustomBufferJSListener = struct {
                 .on_destroy = onDestroy,
                 .read_methods = &read_methods,
                 .after_shutdown = shutdown.reportAfterShutdown,
+                .after_write = shutdown.reportAfterWrite,
             },
             .buffer = buffer,
         };

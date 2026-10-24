@@ -11,7 +11,7 @@ pub const Engine = a.v.em.Engine;
 pub const LocalScope = a.Scope;
 pub const Environment = callbacks.Environment;
 
-pub const Kind = enum { async_wrap, fsreqpromise, filehandleclosereq, filehandle, fsreqcallback, shutdownwrap };
+pub const Kind = enum { async_wrap, fsreqpromise, filehandleclosereq, filehandle, fsreqcallback, shutdownwrap, writewrap };
 pub const Provider = struct {
     pub const none: u32 = 0;
     pub const filehandle: u32 = 4;
@@ -19,6 +19,7 @@ pub const Provider = struct {
     pub const fsreqcallback: u32 = 8;
     pub const fsreqpromise: u32 = 9;
     pub const shutdownwrap: u32 = 35;
+    pub const writewrap: u32 = 52;
 };
 /// Native CHECK sites belong to the shared Environment's actual terminal owner.
 pub const Check = callbacks.Check;
@@ -78,7 +79,7 @@ const RequestFields = struct {
 pub const Registry = struct {
     environment: *Environment,
     references: usize = 1,
-    class_ids: [6]c.JSClassID = .{ 0, 0, 0, 0, 0, 0 },
+    class_ids: [7]c.JSClassID = .{ 0, 0, 0, 0, 0, 0, 0 },
     head: ?*BaseEntry = null,
     tail: ?*BaseEntry = null,
     fs_binding_data: ?WeakBindingSlot = null,
@@ -107,16 +108,16 @@ pub const Registry = struct {
             environment.allocator().destroy(self);
             environment.release();
         }
-        inline for (.{ "AsyncWrap", "FSReqPromise", "FileHandleCloseReq", "FileHandle", "FSReqCallback", "ShutdownWrap" }, 0..) |name, index| {
+        inline for (.{ "AsyncWrap", "FSReqPromise", "FileHandleCloseReq", "FileHandle", "FSReqCallback", "ShutdownWrap", "WriteWrap" }, 0..) |name, index| {
             const generation = try s.beforeAllocation();
             if (c.JS_NewClassID(s.engine.runtime, &self.class_ids[index]) == 0)
                 return error.OutOfMemory;
             const definition: c.JSClassDef = .{
                 .class_name = name,
                 .finalizer = if (index == @intFromEnum(Kind.filehandle)) streamWrapperFinalizer
-                    else if (index == @intFromEnum(Kind.shutdownwrap)) requestWrapperFinalizer else wrapperFinalizer,
+                    else if (index == @intFromEnum(Kind.shutdownwrap) or index == @intFromEnum(Kind.writewrap)) requestWrapperFinalizer else wrapperFinalizer,
                 .gc_mark = if (index == @intFromEnum(Kind.filehandle)) streamWrapperMark
-                    else if (index == @intFromEnum(Kind.shutdownwrap)) requestWrapperMark else wrapperMark,
+                    else if (index == @intFromEnum(Kind.shutdownwrap) or index == @intFromEnum(Kind.writewrap)) requestWrapperMark else wrapperMark,
             };
             const status = c.JS_NewClass(s.engine.runtime, self.class_ids[index], &definition);
             try s.boundary.checkPendingSince(generation);
@@ -160,6 +161,10 @@ pub const Registry = struct {
         for (self.class_ids) |known| if (id == known) return true;
         return false;
     }
+    fn isRequestClass(self: *const Registry, value: c.JSValue) bool {
+        const id = c.JS_GetClassID(value);
+        return id == self.classId(.shutdownwrap) or id == self.classId(.writewrap);
+    }
     /// Brand survives clearing the native pointer, as with a retained V8
     /// template instance after its BaseObject has been deleted.
     pub fn unwrap(self: *const Registry, value: c.JSValue) ?*State {
@@ -168,7 +173,7 @@ pub const Registry = struct {
             const fields = self.streamFields(value) orelse return null;
             return fields.state;
         }
-        if (c.JS_GetClassID(value) == self.classId(.shutdownwrap)) {
+        if (self.isRequestClass(value)) {
             const fields = self.requestFields(value) orelse return null;
             return fields.state;
         }
@@ -183,8 +188,8 @@ pub const Registry = struct {
         return if (fields.registry == self) fields else null;
     }
     fn requestFields(self: *const Registry, wrapper: c.JSValue) ?*RequestFields {
-        if (c.JS_GetClassID(wrapper) != self.classId(.shutdownwrap)) return null;
-        const raw = c.JS_GetOpaque(wrapper, self.classId(.shutdownwrap)) orelse return null;
+        if (!self.isRequestClass(wrapper)) return null;
+        const raw = c.JS_GetOpaque(wrapper, c.JS_GetClassID(wrapper)) orelse return null;
         const fields: *RequestFields = @ptrCast(@alignCast(raw));
         return if (fields.registry == self) fields else null;
     }
@@ -217,7 +222,7 @@ pub const Registry = struct {
             const fields = self.streamFields(wrapper) orelse return false;
             return fields.state == null;
         }
-        if (c.JS_GetClassID(wrapper) == self.classId(.shutdownwrap)) {
+        if (self.isRequestClass(wrapper)) {
             const fields = self.requestFields(wrapper) orelse return false;
             return fields.state == null;
         }
@@ -228,7 +233,7 @@ pub const Registry = struct {
             const fields = self.streamFields(wrapper).?;
             std.debug.assert(fields.state == null);
             fields.state = state;
-        } else if (c.JS_GetClassID(wrapper) == self.classId(.shutdownwrap)) {
+        } else if (self.isRequestClass(wrapper)) {
             const fields = self.requestFields(wrapper).?;
             std.debug.assert(fields.state == null);
             fields.state = state;
@@ -241,7 +246,7 @@ pub const Registry = struct {
             const fields = self.streamFields(wrapper).?;
             std.debug.assert(fields.state == state);
             fields.state = null;
-        } else if (c.JS_GetClassID(wrapper) == self.classId(.shutdownwrap)) {
+        } else if (self.isRequestClass(wrapper)) {
             const fields = self.requestFields(wrapper).?;
             std.debug.assert(fields.state == state);
             fields.state = null;
@@ -314,7 +319,7 @@ pub const Registry = struct {
             self.release();
         };
         var request_fields: ?*RequestFields = null;
-        if (kind == .shutdownwrap) {
+        if (kind == .shutdownwrap or kind == .writewrap) {
             const created = try self.environment.allocator().create(RequestFields);
             created.* = .{ .registry = self.retain() };
             request_fields = created;

@@ -25,6 +25,7 @@ const io = @import("native_node_fs_request_io.zig");
 const check = @import("native_node_check_failure.zig");
 const c = a.c;
 const Scope = a.Scope;
+const uv = @import("native_node_managed_buffers.zig").uv;
 
 pub const Inputs = struct {
     controller: *io.Controller,
@@ -93,6 +94,13 @@ pub const Handle = struct {
         const self: *Handle = @fieldParentPtr("stream", base);
         return ShutdownReq.dispatch(s, self, request orelse
             return error.ActualFileHandleShutdownRequestRequired);
+    }
+    /// Exact node_file.cc:287-292. This is the original unsupported write
+    /// virtual, not a missing implementation converted to success.
+    fn doWrite(_: *stream_base.Base, _: *Scope, _: *stream_requests.Write,
+        _: []uv.uv_buf_t, _: ?*uv.uv_stream_t) anyerror!c_int
+    {
+        return uv.UV_ENOSYS;
     }
     pub fn shutdown(self: *Handle, s: *Scope, wrapper: ?c.JSValue) anyerror!c_int {
         return self.stream.shutdownRequest(s, wrapper);
@@ -199,7 +207,8 @@ pub const Handle = struct {
             .{ .get_async_wrap = streamWrap,
                 .is_alive = streamIsAlive, .get_fd = streamGetFD,
                 .read_start = streamReadStart, .read_stop = streamReadStop,
-                .create_shutdown = createShutdown, .do_shutdown = doShutdown },
+                .create_shutdown = createShutdown, .do_shutdown = doShutdown,
+                .do_write = doWrite },
             self.stream_operations);
         self.stream_initialized = true;
         self.read_state.fd = descriptor;

@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "historical_commit": "e9fe2de0c548fd00cc920dfd0670b0498b54845d",
+  "historical_relative_path": "src/extensions/native_node_commonjs_compile_info.zig",
+  "source_hunks": [
+    {
+      "before": "if (performBody(engine, source, filename, script)) |completion| {",
+      "after": "if (performBody(&boundary, engine, source, filename, script)) |completion| {"
+    },
+    {
+      "before": "fn performBody(engine: *v.em.Engine, source: c.JSValue, filename: c.JSValue, script: bool) !Completion {\n    const generation = engine.native_allocation_generation;",
+      "after": "fn performBody(boundary: *Boundary, engine: *v.em.Engine, source: c.JSValue, filename: c.JSValue, script: bool) !Completion {\n    // Enter the caller-stable native frame before the real compiler. A retained\n    // producer is current even after its raw VM exception was taken elsewhere.\n    try boundary.checkCurrent();\n    const generation = engine.native_allocation_generation;"
+    },
+    {
+      "before": "    if (c.JS_HasException(engine.context)) {\n        host_error = error.JavaScriptException;\n    } else {\n        values[0] = c.JS_EvalFunction(engine.context, c.JS_DupValue(engine.context, bytecode));\n        if (c.JS_IsException(values[0]) and !c.JS_HasException(engine.context)) host_error = error.MissingActualCompileInfoRunReason;\n    }",
+      "after": "    // Start/check before guest script execution, retaining any genuine native\n    // producer until the same boundary finishes all returned-value retirement.\n    if (boundary.checkCurrent()) |_| {\n        values[0] = c.JS_EvalFunction(engine.context, c.JS_DupValue(engine.context, bytecode));\n        if (c.JS_IsException(values[0]) and !c.JS_HasException(engine.context)) host_error = error.MissingActualCompileInfoRunReason;\n    } else |err| host_error = err;"
+    }
+  ],
+  "complete_forward_and_inverse": true,
+  "source_only": true,
+  "Main_mutated": false,
+  "native_execution": false
+}

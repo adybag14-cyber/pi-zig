@@ -1,0 +1,8 @@
+{
+  "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\authority\\deps__v8__src__heap__setup-heap-internal.cc.txt",
+  "source": "deps/v8/src/heap/setup-heap-internal.cc",
+  "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/heap/setup-heap-internal.cc",
+  "bytes": 71307,
+  "sha256": "6ED504673911E479ABE4F9C09844FB3CE9767AA14C8F64AC41127BB9E44DC20E",
+  "executed": false
+}

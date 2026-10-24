@@ -1,0 +1,268 @@
+diff --git a/src/extensions/native_node_module_execution_state.zig b/src/extensions/native_node_module_execution_state.zig
+--- /dev/null
++++ b/src/extensions/native_node_module_execution_state.zig
+@@ -0,0 +1,84 @@
++// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
++//! Actual internal/modules/helpers execution-start lexical cells and four
++//! ordinary method bodies. One private helper owner is shared per Engine.
++//! This records actual execution; it supplies no loader/permission/ESM policy.
++//! The carrier is not the complete helpers module and is never published as one.
++const a = @import("native_node_argument_values.zig");
++const functions = @import("native_node_module_callable.zig");
++const publication = @import("native_node_fs_private_publication.zig");
++const c = a.c;
++const Scope = a.Scope;
++const key = "pi-native:private/module-execution-state";
++const State = struct {
++    engine: *a.v.em.Engine,
++    cjs_started: bool = false,
++    esm_started: bool = false,
++};
++const Operation = enum(c_int) { has_cjs, set_cjs, has_esm, set_esm };
++
++fn finalize(_: ?*c.JSRuntime, holder: c.JSValue) callconv(.c) void {
++    const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(holder, c.JS_GetClassID(holder)) orelse return));
++    const engine = state.engine;
++    engine.gpa.destroy(state);
++    c.pi_js_native_memory_release(engine.native_memory_owner, @sizeOf(State));
++}
++fn stateOwner(s: *Scope) !c.JSValue {
++    const engine = s.engine;
++    try s.pending();
++    if (c.pi_js_native_memory_reserve(engine.native_memory_owner, @sizeOf(State)) == 0) return error.OutOfMemory;
++    var attached = false;
++    errdefer if (!attached) c.pi_js_native_memory_release(engine.native_memory_owner, @sizeOf(State));
++    const state = try engine.gpa.create(State);
++    errdefer if (!attached) engine.gpa.destroy(state);
++    var id: c.JSClassID = 0;
++    if (c.JS_NewClassID(engine.runtime, &id) == 0) return error.OutOfMemory;
++    const definition: c.JSClassDef = .{ .class_name = "Native Module Execution State", .finalizer = finalize };
++    if (c.JS_NewClass(engine.runtime, id, &definition) < 0) return error.OutOfMemory;
++    const generation = try s.beforeAllocation();
++    const holder = try s.checkedAllocation(c.JS_NewObjectProtoClass(engine.context, c.pi_js_null(), id), generation);
++    state.* = .{ .engine = engine };
++    _ = c.JS_SetOpaque(holder, state);
++    attached = true;
++    return holder; // Borrowed from this expression's Scope.
++}
++fn callback(engine: *a.v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    try engine.checkNativeEntry();
++    // Only these four known method captures can reach the private native cell.
++    // Receiver and arguments are deliberately unused, as in the original bodies.
++    const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(roots[0], c.JS_GetClassID(roots[0])) orelse return error.ActualModuleExecutionStateRequired));
++    if (state.engine != engine) return error.ActualModuleExecutionStateEngineMismatch;
++    var raw: i32 = 0;
++    if (c.JS_ToInt32(engine.context, &raw, roots[1]) != 0) return error.ActualModuleExecutionOperationRequired;
++    return switch (@as(Operation, @enumFromInt(raw))) {
++        .has_cjs => c.JS_NewBool(engine.context, state.cjs_started),
++        .has_esm => c.JS_NewBool(engine.context, state.esm_started),
++        .set_cjs => blk: { state.cjs_started = true; break :blk c.pi_js_undefined(); },
++        .set_esm => blk: { state.esm_started = true; break :blk c.pi_js_undefined(); },
++    };
++}
++pub fn acquire(engine: *a.v.em.Engine) !c.JSValue {
++    try engine.checkNativeEntry();
++    if (engine.native_module_values.get(key)) |known| return a.duplicate(engine, known);
++    const candidate = try a.expression(engine, createBody, .{});
++    if (engine.native_module_values.get(key)) |known| {
++        var completion = a.owned.Completion.initValue(engine, a.duplicate(engine, known));
++        completion.release(candidate);
++        return completion.finishValue();
++    }
++    return publication.publish(engine, key, candidate);
++}
++fn createBody(s: *Scope) !c.JSValue {
++    const owner = try stateOwner(s);
++    const exports = try s.object();
++    inline for (.{
++        .{ "hasStartedUserCJSExecution", Operation.has_cjs },
++        .{ "setHasStartedUserCJSExecution", Operation.set_cjs },
++        .{ "hasStartedUserESMExecution", Operation.has_esm },
++        .{ "setHasStartedUserESMExecution", Operation.set_esm },
++    }) |entry| {
++        const function = try s.own(try functions.create(s.engine, entry[0], 0, false, callback,
++            &.{ owner, c.JS_NewInt32(s.engine.context, @intFromEnum(entry[1])) }));
++        try s.put(exports, entry[0], function);
++    }
++    return a.duplicate(s.engine, exports);
++}
+diff --git a/src/extensions/native_node_commonjs_prototype.zig b/src/extensions/native_node_commonjs_prototype.zig
+--- a/src/extensions/native_node_commonjs_prototype.zig
++++ b/src/extensions/native_node_commonjs_prototype.zig
+@@ -20,7 +20,6 @@
+     wrap_safe: c.JSValue,
+     load_esm_from_cjs: c.JSValue,
+     make_require_function: c.JSValue,
+-    set_started_user_cjs: c.JSValue,
+     call_and_pause_on_start: c.JSValue,
+     inspect_brk: bool,
+ };
+@@ -44,6 +43,10 @@
+             try s.put(roots, field.name, value);
+         }
+     }
++    // Original internal/modules/helpers owns this lexical fact. It is shared
++    // with its getters/ESM sibling and is not supplied by the embedding caller.
++    const execution_state = try s.own(try @import("native_node_module_execution_state.zig").acquire(engine));
++    try s.put(roots, "set_started_user_cjs", try s.get(execution_state, "setHasStartedUserCJSExecution"));
+     inline for (.{ .{ "kFormat", constructor.LoaderKey.format }, .{ "kIsMainSymbol", constructor.LoaderKey.is_main }, .{ "kIsExecuting", constructor.LoaderKey.is_executing }, .{ "kURL", constructor.LoaderKey.url }, .{ "kIsCachedByESMLoader", constructor.LoaderKey.cached_by_esm } }) |entry| try s.put(roots, entry[0], try s.own(try constructor.loaderKey(engine, inputs.module_constructor, entry[1])));
+     // Private Module export snapshot is not a public Symbol property. A VM
+     // WeakMap provides the matching non-enumerable, GC-aware private relation.
+diff --git a/src/native_node_module_execution_state_test.zig b/src/native_node_module_execution_state_test.zig
+--- /dev/null
++++ b/src/native_node_module_execution_state_test.zig
+@@ -0,0 +1,131 @@
++//! Real per-Engine internal/modules/helpers execution-state controls.
++//! They do not claim a completed canonical loader or execute a fake prototype.
++const std = @import("std");
++const em = @import("extensions/engine.zig");
++const c = em.c;
++const execution = @import("extensions/native_node_module_execution_state.zig");
++const js = @import("extensions/native_js_values.zig");
++const key = "pi-native:private/module-execution-state";
++
++fn expose(engine: *em.Engine, name: [*:0]const u8, value: c.JSValue) !void {
++    const global = c.JS_GetGlobalObject(engine.context); defer engine.freeValue(global);
++    if (c.JS_DefinePropertyValueStr(engine.context, global, name, c.JS_DupValue(engine.context, value), c.JS_PROP_C_W_E) < 0) return js.capture(engine);
++}
++fn check(engine: *em.Engine, source: []const u8) !void {
++    const result = try engine.eval(source, "module-execution-state-controls.js", c.JS_EVAL_TYPE_GLOBAL);
++    defer engine.freeValue(result);
++    try std.testing.expect(c.JS_IsStrictEqual(engine.context, result, c.JS_NewBool(engine.context, true)));
++}
++fn method(engine: *em.Engine, namespace: c.JSValue, name: [*:0]const u8) !c.JSValue {
++    return engine.checked(c.JS_GetPropertyStr(engine.context, namespace, name));
++}
++fn call(engine: *em.Engine, function: c.JSValue) !c.JSValue {
++    return engine.checked(c.JS_Call(engine.context, function, c.pi_js_undefined(), 0, null));
++}
++
++test "native module execution state original methods preserve metadata and independent monotone facts" {
++    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
++    const namespace = try execution.acquire(engine); defer engine.freeValue(namespace);
++    try expose(engine, "executionState", namespace);
++    try check(engine,
++        \\(()=>{const names=["hasStartedUserCJSExecution","setHasStartedUserCJSExecution","hasStartedUserESMExecution","setHasStartedUserESMExecution"];
++        \\if(JSON.stringify(Object.keys(executionState))!==JSON.stringify(names))throw Error("names");
++        \\for(const name of names){const f=executionState[name];if(f.name!==name||f.length!==0||Object.hasOwn(f,"prototype"))throw Error("method metadata")}
++        \\if(executionState.hasStartedUserCJSExecution()!==false||executionState.hasStartedUserESMExecution()!==false)throw Error("initial facts");
++        \\if(executionState.setHasStartedUserCJSExecution()!==undefined||executionState.hasStartedUserCJSExecution()!==true||executionState.hasStartedUserESMExecution()!==false)throw Error("CJS fact");
++        \\if(executionState.setHasStartedUserCJSExecution()!==undefined||executionState.setHasStartedUserESMExecution()!==undefined)throw Error("setter results");
++        \\return executionState.hasStartedUserCJSExecution()===true&&executionState.hasStartedUserESMExecution()===true})()
++    );
++    try std.testing.expect(!engine.native_module_names.contains(key));
++}
++test "native module execution state ignores receiver and arguments and rejects construction without setting" {
++    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
++    const namespace = try execution.acquire(engine); defer engine.freeValue(namespace);
++    try expose(engine, "executionState", namespace);
++    try check(engine,
++        \\(()=>{let touches=0;const hostile=new Proxy({},{get(){touches++;throw Error("unused receiver")}});
++        \\const argument={get then(){touches++;throw Error("unused argument")},[Symbol.toPrimitive](){touches++;throw Error("unused coercion")}};
++        \\for(const name of Object.keys(executionState)){let rejected=false;try{Reflect.construct(executionState[name],[])}catch(error){rejected=error instanceof TypeError}if(!rejected)throw Error("constructible method")}
++        \\if(executionState.hasStartedUserCJSExecution()||executionState.hasStartedUserESMExecution())throw Error("constructor changed state");
++        \\if(Reflect.apply(executionState.hasStartedUserCJSExecution,hostile,[argument])!==false)throw Error("detached getter");
++        \\if(Reflect.apply(executionState.setHasStartedUserCJSExecution,hostile,[argument])!==undefined)throw Error("detached setter");
++        \\return touches===0&&executionState.hasStartedUserCJSExecution()===true&&executionState.hasStartedUserESMExecution()===false})()
++    );
++}
++test "native module execution state cached acquisition retains exact methods and never resets a started fact" {
++    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
++    const first = try execution.acquire(engine); defer engine.freeValue(first);
++    const setter = try method(engine, first, "setHasStartedUserESMExecution"); defer engine.freeValue(setter);
++    const result = try call(engine, setter); defer engine.freeValue(result);
++    const second = try execution.acquire(engine); defer engine.freeValue(second);
++    try std.testing.expect(c.JS_IsStrictEqual(engine.context, first, second));
++    const next = try method(engine, second, "setHasStartedUserESMExecution"); defer engine.freeValue(next);
++    try std.testing.expect(c.JS_IsStrictEqual(engine.context, setter, next));
++    try expose(engine, "executionState", second);
++    try check(engine, "executionState.hasStartedUserESMExecution()===true&&executionState.hasStartedUserCJSExecution()===false");
++}
++test "native module execution state belongs to each actual Engine rather than process globals" {
++    const first = try em.Engine.init(std.testing.allocator, .{}); defer first.deinit();
++    const first_namespace = try execution.acquire(first); defer first.freeValue(first_namespace);
++    try expose(first, "executionState", first_namespace);
++    try check(first, "executionState.setHasStartedUserCJSExecution()===undefined&&executionState.hasStartedUserCJSExecution()===true");
++    const second = try em.Engine.init(std.testing.allocator, .{}); defer second.deinit();
++    const second_namespace = try execution.acquire(second); defer second.freeValue(second_namespace);
++    try expose(second, "executionState", second_namespace);
++    try check(second, "executionState.hasStartedUserCJSExecution()===false&&executionState.hasStartedUserESMExecution()===false");
++    try check(second, "executionState.setHasStartedUserESMExecution()===undefined&&executionState.hasStartedUserESMExecution()===true");
++    try check(first, "executionState.hasStartedUserCJSExecution()===true&&executionState.hasStartedUserESMExecution()===false");
++}
++test "native module execution state pending cold entry wins before any native allocation or publication" {
++    var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
++    const engine = try em.Engine.init(failing.allocator(), .{}); defer engine.deinit();
++    const reason = try engine.checked(c.JS_NewError(engine.context)); defer engine.freeValue(reason);
++    _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason));
++    const index = failing.alloc_index;
++    failing.fail_index = index;
++    const result = execution.acquire(engine);
++    failing.fail_index = std.math.maxInt(usize);
++    try std.testing.expectError(error.JavaScriptException, result);
++    try std.testing.expectEqual(index, failing.alloc_index);
++    try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, engine.captured_exception.?));
++    try std.testing.expect(!engine.native_module_values.contains(key));
++    try std.testing.expect(engine.native_fatal_invocation == null);
++}
++test "native module execution state pending event prevents setter mutation without hiding the original reason" {
++    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
++    const namespace = try execution.acquire(engine); defer engine.freeValue(namespace);
++    const setter = try method(engine, namespace, "setHasStartedUserCJSExecution"); defer engine.freeValue(setter);
++    const reason = try engine.checked(c.JS_NewError(engine.context)); defer engine.freeValue(reason);
++    _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason));
++    try std.testing.expectError(error.JavaScriptException, call(engine, setter));
++    try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, engine.captured_exception.?));
++    try expose(engine, "executionState", namespace);
++    try check(engine, "executionState.hasStartedUserCJSExecution()===false&&executionState.hasStartedUserESMExecution()===false");
++    const result = try call(engine, setter); defer engine.freeValue(result);
++    try check(engine, "executionState.hasStartedUserCJSExecution()===true");
++}
++test "native module execution state retained methods own their native cell through cache retirement and collection" {
++    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
++    const baseline = c.pi_js_native_memory_used(engine.native_memory_owner);
++    const namespace = try execution.acquire(engine);
++    var own_namespace = true; defer if (own_namespace) engine.freeValue(namespace);
++    const getter = try method(engine, namespace, "hasStartedUserCJSExecution");
++    var own_getter = true; defer if (own_getter) engine.freeValue(getter);
++    const setter = try method(engine, namespace, "setHasStartedUserCJSExecution");
++    var own_setter = true; defer if (own_setter) engine.freeValue(setter);
++    engine.freeValue(namespace); own_namespace = false;
++    // Deliberate native cache retirement: only the two retained real methods
++    // keep the same native cell alive. This is a lifetime control, not a public
++    // cache-eviction API or a fabricated helper owner.
++    const removed = engine.native_module_values.fetchRemove(key).?;
++    engine.freeValue(removed.value);
++    c.JS_RunGC(engine.runtime);
++    try std.testing.expect(c.pi_js_native_memory_used(engine.native_memory_owner) > baseline);
++    const set_result = try call(engine, setter); engine.freeValue(set_result);
++    const get_result = try call(engine, getter); defer engine.freeValue(get_result);
++    try std.testing.expect(c.JS_IsStrictEqual(engine.context, get_result, c.JS_NewBool(engine.context, true)));
++    engine.freeValue(setter); own_setter = false;
++    engine.freeValue(getter); own_getter = false;
++    c.JS_RunGC(engine.runtime);
++    try std.testing.expectEqual(baseline, c.pi_js_native_memory_used(engine.native_memory_owner));
++}
+diff --git a/build.zig b/build.zig
+--- a/build.zig
++++ b/build.zig
+@@ -1832,6 +1832,19 @@
+         public_print_tests.root_module.linkSystemLibrary("userenv", .{});
+     }
+     b.step("build-native-public-print-mode", "Install actual c268 public print and JSON mode controls without execution").dependOn(&b.addInstallArtifact(public_print_tests, .{}).step);
++    const module_execution_state_tests = b.addTest(.{
++        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_execution_state_test.zig"), .target = target, .optimize = optimize }),
++        .filters = &.{"native module execution state"}, .use_llvm = use_llvm,
++    });
++    linkQuickJs(b, module_execution_state_tests.root_module, quickjs, sqlite_lib_dir);
++    linkTypeScriptParser(b, module_execution_state_tests.root_module, typescript_parser);
++    linkSqlite(module_execution_state_tests.root_module, sqlite_lib_dir, sqlite_library);
++    module_execution_state_tests.root_module.addImport("catalog_tool", catalog_tool);
++    if (target.result.os.tag == .windows) {
++        module_execution_state_tests.root_module.linkSystemLibrary("advapi32", .{});
++        module_execution_state_tests.root_module.linkSystemLibrary("userenv", .{});
++    }
++    b.step("build-native-node-module-execution-state", "Install actual Module helper execution-state controls without execution").dependOn(&b.addInstallArtifact(module_execution_state_tests, .{}).step);
+     const public_rpc_jsonl_tests = b.addTest(.{
+         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_public_rpc_jsonl_test.zig"), .target = target, .optimize = optimize }),
+         .filters = &.{"Public RPC JSONL actual"}, .use_llvm = use_llvm,

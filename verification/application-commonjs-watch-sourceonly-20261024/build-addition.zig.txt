@@ -1,0 +1,16 @@
+    if (native_node_network != null) {
+        const commonjs_watch = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_commonjs_watch_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native actual CommonJS watch"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, commonjs_watch.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, commonjs_watch.root_module, typescript_parser);
+        linkSqlite(commonjs_watch.root_module, sqlite_lib_dir, sqlite_library);
+        commonjs_watch.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            commonjs_watch.root_module.linkSystemLibrary("advapi32", .{});
+            commonjs_watch.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-commonjs-watch", "Install eleven actual CommonJS watch controls without execution").dependOn(&b.addInstallArtifact(commonjs_watch, .{ .dest_sub_path = b.fmt("native-node-commonjs-watch{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    }
+

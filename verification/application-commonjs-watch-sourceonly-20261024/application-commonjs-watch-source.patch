@@ -1,0 +1,454 @@
+--- a/build.zig
++++ b/build.zig
+@@ -5195,6 +5195,22 @@
+     }
+ 
+     if (native_node_network != null) {
++        const commonjs_watch = b.addTest(.{
++            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_commonjs_watch_test.zig"), .target = target, .optimize = optimize }),
++            .filters = &.{"native actual CommonJS watch"}, .use_llvm = use_llvm,
++        });
++        linkQuickJs(b, commonjs_watch.root_module, quickjs, sqlite_lib_dir);
++        linkTypeScriptParser(b, commonjs_watch.root_module, typescript_parser);
++        linkSqlite(commonjs_watch.root_module, sqlite_lib_dir, sqlite_library);
++        commonjs_watch.root_module.addImport("catalog_tool", catalog_tool);
++        if (target.result.os.tag == .windows) {
++            commonjs_watch.root_module.linkSystemLibrary("advapi32", .{});
++            commonjs_watch.root_module.linkSystemLibrary("userenv", .{});
++        }
++        b.step("build-native-node-commonjs-watch", "Install eleven actual CommonJS watch controls without execution").dependOn(&b.addInstallArtifact(commonjs_watch, .{ .dest_sub_path = b.fmt("native-node-commonjs-watch{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
++    }
++
++    if (native_node_network != null) {
+         const native_corruption_probe = b.addExecutable(.{
+             .name = "test",
+             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_corruption_probe.zig"), .target = target, .optimize = optimize }),
+--- a/src/extensions/native_node_commonjs_find_path.zig
++++ b/src/extensions/native_node_commonjs_find_path.zig
+@@ -16,17 +16,19 @@
+     array_push_apply_target: c.JSValue,
+     string_char_code_at: c.JSValue,
+     resolve_exports: c.JSValue,
+-    report_module_not_found: c.JSValue,
+     invalid_arg_type: c.JSValue,
+ };
+ const count = lookup.captured_root_count;
+ pub fn create(engine: *v.em.Engine, inputs: Inputs) !c.JSValue {
++    var s: Scope = .{ .engine = engine }; defer s.deinit();
++    const reporting = try s.own(try @import("native_node_commonjs_watch.zig").acquire(engine, inputs.lookup.module_constructor));
++    const report_module_not_found = try s.get(reporting, "reportModuleNotFoundToWatchMode");
+     var values: [count + 14]c.JSValue = undefined;
+     for (lookup.captureRoots(engine, inputs.lookup), 0..) |value, index| values[index] = value;
+     const tail = [_]c.JSValue{ inputs.files.process, inputs.files.to_real_path, inputs.files.read_package, inputs.files.error_constructor,
+         c.pi_js_bool(engine.context, @intFromBool(inputs.files.preserve_symlinks)), c.pi_js_bool(engine.context, @intFromBool(inputs.files.preserve_symlinks_main)),
+         inputs.get_cjs_conditions, inputs.array_join, inputs.object_keys, inputs.array_push_apply_target,
+-        inputs.string_char_code_at, inputs.resolve_exports, inputs.report_module_not_found, inputs.invalid_arg_type };
++        inputs.string_char_code_at, inputs.resolve_exports, report_module_not_found, inputs.invalid_arg_type };
+     for (tail, 0..) |value, index| values[count + index] = value;
+     return @import("native_node_module_callable.zig").create(engine, "", 3, true, callback, &values);
+ }
+@@ -39,9 +41,9 @@
+         .preserve_symlinks = c.JS_ToBool(engine.context, values[count + 4]) == 1, .preserve_symlinks_main = c.JS_ToBool(engine.context, values[count + 5]) == 1 },
+         .get_cjs_conditions = values[count + 6], .array_join = values[count + 7], .object_keys = values[count + 8],
+         .array_push_apply_target = values[count + 9], .string_char_code_at = values[count + 10],
+-        .resolve_exports = values[count + 11], .report_module_not_found = values[count + 12], .invalid_arg_type = values[count + 13] };
++        .resolve_exports = values[count + 11], .invalid_arg_type = values[count + 13] };
+     const conditions = if (c.JS_IsUndefined(arg(args, 3))) try s.call(inputs.get_cjs_conditions, c.pi_js_undefined(), &.{}) else arg(args, 3);
+-    return find(engine, inputs, arg(args, 0), arg(args, 1), arg(args, 2), conditions);
++    return findWithReporter(engine, inputs, values[count + 12], arg(args, 0), arg(args, 1), arg(args, 2), conditions);
+ }
+ fn character(s: *Scope, inputs: Inputs, request: c.JSValue, offset: i32) !c.JSValue {
+     const index = try s.own(try s.engine.checked(c.JS_PiBinaryOperator(s.engine.context, 1, try s.get(request, "length"), c.JS_NewInt32(s.engine.context, offset))));
+@@ -52,6 +54,14 @@
+     return s.call(try s.get(inputs.lookup.state, "stat"), c.pi_js_undefined(), &.{path});
+ }
+ pub fn find(engine: *v.em.Engine, inputs: Inputs, request: c.JSValue, original_paths: c.JSValue, is_main: c.JSValue, conditions: c.JSValue) !c.JSValue {
++    var s: Scope = .{ .engine = engine }; defer s.deinit();
++    const reporting = try s.own(try @import("native_node_commonjs_watch.zig").acquire(engine, inputs.lookup.module_constructor));
++    return findWithReporter(engine, inputs, try s.get(reporting, "reportModuleNotFoundToWatchMode"),
++        request, original_paths, is_main, conditions);
++}
++fn findWithReporter(engine: *v.em.Engine, inputs: Inputs, report_module_not_found: c.JSValue,
++    request: c.JSValue, original_paths: c.JSValue, is_main: c.JSValue, conditions: c.JSValue) !c.JSValue
++{
+     var s: Scope = .{ .engine = engine }; defer s.deinit();
+     const path = inputs.lookup.path;
+     const absolute_method = try s.get(path, "isAbsolute");
+@@ -116,7 +126,7 @@
+         }
+         const report_exts = try frame.array(); try frame.index(report_exts, 0, try frame.text(""));
+         if (!c.JS_IsUndefined(exts)) _ = try frame.call(inputs.lookup.reflect_apply, c.pi_js_undefined(), &.{ inputs.array_push_apply_target, report_exts, exts });
+-        _ = try frame.call(inputs.report_module_not_found, c.pi_js_undefined(), &.{ base, report_exts });
++        _ = try frame.call(report_module_not_found, c.pi_js_undefined(), &.{ base, report_exts });
+     }
+     return c.pi_js_bool(engine.context, 0);
+ }
+--- a/src/extensions/native_node_commonjs_load.zig
++++ b/src/extensions/native_node_commonjs_load.zig
+@@ -15,7 +15,6 @@
+     can_require_without_scheme: c.JSValue,
+     /// Actual internalBinding('module_wrap').kEvaluated, supplied by its owner.
+     k_evaluated: c.JSValue,
+-    should_report_required_modules: c.JSValue,
+ };
+ fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < args.len) args[index] else c.pi_js_undefined(); }
+ pub fn create(engine: *v.em.Engine, module: c.JSValue, inputs: Inputs) !c.JSValue {
+@@ -37,6 +36,8 @@
+     const circular_graph = try s.own(try @import("native_node_commonjs_circular.zig").create(engine, module, inputs.k_evaluated));
+     try s.put(state.roots, "circular_exports", try s.get(circular_graph, "getExportsForCircularRequire"));
+     try s.put(state.roots, "circular_warning_proxy", try s.get(circular_graph, "CircularRequirePrototypeWarningProxy"));
++    const reporting = try s.own(try @import("native_node_commonjs_watch.zig").acquire(engine, module));
++    try s.put(state.roots, "report_module", try s.get(reporting, "reportModuleToWatchMode"));
+     try s.put(state.roots, "relativeResolveCache", try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()))));
+     const empty = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
+     if (c.JS_FreezeObject(engine.context, empty) < 0) return v.js.capture(engine);
+@@ -73,15 +74,7 @@
+     }
+ }
+ fn report(s: *Scope, state: *lexical.State, filename: c.JSValue) !void {
+-    if (!s.truthy(try s.call(try s.get(state.roots, "should_report_required_modules"), c.pi_js_undefined(), &.{}))) return;
+-    const process = try s.get(state.roots, "process");
+-    if (!s.truthy(try s.get(process, "send"))) return;
+-    const send = try s.get(process, "send");
+-    const record = try s.object();
+-    const list = try s.array();
+-    try s.index(list, 0, filename);
+-    try s.put(record, "watch:require", list);
+-    _ = try s.call(send, process, &.{record});
++    _ = try s.call(try s.get(state.roots, "report_module"), c.pi_js_undefined(), &.{filename});
+ }
+ fn circular(s: *Scope, state: *lexical.State, module: c.JSValue) !c.JSValue { return s.call(try s.get(state.roots, "circular_exports"), c.pi_js_undefined(), &.{module}); }
+ fn failedCleanup(s: *Scope, state: *lexical.State, module: c.JSValue, parent: c.JSValue, filename: c.JSValue, relative: c.JSValue) !void {
+--- /dev/null
++++ b/src/extensions/native_node_commonjs_watch.zig
+@@ -0,0 +1,122 @@
++// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
++//! Actual loader.js watch-dependency reporters and their shared getLazy cell.
++//! The canonical Module supplies the real process/path and captured ArrayMap.
++//! No transport, public Module, or default application backend is installed.
++const a = @import("native_node_argument_values.zig");
++const c = a.c;
++const Scope = a.Scope;
++const modules = @import("native_node_module_constructor.zig");
++const functions = @import("native_node_module_callable.zig");
++const publication = @import("native_node_fs_private_publication.zig");
++const key = "pi-native:private/commonjs-watch-reporting";
++
++/// Validate the actual shared Module even on an already-cached acquisition.
++/// Both _load and _findPath retain the same completed private declarations.
++pub fn acquire(engine: *a.v.em.Engine, module: c.JSValue) !c.JSValue {
++    try engine.checkNativeEntry();
++    const candidate = try a.expression(engine, createBody, .{module});
++    if (engine.native_module_values.get(key)) |known| {
++        var completion = a.owned.Completion.initValue(engine, a.duplicate(engine, known));
++        completion.release(candidate);
++        return completion.finishValue();
++    }
++    return publication.publish(engine, key, candidate);
++}
++fn createBody(s: *Scope, module: c.JSValue) !c.JSValue {
++    const lexical = try s.own(try modules.loaderEnvironment(s.engine, module));
++    if (s.engine.native_module_values.get(key)) |known| return a.duplicate(s.engine, known);
++    const process = try s.get(lexical, "process");
++    const paths = try s.get(lexical, "paths");
++    const map = try s.get(lexical, "arrayMap");
++    if (!c.JS_IsObject(process) or !c.JS_IsObject(paths) or
++        !c.JS_IsFunction(s.engine.context, map)) return error.ActualCommonJSWatchInputsRequired;
++    const state = try s.objectProto(c.pi_js_null());
++    try s.put(state, "process", process);
++    try s.put(state, "paths", paths);
++    try s.put(state, "arrayMap", map);
++    try s.put(state, "initialized", a.boolean(s, false));
++    try s.put(state, "value", c.pi_js_undefined());
++    const result = try s.objectProto(c.pi_js_null());
++    try s.put(result, "reportModuleToWatchMode",
++        try s.own(try functions.create(s.engine, "reportModuleToWatchMode", 1, true,
++            reportRequired, &.{state})));
++    try s.put(result, "reportModuleNotFoundToWatchMode",
++        try s.own(try functions.create(s.engine, "reportModuleNotFoundToWatchMode", 2, true,
++            reportMissing, &.{state})));
++    return a.duplicate(s.engine, result);
++}
++fn environmentValue(s: *Scope, process: c.JSValue) !c.JSValue {
++    return a.duplicate(s.engine, try s.get(try s.get(process, "env"), "WATCH_REPORT_DEPENDENCIES"));
++}
++fn enabled(s: *Scope, state: c.JSValue) !c.JSValue {
++    // internal/util.getLazy sets initialized only after the initializer returns.
++    // An abrupt first read retries. Reentrant completion is not rolled back or
++    // treated as a winner: a later successful outer assignment replaces it.
++    if (s.equal(try s.get(state, "initialized"), a.boolean(s, false))) {
++        const value = try s.own(try a.expression(s.engine, environmentValue,
++            .{try s.get(state, "process")}));
++        try s.put(state, "value", value);
++        try s.put(state, "initialized", a.boolean(s, true));
++    }
++    return a.boolean(s, s.truthy(try s.get(state, "value")));
++}
++fn reportRequired(engine: *a.v.em.Engine, _: c.JSValue, args: []const c.JSValue,
++    roots: []const c.JSValue) !c.JSValue
++{
++    return a.expression(engine, requiredBody, .{roots[0], a.arg(args, 0)});
++}
++fn requiredBody(s: *Scope, state: c.JSValue, filename: c.JSValue) !c.JSValue {
++    if (!try a.condition(s.engine, enabled, .{state})) return c.pi_js_undefined();
++    const process = try s.get(state, "process");
++    if (!try a.condition(s.engine, a.fieldTruthy,
++        .{process, @as([*:0]const u8, "send")})) return c.pi_js_undefined();
++    // Source reads process.send again as the callee, before its object/array
++    // argument. Object literal fields and array elements are definitions.
++    const send = try s.get(process, "send");
++    const record = try s.object();
++    const files = try a.array(s);
++    try a.index(s, files, 0, filename);
++    try s.define(record, "watch:require", files, c.JS_PROP_C_W_E);
++    _ = try s.call(send, process, &.{record});
++    return c.pi_js_undefined();
++}
++fn reportMissing(engine: *a.v.em.Engine, _: c.JSValue, args: []const c.JSValue,
++    roots: []const c.JSValue) !c.JSValue
++{
++    return a.expression(engine, missingBody, .{roots[0], a.arg(args, 0), a.arg(args, 1)});
++}
++fn missingBody(s: *Scope, state: c.JSValue, base_path: c.JSValue,
++    extensions: c.JSValue) !c.JSValue
++{
++    if (!try a.condition(s.engine, enabled, .{state})) return c.pi_js_undefined();
++    const process = try s.get(state, "process");
++    if (!try a.condition(s.engine, a.fieldTruthy,
++        .{process, @as([*:0]const u8, "send")})) return c.pi_js_undefined();
++    const send = try s.get(process, "send");
++    const record = try s.object();
++    const paths = try s.get(state, "paths");
++    // Use the actual captured ArrayPrototypeMap, including length/Has/Get,
++    // holes, inherited elements, species construction, and abrupt completion.
++    const mapper = try s.own(try functions.create(s.engine, "", 1, false,
++        resolveExtension, &.{paths, base_path}));
++    const mapped = try s.call(try s.get(state, "arrayMap"), extensions, &.{mapper});
++    try s.define(record, "watch:require", mapped, c.JS_PROP_C_W_E);
++    _ = try s.call(send, process, &.{record});
++    return c.pi_js_undefined();
++}
++fn resolveExtension(engine: *a.v.em.Engine, _: c.JSValue, args: []const c.JSValue,
++    roots: []const c.JSValue) !c.JSValue
++{
++    return a.expression(engine, resolveBody, .{roots[0], roots[1], a.arg(args, 0)});
++}
++fn resolveBody(s: *Scope, paths: c.JSValue, base_path: c.JSValue,
++    extension: c.JSValue) !c.JSValue
++{
++    // Preserve path.resolve callee lookup before each template substitution,
++    // and both independent ToString operations at every visited map element.
++    const resolve = try s.get(paths, "resolve");
++    const base = try s.toString(base_path);
++    const suffix = try s.toString(extension);
++    const filename = try a.add(s, base, suffix);
++    return a.duplicate(s.engine, try s.call(resolve, paths, &.{filename}));
++}
+--- a/src/extensions/native_node_module_constructor.zig
++++ b/src/extensions/native_node_module_constructor.zig
+@@ -152,6 +152,7 @@
+     try define(s, owner, "arrayIndexOf", try method(s, array_prototype, "indexOf"));
+     try define(s, owner, "arraySplice", try method(s, array_prototype, "splice"));
+     try define(s, owner, "arrayIsArray", try method(s, array, "isArray"));
++    try define(s, owner, "arrayMap", try method(s, array_prototype, "map"));
+     inline for (.{ .{"arraySlice", "slice"}, .{"arrayUnshift", "unshift"}, .{"arrayFilter", "filter"} }) |entry|
+         try define(s, owner, entry[0], try method(s, array_prototype, entry[1]));
+     // loader.js keeps this actual Array, including inherited reads after a
+--- /dev/null
++++ b/src/native_node_commonjs_watch_test.zig
+@@ -0,0 +1,195 @@
++//! Focused controls for the canonical Module's real watch-reporting owner.
++//! These do not publish a public loader, open an IPC transport, or run Node.
++const std = @import("std");
++const a = @import("extensions/native_node_argument_values.zig");
++const c = a.c;
++const core = @import("extensions/native_node_commonjs_module_core.zig");
++const modules = @import("extensions/native_node_module_constructor.zig");
++const watch = @import("extensions/native_node_commonjs_watch.zig");
++
++const Fixture = struct {
++    engine: *a.v.em.Engine,
++    environment: std.process.Environ.Map,
++    module: ?c.JSValue = null,
++    graph: ?c.JSValue = null,
++
++    fn init(self: *Fixture) !void {
++        self.* = .{ .engine = undefined, .environment = .init(std.testing.allocator) };
++        errdefer self.environment.deinit();
++        self.engine = try a.v.em.Engine.init(std.testing.allocator, .{});
++        errdefer self.engine.deinit();
++        try @import("extensions/timers.zig").install(self.engine, std.testing.io);
++        try @import("extensions/native_process.zig").install(self.engine, std.testing.io,
++            &self.environment, &.{"actual-commonjs-watch-controls"});
++        try @import("extensions/node_path.zig").install(self.engine, std.testing.io);
++        try @import("extensions/node_url.zig").install(self.engine);
++        const process = (try self.engine.requireBuiltin("node:process")) orelse
++            return error.ActualWatchProcessRequired;
++        defer self.engine.freeValue(process);
++        try @import("extensions/node_fs.zig").installWithStreams(self.engine, std.testing.io, process);
++        self.module = try core.create(self.engine);
++    }
++    fn complete(self: *Fixture) !void {
++        self.graph = try watch.acquire(self.engine, self.module.?);
++        _ = try a.expression(self.engine, publish, .{self.module.?, self.graph.?});
++    }
++    fn publish(s: *a.Scope, module: c.JSValue, graph: c.JSValue) !c.JSValue {
++        const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));
++        try s.define(global, "actualReportRequired", try s.get(graph, "reportModuleToWatchMode"), c.JS_PROP_C_W_E);
++        try s.define(global, "actualReportMissing", try s.get(graph, "reportModuleNotFoundToWatchMode"), c.JS_PROP_C_W_E);
++        try s.define(global, "actualWatchPaths", try s.own(try modules.pathObject(s.engine, module)), c.JS_PROP_C_W_E);
++        return c.pi_js_undefined();
++    }
++    fn run(self: *Fixture, source: []const u8) !void {
++        const result = try self.engine.eval(source, "actual-commonjs-watch-control.js", c.JS_EVAL_TYPE_GLOBAL);
++        self.engine.freeValue(result);
++    }
++    fn deinit(self: *Fixture) void {
++        if (self.graph) |value| self.engine.freeValue(value);
++        if (self.module) |value| self.engine.freeValue(value);
++        self.engine.deinit();
++        self.environment.deinit();
++    }
++};
++
++test "native actual CommonJS watch shares one authenticated graph without publishing public Module" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.complete();
++    const same = try watch.acquire(f.engine, f.module.?); defer f.engine.freeValue(same);
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, same, f.graph.?));
++    try std.testing.expect(!f.engine.native_module_names.contains("node:module"));
++    try f.run(
++        \\if(actualReportRequired.name!=="reportModuleToWatchMode"||actualReportRequired.length!==1||!Object.hasOwn(actualReportRequired,"prototype"))throw Error("required declaration");
++        \\if(actualReportMissing.name!=="reportModuleNotFoundToWatchMode"||actualReportMissing.length!==2||!Object.hasOwn(actualReportMissing,"prototype"))throw Error("missing declaration");
++    );
++    const foreign = try f.engine.checked(c.JS_NewObject(f.engine.context)); defer f.engine.freeValue(foreign);
++    if (watch.acquire(f.engine, foreign)) |unexpected| {
++        f.engine.freeValue(unexpected);
++        return error.ForeignWatchModuleAccepted;
++    } else |_| {}
++}
++
++test "native actual CommonJS watch reads environment lazily once and shares the value between reporters" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    try f.run(
++        \\globalThis.watchEnvReads=0;globalThis.watchFlagReads=0;globalThis.watchMessages=[];globalThis.watchFlag="enabled";
++        \\Object.defineProperty(process,"env",{configurable:true,get(){watchEnvReads++;return {get WATCH_REPORT_DEPENDENCIES(){watchFlagReads++;return watchFlag}}}});
++        \\process.send=function(message){if(this!==process)throw Error("process receiver");watchMessages.push(message)};
++    );
++    try f.complete();
++    try f.run(
++        \\if(watchEnvReads!==0||watchFlagReads!==0)throw Error("eager environment read");
++        \\actualReportRequired("/original.cjs");watchFlag="";actualReportMissing("/missing",[".js",".json"]);
++        \\if(watchEnvReads!==1||watchFlagReads!==1||watchMessages.length!==2)throw Error("shared lazy cell");
++        \\if(watchMessages[0]["watch:require"][0]!=="/original.cjs"||watchMessages[1]["watch:require"][0]!==actualWatchPaths.resolve("/missing.js")||watchMessages[1]["watch:require"][1]!==actualWatchPaths.resolve("/missing.json"))throw Error("actual path results");
++    );
++}
++
++test "native actual CommonJS watch caches an undefined flag and never reads send on the disabled path" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.complete();
++    try f.run(
++        \\let reads=0,flag;Object.defineProperty(process,"env",{value:{get WATCH_REPORT_DEPENDENCIES(){reads++;return flag}},configurable:true});
++        \\Object.defineProperty(process,"send",{get(){throw Error("disabled send read")},configurable:true});
++        \\actualReportRequired("first");flag="enabled";actualReportMissing({toString(){throw Error("disabled coercion")}},null);
++        \\if(reads!==1)throw Error("undefined was not cached");
++    );
++}
++
++test "native actual CommonJS watch retries a throwing lazy initializer and preserves its exact reason" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.complete();
++    try f.run(
++        \\const reason={initial:true};let reads=0,sent=0;
++        \\Object.defineProperty(process,"env",{get(){if(++reads===1)throw reason;return {WATCH_REPORT_DEPENDENCIES:"yes"}},configurable:true});
++        \\process.send=function(){sent++};let caught;try{actualReportRequired("first")}catch(error){caught=error}
++        \\if(caught!==reason||sent!==0)throw Error("initializer abrupt identity");
++        \\actualReportMissing("/next",[".js"]);actualReportRequired("last");
++        \\if(reads!==2||sent!==2)throw Error("initializer retry or cache");
++    );
++}
++
++test "native actual CommonJS watch outer successful initialization replaces a reentrant inner value" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.complete();
++    try f.run(
++        \\let reads=0;const sent=[];process.env={get WATCH_REPORT_DEPENDENCIES(){if(++reads===1){actualReportRequired("nested-disabled");return "outer-enabled"}return ""}};
++        \\process.send=function(message){sent.push(message)};
++        \\actualReportRequired("outer");actualReportMissing("/after",[".cjs"]);
++        \\if(reads!==2||sent.length!==2||sent[0]["watch:require"][0]!=="outer")throw Error("reentrant outer assignment");
++    );
++}
++
++test "native actual CommonJS watch throwing outer initialization keeps a completed reentrant inner cache" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.complete();
++    try f.run(
++        \\let reads=0;const reason={outer:true},sent=[];process.env={get WATCH_REPORT_DEPENDENCIES(){if(++reads===1){actualReportRequired("inner");throw reason}return "inner-enabled"}};
++        \\process.send=function(message){sent.push(message)};let caught;try{actualReportRequired("outer")}catch(error){caught=error}
++        \\if(caught!==reason||sent.length!==1||sent[0]["watch:require"][0]!=="inner")throw Error("inner completion");
++        \\actualReportMissing("/after",[".js"]);if(reads!==2||sent.length!==2)throw Error("inner cache rolled back");
++    );
++}
++
++test "native actual CommonJS watch performs two live send reads and keeps uncoerced filename identity" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.complete();
++    try f.run(
++        \\process.env={WATCH_REPORT_DEPENDENCIES:"yes"};let reads=0,observed;const filename={toString(){throw Error("filename coercion")}};
++        \\Object.defineProperty(process,"send",{configurable:true,get(){reads++;if(reads===1)return {truthy:true};return function(message){if(this!==process)throw Error("send receiver");observed=message}}});
++        \\actualReportRequired(filename);
++        \\if(reads!==2||observed["watch:require"][0]!==filename)throw Error("callee or filename identity");
++        \\if(Object.getPrototypeOf(observed)!==Object.prototype||Object.keys(observed).join(",")!=="watch:require")throw Error("ordinary message object");
++    );
++}
++
++test "native actual CommonJS watch defines message literals without inherited setters" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.complete();
++    try f.run(
++        \\process.env={WATCH_REPORT_DEPENDENCIES:"yes"};let observed;process.send=function(message){observed=message};
++        \\Object.defineProperty(Object.prototype,"watch:require",{configurable:true,set(){throw Error("object literal setter")}});
++        \\Object.defineProperty(Array.prototype,"0",{configurable:true,set(){throw Error("array literal setter")}});
++        \\try{actualReportRequired("own")}finally{delete Object.prototype["watch:require"];delete Array.prototype["0"]}
++        \\const field=Object.getOwnPropertyDescriptor(observed,"watch:require"),element=Object.getOwnPropertyDescriptor(field.value,"0");
++        \\if(!field.enumerable||!field.configurable||!field.writable||!element.enumerable||!element.configurable||!element.writable||element.value!=="own")throw Error("literal descriptors");
++    );
++}
++
++test "native actual CommonJS watch uses captured map with sparse inherited elements and real species semantics" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    try f.run(
++        \\globalThis.watchOriginalMap=Array.prototype.map;Array.prototype.map=function(){throw Error("guest replaced map")};
++    );
++    try f.complete();
++    try f.run(
++        \\try{process.env={WATCH_REPORT_DEPENDENCIES:"yes"};let observed;process.send=message=>{observed=message};
++        \\class Result extends Array{};const extensions=[".js"];extensions.length=4;const inherited=Object.create(Array.prototype);inherited[2]=".json";Object.setPrototypeOf(extensions,inherited);
++        \\Object.defineProperty(extensions,"constructor",{value:{[Symbol.species]:Result}});
++        \\actualReportMissing("/candidate",extensions);const mapped=observed["watch:require"];
++        \\if(!(mapped instanceof Result)||mapped.length!==4||(1 in mapped)||(3 in mapped)||mapped[0]!==actualWatchPaths.resolve("/candidate.js")||mapped[2]!==actualWatchPaths.resolve("/candidate.json"))throw Error("map species holes inherited");
++        \\}finally{Array.prototype.map=watchOriginalMap}
++    );
++}
++
++test "native actual CommonJS watch resolves each path callee before template coercions after the selected send" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.complete();
++    try f.run(
++        \\process.env={WATCH_REPORT_DEPENDENCIES:"yes"};const events=[];let sendReads=0,observed;
++        \\Object.defineProperty(process,"send",{configurable:true,get(){events.push("send"+(++sendReads));return function(message){events.push("emit");observed=message}}});
++        \\const second=function(value){if(this!==actualWatchPaths)throw Error("second receiver");events.push("second");return "second:"+value};
++        \\Object.defineProperty(actualWatchPaths,"resolve",{configurable:true,get(){events.push("resolve");return function(value){if(this!==actualWatchPaths)throw Error("first receiver");events.push("first");return "first:"+value}}});
++        \\const base={toString(){events.push("base");return "root"}},ext={toString(){events.push("ext");Object.defineProperty(actualWatchPaths,"resolve",{value:second,writable:true,configurable:true});return ".a"}};
++        \\const extensions={get length(){events.push("length");return 2},0:ext,1:".b"};
++        \\actualReportMissing(base,extensions);
++        \\if(events.join(",")!=="send1,send2,length,resolve,base,ext,first,base,second,emit")throw Error("lookup/coercion order "+events);
++        \\if(observed["watch:require"].join(",")!=="first:root.a,second:root.b")throw Error("per-element path result");
++    );
++}
++
++test "native actual CommonJS watch propagates map and send exceptions while retaining the initialized flag" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.complete();
++    try f.run(
++        \\let flagReads=0,sends=0;const mapReason={map:true},sendReason={send:true};
++        \\process.env={get WATCH_REPORT_DEPENDENCIES(){flagReads++;return "yes"}};process.send=function(){sends++};
++        \\let caught;try{actualReportMissing("/bad",{length:1,get 0(){throw mapReason}})}catch(error){caught=error}
++        \\if(caught!==mapReason||sends!==0)throw Error("map abrupt completion");
++        \\process.send=function(){throw sendReason};caught=undefined;try{actualReportRequired("send-failure")}catch(error){caught=error}
++        \\if(caught!==sendReason)throw Error("send abrupt identity");
++        \\process.env={get WATCH_REPORT_DEPENDENCIES(){throw Error("flag reread")}};process.send=function(){sends++};actualReportRequired("after");
++        \\if(flagReads!==1||sends!==1)throw Error("abrupt completion discarded lazy flag");
++    );
++}

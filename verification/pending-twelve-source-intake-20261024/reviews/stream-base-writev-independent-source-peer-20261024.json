@@ -1,0 +1,193 @@
+{
+  "schema": "pi-zig-independent-stream-writev-source-peer-v1",
+  "review_date_utc": "2026-10-24",
+  "reviewer": "catalog_review",
+  "verdict": "No concrete source blocker found in the selected Writev packet; acceptable for exact source intake subject to Root's separate integration and executable qualification.",
+  "scope": "Source-only independent peer of actual Writev/primitive codec/temporary owner and its 32 authored controls.",
+  "base_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\source-intake.json",
+    "bytes": 44311,
+    "sha256": "5A71FE0B550BDB59E4B9B73062546F65073647C4011895C59FBDD691409CEB60"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\stream-base-writev-successor.patch",
+    "bytes": 76455,
+    "sha256": "86EF930E75A335096D4735D4FF4835C7D73FC9B6B8B5C23DC45C5EC6FF38BFEE"
+  },
+  "selected_changes": [
+    {
+      "target": "src/extensions/native_node_maybe_stack_buffer.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_maybe_stack_buffer.zig",
+        "bytes": 2561,
+        "sha256": "5CF8285B49EFFD29C1B850B2E52CA9D71B792BC7397B6EF24221809023611DEC"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_stream_string_bytes.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_stream_string_bytes.zig",
+        "bytes": 11908,
+        "sha256": "8B7621BF39B5E4EB1F160B791CA9BFC56927E871267E0502317F77F626C53681"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_stream_writev.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\projected\\src\\extensions\\native_node_stream_writev.zig",
+        "bytes": 7309,
+        "sha256": "C0E46C85BAB085FD0B62EBBED2755EFEB6DDD2D834BA96F93277F456BF452838"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_stream_js_dispatch.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\projected\\src\\extensions\\native_node_stream_js_dispatch.zig",
+        "bytes": 6228,
+        "sha256": "7FEFF3C4EF7320CB980EF3753F934C9977A59B59D56A10F00A1FF4006D75754F"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\projected\\src\\extensions\\native_node_stream_js_dispatch.zig",
+        "bytes": 6368,
+        "sha256": "9AC42115D5A3DF71A4EBE3A4E0ED41B56269EF7ED9F2322B789B0456356C7478"
+      }
+    },
+    {
+      "target": "src/native_node_stream_writev_test.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\projected-v4\\src\\native_node_stream_writev_test.zig",
+        "bytes": 48060,
+        "sha256": "78386904DA21ECB860D07214D887829B0B5D1189BD530871B106A3C58F99EB93"
+      }
+    },
+    {
+      "target": "build.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 521275,
+        "sha256": "BFD38FBB83398BF6602E7A11CBB2FF30224774DD1C1C3DCFF0BADF8D1464A973"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 522996,
+        "sha256": "DFCA49979BBB32423FBA060867576DF22331A39C3E118BCA0C331B7C09C32555"
+      }
+    }
+  ],
+  "reused_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\source-intake.json",
+    "bytes": 32588,
+    "sha256": "146FD4EA6FA44793195C5A158B47EFC5E99F45FB56D4BBF1FB16EE1C9CC17DF3"
+  },
+  "reused_predecessor_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-base-string-write-independent-source-peer-20261024.json",
+    "bytes": 12528,
+    "sha256": "2281EBF3E3ED631971B01BF9F83A838EB1CAE6D761F56583072351F143198741"
+  },
+  "read_scope": {
+    "production": "Read all selected MaybeStackBuffer, stream_string_bytes and stream_writev source plus complete125-line dispatcher.",
+    "controls": "Read the entire817-line selected-v4 test source, including actual fixture/request construction, native allocation observation, all32 declarations and typed retirement."
+  },
+  "source_findings": [
+    {
+      "topic": "Original Writev order and error boundaries",
+      "evidence": "stream_base.cc180-294",
+      "finding": "Exact IsObject/IsArray and IsTrue checks; count snapshots before getters; full sizing pass before INT_MAX guard; buffer chunks skip encoding reads; second pass repeats Get/ToString/encoding in original order. Zero backing, changed strings/encodings, odd tails and buffer/string transitions preserve the original count/capacity behavior."
+    },
+    {
+      "topic": "Concrete ArrayBufferView breadth",
+      "evidence": "node_buffer.cc239-271; V8 api.cc3553-3555; five unchanged current QuickJS intrinsic bodies",
+      "finding": "The native brand includes DataView and all typed-array classes, with no proxy unwrapping or guest byteLength/data getters. Existing intrinsic Data/Length preserve detached/RAB behavior. The concrete Array check cannot invoke a proxy length trap."
+    },
+    {
+      "topic": "Primitive encoding selection",
+      "evidence": "encoding.cc15-135; util.cc100-153",
+      "finding": "Only primitive strings enter Utf8Value-style conversion. Actual NUL-terminated alias matching, case folding, nonstring default and exact1024-byte stack/heap threshold are retained; no object coercion is invented for the encoding operand."
+    },
+    {
+      "topic": "String capacity and UTF8 clipping",
+      "evidence": "string_bytes.cc238-437; V8 string.cc1113-1139; unicode-inl.h223-286; simdutf.h3711,3851",
+      "finding": "ASCII/Latin1 use low bytes, UCS2 writes complete little-endian units, UTF8 writes complete scalars with replacement for unpaired surrogates and no partial paired scalar. Long UTF8 evaluates Size then still uses StorageSize. Base64 capacity uses the original encoded-length formula, including URL no-padding; hex odd storage lengths retain the native CHECK."
+    },
+    {
+      "topic": "nbytes fallback equivalence",
+      "evidence": "nbytes.h109-237; nbytes.cpp125-158",
+      "finding": "Compared the complete scalar group/fast loop to the primary implementation and independently checked all256 base64 lookup classifications/valid values and all256 hex values. Whitespace's -2 and other invalid -1 both select the identical slow skip/stop branch. Padding checks keep full wide-unit comparison, while alphabet lookup intentionally truncates to low byte. Successful SIMD inputs have the same prefix/length; the selected scalar path also preserves bounded-output and invalid-input fallback behavior."
+    },
+    {
+      "topic": "Native temporary ownership",
+      "evidence": "util.h393-518; util-inl.h241-293,551-565; existing make_callback.zig93-119",
+      "finding": "MaybeStackBuffer starts with its zero terminator, uses actual charged native storage only above the stack count, performs the original one full-GC allocation retry and native CHECK on failure, and frees exact heap storage. Wide base64/hex creates and retires the actual TwoByteValue-equivalent temporary even at zero output capacity. Environment remains retained for allocation/free."
+    },
+    {
+      "topic": "WriteWrap/backing result lifetime",
+      "evidence": "writev source107-158 and previously accepted Write20 owner",
+      "finding": "Every local chunk/view remains rooted through Write. Existing Write owns the actual request, counts attempted bytes and advances partial vectors. Encoded backing transfers only when returned res.wrap exists and original storage_size is positive. Result pointer retirement precedes local backing/vector release. Ordinary init-hook throw still transfers accepted backing; later error-Set failure retains the original default result and does not invent a returned wrap."
+    },
+    {
+      "topic": "Dispatch and FileHandle",
+      "evidence": "four exact dispatcher edits; selected test753-817",
+      "finding": "Added only writev import/enum/switch and updated gating comment. Existing absent/dead receiver guards and saved trigger scope remain unchanged. Actual FileHandle control retains original UV_ENOSYS; no public constructor or OS-write substitute is introduced."
+    }
+  ],
+  "control_assessment": {
+    "declared_count": 32,
+    "filter": "native Stream vector write",
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\projected-v4\\src\\native_node_stream_writev_test.zig",
+      "bytes": 48060,
+      "sha256": "78386904DA21ECB860D07214D887829B0B5D1189BD530871B106A3C58F99EB93"
+    },
+    "meaningful_cases": [
+      "primitive alias/coercion and NUL handling",
+      "UTF8 boundary and all eight encodings",
+      "wide low-byte decoding and zero-capacity temporary",
+      "real charged16/17 and1024/1025 temporary thresholds",
+      "DataView/typed-array intrinsic data",
+      "first/second pass getter/coercion order and abrupt reasons",
+      "count mutation and changed second-pass data/type",
+      "local view retention through GC",
+      "accepted and synchronous-error request/token lifetime",
+      "complete/partial/failing try-write accounting",
+      "error setter and init-hook event ordering",
+      "genuine FileHandle dispatch and nested trigger restoration"
+    ],
+    "limits": "Controls are authored source. Tests use genuine Environment/FileHandle/WriteWrap infrastructure with deliberate native virtual observations. They do not establish metadata count, runtime success, public FileHandle publication or full application startup.",
+    "actual_metadata_count": null,
+    "runtime_executed": false
+  },
+  "static_verification": {
+    "writev_manifest_unique_pin_versions_rehashed": 59,
+    "writev_plus_stringwrite_manifest_union_rehashed": 86,
+    "full_patch_exact_including_diff_git_headers": true,
+    "dispatcher_four_forward_and_inverse_edits_exact": true,
+    "build_addition_bytes": 1721,
+    "build_addition_lines": 21,
+    "build_forward_and_inverse_exact": true,
+    "all34_direct_import_mappings_reproduced": true,
+    "all32_declaration_names_exact": true,
+    "selected_quickjs_view_intrinsic_bodies_equal_current_main": true,
+    "base64_table_classifications_checked": 256,
+    "hex_table_values_checked": 256
+  },
+  "integration_constraints": [
+    "Preserve selected v2 helper/codec and v4 controls; earlier drafts remain unselected.",
+    "Apply exact predecessor chain through accepted Write20 and StringWrite18. Keep this packet separate from the already accepted six-packet source plan.",
+    "Compose the additive build hunk; do not copy its standalone build over Root's Module-combined build.",
+    "No new C ABI here, but the inherited StringWrite borrowed flat-string ABI still requires Root's fresh library/build before native qualification.",
+    "Complete external_stream/AddMethods/public FileHandle publication remains separate."
+  ],
+  "not_executed": {
+    "candidate": true,
+    "native_build_or_query": true,
+    "runtime": true,
+    "node": true,
+    "generator": true,
+    "main_mutation": true
+  }
+}

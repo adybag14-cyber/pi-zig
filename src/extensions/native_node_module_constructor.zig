@@ -132,7 +132,14 @@ fn createBody(s: *Scope, inputs: Inputs) !c.JSValue {
     const safe_set = try s.own(try @import("native_node_fs_collections.zig").acquireSafeSet(s.engine));
     try define(s, owner, "safeMap", safe_map);
     try define(s, owner, "safeSet", safe_set);
-    try define(s, owner, "objectFreeze", try method(s, try global(s, "Object"), "freeze"));
+    const object_constructor = try global(s, "Object");
+    try define(s, owner, "objectFreeze", try method(s, object_constructor, "freeze"));
+    const object_prototype = try s.get(object_constructor, "prototype");
+    try define(s, owner, "circularObjectPrototype", object_prototype);
+    try define(s, owner, "circularHasOwnProperty", try method(s, object_prototype, "hasOwnProperty"));
+    inline for (.{ .{ "circularGetOwnPropertyDescriptor", "getOwnPropertyDescriptor" },
+        .{ "circularGetPrototypeOf", "getPrototypeOf" }, .{ "circularSetPrototypeOf", "setPrototypeOf" } }) |entry|
+        try define(s, owner, entry[0], try method(s, object_constructor, entry[1]));
     const map = try global(s, "Map");
     try define(s, owner, "mapConstructor", map);
     const map_prototype = try s.get(map, "prototype");
@@ -145,6 +152,7 @@ fn createBody(s: *Scope, inputs: Inputs) !c.JSValue {
     try define(s, owner, "arrayIndexOf", try method(s, array_prototype, "indexOf"));
     try define(s, owner, "arraySplice", try method(s, array_prototype, "splice"));
     try define(s, owner, "arrayIsArray", try method(s, array, "isArray"));
+    try define(s, owner, "arrayMap", try method(s, array_prototype, "map"));
     inline for (.{ .{"arraySlice", "slice"}, .{"arrayUnshift", "unshift"}, .{"arrayFilter", "filter"} }) |entry|
         try define(s, owner, entry[0], try method(s, array_prototype, entry[1]));
     // loader.js keeps this actual Array, including inherited reads after a
@@ -153,7 +161,9 @@ fn createBody(s: *Scope, inputs: Inputs) !c.JSValue {
     inline for (.{ 115, 101, 108, 117, 100, 111, 109, 95, 101, 100, 111, 110 }, 0..) |value, position|
         try a.index(s, nm_chars, @intCast(position), c.JS_NewInt32(s.engine.context, value));
     try define(s, owner, "nmChars", nm_chars);
-    const string_prototype = try s.get(try global(s, "String"), "prototype");
+    const string_constructor = try global(s, "String");
+    try define(s, owner, "circularString", string_constructor);
+    const string_prototype = try s.get(string_constructor, "prototype");
     try define(s, owner, "charCodeAt", try method(s, string_prototype, "charCodeAt"));
     try define(s, owner, "stringSlice", try method(s, string_prototype, "slice"));
     inline for (.{ .{"stringCharAt", "charAt"}, .{"stringStartsWith", "startsWith"}, .{"stringSplit", "split"} }) |entry|

@@ -1,0 +1,10 @@
+[
+  {
+    "source": "deps/v8/third_party/simdutf/simdutf.h",
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/simdutf/simdutf.h",
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\authority\\deps__v8__third_party__simdutf__simdutf.h.txt",
+    "bytes": 240473,
+    "sha256": "3DB538B964FACC1184193D4283C6EB5BBCE23D5365355D20058D5740A7921879",
+    "executed": false
+  }
+]

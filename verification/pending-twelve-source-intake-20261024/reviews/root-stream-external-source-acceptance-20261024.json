@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-24T17:24:23.393687+00:00",
+  "status": "Root_accepted_source_only_native_External_GetExternal",
+  "base_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\source-intake.json",
+    "bytes": 27819,
+    "sha256": "5D14CD9857AED0F02EC9C5D413C5A7669987C487103B05BF3451C37BC05820C2"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-controls-review\\stream-base-external-independent-source-peer-20261024.json",
+    "bytes": 13922,
+    "sha256": "DBAE099E45CC00B9B64212C5CBA97D7945C790B993782993AA1D0C440F0EDF5E"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\stream-external-successor.patch",
+    "bytes": 18310,
+    "sha256": "D455908E00811DDC3E76404D2BC01E206E14FF165A3C4D637662E6219EAA0E5A"
+  },
+  "selected_changes": [
+    {
+      "target": "vendor/quickjs/quickjs.h",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\projected-v2\\vendor\\quickjs\\quickjs.h",
+        "bytes": 116017,
+        "sha256": "4E33B0F27BA25178F1ED19A3C030F2037542E9D7C5731D909E5E0938783DCABF"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 116648,
+        "sha256": "532BFBF4CE23AAA4B1F49D576F1A48D997B234142DFE1A587A2FFE5A340971AA"
+      }
+    },
+    {
+      "target": "vendor/quickjs/quickjs.c",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-string-write-sourceonly-20261024\\projected-v2\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2405312,
+        "sha256": "749D971CE7902D6B1E0FFCC597FB30652D57F24725D4484F6E9E8FC1FEEBA931"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2406379,
+        "sha256": "B23C5114FD01344B5BB1424A4DC2B702506CFFDA0280329044C0763B27A7F754"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_external_value.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\projected\\src\\extensions\\native_node_external_value.zig",
+        "bytes": 1011,
+        "sha256": "E222127ED1E51BD048BDCF96632B57E2E72D3ADAFFB881D203731818E05FE5B1"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_stream_js_dispatch.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\projected\\src\\extensions\\native_node_stream_js_dispatch.zig",
+        "bytes": 6368,
+        "sha256": "9AC42115D5A3DF71A4EBE3A4E0ED41B56269EF7ED9F2322B789B0456356C7478"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\projected\\src\\extensions\\native_node_stream_js_dispatch.zig",
+        "bytes": 6943,
+        "sha256": "438459C8F84ED1FEEADD2F7B1BA0484B5FC973D925827C83D79EF3BA302BA026"
+      }
+    },
+    {
+      "target": "src/native_node_stream_external_test.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\projected\\src\\native_node_stream_external_test.zig",
+        "bytes": 8841,
+        "sha256": "FF18DE0E3A88E2F6965AD5E92A8A8C74601F21BF4E4E5EB9790137D38965B12E"
+      }
+    },
+    {
+      "target": "build.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 522996,
+        "sha256": "DFCA49979BBB32423FBA060867576DF22331A39C3E118BCA0C331B7C09C32555"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 524748,
+        "sha256": "47C7D43DDBD0FA482F4D8221BFB17F71CB4342A4C86F4F44C0439229A6E3C1E3"
+      }
+    }
+  ],
+  "predecessor_root_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-writev-source-acceptance-20261024.json",
+    "bytes": 7293,
+    "sha256": "47B7D383EC77250730F9FD0E538623E61831074996ECA9C7079B501939F511F1"
+  },
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\build-addition.zig.txt",
+    "bytes": 1752,
+    "sha256": "48218F2739871D11AC013E1B330A30DA7A47FDC12E3069AB0A51FB62AE27D360"
+  },
+  "root_manual_read_scope": [
+    "Full18310-byte patch, including every C/header/dispatcher change, new native value owner, all161 lines/ten authored controls and the additive build block.",
+    "Full independent source peer including original V8/Node authority, VM class registration and actual Scope/FileHandle ownership checks.",
+    "Relied on the peer for full original authority/context reads and exact whole C/header/dispatcher/build inverses; Root did not reread entire2.4MB QuickJS predecessor."
+  ],
+  "root_static_identity": {
+    "manifest_path_versions_rehashed": 45,
+    "control_declarations_verified": 10
+  },
+  "source_findings": [
+    "New/Is/Value use an actual predefined private VM class, with no target finalizer or GC mark; stored native addresses remain borrowed.",
+    "Each getter creates a fresh null-prototype nonextensible value for an existing native stream, including a closed stream; missing or retired receiver returns undefined.",
+    "Recognition and extraction check native tag/class without traps, coercion or dereferencing the address.",
+    "The getter retains no native stream reference, wrapper reference or trigger scope, and performs no target dereference after allocation.",
+    "Control paths compare a retired borrowed address without dereferencing it and verify private opaque-slot protection."
+  ],
+  "declared_controls": 10,
+  "actual_metadata_count": null,
+  "native_execution_authorized": false,
+  "main_intake_authorized": false,
+  "source_mutation_hold_released": false,
+  "product_qualification": false,
+  "limits": [
+    "No Zig parser/formatter, C compiler, link, metadata query, runtime or Node capture executed.",
+    "All ten controls are authored source declarations, not observed native results.",
+    "Requires a fresh QuickJS archive containing the three new private ABI symbols.",
+    "No public constructor/accessor/signature/complete FileHandle publication or application qualification is claimed.",
+    "The native address is intentionally borrowed; consumers must independently ensure target lifetime before dereferencing it."
+  ],
+  "integration": {
+    "build_step": "build-native-node-stream-external",
+    "binary": "native-node-stream-external.exe",
+    "mode": "install-only",
+    "fresh_quickjs_required": true,
+    "new_private_c_abi": [
+      "JS_PiNewExternal",
+      "JS_PiIsExternal",
+      "JS_PiExternalValue"
+    ],
+    "public_constructor_published": false
+  },
+  "remaining_dependencies": [
+    "Complete original AddMethods metadata and signature/accessor publication",
+    "Complete FileHandle template constructor callback plus close/releaseFD with actual retained Inputs",
+    "Root native qualification and integration"
+  ]
+}

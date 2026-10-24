@@ -1,0 +1,26 @@
+[
+  {
+    "source": "deps/v8/src/objects/string.cc",
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/objects/string.cc",
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\authority\\deps__v8__src__objects__string.cc.txt",
+    "bytes": 84287,
+    "sha256": "F8EB81FC6401C7BF4A1C8DD4A76FC65B792A944757712A3EFA80C3DC31416403",
+    "executed": false
+  },
+  {
+    "source": "deps/v8/src/api/api.cc",
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/api/api.cc",
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\authority\\deps__v8__src__api__api.cc.txt",
+    "bytes": 489340,
+    "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+    "executed": false
+  },
+  {
+    "source": "deps/nbytes/src/nbytes.cpp",
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/nbytes/src/nbytes.cpp",
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\authority\\deps__nbytes__src__nbytes.cpp.txt",
+    "bytes": 7962,
+    "sha256": "1958A77D0FDBC50375FF77D09C25CEDB70672AF6CA74F5A1CE2547CAEADEEB97",
+    "executed": false
+  }
+]

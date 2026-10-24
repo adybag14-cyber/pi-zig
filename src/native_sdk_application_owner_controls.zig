@@ -31,6 +31,11 @@ fn ownerBody(owner: *actual.Owner, s: *Scope) !void {
         try std.testing.expect(c.JS_IsAsyncFunction(function));
         try std.testing.expect(!c.JS_IsConstructor(s.engine.context, function));
     }
+    const print = try owned.ownRoot(s, try owner.createPrintMode());
+    const run_print = try get(s, print, "runPrintMode");
+    try std.testing.expect(c.JS_IsAsyncFunction(run_print));
+    try std.testing.expect(!c.JS_IsConstructor(s.engine.context, run_print));
+    try std.testing.expect(c.JS_IsStrictEqual(s.engine.context, try get(s, run_print, "length"), c.JS_NewInt32(s.engine.context, 2)));
     const namespace = try owned.ownRoot(s, try owner.authStorage());
     const core = if (owner.auth) |*value| value else return error.RequiredActualAuthOwner;
     const memory = try owned.ownRoot(s, try core.inMemory());

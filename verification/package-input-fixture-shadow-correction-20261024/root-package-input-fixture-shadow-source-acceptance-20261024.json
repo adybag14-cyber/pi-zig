@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-24T18:17:05.995904+00:00",
+  "verdict": "accepted_exact_source_only_identifier_correction",
+  "base_head": "eeb59f314c834ed8a060da178251e380a50d0a62",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-input-fixture-shadow-correction-sourceonly-20261024\\source-intake.json",
+    "bytes": 4071,
+    "sha256": "E5651DFE6852CBFDF7AE31E6DDAAD1FDD02857286E1C03469C1AC47CA4B0CC88"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-gap-assessment\\package-input-fixture-shadow-independent-source-peer-20261024.json",
+    "bytes": 3182,
+    "sha256": "924F22B0ABFAFBD2FC6515309CD514682DC91E3A27A723A6D9DC2F81187B332B"
+  },
+  "selected_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-input-fixture-shadow-correction-sourceonly-20261024\\projected\\src\\native_node_module_package_inputs_test.zig",
+    "bytes": 17613,
+    "sha256": "540F3AF4828DB693266169079FC808C7351177A5145A71A3ECA3824EEAE5717D"
+  },
+  "exact_patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-input-fixture-shadow-correction-sourceonly-20261024\\package-input-fixture-local-name.patch",
+    "bytes": 1146,
+    "sha256": "ED5EF4E6781E236A009FDCC7F97FCFA7291D9E1DC897B125F4FEAAB0152BCB8B"
+  },
+  "checks": {
+    "complete_raw_forward_and_inverse": true,
+    "exact_patch_reconstructed": true,
+    "six_test_names_and_bodies_byte_identical": true,
+    "callback_and_JS_property_unchanged": true,
+    "original_negative_artifacts_rehashed": true
+  },
+  "change": "Fixture.bootstrap local read and its one use become read_function. Fixture.read, production code, names and assertions stay byte-identical.",
+  "original_negative_closure_pending": true,
+  "Main_mutated": false,
+  "native_execution": false,
+  "native_qualification": false,
+  "product_qualification": false,
+  "integration_condition": "Original failed BuildQuery must close independently before Main intake; fresh candidate compilation/metadata/runtime remain necessary."
+}

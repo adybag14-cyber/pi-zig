@@ -1,0 +1,744 @@
+{
+  "schema": 1,
+  "created_at_utc": "2026-10-24T14:00:17.582242+00:00",
+  "scope": "Actual shared getLazy watch-dependency reporting, bound into canonical _load and _findPath without caller-supplied reporting policy.",
+  "base_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "required_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-circular-sourceonly-20261023\\source-accounting.json",
+    "bytes": 29042,
+    "sha256": "4D0DBDD37B47F32547F3EC5C67F5FF3E5D477C2BE5CE118282B3D42A84EC8EFB"
+  },
+  "required_predecessor_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-gap-assessment\\commonjs-circular-independent-source-peer-20261023.json",
+    "bytes": 6308,
+    "sha256": "548B8042B85982860BECD2993AAF4BEF1A16BB8E1EC855DF17F483EA6C46D45C"
+  },
+  "targets": [
+    {
+      "target": "src/extensions/native_node_commonjs_find_path.zig",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-watch-sourceonly-20261024\\projected\\src\\extensions\\native_node_commonjs_find_path.zig",
+        "bytes": 9802,
+        "sha256": "B5602E59F806983B7AD5D28904711AB5A92881D7E80FAD957C003A70187EEB93"
+      },
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_find_path.zig",
+        "bytes": 9039,
+        "sha256": "FC8D15893F89F9E053BE7B1D94265CFEACC9ACC4D6125053A571A71679A063EF"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_commonjs_load.zig",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-watch-sourceonly-20261024\\projected\\src\\extensions\\native_node_commonjs_load.zig",
+        "bytes": 14949,
+        "sha256": "8AF83EB139AEAEB8215212F768FD0655A2DB2028E8235C33530A436F770EB5BE"
+      },
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-circular-sourceonly-20261023\\projected-v2\\src\\extensions\\native_node_commonjs_load.zig",
+        "bytes": 15177,
+        "sha256": "D2141BB53FF6CA3A5A395E21AC3FD3CE8DA398580181EC2F1D5D465146DF0C38"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_commonjs_watch.zig",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-watch-sourceonly-20261024\\projected\\src\\extensions\\native_node_commonjs_watch.zig",
+        "bytes": 6350,
+        "sha256": "52E59E13411D1AD04D50B52818A57AA50C0EB637D01A8FC0CC79D146A1289534"
+      },
+      "base": null
+    },
+    {
+      "target": "src/extensions/native_node_module_constructor.zig",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-watch-sourceonly-20261024\\projected\\src\\extensions\\native_node_module_constructor.zig",
+        "bytes": 30628,
+        "sha256": "85330C0B93D291A915AB958507BFE0A436C2C29A245D4A0A50C9B23ECEE15333"
+      },
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-circular-sourceonly-20261023\\projected-v2\\src\\extensions\\native_node_module_constructor.zig",
+        "bytes": 30551,
+        "sha256": "0C494B59B1DB195C057F9ABCB0296882DCA34D77DDDFF6F633E138416494C7AE"
+      }
+    },
+    {
+      "target": "src/native_node_commonjs_watch_test.zig",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-watch-sourceonly-20261024\\projected\\src\\native_node_commonjs_watch_test.zig",
+        "bytes": 13643,
+        "sha256": "9139620DE7F473BDA146EEFD4BD30D703D13145AE41E6B1BBE154F64C6216DE4"
+      },
+      "base": null
+    }
+  ],
+  "build": {
+    "target": "build.zig",
+    "main_base": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+      "bytes": 515962,
+      "sha256": "7AB122A962019B935EB08EE6042BFFDDCB6F7AF6BE6405F47E06A6CF591B7D4F"
+    },
+    "predecessor_addition": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-circular-sourceonly-20261023\\build-addition.zig.txt",
+      "bytes": 1190,
+      "sha256": "C87C91AC3374A35384BD9A4DD9F80E45B436917345955E9AC5254F01C4F3CD3D"
+    },
+    "insert_before_utf8": "    if (native_node_network != null) {\n        const native_corruption_probe = b.addExecutable(.{",
+    "add_only_hunk": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-watch-sourceonly-20261024\\build-addition.zig.txt",
+      "bytes": 1153,
+      "sha256": "44AA59D78B28E90361B320F3A542EA59E19A4838AA0C68BF3598E44CBCB5029E"
+    },
+    "derived_base": {
+      "bytes": 517152,
+      "sha256": "D757467D5160938144CAC7DE749A7077FCDEA500B04B62017387014920DDAB76"
+    },
+    "derived_output": {
+      "bytes": 518305,
+      "sha256": "C71E7E773CBADF66D153214D8903E0320388638F77A2BBDDD39C0E8143F83F4B"
+    },
+    "new_hunk_inverse_exact": true,
+    "predecessor_hunk_inverse_exact": true,
+    "integration": "Compose only the new additive hunk into the actual reviewed combined build. The standalone patch build base is exactly Main plus the predecessor circular insertion."
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-watch-sourceonly-20261024\\application-commonjs-watch-source.patch",
+    "bytes": 29625,
+    "sha256": "AA2E60FFD075BD3ED92D222283B38F8BE160EB9B81C7BB99751EB0831C8AC97F"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-watch-sourceonly-20261024\\README.md",
+    "bytes": 5181,
+    "sha256": "4BF7211447D1E60EA080B78E20B6F7D2D86C1AF3EE539ABFB57F0904E81DA22F"
+  },
+  "retained_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\primary-authority.json",
+      "bytes": 3386,
+      "sha256": "1C852A94D054E0705D4D098E66749A83FB7AFD01B462F9933A2EC11FFEEC2CC4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+      "bytes": 72050,
+      "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__util.js.txt",
+      "bytes": 28980,
+      "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\LICENSE.txt",
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    }
+  ],
+  "authority_ranges": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+      "lines": "185",
+      "behavior": "One shouldReportRequiredModules=getLazy initializer over the actual process.env.WATCH_REPORT_DEPENDENCIES."
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+      "lines": "314-329",
+      "behavior": "Both reporters, condition/callee send reads, ordinary literals, captured ArrayPrototypeMap and per-element live path.resolve/template order."
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__util.js.txt",
+      "lines": "813-823",
+      "behavior": "getLazy stores value then initialized=true, preserving undefined, retry and reentrant outer/inner outcomes."
+    }
+  ],
+  "direct_import_resolutions": [
+    {
+      "from": "src/native_node_commonjs_watch_test.zig",
+      "operand": "extensions/native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "from": "src/native_node_commonjs_watch_test.zig",
+      "operand": "extensions/native_node_commonjs_module_core.zig",
+      "target": "src/extensions/native_node_commonjs_module_core.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_module_core.zig",
+        "bytes": 4518,
+        "sha256": "3430093711662E683544D718DB8D44DD636F556A6156B9C761D47D56A4B4E258"
+      }
+    },
+    {
+      "from": "src/native_node_commonjs_watch_test.zig",
+      "operand": "extensions/native_node_commonjs_watch.zig",
+      "target": "src/extensions/native_node_commonjs_watch.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-watch-sourceonly-20261024\\projected\\src\\extensions\\native_node_commonjs_watch.zig",
+        "bytes": 6350,
+        "sha256": "52E59E13411D1AD04D50B52818A57AA50C0EB637D01A8FC0CC79D146A1289534"
+      }
+    },
+    {
+      "from": "src/native_node_commonjs_watch_test.zig",
+      "operand": "extensions/native_node_module_constructor.zig",
+      "target": "src/extensions/native_node_module_constructor.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-watch-sourceonly-20261024\\projected\\src\\extensions\\native_node_module_constructor.zig",
+        "bytes": 30628,
+        "sha256": "85330C0B93D291A915AB958507BFE0A436C2C29A245D4A0A50C9B23ECEE15333"
+      }
+    },
+    {
+      "from": "src/native_node_commonjs_watch_test.zig",
+      "operand": "extensions/native_process.zig",
+      "target": "src/extensions/native_process.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+        "bytes": 6626,
+        "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+      }
+    },
+    {
+      "from": "src/native_node_commonjs_watch_test.zig",
+      "operand": "extensions/node_fs.zig",
+      "target": "src/extensions/node_fs.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_fs.zig",
+        "bytes": 40147,
+        "sha256": "1EAC38BF57D96BDCEB096A091FFFD6C7D5EBA78101D7DBDFD1E060A5FE9DD7A9"
+      }
+    },
+    {
+      "from": "src/native_node_commonjs_watch_test.zig",
+      "operand": "extensions/node_path.zig",
+      "target": "src/extensions/node_path.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_path.zig",
+        "bytes": 31004,
+        "sha256": "377B41F044812F61066B61D0A70723A90019E1F41FD2617DF4DC252BBCBC02B5"
+      }
+    },
+    {
+      "from": "src/native_node_commonjs_watch_test.zig",
+      "operand": "extensions/node_url.zig",
+      "target": "src/extensions/node_url.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_url.zig",
+        "bytes": 12179,
+        "sha256": "61B4200BCE8AB01D4051492FCAAE130B049139770E3727E4B110A193C401EDC8"
+      }
+    },
+    {
+      "from": "src/native_node_commonjs_watch_test.zig",
+      "operand": "extensions/timers.zig",
+      "target": "src/extensions/timers.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\timers.zig",
+        "bytes": 52715,
+        "sha256": "4AB5926421C7601B752F92E4306DC31A455C16437F8C904F80875EEE4B70CCCC"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_find_path.zig",
+      "operand": "native_ai_provider_values.zig",
+      "target": "src/extensions/native_ai_provider_values.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_ai_provider_values.zig",
+        "bytes": 2689,
+        "sha256": "2D64F3F5E408790DC0BD374E13F1A9C69EB21E1D62944DAE9C913B87F13629EB"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_find_path.zig",
+      "operand": "native_node_commonjs_interrupt.zig",
+      "target": "src/extensions/native_node_commonjs_interrupt.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_interrupt.zig",
+        "bytes": 1877,
+        "sha256": "7501E2EDA766BD831320F2878547C39083DEF09D21124D85E55545C342532B6C"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_find_path.zig",
+      "operand": "native_node_commonjs_lookup.zig",
+      "target": "src/extensions/native_node_commonjs_lookup.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_lookup.zig",
+        "bytes": 14510,
+        "sha256": "4B83FFDA07AB397FEFF38F778CE5C4746B35D424797A52EFEA5B0F5C265F5BB1"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_find_path.zig",
+      "operand": "native_node_commonjs_require_function.zig",
+      "target": "src/extensions/native_node_commonjs_require_function.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_require_function.zig",
+        "bytes": 6191,
+        "sha256": "337FF82B632C69E83E5ACF16449C4AB36A7C179C7E93CB88193B53A114C59AC7"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_find_path.zig",
+      "operand": "native_node_commonjs_try_files.zig",
+      "target": "src/extensions/native_node_commonjs_try_files.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_try_files.zig",
+        "bytes": 5079,
+        "sha256": "00640FC6206765758E64B23DF6D255716B229DD0181C74008777FA55010AB06A"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_find_path.zig",
+      "operand": "native_node_commonjs_watch.zig",
+      "target": "src/extensions/native_node_commonjs_watch.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-watch-sourceonly-20261024\\projected\\src\\extensions\\native_node_commonjs_watch.zig",
+        "bytes": 6350,
+        "sha256": "52E59E13411D1AD04D50B52818A57AA50C0EB637D01A8FC0CC79D146A1289534"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_find_path.zig",
+      "operand": "native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_load.zig",
+      "operand": "native_ai_provider_values.zig",
+      "target": "src/extensions/native_ai_provider_values.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_ai_provider_values.zig",
+        "bytes": 2689,
+        "sha256": "2D64F3F5E408790DC0BD374E13F1A9C69EB21E1D62944DAE9C913B87F13629EB"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_load.zig",
+      "operand": "native_async_body.zig",
+      "target": "src/extensions/native_async_body.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_async_body.zig",
+        "bytes": 5615,
+        "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_load.zig",
+      "operand": "native_node_commonjs_circular.zig",
+      "target": "src/extensions/native_node_commonjs_circular.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-circular-sourceonly-20261023\\projected-v2\\src\\extensions\\native_node_commonjs_circular.zig",
+        "bytes": 10266,
+        "sha256": "F1583B145A1E3AE9EEDB5BACEE3C68DC1447A443B84F258ADB2E7BC792701213"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_load.zig",
+      "operand": "native_node_commonjs_state.zig",
+      "target": "src/extensions/native_node_commonjs_state.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_state.zig",
+        "bytes": 2830,
+        "sha256": "FD1FCE7037F7D3B50E6DB6095B2463B8949B1D897910EAA1125DE9C6C26FDDA9"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_load.zig",
+      "operand": "native_node_commonjs_watch.zig",
+      "target": "src/extensions/native_node_commonjs_watch.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-watch-sourceonly-20261024\\projected\\src\\extensions\\native_node_commonjs_watch.zig",
+        "bytes": 6350,
+        "sha256": "52E59E13411D1AD04D50B52818A57AA50C0EB637D01A8FC0CC79D146A1289534"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_load.zig",
+      "operand": "native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_load.zig",
+      "operand": "native_node_module_constructor.zig",
+      "target": "src/extensions/native_node_module_constructor.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-watch-sourceonly-20261024\\projected\\src\\extensions\\native_node_module_constructor.zig",
+        "bytes": 30628,
+        "sha256": "85330C0B93D291A915AB958507BFE0A436C2C29A245D4A0A50C9B23ECEE15333"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_watch.zig",
+      "operand": "native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_watch.zig",
+      "operand": "native_node_fs_private_publication.zig",
+      "target": "src/extensions/native_node_fs_private_publication.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_private_publication.zig",
+        "bytes": 1033,
+        "sha256": "F118D857DB722708344B87083608FEFEB769183BC0DB0F09C05D1CDCF87AB307"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_watch.zig",
+      "operand": "native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_commonjs_watch.zig",
+      "operand": "native_node_module_constructor.zig",
+      "target": "src/extensions/native_node_module_constructor.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-watch-sourceonly-20261024\\projected\\src\\extensions\\native_node_module_constructor.zig",
+        "bytes": 30628,
+        "sha256": "85330C0B93D291A915AB958507BFE0A436C2C29A245D4A0A50C9B23ECEE15333"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_module_constructor.zig",
+      "operand": "native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_module_constructor.zig",
+      "operand": "native_node_fs_collections.zig",
+      "target": "src/extensions/native_node_fs_collections.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_collections.zig",
+        "bytes": 16225,
+        "sha256": "EBC0FE29F1EFE23C34F7EB2A3181597197C07E31A6BB9C5681B3EB53213C007F"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_module_constructor.zig",
+      "operand": "native_node_fs_private_publication.zig",
+      "target": "src/extensions/native_node_fs_private_publication.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_private_publication.zig",
+        "bytes": 1033,
+        "sha256": "F118D857DB722708344B87083608FEFEB769183BC0DB0F09C05D1CDCF87AB307"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_module_constructor.zig",
+      "operand": "native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "from": "src/extensions/native_node_module_constructor.zig",
+      "operand": "native_node_module_paths.zig",
+      "target": "src/extensions/native_node_module_paths.zig",
+      "input": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_paths.zig",
+        "bytes": 6731,
+        "sha256": "AF94838CCA8A0BAC3D4334D95F8BBD00D146445510DB156CAEB9AC428143BE1C"
+      }
+    }
+  ],
+  "finite_existing_file_deltas": {
+    "src/extensions/native_node_module_constructor.zig": [
+      {
+        "old_start_line": 155,
+        "old_lines": 0,
+        "new_start_line": 155,
+        "new_lines": 1,
+        "before": "",
+        "after": "    try define(s, owner, \"arrayMap\", try method(s, array_prototype, \"map\"));\n"
+      }
+    ],
+    "src/extensions/native_node_commonjs_load.zig": [
+      {
+        "old_start_line": 18,
+        "old_lines": 1,
+        "new_start_line": 18,
+        "new_lines": 0,
+        "before": "    should_report_required_modules: c.JSValue,\n",
+        "after": ""
+      },
+      {
+        "old_start_line": 40,
+        "old_lines": 0,
+        "new_start_line": 39,
+        "new_lines": 2,
+        "before": "",
+        "after": "    const reporting = try s.own(try @import(\"native_node_commonjs_watch.zig\").acquire(engine, module));\n    try s.put(state.roots, \"report_module\", try s.get(reporting, \"reportModuleToWatchMode\"));\n"
+      },
+      {
+        "old_start_line": 76,
+        "old_lines": 9,
+        "new_start_line": 77,
+        "new_lines": 1,
+        "before": "    if (!s.truthy(try s.call(try s.get(state.roots, \"should_report_required_modules\"), c.pi_js_undefined(), &.{}))) return;\n    const process = try s.get(state.roots, \"process\");\n    if (!s.truthy(try s.get(process, \"send\"))) return;\n    const send = try s.get(process, \"send\");\n    const record = try s.object();\n    const list = try s.array();\n    try s.index(list, 0, filename);\n    try s.put(record, \"watch:require\", list);\n    _ = try s.call(send, process, &.{record});\n",
+        "after": "    _ = try s.call(try s.get(state.roots, \"report_module\"), c.pi_js_undefined(), &.{filename});\n"
+      }
+    ],
+    "src/extensions/native_node_commonjs_find_path.zig": [
+      {
+        "old_start_line": 19,
+        "old_lines": 1,
+        "new_start_line": 19,
+        "new_lines": 0,
+        "before": "    report_module_not_found: c.JSValue,\n",
+        "after": ""
+      },
+      {
+        "old_start_line": 24,
+        "old_lines": 0,
+        "new_start_line": 23,
+        "new_lines": 3,
+        "before": "",
+        "after": "    var s: Scope = .{ .engine = engine }; defer s.deinit();\n    const reporting = try s.own(try @import(\"native_node_commonjs_watch.zig\").acquire(engine, inputs.lookup.module_constructor));\n    const report_module_not_found = try s.get(reporting, \"reportModuleNotFoundToWatchMode\");\n"
+      },
+      {
+        "old_start_line": 29,
+        "old_lines": 1,
+        "new_start_line": 31,
+        "new_lines": 1,
+        "before": "        inputs.string_char_code_at, inputs.resolve_exports, inputs.report_module_not_found, inputs.invalid_arg_type };\n",
+        "after": "        inputs.string_char_code_at, inputs.resolve_exports, report_module_not_found, inputs.invalid_arg_type };\n"
+      },
+      {
+        "old_start_line": 42,
+        "old_lines": 1,
+        "new_start_line": 44,
+        "new_lines": 1,
+        "before": "        .resolve_exports = values[count + 11], .report_module_not_found = values[count + 12], .invalid_arg_type = values[count + 13] };\n",
+        "after": "        .resolve_exports = values[count + 11], .invalid_arg_type = values[count + 13] };\n"
+      },
+      {
+        "old_start_line": 44,
+        "old_lines": 1,
+        "new_start_line": 46,
+        "new_lines": 1,
+        "before": "    return find(engine, inputs, arg(args, 0), arg(args, 1), arg(args, 2), conditions);\n",
+        "after": "    return findWithReporter(engine, inputs, values[count + 12], arg(args, 0), arg(args, 1), arg(args, 2), conditions);\n"
+      },
+      {
+        "old_start_line": 55,
+        "old_lines": 0,
+        "new_start_line": 57,
+        "new_lines": 8,
+        "before": "",
+        "after": "    var s: Scope = .{ .engine = engine }; defer s.deinit();\n    const reporting = try s.own(try @import(\"native_node_commonjs_watch.zig\").acquire(engine, inputs.lookup.module_constructor));\n    return findWithReporter(engine, inputs, try s.get(reporting, \"reportModuleNotFoundToWatchMode\"),\n        request, original_paths, is_main, conditions);\n}\nfn findWithReporter(engine: *v.em.Engine, inputs: Inputs, report_module_not_found: c.JSValue,\n    request: c.JSValue, original_paths: c.JSValue, is_main: c.JSValue, conditions: c.JSValue) !c.JSValue\n{\n"
+      },
+      {
+        "old_start_line": 119,
+        "old_lines": 1,
+        "new_start_line": 129,
+        "new_lines": 1,
+        "before": "        _ = try frame.call(inputs.report_module_not_found, c.pi_js_undefined(), &.{ base, report_exts });\n",
+        "after": "        _ = try frame.call(report_module_not_found, c.pi_js_undefined(), &.{ base, report_exts });\n"
+      }
+    ]
+  },
+  "unchanged_function_bodies": {
+    "src/extensions/native_node_module_constructor.zig": [
+      "statement",
+      "define",
+      "global",
+      "method",
+      "cachedOwner",
+      "freshCache",
+      "selectCompleted",
+      "acquireConstructor",
+      "actualConstructor",
+      "actualConstructorBody",
+      "create",
+      "graphBody",
+      "accessor",
+      "setField",
+      "dirname",
+      "setPath",
+      "setExports",
+      "setChildren",
+      "weakSet",
+      "updateChildren",
+      "includes",
+      "construct",
+      "constructBody",
+      "parentFunction",
+      "warned",
+      "hasCode",
+      "optionPredicate",
+      "pendingDeprecation",
+      "warn",
+      "emitWarning",
+      "deprecatedParent",
+      "deprecatedParentBody",
+      "parentBody",
+      "getParent",
+      "setParentBody",
+      "setParent",
+      "getConstructor",
+      "isPreloading",
+      "weakReadBody",
+      "lastParent",
+      "firstParent",
+      "setLastParentBody",
+      "setLastParent",
+      "ownerField",
+      "loaderEnvironment",
+      "loaderEnvironmentBody",
+      "commonJSState",
+      "retainState",
+      "retainCommonJSState",
+      "keyBody",
+      "loaderKey",
+      "exportMapBody",
+      "moduleExportMap",
+      "snapshotBody",
+      "snapshotExports",
+      "snapshotRead",
+      "exportsSnapshot",
+      "hasRecord",
+      "hasPrivateModuleRecord",
+      "pathObject",
+      "convertedRead",
+      "convertedBody",
+      "retainConverted",
+      "retainConvertedBody",
+      "addChildBody",
+      "addCachedChild",
+      "isArray",
+      "removeChildBody",
+      "removeChild",
+      "warningCodes",
+      "publishBody",
+      "publish"
+    ],
+    "src/extensions/native_node_commonjs_load.zig": [
+      "arg",
+      "property",
+      "symbol",
+      "setSymbol",
+      "privateSet",
+      "privateGet",
+      "remove",
+      "updateChildren",
+      "circular",
+      "failedCleanup",
+      "loadBody",
+      "loadWithCleanup"
+    ],
+    "src/extensions/native_node_commonjs_find_path.zig": [
+      "arg",
+      "character",
+      "number",
+      "stat"
+    ]
+  },
+  "static_checks": {
+    "all_relative_imports_resolve": true,
+    "new_owner_Scope_methods": [
+      "call",
+      "define",
+      "equal",
+      "get",
+      "object",
+      "objectProto",
+      "own",
+      "put",
+      "toString",
+      "truthy"
+    ],
+    "exact_finite_line_inverses": true,
+    "exact_patch_reconstruction": true,
+    "old_find_algorithm_unchanged_except_bound_reporter_parameter": true,
+    "caller_supplied_reporting_policy_removed_from_both_public_Inputs": true,
+    "main_head_observed": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+    "main_porcelain_empty": true
+  },
+  "controls": {
+    "install_step": "build-native-node-commonjs-watch",
+    "filter": "native actual CommonJS watch",
+    "source_named_declarations": 11,
+    "names": [
+      "native actual CommonJS watch shares one authenticated graph without publishing public Module",
+      "native actual CommonJS watch reads environment lazily once and shares the value between reporters",
+      "native actual CommonJS watch caches an undefined flag and never reads send on the disabled path",
+      "native actual CommonJS watch retries a throwing lazy initializer and preserves its exact reason",
+      "native actual CommonJS watch outer successful initialization replaces a reentrant inner value",
+      "native actual CommonJS watch throwing outer initialization keeps a completed reentrant inner cache",
+      "native actual CommonJS watch performs two live send reads and keeps uncoerced filename identity",
+      "native actual CommonJS watch defines message literals without inherited setters",
+      "native actual CommonJS watch uses captured map with sparse inherited elements and real species semantics",
+      "native actual CommonJS watch resolves each path callee before template coercions after the selected send",
+      "native actual CommonJS watch propagates map and send exceptions while retaining the initialized flag"
+    ],
+    "compiled_metadata_count": null,
+    "executed": false
+  },
+  "claims": {
+    "source_implementation_prepared": true,
+    "independent_peer_acceptance": false,
+    "Main_mutated": false,
+    "public_module_or_transport_installed": false,
+    "default_backend_changed": false,
+    "production_bridge_removed": false,
+    "full_application_qualified": false
+  },
+  "not_executed": [
+    "Zig parser or formatter",
+    "native compiler",
+    "native metadata query",
+    "native runtime",
+    "Node capture",
+    "source generator"
+  ],
+  "preserved_sealed_packets": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\application-commonjs-circular-sourceonly-20261023\\source-accounting.json",
+      "bytes": 29042,
+      "sha256": "4D0DBDD37B47F32547F3EC5C67F5FF3E5D477C2BE5CE118282B3D42A84EC8EFB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\next-two-catalog-sourceonly-20261023\\source-accounting.json",
+      "bytes": 7198,
+      "sha256": "7FF06B1DCD07766BBC762D37F5030963C3E7EC42643E21F06190AE3E1E01BB0B"
+    }
+  ],
+  "remaining_application_work": [
+    "Complete canonical hooks/ESM/compiler graph",
+    "Native Jiti dependencies and real physical module identities",
+    "Complete application namespace and supplier lifetime assembly",
+    "Main print/RPC selection and actual application qualification"
+  ]
+}

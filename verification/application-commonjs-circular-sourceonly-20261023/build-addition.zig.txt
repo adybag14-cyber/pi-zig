@@ -1,0 +1,16 @@
+    if (native_node_network != null) {
+        const commonjs_circular = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_commonjs_circular_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native actual CommonJS circular"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, commonjs_circular.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, commonjs_circular.root_module, typescript_parser);
+        linkSqlite(commonjs_circular.root_module, sqlite_lib_dir, sqlite_library);
+        commonjs_circular.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            commonjs_circular.root_module.linkSystemLibrary("advapi32", .{});
+            commonjs_circular.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-commonjs-circular", "Install nine actual CommonJS circular controls without execution").dependOn(&b.addInstallArtifact(commonjs_circular, .{ .dest_sub_path = b.fmt("native-node-commonjs-circular{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    }
+

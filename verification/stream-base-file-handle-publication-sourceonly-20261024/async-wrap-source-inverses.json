@@ -1,0 +1,72 @@
+{
+  "donor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-write-buffer-sourceonly-20261023\\projected\\src\\extensions\\native_node_async_wrap.zig",
+    "bytes": 21090,
+    "sha256": "4B9D3A2333005B1456F09DD68C9BB93A39AF8E5F9D0481A079A4B625B0940621"
+  },
+  "output": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-file-handle-publication-sourceonly-20261024\\projected\\src\\extensions\\native_node_async_wrap.zig",
+    "bytes": 25866,
+    "sha256": "1785211A09CBAF5010361E7E0697D92F8B7A711EDCD69FAD3156BD267D77D10C"
+  },
+  "edits": [
+    {
+      "old": "//! AsyncWrap API methods. FileHandle's callback/StreamBase template is separate.",
+      "new": "//! AsyncWrap API methods and complete FileHandle template with real native inputs."
+    },
+    {
+      "old": "const fs_callback = @import(\"native_node_fs_request_callback.zig\");",
+      "new": "const fs_callback = @import(\"native_node_fs_request_callback.zig\");\nconst file_template = @import(\"native_node_file_handle_template.zig\");\nconst file_binding = @import(\"native_node_fs_binding_data.zig\");\nconst one_byte = @import(\"native_node_one_byte_string.zig\");"
+    },
+    {
+      "old": "pub const Provider = native.Provider;",
+      "new": "pub const Provider = native.Provider;\npub const FileHandleInputs = file_template.Inputs;"
+    },
+    {
+      "old": "    fs_callback_controller: ?*fs_io.Controller = null,",
+      "new": "    fs_callback_controller: ?*fs_io.Controller = null,\n    file_handle_owner: ?*file_template.Owner = null,"
+    },
+    {
+      "old": "    if (self.fs_callback_controller) |controller| {",
+      "new": "    if (self.file_handle_owner) |configured| {\n        self.file_handle_owner = null;\n        configured.destroy(runtime);\n    }\n    if (self.fs_callback_controller) |controller| {"
+    },
+    {
+      "old": "    for (self.constructors) |slot| if (slot) |value| c.JS_MarkValue(runtime, value, marker);",
+      "new": "    for (self.constructors) |slot| if (slot) |value| c.JS_MarkValue(runtime, value, marker);\n    if (self.file_handle_owner) |configured| configured.mark(runtime, marker);"
+    },
+    {
+      "old": "        if (argc > 0) argv[0] else c.pi_js_undefined(),",
+      "new": "        if (argc > 0) argv[0..@intCast(argc)] else &.{},"
+    },
+    {
+      "old": "    receiver_or_target: c.JSValue, first_argument: c.JSValue,",
+      "new": "    receiver_or_target: c.JSValue, args: []const c.JSValue,"
+    },
+    {
+      "old": "            const use_bigint = c.JS_IsBool(first_argument) and",
+      "new": "            const first_argument = a.arg(args, 0);\n            const use_bigint = c.JS_IsBool(first_argument) and"
+    },
+    {
+      "old": "        } else if (self.kind == .shutdownwrap or self.kind == .writewrap) {",
+      "new": "        } else if (self.kind == .filehandle) {\n            const configured = owner.file_handle_owner orelse\n                return error.ActualFileHandleCallbackTemplateRequired;\n            try configured.construct(s, receiver, args);\n        } else if (self.kind == .shutdownwrap or self.kind == .writewrap) {"
+    },
+    {
+      "old": "    if (self.kind == .fsreqcallback)\n        check.assertion",
+      "new": "    if (self.kind == .filehandle)\n        check.assertion(s.engine, .{\n            .file_line = \"src/node_file.cc:252\",\n            .message = \"args.IsConstructCall()\",\n            .function = \"node::fs::FileHandle::New\",\n        });\n    if (self.kind == .fsreqcallback)\n        check.assertion"
+    },
+    {
+      "old": "    if (kind == .filehandle) return error.ActualFileHandleCallbackTemplateRequired;",
+      "new": "    if (kind == .filehandle and owner.file_handle_owner == null)\n        return error.ActualFileHandleCallbackTemplateRequired;"
+    },
+    {
+      "old": "    } else {\n        const parent = try ensureConstructor(s, owner, owner_value, .async_wrap);",
+      "new": "    } else {\n        if (kind == .filehandle)\n            try file_template.installPrototype(s, prototype, owner_value);\n        const parent = try ensureConstructor(s, owner, owner_value, .async_wrap);"
+    },
+    {
+      "old": "",
+      "new": "\n/// The real fs assembler supplies its already-acquired native collaborators\n/// after BindingData and before any FileHandle constructor or stored instance\n/// template is exposed. Reconfiguration cannot replace live lifetime owners.\npub fn configureFileHandle(engine: *Engine, known_owner: c.JSValue,\n    inputs: FileHandleInputs) !void\n{\n    const result = try a.expression(engine, configureFileHandleBody, .{ known_owner, inputs });\n    engine.freeValue(result);\n}\nfn configureFileHandleBody(s: *Scope, known_owner: c.JSValue,\n    inputs: FileHandleInputs) !c.JSValue\n{\n    try s.engine.checkNativeEntry();\n    const owner = try bundleOf(s.engine, known_owner);\n    if (owner.registry.environment != inputs.controller.environment or\n        inputs.immediate_queue.engine != s.engine)\n        return error.ActualFileHandleTemplateEnvironmentMismatch;\n    if (owner.file_handle_owner) |existing| {\n        if (!existing.matches(inputs)) return error.ActualFileHandleTemplateInputsMismatch;\n        return c.pi_js_undefined();\n    }\n    const candidate = try file_template.Owner.create(s, owner.registry, known_owner, inputs);\n    // Primitive/native allocations may reenter through VM finalization. A\n    // completed winner keeps its original collaborators; never overwrite it.\n    if (owner.file_handle_owner) |existing| {\n        const same = existing.matches(inputs);\n        candidate.destroy(s.engine.runtime);\n        if (!same) return error.ActualFileHandleTemplateInputsMismatch;\n        return c.pi_js_undefined();\n    }\n    owner.file_handle_owner = candidate;\n    return c.pi_js_undefined();\n}\n\n/// SetConstructorFunction on the EXISTING actual fs BindingData target. This\n/// installs the complete FileHandle class only; it does not manufacture or\n/// publish a partial internalBinding('fs') namespace or select a runtime factory.\npub fn publishFileHandle(engine: *Engine, known_owner: c.JSValue,\n    actual_fs_target: c.JSValue) !void\n{\n    const result = try a.expression(engine, publishFileHandleBody,\n        .{ known_owner, actual_fs_target });\n    engine.freeValue(result);\n}\nfn publishFileHandleBody(s: *Scope, known_owner: c.JSValue,\n    actual_fs_target: c.JSValue) !c.JSValue\n{\n    const owner = try bundleOf(s.engine, known_owner);\n    try requireTemplate(owner, .filehandle);\n    const configured = owner.file_handle_owner.?;\n    const data = file_binding.get(owner.registry) orelse\n        return error.ActualFileHandleRealmBindingDataRequired;\n    if (!c.JS_IsStrictEqual(s.engine.context, data.template_owner, known_owner) or\n        !c.JS_IsStrictEqual(s.engine.context, data.wrapper orelse\n            return error.ActualFileHandleFSBindingTargetRequired, actual_fs_target))\n        return error.ActualFileHandleFSBindingTargetRequired;\n    const target = try s.own(a.duplicate(s.engine, actual_fs_target));\n    const key = try one_byte.fromCString(s, \"FileHandle\", configured.inputs.heap_diagnostics);\n    // util.cc:705 uses GetFunction(...).ToLocalChecked(), then ordinary\n    // target.Set(...).Check(). A false Set is accepted; an empty Maybe is fatal.\n    const function = ensureConstructor(s, owner, known_owner, .filehandle) catch\n        check.fatal(s.engine, \"v8::ToLocalChecked\", \"Empty MaybeLocal\",\n            configured.inputs.heap_diagnostics);\n    try s.pending();\n    const status = c.JS_SetPropertyValue(s.engine.context, target,\n        a.duplicate(s.engine, key), a.duplicate(s.engine, function), 0);\n    if (status < 0) check.maybeCheck(s.engine, configured.inputs.heap_diagnostics);\n    try s.pending();\n    return c.pi_js_undefined();\n}\n",
+      "kind": "append"
+    }
+  ],
+  "inverse_exact": true
+}

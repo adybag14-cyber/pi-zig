@@ -16,17 +16,19 @@ pub const Inputs = struct {
     array_push_apply_target: c.JSValue,
     string_char_code_at: c.JSValue,
     resolve_exports: c.JSValue,
-    report_module_not_found: c.JSValue,
     invalid_arg_type: c.JSValue,
 };
 const count = lookup.captured_root_count;
 pub fn create(engine: *v.em.Engine, inputs: Inputs) !c.JSValue {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const reporting = try s.own(try @import("native_node_commonjs_watch.zig").acquire(engine, inputs.lookup.module_constructor));
+    const report_module_not_found = try s.get(reporting, "reportModuleNotFoundToWatchMode");
     var values: [count + 14]c.JSValue = undefined;
     for (lookup.captureRoots(engine, inputs.lookup), 0..) |value, index| values[index] = value;
     const tail = [_]c.JSValue{ inputs.files.process, inputs.files.to_real_path, inputs.files.read_package, inputs.files.error_constructor,
         c.pi_js_bool(engine.context, @intFromBool(inputs.files.preserve_symlinks)), c.pi_js_bool(engine.context, @intFromBool(inputs.files.preserve_symlinks_main)),
         inputs.get_cjs_conditions, inputs.array_join, inputs.object_keys, inputs.array_push_apply_target,
-        inputs.string_char_code_at, inputs.resolve_exports, inputs.report_module_not_found, inputs.invalid_arg_type };
+        inputs.string_char_code_at, inputs.resolve_exports, report_module_not_found, inputs.invalid_arg_type };
     for (tail, 0..) |value, index| values[count + index] = value;
     return @import("native_node_module_callable.zig").create(engine, "", 3, true, callback, &values);
 }
@@ -39,9 +41,9 @@ fn callback(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, values:
         .preserve_symlinks = c.JS_ToBool(engine.context, values[count + 4]) == 1, .preserve_symlinks_main = c.JS_ToBool(engine.context, values[count + 5]) == 1 },
         .get_cjs_conditions = values[count + 6], .array_join = values[count + 7], .object_keys = values[count + 8],
         .array_push_apply_target = values[count + 9], .string_char_code_at = values[count + 10],
-        .resolve_exports = values[count + 11], .report_module_not_found = values[count + 12], .invalid_arg_type = values[count + 13] };
+        .resolve_exports = values[count + 11], .invalid_arg_type = values[count + 13] };
     const conditions = if (c.JS_IsUndefined(arg(args, 3))) try s.call(inputs.get_cjs_conditions, c.pi_js_undefined(), &.{}) else arg(args, 3);
-    return find(engine, inputs, arg(args, 0), arg(args, 1), arg(args, 2), conditions);
+    return findWithReporter(engine, inputs, values[count + 12], arg(args, 0), arg(args, 1), arg(args, 2), conditions);
 }
 fn character(s: *Scope, inputs: Inputs, request: c.JSValue, offset: i32) !c.JSValue {
     const index = try s.own(try s.engine.checked(c.JS_PiBinaryOperator(s.engine.context, 1, try s.get(request, "length"), c.JS_NewInt32(s.engine.context, offset))));
@@ -52,6 +54,14 @@ fn stat(s: *Scope, inputs: Inputs, path: c.JSValue) !c.JSValue {
     return s.call(try s.get(inputs.lookup.state, "stat"), c.pi_js_undefined(), &.{path});
 }
 pub fn find(engine: *v.em.Engine, inputs: Inputs, request: c.JSValue, original_paths: c.JSValue, is_main: c.JSValue, conditions: c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const reporting = try s.own(try @import("native_node_commonjs_watch.zig").acquire(engine, inputs.lookup.module_constructor));
+    return findWithReporter(engine, inputs, try s.get(reporting, "reportModuleNotFoundToWatchMode"),
+        request, original_paths, is_main, conditions);
+}
+fn findWithReporter(engine: *v.em.Engine, inputs: Inputs, report_module_not_found: c.JSValue,
+    request: c.JSValue, original_paths: c.JSValue, is_main: c.JSValue, conditions: c.JSValue) !c.JSValue
+{
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     const path = inputs.lookup.path;
     const absolute_method = try s.get(path, "isAbsolute");
@@ -116,7 +126,7 @@ pub fn find(engine: *v.em.Engine, inputs: Inputs, request: c.JSValue, original_p
         }
         const report_exts = try frame.array(); try frame.index(report_exts, 0, try frame.text(""));
         if (!c.JS_IsUndefined(exts)) _ = try frame.call(inputs.lookup.reflect_apply, c.pi_js_undefined(), &.{ inputs.array_push_apply_target, report_exts, exts });
-        _ = try frame.call(inputs.report_module_not_found, c.pi_js_undefined(), &.{ base, report_exts });
+        _ = try frame.call(report_module_not_found, c.pi_js_undefined(), &.{ base, report_exts });
     }
     return c.pi_js_bool(engine.context, 0);
 }

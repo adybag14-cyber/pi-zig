@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-24T18:17:56.773188+00:00",
+  "verdict": "accepted_finite_source_only_successor",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024-v2\\source-intake.json",
+    "bytes": 17648,
+    "sha256": "EC56E9F1F10BB6CEB513BB2FDD6C042FD95AE63443083BBEB94772729837E79E"
+  },
+  "predecessor_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024\\source-intake.json",
+    "bytes": 16431,
+    "sha256": "810273D34A62A554FEA647BD0238E587842372A18796BCFFF780A06DBE3EAB95"
+  },
+  "predecessor_full_Root_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-module-compile-info-source-peer-20261024.json",
+    "bytes": 14892,
+    "sha256": "77F55D0A2717C3D436233620581C30B5C5C8E27D1CA64B4E7D841FD41A0AF5A7"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-gap-assessment\\module-compile-info-v2-identifier-independent-source-peer-20261024.json",
+    "bytes": 3533,
+    "sha256": "75E61E68A4C4EFC1D4DD678245B06104E1DAAB4A86B3E6366AEEB374236F7271"
+  },
+  "selected_owner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024-v2\\projected\\src\\extensions\\native_node_commonjs_compile_info.zig",
+    "bytes": 5784,
+    "sha256": "9F6957753B97394694BF19101768032357A07CD139B47AEBB20BD33F4A520081"
+  },
+  "inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024-v2\\parameter-rename-inverse.json",
+    "bytes": 4030,
+    "sha256": "8D640F07983CB6AA45E438BA2EF25AD492316CF5164CFC7A3CBA8C421387DC6C"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024-v2\\module-compile-info-v2-successor.patch",
+    "bytes": 29624,
+    "sha256": "93201DC465F68D8310E860A6C4C98064BF65AE82ED336CBDB04385F764132C08"
+  },
+  "checks": {
+    "unique_pins_rehashed": 26,
+    "complete_five_token_intermediate_forward_and_raw_inverse": true,
+    "full_three_path_patch_reconstructed": true,
+    "full_owner_read": true,
+    "eleven_test_declarations_and_assertions_byte_identical": true,
+    "build_insertion_711_unchanged": true,
+    "authority_and_semantic_accounting_unchanged": true
+  },
+  "change": "Only two private bool parameters and three references change script to script_mode; public entry, native compiler semantics and ownership remain unchanged.",
+  "source_declared_controls": 11,
+  "actual_metadata_count": null,
+  "native_execution": false,
+  "Main_mutated": false,
+  "native_qualification": false,
+  "product_qualification": false
+}

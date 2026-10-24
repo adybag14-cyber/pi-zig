@@ -64,6 +64,11 @@ pub const Owner = struct {
     pub fn authStorage(self: *Owner) !c.JSValue {
         return valueEntry(self, false);
     }
+    /// Construct the actual public print module from this same live frontend
+    /// and the already assembled native shell. No callback or policy is supplied.
+    pub fn createPrintMode(self: *Owner) !c.JSValue {
+        return printModeEntry(self);
+    }
     /// Actual Source AuthStorage.inMemory(), without a File backend substitute
     /// or fabricated resolver. Its genuine module dependencies already exist.
     pub fn inMemory(self: *Owner) !c.JSValue {
@@ -96,6 +101,42 @@ pub const Owner = struct {
         }
     }
 };
+fn printModeEntry(self: *Owner) !c.JSValue {
+    const engine = self.engine;
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    try self.check();
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    const value = printModeScoped(self) catch |err| {
+        return engine.checked(engine.leaveNativeInvocation(&invocation, @import("native_sdk.zig").fail(engine, err)));
+    };
+    return engine.checked(engine.leaveNativeInvocation(&invocation, value));
+}
+fn printModeScoped(self: *Owner) !c.JSValue {
+    var scope: Scope = .{ .engine = self.engine };
+    return completion.finishValue(&scope, printModeBody(self, &scope));
+}
+fn printModeBody(self: *Owner, scope: *Scope) !c.JSValue {
+    const engine = scope.engine;
+    const o: Ops = .{ .scope = scope };
+    const frontend = self.frontend orelse return error.ActualSdkAuthOwnerRetired;
+    // Retain every concrete input before reading a guest-mutable carrier. Its
+    // getter may retire this host handle while the original module is built.
+    // Native frontend capabilities still remain borrowed through Engine death.
+    var output: @import("native_sdk_output_guard.zig").Exports = undefined;
+    inline for (std.meta.fields(@TypeOf(output))) |field| {
+        @field(output, field.name) = try o.own(c.JS_DupValue(engine.context, @field(frontend.output_guard, field.name)));
+    }
+    const imports = try o.own(c.JS_DupValue(engine.context, self.runtime_imports));
+    const shell_owner = engine.native_module_values.get("pi-native:sdk-shell") orelse return error.RequiredGenuineSdkShellModuleOwner;
+    const expected_shell = try o.own(c.JS_DupValue(engine.context, shell_owner));
+    const shell = try o.get(imports, "shell");
+    if (!scope.equal(shell, expected_shell)) return error.ActualSdkShellNamespaceChanged;
+    // Do not touch self after the guest read. The public module owns its exact
+    // captured function roots and preserves its existing per-Engine cache.
+    return @import("native_public_print_mode.zig").create(engine, .{ .output = output, .shell = shell });
+}
 fn valueEntry(self: *Owner, in_memory: bool) !c.JSValue {
     const engine = self.engine;
     engine.native_exception_diagnostics_suppressed += 1;

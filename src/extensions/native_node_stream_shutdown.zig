@@ -181,6 +181,12 @@ pub fn reportAfterShutdown(listener: *resources.Listener,
     return reportAfterRequest(listener, &request.request, status);
 }
 
+pub fn reportAfterWrite(listener: *resources.Listener,
+    request: *requests.Write, status: c_int) anyerror!void
+{
+    return reportAfterRequest(listener, &request.request, status);
+}
+
 pub fn reportAfterRequest(listener: *resources.Listener,
     request: *requests.Request, status: c_int) anyerror!void
 {
@@ -195,12 +201,12 @@ pub fn reportAfterRequest(listener: *resources.Listener,
     const engine = try environment.requireEngine();
     const state = request.asyncWrap();
     var locals = a.Scope.init(engine);
-    const ignored = try locals.finish(reportBody(&locals, stream, state, status));
+    const ignored = try locals.finish(reportBody(&locals, stream, state, request.bindings, status));
     engine.freeValue(ignored);
 }
 
 fn reportBody(s: *a.Scope, stream: *streams.Base, state: *wraps.State,
-    status: c_int) anyerror!c.JSValue
+    request_bindings: ?streams.RequestBindings, status: c_int) anyerror!c.JSValue
 {
     const wrapper = state.object() orelse check.assertion(s.engine, .{
         .file_line = "src/stream_base.cc:763",
@@ -215,7 +221,7 @@ fn reportBody(s: *a.Scope, stream: *streams.Base, state: *wraps.State,
         try s.own(a.duplicate(s.engine, stream_object)),
         c.pi_js_undefined(),
     };
-    const bindings = stream.operations.shutdown orelse
+    const bindings = request_bindings orelse stream.operations.shutdown orelse
         return error.ActualStreamShutdownBindingsRequired;
     const diagnostics = stream.operations.heap_diagnostics;
     if (stream.virtuals.error_string(stream)) |message| {

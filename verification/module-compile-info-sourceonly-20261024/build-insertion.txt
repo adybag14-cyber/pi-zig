@@ -1,0 +1,5 @@
+    const module_compile_info_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_compile_info_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native module compile info"}, .use_llvm = use_llvm });
+    linkQuickJs(b, module_compile_info_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(module_compile_info_tests.root_module, sqlite_lib_dir, sqlite_library);
+    module_compile_info_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-node-module-compile-info", "Install actual compiler-info completion ownership controls").dependOn(&b.addInstallArtifact(module_compile_info_tests, .{}).step);
