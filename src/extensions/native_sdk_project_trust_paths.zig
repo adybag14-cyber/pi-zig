@@ -84,6 +84,37 @@ fn createBody(s: *Scope, inputs: Inputs) anyerror!c.JSValue {
     const join = try requiredFunction(s, inputs.paths, "join");
     const canonicalize = try requiredFunction(s, inputs.path_utilities, "canonicalizePath");
     const resolve = try requiredFunction(s, inputs.path_utilities, "resolvePath");
+    const built = try fromCaptures(s, .{
+        .exists_sync = exists_sync, .home_dir = home_dir, .dirname = dirname,
+        .join = join, .canonicalize = canonicalize, .resolve = resolve,
+        .config_dir = inputs.config_dir,
+    });
+    const exports_value = built.exports_value;
+    const graph = try v.stateObject(s);
+    inline for (input_names) |name| try v.put(s, graph, name, @field(inputs, name));
+    try v.put(s, graph, "exports", exports_value);
+    return v.duplicate(s, graph);
+}
+
+/// Scoped, already-rooted genuine named imports from one trust-manager
+/// evaluation. No guest carrier or replacement import namespace is constructed.
+pub const Captures = struct {
+    exists_sync: c.JSValue, home_dir: c.JSValue, dirname: c.JSValue,
+    join: c.JSValue, canonicalize: c.JSValue, resolve: c.JSValue,
+    config_dir: c.JSValue,
+};
+pub const Built = struct { exports_value: c.JSValue, normalize_function: c.JSValue };
+
+/// Both values are borrowed from s. The complete module also uses this exact
+/// normalize function for its Store callbacks; all operation bodies stay shared.
+pub fn fromCaptures(s: *Scope, imports: Captures) anyerror!Built {
+    try s.engine.checkNativeEntry();
+    const exists_sync = imports.exists_sync;
+    const home_dir = imports.home_dir;
+    const dirname = imports.dirname;
+    const join = imports.join;
+    const canonicalize = imports.canonicalize;
+    const resolve = imports.resolve;
     const resource_names = try v.array(s);
     inline for (.{
         "settings.json", "mcp.json", "extensions", "skills",
@@ -97,17 +128,14 @@ fn createBody(s: *Scope, inputs: Inputs) anyerror!c.JSValue {
         optionsCallback, &.{ normalize_function, parent_function });
     const resources_function = try v.ordinary(s, "hasTrustRequiringProjectResources", 1,
         resourcesCallback, &.{
-            exists_sync, home_dir, dirname, join, inputs.config_dir,
+            exists_sync, home_dir, dirname, join, imports.config_dir,
             canonicalize, resolve, resource_names,
         });
     const exports_value = try v.object(s);
     try v.put(s, exports_value, "getProjectTrustParentPath", parent_function);
     try v.put(s, exports_value, "getProjectTrustOptions", options_function);
     try v.put(s, exports_value, "hasTrustRequiringProjectResources", resources_function);
-    const graph = try v.stateObject(s);
-    inline for (input_names) |name| try v.put(s, graph, name, @field(inputs, name));
-    try v.put(s, graph, "exports", exports_value);
-    return v.duplicate(s, graph);
+    return .{ .exports_value = exports_value, .normalize_function = normalize_function };
 }
 
 fn normalizeCallback(engine: *Engine, _: c.JSValue, args: []const c.JSValue,

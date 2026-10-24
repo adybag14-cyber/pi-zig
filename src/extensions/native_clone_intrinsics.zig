@@ -14,7 +14,7 @@ pub fn create(context: *c.JSContext) !c.JSValue {
     defer c.JS_FreeValue(context, global);
     const result = try checked(c.JS_NewObjectProto(context, c.pi_js_null()));
     errdefer c.JS_FreeValue(context, result);
-    inline for (.{ "Error", "EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "Map", "Set", "DataView", "String", "Function", "FinalizationRegistry", "Array", "Object", "Symbol" }) |name| {
+    inline for (.{ "Error", "EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "Map", "Set", "DataView", "String", "Function", "FinalizationRegistry", "Array", "Object", "Symbol", "RegExp" }) |name| {
         const constructor = try checked(c.JS_GetPropertyStr(context, global, name));
         defer c.JS_FreeValue(context, constructor);
         try put(context, result, name, c.JS_DupValue(context, constructor));
@@ -55,9 +55,25 @@ pub fn create(context: *c.JSContext) !c.JSValue {
             defer c.JS_FreeValue(context, prototype);
             const method = if (comptime @import("std").mem.eql(u8, name, "Array")) "forEach" else "register";
             try put(context, result, name ++ "." ++ method, try checked(c.JS_GetPropertyStr(context, prototype, method)));
+            if (comptime @import("std").mem.eql(u8, name, "Array"))
+                try put(context, result, "Array.some", try checked(c.JS_GetPropertyStr(context, prototype, "some")));
         }
         if (comptime @import("std").mem.eql(u8, name, "Object")) {
             try put(context, result, "Object.freeze", try checked(c.JS_GetPropertyStr(context, constructor, "freeze")));
+            try put(context, result, "Object.entries", try checked(c.JS_GetPropertyStr(context, constructor, "entries")));
+            const prototype = try checked(c.JS_GetPropertyStr(context, constructor, "prototype"));
+            defer c.JS_FreeValue(context, prototype);
+            try put(context, result, "Object.hasOwnProperty", try checked(c.JS_GetPropertyStr(context, prototype, "hasOwnProperty")));
+        }
+        if (comptime @import("std").mem.eql(u8, name, "String") or @import("std").mem.eql(u8, name, "RegExp")) {
+            const prototype = try checked(c.JS_GetPropertyStr(context, constructor, "prototype"));
+            defer c.JS_FreeValue(context, prototype);
+            if (comptime @import("std").mem.eql(u8, name, "String")) {
+                try put(context, result, "String.split", try checked(c.JS_GetPropertyStr(context, prototype, "split")));
+                try put(context, result, "String.toLowerCase", try checked(c.JS_GetPropertyStr(context, prototype, "toLowerCase")));
+            } else {
+                try put(context, result, "RegExp.exec", try checked(c.JS_GetPropertyStr(context, prototype, "exec")));
+            }
         }
         if (comptime @import("std").mem.eql(u8, name, "Symbol")) {
             try put(context, result, "Symbol.iterator", try checked(c.JS_GetPropertyStr(context, constructor, "iterator")));

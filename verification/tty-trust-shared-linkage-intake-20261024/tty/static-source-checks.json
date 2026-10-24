@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "source_changes": [
+    {
+      "destination_relative_path": "src/extensions/native_node_tty_color_depth.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\src\\extensions\\native_node_tty_color_depth.zig",
+        "bytes": 18770,
+        "sha256": "6A6D7B2D4DA8FA43D82B0B91722C098B0A64B0E682DDA744AEEA3FE29EDE96AA"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_clone_intrinsics.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\original\\src\\extensions\\native_clone_intrinsics.zig",
+        "bytes": 5808,
+        "sha256": "5793E31979FB384F362E6E32FBD8A81C72B273D16E3BAC07C775C41C7D9962A2"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+        "bytes": 7170,
+        "sha256": "ACD65CF7EDD3FD885F91762EACEE54822026F4238272BA651203559AC2419D77"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_node_tty_color_depth_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\src\\native_node_tty_color_depth_test.zig",
+        "bytes": 31063,
+        "sha256": "778344B6B920ED7A857F02CAB81E32CBF771A3F6DBF16F5DD6E2CFCD9300FBAB"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\original\\build.zig",
+        "bytes": 541125,
+        "sha256": "EAB06B9082B53FB958E34E47193447CBA30DA153803472666401EC0A72D48691"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 542387,
+        "sha256": "12AD1029A35EE1C33EB9C5BD4C0EAFDEC97EDEBC57AEB65FE5DF5164F06B41AD"
+      }
+    }
+  ],
+  "clone_hunks": 4,
+  "clone_complete_forward_inverse": true,
+  "build_addition_bytes": 1262,
+  "build_full_inverse": true,
+  "patch_reconstructed": true,
+  "git_apply_check": true,
+  "relative_import_occurrences": 14,
+  "standard_package_import_occurrences": 15,
+  "declared_control_count": 29,
+  "names": [
+    "native tty color depth has original callable shape and no unrelated OS load",
+    "native tty color depth uses genuine installed OS release and caches only successful lazy resolution",
+    "native tty color depth force color uses strict cases and two original Gets",
+    "native tty color depth disable flags use definedness nonempty comparison and short circuit",
+    "native tty color depth emits exact combined warning once on actual process receiver",
+    "native tty color depth warning retries throws and preserves reentrant assignment timing",
+    "native tty color depth Windows thresholds preserve original split limit and major condition",
+    "native tty color depth lazy require member and release failures do not publish cache",
+    "native tty color depth outer OS release assignment wins after synchronous reentry",
+    "native tty color depth captured split retains original Symbol split dispatch and undefined retry",
+    "native tty color depth Windows cached property coercions use unary plus and reject BigInt",
+    "native tty color depth retains builtin process while reading live env and platform properties",
+    "native tty color depth tmux and Azure gates retain own property semantics",
+    "native tty color depth CI uses exact real Map order and hasOwn checks",
+    "native tty color depth actual SafeMap iteration observes its real entries and closes early returns",
+    "native tty color depth TeamCity uses inherited in trap and exact version regexp",
+    "native tty color depth terminal program cases preserve repeated version Get and short circuit",
+    "native tty color depth COLORTERM comparisons read twice and ordinary fallback remains last",
+    "native tty color depth original ordinary TERM table and every regexp are retained",
+    "native tty color depth TERM coercions and five property reads follow original order",
+    "native tty color depth inherited TERM lookup is ordinary and repeats successful Get",
+    "native tty color depth captures original primordials and genuine SafeMap before guest mutation",
+    "native tty color depth genuine Array some skips holes and consults inherited indexed entries",
+    "native tty color depth ordinary environment errors preserve exact thrown identity",
+    "native tty color depth discarded disable operand fatal retires before second property Get",
+    "native tty color depth warning result fatal precedes warned assignment and preserves retry",
+    "native tty color depth release local survives through cache assignment and retires at original terminal",
+    "native tty color depth current native fatal in environment Get prevents later branches",
+    "native tty color depth rejects a foreign SafeMap and never lazily recaptures globals"
+  ],
+  "authority_excerpts": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-qualification-sourceonly-20261017\\verification\\node-tty-sourceonly-20261017\\authority\\internal-tty.js",
+        "bytes": 7150,
+        "sha256": "996AE301EE60854817401545811FD908C332CD3ED071C6A498D211CCDD9A932D"
+      },
+      "start_line": 26,
+      "end_line": 256,
+      "bytes": 5914,
+      "sha256": "9966D805F7B4E35A9311496CBE0B2BF500CDEC55C714BED9AA4D362147FBDD51"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-commonjs-internal-builtin-require-sourceonly-20261018\\authority\\realm.js",
+        "bytes": 15448,
+        "sha256": "6B19B7E820C099E28748019277B1CFDCDF2F1167C4F937F2645072764D2AC421"
+      },
+      "start_line": 383,
+      "end_line": 405,
+      "bytes": 664,
+      "sha256": "05B8BCDD3940CECABEFF4185D6380C9CC6FDAC7A473CFC4617C6EFE409DE8C97"
+    }
+  ],
+  "no_native_or_candidate_execution": true
+}

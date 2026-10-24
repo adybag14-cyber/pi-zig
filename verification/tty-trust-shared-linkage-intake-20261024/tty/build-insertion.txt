@@ -1,0 +1,17 @@
+    // Original internal/tty.getColorDepth over genuine builtin inputs.
+    // Install only; metadata/runtime require separate Root authorization.
+    const node_tty_color_depth = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_tty_color_depth_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native tty color depth"},
+    });
+    linkQuickJs(b, node_tty_color_depth.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_tty_color_depth.root_module, typescript_parser);
+    linkSqlite(node_tty_color_depth.root_module, sqlite_lib_dir, sqlite_library);
+    node_tty_color_depth.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_tty_color_depth.root_module.linkSystemLibrary("advapi32", .{});
+        node_tty_color_depth.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-tty-color-depth", "Install twenty-nine declared TTY color-depth controls without running").dependOn(&b.addInstallArtifact(node_tty_color_depth, .{ .dest_sub_path = b.fmt("native-node-tty-color-depth{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+

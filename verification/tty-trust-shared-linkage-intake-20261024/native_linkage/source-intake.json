@@ -1,0 +1,183 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T20:46:53.088994+00:00",
+  "reviewer": "Root",
+  "status": "source_only_causal_shared_linkage_correction_pending_independent_peer",
+  "source_basis_head": "de0d35e7920c77b4a3bb81a0ec115568c7adc36a",
+  "changes": [
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-stream-native-linkage-sourceonly-20261024\\original\\build.zig",
+        "bytes": 546337,
+        "sha256": "75B7D90F9118A4ED1B719F7615EA4DA8EB9C0344FBE233219F42FAA30EC68343"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-stream-native-linkage-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 547411,
+        "sha256": "F6A4571DEDBE4E32B03672192F7C4A168093AD48E37065AFB0373CE421B7D2CF"
+      }
+    }
+  ],
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-stream-native-linkage-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1074,
+    "sha256": "C6C70DD9E8BF70CD95F2FA93B87E6DD0BC49E5B5E2E3A98C7ABBD91FE1865756"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-stream-native-linkage-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1200,
+    "sha256": "F4E3049B6F5A00BD3FE7AC7A05F550281090375F3E8B135331D3AD61B579BEBB"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-stream-native-linkage-sourceonly-20261024\\source-diff.patch",
+    "bytes": 1613,
+    "sha256": "5F03F873E37CAAF16D2CF0764E5FFC0E86C7C3B0ED07976C3B501AECC06D5F7B"
+  },
+  "cause": {
+    "original_result": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v44-new23-buildquery-20261024-203424\\result.json",
+      "bytes": 28815,
+      "sha256": "B90CDC644BABCF8AE3C5A911A4374674C11A01971895A6CCCC3E3E19826E51C3"
+    },
+    "original_stderr": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v44-new23-buildquery-20261024-203424\\groups\\native-node-module-package-inputs\\compile.stderr.log",
+      "bytes": 22271,
+      "sha256": "82DB032B76049C72CDB43CB6D9990EEB665E482F916C9F1EB99E3A23A07093B7"
+    },
+    "missing_symbols": [
+      "pi_node_one_byte_string_cstring_length",
+      "pi_node_one_byte_string_empty_maybe_handle",
+      "pi_node_custom_buffer_listener_allocate",
+      "pi_node_custom_buffer_listener_free"
+    ],
+    "existing_definitions_unmodified": true,
+    "reason": "These native providers were linked by selected stream targets only, while the actual package-input VM now reaches the same stream consumers through its genuine filesystem/CommonJS graph."
+  },
+  "native_source_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_diagnostic_context.c",
+      "bytes": 789,
+      "sha256": "AC01853D724253740008E26D2663545D2F564A6E59DE91AA8CE2C8777C7B832C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_diagnostic_context.h",
+      "bytes": 775,
+      "sha256": "4D8E43A6527FED6AA19F86A2A51CD490E5DDEAC6CCC323635B700ED4E8B798C0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_diagnostic_context.hpp",
+      "bytes": 914,
+      "sha256": "7EA7700F4EDCC6ED5C27DF98574BE27A572AFF01E151B9F39667E6737ACC30B9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_v8_base_fatal.cpp",
+      "bytes": 7723,
+      "sha256": "1C83C0523655ACD3FF64CA067AE2CB5131C98B36A2E60910AEF4C64699BD3BBC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_v8_base_fatal.h",
+      "bytes": 7727,
+      "sha256": "C5B2D6E6F7B8DA0E8C9D70E8934392B10BB638DA5C209870385FCE1AC71D3CBF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_one_byte_string_diagnostics.cpp",
+      "bytes": 2695,
+      "sha256": "3E61B1FDD631E80B31F51F5B130D203C4C01BD41FF4EE4FD2831C27074459B53"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_one_byte_string_diagnostics.h",
+      "bytes": 576,
+      "sha256": "687E51133E348B90B4C7CF5CBEB53C2098CF6988A5C3915F68DF008D0A9E1C88"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_one_byte_string.zig",
+      "bytes": 2658,
+      "sha256": "2387DDE54B2B079BC0F78490602E4CF150F4A1E46FFC3FC05D7EF3CB5CEE4507"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_custom_buffer_listener_allocation.cpp",
+      "bytes": 1371,
+      "sha256": "DEE3A42BB595DE00E8EC6A2784E40741E233D58E81001A4050449F9D7FE9DD63"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_custom_buffer_listener_allocation.h",
+      "bytes": 1222,
+      "sha256": "95E77F10C01964B18BBB845E0554C5F2F9ABD81D4A4238E5F5133DF1E77EC282"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_custom_buffer_listener.zig",
+      "bytes": 7818,
+      "sha256": "BA7B47F0A16BD3708AB1F09CC9E249892567782479C2049F8EE0006B706B0B95"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_standard_allocator.hpp",
+      "bytes": 2562,
+      "sha256": "16D82D2C2143DFAF3861B722BD2E9775FB0BD7D6C9BE400D0ECE37E0674E709B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_simdjson_memory.cpp",
+      "bytes": 2714,
+      "sha256": "44794005D36BB3E1EC6B1A7DF3AA9A6B7DE7C02D6F12BBF38115F83E49C5E103"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_simdjson_memory.hpp",
+      "bytes": 2449,
+      "sha256": "7554ED1DDCA28FAE7B11E025BD9D7EEF560DB657086A40029E5D95DBEFAE5291"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_node_memory.zig",
+      "bytes": 1030,
+      "sha256": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_node_network.zig",
+      "bytes": 5905,
+      "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_package_json.zig",
+      "bytes": 1596,
+      "sha256": "517AC416D7CE82BC2AED11B34038187EE456B3C599B6DFBE058D303873A2EC73"
+    }
+  ],
+  "linkage": {
+    "destination_archive": "pi-quickjs",
+    "gating": "Existing native_node_memory capability: 64-bit Windows/Linux only.",
+    "native_memory_owner": "One existing pi-node-native-memory instance linked directly; no new allocator/TLS domain.",
+    "source_membership": [
+      "src/extensions/native_node_diagnostic_context.c",
+      "src/extensions/native_v8_base_fatal.cpp",
+      "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+      "src/extensions/native_node_custom_buffer_listener_allocation.cpp"
+    ],
+    "C_flags": [
+      "-std=gnu11"
+    ],
+    "CXX_flags": [
+      "-std=gnu++20",
+      "-fno-exceptions",
+      "-fno-rtti",
+      "-fno-strict-aliasing"
+    ],
+    "existing_focused_targets": "Unchanged; ordinary static archive extraction resolves the same strong definitions only when absent from existing direct objects/libraries. No whole-archive link is introduced.",
+    "new_install_or_run_steps": 0
+  },
+  "controls": {
+    "source_declaration_count_added": 0,
+    "original_group_names_orders_controls_and_artifact_bindings_unchanged": true,
+    "actual_metadata_count": null,
+    "runtime_result": null
+  },
+  "integration": "Compose only exact build-insertion bytes into the then accepted Main build; a whole-file older projection must not replace a composed successor. Main remains frozen until independent negative closure and Root source release.",
+  "claims": {
+    "Main_mutated": false,
+    "native_bodies_changed": false,
+    "native_abi_changed": false,
+    "Zig_parser_executed": false,
+    "native_execution": false,
+    "runtime_qualification": false,
+    "product_qualification": false
+  }
+}

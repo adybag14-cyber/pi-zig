@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "scope": "Source-only clarification of getColorDepth's Windows release local retirement",
+  "reviewer": "catalog_review",
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\source-intake.json",
+    "bytes": 19587,
+    "sha256": "493EC6226951B6FDE87E1413104D43BF7C430C8B43C7120C5BDE5EFB39EB64F0"
+  },
+  "selected_owner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\src\\extensions\\native_node_tty_color_depth.zig",
+    "bytes": 18770,
+    "sha256": "6A6D7B2D4DA8FA43D82B0B91722C098B0A64B0E682DDA744AEEA3FE29EDE96AA"
+  },
+  "conclusion": "Preserve the original Frame.release until synchronous function terminal; do not clear it at the end of the inner if block.",
+  "reason": [
+    "The original release binding is a block-scoped const but is not captured by a nested closure. Its local slot remains in the Source VM activation after lexical visibility ends.",
+    "pop_scope/close_scopes emit OP_leave_scope. The bytecode pass lowers leave_scope only to close_loc for captured variables; it emits no set_loc_uninitialized or value retirement on exit.",
+    "The VM's close_lexical_var detaches a captured reference; it does not clear the underlying local slot. This source's uncaptured release does not require even that detachment.",
+    "The existing native Frame.detach contract explicitly retains a local until next initialization or terminal retirement. getColorDepth enters this if block at most once per invocation, so no later block reinitialization replaces release.",
+    "Native Frame.release therefore spans successful OSRelease assignment and the following numeric-property operations. An earlier explicit clear would change observable native-finalizer timing relative to literal Source execution.",
+    "Current control 'release local survives through cache assignment and retires at original terminal' remains selected; all29 authored controls are unexecuted."
+  ],
+  "excerpts": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2407586,
+        "sha256": "92D0A80DFD4D9AB76181ABAB3F0FE179BFA9827710A3A66A2C1BC651F426076F"
+      },
+      "start_line": 28242,
+      "end_line": 28260,
+      "bytes": 601,
+      "sha256": "5896403D2982F27EC3960E2EDCD19D7B432CED9E7157AB44E38365A748FDD3C5",
+      "text": "static void pop_scope(JSParseState *s) {\n    if (s->cur_func) {\n        /* disable scoped variables */\n        JSFunctionDef *fd = s->cur_func;\n        int scope = fd->scope_level;\n        emit_op(s, OP_leave_scope);\n        emit_u16(s, scope);\n        fd->scope_level = fd->scopes[scope].parent;\n        fd->scope_first = get_first_lexical_var(fd, fd->scope_level);\n    }\n}\n\nstatic void close_scopes(JSParseState *s, int scope, int scope_stop)\n{\n    while (scope > scope_stop) {\n        emit_op(s, OP_leave_scope);\n        emit_u16(s, scope);\n        scope = s->cur_func->scopes[scope].parent;\n    }\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2407586,
+        "sha256": "92D0A80DFD4D9AB76181ABAB3F0FE179BFA9827710A3A66A2C1BC651F426076F"
+      },
+      "start_line": 39581,
+      "end_line": 39632,
+      "bytes": 2231,
+      "sha256": "40DA44C5F3EE1BCCAD5C8933B43CE9C40522E7AC5E0DC3CF48BD7A7D6AAF7638",
+      "text": "        case OP_enter_scope:\n            {\n                int scope_idx, scope = get_u16(bc_buf + pos + 1);\n\n                if (scope == s->body_scope) {\n                    instantiate_hoisted_definitions(ctx, s, &bc_out);\n                }\n\n                for(scope_idx = s->scopes[scope].first; scope_idx >= 0;) {\n                    JSVarDef *vd = &s->vars[scope_idx];\n                    if (vd->scope_level == scope) {\n                        if (scope_idx != s->arguments_arg_idx) {\n                            if (vd->var_kind == JS_VAR_FUNCTION_DECL ||\n                                vd->var_kind == JS_VAR_NEW_FUNCTION_DECL) {\n                                /* Initialize lexical variable upon entering scope */\n                                dbuf_putc(&bc_out, OP_fclosure);\n                                dbuf_put_u32(&bc_out, vd->func_pool_idx);\n                                dbuf_putc(&bc_out, OP_put_loc);\n                                dbuf_put_u16(&bc_out, scope_idx);\n                            } else {\n                                /* XXX: should check if variable can be used\n                                   before initialization */\n                                dbuf_putc(&bc_out, OP_set_loc_uninitialized);\n                                dbuf_put_u16(&bc_out, scope_idx);\n                            }\n                        }\n                        scope_idx = vd->scope_next;\n                    } else {\n                        break;\n                    }\n                }\n            }\n            break;\n\n        case OP_leave_scope:\n            {\n                int scope_idx, scope = get_u16(bc_buf + pos + 1);\n\n                for(scope_idx = s->scopes[scope].first; scope_idx >= 0;) {\n                    JSVarDef *vd = &s->vars[scope_idx];\n                    if (vd->scope_level == scope) {\n                        if (vd->is_captured) {\n                            dbuf_putc(&bc_out, OP_close_loc);\n                            dbuf_put_u16(&bc_out, scope_idx);\n                        }\n                        scope_idx = vd->scope_next;\n                    } else {\n                        break;\n                    }\n                }\n            }\n            break;\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2407586,
+        "sha256": "92D0A80DFD4D9AB76181ABAB3F0FE179BFA9827710A3A66A2C1BC651F426076F"
+      },
+      "start_line": 20095,
+      "end_line": 20107,
+      "bytes": 394,
+      "sha256": "55AB179498571AF39393C72BF79539D009B103CEFDC3EBF3CAB3C544F68D0054",
+      "text": "static void close_lexical_var(JSContext *ctx, JSFunctionBytecode *b,\n                              JSStackFrame *sf, int var_idx)\n{\n    JSVarRef *var_ref;\n    int var_ref_idx;\n\n    var_ref_idx = b->vardefs[b->arg_count + var_idx].var_ref_idx;\n    var_ref = sf->var_refs[var_ref_idx];\n    if (var_ref) {\n        close_var_ref(ctx->rt, var_ref);\n        sf->var_refs[var_ref_idx] = NULL;\n    }\n}\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_lexical_frame.zig",
+        "bytes": 17136,
+        "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E"
+      },
+      "start_line": 209,
+      "end_line": 233,
+      "bytes": 1409,
+      "sha256": "3617700929EA33C916E583B65489C408129CA3C65FA4C69EA880701958DC8B8A",
+      "text": "        /// Close one Source lexical binding at its scope exit. The original\n        /// local remains in this activation until its next initialization or\n        /// terminal retirement. A later capture creates a fresh cell.\n        /// All lookup and cell links are cleared before releasing either\n        /// activation edge; other open bindings keep their own actual leases.\n        pub fn detach(self: *Self, comptime name: Names, completion: *v.owned.Completion) void {\n            const position = @intFromEnum(name);\n            const root = self.captures[position];\n            const borrowed = self.borrowedCaptures();\n            self.captures[position] = c.pi_js_undefined();\n            if (c.JS_IsUndefined(root)) return;\n            if (c.JS_IsLiveObject(self.engine.runtime, root)) {\n                const cell = cellFrom(root);\n                if (!cell.immutable_argument) {\n                    cell.value = c.JS_DupValue(self.engine.context, self.values[position]);\n                    cell.ready = self.ready[position];\n                }\n                const activation = cell.activation;\n                const lease = cell.lease;\n                cell.activation = c.pi_js_undefined(); cell.lease = c.pi_js_undefined();\n                completion.release(activation);\n                completion.release(lease);\n            }\n            if (!borrowed) completion.release(root);\n        }\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_lexical_frame.zig",
+        "bytes": 17136,
+        "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E"
+      },
+      "start_line": 258,
+      "end_line": 264,
+      "bytes": 395,
+      "sha256": "E59A99B77F643CA8C98C19E19AD4F03EEABAE39D3531A91F7AF19BE5B0CF3742",
+      "text": "        pub fn close(self: *Self, completion: *v.owned.Completion) void {\n            if (self.closed) return;\n            self.closed = true;\n            self.detachCaptures(completion);\n            // BCDF frees uncaptured function locals in declaration order.\n            for (&self.values) |*root| { const value = root.*; root.* = c.pi_js_undefined(); completion.release(value); }\n        }\n"
+    }
+  ],
+  "production_change_required": false,
+  "source_intake_unchanged": true,
+  "native_execution": false,
+  "Main_mutated": false
+}

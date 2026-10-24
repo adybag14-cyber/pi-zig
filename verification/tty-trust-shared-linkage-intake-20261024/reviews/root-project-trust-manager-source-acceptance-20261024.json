@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-24T20:48:50.625649+00:00",
+  "status": "accepted_complete_shared_authenticated_trust_manager_source_only",
+  "candidate_head": "de0d35e7920c77b4a3bb81a0ec115568c7adc36a",
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\source-intake.json",
+    "bytes": 49843,
+    "sha256": "14F573C49CDFC6D21D0A10BB412CC0246E9F4C46A248C1C18226D881770A8566"
+  },
+  "source_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\factory-hook-source-inverses.json",
+    "bytes": 17862,
+    "sha256": "9774568FEB9D46BCB333A86437676BC33868EBF359D5F52A97F49B5EC96834AD"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1848,
+    "sha256": "9A4A3E34387BFA338166EB47385C9626BA3A304B1365FE8986BA704D2AAEEFDD"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\source-diff.patch",
+    "bytes": 53348,
+    "sha256": "8C74240C996F348B7FF91470FA1E1DF0EB10EC61049A8CEF3E7B0BB24CC65D1B"
+  },
+  "prerequisites": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\source-intake.json",
+      "bytes": 22117,
+      "sha256": "893BC3B7884B5ACD05368C1D1BF4A8788A94017A6B5A883856CD654FBE654CA3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-project-trust-store-v2-source-acceptance-20261024.json",
+      "bytes": 5359,
+      "sha256": "1C32DA0A1EF02352533C0FAB1C909A4ED040B3ACFD5EE1BC03BA2FE76BD5AD3E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-project-trust-paths-v2-source-acceptance-20261024.json",
+      "bytes": 3465,
+      "sha256": "903FAFC5671032C19AB8A904B04F485F03CD7AC012D73ACA9C2B3BCB145E95CC"
+    }
+  ],
+  "source_pin_versions_verified": 69,
+  "source_checks": {
+    "complete_original_module_and_new_owner_read": true,
+    "all8_factory_and_authenticated_entry_hunks_manually_read": true,
+    "all8_hunks_forward_and_raw_inverse": true,
+    "shared_operation_suffixes_raw_unchanged": [
+      {
+        "relative": "src/extensions/native_sdk_project_trust_paths.zig",
+        "bytes": 11200,
+        "sha256": "8912D8393583ABD54208FDBE376B81BD6FE5F6D54303BDB375C5777AAE67C42D"
+      },
+      {
+        "relative": "src/extensions/native_sdk_project_trust_store.zig",
+        "bytes": 26035,
+        "sha256": "724DCF82C0DAC467D2C2088B396AF0F8CFCBA381F868CE16321DE20808C7EB23"
+      }
+    ],
+    "complete_test_root_and_all20_controls_read": true,
+    "actual_auth_fixture_and_Disk_blocks_raw_unchanged": true,
+    "all7_target_patch_bytes_reconstructed": true,
+    "git_apply_check_nonbuild_nonStore_targets": true,
+    "accepted_Store_successor_raw_inverse": true,
+    "build1071_byte_addition_and_raw_inverse": true,
+    "local_import_occurrences": 64,
+    "standard_import_occurrences": 3,
+    "literal_embeds": 0
+  },
+  "manual_review": [
+    "One complete four-export trust-manager cache retains each original named import in source order and shares one normalizeCwd closure between the unchanged Paths and Store operations.",
+    "Both authenticated Auth entry points use the same complete module. Application forwards its new complete manager entry through the existing live Auth owner.",
+    "All runtime/platform/filesystem/path/path-utility/configuration/OS/lockfile roots are retained before guest carrier reads; identities are checked before text-owner acquisition or module creation. No self access follows a carrier Get.",
+    "Named callable members remain ordinary capture-time reads; actual default lockfile object is retained and its lockSync member remains live per original Store attempt.",
+    "Cached creation verifies exact original input identities without rereading captured named members. Pending ordinary/fatal completion and cold reentry cannot publish a partial trust module.",
+    "Complete graph and exports finish local retirement before cache publication; returned original functions and Store continue to own the genuine providers after host-handle retirement."
+  ],
+  "selected_sources": [
+    {
+      "destination_relative_path": "src/extensions/native_sdk_project_trust_paths.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_project_trust_paths.zig",
+        "bytes": 18064,
+        "sha256": "B44C685CDB3DE78F2853526AAA1DCCF4D1A480C630CF06E1E0C3FC68EEC72B1D"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_sdk_project_trust_store.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_project_trust_store.zig",
+        "bytes": 33242,
+        "sha256": "6D68C2413AA2BFC2035518FB48F174F16FC4735E02E18EDD43B3681C0CD57AF1"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+        "bytes": 18450,
+        "sha256": "2F128521E87FEA6AABF37CCF7CE42380775FB6288C715404AFDD5AAD6673C05A"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_sdk_application_owner.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_application_owner.zig",
+        "bytes": 15448,
+        "sha256": "49577CBE87DF7F92A52827F576CBD5D3BFBAE3151BF4706CC6BE4BB8524BA650"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_sdk_project_trust_manager.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_project_trust_manager.zig",
+        "bytes": 5719,
+        "sha256": "FCA0D83819F9A7E73E317FFB9976DC741344347B12D09B9D52C24A990341D1CB"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_sdk_project_trust_manager_test.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\projected\\src\\native_sdk_project_trust_manager_test.zig",
+        "bytes": 34054,
+        "sha256": "518416077F1911E4B9FB29392C1CE5E13EAA1CCB4A2076EED09DDA6EAB6DE822"
+      }
+    }
+  ],
+  "build_requirement": "Compose only the1071-byte addition after the accepted Store1054-byte addition; no whole-file projected build overwrite. Default test.exe/test.pdb binding is retained.",
+  "source_declared_controls": 20,
+  "remaining_integration": [
+    "Original emitProjectTrustEvent complete snapshot and awaited handler/error semantics",
+    "Original resolveProjectTrust override/resource/event/store/default/UI precedence",
+    "Full Main runtimeFactory closure, module loading and production application assembly"
+  ],
+  "source_review_accepted": true,
+  "Main_mutated": false,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "actual_metadata_count": null,
+  "production_bridge_removed": false
+}

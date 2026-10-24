@@ -78,6 +78,11 @@ pub const Owner = struct {
         try self.check();
         return if (self.auth) |*value| value.createProjectTrustPaths() else error.ActualSdkApplicationAuthRetired;
     }
+    /// The complete original trust manager over the same authenticated runtime.
+    pub fn createProjectTrustManager(self: *Owner) !c.JSValue {
+        try self.check();
+        return if (self.auth) |*value| value.createProjectTrustManager() else error.ActualSdkApplicationAuthRetired;
+    }
     /// Explicit Source mode transitions. Call only at the actual noninteractive
     /// or RPC transition, never infer takeover from TTY state or a mode boolean.
     pub fn takeOverStdout(self: *Owner) !void { return stdoutTransition(self, false); }

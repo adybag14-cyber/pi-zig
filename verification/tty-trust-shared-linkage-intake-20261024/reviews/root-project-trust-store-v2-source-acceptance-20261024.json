@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-24T20:40:58.024444+00:00",
+  "status": "accepted_complete_private_ProjectTrustStore_v2_source_only",
+  "candidate_head": "de0d35e7920c77b4a3bb81a0ec115568c7adc36a",
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\source-intake.json",
+    "bytes": 22117,
+    "sha256": "893BC3B7884B5ACD05368C1D1BF4A8788A94017A6B5A883856CD654FBE654CA3"
+  },
+  "selected_owner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\projected-v2\\src\\extensions\\native_sdk_project_trust_store.zig",
+    "bytes": 31895,
+    "sha256": "9268A5A8F93551974E3423C323F4907722B241A84CD47BBA4F1503B4E99FBA08"
+  },
+  "selected_test_root": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\projected-v2\\src\\native_sdk_project_trust_store_test.zig",
+    "bytes": 39918,
+    "sha256": "EC2F6BD81A42B3A56F44598CCA09DD3D6C6E807DDF60E94F70297620D7A61542"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\source-diff.patch",
+    "bytes": 75246,
+    "sha256": "1FCDE711020AE9862798CB7D2D5956258DE3B3AFE195512DB9161D6FB85F5175"
+  },
+  "original_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\authority\\trust-manager.ts",
+    "bytes": 7067,
+    "sha256": "3098117EBEA573AFA6BE81D669B2B0FE9CBC948CB4C10EF4EF12E54CA6758CAC"
+  },
+  "source_pin_versions_verified": 34,
+  "source_checks": {
+    "complete_original_class_helpers_and_imports_read": true,
+    "complete_owner_and_all37_controls_read": true,
+    "v2_single_hunk_forward_and_raw_inverse": true,
+    "original36_control_prefix_exact": true,
+    "original_loop_head_retirement_and_ToObject_compiler_ranges_read": true,
+    "actual_guest_ToObject_helper_read": true,
+    "build1054_byte_insertion_and_raw_inverse": true,
+    "complete_three_target_patch_reconstructed": true,
+    "git_apply_check_all_targets": true,
+    "direct_import_occurrences": 15,
+    "standard_package_import_occurrences": 1,
+    "literal_embeds": 0,
+    "test_names_and_order_exact": true
+  },
+  "manual_review": [
+    "Actual file-specific physical directory lock is acquired for every read and write; missing-file handling, canonical path, own trustPath and nearest-ancestor decisions retain the original behavior.",
+    "Named imports are retained once per private graph, while lockSync and original JSON/Object/Error/Date accesses retain their live lookup and call ordering.",
+    "Exactly ten ELOCKED attempts and nine 20ms live Date waits are retained; genuine fatal completion bypasses ordinary catch/finally while release failure replaces ordinary return or throw.",
+    "Original two-element iteration/destructuring, normal and abrupt IteratorClose, catch extent, inherited properties and sorted newline persistence retain the original guest operations.",
+    "The v2 object-binding correction performs checked ToObject exactly once before both path and decision Gets, preserving strict primitive prototype getter receiver identity.",
+    "Original compiler loop-head scope is entered before label_next, so prior uncaptured head bindings remain until their respective assignments; body-local retirement remains after head assignment."
+  ],
+  "actual_guest_ToObject_helper": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_guest_operation.zig",
+    "bytes": 7009,
+    "sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C"
+  },
+  "build_requirement": {
+    "method": "Compose only the exact1054-byte insertion into the then accepted current build; standalone projected build is not whole-file integration authority.",
+    "insertion": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\build-insertion.txt",
+      "bytes": 1054,
+      "sha256": "5FB2736B6A0460A9837833BB892AE817284E9E220EDCCE4C4D8263EE9EE95D7B"
+    },
+    "raw_inverse": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\build-source-inverse.json",
+      "bytes": 1705,
+      "sha256": "836F1667608E3CDE83A868E38FABEC81FEC35EAB62C92CEA6B0552A89D1AEB41"
+    },
+    "default_Windows_artifacts": [
+      "test.exe",
+      "test.pdb"
+    ],
+    "install_only": true
+  },
+  "source_declared_controls": 37,
+  "remaining_integration": [
+    "Authenticated shared original trust-manager import/evaluation assembly",
+    "Original emitProjectTrustEvent complete snapshot and awaited handler/error semantics",
+    "Original resolveProjectTrust override/resource/event/store/default/UI precedence",
+    "Full Main runtimeFactory closure and genuine production assembly"
+  ],
+  "source_review_accepted": true,
+  "Main_mutated": false,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "actual_metadata_count": null,
+  "production_bridge_removed": false
+}

@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "status": "source_only_shared_native_stream_linkage",
+  "source_basis_head": "de0d35e7920c77b4a3bb81a0ec115568c7adc36a",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-stream-native-linkage-sourceonly-20261024\\original\\build.zig",
+    "bytes": 546337,
+    "sha256": "75B7D90F9118A4ED1B719F7615EA4DA8EB9C0344FBE233219F42FAA30EC68343"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-stream-native-linkage-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 547411,
+    "sha256": "F6A4571DEDBE4E32B03672192F7C4A168093AD48E37065AFB0373CE421B7D2CF"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-stream-native-linkage-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1074,
+    "sha256": "C6C70DD9E8BF70CD95F2FA93B87E6DD0BC49E5B5E2E3A98C7ABBD91FE1865756"
+  },
+  "offset": 7317,
+  "anchor": "    // One unchanged libuv/llhttp graph is shared by native TCP and file I/O owners.\n",
+  "whole_file_raw_inverse": true,
+  "all_existing_target_bytes_unchanged": true,
+  "native_implementation_bytes_changed": false,
+  "source_declared_controls_added": 0,
+  "native_execution": false
+}

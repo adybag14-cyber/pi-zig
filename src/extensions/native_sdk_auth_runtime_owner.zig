@@ -74,6 +74,11 @@ pub const Owner = struct {
     pub fn createProjectTrustPaths(self: *Owner) !c.JSValue {
         return projectTrustPathsEntry(self);
     }
+    /// Complete original trust-manager module. The path entry above selects
+    /// this same evaluation, including its Store and shared named captures.
+    pub fn createProjectTrustManager(self: *Owner) !c.JSValue {
+        return projectTrustPathsEntry(self);
+    }
     /// Actual Source AuthStorage.inMemory(), without a File backend substitute
     /// or fabricated resolver. Its genuine module dependencies already exist.
     pub fn inMemory(self: *Owner) !c.JSValue {
@@ -167,6 +172,7 @@ fn projectTrustPathsBody(self: *Owner, scope: *Scope) !c.JSValue {
     const expected_utilities = try o.own(c.JS_DupValue(engine.context, try installed(engine, "pi-private:actual-sdk-path-utilities")));
     const expected_configuration = try o.own(c.JS_DupValue(engine.context, try installed(engine, "pi-native:sdk-configuration-native-zig")));
     const os = try o.own(c.JS_DupValue(engine.context, try installed(engine, "node:os")));
+    const lockfile = try o.own(c.JS_DupValue(engine.context, try installed(engine, "pi-native:auth-directory-lock")));
     if (!scope.equal(imports, expected_imports)) return error.ActualSdkTrustRuntimeNamespaceChanged;
     const platform = try o.get(imports, "platform");
     if (!scope.equal(platform, expected_platform)) return error.ActualSdkTrustPlatformNamespaceChanged;
@@ -178,13 +184,14 @@ fn projectTrustPathsBody(self: *Owner, scope: *Scope) !c.JSValue {
     if (!scope.equal(path_utilities, expected_utilities)) return error.ActualSdkTrustUtilitiesNamespaceChanged;
     const configuration = try o.get(imports, "configuration");
     if (!scope.equal(configuration, expected_configuration)) return error.ActualSdkTrustConfigurationNamespaceChanged;
-    const config_dir = try o.get(configuration, "CONFIG_DIR_NAME");
-    // Source imports homedir from the installed OS namespace. Preserve ordinary
-    // named-member mutation before capture; no foreign carrier or callable
-    // whitelist is accepted. Never touch self after the first carrier Get.
-    return @import("native_sdk_project_trust_paths.zig").create(engine, .{
+    // This is the actual retained text module, acquired only after all
+    // carrier identities pass. Foreign/pending carriers publish no new cache.
+    // All self-owned inputs were rooted before the first carrier Get.
+    const text_utilities = try o.own(try @import("native_sdk_text_helpers.zig").create(engine));
+    return @import("native_sdk_project_trust_manager.zig").create(engine, .{
         .filesystem = filesystem, .paths = paths, .os = os,
-        .path_utilities = path_utilities, .config_dir = config_dir,
+        .configuration = configuration, .path_utilities = path_utilities,
+        .text_utilities = text_utilities, .lockfile = lockfile,
     });
 }
 

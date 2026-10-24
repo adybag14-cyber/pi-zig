@@ -1,0 +1,20 @@
+    // CommonJS/SDK consumers also reach StreamBase through the real filesystem.
+    // Carry its unchanged native string and listener helpers in the shared VM
+    // archive, with the same admitted allocator and compile flags as the
+    // existing focused stream targets. Archive extraction keeps one definition.
+    if (native_node_memory) |memory| {
+        quickjs.root_module.linkLibrary(memory);
+        quickjs.root_module.addIncludePath(b.path("src/extensions"));
+        quickjs.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_diagnostic_context.c"),
+            .flags = &.{"-std=gnu11"},
+        });
+        quickjs.root_module.addCSourceFiles(.{
+            .files = &.{
+                "src/extensions/native_v8_base_fatal.cpp",
+                "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+                "src/extensions/native_node_custom_buffer_listener_allocation.cpp",
+            },
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+    }

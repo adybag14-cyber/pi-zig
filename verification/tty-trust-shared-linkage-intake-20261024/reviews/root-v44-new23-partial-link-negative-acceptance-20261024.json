@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "Root_accepted_original_new23_partial_link_negative_closure",
+  "accepted_utc": "2026-10-24T20:58:13.513597+00:00",
+  "candidate_head": "de0d35e7920c77b4a3bb81a0ec115568c7adc36a",
+  "original_job_id": "job-1792874065643-18ad0408-398",
+  "original_job_terminal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v44-new23-control-20261024-203424\\independent-observed-job-status.json",
+    "bytes": 1522,
+    "sha256": "410C0F82F7146E64A29A314E8810C29794C0DFA84B002ADD062F6BBF6AA2AC2C"
+  },
+  "independent_auditor_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v44-new23-negative-auditor-source-acceptance-20261024.json",
+    "bytes": 3012,
+    "sha256": "52DD95AAD709F71F6D08596D9F6D10C00732878C282B071CE1D757246FA8BEEE"
+  },
+  "independent_audit_job_terminal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v44-new23-control-20261024-203424\\independent-negative-audit-job-terminal.json",
+    "bytes": 1440,
+    "sha256": "2C662F4A7A7E1EC2F36A6DB6EA04E571A1EA1C23B9EC251C504E3D41DEAFFBE3"
+  },
+  "closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v44-new23-control-20261024-203424\\independent-partial-compile-negative-closure.json",
+    "bytes": 100283,
+    "sha256": "CF8F8E83B4DAEDFA0A4AF6739F86D9980F439142B85A4195C9BB65B0D650F495"
+  },
+  "original_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v44-new23-buildquery-20261024-203424\\result.json",
+    "bytes": 28815,
+    "sha256": "B90CDC644BABCF8AE3C5A911A4374674C11A01971895A6CCCC3E3E19826E51C3"
+  },
+  "before": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v44-new23-buildquery-20261024-203424\\before.json",
+    "bytes": 20218551,
+    "sha256": "BC110EC21A21A08FADD555C88E3051CCFD4E2DF12DB2473E40C1BA47AEC1C2FC"
+  },
+  "final": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v44-new23-buildquery-20261024-203424\\final.json",
+    "bytes": 20218551,
+    "sha256": "BC110EC21A21A08FADD555C88E3051CCFD4E2DF12DB2473E40C1BA47AEC1C2FC"
+  },
+  "current_inventory_counts": {
+    "source": 19554,
+    "tree": 19567,
+    "vendor": 1489,
+    "compiler": 19546,
+    "controls": 14
+  },
+  "current_distinct_files_rehashed": 39123,
+  "Root_rechecked_certificate_reference_pins": 274,
+  "actual_original_process_instances_absent": 6,
+  "granted_groups": 23,
+  "attempted_groups": 2,
+  "unstarted_groups": 21,
+  "partial_first_group_metadata_count": 14,
+  "full_metadata_count": null,
+  "actual_tests_started": 0,
+  "reason": "First stream group compile/metadata terminal0 is partial and inadmissible; second package-input compile terminal1 reaches linker but four existing shared stream native support symbols are absent. The earlier C-import type error is resolved. All23 remain unqualified;21 were unstarted.",
+  "original_negative_receipts_preserved": true,
+  "source_mutation_hold_released": true,
+  "source_mutation_scope": "Only the separately source-accepted shared native stream linkage, TTY getColorDepth, ProjectTrustStore v2 and authenticated shared project-trust-manager exact composition, after Root acceptance of its finite integration plan. This closure grants no native retry, metadata acceptance or RuntimeOnly launch.",
+  "native_execution_authorized": false,
+  "runtime_qualified": false,
+  "product_qualified": false
+}

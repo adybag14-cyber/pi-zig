@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\original\\build.zig",
+    "bytes": 541125,
+    "sha256": "EAB06B9082B53FB958E34E47193447CBA30DA153803472666401EC0A72D48691"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 542387,
+    "sha256": "12AD1029A35EE1C33EB9C5BD4C0EAFDEC97EDEBC57AEB65FE5DF5164F06B41AD"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1262,
+    "sha256": "12E5119C0FE55972B2114978C723BFA2210FF1812A6262D544848370E287DFEB"
+  },
+  "offset": 484410,
+  "anchor": "    // Genuine shared Node argument errors and actual rest/super controls.\n",
+  "complete_raw_inverse": true,
+  "install_only": true,
+  "artifact_stem": "native-node-tty-color-depth"
+}

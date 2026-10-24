@@ -1,0 +1,331 @@
+{
+  "schema": 1,
+  "status": "source_only_no_candidate_execution",
+  "selected_sources": [
+    {
+      "destination_relative_path": "src/extensions/native_sdk_project_trust_store.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\projected-v2\\src\\extensions\\native_sdk_project_trust_store.zig",
+        "bytes": 31895,
+        "sha256": "9268A5A8F93551974E3423C323F4907722B241A84CD47BBA4F1503B4E99FBA08"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_sdk_project_trust_store_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\projected-v2\\src\\native_sdk_project_trust_store_test.zig",
+        "bytes": 39918,
+        "sha256": "EC2F6BD81A42B3A56F44598CCA09DD3D6C6E807DDF60E94F70297620D7A61542"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\original\\build.zig",
+        "bytes": 546337,
+        "sha256": "75B7D90F9118A4ED1B719F7615EA4DA8EB9C0344FBE233219F42FAA30EC68343"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 547391,
+        "sha256": "84BEACAD508BE43C21B33955F5DDD83A5637582926BC3788F102F32C10993DF4"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\source-diff.patch",
+    "bytes": 75246,
+    "sha256": "1FCDE711020AE9862798CB7D2D5956258DE3B3AFE195512DB9161D6FB85F5175"
+  },
+  "all_added_destinations_absent_in_Main": true,
+  "source_basis_head": "de0d35e7920c77b4a3bb81a0ec115568c7adc36a",
+  "build_original_exact_current_Main": true,
+  "build_insertion_bytes": 1054,
+  "build_inverse_exact": true,
+  "v2_owner_single_hunk_forward_inverse_exact": true,
+  "original36_test_bytes_unchanged": true,
+  "selected_test_declarations": 37,
+  "distinct_test_names": 37,
+  "build_step_install_only": true,
+  "actual_artifact_stem": "test",
+  "direct_imports": [
+    {
+      "source_relative_path": "src/extensions/native_sdk_project_trust_store.zig",
+      "literal": "native_sdk_session_locals.zig",
+      "resolved_relative_path": "src/extensions/native_sdk_session_locals.zig",
+      "resolution": "current_Main_de0_source",
+      "provider": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_session_locals.zig",
+        "bytes": 9136,
+        "sha256": "2E530FC843E99654A3F72F05207E04A5F77E3713D7D9D19B26117A46D7EC9064"
+      }
+    },
+    {
+      "source_relative_path": "src/extensions/native_sdk_project_trust_store.zig",
+      "literal": "native_agent_af_values.zig",
+      "resolved_relative_path": "src/extensions/native_agent_af_values.zig",
+      "resolution": "current_Main_de0_source",
+      "provider": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_agent_af_values.zig",
+        "bytes": 8615,
+        "sha256": "3836B2F939A7443861BDCF2250C343E8F343EEE381DED4DC62BF2154E2A54656"
+      }
+    },
+    {
+      "source_relative_path": "src/extensions/native_sdk_project_trust_store.zig",
+      "literal": "native_class.zig",
+      "resolved_relative_path": "src/extensions/native_class.zig",
+      "resolution": "current_Main_de0_source",
+      "provider": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_class.zig",
+        "bytes": 4809,
+        "sha256": "F6AD787D513A099F45A79BF4FB9B313630AA0371C31C403FCF36CE6A3896BC8D"
+      }
+    },
+    {
+      "source_relative_path": "src/extensions/native_sdk_project_trust_store.zig",
+      "literal": "native_sdk.zig",
+      "resolved_relative_path": "src/extensions/native_sdk.zig",
+      "resolution": "current_Main_de0_source",
+      "provider": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk.zig",
+        "bytes": 164658,
+        "sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3"
+      }
+    },
+    {
+      "source_relative_path": "src/native_sdk_project_trust_store_test.zig",
+      "literal": "extensions/engine.zig",
+      "resolved_relative_path": "src/extensions/engine.zig",
+      "resolution": "current_Main_de0_source",
+      "provider": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      }
+    },
+    {
+      "source_relative_path": "src/native_sdk_project_trust_store_test.zig",
+      "literal": "extensions/native_sdk_session_locals.zig",
+      "resolved_relative_path": "src/extensions/native_sdk_session_locals.zig",
+      "resolution": "current_Main_de0_source",
+      "provider": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_session_locals.zig",
+        "bytes": 9136,
+        "sha256": "2E530FC843E99654A3F72F05207E04A5F77E3713D7D9D19B26117A46D7EC9064"
+      }
+    },
+    {
+      "source_relative_path": "src/native_sdk_project_trust_store_test.zig",
+      "literal": "extensions/native_sdk_project_trust_store.zig",
+      "resolved_relative_path": "src/extensions/native_sdk_project_trust_store.zig",
+      "resolution": "selected_new_source",
+      "provider": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\projected-v2\\src\\extensions\\native_sdk_project_trust_store.zig",
+        "bytes": 31895,
+        "sha256": "9268A5A8F93551974E3423C323F4907722B241A84CD47BBA4F1503B4E99FBA08"
+      }
+    },
+    {
+      "source_relative_path": "src/native_sdk_project_trust_store_test.zig",
+      "literal": "extensions/timers.zig",
+      "resolved_relative_path": "src/extensions/timers.zig",
+      "resolution": "current_Main_de0_source",
+      "provider": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\timers.zig",
+        "bytes": 52715,
+        "sha256": "4AB5926421C7601B752F92E4306DC31A455C16437F8C904F80875EEE4B70CCCC"
+      }
+    },
+    {
+      "source_relative_path": "src/native_sdk_project_trust_store_test.zig",
+      "literal": "extensions/native_process.zig",
+      "resolved_relative_path": "src/extensions/native_process.zig",
+      "resolution": "current_Main_de0_source",
+      "provider": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+        "bytes": 6626,
+        "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+      }
+    },
+    {
+      "source_relative_path": "src/native_sdk_project_trust_store_test.zig",
+      "literal": "extensions/node_path.zig",
+      "resolved_relative_path": "src/extensions/node_path.zig",
+      "resolution": "current_Main_de0_source",
+      "provider": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_path.zig",
+        "bytes": 31004,
+        "sha256": "377B41F044812F61066B61D0A70723A90019E1F41FD2617DF4DC252BBCBC02B5"
+      }
+    },
+    {
+      "source_relative_path": "src/native_sdk_project_trust_store_test.zig",
+      "literal": "extensions/node_url.zig",
+      "resolved_relative_path": "src/extensions/node_url.zig",
+      "resolution": "current_Main_de0_source",
+      "provider": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_url.zig",
+        "bytes": 12179,
+        "sha256": "61B4200BCE8AB01D4051492FCAAE130B049139770E3727E4B110A193C401EDC8"
+      }
+    },
+    {
+      "source_relative_path": "src/native_sdk_project_trust_store_test.zig",
+      "literal": "extensions/node_fs.zig",
+      "resolved_relative_path": "src/extensions/node_fs.zig",
+      "resolution": "current_Main_de0_source",
+      "provider": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_fs.zig",
+        "bytes": 40147,
+        "sha256": "1EAC38BF57D96BDCEB096A091FFFD6C7D5EBA78101D7DBDFD1E060A5FE9DD7A9"
+      }
+    },
+    {
+      "source_relative_path": "src/native_sdk_project_trust_store_test.zig",
+      "literal": "extensions/native_sdk_path_utilities_namespace.zig",
+      "resolved_relative_path": "src/extensions/native_sdk_path_utilities_namespace.zig",
+      "resolution": "current_Main_de0_source",
+      "provider": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_path_utilities_namespace.zig",
+        "bytes": 12112,
+        "sha256": "7C0AF64A22183B5919169A5C4F3EF150CD4FB03B25555A001BA71B9153D6309E"
+      }
+    },
+    {
+      "source_relative_path": "src/native_sdk_project_trust_store_test.zig",
+      "literal": "extensions/native_sdk_text_helpers.zig",
+      "resolved_relative_path": "src/extensions/native_sdk_text_helpers.zig",
+      "resolution": "current_Main_de0_source",
+      "provider": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_text_helpers.zig",
+        "bytes": 3216,
+        "sha256": "0917764AF64C98F32EB543028DFF1C75D806F44686DC3F4135CB416622A76087"
+      }
+    },
+    {
+      "source_relative_path": "src/native_sdk_project_trust_store_test.zig",
+      "literal": "extensions/native_auth_directory_lock.zig",
+      "resolved_relative_path": "src/extensions/native_auth_directory_lock.zig",
+      "resolution": "current_Main_de0_source",
+      "provider": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_auth_directory_lock.zig",
+        "bytes": 29972,
+        "sha256": "FFF94746546ABE64F86A5776232C5665FDB46EAC386F6BDB3559C3952E4329B1"
+      }
+    }
+  ],
+  "standard_package_imports": [
+    {
+      "source_relative_path": "src/native_sdk_project_trust_store_test.zig",
+      "literal": "std"
+    }
+  ],
+  "current_provider_authority": [
+    {
+      "role": "real_filesystem",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_fs.zig",
+        "bytes": 40147,
+        "sha256": "1EAC38BF57D96BDCEB096A091FFFD6C7D5EBA78101D7DBDFD1E060A5FE9DD7A9"
+      }
+    },
+    {
+      "role": "real_paths",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_path.zig",
+        "bytes": 31004,
+        "sha256": "377B41F044812F61066B61D0A70723A90019E1F41FD2617DF4DC252BBCBC02B5"
+      }
+    },
+    {
+      "role": "canonicalize_resolve_path",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_path_utilities_namespace.zig",
+        "bytes": 12112,
+        "sha256": "7C0AF64A22183B5919169A5C4F3EF150CD4FB03B25555A001BA71B9153D6309E"
+      }
+    },
+    {
+      "role": "named_stripBom",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_text_helpers.zig",
+        "bytes": 3216,
+        "sha256": "0917764AF64C98F32EB543028DFF1C75D806F44686DC3F4135CB416622A76087"
+      }
+    },
+    {
+      "role": "actual_file_specific_directory_lock",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_auth_directory_lock.zig",
+        "bytes": 29972,
+        "sha256": "FFF94746546ABE64F86A5776232C5665FDB46EAC386F6BDB3559C3952E4329B1"
+      }
+    },
+    {
+      "role": "ordinary_class",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_class.zig",
+        "bytes": 4809,
+        "sha256": "F6AD787D513A099F45A79BF4FB9B313630AA0371C31C403FCF36CE6A3896BC8D"
+      }
+    },
+    {
+      "role": "scoped_values_and_frames",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_session_locals.zig",
+        "bytes": 9136,
+        "sha256": "2E530FC843E99654A3F72F05207E04A5F77E3713D7D9D19B26117A46D7EC9064"
+      }
+    },
+    {
+      "role": "guest_ToObject_and_iterator_operations",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_values.zig",
+        "bytes": 13939,
+        "sha256": "0B1BB422A9C89E7CE8146B32413B27E42D8DFB65285C3245B89EED8AF222022E"
+      }
+    }
+  ],
+  "lexical_head_lifetime": {
+    "authority": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2409692,
+      "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+    },
+    "parser_ranges": [
+      [
+        32994,
+        33313
+      ],
+      [
+        39630,
+        39692
+      ],
+      [
+        30743,
+        30777
+      ],
+      [
+        30807,
+        30888
+      ]
+    ],
+    "conclusions": [
+      "The lexical loop-head scope is pushed before label_next and is not re-entered on each iteration.",
+      "Old uncaptured key/value/path bindings are retained until the corresponding actual binding assignment.",
+      "The body-local reset occurs after the new head assignments; this ordering is preserved.",
+      "Object binding performs OP_to_object once before both property Gets; selected v2 preserves the shared wrapper."
+    ]
+  },
+  "native_abi_changes": false,
+  "native_execution": false,
+  "Zig_parser_executed": false,
+  "actual_metadata_count": null,
+  "runtime_result": null
+}

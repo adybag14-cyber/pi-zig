@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "root_accepted_exact_seven_packets_five_roots_source_intake",
+  "created_utc": "2026-10-24T20:18:56.754880+00:00",
+  "source_basis_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "prior_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "candidate_head": "de0d35e7920c77b4a3bb81a0ec115568c7adc36a",
+  "plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-controls-review\\next-five-module-trust-parser-intake-sourceonly-20261024\\source-intake-plan.json",
+    "bytes": 477897,
+    "sha256": "C86298F133A14C364C0ABA386D1FAE311705A85FB1C0CAFF2E1C59CD5FC20798"
+  },
+  "prior_intake_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-four-helper-stream-correction-source-intake-acceptance-20261024.json",
+    "bytes": 3159,
+    "sha256": "EED39E9E4F42BC66D312D68A73D18DE24270DEDB56929F17FAFFB29CF450043D"
+  },
+  "original_negative_closure_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v43-new18-partial-compile-negative-acceptance-20261024.json",
+    "bytes": 3223,
+    "sha256": "181443E1166146CDD47B590D39F072855BAC9A8D4373FA9EAE70F888A9D347BB"
+  },
+  "independent_composition_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\next-five-module-trust-parser-independent-composition-peer-20261024.json",
+    "bytes": 12749,
+    "sha256": "8C3EC44E3E006C259D3E8573BD0322B818B9A7E180E4811FB4E158357410510D"
+  },
+  "root_pre_intake_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-seven-packet-five-root-intake-sourceonly-20261024\\root-pre-intake-acceptance.json",
+    "bytes": 2018,
+    "sha256": "03983AEAF6D96F9314A8ED1C5C48122D3E87618C0C67BADBAD001146111D183F"
+  },
+  "root_materialization_receipt": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-seven-packet-five-root-intake-sourceonly-20261024\\root-materialization-receipt.json",
+    "bytes": 27212,
+    "sha256": "2C49F06C96AD15B6C125CE3DD6322BAEEEDECFA481E3282C3AD4F98146859A68"
+  },
+  "root_staged_blob_verification": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-seven-packet-five-root-intake-sourceonly-20261024\\root-staged-blob-verification.json",
+    "bytes": 10503,
+    "sha256": "3F989448B72A90504E044E16F4354527ECCEF4EF35D735D32C5B8E8DF1ECD98F"
+  },
+  "counts": {
+    "pending_paths": 105,
+    "source_build_paths": 24,
+    "evidence_paths": 81,
+    "cumulative_selected_paths": 334,
+    "cumulative_source_build_paths_from_origin": 82,
+    "new_test_roots": 5,
+    "new_declared_controls": 123,
+    "fresh_selected_roots": 23,
+    "fresh_source_declared_controls": 394
+  },
+  "working_tree_clean": true,
+  "only_expected_changed_paths": true,
+  "all105_committed_blob_bytes_exact": true,
+  "all105_current_file_bytes_exact": true,
+  "source_build_diff_check_passed": true,
+  "archive_whitespace_preserved_exactly": true,
+  "archive_diff_check_exit": 2,
+  "archive_whitespace_note": "Only original archived patch context spaces and build insertion final blank lines are reported; production source/build diff check is clean. Original evidence bytes remain exact.",
+  "preserved_progress_and_prior_oracles_and18_roots": true,
+  "all_prior_nonselected_files_preserved": true,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "actual_metadata_count": null,
+  "production_bridge_removed": false,
+  "qualification_boundary": "All23 selected roots require fresh compiler metadata and runtime evidence on this exact committed HEAD. The prior failed new18 result remains closed negative; no executable or partial metadata transfers. Existing63 must use the same144 catalog and its original order.",
+  "next_step": "Prepare and independently review the actual new23 and same144 existing63 catalogs and bound controls before a separate Root native grant."
+}

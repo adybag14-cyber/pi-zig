@@ -1,0 +1,15 @@
+# Genuine internal/tty color-depth supplier
+
+This packet implements the complete original getColorDepth callable and its private OSRelease, warning, TERM table, regexp-array and CI-map state from retained internal/tty.js 996AE301. The real builtin assembler supplies process, require and the actual early-bootstrapped SafeMap class. The retained realm authority passes process as a builtin wrapper argument; replacing globalThis.process does not replace that binding. env, platform and emitWarning remain live property reads on the actual retained process.
+
+The old unselected 9E295B73 donor and all its bytes are preserved. This supplier replaces its static CI shortcut with real SafeMap/Object.entries/for-of operations, its regexp loop with captured Array.some and a real fresh callback, its late global-process access with the original builtin binding, and its broad temporary scopes with explicit expression retirement and genuine synchronous argument/local owners. Function-local regexp literals are fresh at their original argument-evaluation positions. The ordinary TERM object intentionally retains inherited keys and two successful property Gets.
+
+The four finite clone-intrinsics hunks capture only RegExp, RegExp.exec, Array.some, Object.entries/Object.hasOwnProperty and String.split/String.toLowerCase before guest mutation. Every previous capture, Engine field and C ABI is unchanged. SafeMap acquisition stays in the existing real primordial owner and is not repeated lazily here.
+
+Twenty-nine unexecuted controls use the actual Engine/process/native OS/private builtin require/SafeMap owners. They cover all original depth branches and thresholds, live property and coercion ordering, actual mutable private Map/regexp-array behavior through explicit native test introspection, holes and inherited entries, ordinary TERM inheritance, original process capture, poisoned public primordials, lazy failure/reentry/undefined cache retry, warning retries/reentry, and native fatal retirement at exact operand/call/local boundaries. The test introspection is private to controls; production publishes no state observer.
+
+Only four source targets change: the new owner, finite intrinsic successor, new test root, and an additive install-only build insertion. The actual artifact stem is explicitly native-node-tty-color-depth. Compose the build insertion over future accepted successors; do not replace another packet's build projection.
+
+This is a genuine callable supplier, not the complete internal/tty module. hasColors still requires its actual shared validateInteger/ERR_OUT_OF_RANGE graph. Full builtin admission, public TTY/WriteStream publication, initialized JS debuglog and application startup remain explicit dependencies in dependency-handoff.json. No module facade, synthetic release value, terminal/environment policy, no-op logger or default backend is added.
+
+No Zig parser, formatter, compiler, metadata/runtime, Node capture or source generator ran. Python checked bytes/imports/source declarations and authored this isolated packet; git apply --check was read-only. Main and all earlier packets remain unchanged.

@@ -100,6 +100,26 @@ pub fn build(b: *std.Build) void {
     });
     // One allocator/TLS domain is shared by native C++ parser and containers.
     const native_node_memory = @import("tools/build_native_node_memory.zig").add(b, target, optimize);
+    // CommonJS/SDK consumers also reach StreamBase through the real filesystem.
+    // Carry its unchanged native string and listener helpers in the shared VM
+    // archive, with the same admitted allocator and compile flags as the
+    // existing focused stream targets. Archive extraction keeps one definition.
+    if (native_node_memory) |memory| {
+        quickjs.root_module.linkLibrary(memory);
+        quickjs.root_module.addIncludePath(b.path("src/extensions"));
+        quickjs.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_diagnostic_context.c"),
+            .flags = &.{"-std=gnu11"},
+        });
+        quickjs.root_module.addCSourceFiles(.{
+            .files = &.{
+                "src/extensions/native_v8_base_fatal.cpp",
+                "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+                "src/extensions/native_node_custom_buffer_listener_allocation.cpp",
+            },
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+    }
     // One unchanged libuv/llhttp graph is shared by native TCP and file I/O owners.
     const native_node_network = switch (target.result.os.tag) {
         .windows, .linux => @import("tools/build_native_node_network.zig").add(b, target, optimize, native_node_memory),
@@ -1873,6 +1893,33 @@ pub fn build(b: *std.Build) void {
         project_trust_paths_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-sdk-project-trust-paths", "Install actual original project trust path and resource controls without execution").dependOn(&b.addInstallArtifact(project_trust_paths_tests, .{}).step);
+    const project_trust_store_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_project_trust_store_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native project trust store"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, project_trust_store_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, project_trust_store_tests.root_module, typescript_parser);
+    linkSqlite(project_trust_store_tests.root_module, sqlite_lib_dir, sqlite_library);
+    project_trust_store_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        project_trust_store_tests.root_module.linkSystemLibrary("advapi32", .{});
+        project_trust_store_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-project-trust-store", "Install actual original project trust store and locking controls without execution").dependOn(&b.addInstallArtifact(project_trust_store_tests, .{}).step);
+    const project_trust_manager_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_project_trust_manager_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native project trust manager"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, project_trust_manager_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, project_trust_manager_tests.root_module, typescript_parser);
+    linkSqlite(project_trust_manager_tests.root_module, sqlite_lib_dir, sqlite_library);
+    project_trust_manager_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        project_trust_manager_tests.root_module.linkSystemLibrary("advapi32", .{});
+        project_trust_manager_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-project-trust-manager", "Install actual shared authenticated trust-manager controls without execution").dependOn(&b.addInstallArtifact(project_trust_manager_tests, .{}).step);
+
     const module_execution_state_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_execution_state_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native module execution state"}, .use_llvm = use_llvm,
@@ -5006,6 +5053,23 @@ pub fn build(b: *std.Build) void {
         node_format_with_options.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-node-format-with-options", "Install twenty-four declared format options and validator controls without running").dependOn(&b.addInstallArtifact(node_format_with_options, .{ .dest_sub_path = b.fmt("native-node-format-with-options{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
+    // Original internal/tty.getColorDepth over genuine builtin inputs.
+    // Install only; metadata/runtime require separate Root authorization.
+    const node_tty_color_depth = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_tty_color_depth_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native tty color depth"},
+    });
+    linkQuickJs(b, node_tty_color_depth.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_tty_color_depth.root_module, typescript_parser);
+    linkSqlite(node_tty_color_depth.root_module, sqlite_lib_dir, sqlite_library);
+    node_tty_color_depth.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_tty_color_depth.root_module.linkSystemLibrary("advapi32", .{});
+        node_tty_color_depth.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-tty-color-depth", "Install twenty-nine declared TTY color-depth controls without running").dependOn(&b.addInstallArtifact(node_tty_color_depth, .{ .dest_sub_path = b.fmt("native-node-tty-color-depth{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
     // Genuine shared Node argument errors and actual rest/super controls.
     // This target only installs the test artifact; no run or Source capture edge.

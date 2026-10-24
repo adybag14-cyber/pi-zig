@@ -1,0 +1,13 @@
+    const project_trust_store_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_project_trust_store_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native project trust store"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, project_trust_store_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, project_trust_store_tests.root_module, typescript_parser);
+    linkSqlite(project_trust_store_tests.root_module, sqlite_lib_dir, sqlite_library);
+    project_trust_store_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        project_trust_store_tests.root_module.linkSystemLibrary("advapi32", .{});
+        project_trust_store_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-project-trust-store", "Install actual original project trust store and locking controls without execution").dependOn(&b.addInstallArtifact(project_trust_store_tests, .{}).step);

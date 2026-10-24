@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "entry": "native_node_tty_color_depth.create(engine, Inputs) returns one owned actual getColorDepth callable",
+  "inputs": [
+    {
+      "name": "process",
+      "supplier": "Actual native_process owner passed by genuine builtin bootstrap, retained by the resulting closure; read live env/platform/emitWarning fields",
+      "default_policy": false
+    },
+    {
+      "name": "require",
+      "supplier": "Actual builtin require from native_node_internal_builtin_require with genuine os admission; called lazily as original require('os')",
+      "default_policy": false
+    },
+    {
+      "name": "safe_map",
+      "supplier": "Completed cached class from native_node_fs_collections.acquireSafeMap during genuine primordial bootstrap; exact cache identity required; no late capture",
+      "default_policy": false
+    }
+  ],
+  "shared_capture_dependency": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+    "bytes": 7170,
+    "sha256": "ACD65CF7EDD3FD885F91762EACEE54822026F4238272BA651203559AC2419D77"
+  },
+  "available_consumer": {
+    "source_intake": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\source-intake.json",
+      "bytes": 15395,
+      "sha256": "404ACD785D524522FB21B84B047948397C8026BB1CE26D0723B1ED5A05C6A96F"
+    },
+    "root_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-util-colors-source-peer-20261024.json",
+      "bytes": 3631,
+      "sha256": "A5DA9BFE900C3034BD7432CC66C3A164C7FE1FF327A719A5128552F8B9CDD96D"
+    },
+    "call": "Original shouldColorize forced branch lazily requires internal/tty and invokes getColorDepth"
+  },
+  "required_next": [
+    "Complete original hasColors using actual shared validateInteger and ERR_OUT_OF_RANGE suppliers, then actual internal/tty module admission; do not publish a partial module facade.",
+    "Genuine initialized JS debuglog still needs its actual builtin dependencies, initial NODE_DEBUG selection, stderr/warning capabilities, accepted colors and formatWithOptions; no no-op or disabled default.",
+    "A genuine public WriteStream constructor/AddMethods assembly and createRuntime/session startup remain separately required."
+  ],
+  "not_claimed": [
+    "hasColors",
+    "complete internal/tty module evaluation/publication",
+    "terminal descriptor allocation",
+    "initialized JS debuglog",
+    "full inspect parity",
+    "default backend switch",
+    "production startup"
+  ]
+}

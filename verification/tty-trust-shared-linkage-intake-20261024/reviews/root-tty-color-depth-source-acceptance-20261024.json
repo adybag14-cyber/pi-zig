@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-24T20:21:11.397433+00:00",
+  "status": "accepted_complete_getColorDepth_source_with_explicit_current_dependency_advances",
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\source-intake.json",
+    "bytes": 19587,
+    "sha256": "493EC6226951B6FDE87E1413104D43BF7C430C8B43C7120C5BDE5EFB39EB64F0"
+  },
+  "observed_main_head": "de0d35e7920c77b4a3bb81a0ec115568c7adc36a",
+  "selected_owner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\src\\extensions\\native_node_tty_color_depth.zig",
+    "bytes": 18770,
+    "sha256": "6A6D7B2D4DA8FA43D82B0B91722C098B0A64B0E682DDA744AEEA3FE29EDE96AA"
+  },
+  "selected_clone_intrinsics": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+    "bytes": 7170,
+    "sha256": "ACD65CF7EDD3FD885F91762EACEE54822026F4238272BA651203559AC2419D77"
+  },
+  "selected_test_root": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\src\\native_node_tty_color_depth_test.zig",
+    "bytes": 31063,
+    "sha256": "778344B6B920ED7A857F02CAB81E32CBF771A3F6DBF16F5DD6E2CFCD9300FBAB"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\tty-color-depth-successor.patch",
+    "bytes": 55882,
+    "sha256": "21622BBD6F76EC99FD652C496260E295D1D1F5D88699475E3231A3F97675B554"
+  },
+  "source_pin_versions_verified": 33,
+  "source_checks": {
+    "full_original_getColorDepth_and_builtin_wrapper_read": true,
+    "full_owner_and_all29_controls_read": true,
+    "four_clone_capture_hunks_forward_and_raw_inverse": true,
+    "build1262_byte_insertion_and_raw_inverse": true,
+    "complete_patch_reconstructed": true,
+    "git_apply_check_nonbuild_sources": true,
+    "relative_import_occurrences": 14,
+    "standard_package_import_occurrences": 15,
+    "literal_embeds": 0,
+    "test_names_and_order_exact": true
+  },
+  "manual_review": [
+    "Original FORCE_COLOR strict cases, repeated Gets, definedness/empty-string disables, TERM dumb precedence and warning return retirement are retained.",
+    "Actual builtin process identity is retained with live env/platform/emitWarning; actual require(os) stays lazy and OSRelease caches only successful completion with original outer reentry assignment.",
+    "All original TERM/CI entries and regular expressions, genuine SafeMap iteration, hasOwn/ordinary inherited table lookup, Array.some hole handling and captured primordials remain actual guest operations.",
+    "Original unary plus, BigInt rejection, property receivers/coercion/order, warning retry/reentry and first native fatal propagation are preserved.",
+    "The Windows release local remains owned until Source activation terminal; original QuickJS and native Frame excerpts match current source byte-for-byte. No early local clearing was added."
+  ],
+  "release_local_clarification": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\tty-color-depth-release-block-retirement-source-note-20261024.json",
+    "bytes": 9450,
+    "sha256": "3FC5312A444C88D7BAFC29CBBAB09A3BE4A151B16B34036252FCB9F0B5F6C828"
+  },
+  "historical_pin_bindings_and_approved_current_advances": {
+    "src/extensions/native_node_fs_collections.zig": {
+      "recorded": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_collections.zig",
+        "bytes": 16225,
+        "sha256": "EBC0FE29F1EFE23C34F7EB2A3181597197C07E31A6BB9C5681B3EB53213C007F"
+      },
+      "historical_commit": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+      "exact_historical_blob": true,
+      "accepted_current": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_collections.zig",
+        "bytes": 16656,
+        "sha256": "3617D02BCF35770944E7804D62E1AFB9699D8A4816BB4E2D45B1C191E7322876"
+      },
+      "reason": "Reviewed de0d35e7 successor adds SafeFinalizationRegistry / own-private getter; existing TTY SafeMap algorithm and lexical-retirement behavior remain unchanged."
+    },
+    "vendor/quickjs/quickjs.h": {
+      "recorded": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+        "bytes": 117314,
+        "sha256": "CA4DB7F473A9A1F7FF5C904D197FE25095B5B78B771327AAFA6F0B8819A7F230"
+      },
+      "historical_commit": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+      "exact_historical_blob": true,
+      "accepted_current": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+        "bytes": 117849,
+        "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+      },
+      "reason": "Reviewed de0d35e7 successor adds SafeFinalizationRegistry / own-private getter; existing TTY SafeMap algorithm and lexical-retirement behavior remain unchanged."
+    },
+    "vendor/quickjs/quickjs.c": {
+      "recorded": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2407586,
+        "sha256": "92D0A80DFD4D9AB76181ABAB3F0FE179BFA9827710A3A66A2C1BC651F426076F"
+      },
+      "historical_commit": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+      "exact_historical_blob": true,
+      "accepted_current": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409692,
+        "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+      },
+      "reason": "Reviewed de0d35e7 successor adds SafeFinalizationRegistry / own-private getter; existing TTY SafeMap algorithm and lexical-retirement behavior remain unchanged."
+    }
+  },
+  "dependency_advance_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-seven-packet-five-root-source-intake-acceptance-20261024.json",
+    "bytes": 3871,
+    "sha256": "CAD3AC65F3CD57C20E2DE04830F4261FC30ADC3DCB5C0F3CF3178D5E354F549C"
+  },
+  "future_build_requirement": {
+    "method": "Apply only the exact1262-byte insertion to the then accepted current build; never overwrite Main with historical projected build.",
+    "current_build": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+      "bytes": 546337,
+      "sha256": "75B7D90F9118A4ED1B719F7615EA4DA8EB9C0344FBE233219F42FAA30EC68343"
+    },
+    "prospective_standalone_on_de0_build": {
+      "bytes": 547599,
+      "sha256": "682F43402F218E8A7C4C6A4F92D4DFD7EDFBCEA069234786C5314694FD2CF8AF"
+    },
+    "not_materialized": true
+  },
+  "limits": [
+    "GetColorDepth helper only; hasColors and actual canonical internal/tty publication are separate.",
+    "Full initialized debuglog, public WriteStream assembly and production createRuntime/session startup remain incomplete.",
+    "No native compile, metadata or runtime result exists for these29 controls. TTY is excluded from current23-root/144-group catalog."
+  ],
+  "source_review_accepted": true,
+  "Main_mutated": false,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "actual_metadata_count": null,
+  "production_bridge_removed": false
+}

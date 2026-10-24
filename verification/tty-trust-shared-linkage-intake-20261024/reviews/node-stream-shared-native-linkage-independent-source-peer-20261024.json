@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "reviewer": "catalog_review",
+  "status": "independently_accepted_source_only_causal_shared_stream_linkage",
+  "source_basis_head": "de0d35e7920c77b4a3bb81a0ec115568c7adc36a",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-stream-native-linkage-sourceonly-20261024\\source-intake.json",
+    "bytes": 8065,
+    "sha256": "65475D8027998D077BCDC9DF537699FCFD88116619B80EABCC3C4FB7B1BB7ADC"
+  },
+  "selected_build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-stream-native-linkage-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 547411,
+    "sha256": "F6A4571DEDBE4E32B03672192F7C4A168093AD48E37065AFB0373CE421B7D2CF"
+  },
+  "static_checks": {
+    "nested_input_pin_versions_verified": 24,
+    "native_source_and_header_pins_verified": 17,
+    "intake_rehashed": true,
+    "current_main_build_matches_original": true,
+    "exact_insertion_bytes": 1074,
+    "exact_insertion_offset": 7317,
+    "whole_file_forward_and_raw_inverse": true,
+    "whole_patch_reproduced": true,
+    "git_apply_check_exit_code": 0,
+    "all_existing_target_bytes_unchanged": true,
+    "new_source_test_declarations": 0,
+    "new_run_or_install_steps": 0
+  },
+  "causal_analysis": [
+    "Preserved actual lld-link stderr reports exactly pi_node_one_byte_string_cstring_length, pi_node_one_byte_string_empty_maybe_handle, pi_node_custom_buffer_listener_allocate and pi_node_custom_buffer_listener_free. The referenced Zig sites are native_node_one_byte_string.zig:32/41 and native_node_custom_buffer_listener.zig:32/53.",
+    "The first pair is defined by the unchanged native_node_one_byte_string_diagnostics.cpp. Its synchronous DiagnosticContextScope needs the unchanged diagnostic_context.c, and its real fatal branch needs the unchanged native_v8_base_fatal.cpp. The second pair is defined by unchanged native_node_custom_buffer_listener_allocation.cpp; it uses the same diagnostic scope and the existing pi_simd allocation-domain implementation.",
+    "The failed package-input target already calls linkQuickJs but does not carry the focused node_one_byte_diagnostics archive or direct listener allocation source. Adding these existing definitions to pi-quickjs closes the observed missing-provider path for this genuine shared VM consumer.",
+    "The addition links the existing native_node_memory variable, created once. It does not compile another native_simdjson_memory.cpp instance or create another allocator/TLS owner. The existing network and package-json libraries already depend on that same build artifact."
+  ],
+  "archive_and_abi_review": {
+    "destination": "existing static pi-quickjs",
+    "ordinary_archive_extraction": true,
+    "no_whole_archive_or_force_load_added": true,
+    "focused_direct_objects_and_static_archives_unchanged": true,
+    "same_C_and_CXX_flags_as_current_focused_owners": true,
+    "same_target_and_optimize_inputs": true,
+    "debug_signature_policy": "The only existing build membership for native_v8_base_fatal.cpp is the focused node_one_byte_diagnostics archive, with the same C++ flags and no divergent DEBUG/OFFICIAL_BUILD defines. The hunk does not introduce a differently configured fatal ABI.",
+    "duplicate_definition_reasoning": "Ordinary lazy archive members supply unresolved symbols; already supplied focused direct-object definitions do not force their counterpart member into the link. The two archives' diagnostic/fatal member definitions and flags are the same, and no forced extraction or aggregate source-body replacement is added. This is a source-level acceptance, not a claim that a new linker invocation has succeeded.",
+    "pinned_build_tool_sources": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Module.zig",
+        "bytes": 26577,
+        "sha256": "0D5D2A468C99BEA020BD8B8CA13C32E64ABD66686D1821C9737FFC1A9292729F",
+        "read_ranges": [
+          [
+            470,
+            473
+          ]
+        ]
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\Compile.zig",
+        "bytes": 84912,
+        "sha256": "6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84",
+        "read_ranges": [
+          [
+            1160,
+            1190
+          ],
+          [
+            2095,
+            2108
+          ]
+        ],
+        "finding": "A static compile skips nesting another static library; consumer dependency traversal supplies the ordinary archive paths. The new linkLibrary(memory) therefore retains the existing native-memory artifact rather than embedding a second owner."
+      }
+    ]
+  },
+  "bounds": {
+    "pointer_bits": 64,
+    "operating_systems": [
+      "windows",
+      "linux"
+    ],
+    "capability_gate": "unchanged native_node_memory optional artifact",
+    "native_abi_changed": false,
+    "native_implementation_changed": false,
+    "metadata_count": null,
+    "runtime_result": null,
+    "native_execution": false,
+    "compiler_or_generator_execution": false,
+    "Main_mutated": false,
+    "product_qualification": false
+  },
+  "remaining": "Root may compose the exact insertion after independent negative closure and source release. Fresh compile/metadata/runtime qualification remains Root-owned; no result or qualification transfers from the preserved failed build.",
+  "blockers": [],
+  "created_utc": "2026-10-24T20:50:04.346171+00:00"
+}

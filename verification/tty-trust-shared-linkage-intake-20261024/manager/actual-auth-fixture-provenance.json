@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "status": "source_only_reuse_actual_auth_fixture",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_project_trust_paths_test.zig",
+    "bytes": 46762,
+    "sha256": "93F611E9EE6F52BC5B94A4348EDE6092118AED783B068660E560A13180DF31A0"
+  },
+  "Disk": {
+    "bytes": 1062,
+    "sha256": "124D713CE3AA198E556AFC6A3D96F3521488912393B82E561A6B5C2DC9057713"
+  },
+  "ActualTrustApplication": {
+    "bytes": 11418,
+    "sha256": "6E02C4FA4D9334704147D36EEC0BFA668D3FDC1E30B536E26360246A938CF269"
+  },
+  "both_original_blocks_raw_unchanged": true,
+  "fixture_has_real_platform_frontend_auth_and_original_physical_config_url": true,
+  "permission_disabled_only_in_control_fixture": true,
+  "production_policy_unchanged": true,
+  "native_execution": false
+}

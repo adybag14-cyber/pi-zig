@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "status": "source_only_install_step_addition",
+  "source_basis_head": "de0d35e7920c77b4a3bb81a0ec115568c7adc36a",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\original\\build.zig",
+    "bytes": 546337,
+    "sha256": "75B7D90F9118A4ED1B719F7615EA4DA8EB9C0344FBE233219F42FAA30EC68343"
+  },
+  "current_Main_at_authoring": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+    "bytes": 546337,
+    "sha256": "75B7D90F9118A4ED1B719F7615EA4DA8EB9C0344FBE233219F42FAA30EC68343"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 547391,
+    "sha256": "84BEACAD508BE43C21B33955F5DDD83A5637582926BC3788F102F32C10993DF4"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1054,
+    "sha256": "5FB2736B6A0460A9837833BB892AE817284E9E220EDCCE4C4D8263EE9EE95D7B"
+  },
+  "anchor": "    const module_execution_state_tests = b.addTest(.{\n",
+  "offset": 185644,
+  "insertion_length": 1054,
+  "exact_inverse": true,
+  "original_build_prefix_and_suffix_unchanged": true,
+  "standalone_build_not_for_whole_file_replacement": true,
+  "target": "build-native-sdk-project-trust-store",
+  "filter": "native project trust store",
+  "artifact_stem": "test",
+  "Windows_artifacts": [
+    "test.exe",
+    "test.pdb"
+  ],
+  "declared_controls": 37,
+  "actual_metadata_count": null,
+  "native_execution": false
+}

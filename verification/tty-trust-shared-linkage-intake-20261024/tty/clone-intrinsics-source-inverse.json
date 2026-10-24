@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\original\\src\\extensions\\native_clone_intrinsics.zig",
+    "bytes": 5808,
+    "sha256": "5793E31979FB384F362E6E32FBD8A81C72B273D16E3BAC07C775C41C7D9962A2"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+    "bytes": 7170,
+    "sha256": "ACD65CF7EDD3FD885F91762EACEE54822026F4238272BA651203559AC2419D77"
+  },
+  "edits": [
+    {
+      "offset": 959,
+      "before": "\"FinalizationRegistry\", \"Array\", \"Object\", \"Symbol\"",
+      "after": "\"FinalizationRegistry\", \"Array\", \"Object\", \"Symbol\", \"RegExp\"",
+      "before_sha256": "5793E31979FB384F362E6E32FBD8A81C72B273D16E3BAC07C775C41C7D9962A2",
+      "after_sha256": "8E8075B420039D6403CE760BDDD1E8BF830A6A817A16401EC72A156BC3A2103F"
+    },
+    {
+      "offset": 4044,
+      "before": "            try put(context, result, name ++ \".\" ++ method, try checked(c.JS_GetPropertyStr(context, prototype, method)));\n",
+      "after": "            try put(context, result, name ++ \".\" ++ method, try checked(c.JS_GetPropertyStr(context, prototype, method)));\n            if (comptime @import(\"std\").mem.eql(u8, name, \"Array\"))\n                try put(context, result, \"Array.some\", try checked(c.JS_GetPropertyStr(context, prototype, \"some\")));\n",
+      "before_sha256": "8E8075B420039D6403CE760BDDD1E8BF830A6A817A16401EC72A156BC3A2103F",
+      "after_sha256": "B3A5BB57AA1F2C9D6F90A6B2E9E615693C5AAD0FDE64B35D1B633A2A497A30A9"
+    },
+    {
+      "offset": 4430,
+      "before": "            try put(context, result, \"Object.freeze\", try checked(c.JS_GetPropertyStr(context, constructor, \"freeze\")));\n",
+      "after": "            try put(context, result, \"Object.freeze\", try checked(c.JS_GetPropertyStr(context, constructor, \"freeze\")));\n            try put(context, result, \"Object.entries\", try checked(c.JS_GetPropertyStr(context, constructor, \"entries\")));\n            const prototype = try checked(c.JS_GetPropertyStr(context, constructor, \"prototype\"));\n            defer c.JS_FreeValue(context, prototype);\n            try put(context, result, \"Object.hasOwnProperty\", try checked(c.JS_GetPropertyStr(context, prototype, \"hasOwnProperty\")));\n",
+      "before_sha256": "B3A5BB57AA1F2C9D6F90A6B2E9E615693C5AAD0FDE64B35D1B633A2A497A30A9",
+      "after_sha256": "C719763506715834CD7E424A6B618579773CD0BA547A51F9189D37DCB07FAA29"
+    },
+    {
+      "offset": 4972,
+      "before": "        if (comptime @import(\"std\").mem.eql(u8, name, \"Symbol\")) {\n",
+      "after": "        if (comptime @import(\"std\").mem.eql(u8, name, \"String\") or @import(\"std\").mem.eql(u8, name, \"RegExp\")) {\n            const prototype = try checked(c.JS_GetPropertyStr(context, constructor, \"prototype\"));\n            defer c.JS_FreeValue(context, prototype);\n            if (comptime @import(\"std\").mem.eql(u8, name, \"String\")) {\n                try put(context, result, \"String.split\", try checked(c.JS_GetPropertyStr(context, prototype, \"split\")));\n                try put(context, result, \"String.toLowerCase\", try checked(c.JS_GetPropertyStr(context, prototype, \"toLowerCase\")));\n            } else {\n                try put(context, result, \"RegExp.exec\", try checked(c.JS_GetPropertyStr(context, prototype, \"exec\")));\n            }\n        }\n        if (comptime @import(\"std\").mem.eql(u8, name, \"Symbol\")) {\n",
+      "before_sha256": "C719763506715834CD7E424A6B618579773CD0BA547A51F9189D37DCB07FAA29",
+      "after_sha256": "ACD65CF7EDD3FD885F91762EACEE54822026F4238272BA651203559AC2419D77"
+    }
+  ],
+  "complete_raw_inverse": true,
+  "old_capture_keys_preserved": true,
+  "Engine_and_C_unchanged": true
+}

@@ -1,0 +1,155 @@
+{
+  "schema": 1,
+  "status": "source_only_shared_trust_factory_successors",
+  "source_basis_head": "de0d35e7920c77b4a3bb81a0ec115568c7adc36a",
+  "transformations": [
+    {
+      "relative_path": "src/extensions/native_sdk_project_trust_paths.zig",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_project_trust_paths.zig",
+        "bytes": 16748,
+        "sha256": "15F33D337B14FF9BDBFBD46A1C92644CB6D86E84A127C4C216B6F9D5A98C191F"
+      },
+      "retained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\original\\src\\extensions\\native_sdk_project_trust_paths.zig",
+        "bytes": 16748,
+        "sha256": "15F33D337B14FF9BDBFBD46A1C92644CB6D86E84A127C4C216B6F9D5A98C191F"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_project_trust_paths.zig",
+        "bytes": 18064,
+        "sha256": "B44C685CDB3DE78F2853526AAA1DCCF4D1A480C630CF06E1E0C3FC68EEC72B1D"
+      },
+      "edits": [
+        {
+          "offset": 4105,
+          "before": "    const resource_names = try v.array(s);\n    inline for (.{\n        \"settings.json\", \"mcp.json\", \"extensions\", \"skills\",\n        \"prompts\", \"themes\", \"SYSTEM.md\", \"APPEND_SYSTEM.md\",\n    }, 0..) |name, index| try v.index(s, resource_names, @intCast(index), try v.text(s, name));\n    const normalize_function = try v.ordinary(s, \"normalizeCwd\", 1, normalizeCallback,\n        &.{ canonicalize, resolve });\n    const parent_function = try v.ordinary(s, \"getProjectTrustParentPath\", 1,\n        parentCallback, &.{ normalize_function, dirname });\n    const options_function = try v.ordinary(s, \"getProjectTrustOptions\", 2,\n        optionsCallback, &.{ normalize_function, parent_function });\n    const resources_function = try v.ordinary(s, \"hasTrustRequiringProjectResources\", 1,\n        resourcesCallback, &.{\n            exists_sync, home_dir, dirname, join, inputs.config_dir,\n            canonicalize, resolve, resource_names,\n        });\n    const exports_value = try v.object(s);\n    try v.put(s, exports_value, \"getProjectTrustParentPath\", parent_function);\n    try v.put(s, exports_value, \"getProjectTrustOptions\", options_function);\n    try v.put(s, exports_value, \"hasTrustRequiringProjectResources\", resources_function);\n",
+          "after": "    const built = try fromCaptures(s, .{\n        .exists_sync = exists_sync, .home_dir = home_dir, .dirname = dirname,\n        .join = join, .canonicalize = canonicalize, .resolve = resolve,\n        .config_dir = inputs.config_dir,\n    });\n    const exports_value = built.exports_value;\n",
+          "input_sha256": "15F33D337B14FF9BDBFBD46A1C92644CB6D86E84A127C4C216B6F9D5A98C191F",
+          "output_sha256": "004D0652CB8486EADA9BBCB2FE861559CEBFEACCBF9CC66F579200F01392C02F"
+        },
+        {
+          "offset": 4605,
+          "before": "fn normalizeCallback(",
+          "after": "/// Scoped, already-rooted genuine named imports from one trust-manager\n/// evaluation. No guest carrier or replacement import namespace is constructed.\npub const Captures = struct {\n    exists_sync: c.JSValue, home_dir: c.JSValue, dirname: c.JSValue,\n    join: c.JSValue, canonicalize: c.JSValue, resolve: c.JSValue,\n    config_dir: c.JSValue,\n};\npub const Built = struct { exports_value: c.JSValue, normalize_function: c.JSValue };\n\n/// Both values are borrowed from s. The complete module also uses this exact\n/// normalize function for its Store callbacks; all operation bodies stay shared.\npub fn fromCaptures(s: *Scope, imports: Captures) anyerror!Built {\n    try s.engine.checkNativeEntry();\n    const exists_sync = imports.exists_sync;\n    const home_dir = imports.home_dir;\n    const dirname = imports.dirname;\n    const join = imports.join;\n    const canonicalize = imports.canonicalize;\n    const resolve = imports.resolve;\n    const resource_names = try v.array(s);\n    inline for (.{\n        \"settings.json\", \"mcp.json\", \"extensions\", \"skills\",\n        \"prompts\", \"themes\", \"SYSTEM.md\", \"APPEND_SYSTEM.md\",\n    }, 0..) |name, index| try v.index(s, resource_names, @intCast(index), try v.text(s, name));\n    const normalize_function = try v.ordinary(s, \"normalizeCwd\", 1, normalizeCallback,\n        &.{ canonicalize, resolve });\n    const parent_function = try v.ordinary(s, \"getProjectTrustParentPath\", 1,\n        parentCallback, &.{ normalize_function, dirname });\n    const options_function = try v.ordinary(s, \"getProjectTrustOptions\", 2,\n        optionsCallback, &.{ normalize_function, parent_function });\n    const resources_function = try v.ordinary(s, \"hasTrustRequiringProjectResources\", 1,\n        resourcesCallback, &.{\n            exists_sync, home_dir, dirname, join, imports.config_dir,\n            canonicalize, resolve, resource_names,\n        });\n    const exports_value = try v.object(s);\n    try v.put(s, exports_value, \"getProjectTrustParentPath\", parent_function);\n    try v.put(s, exports_value, \"getProjectTrustOptions\", options_function);\n    try v.put(s, exports_value, \"hasTrustRequiringProjectResources\", resources_function);\n    return .{ .exports_value = exports_value, .normalize_function = normalize_function };\n}\n\nfn normalizeCallback(",
+          "input_sha256": "004D0652CB8486EADA9BBCB2FE861559CEBFEACCBF9CC66F579200F01392C02F",
+          "output_sha256": "B44C685CDB3DE78F2853526AAA1DCCF4D1A480C630CF06E1E0C3FC68EEC72B1D"
+        }
+      ],
+      "complete_raw_inverse": true
+    },
+    {
+      "relative_path": "src/extensions/native_sdk_project_trust_store.zig",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\projected-v2\\src\\extensions\\native_sdk_project_trust_store.zig",
+        "bytes": 31895,
+        "sha256": "9268A5A8F93551974E3423C323F4907722B241A84CD47BBA4F1503B4E99FBA08"
+      },
+      "retained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\original\\src\\extensions\\native_sdk_project_trust_store.zig",
+        "bytes": 31895,
+        "sha256": "9268A5A8F93551974E3423C323F4907722B241A84CD47BBA4F1503B4E99FBA08"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_project_trust_store.zig",
+        "bytes": 33242,
+        "sha256": "6D68C2413AA2BFC2035518FB48F174F16FC4735E02E18EDD43B3681C0CD57AF1"
+      },
+      "edits": [
+        {
+          "offset": 4402,
+          "before": "    const nearest = try v.ordinary(s, \"findNearestTrustEntry\", 2, nearestCall, &.{ normalize, dirname });\n    const read_file = try v.ordinary(s, \"readTrustFile\", 1, readCall, &.{ exists_sync, read_sync, strip_bom });\n    const write_file = try v.ordinary(s, \"writeTrustFile\", 2, writeCall, &.{ dirname, mkdir_sync, write_sync });\n    const acquire = try v.ordinary(s, \"acquireTrustLockSync\", 1, acquireCall, &.{ dirname, mkdir_sync, inputs.lockfile });\n    const with_lock = try v.ordinary(s, \"withTrustFileLock\", 2, withLockCall, &.{acquire});\n    const prototype = try v.object(s);\n    var constructor_boundary: v.guest.Boundary = .{ .engine = s.engine };\n    try constructor_boundary.begin();\n    const constructor_value = try constructor_boundary.finishValue(s,\n        native_class.constructor(s.engine, \"ProjectTrustStore\", 1, prototype,\n            constructCall, &.{ join, resolve_path }));\n    try defineMethod(s, prototype, \"get\", 1, getCall, &.{});\n    try defineMethod(s, prototype, \"getEntry\", 1, getEntryCall, &.{ with_lock, read_file, nearest });\n    try defineMethod(s, prototype, \"set\", 2, setCall, &.{});\n    try defineMethod(s, prototype, \"setMany\", 1, setManyCall, &.{ with_lock, read_file, normalize, write_file });\n",
+          "after": "    const constructor_value = try fromCaptures(s, .{\n        .exists_sync = exists_sync, .mkdir_sync = mkdir_sync, .read_sync = read_sync,\n        .write_sync = write_sync, .dirname = dirname, .join = join,\n        .resolve_path = resolve_path, .strip_bom = strip_bom,\n        .lockfile = inputs.lockfile, .normalize = normalize,\n    });\n",
+          "input_sha256": "9268A5A8F93551974E3423C323F4907722B241A84CD47BBA4F1503B4E99FBA08",
+          "output_sha256": "1E94D70FFFC5FC8EEC6864991D775E824834F7F1896C7EC8141CAB7F03D6503C"
+        },
+        {
+          "offset": 4960,
+          "before": "fn defineMethod(",
+          "after": "/// Actual captured imports and the one shared normalizeCwd closure supplied\n/// by the complete trust-manager evaluation. Every value is already rooted in s.\npub const Captures = struct {\n    exists_sync: c.JSValue, mkdir_sync: c.JSValue, read_sync: c.JSValue,\n    write_sync: c.JSValue, dirname: c.JSValue, join: c.JSValue,\n    resolve_path: c.JSValue, strip_bom: c.JSValue,\n    lockfile: c.JSValue, normalize: c.JSValue,\n};\n/// Returns a borrowed complete ordinary class constructor rooted in s.\npub fn fromCaptures(s: *Scope, imports: Captures) anyerror!c.JSValue {\n    try s.engine.checkNativeEntry();\n    const exists_sync = imports.exists_sync;\n    const mkdir_sync = imports.mkdir_sync;\n    const read_sync = imports.read_sync;\n    const write_sync = imports.write_sync;\n    const dirname = imports.dirname;\n    const join = imports.join;\n    const resolve_path = imports.resolve_path;\n    const strip_bom = imports.strip_bom;\n    const normalize = imports.normalize;\n    const nearest = try v.ordinary(s, \"findNearestTrustEntry\", 2, nearestCall, &.{ normalize, dirname });\n    const read_file = try v.ordinary(s, \"readTrustFile\", 1, readCall, &.{ exists_sync, read_sync, strip_bom });\n    const write_file = try v.ordinary(s, \"writeTrustFile\", 2, writeCall, &.{ dirname, mkdir_sync, write_sync });\n    const acquire = try v.ordinary(s, \"acquireTrustLockSync\", 1, acquireCall, &.{ dirname, mkdir_sync, imports.lockfile });\n    const with_lock = try v.ordinary(s, \"withTrustFileLock\", 2, withLockCall, &.{acquire});\n    const prototype = try v.object(s);\n    var constructor_boundary: v.guest.Boundary = .{ .engine = s.engine };\n    try constructor_boundary.begin();\n    const constructor_value = try constructor_boundary.finishValue(s,\n        native_class.constructor(s.engine, \"ProjectTrustStore\", 1, prototype,\n            constructCall, &.{ join, resolve_path }));\n    try defineMethod(s, prototype, \"get\", 1, getCall, &.{});\n    try defineMethod(s, prototype, \"getEntry\", 1, getEntryCall, &.{ with_lock, read_file, nearest });\n    try defineMethod(s, prototype, \"set\", 2, setCall, &.{});\n    try defineMethod(s, prototype, \"setMany\", 1, setManyCall, &.{ with_lock, read_file, normalize, write_file });\n    return constructor_value;\n}\nfn defineMethod(",
+          "input_sha256": "1E94D70FFFC5FC8EEC6864991D775E824834F7F1896C7EC8141CAB7F03D6503C",
+          "output_sha256": "6D68C2413AA2BFC2035518FB48F174F16FC4735E02E18EDD43B3681C0CD57AF1"
+        }
+      ],
+      "complete_raw_inverse": true
+    },
+    {
+      "relative_path": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+        "bytes": 17972,
+        "sha256": "35897A81D550D64E2BDEF66696F759A1AEF5BDA5B0D8EB863FE409C874F84B4C"
+      },
+      "retained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\original\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+        "bytes": 17972,
+        "sha256": "35897A81D550D64E2BDEF66696F759A1AEF5BDA5B0D8EB863FE409C874F84B4C"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+        "bytes": 18450,
+        "sha256": "2F128521E87FEA6AABF37CCF7CE42380775FB6288C715404AFDD5AAD6673C05A"
+      },
+      "edits": [
+        {
+          "offset": 3495,
+          "before": "    pub fn createProjectTrustPaths(self: *Owner) !c.JSValue {\n        return projectTrustPathsEntry(self);\n    }\n",
+          "after": "    pub fn createProjectTrustPaths(self: *Owner) !c.JSValue {\n        return projectTrustPathsEntry(self);\n    }\n    /// Complete original trust-manager module. The path entry above selects\n    /// this same evaluation, including its Store and shared named captures.\n    pub fn createProjectTrustManager(self: *Owner) !c.JSValue {\n        return projectTrustPathsEntry(self);\n    }\n",
+          "input_sha256": "35897A81D550D64E2BDEF66696F759A1AEF5BDA5B0D8EB863FE409C874F84B4C",
+          "output_sha256": "94F9BCDB584F0FC4C2BC78EA055903BFE57019D47FF36CD1F9F87FF05A762D17"
+        },
+        {
+          "offset": 9459,
+          "before": "    const os = try o.own(c.JS_DupValue(engine.context, try installed(engine, \"node:os\")));\n",
+          "after": "    const os = try o.own(c.JS_DupValue(engine.context, try installed(engine, \"node:os\")));\n    const lockfile = try o.own(c.JS_DupValue(engine.context, try installed(engine, \"pi-native:auth-directory-lock\")));\n",
+          "input_sha256": "94F9BCDB584F0FC4C2BC78EA055903BFE57019D47FF36CD1F9F87FF05A762D17",
+          "output_sha256": "CBA12CB628DB785910ED1A0A3193913850717EABC7E7DD1F95A4171ED9748A23"
+        },
+        {
+          "offset": 10589,
+          "before": "    const config_dir = try o.get(configuration, \"CONFIG_DIR_NAME\");\n    // Source imports homedir from the installed OS namespace. Preserve ordinary\n    // named-member mutation before capture; no foreign carrier or callable\n    // whitelist is accepted. Never touch self after the first carrier Get.\n    return @import(\"native_sdk_project_trust_paths.zig\").create(engine, .{\n        .filesystem = filesystem, .paths = paths, .os = os,\n        .path_utilities = path_utilities, .config_dir = config_dir,\n    });\n",
+          "after": "    // This is the actual retained text module, acquired only after all\n    // carrier identities pass. Foreign/pending carriers publish no new cache.\n    // All self-owned inputs were rooted before the first carrier Get.\n    const text_utilities = try o.own(try @import(\"native_sdk_text_helpers.zig\").create(engine));\n    return @import(\"native_sdk_project_trust_manager.zig\").create(engine, .{\n        .filesystem = filesystem, .paths = paths, .os = os,\n        .configuration = configuration, .path_utilities = path_utilities,\n        .text_utilities = text_utilities, .lockfile = lockfile,\n    });\n",
+          "input_sha256": "CBA12CB628DB785910ED1A0A3193913850717EABC7E7DD1F95A4171ED9748A23",
+          "output_sha256": "2F128521E87FEA6AABF37CCF7CE42380775FB6288C715404AFDD5AAD6673C05A"
+        }
+      ],
+      "complete_raw_inverse": true
+    },
+    {
+      "relative_path": "src/extensions/native_sdk_application_owner.zig",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_application_owner.zig",
+        "bytes": 15154,
+        "sha256": "6EF2F47ACD53649507ADE2C6DEB0D5352D02B905AB5C1F93BF53CA9F4B92E3B3"
+      },
+      "retained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\original\\src\\extensions\\native_sdk_application_owner.zig",
+        "bytes": 15154,
+        "sha256": "6EF2F47ACD53649507ADE2C6DEB0D5352D02B905AB5C1F93BF53CA9F4B92E3B3"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_application_owner.zig",
+        "bytes": 15448,
+        "sha256": "49577CBE87DF7F92A52827F576CBD5D3BFBAE3151BF4706CC6BE4BB8524BA650"
+      },
+      "edits": [
+        {
+          "offset": 3854,
+          "before": "    pub fn createProjectTrustPaths(self: *Owner) !c.JSValue {\n        try self.check();\n        return if (self.auth) |*value| value.createProjectTrustPaths() else error.ActualSdkApplicationAuthRetired;\n    }\n",
+          "after": "    pub fn createProjectTrustPaths(self: *Owner) !c.JSValue {\n        try self.check();\n        return if (self.auth) |*value| value.createProjectTrustPaths() else error.ActualSdkApplicationAuthRetired;\n    }\n    /// The complete original trust manager over the same authenticated runtime.\n    pub fn createProjectTrustManager(self: *Owner) !c.JSValue {\n        try self.check();\n        return if (self.auth) |*value| value.createProjectTrustManager() else error.ActualSdkApplicationAuthRetired;\n    }\n",
+          "input_sha256": "6EF2F47ACD53649507ADE2C6DEB0D5352D02B905AB5C1F93BF53CA9F4B92E3B3",
+          "output_sha256": "49577CBE87DF7F92A52827F576CBD5D3BFBAE3151BF4706CC6BE4BB8524BA650"
+        }
+      ],
+      "complete_raw_inverse": true
+    }
+  ],
+  "sealed_Store_parent": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-store-sourceonly-20261024\\source-intake.json",
+    "bytes": 22117,
+    "sha256": "893BC3B7884B5ACD05368C1D1BF4A8788A94017A6B5A883856CD654FBE654CA3"
+  },
+  "original_operation_callback_bodies_unchanged": true,
+  "Main_mutated": false,
+  "native_execution": false
+}

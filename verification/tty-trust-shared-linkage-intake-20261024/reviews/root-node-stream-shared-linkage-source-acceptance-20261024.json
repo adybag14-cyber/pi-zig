@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-24T20:52:14.143077+00:00",
+  "status": "root_accepted_causal_shared_native_stream_linkage_source",
+  "candidate_head": "de0d35e7920c77b4a3bb81a0ec115568c7adc36a",
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-stream-native-linkage-sourceonly-20261024\\source-intake.json",
+    "bytes": 8065,
+    "sha256": "65475D8027998D077BCDC9DF537699FCFD88116619B80EABCC3C4FB7B1BB7ADC"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\node-stream-shared-native-linkage-independent-source-peer-20261024.json",
+    "bytes": 5446,
+    "sha256": "9392BC04ADAA92802D7F94D0CF8A776D0F79C83F5A6E60F7229B92A6C6A47D69"
+  },
+  "selected_build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-stream-native-linkage-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 547411,
+    "sha256": "F6A4571DEDBE4E32B03672192F7C4A168093AD48E37065AFB0373CE421B7D2CF"
+  },
+  "build_insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-stream-native-linkage-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1074,
+    "sha256": "C6C70DD9E8BF70CD95F2FA93B87E6DD0BC49E5B5E2E3A98C7ABBD91FE1865756"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-stream-native-linkage-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1200,
+    "sha256": "F4E3049B6F5A00BD3FE7AC7A05F550281090375F3E8B135331D3AD61B579BEBB"
+  },
+  "cause": {
+    "original_result": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v44-new23-buildquery-20261024-203424\\result.json",
+      "bytes": 28815,
+      "sha256": "B90CDC644BABCF8AE3C5A911A4374674C11A01971895A6CCCC3E3E19826E51C3"
+    },
+    "original_stderr": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v44-new23-buildquery-20261024-203424\\groups\\native-node-module-package-inputs\\compile.stderr.log",
+      "bytes": 22271,
+      "sha256": "82DB032B76049C72CDB43CB6D9990EEB665E482F916C9F1EB99E3A23A07093B7"
+    },
+    "missing_symbols": [
+      "pi_node_one_byte_string_cstring_length",
+      "pi_node_one_byte_string_empty_maybe_handle",
+      "pi_node_custom_buffer_listener_allocate",
+      "pi_node_custom_buffer_listener_free"
+    ],
+    "existing_definitions_unmodified": true,
+    "reason": "These native providers were linked by selected stream targets only, while the actual package-input VM now reaches the same stream consumers through its genuine filesystem/CommonJS graph."
+  },
+  "source_checks": {
+    "four_original_missing_symbols_and_genuine_definitions_read": true,
+    "exact1074_byte_hunk_and_whole_inverse_reverified": true,
+    "all17_native_source_header_build_pins_reverified": true,
+    "pinned_Zig_archive_traversal_source_pins_reverified": true,
+    "existing_focused_target_bodies_unchanged": true,
+    "same_existing_native_memory_owner": true,
+    "ordinary_static_archive_extraction_no_forced_load": true,
+    "same_C_CPP_target_optimize_flags": true,
+    "native_source_and_ABI_unchanged": true
+  },
+  "source_review_accepted": true,
+  "source_declared_controls_added": 0,
+  "Main_mutated": false,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "source_mutation_hold_released": false,
+  "actual_metadata_count": null,
+  "integration": "Compose exact insertion only after the independent negative closure and a separate Root source-intake acceptance. All current144 group names/orders/control bodies/artifact bindings remain unchanged by this fix."
+}

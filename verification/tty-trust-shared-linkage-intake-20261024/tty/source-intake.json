@@ -1,0 +1,442 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T20:10:13.923132+00:00",
+  "scope": "Complete genuine original internal/tty getColorDepth callable and private state",
+  "status": "sealed_source_only_pending_independent_peer_and_native_qualification",
+  "observed_main_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "main_porcelain_empty": true,
+  "changes": [
+    {
+      "destination_relative_path": "src/extensions/native_node_tty_color_depth.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\src\\extensions\\native_node_tty_color_depth.zig",
+        "bytes": 18770,
+        "sha256": "6A6D7B2D4DA8FA43D82B0B91722C098B0A64B0E682DDA744AEEA3FE29EDE96AA"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_clone_intrinsics.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\original\\src\\extensions\\native_clone_intrinsics.zig",
+        "bytes": 5808,
+        "sha256": "5793E31979FB384F362E6E32FBD8A81C72B273D16E3BAC07C775C41C7D9962A2"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+        "bytes": 7170,
+        "sha256": "ACD65CF7EDD3FD885F91762EACEE54822026F4238272BA651203559AC2419D77"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_node_tty_color_depth_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\src\\native_node_tty_color_depth_test.zig",
+        "bytes": 31063,
+        "sha256": "778344B6B920ED7A857F02CAB81E32CBF771A3F6DBF16F5DD6E2CFCD9300FBAB"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\original\\build.zig",
+        "bytes": 541125,
+        "sha256": "EAB06B9082B53FB958E34E47193447CBA30DA153803472666401EC0A72D48691"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 542387,
+        "sha256": "12AD1029A35EE1C33EB9C5BD4C0EAFDEC97EDEBC57AEB65FE5DF5164F06B41AD"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\tty-color-depth-successor.patch",
+    "bytes": 55882,
+    "sha256": "21622BBD6F76EC99FD652C496260E295D1D1F5D88699475E3231A3F97675B554"
+  },
+  "source_inverses": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\clone-intrinsics-source-inverse.json",
+      "bytes": 3974,
+      "sha256": "D173CA5A721F2DD9D4056B4795FC1CFFBA99BBA1F6BA4B5C1918016F15D79045"
+    }
+  ],
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1262,
+    "sha256": "12E5119C0FE55972B2114978C723BFA2210FF1812A6262D544848370E287DFEB"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1080,
+    "sha256": "40ED4D18BD502C1451C0B80FBF5E40D213EEE0D40C147A1EDDD773285597F421"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\README.md",
+    "bytes": 3142,
+    "sha256": "B4B59D5A645F27912430AADC7D0816E3FBA6D1440405B70FAF3F0E698585DC17"
+  },
+  "static_checks": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\static-source-checks.json",
+    "bytes": 6551,
+    "sha256": "8BC00D4C278D461DD1B9F6A4DAC8A83A01BAC5E3BB63AF5D05D3DB3255085AC9"
+  },
+  "dependency_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\dependency-handoff.json",
+    "bytes": 2635,
+    "sha256": "BB325D01872900E3AC4DD92F7657EEA329A4DAC1BA124BDA891DF14B402176FE"
+  },
+  "retained_authority": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-qualification-sourceonly-20261017\\verification\\node-tty-sourceonly-20261017\\authority\\internal-tty.js",
+        "bytes": 7150,
+        "sha256": "996AE301EE60854817401545811FD908C332CD3ED071C6A498D211CCDD9A932D"
+      },
+      "role": "Complete original getColorDepth, warning, TERM/CI lexicals; full original read",
+      "selected_lines": [
+        [
+          26,
+          256
+        ]
+      ]
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-qualification-sourceonly-20261017\\verification\\node-tty-sourceonly-20261017\\authority\\tty.js",
+        "bytes": 5045,
+        "sha256": "9D05C1F3CBACB47623D49EEB09DD185CCA4D80BCDFB4ED769FDE90E0535FFE7B"
+      },
+      "role": "Original public WriteStream prototype consumes the same getColorDepth; no public TTY publication claimed"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-qualification-sourceonly-20261017\\verification\\node-tty-sourceonly-20261017\\authority-manifest.json",
+        "bytes": 2653,
+        "sha256": "DF7218F77554E82F3CF2034760A160FECCB3807DFDACA6EC277EC92B3688F262"
+      },
+      "role": "Retained official Node24.14.0 provenance and byte equality to captured builtin authority"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-qualification-sourceonly-20261017\\verification\\node-tty-sourceonly-20261017\\authority\\LICENSE.txt",
+        "bytes": 156926,
+        "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+      },
+      "role": "Original retained MIT notice and third-party license notices"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-commonjs-internal-builtin-require-sourceonly-20261018\\authority\\realm.js",
+        "bytes": 15448,
+        "sha256": "6B19B7E820C099E28748019277B1CFDCDF2F1167C4F937F2645072764D2AC421"
+      },
+      "role": "Actual builtin wrapper passes process/require/primordials as retained lexical inputs",
+      "selected_lines": [
+        [
+          383,
+          405
+        ]
+      ]
+    }
+  ],
+  "unselected_preserved_donor": {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-qualification-sourceonly-20261017\\src\\extensions\\native_node_tty_colors.zig",
+      "bytes": 16900,
+      "sha256": "9E295B7372F204C87A485548EA97B60E0B91CA4518378EC44901C9A64163C6B1"
+    },
+    "selected": false
+  },
+  "direct_import_resolutions": [
+    {
+      "importer": "src/extensions/native_node_tty_color_depth.zig",
+      "literal": "native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_tty_color_depth.zig",
+      "literal": "native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_tty_color_depth.zig",
+      "literal": "native_sync_arguments.zig",
+      "target": "src/extensions/native_sync_arguments.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+        "bytes": 9162,
+        "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_tty_color_depth.zig",
+      "literal": "native_public_values.zig",
+      "target": "src/extensions/native_public_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_values.zig",
+        "bytes": 13939,
+        "sha256": "0B1BB422A9C89E7CE8146B32413B27E42D8DFB65285C3245B89EED8AF222022E"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_tty_color_depth.zig",
+      "literal": "native_image_arithmetic.zig",
+      "target": "src/extensions/native_image_arithmetic.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_image_arithmetic.zig",
+        "bytes": 6819,
+        "sha256": "1CF3B862D1665FBFFFE3AC93C281A5C1040B44132C4289EB5F02644706AE2016"
+      }
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "engine.zig",
+      "target": "src/extensions/engine.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      }
+    },
+    {
+      "importer": "src/native_node_tty_color_depth_test.zig",
+      "literal": "extensions/native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "importer": "src/native_node_tty_color_depth_test.zig",
+      "literal": "extensions/native_node_tty_color_depth.zig",
+      "target": "src/extensions/native_node_tty_color_depth.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\src\\extensions\\native_node_tty_color_depth.zig",
+        "bytes": 18770,
+        "sha256": "6A6D7B2D4DA8FA43D82B0B91722C098B0A64B0E682DDA744AEEA3FE29EDE96AA"
+      }
+    },
+    {
+      "importer": "src/native_node_tty_color_depth_test.zig",
+      "literal": "extensions/native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "importer": "src/native_node_tty_color_depth_test.zig",
+      "literal": "extensions/native_sync_arguments.zig",
+      "target": "src/extensions/native_sync_arguments.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+        "bytes": 9162,
+        "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+      }
+    },
+    {
+      "importer": "src/native_node_tty_color_depth_test.zig",
+      "literal": "extensions/native_node_fs_collections.zig",
+      "target": "src/extensions/native_node_fs_collections.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_collections.zig",
+        "bytes": 16225,
+        "sha256": "EBC0FE29F1EFE23C34F7EB2A3181597197C07E31A6BB9C5681B3EB53213C007F"
+      }
+    },
+    {
+      "importer": "src/native_node_tty_color_depth_test.zig",
+      "literal": "extensions/native_process.zig",
+      "target": "src/extensions/native_process.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+        "bytes": 6626,
+        "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+      }
+    },
+    {
+      "importer": "src/native_node_tty_color_depth_test.zig",
+      "literal": "extensions/native_node_os.zig",
+      "target": "src/extensions/native_node_os.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_os.zig",
+        "bytes": 18014,
+        "sha256": "9EEC70BDD87210460DE4CCFC70D66BAB4333FDB56ED41C127171B6FE6BBABBD2"
+      }
+    },
+    {
+      "importer": "src/native_node_tty_color_depth_test.zig",
+      "literal": "extensions/native_node_internal_builtin_require.zig",
+      "target": "src/extensions/native_node_internal_builtin_require.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_internal_builtin_require.zig",
+        "bytes": 8889,
+        "sha256": "E5C93743C8285705C646875C42F3EAD46C1750244BE3F8A7989F1607EA30B1EA"
+      }
+    }
+  ],
+  "standard_package_imports": [
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std"
+    },
+    {
+      "importer": "src/native_node_tty_color_depth_test.zig",
+      "literal": "std"
+    }
+  ],
+  "native_dependency_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 117314,
+      "sha256": "CA4DB7F473A9A1F7FF5C904D197FE25095B5B78B771327AAFA6F0B8819A7F230"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2407586,
+      "sha256": "92D0A80DFD4D9AB76181ABAB3F0FE179BFA9827710A3A66A2C1BC651F426076F"
+    }
+  ],
+  "private_api": {
+    "factory": "native_node_tty_color_depth.create",
+    "result": "owned genuine getColorDepth callable; constructible, name getColorDepth, length0/formal_count1",
+    "inputs": [
+      "actual builtin process",
+      "actual builtin require",
+      "actual cached SafeMap constructor"
+    ],
+    "cache_policy": "One result retained by actual module assembler; OSRelease and warned are original per-module state",
+    "public_namespace": false
+  },
+  "controls": {
+    "target": "build-native-node-tty-color-depth",
+    "test_root": "src/native_node_tty_color_depth_test.zig",
+    "filter": "native tty color depth",
+    "artifact_stem": "native-node-tty-color-depth",
+    "source_declaration_count": 29,
+    "names": [
+      "native tty color depth has original callable shape and no unrelated OS load",
+      "native tty color depth uses genuine installed OS release and caches only successful lazy resolution",
+      "native tty color depth force color uses strict cases and two original Gets",
+      "native tty color depth disable flags use definedness nonempty comparison and short circuit",
+      "native tty color depth emits exact combined warning once on actual process receiver",
+      "native tty color depth warning retries throws and preserves reentrant assignment timing",
+      "native tty color depth Windows thresholds preserve original split limit and major condition",
+      "native tty color depth lazy require member and release failures do not publish cache",
+      "native tty color depth outer OS release assignment wins after synchronous reentry",
+      "native tty color depth captured split retains original Symbol split dispatch and undefined retry",
+      "native tty color depth Windows cached property coercions use unary plus and reject BigInt",
+      "native tty color depth retains builtin process while reading live env and platform properties",
+      "native tty color depth tmux and Azure gates retain own property semantics",
+      "native tty color depth CI uses exact real Map order and hasOwn checks",
+      "native tty color depth actual SafeMap iteration observes its real entries and closes early returns",
+      "native tty color depth TeamCity uses inherited in trap and exact version regexp",
+      "native tty color depth terminal program cases preserve repeated version Get and short circuit",
+      "native tty color depth COLORTERM comparisons read twice and ordinary fallback remains last",
+      "native tty color depth original ordinary TERM table and every regexp are retained",
+      "native tty color depth TERM coercions and five property reads follow original order",
+      "native tty color depth inherited TERM lookup is ordinary and repeats successful Get",
+      "native tty color depth captures original primordials and genuine SafeMap before guest mutation",
+      "native tty color depth genuine Array some skips holes and consults inherited indexed entries",
+      "native tty color depth ordinary environment errors preserve exact thrown identity",
+      "native tty color depth discarded disable operand fatal retires before second property Get",
+      "native tty color depth warning result fatal precedes warned assignment and preserves retry",
+      "native tty color depth release local survives through cache assignment and retires at original terminal",
+      "native tty color depth current native fatal in environment Get prevents later branches",
+      "native tty color depth rejects a foreign SafeMap and never lazily recaptures globals"
+    ],
+    "actual_metadata_count": null,
+    "runtime_result": null
+  },
+  "claims": {
+    "Main_mutated": false,
+    "prior_packets_mutated": false,
+    "Engine_fields_changed": false,
+    "new_C_ABI": false,
+    "hasColors_implemented": false,
+    "complete_internal_tty_module_published": false,
+    "initialized_debuglog": false,
+    "production_startup": false,
+    "native_qualification": false
+  },
+  "not_executed": [
+    "Zig parser",
+    "Zig formatter",
+    "native build/query/runtime",
+    "Node reference capture",
+    "candidate source generator"
+  ]
+}
