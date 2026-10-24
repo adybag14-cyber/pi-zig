@@ -1,0 +1,14 @@
+    const main_runtime_helpers_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_main_runtime_helpers_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native Main runtime helpers"},
+    });
+    linkQuickJs(b, main_runtime_helpers_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, main_runtime_helpers_tests.root_module, typescript_parser);
+    linkSqlite(main_runtime_helpers_tests.root_module, sqlite_lib_dir, sqlite_library);
+    main_runtime_helpers_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        main_runtime_helpers_tests.root_module.linkSystemLibrary("advapi32", .{});
+        main_runtime_helpers_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-main-runtime-helpers", "Install actual authenticated Main option and path controls without execution").dependOn(&b.addInstallArtifact(main_runtime_helpers_tests, .{}).step);
+

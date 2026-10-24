@@ -1,0 +1,101 @@
+TF_BUILTIN(StringPrototypeSplit, StringBuiltinsAssembler) {
+  const int kSeparatorArg = 0;
+  const int kLimitArg = 1;
+
+  const TNode<IntPtrT> argc = ChangeInt32ToIntPtr(
+      UncheckedParameter<Int32T>(Descriptor::kJSActualArgumentsCount));
+  CodeStubArguments args(this, argc);
+
+  TNode<JSAny> receiver = args.GetReceiver();
+  const TNode<JSAny> separator = args.GetOptionalArgumentValue(kSeparatorArg);
+  const TNode<JSAny> limit = args.GetOptionalArgumentValue(kLimitArg);
+  auto context = Parameter<NativeContext>(Descriptor::kContext);
+
+  TNode<Smi> smi_zero = SmiConstant(0);
+
+  RequireObjectCoercible(context, receiver, "String.prototype.split");
+
+  // Redirect to splitter method if {separator[@@split]} is not undefined.
+
+  MaybeCallFunctionAtSymbol(
+      context, separator, receiver, isolate()->factory()->split_symbol(),
+      DescriptorIndexNameValue{JSRegExp::kSymbolSplitFunctionDescriptorIndex,
+                               RootIndex::ksplit_symbol,
+                               Context::REGEXP_SPLIT_FUNCTION_INDEX},
+      [&]() {
+        args.PopAndReturn(CallBuiltin<JSAny>(Builtin::kRegExpSplit, context,
+                                             separator, receiver, limit));
+      },
+      [&](TNode<Object> fn) {
+        args.PopAndReturn(Call(context, fn, separator, receiver, limit));
+      });
+
+  // String and integer conversions.
+
+  TNode<String> subject_string = ToString_Inline(context, receiver);
+  TNode<Number> limit_number = Select<Number>(
+      IsUndefined(limit), [=, this] { return NumberConstant(kMaxUInt32); },
+      [=, this] { return ToUint32(context, limit); });
+  const TNode<String> separator_string = ToString_Inline(context, separator);
+
+  Label return_empty_array(this);
+
+  // Shortcut for {limit} == 0.
+  GotoIf(TaggedEqual(limit_number, smi_zero), &return_empty_array);
+
+  // ECMA-262 says that if {separator} is undefined, the result should
+  // be an array of size 1 containing the entire string.
+  {
+    Label next(this);
+    GotoIfNot(IsUndefined(separator), &next);
+
+    const ElementsKind kind = PACKED_ELEMENTS;
+    const TNode<NativeContext> native_context = LoadNativeContext(context);
+    TNode<Map> array_map = LoadJSArrayElementsMap(kind, native_context);
+
+    TNode<Smi> length = SmiConstant(1);
+    TNode<IntPtrT> capacity = IntPtrConstant(1);
+    TNode<JSArray> result = AllocateJSArray(kind, array_map, capacity, length);
+
+    TNode<FixedArray> fixed_array = CAST(LoadElements(result));
+    StoreFixedArrayElement(fixed_array, 0, subject_string);
+
+    args.PopAndReturn(result);
+
+    BIND(&next);
+  }
+
+  // If the separator string is empty then return the elements in the subject.
+  {
+    Label next(this);
+    GotoIfNot(SmiEqual(LoadStringLengthAsSmi(separator_string), smi_zero),
+              &next);
+
+    TNode<Smi> subject_length = LoadStringLengthAsSmi(subject_string);
+    GotoIf(SmiEqual(subject_length, smi_zero), &return_empty_array);
+
+    args.PopAndReturn(
+        StringToArray(context, subject_string, subject_length, limit_number));
+
+    BIND(&next);
+  }
+
+  const TNode<JSAny> result =
+      CallRuntime<JSAny>(Runtime::kStringSplit, context, subject_string,
+                         separator_string, limit_number);
+  args.PopAndReturn(result);
+
+  BIND(&return_empty_array);
+  {
+    const ElementsKind kind = PACKED_ELEMENTS;
+    const TNode<NativeContext> native_context = LoadNativeContext(context);
+    TNode<Map> array_map = LoadJSArrayElementsMap(kind, native_context);
+
+    TNode<Smi> length = smi_zero;
+    TNode<IntPtrT> capacity = IntPtrConstant(0);
+    TNode<JSArray> result_array =
+        AllocateJSArray(kind, array_map, capacity, length);
+
+    args.PopAndReturn(result_array);
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+    "bytes": 12596,
+    "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+  },
+  "reference": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024-v2\\projected\\src\\fixtures\\native-node-debuglog-timers-reference.js",
+    "bytes": 13127,
+    "sha256": "7105D48D0DCFFDE824CDBD51AE320D47C92456233E8FEA6A5E020487F686E4E6"
+  },
+  "original_byte_start": 740,
+  "original_byte_end_exclusive": 12442,
+  "reference_byte_start": 1298,
+  "body_bytes": 11702,
+  "body_sha256": "3C4DC5D77C9D60066F7769BD2419A7441BD574604BCB754568E9323AFD1363A3",
+  "exact_original_body": true,
+  "strict_directive": {
+    "source_byte_start": 0,
+    "bytes": 14,
+    "text": "'use strict';\n",
+    "reference_byte_start": 0,
+    "sha256": "E65F3CCA9A4637C34593C5B4DC5698D6368B91CE43F6D26273A70C430A66B71F"
+  },
+  "wrapper_role": "Test-only original strict context and actual process/inspect/private require/SafeMap/SafeArrayIterator; controlled original private trace input.",
+  "executed": false
+}

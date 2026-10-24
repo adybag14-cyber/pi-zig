@@ -52773,7 +52773,7 @@ static JSValue js_string_replace(JSContext *ctx, JSValueConst this_val,
     replaceValue_str = JS_UNDEFINED;
     repl_str = JS_UNDEFINED;
 
-    if (JS_IsObject(searchValue)) {
+    if (!JS_IsUndefined(searchValue) && !JS_IsNull(searchValue)) {
         JSValue replacer;
         if (is_replaceAll) {
             if (check_regexp_g_flag(ctx, searchValue) < 0)
@@ -52884,7 +52884,7 @@ static JSValue js_string_split(JSContext *ctx, JSValueConst this_val,
     A = JS_UNDEFINED;
     R = JS_UNDEFINED;
 
-    if (JS_IsObject(separator)) {
+    if (!JS_IsUndefined(separator) && !JS_IsNull(separator)) {
         JSValue splitter;
         splitter = JS_GetProperty(ctx, separator, JS_ATOM_Symbol_split);
         if (JS_IsException(splitter))

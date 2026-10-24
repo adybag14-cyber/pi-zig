@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\original\\build.zig",
+    "bytes": 550798,
+    "sha256": "4FC880853D3B268E38DA1D9B05B60590384696B0005820F66A9FA70D2747440C"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1087,
+    "sha256": "9C9DB4D55FE213F289E9D547B02A1ECCF71C8AF19C9F6EA91351A3B7A7585FAE"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 551885,
+    "sha256": "AD33906FE1A7F5C6BD4A3B317092E1B0E72D4AD1BFBD842E590EF48D26F85E30"
+  },
+  "anchor": "    const module_execution_state_tests = b.addTest(.{\n",
+  "addition_bytes": 1087,
+  "raw_inverse_exact": true,
+  "composition": "Apply only this insertion to a newer Root selected build; this build contains neither the separately accepted Event nor Resolver insertions.",
+  "target": "build-native-sdk-settings-shared-defaults",
+  "filter": "native settings shared defaults",
+  "default_installed_artifacts": [
+    "test.exe",
+    "test.pdb"
+  ],
+  "actual_metadata_count": null,
+  "native_execution": false
+}

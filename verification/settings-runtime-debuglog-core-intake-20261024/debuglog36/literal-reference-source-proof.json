@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+    "bytes": 12596,
+    "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+  },
+  "reference": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\projected\\src\\fixtures\\native-node-debuglog-reference.js",
+    "bytes": 4168,
+    "sha256": "5D66C353CB5924D49F6226713388D20AF1C5781B99B018DAEA9E4B6B013DB439"
+  },
+  "original_start": 740,
+  "original_end_exclusive": 3994,
+  "original_bytes": 3254,
+  "original_sha256": "EE83E35CE32905F73EEACEF22F06C4265C10C26DFC177A22480B2BE12D3E3372",
+  "reference_body_offset": 860,
+  "exact_source_body": true,
+  "wrapper_uses_actual_selected_native_process_require_inspect_and_safe_iterator": true,
+  "not_executed": true
+}

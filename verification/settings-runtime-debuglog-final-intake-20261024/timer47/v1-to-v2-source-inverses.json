@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "status": "finite_successor_draft_pending_genuine_split_prerequisite",
+  "prior_entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\source-intake.json",
+    "bytes": 43742,
+    "sha256": "2C0CCBF8696E045819568C822C417AD866DE4D681B3B70D4762DE18916714542"
+  },
+  "records": [
+    {
+      "target": "src/extensions/native_node_debuglog_format_time.zig",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog_format_time.zig",
+        "bytes": 6187,
+        "sha256": "6ED9BE62C5D4B37CECC6357F329F06964E837AC0B1481B144BD6665A08E20044"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024-v2\\projected\\src\\extensions\\native_node_debuglog_format_time.zig",
+        "bytes": 6365,
+        "sha256": "FB7B7B055A45D30E401911C3E262613B02F1EA564CC7A48C6DF28F6C124241DB"
+      },
+      "kind": "one exact existing line replacement",
+      "before": "    const parts = try s.call(split, text, &.{try s.text(\".\"), number(s, 2)});\n",
+      "after": "    const raw_parts = try s.call(split, text, &.{try s.text(\".\"), number(s, 2)});\n    // Original object destructuring converts once before either indexed Get.\n    const parts = try @import(\"native_sdk_guest_operation.zig\").toObject(&s.values, raw_parts);\n",
+      "complete_inverse": true
+    },
+    {
+      "target": "src/fixtures/native-node-debuglog-timers-reference.js",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\fixtures\\native-node-debuglog-timers-reference.js",
+        "bytes": 13113,
+        "sha256": "CDF0691E0BC19FA3AAF4A42AE7D6264A53CA426DF181F3D31407A2C8CF5DE8EA"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024-v2\\projected\\src\\fixtures\\native-node-debuglog-timers-reference.js",
+        "bytes": 13127,
+        "sha256": "7105D48D0DCFFDE824CDBD51AE320D47C92456233E8FEA6A5E020487F686E4E6"
+      },
+      "kind": "original strict execution directive prefix",
+      "prefix": "'use strict';\n",
+      "complete_inverse": true
+    },
+    {
+      "target": "src/native_node_debuglog_timers_test.zig",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\native_node_debuglog_timers_test.zig",
+        "bytes": 53645,
+        "sha256": "EA226A7A145F59EB7173BB98F21BEE302589D4BA532482411E7CC2EB137F57D6"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024-v2\\projected\\src\\native_node_debuglog_timers_test.zig",
+        "bytes": 56593,
+        "sha256": "1CFB02C65E3052486A97412F18B4D55B934F4353357425C981D31491D8241CCC"
+      },
+      "kind": "two appended focused controls; original 45-control prefix byte exact",
+      "append": "\ntest \"native debug timers box a primitive split result once before both object pattern Gets\" {\n    for ([_]bool{ false, true }) |reference| {\n        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);\n        try f.evaluate(\n            \\\\{\n            \\\\const savedSplit=Object.getOwnPropertyDescriptor(String.prototype,Symbol.split);\n            \\\\const savedZero=Object.getOwnPropertyDescriptor(Number.prototype,'0');\n            \\\\const savedOne=Object.getOwnPropertyDescriptor(Number.prototype,'1');\n            \\\\const seen=[];let boxed;\n            \\\\try{\n            \\\\ Object.defineProperty(String.prototype,Symbol.split,{configurable:true,value:function(text,limit){'use strict';if(this!=='.'||text!=='0.000'||limit!==2)throw Error('split inputs');seen.push('split');return 7}});\n            \\\\ Object.defineProperty(Number.prototype,'0',{configurable:true,get(){'use strict';if(typeof this!=='object'||Number.prototype.valueOf.call(this)!==7)throw Error('one ToObject required');boxed=this;this.marker='same boxed result';seen.push('zero');return'9'}});\n            \\\\ Object.defineProperty(Number.prototype,'1',{configurable:true,get(){'use strict';if(this!==boxed||this.marker!=='same boxed result')throw Error('different object wrappers');seen.push('one');return'123'}});\n            \\\\ if(F(3600000)!=='1:00:09.123 (h:mm:ss.mmm)'||JSON.stringify(seen)!=='[\"split\",\"zero\",\"one\"]')throw Error('boxed destructuring '+JSON.stringify(seen));\n            \\\\}finally{\n            \\\\ if(savedSplit)Object.defineProperty(String.prototype,Symbol.split,savedSplit);else delete String.prototype[Symbol.split];\n            \\\\ if(savedZero)Object.defineProperty(Number.prototype,'0',savedZero);else delete Number.prototype[0];\n            \\\\ if(savedOne)Object.defineProperty(Number.prototype,'1',savedOne);else delete Number.prototype[1];\n            \\\\}\n            \\\\}\n        );\n        try f.balanced();\n    }\n}\ntest \"native debug timers reject nullish split results at the original object pattern conversion\" {\n    for ([_]bool{ false, true }) |reference| {\n        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);\n        try f.evaluate(\n            \\\\{\n            \\\\const saved=Object.getOwnPropertyDescriptor(String.prototype,Symbol.split);\n            \\\\let calls=0;\n            \\\\try{\n            \\\\ for(const result of [null,undefined]){\n            \\\\  Object.defineProperty(String.prototype,Symbol.split,{configurable:true,value:function(){calls++;return result}});\n            \\\\  if(!(reason(()=>F(3600000)) instanceof TypeError))throw Error('object pattern nullish rejection');\n            \\\\ }\n            \\\\ if(calls!==2)throw Error('split call count');\n            \\\\}finally{if(saved)Object.defineProperty(String.prototype,Symbol.split,saved);else delete String.prototype[Symbol.split]}\n            \\\\}\n        );\n        try f.balanced();\n    }\n}\n",
+      "complete_inverse": true
+    },
+    {
+      "target": "build.zig",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 558283,
+        "sha256": "52DAD42ACA92A39FADEE8713F9E38C4F233900915B8D1AA3EB41A02592506FB6"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024-v2\\projected\\build.zig",
+        "bytes": 558284,
+        "sha256": "5985CC2957641104917C3710CA0EBB9E71A1981397C236EA177F1815D743311A"
+      },
+      "kind": "control-count description only",
+      "before": "forty-five original timer controls",
+      "after": "forty-seven original timer controls",
+      "complete_inverse": true
+    }
+  ],
+  "prior_45_control_prefix_exact": true,
+  "new_controls": 2,
+  "source_declarations": 47,
+  "prior_packets_preserved": true,
+  "native_execution": false
+}

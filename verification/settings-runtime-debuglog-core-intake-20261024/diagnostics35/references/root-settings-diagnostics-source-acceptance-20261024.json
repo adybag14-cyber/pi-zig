@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "root_accepted_complete_original_settings_diagnostics_source",
+  "candidate_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\source-intake.json",
+    "bytes": 17492,
+    "sha256": "5939BA07983B17BFF29B7B47AE3AD8103472982BE1741AB5246FC23821DF3527"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-controls-review\\sdk-settings-diagnostics-independent-source-peer-20261024.json",
+    "bytes": 8051,
+    "sha256": "1DA86FC8A07EFFC2D1B74AC5042BA84B292434A1D982C3B920106030318CA8F8"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\sdk-settings-diagnostics.patch",
+    "bytes": 40097,
+    "sha256": "E44994A73C0EF69CE705D3F4EA4DFAA6CE4649ECF9026D43DBDCAD2ED9B2C533"
+  },
+  "changes": [
+    {
+      "destination_relative_path": "src/extensions/native_sdk_settings_diagnostics.zig",
+      "operation": "create",
+      "before": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings_diagnostics.zig",
+        "bytes": 7641,
+        "sha256": "9DEA7DBF015EFC0229D090DDC1B33DEB0BB6CBA4DF99A1309A4847401E80CB9D"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_sdk_settings_diagnostics_test.zig",
+      "operation": "create",
+      "before": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\native_sdk_settings_diagnostics_test.zig",
+        "bytes": 11138,
+        "sha256": "F72AE7B7AFB476F7137500C53AF2D29178E23E8C7FFB4D01976EF18F53A6DDD5"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/sdk-settings-diagnostics-4954-source.mjs",
+      "operation": "create",
+      "before": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-diagnostics-4954-source.mjs",
+        "bytes": 814,
+        "sha256": "A931B5E5AE416AAE20E9AF21889C62543C5019B21123C79507DD23AEF29DA3C6"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/sdk-settings-diagnostics-observer.mjs",
+      "operation": "create",
+      "before": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-diagnostics-observer.mjs",
+        "bytes": 17879,
+        "sha256": "C83D8103DE3639323224D33213694C72EEFC838DBBE6E16687EBA6FBD937D6D3"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "insert_build_hunk",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 556915,
+        "sha256": "53162A0B9E7F297B245EE10D622AC9090DE94920B5D2057BD2AC4881A191679D"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 557946,
+        "sha256": "749EFC3533404393360AB5D4704F773E3C18AD6CAAEE5833832F63E2F5E53053"
+      }
+    }
+  ],
+  "original_fixture_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\original-fixture-inverse.json",
+    "bytes": 3927,
+    "sha256": "F22F21AB85607DD748B25EC07E7A99E3F89F7873F4C48B96F89E2DE66F168C9D"
+  },
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1031,
+    "sha256": "AAADE15854A028C0738ED1094AC21DAEF36EFCCA639604C8B77CDED73C0A27FE"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\build-insertion-inverse.json",
+    "bytes": 1360,
+    "sha256": "BC7DD20182464BB9CCF199BEA3AD1D8F7ADBDEBAA6C0760F32030A4DBCE0CF66"
+  },
+  "verification": {
+    "unique_pinned_versions": 32,
+    "all9_original_type_module_erasures_and_full_inverse": true,
+    "all5_patch_targets_exact": true,
+    "direct_imports": 9,
+    "embeds": 2,
+    "standard_package_occurrences": 1,
+    "build_insertion_bytes": 1031,
+    "source_declared_controls": 35,
+    "all33_named_observers_present": true,
+    "git_apply_check_exit": 0,
+    "Main_clean": true
+  },
+  "Root_semantic_review": [
+    "Authored and read complete two-function native owner, retained original986-byte source, full fixture/observer and all35 controls.",
+    "Single actual ToObject for destructured primitive receiver; scope/path/error Gets finish before original object-literal location then message conversion.",
+    "Real per-call seen lexical cell survives escaped callbacks after normal or throwing filter; live global Set before filter lookup and live has/add operations.",
+    "Has truthiness and ignored add completion retire at their own original statement boundaries; pending/fatal/cancellation and native DATA remain distinct.",
+    "Private complete cache only. Tests use actual manager imports/SettingsManager and genuine native retirement hooks."
+  ],
+  "scope_limits": [
+    "Authenticated complete main createRuntime caller must acquire and use this owner.",
+    "No public SDK namespace or bootstrap completeness claim.",
+    "Existing SettingsManager semantics beyond drainErrors/storage collaborators remain their separately scoped work."
+  ],
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "actual_metadata_count": null,
+  "created_utc": "2026-10-24T22:39:01.381783+00:00"
+}

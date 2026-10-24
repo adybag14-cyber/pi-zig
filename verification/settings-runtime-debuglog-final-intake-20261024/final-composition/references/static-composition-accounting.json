@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T22:49:59.571865+00:00",
+  "reviewer": "handover_review",
+  "status": "static_exact_seven_packet_core_composition_complete",
+  "plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-gap-assessment\\settings-runtime-debuglog-core-intake-sourceonly-20261024\\source-intake-plan.json",
+    "bytes": 637040,
+    "sha256": "3238A14B2E4BE2D002B39BEF87595EA27495BE4E69D8BA39E03FC18C2D10EF8D"
+  },
+  "Root_selection": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-settings-runtime-debuglog-intake-selection-20261024.json",
+    "bytes": 5634,
+    "sha256": "F1A7B979165EB2C5123885071A599A827F3F35D9AE0C9BE1B41C6CC155E6FB73"
+  },
+  "data_only_composer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-gap-assessment\\settings-runtime-debuglog-core-intake-sourceonly-20261024\\compose-seven-core-static.py",
+    "bytes": 19664,
+    "sha256": "A7681F3729CCDE2A894326A34670C0C8E739C3AE02DCD414866B449314651C61"
+  },
+  "checks": {
+    "all455_current_inventory_bytes_exact": true,
+    "seven_complete_raw_patches_reconstructed": true,
+    "six_standalone_build_insertions_exact": true,
+    "six_composed_intermediate_build_pins_exact": true,
+    "full_build_reverse_inverse_returns_35790": true,
+    "all30_source_preconditions_exact": true,
+    "all31_prior_root_names_650_preserved": true,
+    "all6_new_root_names_210_match_sources": true,
+    "all159_direct_imports_and10_embeds_resolve": true,
+    "160_declared_packet_dependency_rows_preserved": true,
+    "no_declared_import_pin_advance_needed": true,
+    "88_evidence_operations_create_only_and_version_deduplicated": true,
+    "last_Main_HEAD_35790_and_clean": true
+  },
+  "census": {
+    "reported677_is_complete_checked_union_including455_current_inventory_not_packet_only": true,
+    "checked_union_pin_versions": 677,
+    "embedded_plan_normalized_pin_versions": 654,
+    "entry_and_Root_receipt_embedded_pin_versions": 225,
+    "current_cumulative_paths": 455,
+    "pending_paths": 119,
+    "new_cumulative_paths": 568,
+    "pending_source_build_paths": 31,
+    "cumulative_source_build_paths": 132,
+    "changed_source_paths_new_to_cumulative_inventory": [
+      "durable/fixtures/native-node-async-hooks-stack-original.js",
+      "src/extensions/fixtures/sdk-default-model-fallback-4954-source.mjs",
+      "src/extensions/fixtures/sdk-default-model-map-4954-source.mjs",
+      "src/extensions/fixtures/sdk-main-runtime-helpers-4954-source.mjs",
+      "src/extensions/fixtures/sdk-main-runtime-helpers-observer.mjs",
+      "src/extensions/fixtures/sdk-settings-default-accessors-4954-source.mjs",
+      "src/extensions/fixtures/sdk-settings-diagnostics-4954-source.mjs",
+      "src/extensions/fixtures/sdk-settings-diagnostics-observer.mjs",
+      "src/extensions/fixtures/sdk-settings-shared-defaults-observer.mjs",
+      "src/extensions/native_node_async_hooks_stack.zig",
+      "src/extensions/native_node_debuglog.zig",
+      "src/extensions/native_node_safe_array_iterator.zig",
+      "src/extensions/native_sdk_factory_model.zig",
+      "src/extensions/native_sdk_main_runtime_helpers.zig",
+      "src/extensions/native_sdk_settings.zig",
+      "src/extensions/native_sdk_settings_default_accessors.zig",
+      "src/extensions/native_sdk_settings_diagnostics.zig",
+      "src/fixtures/native-node-debuglog-reference.js",
+      "src/native_node_async_hooks_stack_test.zig",
+      "src/native_node_async_hooks_stack_test_support.zig",
+      "src/native_node_debuglog_test.zig",
+      "src/native_sdk_default_model_map_test.zig",
+      "src/native_sdk_main_runtime_helpers_test.zig",
+      "src/native_sdk_settings_diagnostics_test.zig",
+      "src/native_sdk_settings_shared_defaults_test.zig"
+    ]
+  },
+  "expected_counts": {
+    "final_source_paths_excluding_build": 30,
+    "new_source_paths": 23,
+    "replaced_source_paths_excluding_build": 7,
+    "build_files": 1,
+    "build_addition_count": 6,
+    "build_addition_bytes": [
+      1279,
+      1087,
+      1013,
+      1031,
+      1038,
+      1219
+    ],
+    "build_added_bytes_total": 6667,
+    "final_build": {
+      "bytes": 563582,
+      "sha256": "781174707000AED07A89E0BF5A7738A4A098F7C84D0A2C44A9927F6AE4E94AD3"
+    },
+    "evidence_documents": 88,
+    "pending_changed_paths": 119,
+    "prior_cumulative_selected_paths": 455,
+    "cumulative_selected_paths_from_origin": 568,
+    "prior_cumulative_source_build_paths": 107,
+    "cumulative_source_build_paths_from_origin": 132,
+    "new_test_roots": 6,
+    "new_declared_controls": 210,
+    "fresh_selected_roots": 37,
+    "fresh_source_declared_controls": 860,
+    "full_catalog_groups_after_append": 158,
+    "full_catalog_source_declarations_after_append": 2926,
+    "relative_import_occurrences": 159,
+    "package_import_occurrences": 30,
+    "literal_embed_occurrences": 10,
+    "retained_packet_import_declarations": 160,
+    "explicit_packet_import_pin_advances": 0,
+    "packet_and_acceptance_pin_versions_reverified": 677,
+    "compiled_metadata_count": null,
+    "runtime_result": null
+  },
+  "remaining": [
+    {
+      "name": "timer47_v2",
+      "selected": false,
+      "reason": "Excluded from immutable seven-packet core; requires separate Root source acceptance and an explicit successor composition."
+    },
+    {
+      "name": "primitive_string_hook_VM_compatibility",
+      "selected": false,
+      "reason": "Excluded from immutable seven-packet core; requires separate Root source acceptance and an explicit successor composition."
+    }
+  ],
+  "limits": {
+    "source_materialized": false,
+    "Main_mutated": false,
+    "candidate_source_executed": false,
+    "source_generator_executed": false,
+    "parser_or_compiler_executed": false,
+    "Node_capture_executed": false,
+    "actual_metadata_count": null,
+    "runtime_result": null,
+    "application_qualified": false
+  }
+}

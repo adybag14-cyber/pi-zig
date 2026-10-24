@@ -1,0 +1,16 @@
+    // Complete selected original JS async ID/stack declarations over actual Environment views.
+    const node_async_hooks_stack = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_async_hooks_stack_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native async stack"},
+    });
+    linkQuickJs(b, node_async_hooks_stack.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_async_hooks_stack.root_module, typescript_parser);
+    linkSqlite(node_async_hooks_stack.root_module, sqlite_lib_dir, sqlite_library);
+    node_async_hooks_stack.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_async_hooks_stack.root_module.linkSystemLibrary("advapi32", .{});
+        node_async_hooks_stack.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-async-hooks-stack", "Install 34 original JS async stack controls without running").dependOn(&b.addInstallArtifact(node_async_hooks_stack, .{ .dest_sub_path = b.fmt("native-node-async-hooks-stack{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+

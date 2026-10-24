@@ -1,0 +1,655 @@
+--- /dev/null
++++ b/src/extensions/native_sdk_settings_diagnostics.zig
+@@ -0,0 +1,137 @@
++//! Complete original settings-diagnostics functions as a private native owner.
++//! Type-only Source imports impose no runtime substitute. Actual callers supply
++//! the genuine SettingsManager; live drainErrors/map/filter/Set remain live.
++const h = @import("native_sdk_session_locals.zig");
++const v = h.v;
++const c = h.c;
++const Engine = h.Engine;
++const Scope = h.Scope;
++const sync = @import("native_sync_arguments.zig");
++const frames = @import("native_public_lexical_frame.zig");
++const CollectFrame = frames.Frame(enum { scope, path, error_value });
++const SeenFrame = frames.Frame(enum { seen });
++const KeyFrame = frames.Frame(enum { key });
++const cache_key = "pi-private:actual-sdk-settings-diagnostics";
++
++/// The complete two-function private owner is published only after both genuine
++/// ordinary functions exist. This is not a partial SDK or public namespace.
++pub fn create(engine: *Engine) !c.JSValue {
++    try engine.checkNativeEntry();
++    if (engine.native_module_values.get(cache_key)) |cached| return h.duplicate(engine, cached);
++    const candidate = try h.expression(engine, createBody, .{});
++    engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1) catch |err| {
++        var completion = v.owned.Completion.initValue(engine, @as(anyerror!c.JSValue, err));
++        completion.release(candidate);
++        return completion.finishValue();
++    };
++    engine.native_module_values.putAssumeCapacity(cache_key, candidate);
++    return h.duplicate(engine, candidate);
++}
++fn createBody(s: *Scope) !c.JSValue {
++    const result = try v.stateObject(s);
++    try v.put(s, result, "collectSettingsDiagnostics", try ordinary(s,
++        "collectSettingsDiagnostics", collectCall, .{}));
++    try v.put(s, result, "deduplicateDiagnostics", try ordinary(s,
++        "deduplicateDiagnostics", deduplicateCall, sync.frameHooks(SeenFrame)));
++    return v.duplicate(s, result);
++}
++fn ordinary(s: *Scope, name: [*:0]const u8, callback: sync.Callback, hooks: sync.Hooks) !c.JSValue {
++    var boundary: v.guest.Boundary = .{ .engine = s.engine };
++    try boundary.begin();
++    return boundary.finishValue(s, v.function.createWithArguments(s.engine, name, 1,
++        .{ .formal_count = 1, .callback = callback, .hooks = hooks }, &.{}));
++}
++fn arrow(s: *Scope, callback: sync.Callback, hooks: sync.Hooks, roots: []const c.JSValue) !c.JSValue {
++    var boundary: v.guest.Boundary = .{ .engine = s.engine };
++    try boundary.begin();
++    return boundary.finishValue(s, v.function.createArrowWithArguments(s.engine, "", 1,
++        .{ .formal_count = 1, .callback = callback, .hooks = hooks }, roots));
++}
++
++fn collectCall(engine: *Engine, _: c.JSValue, arguments: *sync.Arguments, _: []const c.JSValue) !c.JSValue {
++    return h.expression(engine, collectBody, .{arguments});
++}
++fn collectBody(s: *Scope, arguments: *sync.Arguments) !c.JSValue {
++    // drainErrors and its call complete before the returned object's map Get.
++    const errors = try v.own(s, try v.invokeOwned(s.engine, arguments.get(0), "drainErrors", &.{}));
++    const map = try v.get(s, errors, "map");
++    const callback = try arrow(s, collectRowCall, sync.frameHooks(CollectFrame), &.{});
++    return v.duplicate(s, try v.call(s, map, errors, &.{callback}));
++}
++fn collectRowCall(engine: *Engine, _: c.JSValue, arguments: *sync.Arguments, _: []const c.JSValue) !c.JSValue {
++    return h.expression(engine, collectRowBody, .{arguments});
++}
++fn destructureBody(s: *Scope, frame: *CollectFrame, incoming: c.JSValue) !void {
++    // A destructuring parameter boxes once. All three original Gets happen
++    // before the object literal starts; the temporary box then retires.
++    const object = try v.guest.toObject(s, incoming);
++    try frame.take(.scope, h.get(s.engine, object, "scope"));
++    try frame.take(.path, h.get(s.engine, object, "path"));
++    try frame.take(.error_value, h.get(s.engine, object, "error"));
++}
++fn collectRowBody(s: *Scope, arguments: *sync.Arguments) !c.JSValue {
++    const frame = try arguments.createFrame(s, CollectFrame);
++    try h.statement(s.engine, destructureBody, .{ frame, arguments.get(0) });
++    const result = try v.object(s);
++    try v.put(s, result, "type", try v.text(s, "warning"));
++    try v.put(s, result, "message", try v.own(s, try h.expression(s.engine, messageBody, .{frame})));
++    return v.duplicate(s, result);
++}
++fn fieldStringBody(s: *Scope, object: c.JSValue, name: [*:0]const u8) !c.JSValue {
++    return v.duplicate(s, try v.stringify(s, try v.get(s, object, name)));
++}
++fn messageBody(s: *Scope, frame: *CollectFrame) !c.JSValue {
++    const with_path = v.truthy(s, frame.get(.path));
++    const prefix = try v.text(s, if (with_path) "Invalid settings file " else "Invalid ");
++    const location = try v.stringify(s, if (with_path) frame.get(.path) else frame.get(.scope));
++    var message = try h.binary(s, .add, prefix, location);
++    message = try h.binary(s, .add, message, try v.text(s, if (with_path) ": " else " settings: "));
++    // Template coercion of the location precedes the error.message Get.
++    const detail = try v.own(s, try h.expression(s.engine, fieldStringBody,
++        .{ frame.get(.error_value), @as([*:0]const u8, "message") }));
++    return v.duplicate(s, try h.binary(s, .add, message, detail));
++}
++
++fn deduplicateCall(engine: *Engine, _: c.JSValue, arguments: *sync.Arguments, _: []const c.JSValue) !c.JSValue {
++    return h.expression(engine, deduplicateBody, .{arguments});
++}
++fn deduplicateBody(s: *Scope, arguments: *sync.Arguments) !c.JSValue {
++    const frame = try arguments.createFrame(s, SeenFrame);
++    // The Source resolves the current global constructor for every invocation.
++    try frame.take(.seen, h.construct(s.engine, "Set", &.{}));
++    const diagnostics = arguments.get(0);
++    const filter = try v.get(s, diagnostics, "filter");
++    const binding = try frame.capture(s, .seen, "seen");
++    const callback = try arrow(s, predicateCall, sync.frameHooks(KeyFrame), &.{binding});
++    return v.duplicate(s, try v.call(s, filter, diagnostics, &.{callback}));
++}
++fn predicateCall(engine: *Engine, _: c.JSValue, arguments: *sync.Arguments, roots: []const c.JSValue) !c.JSValue {
++    return h.expression(engine, predicateBody, .{ arguments, roots[0] });
++}
++fn keyBody(s: *Scope, diagnostic: c.JSValue) !c.JSValue {
++    // ToString(type) completes before Get(message), with a literal NUL separator.
++    const kind = try v.own(s, try h.expression(s.engine, fieldStringBody,
++        .{ diagnostic, @as([*:0]const u8, "type") }));
++    const prefix = try h.binary(s, .add, kind, try v.text(s, "\x00"));
++    const message = try v.own(s, try h.expression(s.engine, fieldStringBody,
++        .{ diagnostic, @as([*:0]const u8, "message") }));
++    return v.duplicate(s, try h.binary(s, .add, prefix, message));
++}
++fn hasBody(s: *Scope, binding: c.JSValue, key: c.JSValue) !c.JSValue {
++    const seen = try SeenFrame.read(s, binding);
++    const has = try v.get(s, seen, "has");
++    return v.boolean(s, v.truthy(s, try v.call(s, has, seen, &.{key})));
++}
++fn addBody(s: *Scope, binding: c.JSValue, key: c.JSValue) !void {
++    const seen = try SeenFrame.read(s, binding);
++    const add = try v.get(s, seen, "add");
++    _ = try v.call(s, add, seen, &.{key});
++}
++fn predicateBody(s: *Scope, arguments: *sync.Arguments, binding: c.JSValue) !c.JSValue {
++    const frame = try arguments.createFrame(s, KeyFrame);
++    try frame.take(.key, h.expression(s.engine, keyBody, .{arguments.get(0)}));
++    if (h.truthy(s.engine, try h.expression(s.engine, hasBody, .{ binding, frame.get(.key) })))
++        return v.boolean(s, false);
++    try h.statement(s.engine, addBody, .{ binding, frame.get(.key) });
++    return v.boolean(s, true);
++}
+--- /dev/null
++++ b/src/native_sdk_settings_diagnostics_test.zig
+@@ -0,0 +1,158 @@
++//! Genuine-VM differential controls for the complete original diagnostics
++//! functions. No SDK manager, Set implementation or production error owner is
++//! replaced: per-case descriptor inputs observe the original live operations.
++const std = @import("std");
++const h = @import("extensions/native_sdk_session_locals.zig");
++const v = h.v;
++const c = h.c;
++const sdk = @import("extensions/native_sdk.zig");
++const owner = @import("extensions/native_sdk_settings_diagnostics.zig");
++const retirement = @import("native_sdk_initial_model_retirement_controls.zig");
++const observer = @embedFile("extensions/fixtures/sdk-settings-diagnostics-observer.mjs");
++const original = @embedFile("extensions/fixtures/sdk-settings-diagnostics-4954-source.mjs");
++fn publish(s: *h.Scope, name: [*:0]const u8, value: c.JSValue) !void {
++    try v.put(s, try v.own(s, c.JS_GetGlobalObject(s.engine.context)), name, value);
++}
++fn prepare(engine: *h.Engine, source: bool) !void {
++    var environment: std.process.Environ.Map = .init(engine.gpa);
++    defer environment.deinit();
++    try @import("extensions/native_process.zig").install(engine, std.testing.io, &environment, &.{"settings-diagnostics-control"});
++    try @import("extensions/native_stream.zig").install(engine);
++    return h.statement(engine, prepareBody, .{source});
++}
++fn prepareBody(s: *h.Scope, source: bool) !void {
++    const engine = s.engine;
++    const managers = try v.own(s, try sdk.managerImports(engine));
++    const constructor = try v.get(s, managers, "SettingsManager");
++    const manager = try v.invoke(s, constructor, "inMemory", &.{});
++    const data = try v.own(s, v.duplicate(s, (try sdk.state(engine, manager)).data));
++    const diagnostics = if (source) result: {
++        const factory = try v.own(s, try engine.eval(original, "original-settings-diagnostics.js", c.JS_EVAL_TYPE_GLOBAL));
++        break :result try v.call(s, factory, c.pi_js_undefined(), &.{});
++    } else try v.own(s, try owner.create(engine));
++    const subject = try v.object(s);
++    try v.put(s, subject, "owner", diagnostics);
++    try v.put(s, subject, "manager", manager);
++    try v.put(s, subject, "data", data);
++    try v.put(s, subject, "SettingsManager", constructor);
++    try publish(s, "diagnosticSubject", subject);
++    try publish(s, "diagnosticHooks", try v.own(s, try retirement.createNativeRetirementHooks(engine)));
++}
++fn run(engine: *h.Engine, source: []const u8) !void {
++    const evaluation = try engine.evalModule(source, "actual-settings-diagnostics-control.mjs");
++    defer engine.freeValue(evaluation);
++    engine.freeValue(try engine.awaitValue(evaluation));
++}
++fn clean(engine: *h.Engine) !void {
++    try std.testing.expect(!c.JS_HasException(engine.context));
++    try std.testing.expect(!c.JS_IsJobPending(engine.runtime));
++    try std.testing.expect(engine.native_fatal_invocation == null);
++    try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
++}
++fn observedBody(s: *h.Scope) !c.JSValue {
++    return v.duplicate(s, try v.global(s, "diagnosticObserved"));
++}
++fn capture(comptime name: []const u8, source: bool) ![]u8 {
++    const engine = try h.Engine.init(std.testing.allocator, .{ .interrupt_budget = 4_000_000 });
++    defer engine.deinit();
++    try prepare(engine, source);
++    try run(engine, observer ++ "\nglobalThis.diagnosticObserved = JSON.stringify(await " ++ name ++ "(diagnosticSubject,diagnosticHooks));\n");
++    const value = try h.expression(engine, observedBody, .{});
++    defer engine.freeValue(value);
++    try std.testing.expect(c.JS_IsString(value));
++    try clean(engine);
++    return engine.toString(value);
++}
++fn both(comptime name: []const u8) !void {
++    const expected = try capture(name, true);
++    defer std.testing.allocator.free(expected);
++    const actual = try capture(name, false);
++    defer std.testing.allocator.free(actual);
++    try std.testing.expectEqualStrings(expected, actual);
++}
++fn recordBody(s: *h.Scope) !c.JSValue {
++    return v.duplicate(s, try v.get(s, try v.global(s, "diagnosticHooks"), "record"));
++}
++const Fatal = enum { current, retirement, cancelled };
++fn fatal(comptime name: []const u8, comptime kind: Fatal) !void {
++    const engine = try h.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit();
++    try prepare(engine, false);
++    const record = try h.expression(engine, recordBody, .{});
++    defer engine.freeValue(record);
++    try std.testing.expectError(error.JavaScriptException, run(engine,
++        observer ++ "\n" ++ name ++ "(diagnosticSubject,diagnosticHooks);\n"));
++    switch (kind) {
++        .current => try retirement.verifyRecordedActualNativeFatal(engine, record),
++        .retirement => try retirement.verifyActualRetirementFatal(engine, record, 0),
++        .cancelled => try retirement.verifyActualCancellationNoGuestClose(engine, record),
++    }
++    try retirement.verifyNoVisits(record, .{1,2,3});
++    try std.testing.expect(engine.native_fatal_invocation == null);
++}
++test "native settings diagnostics complete original ordinary export shapes" { try both("observeDiagnosticShapes"); }
++test "native settings diagnostics genuine manager drains path and scope diagnostics exactly once" { try both("observeDiagnosticDrain"); }
++test "native settings diagnostics genuine fromStorage load failure retains original message" { try both("observeDiagnosticStorage"); }
++test "native settings diagnostics truthy path selection and original template conversions" { try both("observeDiagnosticPaths"); }
++test "native settings diagnostics live map receiver arrow shape and direct return" { try both("observeDiagnosticLiveMap"); }
++test "native settings diagnostics actual map preserves sparse error-array holes" { try both("observeDiagnosticSparseMap"); }
++test "native settings diagnostics destructured scope path error Get ordering" { try both("observeDiagnosticDestructure"); }
++test "native settings diagnostics primitive destructuring retains original shared wrapper" { try both("observeDiagnosticPrimitiveBox"); }
++test "native settings diagnostics location conversion precedes error message Get and conversion" { try both("observeDiagnosticMessageOrder"); }
++test "native settings diagnostics nullish rows reject after actual manager drain" { try both("observeDiagnosticNullishRow"); }
++test "native settings diagnostics template symbol conversion failures match original" { try both("observeDiagnosticSymbols"); }
++test "native settings diagnostics destructuring failure retains identity and suppresses later Get" { try both("observeDiagnosticDestructureFailure"); }
++test "native settings diagnostics escaped map arrow survives outer invocation" { try both("observeDiagnosticMapEscape"); }
++test "native settings diagnostics map lookup failure occurs after draining genuine manager" { try both("observeDiagnosticMapFailure"); }
++test "native settings diagnostics deduplication preserves first type message identity and order" { try both("observeDiagnosticFirstOccurrence"); }
++test "native settings diagnostics original NUL separator collision semantics" { try both("observeDiagnosticNulCollision"); }
++test "native settings diagnostics actual sparse and generic filter behavior" { try both("observeDiagnosticSparseFilter"); }
++test "native settings diagnostics live Set construction precedes filter lookup and call" { try both("observeDiagnosticSetOrder"); }
++test "native settings diagnostics Set construction failure suppresses filter lookup" { try both("observeDiagnosticSetFailure"); }
++test "native settings diagnostics live Set has add receiver key and duplicate suppression" { try both("observeDiagnosticHasAdd"); }
++test "native settings diagnostics truthy has result retires before callback returns" { try both("observeDiagnosticTruthyHasRetirement"); }
++test "native settings diagnostics ignored add result retires before acceptance returns" { try both("observeDiagnosticAddRetirement"); }
++test "native settings diagnostics key type conversion precedes message lookup" { try both("observeDiagnosticKeyOrder"); }
++test "native settings diagnostics key conversion throw suppresses message and retains identity" { try both("observeDiagnosticKeyFailure"); }
++test "native settings diagnostics escaped predicates retain separate invocation Sets" { try both("observeDiagnosticEscape"); }
++test "native settings diagnostics escaped predicate retains seen after filter throws" { try both("observeDiagnosticEscapeAfterThrow"); }
++test "native settings diagnostics captured native seen lifetime matches original closure" { try both("observeDiagnosticSetLifetime"); }
++test "native settings diagnostics successful private native Error remains ordinary thrown data" { try both("observeDiagnosticPrivateData"); }
++test "native settings diagnostics destructured local retirement matches actual original VM" { try both("observeDiagnosticRowLifetime"); }
++test "native settings diagnostics ordinary function constructor primitive return semantics" { try both("observeDiagnosticConstructorReturn"); }
++
++test "native settings diagnostics current native fatal preempts guest catch and later reads" { try fatal("observeDiagnosticCurrentFatal", .current); }
++test "native settings diagnostics has result retirement fatal prevents guest continuation" { try fatal("observeDiagnosticHasRetirementFatal", .retirement); }
++test "native settings diagnostics has result retirement cancellation prevents guest continuation" { try fatal("observeDiagnosticHasRetirementCancel", .cancelled); }
++test "native settings diagnostics pending entry precedes cold or warm private cache" {
++    inline for (.{ false, true }) |warm| {
++        const engine = try h.Engine.init(std.testing.allocator, .{});
++        defer engine.deinit();
++        if (warm) engine.freeValue(try owner.create(engine));
++        const reason = try sdk.object(engine);
++        defer engine.freeValue(reason);
++        _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason));
++        try std.testing.expectError(error.JavaScriptException, owner.create(engine));
++        try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, engine.captured_exception orelse return error.MissingOriginalPending));
++        try std.testing.expectEqual(warm, engine.native_module_values.contains("pi-private:actual-sdk-settings-diagnostics"));
++        try std.testing.expect(engine.native_fatal_invocation == null);
++    }
++}
++test "native settings diagnostics complete private owner is cached with stable function identity" {
++    const engine = try h.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit();
++    const a = try owner.create(engine);
++    defer engine.freeValue(a);
++    const b = try owner.create(engine);
++    defer engine.freeValue(b);
++    try std.testing.expect(c.JS_IsStrictEqual(engine.context, a, b));
++    inline for (.{ "collectSettingsDiagnostics", "deduplicateDiagnostics" }) |name| {
++        const av = try h.get(engine, a, name);
++        defer engine.freeValue(av);
++        const bv = try h.get(engine, b, name);
++        defer engine.freeValue(bv);
++        try std.testing.expect(c.JS_IsStrictEqual(engine.context, av, bv));
++        try std.testing.expect(c.JS_IsFunction(engine.context, av));
++    }
++    try clean(engine);
++}
+--- /dev/null
++++ b/src/extensions/fixtures/sdk-settings-diagnostics-4954-source.mjs
+@@ -0,0 +1,27 @@
++(function settingsDiagnosticsOriginal() {
++"use strict";
++
++function collectSettingsDiagnostics(settingsManager) {
++	return settingsManager.drainErrors().map(({ scope, path, error }) => ({
++		type: "warning",
++		message: path ? `Invalid settings file ${path}: ${error.message}` : `Invalid ${scope} settings: ${error.message}`,
++	}));
++}
++
++/**
++ * Remove duplicate type/message diagnostics while preserving their first occurrence.
++ * Startup and runtime settings managers can report the same file error.
++ */
++function deduplicateDiagnostics(
++	diagnostics,
++) {
++	const seen = new Set();
++	return diagnostics.filter((diagnostic) => {
++		const key = `${diagnostic.type}\0${diagnostic.message}`;
++		if (seen.has(key)) return false;
++		seen.add(key);
++		return true;
++	});
++}
++return {collectSettingsDiagnostics,deduplicateDiagnostics};
++})
+--- /dev/null
++++ b/src/extensions/fixtures/sdk-settings-diagnostics-observer.mjs
+@@ -0,0 +1,298 @@
++// Controls execute the complete original bodies and native owner in fresh VMs.
++// Every collect caller uses the actual native SettingsManager and its backing
++// error array. Descriptor mutations are observational inputs to those methods.
++function expectDiagnostic(value, message) {
++  if (!value) throw new Error("settings diagnostics control: " + message);
++}
++function equalDiagnostic(a, b, message) {
++  expectDiagnostic(JSON.stringify(a) === JSON.stringify(b), message);
++}
++function seedDiagnostics(s, rows) { s.data.errors = rows; }
++function collectDiagnostics(s) { return s.owner.collectSettingsDiagnostics(s.manager); }
++function rowDiagnostic(scope, path, message) { return {scope, path, error:{message}}; }
++function observeDiagnosticShapes(s) {
++  const rows = [];
++  for (const name of ["collectSettingsDiagnostics","deduplicateDiagnostics"]) {
++    const f=s.owner[name], d=Object.getOwnPropertyDescriptor(f,"prototype");
++    expectDiagnostic(typeof f==="function" && f.name===name && f.length===1,"complete original ordinary function shape");
++    rows.push([name,f.length,Reflect.ownKeys(f),d.writable,d.enumerable,d.configurable,f.prototype.constructor===f]);
++  }
++  return rows;
++}
++function observeDiagnosticDrain(s) {
++  const original=[rowDiagnostic("global","/agent/settings.json","invalid JSON"),rowDiagnostic("project",undefined,"storage unavailable")];
++  seedDiagnostics(s,original);
++  const first=collectDiagnostics(s), second=collectDiagnostics(s);
++  equalDiagnostic(first,[{type:"warning",message:"Invalid settings file /agent/settings.json: invalid JSON"},{type:"warning",message:"Invalid project settings: storage unavailable"}],"exact original messages");
++  equalDiagnostic(second,[],"real manager drained errors");
++  expectDiagnostic(s.data.errors!==original && s.data.errors.length===0,"fresh real backing array");
++  return [first,second,original.length];
++}
++function observeDiagnosticStorage(s) {
++  const calls=[],reason=new Error("storage unavailable");
++  const storage={withLock(scope,fn){calls.push(scope);if(scope==="global")throw reason;return fn(undefined);}};
++  const manager=s.SettingsManager.fromStorage(storage);
++  const result=s.owner.collectSettingsDiagnostics(manager);
++  equalDiagnostic(result,[{type:"warning",message:"Invalid global settings: storage unavailable"}],"actual storage load error without a path");
++  equalDiagnostic(s.owner.collectSettingsDiagnostics(manager),[],"actual storage error drained once");
++  return [calls,result];
++}
++function observeDiagnosticPaths(s) {
++  const paths=[undefined,null,false,0,-0,NaN,"",true,7,"p"];
++  seedDiagnostics(s,paths.map(path=>rowDiagnostic("global",path,"x")));
++  const result=collectDiagnostics(s);
++  expectDiagnostic(result.slice(0,7).every(x=>x.message==="Invalid global settings: x"),"truthy path rule");
++  equalDiagnostic(result.slice(7).map(x=>x.message),["Invalid settings file true: x","Invalid settings file 7: x","Invalid settings file p: x"],"path template conversion");
++  return result;
++}
++function observeDiagnosticLiveMap(s) {
++  const order=[],rows=[];
++  Object.defineProperty(rows,"map",{get(){order.push("map:Get");return function(cb){
++    order.push("map:Call");expectDiagnostic(this===rows && arguments.length===1,"map receiver and one callback");
++    expectDiagnostic(cb.length===1 && cb.name==="" && !Object.hasOwn(cb,"prototype"),"original anonymous arrow");
++    let construct=false;try{new cb({});}catch(e){construct=e instanceof TypeError;}
++    expectDiagnostic(construct,"row callback is not constructible");
++    return {custom:true,value:cb(rowDiagnostic("project",null,"x"),17,rows)};
++  };}});
++  seedDiagnostics(s,rows);const out=collectDiagnostics(s);
++  equalDiagnostic(order,["map:Get","map:Call"],"map live lookup");
++  return [order,out];
++}
++function observeDiagnosticSparseMap(s) {
++  const rows=[];rows.length=4;rows[2]=rowDiagnostic("global",null,"hole");
++  seedDiagnostics(s,rows);const out=collectDiagnostics(s);
++  expectDiagnostic(out.length===4 && !(0 in out) && (2 in out) && !(3 in out),"actual map retains holes");
++  return [out.length,Object.keys(out),out[2]];
++}
++function observeDiagnosticDestructure(s) {
++  const order=[],row={};
++  for(const name of ["scope","path","error"])
++    Object.defineProperty(row,name,{get(){order.push(name);return name==="error"?{get message(){order.push("message");return "x";}}:name==="path"?"p":"global";}});
++  seedDiagnostics(s,[row]);const out=collectDiagnostics(s);
++  equalDiagnostic(order,["scope","path","error","message"],"all destructuring Gets precede literal");
++  return [order,out];
++}
++function observeDiagnosticPrimitiveBox(s) {
++  const old=Object.getOwnPropertyDescriptors(Number.prototype),order=[];
++  let first;
++  try {
++    Object.defineProperties(Number.prototype,{
++      scope:{configurable:true,get(){order.push(["scope",typeof this]);first=this;this.tag=1;return "global";}},
++      path:{configurable:true,get(){order.push(["path",this===first,this.tag]);return null;}},
++      error:{configurable:true,get(){order.push(["error",this===first,this.tag]);return {message:"boxed"};}},
++    });
++    seedDiagnostics(s,[17]);const out=collectDiagnostics(s);
++    equalDiagnostic(order,[["scope","object"],["path",true,1],["error",true,1]],"one original ToObject receiver");
++    return [order,out];
++  } finally {
++    for(const k of ["scope","path","error"]) {if(old[k])Object.defineProperty(Number.prototype,k,old[k]);else delete Number.prototype[k];}
++  }
++}
++function observeDiagnosticMessageOrder(s) {
++  const order=[],path={toString(){order.push("path:string");return "where";}};
++  const error={get message(){order.push("message:Get");return {toString(){order.push("message:string");return "why";}};}};
++  seedDiagnostics(s,[{get scope(){order.push("scope:Get");return "global";},get path(){order.push("path:Get");return path;},get error(){order.push("error:Get");return error;}}]);
++  const out=collectDiagnostics(s);
++  equalDiagnostic(order,["scope:Get","path:Get","error:Get","path:string","message:Get","message:string"],"template order");
++  return [order,out];
++}
++function observeDiagnosticNullishRow(s) {
++  const out=[];
++  for(const row of [undefined,null]) {
++    seedDiagnostics(s,[row]);let caught;
++    try{collectDiagnostics(s);}catch(e){caught=e;}
++    expectDiagnostic(caught instanceof TypeError,"nullish destructuring rejects");
++    out.push([caught.name,s.data.errors.length]);
++  }
++  return out;
++}
++function observeDiagnosticSymbols(s) {
++  const out=[];
++  for(const row of [rowDiagnostic("global",Symbol("p"),"x"),rowDiagnostic(Symbol("scope"),null,"x"),rowDiagnostic("global","p",Symbol("message"))]) {
++    seedDiagnostics(s,[row]);let caught;try{collectDiagnostics(s);}catch(e){caught=e;}
++    expectDiagnostic(caught instanceof TypeError,"template symbol throws");
++    out.push(caught.name);
++  }
++  return out;
++}
++function observeDiagnosticDestructureFailure(s) {
++  const order=[],sentinel={same:true};
++  seedDiagnostics(s,[{get scope(){order.push("scope");return "global";},get path(){order.push("path");throw sentinel;},get error(){order.push("error");return {};}}]);
++  let caught;try{collectDiagnostics(s);}catch(e){caught=e;}
++  expectDiagnostic(caught===sentinel,"original Get throw identity");
++  equalDiagnostic(order,["scope","path"],"later destructuring Get suppressed");
++  return [order,caught===sentinel,s.data.errors.length];
++}
++function observeDiagnosticMapEscape(s) {
++  let escaped;
++  const rows=[];rows.map=function(cb){escaped=cb;return "custom";};
++  seedDiagnostics(s,rows);
++  expectDiagnostic(collectDiagnostics(s)==="custom","direct map return retained");
++  const out=escaped(rowDiagnostic("project",null,"later"));
++  expectDiagnostic(out.message==="Invalid project settings: later","escaped row arrow survives outer return");
++  return out;
++}
++function observeDiagnosticMapFailure(s) {
++  const rows=[],sentinel={same:true},order=[];
++  Object.defineProperty(rows,"map",{get(){order.push("map");throw sentinel;}});
++  seedDiagnostics(s,rows);let caught;try{collectDiagnostics(s);}catch(e){caught=e;}
++  expectDiagnostic(caught===sentinel && s.data.errors.length===0,"drain precedes map failure");
++  return [order,caught===sentinel];
++}
++function observeDiagnosticFirstOccurrence(s) {
++  const a={type:"warning",message:"x",extra:1},b={type:"warning",message:"x",extra:2},c={type:"error",message:"x"},d={type:"warning",message:"y"};
++  const out=s.owner.deduplicateDiagnostics([a,b,c,d,a]);
++  expectDiagnostic(out.length===3 && out[0]===a && out[1]===c && out[2]===d,"first exact type/message identity and order");
++  return out;
++}
++function observeDiagnosticNulCollision(s) {
++  const a={type:"a\0b",message:"c"},b={type:"a",message:"b\0c"};
++  const out=s.owner.deduplicateDiagnostics([a,b]);
++  expectDiagnostic(out.length===1 && out[0]===a,"preserve original NUL concatenation collision");
++  return out;
++}
++function observeDiagnosticSparseFilter(s) {
++  const rows=[];rows.length=5;rows[1]={type:"warning",message:"a"};rows[4]={type:"warning",message:"a"};
++  const out=s.owner.deduplicateDiagnostics(rows);
++  expectDiagnostic(out.length===1 && out[0]===rows[1],"filter skips holes and retains first");
++  const generic={0:rows[1],2:{type:"warning",message:"b"},length:3,filter:Array.prototype.filter};
++  const other=s.owner.deduplicateDiagnostics(generic);
++  expectDiagnostic(other.length===2 && other[1]===generic[2],"actual generic filter");
++  return [out,other];
++}
++function observeDiagnosticSetOrder(s) {
++  const NativeSet=globalThis.Set,order=[],input={get filter(){order.push("filter:Get");return function(cb){
++    order.push("filter:Call");expectDiagnostic(this===input && arguments.length===1,"filter receiver and argument count");
++    expectDiagnostic(cb.name==="" && cb.length===1 && !Object.hasOwn(cb,"prototype"),"filter is original arrow");
++    return "live";
++  };}};
++  Object.defineProperty(globalThis,"Set",{configurable:true,get(){order.push("Set:Get");return function(){
++    order.push(["Set:construct",new.target!==undefined,arguments.length]);return new NativeSet();
++  };}});
++  try {expectDiagnostic(s.owner.deduplicateDiagnostics(input)==="live","filter return passed through");return order;}
++  finally{Object.defineProperty(globalThis,"Set",{value:NativeSet,writable:true,configurable:true});}
++}
++function observeDiagnosticSetFailure(s) {
++  const old=globalThis.Set,sentinel={same:true},order=[];
++  globalThis.Set=function(){order.push("Set");throw sentinel;};
++  try {
++    let caught;try{s.owner.deduplicateDiagnostics({get filter(){order.push("filter");throw Error("later");}});}catch(e){caught=e;}
++    expectDiagnostic(caught===sentinel,"Set constructor error identity");
++    equalDiagnostic(order,["Set"],"constructor before filter lookup");
++    return [order,caught===sentinel];
++  } finally {globalThis.Set=old;}
++}
++function observeDiagnosticHasAdd(s) {
++  const old=globalThis.Set,order=[],keys=[],seen={};
++  Object.defineProperties(seen,{
++    has:{get(){order.push("has:Get");return function(key){order.push(["has",this===seen,arguments.length,key]);return keys.includes(key);};}},
++    add:{get(){order.push("add:Get");return function(key){order.push(["add",this===seen,arguments.length,key]);keys.push(key);return {ignored:true};};}},
++  });
++  globalThis.Set=function(){return seen;};
++  try {
++    const out=s.owner.deduplicateDiagnostics([{type:"warning",message:"x"},{type:"warning",message:"x"}]);
++    expectDiagnostic(out.length===1 && keys.length===1,"live has/add semantics");
++    return [order,out];
++  } finally {globalThis.Set=old;}
++}
++function observeDiagnosticTruthyHasRetirement(s,hooks) {
++  const old=globalThis.Set,order=[];
++  globalThis.Set=function(){return {has(){order.push(["has",hooks.count(0)]);return hooks.make(0);},get add(){throw Error("truthy has suppresses add");}};};
++  try {
++    const input={filter(cb){const decision=cb({type:"x",message:"y"});order.push(["after",decision,hooks.count(0)]);return decision;}};
++    const out=s.owner.deduplicateDiagnostics(input);
++    expectDiagnostic(out===false && hooks.count(0)===1,"truthy native holder retires");
++    return order;
++  } finally {globalThis.Set=old;}
++}
++function observeDiagnosticAddRetirement(s,hooks) {
++  const old=globalThis.Set,order=[];
++  globalThis.Set=function(){return {has(){return false;},add(){order.push("add");return hooks.make(0);}};};
++  try {
++    const input={filter(cb){const result=cb({type:"x",message:"y"});order.push([result,hooks.count(0)]);return result;}};
++    expectDiagnostic(s.owner.deduplicateDiagnostics(input)===true,"new diagnostic accepted");
++    expectDiagnostic(hooks.count(0)===1,"add ignored result retires before returning");
++    return order;
++  } finally {globalThis.Set=old;}
++}
++function observeDiagnosticKeyOrder(s) {
++  const order=[],row={get type(){order.push("type:Get");return {toString(){order.push("type:string");return "w";}};},get message(){order.push("message:Get");return {toString(){order.push("message:string");return "x";}};}};
++  const out=s.owner.deduplicateDiagnostics([row]);
++  equalDiagnostic(order,["type:Get","type:string","message:Get","message:string"],"key template order");
++  expectDiagnostic(out[0]===row,"original object returned");
++  return order;
++}
++function observeDiagnosticKeyFailure(s) {
++  const sentinel={same:true},order=[];
++  const row={get type(){order.push("type");return {toString(){order.push("string");throw sentinel;}};},get message(){order.push("message");return "x";}};
++  let caught;try{s.owner.deduplicateDiagnostics([row]);}catch(e){caught=e;}
++  expectDiagnostic(caught===sentinel,"type conversion throw preserved");
++  equalDiagnostic(order,["type","string"],"message suppressed after throw");
++  return [order,caught===sentinel];
++}
++function observeDiagnosticEscape(s) {
++  let first,second;
++  s.owner.deduplicateDiagnostics({filter(cb){first=cb;return undefined;}});
++  s.owner.deduplicateDiagnostics({filter(cb){second=cb;return undefined;}});
++  const row={type:"warning",message:"x"},out=[first(row),first(row),second(row),first({type:"warning",message:"y"})];
++  equalDiagnostic(out,[true,false,true,true],"per-invocation escaped lexical Set");
++  return out;
++}
++function observeDiagnosticEscapeAfterThrow(s) {
++  let escaped;const sentinel={same:true};
++  let caught;try{s.owner.deduplicateDiagnostics({filter(cb){escaped=cb;throw sentinel;}});}catch(e){caught=e;}
++  expectDiagnostic(caught===sentinel,"filter throw retained");
++  const row={type:"warning",message:"later"},out=[escaped(row),escaped(row)];
++  equalDiagnostic(out,[true,false],"actual lexical Set survives throwing filter");
++  return [caught===sentinel,out];
++}
++function observeDiagnosticSetLifetime(s,hooks) {
++  const old=globalThis.Set,order=[];let escaped;
++  globalThis.Set=function(){const seen=hooks.make(0);seen.has=function(){return false;};seen.add=function(){};return seen;};
++  try {
++    s.owner.deduplicateDiagnostics({filter(cb){escaped=cb;order.push(hooks.count(0));return undefined;}});
++    order.push(hooks.count(0));escaped({type:"w",message:"x"});order.push(hooks.count(0));
++    escaped=null;order.push(hooks.count(0));
++    equalDiagnostic(order,[0,0,0,1],"closed-over seen owned exactly through escaped arrow");
++    return order;
++  } finally {globalThis.Set=old;}
++}
++function observeDiagnosticPrivateData(s,hooks) {
++  let privateReason;
++  seedDiagnostics(s,[{get scope(){privateReason=hooks.freshPrivateData();throw privateReason;},path:null,error:{message:"unreached"}}]);
++  let caught;try{collectDiagnostics(s);}catch(e){caught=e;}
++  expectDiagnostic(caught===privateReason && hooks.isUnmarkedPrivateData(caught),"native private Error thrown as ordinary data");
++  return [caught===privateReason,hooks.isUnmarkedPrivateData(caught)];
++}
++function observeDiagnosticRowLifetime(s,hooks) {
++  const order=[],row={get scope(){const value=hooks.make(0);value.toString=function(){order.push(["scope:string",hooks.count(0),hooks.count(1)]);return "global";};return value;},
++    get path(){return null;},get error(){const value=hooks.make(1);Object.defineProperty(value,"message",{get(){order.push(["message",hooks.count(0),hooks.count(1)]);return "x";}});return value;}};
++  seedDiagnostics(s,[row]);const out=collectDiagnostics(s);
++  order.push(["after",hooks.count(0),hooks.count(1)]);
++  expectDiagnostic(hooks.count(0)===1 && hooks.count(1)===1,"destructured locals retire after callback");
++  return [order,out];
++}
++function observeDiagnosticConstructorReturn(s) {
++  const rows=[];rows.map=()=>17;seedDiagnostics(s,rows);
++  const C=s.owner.collectSettingsDiagnostics,collect=new C(s.manager);
++  expectDiagnostic(Object.getPrototypeOf(collect)===C.prototype,"ordinary collect constructor primitive return");
++  const D=s.owner.deduplicateDiagnostics,dedupe=new D({filter(){return 19;}});
++  expectDiagnostic(Object.getPrototypeOf(dedupe)===D.prototype,"ordinary dedupe constructor primitive return");
++  return [Object.keys(collect),Object.keys(dedupe)];
++}
++function observeDiagnosticCurrentFatal(s,hooks) {
++  const prior=hooks.freshPrivateData();expectDiagnostic(hooks.isUnmarkedPrivateData(prior),"successful data before current fatal");
++  seedDiagnostics(s,[{get scope(){return hooks.raiseNativeFatal();},get path(){hooks.visit(1);},get error(){hooks.visit(2);}}]);
++  try{collectDiagnostics(s);}catch(e){hooks.visit(3);}
++  hooks.visit(1);
++}
++function observeDiagnosticHasRetirementFatal(s,hooks) {
++  globalThis.Set=function(){return {has(){hooks.armFatal(0);return hooks.make(0);},get add(){hooks.visit(1);return function(){};}};};
++  try{s.owner.deduplicateDiagnostics({filter(cb){const result=cb({type:"x",message:"y"});hooks.visit(2);return result;}});}catch(e){hooks.visit(3);}
++  hooks.visit(1);
++}
++function observeDiagnosticHasRetirementCancel(s,hooks) {
++  globalThis.Set=function(){return {has(){hooks.armCancel(0);return hooks.make(0);},get add(){hooks.visit(1);return function(){};}};};
++  try{s.owner.deduplicateDiagnostics({filter(cb){const result=cb({type:"x",message:"y"});hooks.visit(2);return result;}});}catch(e){hooks.visit(3);}
++  hooks.visit(1);
++}
+--- a/build.zig
++++ b/build.zig
+@@ -1980,6 +1980,20 @@
+         project_trust_resolution_tests.root_module.linkSystemLibrary("userenv", .{});
+     }
+     b.step("build-native-sdk-project-trust-resolution", "Install actual authenticated project-trust resolution controls without execution").dependOn(&b.addInstallArtifact(project_trust_resolution_tests, .{}).step);
++
++    const settings_diagnostics_tests = b.addTest(.{
++        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_settings_diagnostics_test.zig"), .target = target, .optimize = optimize }),
++        .filters = &.{"native settings diagnostics"},
++    });
++    linkQuickJs(b, settings_diagnostics_tests.root_module, quickjs, sqlite_lib_dir);
++    linkTypeScriptParser(b, settings_diagnostics_tests.root_module, typescript_parser);
++    linkSqlite(settings_diagnostics_tests.root_module, sqlite_lib_dir, sqlite_library);
++    settings_diagnostics_tests.root_module.addImport("catalog_tool", catalog_tool);
++    if (target.result.os.tag == .windows) {
++        settings_diagnostics_tests.root_module.linkSystemLibrary("advapi32", .{});
++        settings_diagnostics_tests.root_module.linkSystemLibrary("userenv", .{});
++    }
++    b.step("build-native-sdk-settings-diagnostics", "Install actual SettingsManager diagnostics controls without execution").dependOn(&b.addInstallArtifact(settings_diagnostics_tests, .{}).step);
+ 
+     const module_execution_state_tests = b.addTest(.{
+         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_execution_state_test.zig"), .target = target, .optimize = optimize }),

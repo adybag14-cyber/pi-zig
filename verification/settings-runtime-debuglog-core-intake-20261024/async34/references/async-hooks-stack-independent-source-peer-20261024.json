@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T22:33:44.356321+00:00",
+  "reviewer": "handover_review",
+  "status": "independently_source_accepted_no_concrete_blocker",
+  "scope": "Selected original private async_hooks ID/stack declarations and same-owner execution-resource acquisition; source-only.",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\source-intake.json",
+    "bytes": 25620,
+    "sha256": "FDA0EB42A54A910437F19213B188D65F0B372EE5F413513CE11B60146807B3FF"
+  },
+  "selected_outputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 41656,
+      "sha256": "B4E4524BCA2BE309E234C3D98E762D279E9FDCDDB256A7D0BC9B8AC8F197A4D0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\src\\extensions\\native_node_async_hooks_stack.zig",
+      "bytes": 18238,
+      "sha256": "3B71C963911264E0C957DB649FEDF2913EEA3DB7F1F501FE3A88532188497114"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\src\\native_node_async_hooks_stack_test_support.zig",
+      "bytes": 13612,
+      "sha256": "3633934ADE6E20A12112FA2BEC8C69E50CBDDE0AB47A2BFFF86C06EF92CF3072"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\src\\native_node_async_hooks_stack_test.zig",
+      "bytes": 23359,
+      "sha256": "F3D75679ECBE7135364886B1FFEBE85ED4C20D3CF2FF6B322786F211216D492B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\durable\\fixtures\\native-node-async-hooks-stack-original.js",
+      "bytes": 2873,
+      "sha256": "DD285BAEB7111A4ABFF22D8DC840B55FD3F8D76B611B614103AA69081FDD47E1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 558134,
+      "sha256": "92876FABAFBA5B3B3DA01BB992EAD15601081050D0669866031A262635A28E0C"
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\async-hooks-stack-successor.patch",
+    "bytes": 62958,
+    "sha256": "54BC79B80FA8E24C60004A0E523E7026372B1EFD072D77C555D59FC539669FAE"
+  },
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1219,
+    "sha256": "F2984B1B19A9CE63E55D4D9E2F202F9A0A59282E1D07E1CEFCF11A09E66F1D4C"
+  },
+  "manual_review": {
+    "production": "Complete 18,238-byte new owner and 623-byte Environment insertion; existing Environment installHooks/shared fields/resources/native push/pop/clear ownership; source primitive operations, completion/pending ownership, ordinary callable and private publication helpers.",
+    "original": "Complete selected original declarations from internal/async_hooks.js, corresponding original async_wrap shared-view publication/constants and env.h field/ID enums; original JS/native stack order remains intentionally distinct.",
+    "controls": "All 34 declared control bodies and complete fixture support read, including the selected original-reference body and numeric-only fallback bridges.",
+    "owner_authentication": "Requires same Engine and actual live Environment, exact already-installed binding identity and exact native fields/ID/resource views. No copy/snapshot or synthetic namespace. This proves installed owner/view identity; the packet explicitly does not authenticate or implement the complete native binding callback producer.",
+    "construction_lifetime": "Temporary Environment retain precedes guest binding Gets. Expected roots remain retained; required views and captures are stored in a charged, traced private holder. A post-getter liveness check prevents publication of a retired Environment; reentrant construction honors an existing matching winner. Retained callable captures keep the holder and Environment alive after cache removal.",
+    "push_order": "Resource assignment precedes capacity check; lexical offset is retained through reentry. Condition and each stack assignment resolve independent live binding stack values; left-hand base precedes index and ID read. Counter increment reads the current stack length after earlier callbacks. Native fallback receives exactly the two original ID arguments with undefined receiver.",
+    "pop_order": "Exact zero fast return suppresses later property reads. Enabled-check mismatch routes to captured native pop with undefined receiver. Successful fast path restores execution then trigger from separate live stack Gets, calls live resources.pop with its real receiver, retires its callee/result before committing lexical offset, and returns the original offset comparison.",
+    "number_semantics": "Actual VM increment/binary operations preserve original prefix counter, negative default-trigger test, signed zero/NaN and independent predicate cells; enum indices match original native authority.",
+    "completion_semantics": "Actual pending/native fatal completion remains owned across guest Get/Set/coercion/call and retirement. Returned flagged DATA is not promoted to fatal. The controls explicitly separate ordinary throwing pop, actual fatal pop, pending cold acquisition and trusted allocation failure.",
+    "clear_identity": "Selected clearAsyncIdStack export is the captured native function itself, preserving identity instead of introducing a wrapper.",
+    "formal_lifetime": "Selected formal arguments are neither reassigned nor captured by escaping closures; ordinary Module callbacks borrow the actual live VM argument frame. The owner creates ordinary constructible functions with original names/lengths and constructor semantics."
+  },
+  "independent_mechanical_checks": {
+    "referenced_unique_path_bytes_sha_versions_rehashed": 42,
+    "entry_version_rehashed_separately": true,
+    "packet_json_proofs_recursively_opened": 7,
+    "environment_insertion_bytes": 623,
+    "environment_insertion_forward_and_complete_raw_inverse": true,
+    "original_environment_equals_current_Main": true,
+    "build_insertion_bytes": 1219,
+    "build_unique_anchor_and_complete_raw_inverse": true,
+    "original_build_equals_current_Main": true,
+    "six_target_git_style_patch_reconstructed_byte_exact": true,
+    "all_thirteen_original_reference_function_bodies_match_raw_authority": true,
+    "direct_relative_imports": 16,
+    "embed_resolutions": 1,
+    "standard_imports": 4,
+    "all_import_lines_and_selected_paths_sizes_hashes_match": true,
+    "declared_control_names_exact_unique": 34,
+    "actual_metadata_count": null,
+    "runtime_result": null,
+    "artifact_stem": "native-node-async-hooks-stack",
+    "pdb_stem": "test"
+  },
+  "integration_requirements": [
+    "Compose only the 1,219-byte build insertion with other pending packets, preserving its install-only target and native-node-async-hooks-stack executable/test PDB distinction.",
+    "Apply the sole 623-byte Environment acquisition insertion to its pinned baseline or an independently composed successor; retain actual backing and all native methods.",
+    "Supply the real installed async_wrap binding with original native push/pop/clear callback identities and genuine operational policies. Numeric test bridges do not qualify native NumberValue/FromJust/fatal/process-exit behavior.",
+    "Complete the real async_wrap/bootstrap assembly, original active_hooks/emitHookFactory/setupHooks and emitAfterScript. emitAfterScript must use original JS pop semantics, not substitute Environment.popAsyncContext.",
+    "Original fatalError/TriggerUncaughtException, real Message/process-exit/async-fatal/trace-event collaborators and canonical process/require/timers startup publication remain separate dependencies."
+  ],
+  "limits": {
+    "Main_changed": false,
+    "candidate_executed": false,
+    "Zig_parser_or_formatter_executed": false,
+    "native_compile_metadata_runtime_executed": false,
+    "Node_reference_capture_executed": false,
+    "candidate_source_generator_executed": false,
+    "native_qualification": false,
+    "complete_async_hooks_bootstrap": false,
+    "production_startup_complete": false
+  },
+  "blockers": []
+}

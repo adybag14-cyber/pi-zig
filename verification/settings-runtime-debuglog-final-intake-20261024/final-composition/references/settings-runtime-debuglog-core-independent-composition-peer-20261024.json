@@ -1,0 +1,345 @@
+{
+  "schema": 1,
+  "reviewer": "controls_review",
+  "status": "accepted_independent_source_composition_core_only",
+  "subject": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-gap-assessment\\settings-runtime-debuglog-core-intake-sourceonly-20261024\\source-intake-plan.json",
+    "bytes": 637040,
+    "sha256": "3238A14B2E4BE2D002B39BEF87595EA27495BE4E69D8BA39E03FC18C2D10EF8D"
+  },
+  "observed_main_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "main_clean": true,
+  "root_selection": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-settings-runtime-debuglog-intake-selection-20261024.json",
+    "bytes": 5634,
+    "sha256": "F1A7B979165EB2C5123885071A599A827F3F35D9AE0C9BE1B41C6CC155E6FB73"
+  },
+  "original_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v46-new31-partial-compile-negative-acceptance-20261024.json",
+    "bytes": 3197,
+    "sha256": "DCE0523B817B564AB19D285C12A418EAA4B621785ECA975051A0A1933A2E1AE0"
+  },
+  "source_review_reused": [
+    {
+      "name": "debuglog36",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\source-intake.json",
+        "bytes": 33159,
+        "sha256": "719435C30C628ACA18BF533F96205CB37BF1CCBAD82E7E365424F4B6AD3DE43C"
+      },
+      "root_source_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-initialized-debuglog-source-acceptance-20261024.json",
+        "bytes": 7344,
+        "sha256": "BD9B1BFA1BDBFEC651BC5430DEC1D95A9EA1B7B5639EE8EEE62371306EAB1D7F"
+      },
+      "independent_source_peer": null,
+      "selected": true
+    },
+    {
+      "name": "settings43",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\source-intake.json",
+        "bytes": 32986,
+        "sha256": "B9F4E03AB59517E440DE5741E593CA06E2B3FC43194BFD5E593CD39254FF9FB6"
+      },
+      "root_source_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-settings-shared-defaults-source-acceptance-20261024.json",
+        "bytes": 10359,
+        "sha256": "08678EF828C0B023CD609D61AD370F3BFC6E576B3514C49A5025CACEC02314D6"
+      },
+      "independent_source_peer": null,
+      "selected": true
+    },
+    {
+      "name": "modelmap6",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\source-intake.json",
+        "bytes": 13361,
+        "sha256": "48E6A2728F08145AF31A5FD042573D64E9FF781992CEC3D92E2A7FDF61ED9A6B"
+      },
+      "root_source_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-default-model-map-source-acceptance-20261024.json",
+        "bytes": 7536,
+        "sha256": "75BDCC65D992BF7DF32A032AA2CE6C8BF0477D59846553C45B293704436F5C80"
+      },
+      "independent_source_peer": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-controls-review\\sdk-default-model-map-independent-source-peer-20261024.json",
+        "bytes": 7156,
+        "sha256": "51D2589A3ECD65CFFBB1FDEC8424D2430C404F05AB2D4FFB1E6AC0AA616B3750"
+      },
+      "selected": true
+    },
+    {
+      "name": "diagnostics35",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\source-intake.json",
+        "bytes": 17492,
+        "sha256": "5939BA07983B17BFF29B7B47AE3AD8103472982BE1741AB5246FC23821DF3527"
+      },
+      "root_source_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-settings-diagnostics-source-acceptance-20261024.json",
+        "bytes": 6237,
+        "sha256": "778FB9FD655DA86C0719035261C681B3767EB562BB4268B1DCE8C1CAE324BA39"
+      },
+      "independent_source_peer": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-controls-review\\sdk-settings-diagnostics-independent-source-peer-20261024.json",
+        "bytes": 8051,
+        "sha256": "1DA86FC8A07EFFC2D1B74AC5042BA84B292434A1D982C3B920106030318CA8F8"
+      },
+      "selected": true
+    },
+    {
+      "name": "mainhelpers56",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\source-intake.json",
+        "bytes": 54143,
+        "sha256": "639C33CCE0283421E2C59B5D7E729A0E4BF304458CBC8350F758CBBC1F85871B"
+      },
+      "root_source_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-main-runtime-helpers-source-acceptance-20261024.json",
+        "bytes": 11482,
+        "sha256": "4FD9192B988EF2093D45E078DD533C1BA1D0C2108B98E3751C03E47AEB7FBCD6"
+      },
+      "independent_source_peer": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\sdk-main-runtime-helpers-independent-source-peer-20261024.json",
+        "bytes": 7162,
+        "sha256": "0EFE538E547985B31C403479FA4CFE1B60AEF2A2D7C4E95D5E5C87C887B10DCC"
+      },
+      "selected": true
+    },
+    {
+      "name": "async34",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\source-intake.json",
+        "bytes": 25620,
+        "sha256": "FDA0EB42A54A910437F19213B188D65F0B372EE5F413513CE11B60146807B3FF"
+      },
+      "root_source_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-async-hooks-stack-source-acceptance-20261024.json",
+        "bytes": 8849,
+        "sha256": "1A1B2C02450B67B18549BFB87C3A65D05E6BDF342B7D55184FD1765E32731BA4"
+      },
+      "independent_source_peer": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-gap-assessment\\async-hooks-stack-independent-source-peer-20261024.json",
+        "bytes": 8806,
+        "sha256": "FD1324E252C899A30F69B9AEC4D4521F42CB743E5A3E6D1FFD7B24389AC9AA79"
+      },
+      "selected": true
+    },
+    {
+      "name": "writev_fixture",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-writev-fixture-shadow-correction-sourceonly-20261024\\source-intake.json",
+        "bytes": 3216,
+        "sha256": "E7723B4924F50AF8CCAAFE1A7F0A536A54C1408E9C6572D28D694C8B2942FE3A"
+      },
+      "root_source_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-writev-fixture-correction-source-acceptance-20261024.json",
+        "bytes": 3354,
+        "sha256": "801AAEF7E592EFC72B104E3034189B8B3F34EB271F5D6531F07B113A7603FED4"
+      },
+      "independent_source_peer": null,
+      "selected": true
+    }
+  ],
+  "verified_pin_census": {
+    "plan_and_selected_entries_and_all_selected_root_and_peer_receipts": 678,
+    "distinct_current_paths": 678,
+    "mismatches": 0,
+    "note": "Expanded independent receipt census; the author 677 census excludes one reused independent receipt input selected by this pass."
+  },
+  "checks": {
+    "all455_current_inventory_equals_exact_origin_git_diff": true,
+    "all30_source_operations_equal_selected_packet_terminal_bytes": true,
+    "all_source_absence_and_replace_preconditions": true,
+    "source_overlap_chains": 0,
+    "all7_complete_patches_reconstructed": true,
+    "patch_target_count": 36,
+    "all6_standalone_and_composed_build_inverses": true,
+    "build_added_bytes": 6667,
+    "expected_full_build": {
+      "bytes": 563582,
+      "sha256": "781174707000AED07A89E0BF5A7738A4A098F7C84D0A2C44A9927F6AE4E94AD3"
+    },
+    "all159_relative_imports_exact": true,
+    "all30_package_imports_exact": true,
+    "all10_literal_embeds_exact": true,
+    "all160_retained_import_pins_exact": true,
+    "explicit_import_advances": 0,
+    "all88_evidence_destinations_absent_and_unique": true,
+    "pending_paths": 119,
+    "cumulative_paths": 568,
+    "cumulative_source_build_paths": 132,
+    "new_roots": 6,
+    "new_declarations": 210,
+    "retained31_names_and650_declarations_exact": true,
+    "fresh_selection": "37 roots / 860 declared controls",
+    "full_catalog": "158 roots / 2926 declared controls",
+    "progress_unchanged": true,
+    "future_head_and_actual_metadata_unresolved": true,
+    "all_execution_and_product_authorities_false": true
+  },
+  "build_order": [
+    "debuglog36",
+    "settings43",
+    "modelmap6",
+    "diagnostics35",
+    "mainhelpers56",
+    "async34"
+  ],
+  "controls": [
+    {
+      "group": "native-node-debuglog",
+      "declared": 36,
+      "artifact": "native-node-debuglog"
+    },
+    {
+      "group": "native-sdk-settings-shared-defaults",
+      "declared": 43,
+      "artifact": "test"
+    },
+    {
+      "group": "native-sdk-default-model-map",
+      "declared": 6,
+      "artifact": "test"
+    },
+    {
+      "group": "native-sdk-settings-diagnostics",
+      "declared": 35,
+      "artifact": "test"
+    },
+    {
+      "group": "native-sdk-main-runtime-helpers",
+      "declared": 56,
+      "artifact": "test"
+    },
+    {
+      "group": "native-node-async-hooks-stack",
+      "declared": 34,
+      "artifact": "native-node-async-hooks-stack"
+    }
+  ],
+  "patch_reconstructions": [
+    {
+      "packet": "debuglog36",
+      "patch": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\debuglog-successor.patch",
+        "bytes": 80631,
+        "sha256": "1E610AA65DF4BB9591B67B17C788D114DAE06CFD89F8D113E20B6246F75C64F2"
+      },
+      "targets": [
+        "src/extensions/native_clone_intrinsics.zig",
+        "src/extensions/native_node_safe_array_iterator.zig",
+        "src/extensions/native_node_debuglog.zig",
+        "src/native_node_debuglog_test.zig",
+        "src/fixtures/native-node-debuglog-reference.js",
+        "build.zig"
+      ],
+      "full_raw_reconstruction_exact": true
+    },
+    {
+      "packet": "settings43",
+      "patch": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\source-diff.patch",
+        "bytes": 100422,
+        "sha256": "5FF819C25250B106DB78B099411860F8D0A329AAD394B66053C6615CA731ECD0"
+      },
+      "targets": [
+        "src/extensions/native_sdk_settings_default_accessors.zig",
+        "src/extensions/native_sdk_settings.zig",
+        "src/native_sdk_settings_shared_defaults_test.zig",
+        "src/extensions/fixtures/sdk-settings-default-accessors-4954-source.mjs",
+        "src/extensions/fixtures/sdk-settings-shared-defaults-observer.mjs",
+        "build.zig"
+      ],
+      "full_raw_reconstruction_exact": true
+    },
+    {
+      "packet": "modelmap6",
+      "patch": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\source-diff.patch",
+        "bytes": 13907,
+        "sha256": "5D015FEA59F420B6C5B9E9DFC36085005CB0FB3C0E77E33E3A833ACD168D29F2"
+      },
+      "targets": [
+        "build.zig",
+        "src/extensions/fixtures/sdk-default-model-fallback-4954-source.mjs",
+        "src/extensions/fixtures/sdk-default-model-map-4954-source.mjs",
+        "src/extensions/native_sdk_factory_model.zig",
+        "src/native_sdk_default_model_map_test.zig"
+      ],
+      "full_raw_reconstruction_exact": true
+    },
+    {
+      "packet": "diagnostics35",
+      "patch": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\sdk-settings-diagnostics.patch",
+        "bytes": 40097,
+        "sha256": "E44994A73C0EF69CE705D3F4EA4DFAA6CE4649ECF9026D43DBDCAD2ED9B2C533"
+      },
+      "targets": [
+        "src/extensions/native_sdk_settings_diagnostics.zig",
+        "src/native_sdk_settings_diagnostics_test.zig",
+        "src/extensions/fixtures/sdk-settings-diagnostics-4954-source.mjs",
+        "src/extensions/fixtures/sdk-settings-diagnostics-observer.mjs",
+        "build.zig"
+      ],
+      "full_raw_reconstruction_exact": true
+    },
+    {
+      "packet": "mainhelpers56",
+      "patch": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\source-diff.patch",
+        "bytes": 84957,
+        "sha256": "7A909E710DF5DAC3D1B605EF3247C54BE515C2338053B75A1034843223A0A1EF"
+      },
+      "targets": [
+        "build.zig",
+        "src/extensions/fixtures/sdk-main-runtime-helpers-4954-source.mjs",
+        "src/extensions/fixtures/sdk-main-runtime-helpers-observer.mjs",
+        "src/extensions/native_sdk_application_owner.zig",
+        "src/extensions/native_sdk_auth_runtime_owner.zig",
+        "src/extensions/native_sdk_main_runtime_helpers.zig",
+        "src/native_sdk_main_runtime_helpers_test.zig"
+      ],
+      "full_raw_reconstruction_exact": true
+    },
+    {
+      "packet": "async34",
+      "patch": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\async-hooks-stack-successor.patch",
+        "bytes": 62958,
+        "sha256": "54BC79B80FA8E24C60004A0E523E7026372B1EFD072D77C555D59FC539669FAE"
+      },
+      "targets": [
+        "src/extensions/native_node_callback_scope.zig",
+        "src/extensions/native_node_async_hooks_stack.zig",
+        "src/native_node_async_hooks_stack_test_support.zig",
+        "src/native_node_async_hooks_stack_test.zig",
+        "durable/fixtures/native-node-async-hooks-stack-original.js",
+        "build.zig"
+      ],
+      "full_raw_reconstruction_exact": true
+    },
+    {
+      "packet": "writev_fixture",
+      "patch": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-writev-fixture-shadow-correction-sourceonly-20261024\\stream-writev-fixture-shadow-correction.patch",
+        "sha256": "01FEF9A6AFCA72CA8ECA76904E9D0ABC23CA83DC5DD298432933674F976B792D",
+        "bytes": 635
+      },
+      "targets": [
+        "src/native_node_stream_writev_test.zig"
+      ],
+      "full_raw_reconstruction_exact": true
+    }
+  ],
+  "limitations": [
+    "Independent finite source composition review reuses completed original source semantics reviews; it does not compile or execute any candidate.",
+    "The two named pending packets (timer47 and VM36) remain excluded; their future cumulative successor requires a separate finite delta review.",
+    "All original failed qualification and partial metadata remain immutable and inadmissible; no success transfers to a later source revision."
+  ],
+  "native_execution": false,
+  "candidate_execution": false,
+  "Main_mutation": false
+}

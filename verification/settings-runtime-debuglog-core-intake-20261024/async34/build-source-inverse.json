@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\original\\build.zig",
+    "bytes": 556915,
+    "sha256": "53162A0B9E7F297B245EE10D622AC9090DE94920B5D2057BD2AC4881A191679D"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 558134,
+    "sha256": "92876FABAFBA5B3B3DA01BB992EAD15601081050D0669866031A262635A28E0C"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1219,
+    "sha256": "F2984B1B19A9CE63E55D4D9E2F202F9A0A59282E1D07E1CEFCF11A09E66F1D4C"
+  },
+  "before_anchor": "    // Original Environment-owned Uint32 abort toggle and borrowed util supplier.\n",
+  "byte_offset": 191279,
+  "complete_raw_inverse": true,
+  "helper_calls": {
+    "linkQuickJs": 4,
+    "linkTypeScriptParser": 3,
+    "linkSqlite": 3
+  },
+  "install_only": true,
+  "artifact_stem": "native-node-async-hooks-stack",
+  "pdb_stem": "test",
+  "Main_mutated": false,
+  "native_execution": false
+}

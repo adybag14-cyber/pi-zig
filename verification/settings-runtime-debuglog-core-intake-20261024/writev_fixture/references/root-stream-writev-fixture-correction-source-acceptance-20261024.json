@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "root_accepted_exact_stream_writev_fixture_shadow_correction",
+  "candidate_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-writev-fixture-shadow-correction-sourceonly-20261024\\source-intake.json",
+    "bytes": 3216,
+    "sha256": "E7723B4924F50AF8CCAAFE1A7F0A536A54C1408E9C6572D28D694C8B2942FE3A"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-writev-fixture-shadow-correction-sourceonly-20261024\\stream-writev-fixture-shadow-correction.patch",
+    "sha256": "01FEF9A6AFCA72CA8ECA76904E9D0ABC23CA83DC5DD298432933674F976B792D",
+    "bytes": 635
+  },
+  "source_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-writev-fixture-shadow-correction-sourceonly-20261024\\source-inverse.json",
+    "sha256": "8073A0400A62F4A4C694A8983E8FC3C292D017C0D2ED2041878B95022D622C16",
+    "bytes": 4927
+  },
+  "selected31_scope_scan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-writev-fixture-shadow-correction-sourceonly-20261024\\selected31-request-shadow-source-scan.json",
+    "sha256": "1A785B8904047969913862CC6388C263D2C240702ED63C56AABB8F27C79928AD",
+    "bytes": 15266
+  },
+  "diagnostic": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v46-new31-buildquery-20261024-221411\\groups\\native-node-stream-writev\\compile.stderr.log",
+    "sha256": "15C8A1304E4F80E26EB73A52EB90F7F089C52146DF048FA83523588F537837F6",
+    "bytes": 22490
+  },
+  "changes": [
+    {
+      "target": "src/native_node_stream_writev_test.zig",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_stream_writev_test.zig",
+        "sha256": "78386904DA21ECB860D07214D887829B0B5D1189BD530871B106A3C58F99EB93",
+        "bytes": 48060
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-writev-fixture-shadow-correction-sourceonly-20261024\\projected\\src\\native_node_stream_writev_test.zig",
+        "sha256": "2051F0A30887D414ECA4775E50BFE8EF6B45F7463D2AA1E10EAC5E5BAF96EC73",
+        "bytes": 48060
+      },
+      "kind": "exact one-hunk, two-identifier rename"
+    }
+  ],
+  "verification": {
+    "unique_pinned_versions": 39,
+    "exact_one_hunk_two_identifier_edits": true,
+    "full_raw_inverse": true,
+    "unchanged_control_names": 32,
+    "unchanged_imports": true,
+    "all31_selected_test_roots_rehashed": true,
+    "three_declaring_Fixture_scopes_reviewed": true,
+    "only_observed_same_scope_request_binding": true,
+    "git_apply_check_exit": 0,
+    "Main_clean": true
+  },
+  "semantic_review": "Local pointer name only. Original take-pending, clear-field and same request.done call order remain exact; the .request member, arguments, failure and ownership semantics are unchanged.",
+  "scope_limit": "Scoped request-shadow scan only, not general compiler qualification. Apply only after independent negative closure releases Main.",
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "actual_metadata_count": null,
+  "created_utc": "2026-10-24T22:35:53.435010+00:00"
+}

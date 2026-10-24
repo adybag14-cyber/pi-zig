@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\original\\build.zig",
+    "bytes": 556915,
+    "sha256": "53162A0B9E7F297B245EE10D622AC9090DE94920B5D2057BD2AC4881A191679D"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1031,
+    "sha256": "AAADE15854A028C0738ED1094AC21DAEF36EFCCA639604C8B77CDED73C0A27FE"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 557946,
+    "sha256": "749EFC3533404393360AB5D4704F773E3C18AD6CAAEE5833832F63E2F5E53053"
+  },
+  "anchor": "    const module_execution_state_tests = b.addTest(.{\n",
+  "addition_bytes": 1031,
+  "raw_inverse_exact": true,
+  "composition": "Apply only this additive insertion to a later Root-selected build. The standalone projected build is pinned to35790.",
+  "target": "build-native-sdk-settings-diagnostics",
+  "filter": "native settings diagnostics",
+  "default_installed_artifacts": [
+    "test.exe",
+    "test.pdb"
+  ],
+  "actual_metadata_count": null,
+  "native_execution": false
+}

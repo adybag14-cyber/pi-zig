@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\original\\build.zig",
+    "bytes": 550798,
+    "sha256": "4FC880853D3B268E38DA1D9B05B60590384696B0005820F66A9FA70D2747440C"
+  },
+  "output": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 552077,
+    "sha256": "E088657D3EF9182767D5DFB1EBC59473A1C9B78970B7AE4CB33045360BD7675A"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1279,
+    "sha256": "805FD415F48AB663E3E6CBC59E65E4E55DA6431E0C4A174E0B4E5DC590A94C03"
+  },
+  "byte_offset": 494083,
+  "anchor_text": "    // Genuine shared Node argument errors and actual rest/super controls.\n",
+  "anchor_count": 1,
+  "complete_raw_inverse": true,
+  "all_other_bytes_unchanged": true,
+  "insertion_only_for_future_composition": true
+}

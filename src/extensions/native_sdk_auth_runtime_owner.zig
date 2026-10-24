@@ -84,6 +84,11 @@ pub const Owner = struct {
     pub fn createProjectTrustResolver(self: *Owner) !c.JSValue {
         return projectTrustResolutionEntry(self);
     }
+    /// Complete private original Main option/path helpers using the same
+    /// authenticated native provider graph. The runtimeFactory remains separate.
+    pub fn createMainRuntimeHelpers(self: *Owner) !c.JSValue {
+        return mainRuntimeHelpersEntry(self);
+    }
     /// Actual Source AuthStorage.inMemory(), without a File backend substitute
     /// or fabricated resolver. Its genuine module dependencies already exist.
     pub fn inMemory(self: *Owner) !c.JSValue {
@@ -228,6 +233,39 @@ fn projectTrustResolutionBody(self: *Owner, scope: *Scope) !c.JSValue {
         .configuration = configuration, .emit_project_trust_event = event,
         .settings_defaults = defaults, .trust_manager = manager,
     });
+}
+
+fn mainRuntimeHelpersEntry(self: *Owner) !c.JSValue {
+    const engine = self.engine;
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    try self.check();
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    var scope: Scope = .{ .engine = engine };
+    const value = completion.finishValue(&scope, mainRuntimeHelpersBody(self, &scope)) catch |err|
+        return engine.checked(engine.leaveNativeInvocation(&invocation, @import("native_sdk.zig").fail(engine, err)));
+    return engine.checked(engine.leaveNativeInvocation(&invocation, value));
+}
+fn mainRuntimeHelpersBody(self: *Owner, scope: *Scope) !c.JSValue {
+    const engine = scope.engine;
+    const o: Ops = .{ .scope = scope };
+    // Root all expected identities before carrier Gets can retire this handle.
+    const imports = try o.own(c.JS_DupValue(engine.context, self.runtime_imports));
+    const expected_imports = try o.own(c.JS_DupValue(engine.context,
+        try installed(engine, "pi-native:sdk-runtime-imports-native-zig")));
+    const expected_platform = try o.own(c.JS_DupValue(engine.context,
+        try installed(engine, "pi-native:actual-sdk-filesystem-platform")));
+    const expected_paths = try o.own(c.JS_DupValue(engine.context,
+        try installed(engine, "pi-private:actual-sdk-path-utilities")));
+    if (!scope.equal(imports, expected_imports)) return error.ActualMainRuntimeNamespaceChanged;
+    const platform = try o.get(imports, "platform");
+    if (!scope.equal(platform, expected_platform)) return error.ActualMainPlatformNamespaceChanged;
+    const paths = try o.get(platform, "pathUtilities");
+    if (!scope.equal(paths, expected_paths)) return error.ActualMainPathUtilitiesChanged;
+    // No self access after the first guest Get. Helpers capture named members
+    // of the actual imported owners once, preserving legitimate member changes.
+    return @import("native_sdk_main_runtime_helpers.zig").create(engine, paths);
 }
 
 fn valueEntry(self: *Owner, in_memory: bool) !c.JSValue {

@@ -1,0 +1,141 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "root_accepted_target_primitive_String_symbol_hook_source",
+  "candidate_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\source-intake.json",
+    "bytes": 13082,
+    "sha256": "8FCDAEC1781DA8CD67B0C62EB8900053ED1523A4352A6D14A19715E1945B9025"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-gap-assessment\\quickjs-string-primitive-hooks-independent-source-peer-20261024.json",
+    "bytes": 6783,
+    "sha256": "B894DBA3AA700EE4446D20FD2F9E86B4731EDDBD04A17F7156FB939FACA66939"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\source-diff.patch",
+    "bytes": 33136,
+    "sha256": "53394781AE90F4802D5140363F8509F564449FA3B773E724242CDEB3C504BD0B"
+  },
+  "changes": [
+    {
+      "destination_relative_path": "vendor/quickjs/quickjs.c",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409692,
+        "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409752,
+        "sha256": "4ED63B340928E1469098889C48B4802328D83174471A3DDF2B328D53A60915C7"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_vm_string_primitive_hooks_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\projected\\src\\native_vm_string_primitive_hooks_test.zig",
+        "bytes": 29827,
+        "sha256": "52159C624BF8ABEC020C03549D11EE8AC69B300062F9FB82D9B7642274E6EA28"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\original\\build.zig",
+        "bytes": 556915,
+        "sha256": "53162A0B9E7F297B245EE10D622AC9090DE94920B5D2057BD2AC4881A191679D"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 557988,
+        "sha256": "FC661A4509EAB1AA09890045A8C25AAF3B2354146EB0577740FA1B860C390483"
+      }
+    }
+  ],
+  "source_inverses": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\c-finite-source-inverses.json",
+    "bytes": 2694,
+    "sha256": "57821026F710C1270303F475B7DE564EABFF61A4CD1C2D23DADDE648A733FA37"
+  },
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1073,
+    "sha256": "DAF51C9514844764CE6F9D7BFF9DE5A132E903D62AB0ECA944F81810F346C48A"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1211,
+    "sha256": "BFC50281D829F1269D87ACC084438108A6AF9C081B3F92AC7B8645F77F539B84"
+  },
+  "authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\source-authority-and-version-comparison.json",
+    "bytes": 26079,
+    "sha256": "952852F332362319E0872CE1933B6258801B522A0400EC8148692792B68A054A"
+  },
+  "adjacent_unselected_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\adjacent-string-hook-gate-inventory.json",
+    "bytes": 2609,
+    "sha256": "313A6B9DD12CFC307008D02489EEA78BDF6BF24382ABB88EBB02FD690A565B40"
+  },
+  "native_dependency_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2409752,
+      "sha256": "4ED63B340928E1469098889C48B4802328D83174471A3DDF2B328D53A60915C7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 117849,
+      "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+    }
+  ],
+  "verification": {
+    "unique_pinned_versions": 52,
+    "exact_C_guard_hunks": 2,
+    "C_intermediates_and_full_reverse_inverse": true,
+    "other_C_bytes_unchanged": true,
+    "public_header_and_ABI_unchanged": true,
+    "six_whole_V8_files_equal_between_exact_versions": true,
+    "all12_authority_slices_and_tag_commit_chain_exact": true,
+    "all3_whole_patch_targets_reconstructed": true,
+    "direct_imports": 2,
+    "standard_packages": 1,
+    "build_insertion_bytes": 1073,
+    "source_declarations": 36,
+    "ordinary_controls": 32,
+    "genuine_native_fatal_controls": 4,
+    "git_apply_check_exit": 0,
+    "Main_clean": true
+  },
+  "Root_semantic_review": [
+    "Read both complete changed C function bodies and unchanged js_is_regexp/global flags functions, primitive property getter ownership and JS_CallFree.",
+    "Read complete 29827-byte test root and all36 control bodies, using fresh actual Engine, real primitive prototype hooks, and existing actual native fatal producer/recorded identity verifier.",
+    "Read pinned V8 symbol dispatch, split and replace call sites, complete replaceAll, and protector invalidation. Official24.13 def0 and retained24.14 f657 relevant full files match.",
+    "Nullish receiver rejects first; only non-nullish search/separator lookup expands; getters and calls retain original primitive this and uncoerced arguments. Primitive replaceAll does not observe Symbol.match or flags. Object global validation remains before replacement method lookup.",
+    "Existing method ownership, self deletion/reentry, noncallable/abrupt completion, fallback and actual native fatal boundaries remain unchanged. Adjacent match/search/matchAll differences are expressly unselected."
+  ],
+  "fresh_QuickJS_compile_required": true,
+  "scope_limits": {
+    "Main_mutated": false,
+    "packet_mutated": false,
+    "candidate_source_executed": false,
+    "parser_or_compiler_executed": false,
+    "Node_or_reference_execution": false,
+    "actual_metadata_count": null,
+    "runtime_result": null,
+    "native_qualification": false,
+    "product_qualification": false,
+    "required_next_gate": "Root-owned fresh QuickJS rebuild from C 4ED63B34, then fresh actual metadata and strict runtime; source review alone is not execution evidence."
+  },
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "actual_metadata_count": null,
+  "created_utc": "2026-10-24T22:51:47.433769+00:00"
+}

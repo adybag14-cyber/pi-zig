@@ -1,0 +1,243 @@
+{
+  "schema": "quickjs-string-primitive-hooks-source-intake-v1",
+  "created_utc": "2026-10-24T22:49:38.221136+00:00",
+  "scope": "Exact pinned Node/V8 non-nullish primitive symbol dispatch for split and shared replace/replaceAll",
+  "status": "source_only_pending_independent_review_and_fresh_native_qualification",
+  "observed_main_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "main_porcelain_empty": true,
+  "changes": [
+    {
+      "destination_relative_path": "vendor/quickjs/quickjs.c",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409692,
+        "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409752,
+        "sha256": "4ED63B340928E1469098889C48B4802328D83174471A3DDF2B328D53A60915C7"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_vm_string_primitive_hooks_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\projected\\src\\native_vm_string_primitive_hooks_test.zig",
+        "bytes": 29827,
+        "sha256": "52159C624BF8ABEC020C03549D11EE8AC69B300062F9FB82D9B7642274E6EA28"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\original\\build.zig",
+        "bytes": 556915,
+        "sha256": "53162A0B9E7F297B245EE10D622AC9090DE94920B5D2057BD2AC4881A191679D"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 557988,
+        "sha256": "FC661A4509EAB1AA09890045A8C25AAF3B2354146EB0577740FA1B860C390483"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\source-diff.patch",
+    "bytes": 33136,
+    "sha256": "53394781AE90F4802D5140363F8509F564449FA3B773E724242CDEB3C504BD0B"
+  },
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1073,
+    "sha256": "DAF51C9514844764CE6F9D7BFF9DE5A132E903D62AB0ECA944F81810F346C48A"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1211,
+    "sha256": "BFC50281D829F1269D87ACC084438108A6AF9C081B3F92AC7B8645F77F539B84"
+  },
+  "source_inverses": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\c-finite-source-inverses.json",
+    "bytes": 2694,
+    "sha256": "57821026F710C1270303F475B7DE564EABFF61A4CD1C2D23DADDE648A733FA37"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\README.md",
+    "bytes": 1756,
+    "sha256": "40C70234BCDBB8C7E298005FADFF58434E33189D9DC0E54E9705164CDC575708"
+  },
+  "static_checks": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\static-source-checks.json",
+    "bytes": 833,
+    "sha256": "50C425AC6681FDBA9AF3AAF2AEAE9219705FCD311509DCEDA4CA3369F59FEB0E"
+  },
+  "retained_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\source-authority-and-version-comparison.json",
+    "bytes": 26079,
+    "sha256": "952852F332362319E0872CE1933B6258801B522A0400EC8148692792B68A054A"
+  },
+  "adjacent_unselected_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\adjacent-string-hook-gate-inventory.json",
+    "bytes": 2609,
+    "sha256": "313A6B9DD12CFC307008D02489EEA78BDF6BF24382ABB88EBB02FD690A565B40"
+  },
+  "direct_import_resolutions": [
+    {
+      "importer": "src/native_vm_string_primitive_hooks_test.zig",
+      "line": 4,
+      "literal": "extensions/native_sdk_session_locals.zig",
+      "target": "src/extensions/native_sdk_session_locals.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_session_locals.zig",
+        "bytes": 9136,
+        "sha256": "2E530FC843E99654A3F72F05207E04A5F77E3713D7D9D19B26117A46D7EC9064"
+      }
+    },
+    {
+      "importer": "src/native_vm_string_primitive_hooks_test.zig",
+      "line": 7,
+      "literal": "native_sdk_initial_model_retirement_controls.zig",
+      "target": "src/native_sdk_initial_model_retirement_controls.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_initial_model_retirement_controls.zig",
+        "bytes": 16159,
+        "sha256": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+      }
+    }
+  ],
+  "standard_package_imports": [
+    {
+      "importer": "src/native_vm_string_primitive_hooks_test.zig",
+      "line": 3,
+      "literal": "std"
+    }
+  ],
+  "literal_embeds": [],
+  "native_dependency_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2409752,
+      "sha256": "4ED63B340928E1469098889C48B4802328D83174471A3DDF2B328D53A60915C7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 117849,
+      "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+    }
+  ],
+  "current_owner_dependencies": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_values.zig",
+      "bytes": 13939,
+      "sha256": "0B1BB422A9C89E7CE8146B32413B27E42D8DFB65285C3245B89EED8AF222022E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_guest_operation.zig",
+      "bytes": 7009,
+      "sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+      "bytes": 15176,
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_session_locals.zig",
+      "bytes": 9136,
+      "sha256": "2E530FC843E99654A3F72F05207E04A5F77E3713D7D9D19B26117A46D7EC9064"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_initial_model_retirement_controls.zig",
+      "bytes": 16159,
+      "sha256": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+    }
+  ],
+  "current_intake_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-six-packet-five-root-source-intake-acceptance-20261024.json",
+    "bytes": 2959,
+    "sha256": "728033A08C592CF7239A7F176CDF9DD091A79083AA542DD3B1B382FECAD2C542"
+  },
+  "controls": {
+    "target": "build-native-vm-string-primitive-hooks",
+    "test_root": "src/native_vm_string_primitive_hooks_test.zig",
+    "filter": "native primitive string hooks",
+    "artifact_stem": "test",
+    "pdb_stem": "test",
+    "source_declaration_count": 36,
+    "names": [
+      "native primitive string hooks string primitive dispatch preserves strict receiver and uncoerced arguments",
+      "native primitive string hooks primitive accessor runs once with original primitive receiver",
+      "native primitive string hooks integer floating signed zero and NaN separators use Number prototype",
+      "native primitive string hooks both Boolean primitive separators dispatch without truthiness filtering",
+      "native primitive string hooks BigInt primitive separator preserves original BigInt receiver",
+      "native primitive string hooks Symbol primitive hook precedes forbidden Symbol string conversion",
+      "native primitive string hooks Object prototype inherited hook is visible through primitive prototypes",
+      "native primitive string hooks splitter result identity is returned without array or string conversion",
+      "native primitive string hooks primitive hook getter abrupt completion precedes input and limit conversion",
+      "native primitive string hooks noncallable primitive hook throws before later coercions",
+      "native primitive string hooks splitter abrupt completion preserves exact thrown value",
+      "native primitive string hooks null and undefined hook values preserve fallback conversion order",
+      "native primitive string hooks nullish separators bypass prototype lookup and retain fallback results",
+      "native primitive string hooks nullish input rejects before primitive hook lookup",
+      "native primitive string hooks zero limit remains an uncoerced argument on the hook path",
+      "native primitive string hooks self deleting getter and returned method retain their active lifetimes",
+      "native primitive string hooks reentrant primitive getter retains separate outer arguments",
+      "native primitive string hooks callable Proxy receives primitive receiver and exact argument pair",
+      "native primitive string hooks sloppy splitter receives normal primitive receiver boxing",
+      "native primitive string hooks ordinary fallback object hooks and RegExp split retain behavior",
+      "native primitive string hooks replace and replaceAll preserve every primitive kind and uncoerced arguments",
+      "native primitive string hooks replace accessor reads once with exact primitive receiver before coercions",
+      "native primitive string hooks replaceAll primitive IsRegExp does not observe match or flags",
+      "native primitive string hooks replace nullish receivers and searches preserve original guard ordering",
+      "native primitive string hooks replace hook getter and noncallable failures precede input conversion",
+      "native primitive string hooks replace hook returns arbitrary identity and preserves exact abrupt value",
+      "native primitive string hooks replace nullish hook fallback preserves coercion order and occurrence semantics",
+      "native primitive string hooks replaceAll retains RegExp global validation before replace lookup",
+      "native primitive string hooks replace self deleting getter retains current callable and later fallback",
+      "native primitive string hooks replace reentrant accessor and callable Proxy retain independent argument pairs",
+      "native primitive string hooks timer trace label primitive backslash and quote replacements observe both live hooks",
+      "native primitive string hooks replace ordinary RegExp object and sloppy primitive behavior remain intact",
+      "native primitive string hooks split primitive getter preserves actual native fatal before coercion",
+      "native primitive string hooks split primitive method preserves actual native fatal through owned call",
+      "native primitive string hooks replaceAll primitive getter preserves actual native fatal before coercion",
+      "native primitive string hooks replace primitive method preserves actual native fatal through owned call"
+    ],
+    "actual_metadata_count": null,
+    "runtime_result": null,
+    "ordinary_controls": 32,
+    "actual_native_fatal_controls": 4
+  },
+  "claims": {
+    "Main_mutated": false,
+    "prior_packets_mutated": false,
+    "Engine_fields_changed": false,
+    "new_C_ABI": false,
+    "header_changed": false,
+    "full_String_compatibility": false,
+    "timer_bootstrap_complete": false,
+    "native_qualification": false,
+    "runtime_qualification": false,
+    "product_acceptance": false
+  },
+  "candidate_executed": false,
+  "native_execution": false,
+  "not_executed": [
+    "Zig parser",
+    "compiler",
+    "native tests",
+    "Node/reference capture",
+    "source generators",
+    "auditors",
+    "constructors"
+  ],
+  "required_future_native_owner": "Fresh QuickJS library from the selected C, then Root-owned fresh BuildQuery/metadata and strict runtime."
+}

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\original\\build.zig",
+    "bytes": 556915,
+    "sha256": "53162A0B9E7F297B245EE10D622AC9090DE94920B5D2057BD2AC4881A191679D"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 557953,
+    "sha256": "763ED27D3708A095B2E304B3D7B8BB87AB44FC467C20505A274CCD28EB7CB6F6"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1038,
+    "sha256": "DAD2694D136A2ACADAE5B1CBF52AEA5228612A40922D3A9510DD5995856796A2"
+  },
+  "anchor": "    const project_trust_resolution_tests = b.addTest(.{\n",
+  "before_anchor": true,
+  "exact_raw_inverse": true,
+  "compose_only_insertion": true,
+  "build_step": "build-native-sdk-main-runtime-helpers",
+  "filter": "native Main runtime helpers",
+  "artifact_stem": "test",
+  "windows_artifacts": [
+    "test.exe",
+    "test.pdb"
+  ],
+  "execution_step_added": false
+}

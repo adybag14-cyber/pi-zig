@@ -88,6 +88,12 @@ pub const Owner = struct {
         try self.check();
         return if (self.auth) |*value| value.createProjectTrustResolver() else error.ActualSdkApplicationAuthRetired;
     }
+    /// Genuine original Main options and path helpers over the retained Auth
+    /// provider graph; no runtimeFactory or complete Main namespace is fabricated.
+    pub fn createMainRuntimeHelpers(self: *Owner) !c.JSValue {
+        try self.check();
+        return if (self.auth) |*value| value.createMainRuntimeHelpers() else error.ActualSdkApplicationAuthRetired;
+    }
     /// Explicit Source mode transitions. Call only at the actual noninteractive
     /// or RPC transition, never infer takeover from TTY state or a mode boolean.
     pub fn takeOverStdout(self: *Owner) !void { return stdoutTransition(self, false); }

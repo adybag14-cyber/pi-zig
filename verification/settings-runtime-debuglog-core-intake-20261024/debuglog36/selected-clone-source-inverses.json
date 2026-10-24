@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "status": "source_only_pristine_ordinary_debuglog_captures",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\original\\src\\extensions\\native_clone_intrinsics.zig",
+    "bytes": 7170,
+    "sha256": "ACD65CF7EDD3FD885F91762EACEE54822026F4238272BA651203559AC2419D77"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+    "bytes": 9712,
+    "sha256": "1419707D2D20C08AFA83EFDD97937BA7604B04BBCA587D92F200A395A9A7F53B"
+  },
+  "edits": [
+    {
+      "offset": 4167,
+      "before": "            if (comptime @import(\"std\").mem.eql(u8, name, \"Array\"))\n                try put(context, result, \"Array.some\", try checked(c.JS_GetPropertyStr(context, prototype, \"some\")));",
+      "after": "            if (comptime @import(\"std\").mem.eql(u8, name, \"Array\")) {\n                try put(context, result, \"Array.some\", try checked(c.JS_GetPropertyStr(context, prototype, \"some\")));\n                // Exact primordial uncurryThis: Function.prototype.call.bind(fn).\n                // Bind while the realm is pristine, before guest code can change\n                // Function metadata, Array iteration or the iterator prototype.\n                const symbol = try checked(c.JS_GetIteratorSymbol(context));\n                defer c.JS_FreeValue(context, symbol);\n                const atom = c.JS_ValueToAtom(context, symbol);\n                if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;\n                defer c.JS_FreeAtom(context, atom);\n                const iterate = try checked(c.JS_GetProperty(context, prototype, atom));\n                defer c.JS_FreeValue(context, iterate);\n                const array = try checked(c.JS_NewArray(context));\n                defer c.JS_FreeValue(context, array);\n                const iterator = try checked(c.JS_Call(context, iterate, array, 0, null));\n                defer c.JS_FreeValue(context, iterator);\n                const next = try checked(c.JS_GetPropertyStr(context, iterator, \"next\"));\n                defer c.JS_FreeValue(context, next);\n                const function_constructor = try checked(c.JS_GetPropertyStr(context, global, \"Function\"));\n                defer c.JS_FreeValue(context, function_constructor);\n                const function_prototype = try checked(c.JS_GetPropertyStr(context, function_constructor, \"prototype\"));\n                defer c.JS_FreeValue(context, function_prototype);\n                const call_method = try checked(c.JS_GetPropertyStr(context, function_prototype, \"call\"));\n                defer c.JS_FreeValue(context, call_method);\n                const bind_method = try checked(c.JS_GetPropertyStr(context, function_prototype, \"bind\"));\n                defer c.JS_FreeValue(context, bind_method);\n                var factory_args = [_]c.JSValue{iterate};\n                var next_args = [_]c.JSValue{next};\n                try put(context, result, \"Array.iterate.uncurried\",\n                    try checked(c.JS_Call(context, bind_method, call_method, 1, &factory_args)));\n                try put(context, result, \"Array.next.uncurried\",\n                    try checked(c.JS_Call(context, bind_method, call_method, 1, &next_args)));\n            }",
+      "input_sha256": "ACD65CF7EDD3FD885F91762EACEE54822026F4238272BA651203559AC2419D77",
+      "output_sha256": "2484A531886AECBE484778C58E3378D962E3E79BB099A8E48E4D961A67C8C2FD"
+    },
+    {
+      "offset": 6702,
+      "before": "            try put(context, result, \"Object.freeze\", try checked(c.JS_GetPropertyStr(context, constructor, \"freeze\")));",
+      "after": "            try put(context, result, \"Object.defineProperty\", try checked(c.JS_GetPropertyStr(context, constructor, \"defineProperty\")));\n            try put(context, result, \"Object.freeze\", try checked(c.JS_GetPropertyStr(context, constructor, \"freeze\")));",
+      "input_sha256": "2484A531886AECBE484778C58E3378D962E3E79BB099A8E48E4D961A67C8C2FD",
+      "output_sha256": "8F72E3135752BC1D05A14F19E2BF20BF28EA32AA913B844927408EDB89048E12"
+    },
+    {
+      "offset": 7839,
+      "before": "                try put(context, result, \"String.toLowerCase\", try checked(c.JS_GetPropertyStr(context, prototype, \"toLowerCase\")));",
+      "after": "                try put(context, result, \"String.toLowerCase\", try checked(c.JS_GetPropertyStr(context, prototype, \"toLowerCase\")));\n                try put(context, result, \"String.toUpperCase\", try checked(c.JS_GetPropertyStr(context, prototype, \"toUpperCase\")));",
+      "input_sha256": "8F72E3135752BC1D05A14F19E2BF20BF28EA32AA913B844927408EDB89048E12",
+      "output_sha256": "1419707D2D20C08AFA83EFDD97937BA7604B04BBCA587D92F200A395A9A7F53B"
+    }
+  ],
+  "complete_raw_inverse": true,
+  "pristine_uncurry_call_and_bind_used_before_guest": true,
+  "all_prior_capture_keys_preserved": true,
+  "native_execution": false,
+  "Main_mutated": false
+}

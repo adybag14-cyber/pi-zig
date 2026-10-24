@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "scope": "Single genuine Environment resource-array owned acquisition; existing lazy owner and all native stack methods remain byte-exact",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\original\\src\\extensions\\native_node_callback_scope.zig",
+    "bytes": 41033,
+    "sha256": "01B48BFFDD03C6A80FA2F8925D8708182FD8E3BAE097F7BDE909691F2B348155"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\src\\extensions\\native_node_callback_scope.zig",
+    "bytes": 41656,
+    "sha256": "B4E4524BCA2BE309E234C3D98E762D279E9FDCDDB256A7D0BC9B8AC8F197A4D0"
+  },
+  "edits": [
+    {
+      "byte_offset": 21524,
+      "before": "",
+      "after": "    /// Owned acquisition of the genuine Environment execution-resource array.\n    /// Native and JS stack owners share this exact array; no snapshot is made.\n    pub fn acquireExecutionAsyncResources(self: *Environment) !c.JSValue {\n        const engine = try self.requireEngine();\n        _ = self.retain();\n        defer self.release();\n        return a.expression(engine, acquireResourcesBody, .{self});\n    }\n    fn acquireResourcesBody(s: *LocalScope, self: *Environment) !c.JSValue {\n        try s.pending();\n        _ = try self.requireEngine();\n        return a.duplicate(s.engine, try self.jsResources(s));\n    }\n",
+      "inserted_bytes": 623,
+      "inserted_sha256": "BD85FA678EDC850295E4A46538788F21F343EAE55673B5C579F8D559532132A6"
+    }
+  ],
+  "complete_raw_inverse": true,
+  "Main_mutated": false,
+  "native_execution": false
+}

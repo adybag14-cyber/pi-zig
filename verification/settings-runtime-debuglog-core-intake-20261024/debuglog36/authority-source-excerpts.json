@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "source_revision": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "excerpts": [
+    {
+      "role": "original imports and deliberate uninitialized-state comment",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+        "bytes": 12596,
+        "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+      },
+      "byte_start": 0,
+      "byte_end_exclusive": 740,
+      "bytes": 740,
+      "sha256": "F7E673CEAD200A8E05A145DEB226C825CD6C894DEC8798F91D3899403FE5AB8C",
+      "line_start": 1,
+      "line_end_inclusive": 26,
+      "text": "'use strict';\n\nconst {\n  MathFloor,\n  Number,\n  NumberPrototypeToFixed,\n  ObjectDefineProperty,\n  RegExp,\n  RegExpPrototypeExec,\n  SafeArrayIterator,\n  SafeMap,\n  StringPrototypePadStart,\n  StringPrototypeSplit,\n  StringPrototypeToLowerCase,\n  StringPrototypeToUpperCase,\n} = primordials;\nconst {\n  CHAR_LOWERCASE_B: kTraceBegin,\n  CHAR_LOWERCASE_E: kTraceEnd,\n  CHAR_LOWERCASE_N: kTraceInstant,\n} = require('internal/constants');\nconst { inspect, format, formatWithOptions } = require('internal/util/inspect');\nconst { getCategoryEnabledBuffer, trace } = internalBinding('trace_events');\n\n// `debugImpls` and `testEnabled` are deliberately not initialized so any call\n// to `debuglog()` before `initializeDebugEnv()` is called will throw.\n"
+    },
+    {
+      "role": "complete selected ordinary initializeDebugEnv warning lazy colors implementation and debuglog bodies",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+        "bytes": 12596,
+        "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+      },
+      "byte_start": 740,
+      "byte_end_exclusive": 3994,
+      "bytes": 3254,
+      "sha256": "EE83E35CE32905F73EEACEF22F06C4265C10C26DFC177A22480B2BE12D3E3372",
+      "line_start": 27,
+      "line_end_inclusive": 138,
+      "text": "let debugImpls;\nlet testEnabled;\n\n\n// `debugEnv` is initial value of process.env.NODE_DEBUG\nfunction initializeDebugEnv(debugEnv) {\n  debugImpls = { __proto__: null };\n  if (debugEnv) {\n    // This is run before any user code, it's OK not to use primordials.\n    debugEnv = debugEnv.replace(/[|\\\\{}()[\\]^$+?.]/g, '\\\\$&')\n      .replaceAll('*', '.*')\n      .replaceAll(',', '$|^');\n    const debugEnvRegex = new RegExp(`^${debugEnv}$`, 'i');\n    testEnabled = (str) => RegExpPrototypeExec(debugEnvRegex, str) !== null;\n  } else {\n    testEnabled = () => false;\n  }\n}\n\n// Emits warning when user sets\n// NODE_DEBUG=http or NODE_DEBUG=http2.\nfunction emitWarningIfNeeded(set) {\n  if ('HTTP' === set || 'HTTP2' === set) {\n    process.emitWarning('Setting the NODE_DEBUG environment variable ' +\n      'to \\'' + StringPrototypeToLowerCase(set) + '\\' can expose sensitive ' +\n      'data (such as passwords, tokens and authentication headers) ' +\n      'in the resulting log.');\n  }\n}\n\nconst noop = () => {};\n\nlet utilColors;\nfunction lazyUtilColors() {\n  utilColors ??= require('internal/util/colors');\n  return utilColors;\n}\n\nfunction debuglogImpl(enabled, set) {\n  if (debugImpls[set] === undefined) {\n    if (enabled) {\n      const pid = process.pid;\n      emitWarningIfNeeded(set);\n      debugImpls[set] = function debug(...args) {\n        const colors = lazyUtilColors().shouldColorize(process.stderr);\n        const msg = formatWithOptions({ colors }, ...args);\n        const coloredPID = inspect(pid, { colors });\n        process.stderr.write(format('%s %s: %s\\n', set, coloredPID, msg));\n      };\n    } else {\n      debugImpls[set] = noop;\n    }\n  }\n  return debugImpls[set];\n}\n\n// debuglogImpl depends on process.pid and process.env.NODE_DEBUG,\n// so it needs to be called lazily in top scopes of internal modules\n// that may be loaded before these run time states are allowed to\n// be accessed.\nfunction debuglog(set, cb) {\n  function init() {\n    set = StringPrototypeToUpperCase(set);\n    enabled = testEnabled(set);\n  }\n  let debug = (...args) => {\n    init();\n    // Only invokes debuglogImpl() when the debug function is\n    // called for the first time.\n    debug = debuglogImpl(enabled, set);\n    if (typeof cb === 'function') {\n      ObjectDefineProperty(debug, 'enabled', {\n        __proto__: null,\n        get() {\n          return enabled;\n        },\n        configurable: true,\n        enumerable: true,\n      });\n      cb(debug);\n    }\n    switch (args.length) {\n      case 1: return debug(args[0]);\n      case 2: return debug(args[0], args[1]);\n      default: return debug(...new SafeArrayIterator(args));\n    }\n  };\n  let enabled;\n  let test = () => {\n    init();\n    test = () => enabled;\n    return enabled;\n  };\n  const logger = (...args) => {\n    // Improve performance when debug is disabled, avoid calling `new SafeArrayIterator(args)`\n    if (enabled === false) return;\n    switch (args.length) {\n      case 1: return debug(args[0]);\n      case 2: return debug(args[0], args[1]);\n      default: return debug(...new SafeArrayIterator(args));\n    }\n  };\n  ObjectDefineProperty(logger, 'enabled', {\n    __proto__: null,\n    get() {\n      return test();\n    },\n    configurable: true,\n    enumerable: true,\n  });\n  return logger;\n}\n"
+    },
+    {
+      "role": "actual primordial uncurryThis capture",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\cjs-fs-inputs-sourceonly-20261018\\authority\\primordials.js.txt",
+        "bytes": 21700,
+        "sha256": "6C9FC969AABDB7403F89EB44545A5AA0E90BEC8385C71D4B2F70F54A0A8591F8"
+      },
+      "byte_start": 627,
+      "byte_end_exclusive": 982,
+      "bytes": 355,
+      "sha256": "88CF2B7504C9EA49581ED73B28464FF5A568E69BF5B467A3D66B1F5407C0DE3A",
+      "line_start": 19,
+      "line_end_inclusive": 25,
+      "text": "// `uncurryThis` is equivalent to `func => Function.prototype.call.bind(func)`.\n// It is using `bind.bind(call)` to avoid using `Function.prototype.bind`\n// and `Function.prototype.call` after it may have been mutated by users.\nconst { apply, bind, call } = Function.prototype;\nconst uncurryThis = bind.bind(call);\nprimordials.uncurryThis = uncurryThis;\n\n"
+    },
+    {
+      "role": "complete SafeIterator and SafeArrayIterator admission",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\cjs-fs-inputs-sourceonly-20261018\\authority\\primordials.js.txt",
+        "bytes": 21700,
+        "sha256": "6C9FC969AABDB7403F89EB44545A5AA0E90BEC8385C71D4B2F70F54A0A8591F8"
+      },
+      "byte_start": 9137,
+      "byte_end_exclusive": 9684,
+      "bytes": 547,
+      "sha256": "1B6D923901EF71684DC53EE046F78F888522CC08EC80D6C3CFD13D70DB0A4231",
+      "line_start": 328,
+      "line_end_inclusive": 349,
+      "text": "const createSafeIterator = (factory, next) => {\n  class SafeIterator {\n    constructor(iterable) {\n      this._iterator = factory(iterable);\n    }\n    next() {\n      return next(this._iterator);\n    }\n    [SymbolIterator]() {\n      return this;\n    }\n  }\n  ObjectSetPrototypeOf(SafeIterator.prototype, null);\n  ObjectFreeze(SafeIterator.prototype);\n  ObjectFreeze(SafeIterator);\n  return SafeIterator;\n};\n\nprimordials.SafeArrayIterator = createSafeIterator(\n  primordials.ArrayPrototypeSymbolIterator,\n  primordials.ArrayIteratorPrototypeNext,\n);\n"
+    }
+  ],
+  "byte_ranges_authoritative": true,
+  "native_or_Node_execution": false
+}

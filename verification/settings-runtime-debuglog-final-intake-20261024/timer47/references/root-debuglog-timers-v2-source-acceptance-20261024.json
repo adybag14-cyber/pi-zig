@@ -1,0 +1,230 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "root_accepted_original_debuglog_timer_v2_source_with_exact_VM_dependency",
+  "candidate_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024-v2\\source-intake.json",
+    "bytes": 49882,
+    "sha256": "D9AE18D80490EB8605B09BC8AB57111794987594DAAF79AF4E9C51B76ABB2329"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-gap-assessment\\debuglog-timers-v2-independent-source-peer-20261024.json",
+    "bytes": 6955,
+    "sha256": "D9C91CCF41CD1F90D0DFD861A8226CB7FED72ACD14BD2D84875AF773BA90FAFC"
+  },
+  "required_VM_Root_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-primitive-string-hooks-source-acceptance-20261024.json",
+    "bytes": 7550,
+    "sha256": "1F5DF7C6821230A5B4FAFE51539F045CEEFB85D5FAE2C6B528F5EAD0DABED541"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024-v2\\debuglog-timers-successor-v2.patch",
+    "bytes": 115784,
+    "sha256": "BAC93C91162246A357BBC045CB95862A09713090ECBCB3D805CB1C2BF7E941B9"
+  },
+  "changes": [
+    {
+      "destination_relative_path": "src/extensions/native_clone_intrinsics.zig",
+      "operation": "replace_exact",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+        "bytes": 9712,
+        "sha256": "1419707D2D20C08AFA83EFDD97937BA7604B04BBCA587D92F200A395A9A7F53B"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+        "bytes": 10419,
+        "sha256": "D5A1B80E1358B3976C6947D71023DDA19378FDBA99B491548AF08F81D97D3A3A"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_node_debuglog.zig",
+      "operation": "replace_exact",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog.zig",
+        "bytes": 28016,
+        "sha256": "2940F0D9B1E07456923198DB8E8C03C699A92C7F2994773C4DED1F121F949091"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog.zig",
+        "bytes": 29341,
+        "sha256": "35C9ED6C05FD5B3025ECDAD5B003E0DF4AE34F84E2C054A271C2A0FEE902058B"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_node_debuglog_format_time.zig",
+      "operation": "create_exact",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024-v2\\projected\\src\\extensions\\native_node_debuglog_format_time.zig",
+        "bytes": 6365,
+        "sha256": "FB7B7B055A45D30E401911C3E262613B02F1EA564CC7A48C6DF28F6C124241DB"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_node_debuglog_time.zig",
+      "operation": "create_exact",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog_time.zig",
+        "bytes": 10170,
+        "sha256": "B6B708D1492F6C38A9F9E0BA2389BFEFD0B32B2364BB907EF044BCA6B15EEEC3"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_node_debuglog_timers.zig",
+      "operation": "create_exact",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog_timers.zig",
+        "bytes": 20390,
+        "sha256": "1F041AEB433B786A102A5448A6C41AAD811B43F690A48A3D4D5EB5DEDA611D62"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_node_debuglog_timers_test.zig",
+      "operation": "create_exact",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024-v2\\projected\\src\\native_node_debuglog_timers_test.zig",
+        "bytes": 56593,
+        "sha256": "1CFB02C65E3052486A97412F18B4D55B934F4353357425C981D31491D8241CCC"
+      }
+    },
+    {
+      "destination_relative_path": "src/fixtures/native-node-debuglog-timers-reference.js",
+      "operation": "create_exact",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024-v2\\projected\\src\\fixtures\\native-node-debuglog-timers-reference.js",
+        "bytes": 13127,
+        "sha256": "7105D48D0DCFFDE824CDBD51AE320D47C92456233E8FEA6A5E020487F686E4E6"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace_exact",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\original\\build.zig",
+        "bytes": 556915,
+        "sha256": "53162A0B9E7F297B245EE10D622AC9090DE94920B5D2057BD2AC4881A191679D"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024-v2\\projected\\build.zig",
+        "bytes": 558284,
+        "sha256": "5985CC2957641104917C3710CA0EBB9E71A1981397C236EA177F1815D743311A"
+      }
+    }
+  ],
+  "source_inverses": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\source-inverses.json",
+      "bytes": 5270,
+      "sha256": "A60CFCD0F1E9C010F5B2D14ECC6D4D027AE3C039738F269D0140B5C50A5C69F1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024-v2\\v1-to-v2-source-inverses.json",
+      "bytes": 7473,
+      "sha256": "6C9441D82E37FB1A61B72097CE3BC54F6FB73AD999F43355A96DD8835ACC82D0"
+    }
+  ],
+  "original_reference": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024-v2\\literal-reference-source-proof.json",
+    "bytes": 1293,
+    "sha256": "8398B856D18C09ACBC1C664D4AD081799E142091877E95CEE79CA0D53CBFEAB3"
+  },
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024-v2\\build-insertion.txt",
+    "bytes": 1369,
+    "sha256": "35A126C86AB31F0AB051676B69F38B97FA0A21937B6044E242C06566434CDD45"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024-v2\\build-source-inverse.json",
+    "bytes": 1119,
+    "sha256": "8313968C3E914D97A3E91343409C59B05A222FDC63260BC594881233690057AA"
+  },
+  "compatibility_dependency": {
+    "packet": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\source-intake.json",
+      "bytes": 13082,
+      "sha256": "8FCDAEC1781DA8CD67B0C62EB8900053ED1523A4352A6D14A19715E1945B9025"
+    },
+    "required_source": {
+      "destination_relative_path": "vendor/quickjs/quickjs.c",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409752,
+        "sha256": "4ED63B340928E1469098889C48B4802328D83174471A3DDF2B328D53A60915C7"
+      },
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409692,
+        "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+      }
+    },
+    "finite_inverse": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\c-finite-source-inverses.json",
+      "bytes": 2694,
+      "sha256": "57821026F710C1270303F475B7DE564EABFF61A4CD1C2D23DADDE648A733FA37"
+    },
+    "unchanged_header": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 117849,
+      "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+    },
+    "exact_condition_changes": 2,
+    "required_behavior": [
+      "Non-nullish primitive separator @@split lookup from the pinned original Node/V8 target.",
+      "Non-nullish primitive searchValue @@replace lookup in replace and replaceAll, including original safeTraceLabel."
+    ],
+    "authority_roles": "The primary retained f657bb8 source declares Node 24.14.0; the official v24.13.0 def0bdf source independently preserves the same relevant primitive hook behavior. The separate VM packet records their exact ranges and provenance.",
+    "selection": "Required external source dependency; not another source target or duplicated C copy in this timer packet.",
+    "fresh_native_QuickJS_required": true,
+    "public_ABI_changed": false,
+    "candidate_executed": false
+  },
+  "verification": {
+    "unique_pinned_versions": 108,
+    "four_clone_hunks_full_raw_inverse": true,
+    "ordinary_debuglog_prefix_exact_with_append_bytes": 1325,
+    "all_four_v1_to_v2_raw_inverses": true,
+    "whole_eight_target_patch_exact": true,
+    "original_body_bytes": 11702,
+    "original_strict_prefix_bytes": 14,
+    "authority_byte_slices_verified": 9,
+    "preserved_original45_control_prefix": true,
+    "source_declarations": 47,
+    "direct_imports": 39,
+    "embeds": 1,
+    "package_occurrences": 16,
+    "build_insertion_bytes": 1369,
+    "installed_executable_stem": "native-node-debuglog-timers",
+    "cached_executable_and_PDB_stem": "test",
+    "Main_clean": true
+  },
+  "Root_semantic_review": [
+    "Read all6365-byte formatTime,10170-byte time,20390-byte timer owner,13127-byte original reference, all56593-byte test root including47 controls, complete clone finite hunks and ordinary-debuglog append.",
+    "Original numeric coercion/rounding and true lexical locals retained; primitive split result passes through one owned actual JS_ToObject before both indexed Gets; nullish values fail at the object pattern operation.",
+    "Time/timeEnd/timeLog preserve actual live label conversions, has/warn/get/set/delete/trace/hrtime order and two live replaceAll operations without extra coercion. Real installed process and original trace inputs are retained.",
+    "DebugWithTimer shares authenticated ordinary owner and actual SafeMap, captures trace named imports once in order, preserves per-call frames/callback/reentry and every-arrow init semantics. Live enabled byte/pid/stderr and safe extra iteration remain ordered.",
+    "Full native and original test fixture contexts use actual owners with explicitly controlled test clock/trace inputs. Fatal, ignored-result retirement, escaped-frame and cached owner reentry controls retain their original expectations.",
+    "v1 three held findings are resolved by exact primitive-hook VM source1F5D acceptance, single ToObject and strict original reference. No public namespace or missing production hrtime/trace producer is fabricated."
+  ],
+  "scope_limits": {
+    "next_minimal_genuine_supplier": "actual process_methods BindingData hrtimeBuffer and uv_hrtime callbacks plus complete original per_thread.js hrtime/hrtimeBigInt wrappers",
+    "tracing_boundary": "actual native controller/Agent/category pointer/clock/writer drafts exist but are not admitted; V8 Extras trace export and process bootstrap lifecycle remain explicit",
+    "assembly": "complete original private debuglog capture and actual initial NODE_DEBUG bootstrap before canonical Module timer/wrapModuleLoad wiring",
+    "remaining": [
+      "actual process.hrtime admission",
+      "genuine trace_events binding/VM operation and process lifecycle",
+      "complete internal/util/debuglog namespace and bootstrap",
+      "canonical Module suppliers and real runtime/session startup"
+    ]
+  },
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "actual_metadata_count": null,
+  "created_utc": "2026-10-24T22:52:47.240991+00:00"
+}

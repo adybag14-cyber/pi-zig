@@ -1,0 +1,396 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\model-resolver.ts",
+    "bytes": 25178,
+    "sha256": "882BCEA5D6CE5AE37D8D8C8A4B171E3F54B0FDDE981EE1CF14B7E83ED692BE38"
+  },
+  "accepted_native_owner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_factory_model.zig",
+    "bytes": 6718,
+    "sha256": "C5318978B99C8B0A008A719ED18D77DD756832CB9B794D136B39D1997851E803"
+  },
+  "accepted_runtime_fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\fixtures\\sdk-public-model-resolver-c268-source.mjs",
+    "bytes": 12327,
+    "sha256": "7EBCF86ACF57112104E4986EF2C3B9B03D6E55DBF243B156E37101E0AF90B1CA"
+  },
+  "original_map_source": "export const defaultModelPerProvider: Partial<Record<KnownProvider, string>> = {\n\t\"amazon-bedrock\": \"us.anthropic.claude-opus-4-6-v1\",\n\t\"ant-ling\": \"Ring-2.6-1T\",\n\tanthropic: \"claude-opus-4-8\",\n\topenai: \"gpt-5.5\",\n\tazure: \"gpt-5.4\",\n\t\"openai-codex\": \"gpt-6.1-sol\",\n\tradius: \"balanced\",\n\tnvidia: \"nvidia/nemotron-3-ultra-550b-a55b\",\n\tdeepseek: \"deepseek-v4-pro\",\n\tgoogle: \"gemini-3.1-pro-preview\",\n\t\"google-vertex\": \"gemini-3.1-pro-preview\",\n\t\"github-copilot\": \"gpt-5.4\",\n\topenrouter: \"moonshotai/kimi-k2.6\",\n\t\"vercel-ai-gateway\": \"zai/glm-5.1\",\n\txai: \"grok-4.7\",\n\tgroq: \"openai/gpt-oss-120b\",\n\tcerebras: \"gpt-oss-120b\",\n\tzai: \"glm-5.3\",\n\t\"zai-coding-cn\": \"glm-5.3\",\n\tmistral: \"devstral-medium-latest\",\n\tminimax: \"MiniMax-M2.7\",\n\t\"minimax-cn\": \"MiniMax-M2.7\",\n\tmoonshotai: \"kimi-k2.6\",\n\t\"moonshotai-cn\": \"kimi-k2.6\",\n\thuggingface: \"moonshotai/Kimi-K2.6\",\n\tfireworks: \"accounts/fireworks/models/kimi-k3\",\n\ttogether: \"moonshotai/Kimi-K3\",\n\tbaseten: \"zai-org/GLM-5.2\",\n\topencode: \"kimi-k2.6\",\n\t\"opencode-go\": \"kimi-k3\",\n\t\"kimi-coding\": \"kimi-for-coding\",\n\tmeta: \"muse-spark-1.3\",\n\t\"cloudflare-workers-ai\": \"@cf/moonshotai/kimi-k2.6\",\n\t\"cloudflare-ai-gateway\": \"workers-ai/@cf/moonshotai/kimi-k2.6\",\n\t\"qwen-token-plan\": \"qwen3.7-max\",\n\t\"qwen-token-plan-cn\": \"qwen3.7-max\",\n\t\"qwen-token-plan-individual\": \"qwen3.8-max\",\n\txiaomi: \"mimo-v2.5-pro\",\n\t\"xiaomi-token-plan-cn\": \"mimo-v2.5-pro\",\n\t\"xiaomi-token-plan-ams\": \"mimo-v2.5-pro\",\n\t\"xiaomi-token-plan-sgp\": \"mimo-v2.5-pro\",\n};",
+  "accepted_map_source": "const defaults = .{\n    .{ \"amazon-bedrock\", \"us.anthropic.claude-opus-4-6-v1\" },\n    .{ \"ant-ling\", \"Ring-2.6-1T\" },\n    .{ \"anthropic\", \"claude-opus-4-8\" },\n    .{ \"openai\", \"gpt-5.5\" },\n    .{ \"azure\", \"gpt-5.4\" },\n    .{ \"openai-codex\", \"gpt-6.1-sol\" },\n    .{ \"radius\", \"balanced\" },\n    .{ \"nvidia\", \"nvidia/nemotron-3.5-super-vl-120b-a12b\" },\n    .{ \"deepseek\", \"deepseek-v4-pro\" },\n    .{ \"google\", \"gemini-3.1-pro-preview\" },\n    .{ \"google-vertex\", \"gemini-3.1-pro-preview\" },\n    .{ \"github-copilot\", \"gpt-5.4\" },\n    .{ \"openrouter\", \"moonshotai/kimi-k2.6\" },\n    .{ \"vercel-ai-gateway\", \"zai/glm-5.1\" },\n    .{ \"xai\", \"grok-4.7\" },\n    .{ \"groq\", \"openai/gpt-oss-120b\" },\n    .{ \"cerebras\", \"gpt-oss-120b\" },\n    .{ \"zai\", \"glm-5.3\" },\n    .{ \"zai-coding-cn\", \"glm-5.3\" },\n    .{ \"mistral\", \"devstral-medium-latest\" },\n    .{ \"minimax\", \"MiniMax-M2.7\" },\n    .{ \"minimax-cn\", \"MiniMax-M2.7\" },\n    .{ \"moonshotai\", \"kimi-k2.6\" },\n    .{ \"moonshotai-cn\", \"kimi-k2.6\" },\n    .{ \"huggingface\", \"moonshotai/Kimi-K2.6\" },\n    .{ \"fireworks\", \"accounts/fireworks/models/kimi-k3\" },\n    .{ \"together\", \"moonshotai/Kimi-K3\" },\n    .{ \"baseten\", \"zai-org/GLM-5.2\" },\n    .{ \"opencode\", \"kimi-k2.6\" },\n    .{ \"opencode-go\", \"kimi-k3\" },\n    .{ \"kimi-coding\", \"kimi-for-coding\" },\n    .{ \"meta\", \"muse-spark-1.3\" },\n    .{ \"cloudflare-workers-ai\", \"@cf/moonshotai/kimi-k2.6\" },\n    .{ \"cloudflare-ai-gateway\", \"workers-ai/@cf/moonshotai/kimi-k2.6\" },\n    .{ \"qwen-token-plan\", \"qwen3.7-max\" },\n    .{ \"qwen-token-plan-cn\", \"qwen3.7-max\" },\n    .{ \"qwen-token-plan-individual\", \"qwen3.8-max\" },\n    .{ \"xiaomi\", \"mimo-v2.6-pro\" },\n    .{ \"xiaomi-token-plan-cn\", \"mimo-v2.6-pro\" },\n    .{ \"xiaomi-token-plan-ams\", \"mimo-v2.6-pro\" },\n    .{ \"xiaomi-token-plan-sgp\", \"mimo-v2.6-pro\" },\n};",
+  "original_map_entries": [
+    [
+      "amazon-bedrock",
+      "us.anthropic.claude-opus-4-6-v1"
+    ],
+    [
+      "ant-ling",
+      "Ring-2.6-1T"
+    ],
+    [
+      "anthropic",
+      "claude-opus-4-8"
+    ],
+    [
+      "openai",
+      "gpt-5.5"
+    ],
+    [
+      "azure",
+      "gpt-5.4"
+    ],
+    [
+      "openai-codex",
+      "gpt-6.1-sol"
+    ],
+    [
+      "radius",
+      "balanced"
+    ],
+    [
+      "nvidia",
+      "nvidia/nemotron-3-ultra-550b-a55b"
+    ],
+    [
+      "deepseek",
+      "deepseek-v4-pro"
+    ],
+    [
+      "google",
+      "gemini-3.1-pro-preview"
+    ],
+    [
+      "google-vertex",
+      "gemini-3.1-pro-preview"
+    ],
+    [
+      "github-copilot",
+      "gpt-5.4"
+    ],
+    [
+      "openrouter",
+      "moonshotai/kimi-k2.6"
+    ],
+    [
+      "vercel-ai-gateway",
+      "zai/glm-5.1"
+    ],
+    [
+      "xai",
+      "grok-4.7"
+    ],
+    [
+      "groq",
+      "openai/gpt-oss-120b"
+    ],
+    [
+      "cerebras",
+      "gpt-oss-120b"
+    ],
+    [
+      "zai",
+      "glm-5.3"
+    ],
+    [
+      "zai-coding-cn",
+      "glm-5.3"
+    ],
+    [
+      "mistral",
+      "devstral-medium-latest"
+    ],
+    [
+      "minimax",
+      "MiniMax-M2.7"
+    ],
+    [
+      "minimax-cn",
+      "MiniMax-M2.7"
+    ],
+    [
+      "moonshotai",
+      "kimi-k2.6"
+    ],
+    [
+      "moonshotai-cn",
+      "kimi-k2.6"
+    ],
+    [
+      "huggingface",
+      "moonshotai/Kimi-K2.6"
+    ],
+    [
+      "fireworks",
+      "accounts/fireworks/models/kimi-k3"
+    ],
+    [
+      "together",
+      "moonshotai/Kimi-K3"
+    ],
+    [
+      "baseten",
+      "zai-org/GLM-5.2"
+    ],
+    [
+      "opencode",
+      "kimi-k2.6"
+    ],
+    [
+      "opencode-go",
+      "kimi-k3"
+    ],
+    [
+      "kimi-coding",
+      "kimi-for-coding"
+    ],
+    [
+      "meta",
+      "muse-spark-1.3"
+    ],
+    [
+      "cloudflare-workers-ai",
+      "@cf/moonshotai/kimi-k2.6"
+    ],
+    [
+      "cloudflare-ai-gateway",
+      "workers-ai/@cf/moonshotai/kimi-k2.6"
+    ],
+    [
+      "qwen-token-plan",
+      "qwen3.7-max"
+    ],
+    [
+      "qwen-token-plan-cn",
+      "qwen3.7-max"
+    ],
+    [
+      "qwen-token-plan-individual",
+      "qwen3.8-max"
+    ],
+    [
+      "xiaomi",
+      "mimo-v2.5-pro"
+    ],
+    [
+      "xiaomi-token-plan-cn",
+      "mimo-v2.5-pro"
+    ],
+    [
+      "xiaomi-token-plan-ams",
+      "mimo-v2.5-pro"
+    ],
+    [
+      "xiaomi-token-plan-sgp",
+      "mimo-v2.5-pro"
+    ]
+  ],
+  "accepted_map_entries": [
+    [
+      "amazon-bedrock",
+      "us.anthropic.claude-opus-4-6-v1"
+    ],
+    [
+      "ant-ling",
+      "Ring-2.6-1T"
+    ],
+    [
+      "anthropic",
+      "claude-opus-4-8"
+    ],
+    [
+      "openai",
+      "gpt-5.5"
+    ],
+    [
+      "azure",
+      "gpt-5.4"
+    ],
+    [
+      "openai-codex",
+      "gpt-6.1-sol"
+    ],
+    [
+      "radius",
+      "balanced"
+    ],
+    [
+      "nvidia",
+      "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    ],
+    [
+      "deepseek",
+      "deepseek-v4-pro"
+    ],
+    [
+      "google",
+      "gemini-3.1-pro-preview"
+    ],
+    [
+      "google-vertex",
+      "gemini-3.1-pro-preview"
+    ],
+    [
+      "github-copilot",
+      "gpt-5.4"
+    ],
+    [
+      "openrouter",
+      "moonshotai/kimi-k2.6"
+    ],
+    [
+      "vercel-ai-gateway",
+      "zai/glm-5.1"
+    ],
+    [
+      "xai",
+      "grok-4.7"
+    ],
+    [
+      "groq",
+      "openai/gpt-oss-120b"
+    ],
+    [
+      "cerebras",
+      "gpt-oss-120b"
+    ],
+    [
+      "zai",
+      "glm-5.3"
+    ],
+    [
+      "zai-coding-cn",
+      "glm-5.3"
+    ],
+    [
+      "mistral",
+      "devstral-medium-latest"
+    ],
+    [
+      "minimax",
+      "MiniMax-M2.7"
+    ],
+    [
+      "minimax-cn",
+      "MiniMax-M2.7"
+    ],
+    [
+      "moonshotai",
+      "kimi-k2.6"
+    ],
+    [
+      "moonshotai-cn",
+      "kimi-k2.6"
+    ],
+    [
+      "huggingface",
+      "moonshotai/Kimi-K2.6"
+    ],
+    [
+      "fireworks",
+      "accounts/fireworks/models/kimi-k3"
+    ],
+    [
+      "together",
+      "moonshotai/Kimi-K3"
+    ],
+    [
+      "baseten",
+      "zai-org/GLM-5.2"
+    ],
+    [
+      "opencode",
+      "kimi-k2.6"
+    ],
+    [
+      "opencode-go",
+      "kimi-k3"
+    ],
+    [
+      "kimi-coding",
+      "kimi-for-coding"
+    ],
+    [
+      "meta",
+      "muse-spark-1.3"
+    ],
+    [
+      "cloudflare-workers-ai",
+      "@cf/moonshotai/kimi-k2.6"
+    ],
+    [
+      "cloudflare-ai-gateway",
+      "workers-ai/@cf/moonshotai/kimi-k2.6"
+    ],
+    [
+      "qwen-token-plan",
+      "qwen3.7-max"
+    ],
+    [
+      "qwen-token-plan-cn",
+      "qwen3.7-max"
+    ],
+    [
+      "qwen-token-plan-individual",
+      "qwen3.8-max"
+    ],
+    [
+      "xiaomi",
+      "mimo-v2.6-pro"
+    ],
+    [
+      "xiaomi-token-plan-cn",
+      "mimo-v2.6-pro"
+    ],
+    [
+      "xiaomi-token-plan-ams",
+      "mimo-v2.6-pro"
+    ],
+    [
+      "xiaomi-token-plan-sgp",
+      "mimo-v2.6-pro"
+    ]
+  ],
+  "finite_value_deltas": [
+    {
+      "provider": "nvidia",
+      "accepted_c268": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "original_4954": "nvidia/nemotron-3-ultra-550b-a55b",
+      "kind": "replace"
+    },
+    {
+      "provider": "xiaomi",
+      "accepted_c268": "mimo-v2.6-pro",
+      "original_4954": "mimo-v2.5-pro",
+      "kind": "replace"
+    },
+    {
+      "provider": "xiaomi-token-plan-cn",
+      "accepted_c268": "mimo-v2.6-pro",
+      "original_4954": "mimo-v2.5-pro",
+      "kind": "replace"
+    },
+    {
+      "provider": "xiaomi-token-plan-ams",
+      "accepted_c268": "mimo-v2.6-pro",
+      "original_4954": "mimo-v2.5-pro",
+      "kind": "replace"
+    },
+    {
+      "provider": "xiaomi-token-plan-sgp",
+      "accepted_c268": "mimo-v2.6-pro",
+      "original_4954": "mimo-v2.5-pro",
+      "kind": "replace"
+    }
+  ],
+  "all_keys_same": true,
+  "order_same": true,
+  "cli_original_source": "export function resolveCliModel(options: {\n\tcliProvider?: string;\n\tcliModel?: string;\n\tcliThinking?: ThinkingLevel;\n\t/** `--api-key` was supplied for the selected provider. */\n\tinlineApiKey?: boolean;\n\tmodelRuntime: ModelRuntime;\n}): ResolveCliModelResult {\n\tconst { cliProvider, cliModel, cliThinking, inlineApiKey, modelRuntime } = options;\n\n\tif (!cliModel) {\n\t\treturn { model: undefined, warning: undefined, error: undefined };\n\t}\n\n\t// Important: use *all* models here, not just models with pre-configured auth.\n\t// This allows \"--api-key\" to be used for first-time setup.\n\tconst models = [...modelRuntime.getModels()];\n\tif (models.length === 0) {\n\t\treturn {\n\t\t\tmodel: undefined,\n\t\t\twarning: undefined,\n\t\t\terror: \"No models available. Check your installation or add models to models.json.\",\n\t\t};\n\t}\n\n\tconst provider = cliProvider\n\t\t? models.find((m) => m.provider.toLowerCase() === cliProvider.toLowerCase())?.provider\n\t\t: undefined;\n\tif (cliProvider && !provider) {\n\t\treturn {\n\t\t\tmodel: undefined,\n\t\t\twarning: undefined,\n\t\t\terror: `Unknown provider \"${cliProvider}\". Use --list-models to see available providers/models.`,\n\t\t};\n\t}\n\n\tconst result = resolveModelReference(\n\t\t{ text: cliModel, provider, thinkingSuffix: \"strict\", fuzzy: true },\n\t\tmodels,\n\t\t// An inline key goes to whichever provider is selected, so stored credentials must not choose it\n\t\tinlineApiKey ? () => false : (providerId) => modelRuntime.hasConfiguredAuth(providerId),\n\t);\n\tif (result.status === \"resolved\") {\n\t\treturn { model: result.model, thinkingLevel: result.thinkingLevel, warning: result.warning, error: undefined };\n\t}\n\tif (result.status === \"ambiguous\") {\n\t\tconst matches = result.candidates\n\t\t\t.map((m) => `${m.provider}/${m.id}`)\n\t\t\t.sort((a, b) => a.localeCompare(b))\n\t\t\t.join(\", \");\n\t\tconst authHint = inlineApiKey\n\t\t\t? \"--api-key does not choose a provider.\"\n\t\t\t: result.usableCount === 0\n\t\t\t\t? \"No matching provider is authenticated.\"\n\t\t\t\t: \"More than one matching provider is authenticated.\";\n\t\treturn {\n\t\t\tmodel: undefined,\n\t\t\twarning: undefined,\n\t\t\terror: `Model \"${cliModel}\" is ambiguous across providers: ${matches}. ${authHint} Use --provider or provider/model.`,\n\t\t};\n\t}\n\n\tconst { target } = result;\n\tif (!target) {\n\t\treturn {\n\t\t\tmodel: undefined,\n\t\t\twarning: undefined,\n\t\t\terror: `Model \"${cliModel}\" not found. Use --list-models to see available models.`,\n\t\t};\n\t}\n\n\t// Use the thinking level suffix only when --thinking is not explicitly provided; otherwise it\n\t// stays part of the custom model id.\n\t// e.g. \"zai-org/GLM-5.1-FP8:high\" \u2192 modelId=\"zai-org/GLM-5.1-FP8\", fallbackThinking=\"high\"\n\tconst modelId = cliThinking ? target.modelText : target.modelId;\n\tconst fallbackThinking = cliThinking ? undefined : target.thinkingLevel;\n\tconst fallbackModel = buildFallbackModel(target.providerModels, modelId);\n\tconst requestedThinking = cliThinking ?? fallbackThinking;\n\treturn {\n\t\tmodel: requestedThinking && requestedThinking !== \"off\" ? { ...fallbackModel, reasoning: true } : fallbackModel,\n\t\tthinkingLevel: fallbackThinking,\n\t\twarning: `Model \"${modelId}\" not found for provider \"${target.provider}\". Using custom model id.`,\n\t\terror: undefined,\n\t};\n}\n",
+  "cli_original_typed_header": "export function resolveCliModel(options: {\n\tcliProvider?: string;\n\tcliModel?: string;\n\tcliThinking?: ThinkingLevel;\n\t/** `--api-key` was supplied for the selected provider. */\n\tinlineApiKey?: boolean;\n\tmodelRuntime: ModelRuntime;\n}): ResolveCliModelResult {\n",
+  "cli_fixture_source": "function resolveCliModel(options) {\n    const { cliProvider, cliModel, cliThinking, inlineApiKey, modelRuntime } = options;\n    if (!cliModel) {\n        return { model: undefined, warning: undefined, error: undefined };\n    }\n    const models = [...modelRuntime.getModels()];\n    if (models.length === 0) {\n        return {\n            model: undefined,\n            warning: undefined,\n            error: \"No models available. Check your installation or add models to models.json.\",\n        };\n    }\n    const provider = cliProvider\n        ? models.find((m) => m.provider.toLowerCase() === cliProvider.toLowerCase())?.provider\n        : undefined;\n    if (cliProvider && !provider) {\n        return {\n            model: undefined,\n            warning: undefined,\n            error: `Unknown provider \"${cliProvider}\". Use --list-models to see available providers/models.`,\n        };\n    }\n    const result = resolveModelReference(\n        { text: cliModel, provider, thinkingSuffix: \"strict\", fuzzy: true },\n        models,\n        inlineApiKey ? () => false : (providerId) => modelRuntime.hasConfiguredAuth(providerId),\n    );\n    if (result.status === \"resolved\") {\n        return { model: result.model, thinkingLevel: result.thinkingLevel, warning: result.warning, error: undefined };\n    }\n    if (result.status === \"ambiguous\") {\n        const matches = result.candidates\n            .map((m) => `${m.provider}/${m.id}`)\n            .sort((a, b) => a.localeCompare(b))\n            .join(\", \");\n        const authHint = inlineApiKey\n            ? \"--api-key does not choose a provider.\"\n            : result.usableCount === 0\n                ? \"No matching provider is authenticated.\"\n                : \"More than one matching provider is authenticated.\";\n        return {\n            model: undefined,\n            warning: undefined,\n            error: `Model \"${cliModel}\" is ambiguous across providers: ${matches}. ${authHint} Use --provider or provider/model.`,\n        };\n    }\n    const { target } = result;\n    if (!target) {\n        return {\n            model: undefined,\n            warning: undefined,\n            error: `Model \"${cliModel}\" not found. Use --list-models to see available models.`,\n        };\n    }\n    const modelId = cliThinking ? target.modelText : target.modelId;\n    const fallbackThinking = cliThinking ? undefined : target.thinkingLevel;\n    const fallbackModel = buildFallbackModel(target.providerModels, modelId);\n    const requestedThinking = cliThinking ?? fallbackThinking;\n    return {\n        model: requestedThinking && requestedThinking !== \"off\" ? { ...fallbackModel, reasoning: true } : fallbackModel,\n        thinkingLevel: fallbackThinking,\n        warning: `Model \"${modelId}\" not found for provider \"${target.provider}\". Using custom model id.`,\n        error: undefined,\n    };\n}\n",
+  "cli_comparison": "Replace only the typed function header, discard blank and whole-line comment lines, and strip line indentation. Every remaining runtime line then matches the accepted c268 fixture byte-for-byte.",
+  "cli_runtime_lines_match": true,
+  "claim": "Matching caller code does not qualify the accepted shared map against 4954 authority. Preserve the c268 owner/history; apply any map correction only through a separately reviewed complete supplier successor.",
+  "source_owner_modified": false,
+  "candidate_executed": false,
+  "native_execution": false
+}

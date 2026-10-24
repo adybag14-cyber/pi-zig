@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "source_only_exact_selection_for_composition_draft",
+  "main_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "source_basis_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "accepted_packets": [
+    {
+      "name": "debuglog36",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\source-intake.json",
+        "bytes": 33159,
+        "sha256": "719435C30C628ACA18BF533F96205CB37BF1CCBAD82E7E365424F4B6AD3DE43C"
+      },
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-initialized-debuglog-source-acceptance-20261024.json",
+        "bytes": 7344,
+        "sha256": "BD9B1BFA1BDBFEC651BC5430DEC1D95A9EA1B7B5639EE8EEE62371306EAB1D7F"
+      }
+    },
+    {
+      "name": "settings43",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\source-intake.json",
+        "bytes": 32986,
+        "sha256": "B9F4E03AB59517E440DE5741E593CA06E2B3FC43194BFD5E593CD39254FF9FB6"
+      },
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-settings-shared-defaults-source-acceptance-20261024.json",
+        "bytes": 10359,
+        "sha256": "08678EF828C0B023CD609D61AD370F3BFC6E576B3514C49A5025CACEC02314D6"
+      }
+    },
+    {
+      "name": "modelmap6",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\source-intake.json",
+        "bytes": 13361,
+        "sha256": "48E6A2728F08145AF31A5FD042573D64E9FF781992CEC3D92E2A7FDF61ED9A6B"
+      },
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-default-model-map-source-acceptance-20261024.json",
+        "bytes": 7536,
+        "sha256": "75BDCC65D992BF7DF32A032AA2CE6C8BF0477D59846553C45B293704436F5C80"
+      }
+    },
+    {
+      "name": "diagnostics35",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\source-intake.json",
+        "bytes": 17492,
+        "sha256": "5939BA07983B17BFF29B7B47AE3AD8103472982BE1741AB5246FC23821DF3527"
+      },
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-settings-diagnostics-source-acceptance-20261024.json",
+        "bytes": 6237,
+        "sha256": "778FB9FD655DA86C0719035261C681B3767EB562BB4268B1DCE8C1CAE324BA39"
+      }
+    },
+    {
+      "name": "mainhelpers56",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\source-intake.json",
+        "bytes": 54143,
+        "sha256": "639C33CCE0283421E2C59B5D7E729A0E4BF304458CBC8350F758CBBC1F85871B"
+      },
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-main-runtime-helpers-source-acceptance-20261024.json",
+        "bytes": 11482,
+        "sha256": "4FD9192B988EF2093D45E078DD533C1BA1D0C2108B98E3751C03E47AEB7FBCD6"
+      }
+    },
+    {
+      "name": "async34",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\source-intake.json",
+        "bytes": 25620,
+        "sha256": "FDA0EB42A54A910437F19213B188D65F0B372EE5F413513CE11B60146807B3FF"
+      },
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-async-hooks-stack-source-acceptance-20261024.json",
+        "bytes": 8849,
+        "sha256": "1A1B2C02450B67B18549BFB87C3A65D05E6BDF342B7D55184FD1765E32731BA4"
+      }
+    },
+    {
+      "name": "writev_fixture",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-writev-fixture-shadow-correction-sourceonly-20261024\\source-intake.json",
+        "bytes": 3216,
+        "sha256": "E7723B4924F50AF8CCAAFE1A7F0A536A54C1408E9C6572D28D694C8B2942FE3A"
+      },
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-writev-fixture-correction-source-acceptance-20261024.json",
+        "bytes": 3354,
+        "sha256": "801AAEF7E592EFC72B104E3034189B8B3F34EB271F5D6531F07B113A7603FED4"
+      }
+    }
+  ],
+  "negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v46-new31-partial-compile-negative-acceptance-20261024.json",
+    "bytes": 3197,
+    "sha256": "DCE0523B817B564AB19D285C12A418EAA4B621785ECA975051A0A1933A2E1AE0"
+  },
+  "prior_intake_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-controls-review\\next-uncaught-tty-trust-intake-sourceonly-20261024\\source-intake-plan.json",
+    "bytes": 517792,
+    "sha256": "0983408AC77D87E10E2BE0BB35989B498923D6FBAD38E0FEC7590E5750BB2734"
+  },
+  "prior_intake_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-six-packet-five-root-source-intake-acceptance-20261024.json",
+    "bytes": 2959,
+    "sha256": "728033A08C592CF7239A7F176CDF9DD091A79083AA542DD3B1B382FECAD2C542"
+  },
+  "expected_core": {
+    "new_roots": 6,
+    "new_declarations": 210,
+    "fresh_roots": 37,
+    "fresh_declarations": 860,
+    "full_groups": 158,
+    "full_declarations": 2926,
+    "source_paths_including_build": 31
+  },
+  "pending_separate_source_review": [
+    "timer47_v2",
+    "primitive_string_hook_VM_compatibility"
+  ],
+  "materialization_authorized": false,
+  "native_execution_authorized": false
+}

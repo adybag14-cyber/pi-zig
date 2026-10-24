@@ -1,0 +1,373 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T22:28:04.075578+00:00",
+  "scope": "complete_original_settings_diagnostics_private_owner",
+  "status": "source_only_ready_for_independent_review",
+  "source_basis_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "latest_read_only_Main_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "changes": [
+    {
+      "destination_relative_path": "src/extensions/native_sdk_settings_diagnostics.zig",
+      "operation": "create",
+      "before": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings_diagnostics.zig",
+        "bytes": 7641,
+        "sha256": "9DEA7DBF015EFC0229D090DDC1B33DEB0BB6CBA4DF99A1309A4847401E80CB9D"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_sdk_settings_diagnostics_test.zig",
+      "operation": "create",
+      "before": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\native_sdk_settings_diagnostics_test.zig",
+        "bytes": 11138,
+        "sha256": "F72AE7B7AFB476F7137500C53AF2D29178E23E8C7FFB4D01976EF18F53A6DDD5"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/sdk-settings-diagnostics-4954-source.mjs",
+      "operation": "create",
+      "before": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-diagnostics-4954-source.mjs",
+        "bytes": 814,
+        "sha256": "A931B5E5AE416AAE20E9AF21889C62543C5019B21123C79507DD23AEF29DA3C6"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/sdk-settings-diagnostics-observer.mjs",
+      "operation": "create",
+      "before": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-diagnostics-observer.mjs",
+        "bytes": 17879,
+        "sha256": "C83D8103DE3639323224D33213694C72EEFC838DBBE6E16687EBA6FBD937D6D3"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "insert_build_hunk",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 556915,
+        "sha256": "53162A0B9E7F297B245EE10D622AC9090DE94920B5D2057BD2AC4881A191679D"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 557946,
+        "sha256": "749EFC3533404393360AB5D4704F773E3C18AD6CAAEE5833832F63E2F5E53053"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\sdk-settings-diagnostics.patch",
+    "bytes": 40097,
+    "sha256": "E44994A73C0EF69CE705D3F4EA4DFAA6CE4649ECF9026D43DBDCAD2ED9B2C533"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\README.md",
+    "bytes": 1618,
+    "sha256": "DBCD01CFCD9CFE0363497A0284AAC11DA1B18138C17AAD7891805BBD713EB5DE"
+  },
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1031,
+    "sha256": "AAADE15854A028C0738ED1094AC21DAEF36EFCCA639604C8B77CDED73C0A27FE"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\build-insertion-inverse.json",
+    "bytes": 1360,
+    "sha256": "BC7DD20182464BB9CCF199BEA3AD1D8F7ADBDEBAA6C0760F32030A4DBCE0CF66"
+  },
+  "original_fixture_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\original-fixture-inverse.json",
+    "bytes": 3927,
+    "sha256": "F22F21AB85607DD748B25EC07E7A99E3F89F7873F4C48B96F89E2DE66F168C9D"
+  },
+  "retained_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\settings-diagnostics.ts",
+      "bytes": 986,
+      "sha256": "8EF3554FF841468A2493D9BAB2754AA7A305471EA5754E54EFCCC363FE0DD0E1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\test\\settings-diagnostics.test.ts",
+      "bytes": 1840,
+      "sha256": "9917A7F5CD35AC5C42FC7277920C1D5EA3F706F29593A4AA1AB9E80D7CE95D9E"
+    }
+  ],
+  "direct_import_resolutions": [
+    {
+      "source": "src/extensions/native_sdk_settings_diagnostics.zig",
+      "operation": "import",
+      "literal": "native_sdk_session_locals.zig",
+      "resolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_session_locals.zig",
+        "bytes": 9136,
+        "sha256": "2E530FC843E99654A3F72F05207E04A5F77E3713D7D9D19B26117A46D7EC9064"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_settings_diagnostics.zig",
+      "operation": "import",
+      "literal": "native_sync_arguments.zig",
+      "resolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+        "bytes": 9162,
+        "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+      }
+    },
+    {
+      "source": "src/extensions/native_sdk_settings_diagnostics.zig",
+      "operation": "import",
+      "literal": "native_public_lexical_frame.zig",
+      "resolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_lexical_frame.zig",
+        "bytes": 17136,
+        "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E"
+      }
+    },
+    {
+      "source": "src/native_sdk_settings_diagnostics_test.zig",
+      "operation": "import",
+      "literal": "extensions/native_sdk_session_locals.zig",
+      "resolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_session_locals.zig",
+        "bytes": 9136,
+        "sha256": "2E530FC843E99654A3F72F05207E04A5F77E3713D7D9D19B26117A46D7EC9064"
+      }
+    },
+    {
+      "source": "src/native_sdk_settings_diagnostics_test.zig",
+      "operation": "import",
+      "literal": "extensions/native_sdk.zig",
+      "resolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk.zig",
+        "bytes": 164658,
+        "sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3"
+      }
+    },
+    {
+      "source": "src/native_sdk_settings_diagnostics_test.zig",
+      "operation": "import",
+      "literal": "extensions/native_sdk_settings_diagnostics.zig",
+      "resolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings_diagnostics.zig",
+        "bytes": 7641,
+        "sha256": "9DEA7DBF015EFC0229D090DDC1B33DEB0BB6CBA4DF99A1309A4847401E80CB9D"
+      }
+    },
+    {
+      "source": "src/native_sdk_settings_diagnostics_test.zig",
+      "operation": "import",
+      "literal": "native_sdk_initial_model_retirement_controls.zig",
+      "resolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_initial_model_retirement_controls.zig",
+        "bytes": 16159,
+        "sha256": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+      }
+    },
+    {
+      "source": "src/native_sdk_settings_diagnostics_test.zig",
+      "operation": "import",
+      "literal": "extensions/native_process.zig",
+      "resolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+        "bytes": 6626,
+        "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+      }
+    },
+    {
+      "source": "src/native_sdk_settings_diagnostics_test.zig",
+      "operation": "import",
+      "literal": "extensions/native_stream.zig",
+      "resolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_stream.zig",
+        "bytes": 36299,
+        "sha256": "FDB5C3E9930572F0D75AD4C6D88AD208CA2C0774270FA1C2839EE9EF59B7C53A"
+      }
+    }
+  ],
+  "embed_resolutions": [
+    {
+      "source": "src/native_sdk_settings_diagnostics_test.zig",
+      "operation": "embedFile",
+      "literal": "extensions/fixtures/sdk-settings-diagnostics-observer.mjs",
+      "resolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-diagnostics-observer.mjs",
+        "bytes": 17879,
+        "sha256": "C83D8103DE3639323224D33213694C72EEFC838DBBE6E16687EBA6FBD937D6D3"
+      }
+    },
+    {
+      "source": "src/native_sdk_settings_diagnostics_test.zig",
+      "operation": "embedFile",
+      "literal": "extensions/fixtures/sdk-settings-diagnostics-4954-source.mjs",
+      "resolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-diagnostics-4954-source.mjs",
+        "bytes": 814,
+        "sha256": "A931B5E5AE416AAE20E9AF21889C62543C5019B21123C79507DD23AEF29DA3C6"
+      }
+    }
+  ],
+  "standard_package_imports": [
+    {
+      "source": "src/native_sdk_settings_diagnostics_test.zig",
+      "package": "std"
+    }
+  ],
+  "supporting_vm_and_manager_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_session_locals.zig",
+      "bytes": 9136,
+      "sha256": "2E530FC843E99654A3F72F05207E04A5F77E3713D7D9D19B26117A46D7EC9064"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_values.zig",
+      "bytes": 13939,
+      "sha256": "0B1BB422A9C89E7CE8146B32413B27E42D8DFB65285C3245B89EED8AF222022E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+      "bytes": 9162,
+      "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_lexical_frame.zig",
+      "bytes": 17136,
+      "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_function.zig",
+      "bytes": 14120,
+      "sha256": "232E0F858F21DD002C2FEB6B65C62486EB6DA113F7463B2DD60CC799B3369007"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_js_values.zig",
+      "bytes": 9122,
+      "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_settings_storage.zig",
+      "bytes": 23867,
+      "sha256": "F64228FA1E07499702305C326A937912A6809961E8151C4CDCB27DBA1D563201"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_manager_imports.zig",
+      "bytes": 4350,
+      "sha256": "7D9C9F0C7B662386F1EF759FBC9510B71DEDB14D1B7194D460F7E09828AC00E0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_initial_model_retirement_controls.zig",
+      "bytes": 16159,
+      "sha256": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2409692,
+      "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 117849,
+      "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+    }
+  ],
+  "private_api": {
+    "path": "src/extensions/native_sdk_settings_diagnostics.zig",
+    "create": "pub fn create(engine: *Engine) !c.JSValue",
+    "private_cache_key": "pi-private:actual-sdk-settings-diagnostics",
+    "complete_exports": [
+      "collectSettingsDiagnostics",
+      "deduplicateDiagnostics"
+    ],
+    "public_namespace_installed": false,
+    "actual_managers_required_by_callers": true
+  },
+  "controls": {
+    "root": "src/native_sdk_settings_diagnostics_test.zig",
+    "target": "build-native-sdk-settings-diagnostics",
+    "filter": "native settings diagnostics",
+    "declared_count": 35,
+    "original_source_differentials": 30,
+    "native_fatal_or_cancel_controls": 3,
+    "host_owner_controls": 2,
+    "names": [
+      "native settings diagnostics complete original ordinary export shapes",
+      "native settings diagnostics genuine manager drains path and scope diagnostics exactly once",
+      "native settings diagnostics genuine fromStorage load failure retains original message",
+      "native settings diagnostics truthy path selection and original template conversions",
+      "native settings diagnostics live map receiver arrow shape and direct return",
+      "native settings diagnostics actual map preserves sparse error-array holes",
+      "native settings diagnostics destructured scope path error Get ordering",
+      "native settings diagnostics primitive destructuring retains original shared wrapper",
+      "native settings diagnostics location conversion precedes error message Get and conversion",
+      "native settings diagnostics nullish rows reject after actual manager drain",
+      "native settings diagnostics template symbol conversion failures match original",
+      "native settings diagnostics destructuring failure retains identity and suppresses later Get",
+      "native settings diagnostics escaped map arrow survives outer invocation",
+      "native settings diagnostics map lookup failure occurs after draining genuine manager",
+      "native settings diagnostics deduplication preserves first type message identity and order",
+      "native settings diagnostics original NUL separator collision semantics",
+      "native settings diagnostics actual sparse and generic filter behavior",
+      "native settings diagnostics live Set construction precedes filter lookup and call",
+      "native settings diagnostics Set construction failure suppresses filter lookup",
+      "native settings diagnostics live Set has add receiver key and duplicate suppression",
+      "native settings diagnostics truthy has result retires before callback returns",
+      "native settings diagnostics ignored add result retires before acceptance returns",
+      "native settings diagnostics key type conversion precedes message lookup",
+      "native settings diagnostics key conversion throw suppresses message and retains identity",
+      "native settings diagnostics escaped predicates retain separate invocation Sets",
+      "native settings diagnostics escaped predicate retains seen after filter throws",
+      "native settings diagnostics captured native seen lifetime matches original closure",
+      "native settings diagnostics successful private native Error remains ordinary thrown data",
+      "native settings diagnostics destructured local retirement matches actual original VM",
+      "native settings diagnostics ordinary function constructor primitive return semantics",
+      "native settings diagnostics current native fatal preempts guest catch and later reads",
+      "native settings diagnostics has result retirement fatal prevents guest continuation",
+      "native settings diagnostics has result retirement cancellation prevents guest continuation",
+      "native settings diagnostics pending entry precedes cold or warm private cache",
+      "native settings diagnostics complete private owner is cached with stable function identity"
+    ],
+    "actual_metadata_count": null,
+    "actual_tests_started": 0
+  },
+  "static_checks": {
+    "five_patch_targets_reconstructed": true,
+    "git_apply_check_exit_code": 0,
+    "all_named_observers_exist": true,
+    "direct_imports_and_embeds_resolve": true,
+    "full_original_fixture_raw_inverse": true,
+    "build_insertion_only_inverse": true,
+    "Main_clean": true,
+    "no_C_ABI_edit": true,
+    "compiler_selected_reachability_claimed": false,
+    "complete_C_preprocessing_claimed": false
+  },
+  "remaining_integration": [
+    "Authenticated complete main createRuntime caller must acquire and use this owner.",
+    "No public SDK namespace or bootstrap completeness claim.",
+    "Existing SettingsManager semantics beyond drainErrors/storage collaborators remain their separately scoped work."
+  ],
+  "not_executed": [
+    "candidate",
+    "original JavaScript reference",
+    "parser",
+    "compiler",
+    "metadata",
+    "native runtime"
+  ],
+  "claims": {
+    "native_execution_authorized": false,
+    "runtime_qualification": false,
+    "product_qualification": false,
+    "actual_metadata_count": null
+  }
+}

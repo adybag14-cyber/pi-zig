@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "status": "source_only_original_body_type_and_module_syntax_erasure",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\settings-diagnostics.ts",
+    "bytes": 986,
+    "sha256": "8EF3554FF841468A2493D9BAB2754AA7A305471EA5754E54EFCCC363FE0DD0E1"
+  },
+  "immutable_original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\original\\settings-diagnostics.ts",
+    "bytes": 986,
+    "sha256": "8EF3554FF841468A2493D9BAB2754AA7A305471EA5754E54EFCCC363FE0DD0E1"
+  },
+  "fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-diagnostics-4954-source.mjs",
+    "bytes": 814,
+    "sha256": "A931B5E5AE416AAE20E9AF21889C62543C5019B21123C79507DD23AEF29DA3C6"
+  },
+  "prefix": "(function settingsDiagnosticsOriginal() {\n\"use strict\";\n",
+  "suffix": "return {collectSettingsDiagnostics,deduplicateDiagnostics};\n})\n",
+  "edits": [
+    {
+      "offset": 0,
+      "before": "import type { AgentSessionRuntimeDiagnostic } from \"./agent-session-services.ts\";\n",
+      "after": "",
+      "before_sha256": "8EF3554FF841468A2493D9BAB2754AA7A305471EA5754E54EFCCC363FE0DD0E1",
+      "after_sha256": "EEB0DC0E921DF0B9989D4D6C9E0E7D15CE456AFC13F57B4D7A9C3ABC90E7CEBA"
+    },
+    {
+      "offset": 0,
+      "before": "import type { SettingsManager } from \"./settings-manager.ts\";\n",
+      "after": "",
+      "before_sha256": "EEB0DC0E921DF0B9989D4D6C9E0E7D15CE456AFC13F57B4D7A9C3ABC90E7CEBA",
+      "after_sha256": "37C7A52AD5F490B892AD79EF67F7DBBDD406F0C6636572B2DD9005D02CECE87B"
+    },
+    {
+      "offset": 1,
+      "before": "export function ",
+      "after": "function ",
+      "before_sha256": "37C7A52AD5F490B892AD79EF67F7DBBDD406F0C6636572B2DD9005D02CECE87B",
+      "after_sha256": "E265DF416DF1BEF10673C1EC22A58BBF2396110C174A5EE8AEA9C91A035525CB"
+    },
+    {
+      "offset": 491,
+      "before": "export function ",
+      "after": "function ",
+      "before_sha256": "E265DF416DF1BEF10673C1EC22A58BBF2396110C174A5EE8AEA9C91A035525CB",
+      "after_sha256": "CB664D69B00362A22604025A6751444660DFE5E3F9B77EF5F0C42D0DEEAA14E8"
+    },
+    {
+      "offset": 37,
+      "before": "settingsManager: SettingsManager",
+      "after": "settingsManager",
+      "before_sha256": "CB664D69B00362A22604025A6751444660DFE5E3F9B77EF5F0C42D0DEEAA14E8",
+      "after_sha256": "9B4E4B34F0FC9B45450B212A60DB832B6886550810715866324430D1B6765241"
+    },
+    {
+      "offset": 52,
+      "before": "): AgentSessionRuntimeDiagnostic[] {",
+      "after": ") {",
+      "before_sha256": "9B4E4B34F0FC9B45450B212A60DB832B6886550810715866324430D1B6765241",
+      "after_sha256": "F6EAD8B9E6E5589F6EA3E0B3CFA457B4050F3995A806E3AC532378DDC4D00F75"
+    },
+    {
+      "offset": 530,
+      "before": "): AgentSessionRuntimeDiagnostic[] {",
+      "after": ") {",
+      "before_sha256": "F6EAD8B9E6E5589F6EA3E0B3CFA457B4050F3995A806E3AC532378DDC4D00F75",
+      "after_sha256": "93D8D0A1B2C81FC76740CF42C69AD2938E8C2D649E8013CA193C327323E0EE96"
+    },
+    {
+      "offset": 475,
+      "before": "diagnostics: readonly AgentSessionRuntimeDiagnostic[]",
+      "after": "diagnostics",
+      "before_sha256": "93D8D0A1B2C81FC76740CF42C69AD2938E8C2D649E8013CA193C327323E0EE96",
+      "after_sha256": "4F797E9318F8CE9BD3860E8546834F96227C3E45D6E43A60CD34544A576F2867"
+    },
+    {
+      "offset": 506,
+      "before": "new Set<string>()",
+      "after": "new Set()",
+      "before_sha256": "4F797E9318F8CE9BD3860E8546834F96227C3E45D6E43A60CD34544A576F2867",
+      "after_sha256": "18CDCDDAF41551DF71FF3A43135CD8B02347A64EF0CF87B344C84CE432AF2EF6"
+    }
+  ],
+  "whole_original_raw_inverse": true,
+  "production_source_execution": false
+}

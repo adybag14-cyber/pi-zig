@@ -1,0 +1,951 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T22:32:50.735284+00:00",
+  "status": "source_only_reviewable",
+  "scope": "Complete original formatTime, time/timeEnd/timeLog/timeLogImpl and debugWithTimer bodies over authenticated ordinary debuglog state and explicitly required original private trace binding input",
+  "observed_main_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "main_porcelain_empty": true,
+  "changes": [
+    {
+      "destination_relative_path": "src/extensions/native_clone_intrinsics.zig",
+      "operation": "replace_exact",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+        "bytes": 9712,
+        "sha256": "1419707D2D20C08AFA83EFDD97937BA7604B04BBCA587D92F200A395A9A7F53B"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+        "bytes": 10419,
+        "sha256": "D5A1B80E1358B3976C6947D71023DDA19378FDBA99B491548AF08F81D97D3A3A"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_node_debuglog.zig",
+      "operation": "replace_exact",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog.zig",
+        "bytes": 28016,
+        "sha256": "2940F0D9B1E07456923198DB8E8C03C699A92C7F2994773C4DED1F121F949091"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog.zig",
+        "bytes": 29341,
+        "sha256": "35C9ED6C05FD5B3025ECDAD5B003E0DF4AE34F84E2C054A271C2A0FEE902058B"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_node_debuglog_format_time.zig",
+      "operation": "create_exact",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog_format_time.zig",
+        "bytes": 6187,
+        "sha256": "6ED9BE62C5D4B37CECC6357F329F06964E837AC0B1481B144BD6665A08E20044"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_node_debuglog_time.zig",
+      "operation": "create_exact",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog_time.zig",
+        "bytes": 10170,
+        "sha256": "B6B708D1492F6C38A9F9E0BA2389BFEFD0B32B2364BB907EF044BCA6B15EEEC3"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_node_debuglog_timers.zig",
+      "operation": "create_exact",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog_timers.zig",
+        "bytes": 20390,
+        "sha256": "1F041AEB433B786A102A5448A6C41AAD811B43F690A48A3D4D5EB5DEDA611D62"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_node_debuglog_timers_test.zig",
+      "operation": "create_exact",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\native_node_debuglog_timers_test.zig",
+        "bytes": 53645,
+        "sha256": "EA226A7A145F59EB7173BB98F21BEE302589D4BA532482411E7CC2EB137F57D6"
+      }
+    },
+    {
+      "destination_relative_path": "src/fixtures/native-node-debuglog-timers-reference.js",
+      "operation": "create_exact",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\fixtures\\native-node-debuglog-timers-reference.js",
+        "bytes": 13113,
+        "sha256": "CDF0691E0BC19FA3AAF4A42AE7D6264A53CA426DF181F3D31407A2C8CF5DE8EA"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace_exact",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\original\\build.zig",
+        "bytes": 556915,
+        "sha256": "53162A0B9E7F297B245EE10D622AC9090DE94920B5D2057BD2AC4881A191679D"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 558283,
+        "sha256": "52DAD42ACA92A39FADEE8713F9E38C4F233900915B8D1AA3EB41A02592506FB6"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\debuglog-timers-successor.patch",
+    "bytes": 112596,
+    "sha256": "5FCE18684403355F79E6859901491EA979CBEF49557A3E79221D3BB74C797DCC"
+  },
+  "source_inverses": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\source-inverses.json",
+      "bytes": 5270,
+      "sha256": "A60CFCD0F1E9C010F5B2D14ECC6D4D027AE3C039738F269D0140B5C50A5C69F1"
+    }
+  ],
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1368,
+    "sha256": "15A3A5988D79189888233C1E5191E60BC796BE1A06B428476A37F3015350F9D3"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1113,
+    "sha256": "416DD4EA87B066617F4FDE933E73D5AFAFFBA22A9341F035A07DF8AEEE449833"
+  },
+  "build_composition": {
+    "anchor": "    // Genuine shared Node argument errors and actual rest/super controls.\n",
+    "insertion_only": true,
+    "standalone_projection_must_not_replace_newer_composed_build": true,
+    "ordinary_debuglog_insertion_preserved_separately": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\build-insertion.txt",
+      "bytes": 1279,
+      "sha256": "805FD415F48AB663E3E6CBC59E65E4E55DA6431E0C4A174E0B4E5DC590A94C03"
+    }
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\README.md",
+    "bytes": 8534,
+    "sha256": "28F2694ECD585E25ABE8602FBA7136A62CE7EA290E3539EC8A6364567344BC4C"
+  },
+  "static_checks": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\static-source-checks.json",
+    "bytes": 8275,
+    "sha256": "2664005675BAFD3BBC0782D1CBD27D5711594147B9A3917D30727B08F90F8338"
+  },
+  "retained_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+      "bytes": 12596,
+      "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\cjs-fs-inputs-sourceonly-20261018\\authority\\primordials.js.txt",
+      "bytes": 21700,
+      "sha256": "6C9FC969AABDB7403F89EB44545A5AA0E90BEC8385C71D4B2F70F54A0A8591F8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\authority\\internal-constants.js",
+      "bytes": 1583,
+      "sha256": "8C4C12BB17F4B106760BE5FE77E8D7FEBC9B104D9DCD97402C332F64D6619440"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\authority\\internal-constants-fetch.json",
+      "bytes": 4417,
+      "sha256": "15B909D69D684B32EC378A2CD6F86FADACF16095285DCC8E3A801986F188ECB0"
+    }
+  ],
+  "authority_excerpts": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\authority-source-excerpts.json",
+    "bytes": 12976,
+    "sha256": "B439FBE07BED921722BCB4ADE7AA9AE3F1967318F7F6BF82BC27EF5119F47287"
+  },
+  "literal_reference_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\literal-reference-source-proof.json",
+    "bytes": 1097,
+    "sha256": "0F3433800D3AEA3115BA315B3188DB52DE466B569F19816AF2EF064F2489C6FD"
+  },
+  "direct_import_resolutions": [
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 3,
+      "literal": "engine.zig",
+      "target": "src/extensions/engine.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog.zig",
+      "line": 5,
+      "literal": "native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog.zig",
+      "line": 6,
+      "literal": "native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog.zig",
+      "line": 7,
+      "literal": "native_sync_arguments.zig",
+      "target": "src/extensions/native_sync_arguments.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+        "bytes": 9162,
+        "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog.zig",
+      "line": 8,
+      "literal": "native_node_internal_builtin_require.zig",
+      "target": "src/extensions/native_node_internal_builtin_require.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_internal_builtin_require.zig",
+        "bytes": 8984,
+        "sha256": "02A9B4AD917C19E365024EDA8911FB8A3E3AE5A38DB03E48BC9C74FF99535D70"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog.zig",
+      "line": 9,
+      "literal": "native_node_internal_inspect_binding.zig",
+      "target": "src/extensions/native_node_internal_inspect_binding.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_internal_inspect_binding.zig",
+        "bytes": 2348,
+        "sha256": "6C1DBB9A9F3458C7B6316C2F5FFB3428CC7CA9E04DAEB468D9415D8840A05C15"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog.zig",
+      "line": 10,
+      "literal": "native_node_safe_array_iterator.zig",
+      "target": "src/extensions/native_node_safe_array_iterator.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\projected\\src\\extensions\\native_node_safe_array_iterator.zig",
+        "bytes": 1745,
+        "sha256": "9D3E761E138CDF9831A5A4D23949076C159F79120377090947F2294B6635EC91"
+      },
+      "selection": "accepted_ordinary_debuglog_prerequisite"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog.zig",
+      "line": 11,
+      "literal": "native_node_inspect_operations.zig",
+      "target": "src/extensions/native_node_inspect_operations.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_inspect_operations.zig",
+        "bytes": 13187,
+        "sha256": "D03966DE89E0ACEE266150FAD4337FAB2C0DC49C4F4FBFCD9F13FE73DD4D3C84"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog.zig",
+      "line": 12,
+      "literal": "native_node_fs_private_publication.zig",
+      "target": "src/extensions/native_node_fs_private_publication.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_private_publication.zig",
+        "bytes": 1033,
+        "sha256": "F118D857DB722708344B87083608FEFEB769183BC0DB0F09C05D1CDCF87AB307"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog_format_time.zig",
+      "line": 5,
+      "literal": "native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog_format_time.zig",
+      "line": 6,
+      "literal": "native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog_format_time.zig",
+      "line": 7,
+      "literal": "native_sync_arguments.zig",
+      "target": "src/extensions/native_sync_arguments.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+        "bytes": 9162,
+        "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog_time.zig",
+      "line": 5,
+      "literal": "native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog_time.zig",
+      "line": 6,
+      "literal": "native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog_time.zig",
+      "line": 7,
+      "literal": "native_sync_arguments.zig",
+      "target": "src/extensions/native_sync_arguments.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+        "bytes": 9162,
+        "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog_timers.zig",
+      "line": 5,
+      "literal": "native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog_timers.zig",
+      "line": 6,
+      "literal": "native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog_timers.zig",
+      "line": 7,
+      "literal": "native_sync_arguments.zig",
+      "target": "src/extensions/native_sync_arguments.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+        "bytes": 9162,
+        "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog_timers.zig",
+      "line": 8,
+      "literal": "native_node_debuglog.zig",
+      "target": "src/extensions/native_node_debuglog.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog.zig",
+        "bytes": 29341,
+        "sha256": "35C9ED6C05FD5B3025ECDAD5B003E0DF4AE34F84E2C054A271C2A0FEE902058B"
+      },
+      "selection": "this_packet"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog_timers.zig",
+      "line": 9,
+      "literal": "native_node_fs_collections.zig",
+      "target": "src/extensions/native_node_fs_collections.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_collections.zig",
+        "bytes": 16656,
+        "sha256": "3617D02BCF35770944E7804D62E1AFB9699D8A4816BB4E2D45B1C191E7322876"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog_timers.zig",
+      "line": 10,
+      "literal": "native_node_debuglog_format_time.zig",
+      "target": "src/extensions/native_node_debuglog_format_time.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog_format_time.zig",
+        "bytes": 6187,
+        "sha256": "6ED9BE62C5D4B37CECC6357F329F06964E837AC0B1481B144BD6665A08E20044"
+      },
+      "selection": "this_packet"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog_timers.zig",
+      "line": 11,
+      "literal": "native_node_debuglog_time.zig",
+      "target": "src/extensions/native_node_debuglog_time.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog_time.zig",
+        "bytes": 10170,
+        "sha256": "B6B708D1492F6C38A9F9E0BA2389BFEFD0B32B2364BB907EF044BCA6B15EEEC3"
+      },
+      "selection": "this_packet"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog_timers.zig",
+      "line": 12,
+      "literal": "native_node_inspect_operations.zig",
+      "target": "src/extensions/native_node_inspect_operations.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_inspect_operations.zig",
+        "bytes": 13187,
+        "sha256": "D03966DE89E0ACEE266150FAD4337FAB2C0DC49C4F4FBFCD9F13FE73DD4D3C84"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/extensions/native_node_debuglog_timers.zig",
+      "line": 13,
+      "literal": "native_node_fs_private_publication.zig",
+      "target": "src/extensions/native_node_fs_private_publication.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_private_publication.zig",
+        "bytes": 1033,
+        "sha256": "F118D857DB722708344B87083608FEFEB769183BC0DB0F09C05D1CDCF87AB307"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 6,
+      "literal": "extensions/native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 7,
+      "literal": "extensions/native_node_debuglog.zig",
+      "target": "src/extensions/native_node_debuglog.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog.zig",
+        "bytes": 29341,
+        "sha256": "35C9ED6C05FD5B3025ECDAD5B003E0DF4AE34F84E2C054A271C2A0FEE902058B"
+      },
+      "selection": "this_packet"
+    },
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 8,
+      "literal": "extensions/native_node_debuglog_timers.zig",
+      "target": "src/extensions/native_node_debuglog_timers.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog_timers.zig",
+        "bytes": 20390,
+        "sha256": "1F041AEB433B786A102A5448A6C41AAD811B43F690A48A3D4D5EB5DEDA611D62"
+      },
+      "selection": "this_packet"
+    },
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 9,
+      "literal": "extensions/native_node_safe_array_iterator.zig",
+      "target": "src/extensions/native_node_safe_array_iterator.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\projected\\src\\extensions\\native_node_safe_array_iterator.zig",
+        "bytes": 1745,
+        "sha256": "9D3E761E138CDF9831A5A4D23949076C159F79120377090947F2294B6635EC91"
+      },
+      "selection": "accepted_ordinary_debuglog_prerequisite"
+    },
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 10,
+      "literal": "extensions/native_node_internal_tty.zig",
+      "target": "src/extensions/native_node_internal_tty.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_internal_tty.zig",
+        "bytes": 10475,
+        "sha256": "A30E0292243D92202072F67C699C2073CA4638128E477A1AFC71DB9D8F6A10E5"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 11,
+      "literal": "extensions/native_node_util_colors.zig",
+      "target": "src/extensions/native_node_util_colors.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_util_colors.zig",
+        "bytes": 8214,
+        "sha256": "3ABFB0B79C9E52FF3FAE5AB344F2F9B534B7EA52E8762108AB2C9B3DF793C827"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 12,
+      "literal": "extensions/native_node_internal_builtin_require.zig",
+      "target": "src/extensions/native_node_internal_builtin_require.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_internal_builtin_require.zig",
+        "bytes": 8984,
+        "sha256": "02A9B4AD917C19E365024EDA8911FB8A3E3AE5A38DB03E48BC9C74FF99535D70"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 13,
+      "literal": "extensions/native_node_argument_bootstrap.zig",
+      "target": "src/extensions/native_node_argument_bootstrap.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_bootstrap.zig",
+        "bytes": 4905,
+        "sha256": "435957EED6F561AD47B2AAA68EA07BC5FBDCCE28D2F077B8824098B309A98484"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 14,
+      "literal": "extensions/native_node_fs_collections.zig",
+      "target": "src/extensions/native_node_fs_collections.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_collections.zig",
+        "bytes": 16656,
+        "sha256": "3617D02BCF35770944E7804D62E1AFB9699D8A4816BB4E2D45B1C191E7322876"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 15,
+      "literal": "extensions/native_node_fs_private_publication.zig",
+      "target": "src/extensions/native_node_fs_private_publication.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_private_publication.zig",
+        "bytes": 1033,
+        "sha256": "F118D857DB722708344B87083608FEFEB769183BC0DB0F09C05D1CDCF87AB307"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 16,
+      "literal": "extensions/native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 55,
+      "literal": "extensions/timers.zig",
+      "target": "src/extensions/timers.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\timers.zig",
+        "bytes": 52715,
+        "sha256": "4AB5926421C7601B752F92E4306DC31A455C16437F8C904F80875EEE4B70CCCC"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 56,
+      "literal": "extensions/native_process.zig",
+      "target": "src/extensions/native_process.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+        "bytes": 6626,
+        "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+      },
+      "selection": "observed_Main"
+    },
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 58,
+      "literal": "extensions/native_node_os.zig",
+      "target": "src/extensions/native_node_os.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_os.zig",
+        "bytes": 18014,
+        "sha256": "9EEC70BDD87210460DE4CCFC70D66BAB4333FDB56ED41C127171B6FE6BBABBD2"
+      },
+      "selection": "observed_Main"
+    }
+  ],
+  "standard_package_imports": [
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 21,
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 26,
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 26,
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 29,
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 53,
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 53,
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 56,
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 58,
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 92,
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 97,
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 105,
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 105,
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 108,
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 117,
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "line": 120,
+      "literal": "std"
+    },
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 5,
+      "literal": "std"
+    }
+  ],
+  "literal_embeds": [
+    {
+      "importer": "src/native_node_debuglog_timers_test.zig",
+      "line": 125,
+      "literal": "fixtures/native-node-debuglog-timers-reference.js",
+      "target": "src/fixtures/native-node-debuglog-timers-reference.js",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\fixtures\\native-node-debuglog-timers-reference.js",
+        "bytes": 13113,
+        "sha256": "CDF0691E0BC19FA3AAF4A42AE7D6264A53CA426DF181F3D31407A2C8CF5DE8EA"
+      },
+      "selection": "this_packet"
+    }
+  ],
+  "prerequisites": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\source-intake.json",
+      "bytes": 33159,
+      "sha256": "719435C30C628ACA18BF533F96205CB37BF1CCBAD82E7E365424F4B6AD3DE43C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-initialized-debuglog-source-acceptance-20261024.json",
+      "bytes": 7344,
+      "sha256": "BD9B1BFA1BDBFEC651BC5430DEC1D95A9EA1B7B5639EE8EEE62371306EAB1D7F"
+    }
+  ],
+  "accepted_prerequisite_sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\projected\\src\\extensions\\native_node_safe_array_iterator.zig",
+      "bytes": 1745,
+      "sha256": "9D3E761E138CDF9831A5A4D23949076C159F79120377090947F2294B6635EC91"
+    }
+  ],
+  "native_dependency_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2409692,
+      "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 117849,
+      "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine_abi.c",
+      "bytes": 18016,
+      "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine_abi.h",
+      "bytes": 2003,
+      "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+      "bytes": 9162,
+      "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_lexical_frame.zig",
+      "bytes": 17136,
+      "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E"
+    }
+  ],
+  "next_supplier_evidence_not_selected": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\analysis.md",
+      "bytes": 19695,
+      "sha256": "48A86AC4C98115B83EDA9E07F55D28E6BF779268631F8292347B425590993462"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__node_process_methods.cc.txt",
+      "bytes": 28464,
+      "sha256": "36888E7A5FC1BA740BEFFBE8A6C6DD0C8BEDC81A3BD52893BE96403790092622"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__node_trace_events.cc.txt",
+      "bytes": 6763,
+      "sha256": "A621D1E86F742AE4605792A7BD516E817D604CE240DEDFA89409EC405921A6A5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_api.h",
+      "bytes": 7902,
+      "sha256": "6AA6586C71DAE6E72F1A59860E54F550E076AC9BEFFFA67264C59FD6A3CFFEA3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_event_api.h",
+      "bytes": 3807,
+      "sha256": "454EE9ECD5E84795751A9D1826FCF18B52E3E43513CE70A200A5F41B01C7194F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_event_api.cpp",
+      "bytes": 5371,
+      "sha256": "8CD4D1AF43AF6C0F80304020EB1027C82F72C9B3BFCA68D72FBF0AB1506837EB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.cpp",
+      "bytes": 13664,
+      "sha256": "E0408BD2D94D728FACD1E2B36C7DD831BEF49E12BF53C52FE60D602D001B0064"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+      "bytes": 6626,
+      "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process_clock.zig",
+      "bytes": 7827,
+      "sha256": "CBE059EE37ACA5AEDA7AE0920CEA1589ABB8A8850FB53E31BFC8E44EC0909B40"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\authority\\per-thread-hrtime-handoff-provenance.json",
+      "bytes": 1146,
+      "sha256": "665513815DAB69195D52C23E20A2127AA8F83E9D8AC1A65A448F6826DA38E607"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\authority\\per-thread-hrtime-handoff-fetch.json",
+      "bytes": 11053,
+      "sha256": "06F34110A5C0A1FBD1A5325874ED4DA5800DC6DEF9FF477332DF9A56788231DF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\authority\\per-thread-hrtime-handoff-excerpt.js.txt",
+      "bytes": 1047,
+      "sha256": "3E2BEE176E24D557D05818A9A765956C9A936C8CD123F10BFA54B57820B1A7E0"
+    }
+  ],
+  "private_api": {
+    "acquire": "native_node_debuglog_timers.acquire(engine, .{ .debuglog_exports = actual_ordinary_private_exports, .trace_events = actual_original_bootstrap_trace_binding }) -> owned private record",
+    "exports": [
+      "kNone",
+      "kSkipLog",
+      "kSkipTrace",
+      "formatTime",
+      "time",
+      "timeEnd",
+      "timeLog",
+      "debugWithTimer"
+    ],
+    "named_trace_import_order": [
+      "getCategoryEnabledBuffer",
+      "trace"
+    ],
+    "shared_state": "actual ordinary process/inspect/format/SafeArrayIterator/testEnabled/warning/lazyColors; existing genuine cached SafeMap",
+    "live_original_hrtime": "ordinary process.hrtime Gets/Calls, no provider installed",
+    "initial_NODE_DEBUG": "only original actual initializer; no invented default",
+    "no_public_module_registration": true
+  },
+  "controls": {
+    "group": "native-node-debuglog-timers",
+    "target": "build-native-node-debuglog-timers",
+    "test_root": "src/native_node_debuglog_timers_test.zig",
+    "filter": "native debug timers",
+    "artifact_stem": "native-node-debuglog-timers",
+    "pdb_stem": "test",
+    "source_declaration_count": 45,
+    "names": [
+      "native debug timers preserve original callable shapes and defer category or timestamp observation",
+      "native debug timers format original thresholds rounding signed zero and nonfinite values",
+      "native debug timers preserve repeated original numeric coercion and Number receiver brands",
+      "native debug timers use captured Number Math and string methods after guest replacement",
+      "native debug timers perform split object destructuring index zero before index one",
+      "native debug timers escape trace labels and emit begin before the timestamp",
+      "native debug timers coerce labels before has and capture set before live hrtime",
+      "native debug timers default log label applies only to undefined and Symbols stop before has",
+      "native debug timers duplicate warning returns before flag coercion trace and clock",
+      "native debug timers direct time always stores while only the trace bit controls begin",
+      "native debug timers missing end label warns then emits end and deletes",
+      "native debug timers elapsed arithmetic reads and coerces seconds before nanoseconds",
+      "native debug timers timeLog preserves optional argument arity and keeps the stored timestamp",
+      "native debug timers end flag combinations retain the original delete and logging order",
+      "native debug timers a logger throw prevents end trace and deletion and preserves identity",
+      "native debug timers a trace throw occurs before start timestamp and after end logging",
+      "native debug timers retain live two-step replaceAll and forward its result without extra coercion",
+      "native debug timers retain the selected set method across hrtime reentry",
+      "native debug timers start trace reentry happens before either timestamp is stored",
+      "native debug timers uppercase the category once at construction with captured string methods",
+      "native debug timers leave testEnabled uninitialized until explicit initialization and then retry",
+      "native debug timers invoke the init callback unconditionally even when both paths are disabled",
+      "native debug timers skip timestamps labels and output only for the original both-disabled condition",
+      "native debug timers trace an enabled category without reading pid stderr or logging",
+      "native debug timers log through actual colors inspector and format with tracing disabled",
+      "native debug timers read the real shared enabled byte on every escaped internal call",
+      "native debug timers share one SafeMap per uppercase set across independent factories",
+      "native debug timers recheck the enabled byte after init callback changes it",
+      "native debug timers retain initialized cells after a callback throw and retry the original callback",
+      "native debug timers run init for every original arrow while escaped internals reuse captures",
+      "native debug timers share original initializeDebugEnv state without retroactively changing escaped flags",
+      "native debug timers emit the original HTTP warning on each init before category observation",
+      "native debug timers observe current pid then two live stderr reads with write captured before format",
+      "native debug timers forward ordinary colors options to the actual inspector",
+      "native debug timers spread extra values through SafeArrayIterator without reading a guest iterator",
+      "native debug timers keep formatter arguments ordered after selecting the second write method",
+      "native debug timers capture trace binding named imports once in original order",
+      "native debug timers require the exact ordinary owner and reject foreign trace identity on reacquisition",
+      "native debug timers require actual prior SafeMap bootstrap and never supply a missing trace binding",
+      "native debug timers preserve reentrant complete owner publication during trace import capture",
+      "native debug timers propagate native fatal trace before timestamp storage in literal and native bodies",
+      "native debug timers retire an ignored trace return before timestamp storage",
+      "native debug timers retire missing-label warning returns before trace and delete",
+      "native debug timers retire init callback results before entering the original arrow body",
+      "native debug timers retain source pid local through write and retire it on function exit"
+    ],
+    "actual_metadata_count": null,
+    "controlled_private_trace_and_hrtime_test_inputs": true
+  },
+  "handoff": {
+    "next_minimal_genuine_supplier": "actual process_methods BindingData hrtimeBuffer and uv_hrtime callbacks plus complete original per_thread.js hrtime/hrtimeBigInt wrappers",
+    "tracing_boundary": "actual native controller/Agent/category pointer/clock/writer drafts exist but are not admitted; V8 Extras trace export and process bootstrap lifecycle remain explicit",
+    "assembly": "complete original private debuglog capture and actual initial NODE_DEBUG bootstrap before canonical Module timer/wrapModuleLoad wiring",
+    "remaining": [
+      "actual process.hrtime admission",
+      "genuine trace_events binding/VM operation and process lifecycle",
+      "complete internal/util/debuglog namespace and bootstrap",
+      "canonical Module suppliers and real runtime/session startup"
+    ]
+  },
+  "claims": {
+    "Main_mutated": false,
+    "native_execution": false,
+    "Node_capture": false,
+    "source_generator_executed": false,
+    "parser_or_formatter_executed": false,
+    "native_qualification": false,
+    "public_debuglog_namespace_published": false,
+    "native_trace_binding_complete": false,
+    "native_hrtime_provider_complete": false,
+    "application_startup_qualified": false
+  },
+  "preserved_unselected_initial_accounting": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\initial-source-inverses.json",
+    "bytes": 5127,
+    "sha256": "D94EE0F060E7BED22148A3D4C4554CCC232E2FDB232C307719B611919EC3B88B"
+  },
+  "unique_selected_accounting_pin_versions": 59
+}

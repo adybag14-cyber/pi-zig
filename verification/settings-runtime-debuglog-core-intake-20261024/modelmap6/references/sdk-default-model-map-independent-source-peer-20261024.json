@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T22:26:00.090075+00:00",
+  "reviewer": "controls_review",
+  "status": "independent_source_peer_accepted",
+  "subject": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\source-intake.json",
+    "bytes": 13361,
+    "sha256": "48E6A2728F08145AF31A5FD042573D64E9FF781992CEC3D92E2A7FDF61ED9A6B"
+  },
+  "scope": "Finite five-value default map update to retained 4954 authority; all original map keys/order and existing implementation bodies preserved",
+  "source_basis_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "Main_working_tree_clean": true,
+  "original_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\model-resolver.ts",
+      "bytes": 25178,
+      "sha256": "882BCEA5D6CE5AE37D8D8C8A4B171E3F54B0FDDE981EE1CF14B7E83ED692BE38"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\fixtures\\sdk-public-model-resolver-c268-source.mjs",
+      "bytes": 12327,
+      "sha256": "7EBCF86ACF57112104E4986EF2C3B9B03D6E55DBF243B156E37101E0AF90B1CA"
+    }
+  ],
+  "preserved_complete_prior_authority_comparison": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\model-defaults-authority-differences.json",
+    "bytes": 17492,
+    "sha256": "21931464C2E9CE5BE6CC5DF4D7B9173C01EA639186B403232DDDE66FC5EE40C0"
+  },
+  "manual_review": [
+    "Full selected native owner and all six actual-VM controls",
+    "Complete 41-entry original map plus original buildFallbackModel runtime body",
+    "Actual current fallback consumer and existing intrinsic literal-object/own-definition helpers",
+    "All six finite owner hunks and complete build insertion/fixture inverses"
+  ],
+  "checks": {
+    "unique_rehashed_pin_versions": 24,
+    "owner_hunks": 6,
+    "map_value_changes": 5,
+    "authority_comment_changes": 1,
+    "full_forward_and_reverse_owner_bytes": true,
+    "all_other_owner_bodies_byte_exact": true,
+    "all41_keys_values_order_equal_4954": true,
+    "prior_c268_native_map_bytes_preserved": true,
+    "exact_two_original_fixture_transformations": true,
+    "retained_comparison_caller_runtime_normalization_verified": true,
+    "complete_patch_targets": 5,
+    "all_patch_targets_reconstructed": true,
+    "direct_import_embed_occurrences": 9,
+    "all_direct_imports_exact": true,
+    "build_inserted_bytes": 1013,
+    "complete_build_inverse": true,
+    "build_helper_arities_current": true,
+    "artifact_stem": "test",
+    "pdb_stem": "test",
+    "declared_control_count": 6,
+    "git_apply_check_exit": 0,
+    "git_apply_check_stderr": ""
+  },
+  "finite_value_deltas": [
+    {
+      "provider": "nvidia",
+      "accepted_c268": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "original_4954": "nvidia/nemotron-3-ultra-550b-a55b",
+      "kind": "replace"
+    },
+    {
+      "provider": "xiaomi",
+      "accepted_c268": "mimo-v2.6-pro",
+      "original_4954": "mimo-v2.5-pro",
+      "kind": "replace"
+    },
+    {
+      "provider": "xiaomi-token-plan-cn",
+      "accepted_c268": "mimo-v2.6-pro",
+      "original_4954": "mimo-v2.5-pro",
+      "kind": "replace"
+    },
+    {
+      "provider": "xiaomi-token-plan-ams",
+      "accepted_c268": "mimo-v2.6-pro",
+      "original_4954": "mimo-v2.5-pro",
+      "kind": "replace"
+    },
+    {
+      "provider": "xiaomi-token-plan-sgp",
+      "accepted_c268": "mimo-v2.6-pro",
+      "original_4954": "mimo-v2.5-pro",
+      "kind": "replace"
+    }
+  ],
+  "owner_replay_stages": [
+    {
+      "before_sha256": "C5318978B99C8B0A008A719ED18D77DD756832CB9B794D136B39D1997851E803",
+      "after_sha256": "36F2F86BE7C74996792F686D76343C6B0D13F73EC55CF17484276659E0C1A9D2",
+      "byte_offset": 77,
+      "before_bytes": 67,
+      "after_bytes": 161
+    },
+    {
+      "before_sha256": "36F2F86BE7C74996792F686D76343C6B0D13F73EC55CF17484276659E0C1A9D2",
+      "after_sha256": "5DA5C755C5675AAA756AF4770D3BE927F082304CCC676A16BBE4377D08F56B3A",
+      "byte_offset": 873,
+      "before_bytes": 61,
+      "after_bytes": 56
+    },
+    {
+      "before_sha256": "5DA5C755C5675AAA756AF4770D3BE927F082304CCC676A16BBE4377D08F56B3A",
+      "after_sha256": "8F7B3DBD4D5FF8BFED6C652B2B8165B14D49061A92420D495ED214B5EA4FE953",
+      "byte_offset": 2175,
+      "before_bytes": 36,
+      "after_bytes": 36
+    },
+    {
+      "before_sha256": "8F7B3DBD4D5FF8BFED6C652B2B8165B14D49061A92420D495ED214B5EA4FE953",
+      "after_sha256": "24122475E44728A6E45B48532C079B61C3DB96AF79E173A92E161DC583F6ED65",
+      "byte_offset": 2211,
+      "before_bytes": 50,
+      "after_bytes": 50
+    },
+    {
+      "before_sha256": "24122475E44728A6E45B48532C079B61C3DB96AF79E173A92E161DC583F6ED65",
+      "after_sha256": "7BA608336C475D98C0C8F1D3C56EA37B90997F774001F4BCA2CE61FC6A179856",
+      "byte_offset": 2261,
+      "before_bytes": 51,
+      "after_bytes": 51
+    },
+    {
+      "before_sha256": "7BA608336C475D98C0C8F1D3C56EA37B90997F774001F4BCA2CE61FC6A179856",
+      "after_sha256": "CE13D704B9C2DE36989EBD681361232E68784B4FB72F79767D28BD0048F37B02",
+      "byte_offset": 2312,
+      "before_bytes": 51,
+      "after_bytes": 51
+    }
+  ],
+  "selected_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_factory_model.zig",
+    "bytes": 6807,
+    "sha256": "CE13D704B9C2DE36989EBD681361232E68784B4FB72F79767D28BD0048F37B02"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\source-diff.patch",
+    "bytes": 13907,
+    "sha256": "5D015FEA59F420B6C5B9E9DFC36085005CB0FB3C0E77E33E3A833ACD168D29F2"
+  },
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1013,
+    "sha256": "F655F40577ED30ECE1F21D9744689A40649213C0EF362AA48D2E93111FE133DF"
+  },
+  "additional_actual_helper_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_values.zig",
+      "bytes": 13939,
+      "sha256": "0B1BB422A9C89E7CE8146B32413B27E42D8DFB65285C3245B89EED8AF222022E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_guest_operation.zig",
+      "bytes": 7009,
+      "sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C"
+    }
+  ],
+  "findings": [],
+  "limitations": [
+    "Source peer only: no parser, formatter, compiler, metadata, runtime or Node execution.",
+    "The existing fallback consumer is exercised by the authored controls; broader CLI/application assembly and native qualification remain separate.",
+    "The five data values track the retained original snapshot; historical c268 source and evidence remain immutable."
+  ],
+  "candidate_executed": false,
+  "native_execution": false,
+  "Main_mutated": false,
+  "product_qualification": false
+}

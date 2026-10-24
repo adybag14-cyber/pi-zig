@@ -14,7 +14,7 @@ pub fn create(context: *c.JSContext) !c.JSValue {
     defer c.JS_FreeValue(context, global);
     const result = try checked(c.JS_NewObjectProto(context, c.pi_js_null()));
     errdefer c.JS_FreeValue(context, result);
-    inline for (.{ "Error", "EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "Map", "Set", "DataView", "String", "Function", "FinalizationRegistry", "Array", "Object", "Symbol", "RegExp" }) |name| {
+    inline for (.{ "Error", "EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "Map", "Set", "DataView", "String", "Function", "FinalizationRegistry", "Array", "Object", "Symbol", "RegExp", "Number" }) |name| {
         const constructor = try checked(c.JS_GetPropertyStr(context, global, name));
         defer c.JS_FreeValue(context, constructor);
         try put(context, result, name, c.JS_DupValue(context, constructor));
@@ -55,10 +55,47 @@ pub fn create(context: *c.JSContext) !c.JSValue {
             defer c.JS_FreeValue(context, prototype);
             const method = if (comptime @import("std").mem.eql(u8, name, "Array")) "forEach" else "register";
             try put(context, result, name ++ "." ++ method, try checked(c.JS_GetPropertyStr(context, prototype, method)));
-            if (comptime @import("std").mem.eql(u8, name, "Array"))
+            if (comptime @import("std").mem.eql(u8, name, "Array")) {
                 try put(context, result, "Array.some", try checked(c.JS_GetPropertyStr(context, prototype, "some")));
+                // Exact primordial uncurryThis: Function.prototype.call.bind(fn).
+                // Bind while the realm is pristine, before guest code can change
+                // Function metadata, Array iteration or the iterator prototype.
+                const symbol = try checked(c.JS_GetIteratorSymbol(context));
+                defer c.JS_FreeValue(context, symbol);
+                const atom = c.JS_ValueToAtom(context, symbol);
+                if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+                defer c.JS_FreeAtom(context, atom);
+                const iterate = try checked(c.JS_GetProperty(context, prototype, atom));
+                defer c.JS_FreeValue(context, iterate);
+                const array = try checked(c.JS_NewArray(context));
+                defer c.JS_FreeValue(context, array);
+                const iterator = try checked(c.JS_Call(context, iterate, array, 0, null));
+                defer c.JS_FreeValue(context, iterator);
+                const next = try checked(c.JS_GetPropertyStr(context, iterator, "next"));
+                defer c.JS_FreeValue(context, next);
+                const function_constructor = try checked(c.JS_GetPropertyStr(context, global, "Function"));
+                defer c.JS_FreeValue(context, function_constructor);
+                const function_prototype = try checked(c.JS_GetPropertyStr(context, function_constructor, "prototype"));
+                defer c.JS_FreeValue(context, function_prototype);
+                const call_method = try checked(c.JS_GetPropertyStr(context, function_prototype, "call"));
+                defer c.JS_FreeValue(context, call_method);
+                const bind_method = try checked(c.JS_GetPropertyStr(context, function_prototype, "bind"));
+                defer c.JS_FreeValue(context, bind_method);
+                var factory_args = [_]c.JSValue{iterate};
+                var next_args = [_]c.JSValue{next};
+                try put(context, result, "Array.iterate.uncurried",
+                    try checked(c.JS_Call(context, bind_method, call_method, 1, &factory_args)));
+                try put(context, result, "Array.next.uncurried",
+                    try checked(c.JS_Call(context, bind_method, call_method, 1, &next_args)));
+            }
+        }
+        if (comptime @import("std").mem.eql(u8, name, "Number")) {
+            const prototype = try checked(c.JS_GetPropertyStr(context, constructor, "prototype"));
+            defer c.JS_FreeValue(context, prototype);
+            try put(context, result, "Number.toFixed", try checked(c.JS_GetPropertyStr(context, prototype, "toFixed")));
         }
         if (comptime @import("std").mem.eql(u8, name, "Object")) {
+            try put(context, result, "Object.defineProperty", try checked(c.JS_GetPropertyStr(context, constructor, "defineProperty")));
             try put(context, result, "Object.freeze", try checked(c.JS_GetPropertyStr(context, constructor, "freeze")));
             try put(context, result, "Object.entries", try checked(c.JS_GetPropertyStr(context, constructor, "entries")));
             const prototype = try checked(c.JS_GetPropertyStr(context, constructor, "prototype"));
@@ -71,6 +108,8 @@ pub fn create(context: *c.JSContext) !c.JSValue {
             if (comptime @import("std").mem.eql(u8, name, "String")) {
                 try put(context, result, "String.split", try checked(c.JS_GetPropertyStr(context, prototype, "split")));
                 try put(context, result, "String.toLowerCase", try checked(c.JS_GetPropertyStr(context, prototype, "toLowerCase")));
+                try put(context, result, "String.toUpperCase", try checked(c.JS_GetPropertyStr(context, prototype, "toUpperCase")));
+                try put(context, result, "String.padStart", try checked(c.JS_GetPropertyStr(context, prototype, "padStart")));
             } else {
                 try put(context, result, "RegExp.exec", try checked(c.JS_GetPropertyStr(context, prototype, "exec")));
             }
@@ -93,6 +132,9 @@ pub fn create(context: *c.JSContext) !c.JSValue {
             }
         }
     }
+    const math = try checked(c.JS_GetPropertyStr(context, global, "Math"));
+    defer c.JS_FreeValue(context, math);
+    try put(context, result, "Math.floor", try checked(c.JS_GetPropertyStr(context, math, "floor")));
     // Node util's actual private symbol is shared by every cache instance in
     // this Engine, including independently created SourceMapCacheMap classes.
     try put(context, result, "Node.source_map_data_private_symbol",

@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "excerpts": [
+    {
+      "role": "original source compiler emits one OP_to_object for an object pattern",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409692,
+        "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+      },
+      "line_start": 30536,
+      "line_end_inclusive": 30540,
+      "byte_start": 1026878,
+      "byte_end_exclusive": 1027072,
+      "bytes": 194,
+      "sha256": "0C5A618DBBF679D298BEF1039F1B0C26F7B03553801D4DD400E4BDF4ADA15AC8",
+      "text": "    if (s->token.val == '{') {\n        if (next_token(s))\n            return -1;\n        /* throw an exception if the value cannot be converted to an object */\n        emit_op(s, OP_to_object);\n"
+    },
+    {
+      "role": "actual OP_to_object replaces primitive operand with its one boxed object",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409692,
+        "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+      },
+      "line_start": 23168,
+      "line_end_inclusive": 23176,
+      "byte_start": 777181,
+      "byte_end_exclusive": 777527,
+      "bytes": 346,
+      "sha256": "3FCC8725C78944A5A4A2EA064BEF3D07B559497350B176D59840448101D85AFD",
+      "text": "        CASE(OP_to_object):\n            if (JS_VALUE_GET_TAG(sp[-1]) != JS_TAG_OBJECT) {\n                sf->cur_pc = pc;\n                ret_val = JS_ToObject(ctx, sp[-1]);\n                if (JS_IsException(ret_val))\n                    goto exception;\n                JS_FreeValue(ctx, sp[-1]);\n                sp[-1] = ret_val;\n            }\n"
+    },
+    {
+      "role": "existing owned VM JS_ToObject operation",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_guest_operation.zig",
+        "bytes": 7009,
+        "sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C"
+      },
+      "line_start": 115,
+      "line_end_inclusive": 118,
+      "byte_start": 6579,
+      "byte_end_exclusive": 6792,
+      "bytes": 213,
+      "sha256": "050B6E42B3B3E833BC0A56235945B3EF0988EB6D0C5AE896B240E05CDFACDC59",
+      "text": "pub fn toObject(s: anytype, value: c.JSValue) !c.JSValue {\n    var boundary: Boundary = .{ .engine = s.engine }; try boundary.begin();\n    return boundary.finishValue(s, c.JS_ToObject(s.engine.context, value));\n}\n"
+    },
+    {
+      "role": "actual Scope/owned expression wrapper",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      },
+      "line_start": 3,
+      "line_end_inclusive": 14,
+      "byte_start": 149,
+      "byte_end_exclusive": 928,
+      "bytes": 779,
+      "sha256": "ACB643C7533A22217A684DAE059FF363C67871904CE0C9815E42E664B9566C29",
+      "text": "//! allocation generation inference or separate error identity registry.\npub const v = @import(\"native_ai_provider_values.zig\");\npub const c = v.c;\npub const Scope = @import(\"native_node_operation_scope.zig\").Scope;\npub const owned = @import(\"native_sdk_owned_completion.zig\");\npub const frames = @import(\"native_public_lexical_frame.zig\");\npub fn duplicate(engine: *v.em.Engine, value: c.JSValue) c.JSValue { return c.JS_DupValue(engine.context, value); }\npub fn arg(args: []const c.JSValue, position: usize) c.JSValue { return if (position < args.len) args[position] else c.pi_js_undefined(); }\npub fn expression(engine: *v.em.Engine, comptime body: anytype, args: anytype) !c.JSValue {\n    var s = Scope.init(engine);\n    return s.finish(@call(.auto, body, .{&s} ++ args));\n}\n"
+    }
+  ],
+  "unchanged_C_header_abi": true,
+  "source_only": true
+}

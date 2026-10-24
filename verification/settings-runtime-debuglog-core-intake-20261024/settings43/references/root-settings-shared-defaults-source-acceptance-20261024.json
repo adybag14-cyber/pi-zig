@@ -1,0 +1,166 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "root_settings_shared_defaults_source_accepted",
+  "candidate_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\source-intake.json",
+    "bytes": 32986,
+    "sha256": "B9F4E03AB59517E440DE5741E593CA06E2B3FC43194BFD5E593CD39254FF9FB6"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\source-diff.patch",
+    "bytes": 100422,
+    "sha256": "5FF819C25250B106DB78B099411860F8D0A329AAD394B66053C6615CA731ECD0"
+  },
+  "source_inverses": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\settings-owner-finite-inverses.json",
+      "bytes": 13995,
+      "sha256": "6698777448487888AF2DDCD3588D4FAE22BB41762F513149879E01ACFD4DF531"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\original-accessor-fixture-inverses.json",
+      "bytes": 24379,
+      "sha256": "C30DF5998D3F4911C6E353A0CA055E19BA676AE4B2D903B08F85B7E6EAFE100F"
+    }
+  ],
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1087,
+    "sha256": "9C9DB4D55FE213F289E9D547B02A1ECCF71C8AF19C9F6EA91351A3B7A7585FAE"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\build-insertion-inverse.json",
+    "bytes": 1404,
+    "sha256": "744E9365B4B10E5F0FBDE72E6B7416BF96ED1726CACB442C473432D9539A7E1B"
+  },
+  "checked_changes": [
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\original\\build.zig",
+        "bytes": 550798,
+        "sha256": "4FC880853D3B268E38DA1D9B05B60590384696B0005820F66A9FA70D2747440C"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 551885,
+        "sha256": "AD33906FE1A7F5C6BD4A3B317092E1B0E72D4AD1BFBD842E590EF48D26F85E30"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/sdk-settings-default-accessors-4954-source.mjs",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-default-accessors-4954-source.mjs",
+        "bytes": 7869,
+        "sha256": "0EF20BAE3AA4499E9F7C91A287F8E4F52C3928CF008657FE6626C6770CD2C7F9"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/sdk-settings-shared-defaults-observer.mjs",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-shared-defaults-observer.mjs",
+        "bytes": 32163,
+        "sha256": "F9ED183A05C763149C9AFDED043961D7156A8FD1B769F765A07CB2A63D2E8354"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_sdk_settings.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\original\\src\\extensions\\native_sdk_settings.zig",
+        "bytes": 42856,
+        "sha256": "BE24774B254246221CA948465457DCE8D149D578BFB27C544CA3299F5CA390FA"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings.zig",
+        "bytes": 34847,
+        "sha256": "17DB88DD58BC93AC4636024C38F3C3A33D78F5566B2999501069B0B858C9FA59"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_sdk_settings_default_accessors.zig",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings_default_accessors.zig",
+        "bytes": 26263,
+        "sha256": "1B6AEF1DA6DA98AD3DAA136C95A660EDF190A424A8804FDCB05876E346221286"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_sdk_settings_shared_defaults_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\native_sdk_settings_shared_defaults_test.zig",
+        "bytes": 15789,
+        "sha256": "B7499688B9DD0BEC25AD635362930FC72D04A79AA9B79481C850630D2C81F7B9"
+      }
+    }
+  ],
+  "root_source_verification": {
+    "status": "root_settings43_source_verified",
+    "source_entry": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\source-intake.json",
+      "bytes": 32986,
+      "sha256": "B9F4E03AB59517E440DE5741E593CA06E2B3FC43194BFD5E593CD39254FF9FB6"
+    },
+    "pin_versions_rehashed": 45,
+    "patch_targets": 6,
+    "existing_owner_hunks": 12,
+    "complete_existing_owner_raw_inverse": true,
+    "original_getter_runtime_bodies_unchanged": 41,
+    "original_constant_signature_erasures": 3,
+    "relative_imports_and_embeds": 25,
+    "package_imports": 4,
+    "source_controls": 43,
+    "build_addition": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\build-insertion.txt",
+      "bytes": 1087,
+      "sha256": "9C9DB4D55FE213F289E9D547B02A1ECCF71C8AF19C9F6EA91351A3B7A7585FAE"
+    },
+    "latest_build_composition": {
+      "bytes": 558002,
+      "sha256": "6E66A03EF8D5F78BFBDA7B71054793461A1C0673123F80B54078B48DA6D4CDBA"
+    },
+    "composed_current_git_apply_check": true,
+    "Main_clean": true,
+    "native_execution_authorized": false,
+    "actual_metadata_count": null
+  },
+  "selected_source_controls": 43,
+  "affected_original_getters": 41,
+  "findings": [
+    "Read the complete new accessor owner, all twelve existing Settings owner changes, all forty-one original getter bodies, the full control observer and all forty-three actual-VM controls. Source-only acceptance; no native result inferred.",
+    "All default-bearing accessors use the genuine per-Engine shared SETTINGS_DEFAULTS owner864B545A. The former per-instance JSON default reader is removed only from the selected accessor owner; its original source/asset remain retained.",
+    "Actual SettingsManager identity/backing data and storage queue remain the collaborators. The complete original missing session-share getter/setter are added; the test Source class only supplies literal original methods on genuine manager instances.",
+    "Ordinary nullish/truthy fallback order, global-only trust/cache fields, exact strict accepted selectors, optional settings parents versus mandatory default parents and repeated compound parent Gets match the original runtime bodies.",
+    "Two compaction token defaults capture once via two separate original parent reads; the exported mode array remains a live mutable array shared by the genuine private import owner. No partial public settings-manager namespace is created.",
+    "Live instance method calls, Number/Array/Math/String/Error resolution and receivers, optional computed keys, provider conversion before model id Get, validation before override work and exact original error construction are preserved.",
+    "Arguments/lexical frames retain true local lifetimes; consumed receiver/predicate/comparison temporaries finish before later Gets. Current fatal, actual retirement fatal/cancellation and preexisting pending entry are explicit controls using the real VM owners.",
+    "Mechanical replay verified45 pin versions,6 complete patch targets,12 original-owner hunks/full raw inverse,41 original getter signature erasures with unchanged bodies,3 constant/helper type erasures,25 relative imports/embeds,4 package imports and43 exact names.",
+    "The 1087-byte build insertion composes into current35790 with exact raw inverse and successful git apply --check. Only that insertion may be composed; the older standalone full build is not an intake target."
+  ],
+  "limitations": [
+    "Root must review and compose the isolated 1,087-byte build insertion into its latest accepted build; do not overwrite newer full build bytes.",
+    "The exact source prerequisites are the accepted Resolver shared defaults owner and existing genuine native SettingsManager, sync argument, lexical-frame, and owned completion collaborators.",
+    "Existing non-default accessors/setters and complete settings-manager module publication retain their prior scope; this packet does not assert full SettingsManager parity.",
+    "Other original SETTINGS_DEFAULTS import sites remain settings-schema.ts, extensions/codemode/tool.ts, extensions/codemode/index.ts, and modes/interactive/components/settings-selector.ts.",
+    "Production createRuntime, actual context/UI/service/session inputs, native compilation, metadata, runtime and product qualification remain separate."
+  ],
+  "actual_metadata_count": null,
+  "native_execution_authorized": false,
+  "candidate_executed": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "Main_mutated": false,
+  "new_C_ABI": false,
+  "created_utc": "2026-10-24T22:13:16.348460+00:00"
+}

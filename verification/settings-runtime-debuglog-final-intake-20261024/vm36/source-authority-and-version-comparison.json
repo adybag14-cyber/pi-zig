@@ -1,0 +1,483 @@
+{
+  "schema": "pinned-node-string-primitive-hook-authority-v1",
+  "static_fetch_only": true,
+  "reference_execution": false,
+  "primary_original_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "primary_declared_version": "24.14.0",
+  "prior_24_13_label_was_inaccurate_for_primary_commit": true,
+  "historical_evidence_unchanged": true,
+  "official_24_13_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "official_tag_ref": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\official-v24.13.0-tag-ref.json",
+    "bytes": 329,
+    "sha256": "F0EA22813924813CC358827A3ADBD5AE530CC0E5438FABE94EB8F875FCD1622E"
+  },
+  "official_tag_object": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\official-v24.13.0-tag-object.json",
+    "bytes": 2908,
+    "sha256": "FDEDDAD4F6232DB8D7D8C1C45AEFA025B1BCDE4CD1BF760D82F8499D1FD9B621"
+  },
+  "official_tag_ref_url": "https://api.github.com/repos/nodejs/node/git/ref/tags/v24.13.0",
+  "official_tag_object_url": "https://api.github.com/repos/nodejs/node/git/tags/d3a73a945e6fff8263153d74e6c3d203fb060b6e",
+  "versions": {
+    "primary_retained_commit": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\src__node_version.h.txt",
+        "bytes": 4247,
+        "sha256": "74D05B970E49928464A4E217ADAAFDE365F77761DEB86A8DEAE6FE9A5B14F1D6"
+      },
+      "declared_version": "24.14.0"
+    },
+    "official_v24_13_0": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\src__node_version.h.txt",
+        "bytes": 4247,
+        "sha256": "B4FA340EFF47758624C9D131F28E48F58875DB9E19CB7CE137476A033E5C3820"
+      },
+      "declared_version": "24.13.0"
+    }
+  },
+  "authority_files": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__builtins-regexp-gen.cc.txt",
+        "bytes": 85180,
+        "sha256": "2538AA5ED1B52D31209E518B860718BE470FB0DFEEB51C405B0DBFE3B2D477A9"
+      },
+      "source_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+      "source_relative_path": "deps/v8/src/builtins/builtins-regexp-gen.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/v8/src/builtins/builtins-regexp-gen.cc",
+      "selected_semantic_authority": false
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__builtins-string-gen.cc.txt",
+        "bytes": 84709,
+        "sha256": "33B0B183E20D832C4871C402906C8C0AEB8135FCBDB327DCA473B0177FD3946B"
+      },
+      "source_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+      "source_relative_path": "deps/v8/src/builtins/builtins-string-gen.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/v8/src/builtins/builtins-string-gen.cc",
+      "selected_semantic_authority": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__regexp-match-all.tq.txt",
+        "bytes": 9181,
+        "sha256": "AC9FE7D1A240EFFD7C1A094E545042D4981EF7F4CEEC5109DCA33B93F971F613"
+      },
+      "source_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+      "source_relative_path": "deps/v8/src/builtins/regexp-match-all.tq",
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/v8/src/builtins/regexp-match-all.tq",
+      "selected_semantic_authority": false
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__string-match-search.tq.txt",
+        "bytes": 3090,
+        "sha256": "49EDC908E088EB8954741A1CE009BD0932C38CC26B1E7BE563313253BFBC46CC"
+      },
+      "source_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+      "source_relative_path": "deps/v8/src/builtins/string-match-search.tq",
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/v8/src/builtins/string-match-search.tq",
+      "selected_semantic_authority": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__string-replaceall.tq.txt",
+        "bytes": 6382,
+        "sha256": "53D77E2769E0D516BCC003CD3270EC9D4DE5C8F765EBCACC53589545D09EB1E4"
+      },
+      "source_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+      "source_relative_path": "deps/v8/src/builtins/string-replaceall.tq",
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/v8/src/builtins/string-replaceall.tq",
+      "selected_semantic_authority": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__objects__lookup.cc.txt",
+        "bytes": 68935,
+        "sha256": "B9536BB8AC91435039AD33ADD1E6280F506AB37D93087BE842D9C5F505E9420E"
+      },
+      "source_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+      "source_relative_path": "deps/v8/src/objects/lookup.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/v8/src/objects/lookup.cc",
+      "selected_semantic_authority": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\deps__v8__src__builtins__builtins-regexp-gen.cc.txt",
+        "bytes": 85180,
+        "sha256": "2538AA5ED1B52D31209E518B860718BE470FB0DFEEB51C405B0DBFE3B2D477A9"
+      },
+      "source_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "source_relative_path": "deps/v8/src/builtins/builtins-regexp-gen.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/builtins/builtins-regexp-gen.cc",
+      "selected_semantic_authority": false
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\deps__v8__src__builtins__builtins-string-gen.cc.txt",
+        "bytes": 84709,
+        "sha256": "33B0B183E20D832C4871C402906C8C0AEB8135FCBDB327DCA473B0177FD3946B"
+      },
+      "source_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "source_relative_path": "deps/v8/src/builtins/builtins-string-gen.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/builtins/builtins-string-gen.cc",
+      "selected_semantic_authority": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\deps__v8__src__builtins__regexp-match-all.tq.txt",
+        "bytes": 9181,
+        "sha256": "AC9FE7D1A240EFFD7C1A094E545042D4981EF7F4CEEC5109DCA33B93F971F613"
+      },
+      "source_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "source_relative_path": "deps/v8/src/builtins/regexp-match-all.tq",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/builtins/regexp-match-all.tq",
+      "selected_semantic_authority": false
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\deps__v8__src__builtins__string-match-search.tq.txt",
+        "bytes": 3090,
+        "sha256": "49EDC908E088EB8954741A1CE009BD0932C38CC26B1E7BE563313253BFBC46CC"
+      },
+      "source_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "source_relative_path": "deps/v8/src/builtins/string-match-search.tq",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/builtins/string-match-search.tq",
+      "selected_semantic_authority": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\deps__v8__src__builtins__string-replaceall.tq.txt",
+        "bytes": 6382,
+        "sha256": "53D77E2769E0D516BCC003CD3270EC9D4DE5C8F765EBCACC53589545D09EB1E4"
+      },
+      "source_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "source_relative_path": "deps/v8/src/builtins/string-replaceall.tq",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/builtins/string-replaceall.tq",
+      "selected_semantic_authority": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\deps__v8__src__objects__lookup.cc.txt",
+        "bytes": 68935,
+        "sha256": "B9536BB8AC91435039AD33ADD1E6280F506AB37D93087BE842D9C5F505E9420E"
+      },
+      "source_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "source_relative_path": "deps/v8/src/objects/lookup.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/objects/lookup.cc",
+      "selected_semantic_authority": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\src__node_version.h.txt",
+        "bytes": 4247,
+        "sha256": "B4FA340EFF47758624C9D131F28E48F58875DB9E19CB7CE137476A033E5C3820"
+      },
+      "source_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "source_relative_path": "src/node_version.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_version.h",
+      "selected_semantic_authority": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\src__node_version.h.txt",
+        "bytes": 4247,
+        "sha256": "74D05B970E49928464A4E217ADAAFDE365F77761DEB86A8DEAE6FE9A5B14F1D6"
+      },
+      "source_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+      "source_relative_path": "src/node_version.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/node_version.h",
+      "selected_semantic_authority": true
+    }
+  ],
+  "full_file_equalities": [
+    {
+      "primary": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__builtins-regexp-gen.cc.txt",
+        "bytes": 85180,
+        "sha256": "2538AA5ED1B52D31209E518B860718BE470FB0DFEEB51C405B0DBFE3B2D477A9"
+      },
+      "official_24_13_0": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\deps__v8__src__builtins__builtins-regexp-gen.cc.txt",
+        "bytes": 85180,
+        "sha256": "2538AA5ED1B52D31209E518B860718BE470FB0DFEEB51C405B0DBFE3B2D477A9"
+      },
+      "whole_file_byte_identical": true
+    },
+    {
+      "primary": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__builtins-string-gen.cc.txt",
+        "bytes": 84709,
+        "sha256": "33B0B183E20D832C4871C402906C8C0AEB8135FCBDB327DCA473B0177FD3946B"
+      },
+      "official_24_13_0": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\deps__v8__src__builtins__builtins-string-gen.cc.txt",
+        "bytes": 84709,
+        "sha256": "33B0B183E20D832C4871C402906C8C0AEB8135FCBDB327DCA473B0177FD3946B"
+      },
+      "whole_file_byte_identical": true
+    },
+    {
+      "primary": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__regexp-match-all.tq.txt",
+        "bytes": 9181,
+        "sha256": "AC9FE7D1A240EFFD7C1A094E545042D4981EF7F4CEEC5109DCA33B93F971F613"
+      },
+      "official_24_13_0": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\deps__v8__src__builtins__regexp-match-all.tq.txt",
+        "bytes": 9181,
+        "sha256": "AC9FE7D1A240EFFD7C1A094E545042D4981EF7F4CEEC5109DCA33B93F971F613"
+      },
+      "whole_file_byte_identical": true
+    },
+    {
+      "primary": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__string-match-search.tq.txt",
+        "bytes": 3090,
+        "sha256": "49EDC908E088EB8954741A1CE009BD0932C38CC26B1E7BE563313253BFBC46CC"
+      },
+      "official_24_13_0": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\deps__v8__src__builtins__string-match-search.tq.txt",
+        "bytes": 3090,
+        "sha256": "49EDC908E088EB8954741A1CE009BD0932C38CC26B1E7BE563313253BFBC46CC"
+      },
+      "whole_file_byte_identical": true
+    },
+    {
+      "primary": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__string-replaceall.tq.txt",
+        "bytes": 6382,
+        "sha256": "53D77E2769E0D516BCC003CD3270EC9D4DE5C8F765EBCACC53589545D09EB1E4"
+      },
+      "official_24_13_0": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\deps__v8__src__builtins__string-replaceall.tq.txt",
+        "bytes": 6382,
+        "sha256": "53D77E2769E0D516BCC003CD3270EC9D4DE5C8F765EBCACC53589545D09EB1E4"
+      },
+      "whole_file_byte_identical": true
+    },
+    {
+      "primary": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__objects__lookup.cc.txt",
+        "bytes": 68935,
+        "sha256": "B9536BB8AC91435039AD33ADD1E6280F506AB37D93087BE842D9C5F505E9420E"
+      },
+      "official_24_13_0": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\node-v24.13.0\\deps__v8__src__objects__lookup.cc.txt",
+        "bytes": 68935,
+        "sha256": "B9536BB8AC91435039AD33ADD1E6280F506AB37D93087BE842D9C5F505E9420E"
+      },
+      "whole_file_byte_identical": true
+    }
+  ],
+  "used_spans": [
+    {
+      "role": "v8-symbol-hook-dispatch",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__builtins-string-gen.cc.txt",
+        "bytes": 84709,
+        "sha256": "33B0B183E20D832C4871C402906C8C0AEB8135FCBDB327DCA473B0177FD3946B"
+      },
+      "lines": [
+        1070,
+        1145
+      ],
+      "excerpt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\excerpts\\v8-symbol-hook-dispatch.txt",
+        "bytes": 3262,
+        "sha256": "C46E044B45BFEE3E0F5FA2E30BC7BC8ED8C9C2B39E8C343044799B31B5E1F7C0"
+      }
+    },
+    {
+      "role": "v8-string-replace",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__builtins-string-gen.cc.txt",
+        "bytes": 84709,
+        "sha256": "33B0B183E20D832C4871C402906C8C0AEB8135FCBDB327DCA473B0177FD3946B"
+      },
+      "lines": [
+        1197,
+        1357
+      ],
+      "excerpt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\excerpts\\v8-string-replace.txt",
+        "bytes": 5795,
+        "sha256": "4062D155A252EB698676E3E7A25A8555F3D76366B740707CB638836900CB7416"
+      }
+    },
+    {
+      "role": "v8-string-split",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__builtins-string-gen.cc.txt",
+        "bytes": 84709,
+        "sha256": "33B0B183E20D832C4871C402906C8C0AEB8135FCBDB327DCA473B0177FD3946B"
+      },
+      "lines": [
+        1537,
+        1637
+      ],
+      "excerpt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\excerpts\\v8-string-split.txt",
+        "bytes": 3688,
+        "sha256": "9102858048E83B9F819D76B33D8E72DB39BB51BCF50B9BECB89E44E816B943EF"
+      }
+    },
+    {
+      "role": "adjacent-v8-string-matchall",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__builtins-string-gen.cc.txt",
+        "bytes": 84709,
+        "sha256": "33B0B183E20D832C4871C402906C8C0AEB8135FCBDB327DCA473B0177FD3946B"
+      },
+      "lines": [
+        1360,
+        1456
+      ],
+      "excerpt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\excerpts\\adjacent-v8-string-matchall.txt",
+        "bytes": 4002,
+        "sha256": "666FD6DE7D38CE4AD26F289D880EB337E03B5A085BDBBE817CA7D5D5688C682A"
+      }
+    },
+    {
+      "role": "v8-protector-invalidation",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__objects__lookup.cc.txt",
+        "bytes": 68935,
+        "sha256": "B9536BB8AC91435039AD33ADD1E6280F506AB37D93087BE842D9C5F505E9420E"
+      },
+      "lines": [
+        344,
+        355
+      ],
+      "excerpt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\excerpts\\v8-protector-invalidation.txt",
+        "bytes": 836,
+        "sha256": "ABCE24633C9909D778E8517E505C976150ACAEB8FCD2ABAE371233D5804B07D8"
+      }
+    },
+    {
+      "role": "v8-string-replaceall",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__string-replaceall.tq.txt",
+        "bytes": 6382,
+        "sha256": "53D77E2769E0D516BCC003CD3270EC9D4DE5C8F765EBCACC53589545D09EB1E4"
+      },
+      "lines": [
+        34,
+        163
+      ],
+      "excerpt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\excerpts\\v8-string-replaceall.txt",
+        "bytes": 5303,
+        "sha256": "0E654C773357FA5A052B4FB9A46EEA8D5F0519A449BA5FBA51B1207D60FFB016"
+      }
+    },
+    {
+      "role": "adjacent-v8-string-match-search",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\deps__v8__src__builtins__string-match-search.tq.txt",
+        "bytes": 3090,
+        "sha256": "49EDC908E088EB8954741A1CE009BD0932C38CC26B1E7BE563313253BFBC46CC"
+      },
+      "lines": [
+        31,
+        87
+      ],
+      "excerpt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\excerpts\\adjacent-v8-string-match-search.txt",
+        "bytes": 2100,
+        "sha256": "DA43B1BEBEDED3FDF95647B2FA94F5DF172E5D5A0FA868723FD459CB268BA76D"
+      }
+    },
+    {
+      "role": "current-js-getproperty-owned-getter",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409692,
+        "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+      },
+      "lines": [
+        10959,
+        11050
+      ],
+      "excerpt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\excerpts\\current-js-getproperty-owned-getter.txt",
+        "bytes": 3613,
+        "sha256": "D334B3785DB826B0896B62C310BDA6C945330C8190599748DE52493DAC704BA8"
+      }
+    },
+    {
+      "role": "current-owned-js-callfree",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409692,
+        "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+      },
+      "lines": [
+        23465,
+        23472
+      ],
+      "excerpt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\excerpts\\current-owned-js-callfree.txt",
+        "bytes": 338,
+        "sha256": "F7038F9232DF56215C9E7BB81C67E8B80FD8ED38CFCCE76CAE8DC6961E167B2D"
+      }
+    },
+    {
+      "role": "current-js-is-regexp-primitive-check",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409692,
+        "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+      },
+      "lines": [
+        54411,
+        54423
+      ],
+      "excerpt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\excerpts\\current-js-is-regexp-primitive-check.txt",
+        "bytes": 346,
+        "sha256": "5178A7F28B71EAA9BD738761BBB8DD446138801E82D7B7065439ABD5702AA362"
+      }
+    },
+    {
+      "role": "current-global-regexp-check",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409692,
+        "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+      },
+      "lines": [
+        52569,
+        52596
+      ],
+      "excerpt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\excerpts\\current-global-regexp-check.txt",
+        "bytes": 818,
+        "sha256": "9DF14F0E732A6572BBB92E04C6ABFFBEF189C3CEFB709682264EED81E1F2FEAE"
+      }
+    },
+    {
+      "role": "adjacent-current-string-match-search-matchall",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409692,
+        "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+      },
+      "lines": [
+        52598,
+        52646
+      ],
+      "excerpt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\authority\\excerpts\\adjacent-current-string-match-search-matchall.txt",
+        "bytes": 1632,
+        "sha256": "9D7EF131B27549D978CD784B85CF87D986F927686D4C10F866378114B02CEAEB"
+      }
+    }
+  ],
+  "conclusion": "Both exact versions dispatch Symbol.split and Symbol.replace hooks for non-nullish primitives; installing hooks invalidates the V8 fast primitive protector. Current calendar-date specification is not used to override the pinned port target."
+}

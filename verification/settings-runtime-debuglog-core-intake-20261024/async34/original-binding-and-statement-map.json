@@ -1,0 +1,179 @@
+{
+  "schema": 1,
+  "original_js": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\authority\\lib__internal__async_hooks.js.txt",
+    "bytes": 20504,
+    "sha256": "24F6E0525B52534DF5644C31560A37A317922E8304D38FB03DC4F997D8DDC07A"
+  },
+  "exact_selected_functions": [
+    {
+      "name": "newAsyncId",
+      "offset": 14827,
+      "bytes": 70,
+      "sha256": "7736AB3F6859BFBE2DB166A07F2E7C97E7511E3058CF52851DBD4E620E7928C0",
+      "first_line": 425,
+      "last_line": 427
+    },
+    {
+      "name": "getDefaultTriggerAsyncId",
+      "offset": 15272,
+      "bytes": 290,
+      "sha256": "7919D22BC73DA8534E6B18F7CBFB6A419BF1010FF9D8C00B3E5995C493B52B40",
+      "first_line": 441,
+      "last_line": 447
+    },
+    {
+      "name": "clearDefaultTriggerAsyncId",
+      "offset": 15565,
+      "bytes": 89,
+      "sha256": "A45A1475585BB733F12C5EE68DD886EBEAF661D39ACCA285C5D7E177E61055DE",
+      "first_line": 450,
+      "last_line": 452
+    },
+    {
+      "name": "hasHooks",
+      "offset": 16373,
+      "bytes": 63,
+      "sha256": "0D2D4DA977F92E66ACD3C5A69C8279BF036DF868DFEAC55A249BFD05F1CC7956",
+      "first_line": 478,
+      "last_line": 480
+    },
+    {
+      "name": "enabledHooksExist",
+      "offset": 16438,
+      "bytes": 59,
+      "sha256": "E6F8409BD6365694367E3B712A39BB8A7FF326DBE84809CE7953371A132F67E5",
+      "first_line": 482,
+      "last_line": 484
+    },
+    {
+      "name": "initHooksExist",
+      "offset": 16499,
+      "bytes": 55,
+      "sha256": "F275F6D4D88020171E57B74976E6201D8D5E1DD42AD5CDE7FF0891CA1AF9C355",
+      "first_line": 486,
+      "last_line": 488
+    },
+    {
+      "name": "afterHooksExist",
+      "offset": 16556,
+      "bytes": 57,
+      "sha256": "1C38F65540AED784683F874AB89ECB244E9176853E1090DDFA743CBAED845CF8",
+      "first_line": 490,
+      "last_line": 492
+    },
+    {
+      "name": "destroyHooksExist",
+      "offset": 16615,
+      "bytes": 61,
+      "sha256": "709A6CFF51EBBFA009CA069C8D0DE0F547C8B4915B3FCDBBDFA2B18F4752D50C",
+      "first_line": 494,
+      "last_line": 496
+    },
+    {
+      "name": "hasAsyncIdStack",
+      "offset": 17760,
+      "bytes": 63,
+      "sha256": "EDF8A262E9D1BA07FE6F16FF444C45D2BE7994A8720C7E9DE4769924D7A1F015",
+      "first_line": 541,
+      "last_line": 543
+    },
+    {
+      "name": "pushAsyncContext",
+      "offset": 17889,
+      "bytes": 570,
+      "sha256": "55E91405B766B35AD7387C1AEDEB4D60DAB41BDE556229ED42AAB7B1C5F4C1B4",
+      "first_line": 547,
+      "last_line": 557
+    },
+    {
+      "name": "popAsyncContext",
+      "offset": 18524,
+      "bytes": 611,
+      "sha256": "37E2826D709A0CB751F55547C9C5C15B359A22A069029C7A9F1A6E85CC257915",
+      "first_line": 561,
+      "last_line": 576
+    },
+    {
+      "name": "executionAsyncId",
+      "offset": 19138,
+      "bytes": 76,
+      "sha256": "95A358A32F28F052DA36D656876375A027E89EBFC4A369046AF36A42F713A805",
+      "first_line": 579,
+      "last_line": 581
+    },
+    {
+      "name": "triggerAsyncId",
+      "offset": 19216,
+      "bytes": 72,
+      "sha256": "5FD8CD38CC528A8205889953A99DF9E3F146FBB12A58B0AEE02808D775050940",
+      "first_line": 583,
+      "last_line": 585
+    }
+  ],
+  "native_binding_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__async_wrap.cc.txt",
+    "bytes": 27043,
+    "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC"
+  },
+  "native_selected_ranges": [
+    {
+      "lines": [
+        277,
+        307
+      ],
+      "text": "void AsyncWrap::PushAsyncContext(const FunctionCallbackInfo<Value>& args) {\n  Environment* env = Environment::GetCurrent(args);\n  // No need for CHECK(IsNumber()) on args because if FromJust() doesn't fail\n  // then the checks in push_async_ids() and pop_async_id() will.\n  double async_id = args[0]->NumberValue(env->context()).FromJust();\n  double trigger_async_id = args[1]->NumberValue(env->context()).FromJust();\n  env->async_hooks()->push_async_context(async_id, trigger_async_id, nullptr);\n}\n\n\nvoid AsyncWrap::PopAsyncContext(const FunctionCallbackInfo<Value>& args) {\n  Environment* env = Environment::GetCurrent(args);\n  double async_id = args[0]->NumberValue(env->context()).FromJust();\n  args.GetReturnValue().Set(env->async_hooks()->pop_async_context(async_id));\n}\n\n\nvoid AsyncWrap::ExecutionAsyncResource(\n    const FunctionCallbackInfo<Value>& args) {\n  Environment* env = Environment::GetCurrent(args);\n  uint32_t index;\n  if (!args[0]->Uint32Value(env->context()).To(&index)) return;\n  args.GetReturnValue().Set(\n      env->async_hooks()->native_execution_async_resource(index));\n}\n\n\nvoid AsyncWrap::ClearAsyncIdStack(const FunctionCallbackInfo<Value>& args) {\n  Environment* env = Environment::GetCurrent(args);\n  env->async_hooks()->clear_async_id_stack();\n}\n"
+    },
+    {
+      "lines": [
+        377,
+        440
+      ],
+      "text": "                                           Local<ObjectTemplate> target) {\n  Isolate* isolate = isolate_data->isolate();\n\n  SetMethod(isolate, target, \"setupHooks\", SetupHooks);\n  SetMethod(isolate, target, \"setCallbackTrampoline\", SetCallbackTrampoline);\n  SetMethod(isolate, target, \"pushAsyncContext\", PushAsyncContext);\n  SetMethod(isolate, target, \"popAsyncContext\", PopAsyncContext);\n  SetMethod(isolate, target, \"executionAsyncResource\", ExecutionAsyncResource);\n  SetMethod(isolate, target, \"clearAsyncIdStack\", ClearAsyncIdStack);\n  SetMethod(isolate, target, \"queueDestroyAsyncId\", QueueDestroyAsyncId);\n  SetMethod(isolate, target, \"setPromiseHooks\", SetPromiseHooks);\n  SetMethod(isolate, target, \"getPromiseHooks\", GetPromiseHooks);\n  SetMethod(isolate, target, \"registerDestroyHook\", RegisterDestroyHook);\n  AsyncWrap::GetConstructorTemplate(isolate_data);\n}\n\nvoid AsyncWrap::CreatePerContextProperties(Local<Object> target,\n                                           Local<Value> unused,\n                                           Local<Context> context,\n                                           void* priv) {\n  Realm* realm = Realm::GetCurrent(context);\n  Environment* env = realm->env();\n  Isolate* isolate = realm->isolate();\n  HandleScope scope(isolate);\n\n  PropertyAttribute ReadOnlyDontDelete =\n      static_cast<PropertyAttribute>(ReadOnly | DontDelete);\n\n#define FORCE_SET_TARGET_FIELD(obj, str, field)                               \\\n  (obj)->DefineOwnProperty(context,                                           \\\n                           FIXED_ONE_BYTE_STRING(isolate, str),               \\\n                           field,                                             \\\n                           ReadOnlyDontDelete).FromJust()\n\n  // Attach the uint32_t[] where each slot contains the count of the number of\n  // callbacks waiting to be called on a particular event. It can then be\n  // incremented/decremented from JS quickly to communicate to C++ if there are\n  // any callbacks waiting to be called.\n  FORCE_SET_TARGET_FIELD(target,\n                         \"async_hook_fields\",\n                         env->async_hooks()->fields().GetJSArray());\n\n  // The following v8::Float64Array has 5 fields. These fields are shared in\n  // this way to allow JS and C++ to read/write each value as quickly as\n  // possible. The fields are represented as follows:\n  //\n  // kAsyncIdCounter: Maintains the state of the next unique id to be assigned.\n  //\n  // kDefaultTriggerAsyncId: Write the id of the resource responsible for a\n  //   handle's creation just before calling the new handle's constructor.\n  //   After the new handle is constructed kDefaultTriggerAsyncId is set back\n  //   to kInvalidAsyncId.\n  FORCE_SET_TARGET_FIELD(target,\n                         \"async_id_fields\",\n                         env->async_hooks()->async_id_fields().GetJSArray());\n\n  FORCE_SET_TARGET_FIELD(target,\n                         \"execution_async_resources\",\n                         env->async_hooks()->js_execution_async_resources());\n\n  target->Set(context,\n              env->async_ids_stack_string(),\n              env->async_hooks()->async_ids_stack().GetJSArray()).Check();\n\n"
+    }
+  ],
+  "production_factory": "native_node_async_hooks_stack.create(engine, actual_environment, actual_installed_async_wrap_binding)",
+  "shared_identity_validation": [
+    "binding === Environment.async_hooks_binding",
+    "async_hook_fields === Environment.fields.view",
+    "async_id_fields === Environment.uid.view",
+    "execution_async_resources === Environment.js_resources"
+  ],
+  "captured_selected_reads": [
+    "async_hook_fields",
+    "async_id_fields",
+    "execution_async_resources",
+    "pushAsyncContext",
+    "popAsyncContext",
+    "clearAsyncIdStack"
+  ],
+  "live_binding_reads": [
+    "async_ids_stack on each original condition or assignment"
+  ],
+  "native_fallback_calls": [
+    {
+      "original": "pushAsyncContext_",
+      "receiver": "undefined",
+      "arguments": [
+        "asyncId",
+        "triggerAsyncId"
+      ]
+    },
+    {
+      "original": "popAsyncContext_",
+      "receiver": "undefined",
+      "arguments": [
+        "asyncId"
+      ]
+    },
+    {
+      "original": "clearAsyncIdStack",
+      "export": "exact captured value identity"
+    }
+  ],
+  "full_binding_factory_implemented": false,
+  "scope_note": "Only these complete declaration bodies are selected. Other original top-level native captures, constants export and active_hooks bootstrap are outside this private fragment. The full genuine binding/bootstrap must supply the installed native callbacks and matching enum constants. The numeric-only fallback controls do not implement V8 NumberValue/FromJust fatal adapters.",
+  "test_fixture": "Real Engine/native process/Environment shared views and existing native push/pop/clear methods; explicit throwing probes for unselected hook/check/exit operations",
+  "no_native_exit_substitution": true,
+  "native_execution": false
+}

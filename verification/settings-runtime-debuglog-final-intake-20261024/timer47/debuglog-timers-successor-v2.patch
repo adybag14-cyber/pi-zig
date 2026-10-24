@@ -1,0 +1,2242 @@
+--- a/src/extensions/native_clone_intrinsics.zig
++++ b/src/extensions/native_clone_intrinsics.zig
+@@ -14,7 +14,7 @@
+     defer c.JS_FreeValue(context, global);
+     const result = try checked(c.JS_NewObjectProto(context, c.pi_js_null()));
+     errdefer c.JS_FreeValue(context, result);
+-    inline for (.{ "Error", "EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "Map", "Set", "DataView", "String", "Function", "FinalizationRegistry", "Array", "Object", "Symbol", "RegExp" }) |name| {
++    inline for (.{ "Error", "EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "Map", "Set", "DataView", "String", "Function", "FinalizationRegistry", "Array", "Object", "Symbol", "RegExp", "Number" }) |name| {
+         const constructor = try checked(c.JS_GetPropertyStr(context, global, name));
+         defer c.JS_FreeValue(context, constructor);
+         try put(context, result, name, c.JS_DupValue(context, constructor));
+@@ -89,6 +89,11 @@
+                     try checked(c.JS_Call(context, bind_method, call_method, 1, &next_args)));
+             }
+         }
++        if (comptime @import("std").mem.eql(u8, name, "Number")) {
++            const prototype = try checked(c.JS_GetPropertyStr(context, constructor, "prototype"));
++            defer c.JS_FreeValue(context, prototype);
++            try put(context, result, "Number.toFixed", try checked(c.JS_GetPropertyStr(context, prototype, "toFixed")));
++        }
+         if (comptime @import("std").mem.eql(u8, name, "Object")) {
+             try put(context, result, "Object.defineProperty", try checked(c.JS_GetPropertyStr(context, constructor, "defineProperty")));
+             try put(context, result, "Object.freeze", try checked(c.JS_GetPropertyStr(context, constructor, "freeze")));
+@@ -104,6 +109,7 @@
+                 try put(context, result, "String.split", try checked(c.JS_GetPropertyStr(context, prototype, "split")));
+                 try put(context, result, "String.toLowerCase", try checked(c.JS_GetPropertyStr(context, prototype, "toLowerCase")));
+                 try put(context, result, "String.toUpperCase", try checked(c.JS_GetPropertyStr(context, prototype, "toUpperCase")));
++                try put(context, result, "String.padStart", try checked(c.JS_GetPropertyStr(context, prototype, "padStart")));
+             } else {
+                 try put(context, result, "RegExp.exec", try checked(c.JS_GetPropertyStr(context, prototype, "exec")));
+             }
+@@ -126,6 +132,9 @@
+             }
+         }
+     }
++    const math = try checked(c.JS_GetPropertyStr(context, global, "Math"));
++    defer c.JS_FreeValue(context, math);
++    try put(context, result, "Math.floor", try checked(c.JS_GetPropertyStr(context, math, "floor")));
+     // Node util's actual private symbol is shared by every cache instance in
+     // this Engine, including independently created SourceMapCacheMap classes.
+     try put(context, result, "Node.source_map_data_private_symbol",
+--- a/src/extensions/native_node_debuglog.zig
++++ b/src/extensions/native_node_debuglog.zig
+@@ -500,3 +500,28 @@
+     _ = try a.expression(s.engine, writeMessage, .{roots[0], roots[1], frame.get(.colored_pid), frame.get(.message)});
+     return c.pi_js_undefined();
+ }
++
++/// The separately admitted original timer bodies share these exact module
++/// cells and captures. This Zig-only handoff never publishes an extra JS API.
++pub fn requireSharedOwner(engine: *a.v.em.Engine, expected_exports: c.JSValue) !c.JSValue {
++    return a.expression(engine, requireSharedOwnerBody, .{expected_exports});
++}
++fn requireSharedOwnerBody(s: *Scope, expected_exports: c.JSValue) anyerror!c.JSValue {
++    const known = s.engine.native_module_values.get(key) orelse
++        return error.RequiredActualInitializedDebuglogOwner;
++    const owner = try s.own(a.duplicate(s.engine, known));
++    if (!s.equal(try member(s, owner, "exports"), expected_exports))
++        return error.ActualInitializedDebuglogOwnerIdentityChanged;
++    return a.duplicate(s.engine, owner);
++}
++pub fn emitSharedWarning(engine: *a.v.em.Engine, owner: c.JSValue, set: c.JSValue) !c.JSValue {
++    return a.expression(engine, warning, .{owner, set});
++}
++pub fn acquireSharedColors(engine: *a.v.em.Engine, owner: c.JSValue) !c.JSValue {
++    return a.expression(engine, lazyColors, .{owner});
++}
++pub fn sharedSpreadCall(engine: *a.v.em.Engine, function: c.JSValue, prefix: []const c.JSValue,
++    iterable: c.JSValue, safe_iterator: c.JSValue) !c.JSValue
++{
++    return a.expression(engine, spreadCall, .{function, prefix, iterable, safe_iterator});
++}
+--- /dev/null
++++ b/src/extensions/native_node_debuglog_format_time.zig
+@@ -0,0 +1,107 @@
++// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
++//! Complete original internal/util/debuglog formatTime and pad bodies.
++//! Arithmetic and formatting run through the original captured VM operations;
++//! this is not a host floating-point approximation of Source coercion.
++const a = @import("native_node_argument_values.zig");
++const functions = @import("native_node_module_callable.zig");
++const sync = @import("native_sync_arguments.zig");
++const c = a.c;
++const Scope = a.Scope;
++const Frame = a.frames.Frame(enum { hours, minutes, seconds, result });
++fn number(s: *Scope, value: i32) c.JSValue { return c.JS_NewInt32(s.engine.context, value); }
++fn intrinsic(s: *Scope, name: [*:0]const u8) !c.JSValue { return s.get(s.engine.intrinsic_clone_operations, name); }
++pub fn create(engine: *a.v.em.Engine) !c.JSValue {
++    return functions.createWithArguments(engine, "formatTime", 1, true,
++        .{ .formal_count = 1, .callback = callback, .hooks = sync.frameHooks(Frame) }, &.{});
++}
++fn callback(engine: *a.v.em.Engine, _: c.JSValue, args: *sync.Arguments,
++    _: []const c.JSValue) anyerror!c.JSValue
++{
++    return a.expression(engine, body, .{args});
++}
++fn atLeast(s: *Scope, value: c.JSValue, threshold: i32) !c.JSValue {
++    return a.boolean(s, s.truthy(try s.binary(7, value, number(s, threshold))));
++}
++fn quotient(s: *Scope, value: c.JSValue, divisor: i32, floor: bool) !c.JSValue {
++    const method = if (floor) try intrinsic(s, "Math.floor") else c.pi_js_undefined();
++    const result = try s.binary(3, value, number(s, divisor));
++    return a.duplicate(s.engine, if (floor) try s.call(method, c.pi_js_undefined(), &.{result}) else result);
++}
++fn remainder(s: *Scope, value: c.JSValue, divisor: i32) !c.JSValue {
++    return a.duplicate(s.engine, try s.binary(8, value, number(s, divisor)));
++}
++fn pad(s: *Scope, value: c.JSValue) !c.JSValue {
++    const method = try intrinsic(s, "String.padStart");
++    const text = try s.toString(value);
++    return a.duplicate(s.engine, try s.call(method, text, &.{number(s, 2), try s.text("0")}));
++}
++fn fixed(s: *Scope, value: c.JSValue) !c.JSValue {
++    return a.duplicate(s.engine, try s.call(try intrinsic(s, "Number.toFixed"), value, &.{number(s, 3)}));
++}
++fn splitAssignment(s: *Scope, args: *sync.Arguments, frame: *Frame) !c.JSValue {
++    // Original object-pattern assignment reads index0, assigns seconds, then
++    // reads index1 and assigns ms. String.prototype[Symbol.split] can reenter.
++    const split = try intrinsic(s, "String.split");
++    const text = try s.own(try a.expression(s.engine, fixed, .{frame.get(.seconds)}));
++    const raw_parts = try s.call(split, text, &.{try s.text("."), number(s, 2)});
++    // Original object destructuring converts once before either indexed Get.
++    const parts = try @import("native_sdk_guest_operation.zig").toObject(&s.values, raw_parts);
++    try frame.copy(.seconds, try s.getKey(parts, number(s, 0)));
++    try args.copy(0, try s.getKey(parts, number(s, 1)));
++    return c.pi_js_undefined();
++}
++fn prefix(s: *Scope, frame: *Frame) !c.JSValue {
++    if (s.equal(frame.get(.hours), number(s, 0)))
++        return a.duplicate(s.engine, frame.get(.minutes));
++    const hours = try s.toString(frame.get(.hours));
++    const start = try a.add(s, hours, try s.text(":"));
++    const minutes = try s.own(try a.expression(s.engine, pad, .{frame.get(.minutes)}));
++    return a.duplicate(s.engine, try a.add(s, start, try s.toString(minutes)));
++}
++fn longResult(s: *Scope, args: *sync.Arguments, frame: *Frame) !c.JSValue {
++    const begin = try s.toString(frame.get(.result));
++    const first = try a.add(s, begin, try s.text(":"));
++    const seconds = try s.own(try a.expression(s.engine, pad, .{frame.get(.seconds)}));
++    const second = try a.add(s, first, try s.toString(seconds));
++    const third = try a.add(s, second, try s.text("."));
++    const fourth = try a.add(s, third, try s.toString(args.get(0)));
++    const fifth = try a.add(s, fourth, try s.text(" ("));
++    const unit = try s.text(if (!s.equal(frame.get(.hours), number(s, 0))) "h:m" else "");
++    const sixth = try a.add(s, fifth, unit);
++    return a.duplicate(s.engine, try a.add(s, sixth, try s.text("m:ss.mmm)")));
++}
++fn secondsResult(s: *Scope, value: c.JSValue) !c.JSValue {
++    const text = try s.own(try a.expression(s.engine, fixed, .{value}));
++    return a.duplicate(s.engine, try a.add(s, try s.toString(text), try s.text("s")));
++}
++fn millisecondsResult(s: *Scope, value: c.JSValue) !c.JSValue {
++    const constructor = try intrinsic(s, "Number");
++    const text = try s.own(try a.expression(s.engine, fixed, .{value}));
++    const result = try s.call(constructor, c.pi_js_undefined(), &.{text});
++    return a.duplicate(s.engine, try a.add(s, try s.toString(result), try s.text("ms")));
++}
++fn body(s: *Scope, args: *sync.Arguments) anyerror!c.JSValue {
++    const frame = try args.createFrame(&s.values, Frame);
++    try frame.copy(.hours, number(s, 0));
++    try frame.copy(.minutes, number(s, 0));
++    try frame.copy(.seconds, number(s, 0));
++    if (try a.condition(s.engine, atLeast, .{args.get(0), @as(i32, 1000)})) {
++        if (try a.condition(s.engine, atLeast, .{args.get(0), @as(i32, 60000)})) {
++            if (try a.condition(s.engine, atLeast, .{args.get(0), @as(i32, 3600000)})) {
++                try frame.take(.hours, a.expression(s.engine, quotient, .{args.get(0), @as(i32, 3600000), true}));
++                try args.take(0, a.expression(s.engine, remainder, .{args.get(0), @as(i32, 3600000)}));
++            }
++            try frame.take(.minutes, a.expression(s.engine, quotient, .{args.get(0), @as(i32, 60000), true}));
++            try args.take(0, a.expression(s.engine, remainder, .{args.get(0), @as(i32, 60000)}));
++        }
++        try frame.take(.seconds, a.expression(s.engine, quotient, .{args.get(0), @as(i32, 1000), false}));
++    }
++    if (!s.equal(frame.get(.hours), number(s, 0)) or !s.equal(frame.get(.minutes), number(s, 0))) {
++        _ = try a.expression(s.engine, splitAssignment, .{args, frame});
++        try frame.take(.result, a.expression(s.engine, prefix, .{frame}));
++        return a.expression(s.engine, longResult, .{args, frame});
++    }
++    if (!s.equal(frame.get(.seconds), number(s, 0)))
++        return a.expression(s.engine, secondsResult, .{frame.get(.seconds)});
++    return a.expression(s.engine, millisecondsResult, .{args.get(0)});
++}
+--- /dev/null
++++ b/src/extensions/native_node_debuglog_time.zig
+@@ -0,0 +1,194 @@
++// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
++//! Complete original debuglog time/timeEnd/timeLog/timeLogImpl bodies.
++//! The process and trace callable are original private inputs. No clock,
++//! category buffer, event registry or disabled fallback is manufactured here.
++const a = @import("native_node_argument_values.zig");
++const functions = @import("native_node_module_callable.zig");
++const sync = @import("native_sync_arguments.zig");
++const c = a.c;
++const Scope = a.Scope;
++const LogFrame = a.frames.Frame(enum { time, duration, milliseconds, formatted });
++const Kind = enum { start, end, log };
++pub const Inputs = struct {
++    process: c.JSValue,
++    trace: c.JSValue,
++    format_time: c.JSValue,
++};
++pub fn create(engine: *a.v.em.Engine, inputs: Inputs) !c.JSValue {
++    return a.expression(engine, createBody, .{inputs});
++}
++fn createBody(s: *Scope, inputs: Inputs) anyerror!c.JSValue {
++    const owner = try s.objectProto(c.pi_js_null());
++    try s.define(owner, "process", inputs.process, 0);
++    try s.define(owner, "trace", inputs.trace, 0);
++    try s.define(owner, "formatTime", inputs.format_time, 0);
++    const implementation = try s.own(try functions.createWithArguments(s.engine, "timeLogImpl", 5, true,
++        .{ .formal_count = 5, .callback = logImplementationCallback, .hooks = sync.frameHooks(LogFrame) }, &.{owner}));
++    try s.define(owner, "timeLogImpl", implementation, 0);
++    const start = try s.own(try functions.createWithArguments(s.engine, "time", 4, true,
++        .{ .formal_count = 6, .callback = operationCallback(.start) }, &.{owner}));
++    const end = try s.own(try functions.createWithArguments(s.engine, "timeEnd", 5, true,
++        .{ .formal_count = 7, .callback = operationCallback(.end) }, &.{owner}));
++    const log = try s.own(try functions.createWithArguments(s.engine, "timeLog", 5, true,
++        .{ .formal_count = 8, .callback = operationCallback(.log) }, &.{owner}));
++    const result = try s.objectProto(c.pi_js_null());
++    try s.define(result, "time", start, 0);
++    try s.define(result, "timeEnd", end, 0);
++    try s.define(result, "timeLog", log, 0);
++    return a.duplicate(s.engine, result);
++}
++fn stringValue(s: *Scope, value: c.JSValue) !c.JSValue {
++    return a.duplicate(s.engine, try s.toString(value));
++}
++fn escapedBackslash(s: *Scope, label: c.JSValue) !c.JSValue {
++    const method = try s.get(label, "replaceAll");
++    return a.duplicate(s.engine, try s.call(method, label, &.{try s.text("\\"), try s.text("\\\\")}));
++}
++fn safeTraceLabel(s: *Scope, label: c.JSValue) !c.JSValue {
++    const first = try s.own(try a.expression(s.engine, escapedBackslash, .{label}));
++    const method = try s.get(first, "replaceAll");
++    return a.duplicate(s.engine, try s.call(method, first, &.{try s.text("\""), try s.text("\\\"")}));
++}
++fn flagClear(s: *Scope, flags: c.JSValue, mask: i32) !c.JSValue {
++    const value = try s.binary(10, flags, c.JS_NewInt32(s.engine.context, mask));
++    return a.boolean(s, s.equal(value, c.JS_NewInt32(s.engine.context, 0)));
++}
++fn hasLabel(s: *Scope, store: c.JSValue, label: c.JSValue) !c.JSValue {
++    const method = try s.get(store, "has");
++    return a.boolean(s, s.truthy(try s.call(method, store, &.{label})));
++}
++fn warning(s: *Scope, owner: c.JSValue, label: c.JSValue,
++    implementation: c.JSValue, duplicate: bool) !c.JSValue
++{
++    const process = try s.get(owner, "process");
++    const method = try s.get(process, "emitWarning");
++    const start = try a.add(s, try s.text(if (duplicate) "Label '" else "No such label '"), try s.toString(label));
++    const middle = try a.add(s, start, try s.text(if (duplicate) "' already exists for " else "' for "));
++    const message = try a.add(s, middle, try s.toString(implementation));
++    _ = try s.call(method, process, &.{message});
++    return c.pi_js_undefined();
++}
++fn traceCall(s: *Scope, owner: c.JSValue, phase: i32,
++    category: c.JSValue, label: c.JSValue) !c.JSValue
++{
++    const function = try s.get(owner, "trace");
++    _ = try s.call(function, c.pi_js_undefined(),
++        &.{c.JS_NewInt32(s.engine.context, phase), category, label, c.JS_NewInt32(s.engine.context, 0)});
++    return c.pi_js_undefined();
++}
++fn storeCurrentTime(s: *Scope, owner: c.JSValue, store: c.JSValue, label: c.JSValue) !c.JSValue {
++    // Preserve set's reference before evaluating the later live hrtime lookup.
++    const method = try s.get(store, "set");
++    const process = try s.get(owner, "process");
++    const hrtime = try s.get(process, "hrtime");
++    const value = try s.call(hrtime, process, &.{});
++    _ = try s.call(method, store, &.{label, value});
++    return c.pi_js_undefined();
++}
++fn deleteLabel(s: *Scope, store: c.JSValue, label: c.JSValue) !c.JSValue {
++    const method = try s.get(store, "delete");
++    _ = try s.call(method, store, &.{label});
++    return c.pi_js_undefined();
++}
++fn logTime(s: *Scope, owner: c.JSValue, store: c.JSValue, implementation: c.JSValue,
++    logger: c.JSValue, label: c.JSValue, extra: ?c.JSValue) !c.JSValue
++{
++    const function = try s.get(owner, "timeLogImpl");
++    if (extra) |value| {
++        _ = try s.call(function, c.pi_js_undefined(), &.{store, implementation, logger, label, value});
++    } else {
++        _ = try s.call(function, c.pi_js_undefined(), &.{store, implementation, logger, label});
++    }
++    return c.pi_js_undefined();
++}
++fn operationCallback(comptime kind: Kind) sync.Callback {
++    return struct {
++        fn callback(engine: *a.v.em.Engine, _: c.JSValue, args: *sync.Arguments,
++            roots: []const c.JSValue) anyerror!c.JSValue
++        {
++            return a.expression(engine, operationBody, .{args, roots[0], kind});
++        }
++    }.callback;
++}
++fn operationBody(s: *Scope, args: *sync.Arguments, owner: c.JSValue,
++    comptime kind: Kind) anyerror!c.JSValue
++{
++    const label_index = if (kind == .start) 4 else 5;
++    const trace_index = label_index + 1;
++    if (c.JS_IsUndefined(args.get(label_index)))
++        try args.take(label_index, a.expression(s.engine, defaultLabel, .{}));
++    try args.take(label_index, a.expression(s.engine, stringValue, .{args.get(label_index)}));
++    if (!c.JS_IsUndefined(args.get(trace_index))) {
++        try args.take(trace_index, a.expression(s.engine, stringValue, .{args.get(trace_index)}));
++    } else {
++        try args.copy(trace_index, args.get(label_index));
++    }
++    if (kind == .start) {
++        if (try a.condition(s.engine, hasLabel, .{args.get(0), args.get(label_index)})) {
++            _ = try a.expression(s.engine, warning, .{owner, args.get(label_index), args.get(2), true});
++            return c.pi_js_undefined();
++        }
++    } else if (try a.condition(s.engine, flagClear, .{args.get(3), @as(i32, 2)})) {
++        _ = try a.expression(s.engine, logTime,
++            .{owner, args.get(0), args.get(2), args.get(4), args.get(label_index),
++              if (kind == .log) @as(?c.JSValue, args.get(7)) else @as(?c.JSValue, null)});
++    }
++    if (try a.condition(s.engine, flagClear, .{args.get(3), @as(i32, 4)})) {
++        try args.take(trace_index, a.expression(s.engine, safeTraceLabel, .{args.get(trace_index)}));
++        _ = try a.expression(s.engine, traceCall,
++            .{owner, @as(i32, switch (kind) { .start => 'b', .end => 'e', .log => 'n' }),
++              args.get(1), args.get(trace_index)});
++    }
++    if (kind == .start) {
++        _ = try a.expression(s.engine, storeCurrentTime, .{owner, args.get(0), args.get(label_index)});
++    } else if (kind == .end) {
++        _ = try a.expression(s.engine, deleteLabel, .{args.get(0), args.get(label_index)});
++    }
++    return c.pi_js_undefined();
++}
++fn defaultLabel(s: *Scope) !c.JSValue { return a.duplicate(s.engine, try s.text("default")); }
++fn readTime(s: *Scope, store: c.JSValue, label: c.JSValue) !c.JSValue {
++    const method = try s.get(store, "get");
++    return a.duplicate(s.engine, try s.call(method, store, &.{label}));
++}
++fn elapsed(s: *Scope, owner: c.JSValue, time: c.JSValue) !c.JSValue {
++    const process = try s.get(owner, "process");
++    const method = try s.get(process, "hrtime");
++    return a.duplicate(s.engine, try s.call(method, process, &.{time}));
++}
++fn milliseconds(s: *Scope, duration: c.JSValue) !c.JSValue {
++    const seconds = try s.getKey(duration, c.JS_NewInt32(s.engine.context, 0));
++    const first = try s.binary(2, seconds, c.JS_NewInt32(s.engine.context, 1000));
++    const nanos = try s.getKey(duration, c.JS_NewInt32(s.engine.context, 1));
++    const second = try s.binary(3, nanos, c.JS_NewInt32(s.engine.context, 1000000));
++    return a.duplicate(s.engine, try a.add(s, first, second));
++}
++fn formatElapsed(s: *Scope, owner: c.JSValue, value: c.JSValue) !c.JSValue {
++    return a.duplicate(s.engine, try s.call(try s.get(owner, "formatTime"), c.pi_js_undefined(), &.{value}));
++}
++fn emitLog(s: *Scope, args: *sync.Arguments, formatted: c.JSValue) !c.JSValue {
++    if (c.JS_IsUndefined(args.get(4))) {
++        _ = try s.call(args.get(2), c.pi_js_undefined(), &.{args.get(3), formatted});
++    } else {
++        _ = try s.call(args.get(2), c.pi_js_undefined(), &.{args.get(3), formatted, args.get(4)});
++    }
++    return c.pi_js_undefined();
++}
++fn logImplementationCallback(engine: *a.v.em.Engine, _: c.JSValue, args: *sync.Arguments,
++    roots: []const c.JSValue) anyerror!c.JSValue
++{
++    return a.expression(engine, logImplementationBody, .{args, roots[0]});
++}
++fn logImplementationBody(s: *Scope, args: *sync.Arguments, owner: c.JSValue) anyerror!c.JSValue {
++    const frame = try args.createFrame(&s.values, LogFrame);
++    try frame.take(.time, a.expression(s.engine, readTime, .{args.get(0), args.get(3)}));
++    if (c.JS_IsUndefined(frame.get(.time))) {
++        _ = try a.expression(s.engine, warning, .{owner, args.get(3), args.get(1), false});
++        return c.pi_js_undefined();
++    }
++    try frame.take(.duration, a.expression(s.engine, elapsed, .{owner, frame.get(.time)}));
++    try frame.take(.milliseconds, a.expression(s.engine, milliseconds, .{frame.get(.duration)}));
++    try frame.take(.formatted, a.expression(s.engine, formatElapsed, .{owner, frame.get(.milliseconds)}));
++    _ = try a.expression(s.engine, emitLog, .{args, frame.get(.formatted)});
++    return c.pi_js_undefined();
++}
+--- /dev/null
++++ b/src/extensions/native_node_debuglog_timers.zig
+@@ -0,0 +1,358 @@
++// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
++//! Complete original debugWithTimer over the shared initialized debuglog owner.
++//! trace_events is a required original private binding input. This consumer
++//! creates no trace registry, clock, enabled buffer, writer or public namespace.
++const a = @import("native_node_argument_values.zig");
++const functions = @import("native_node_module_callable.zig");
++const sync = @import("native_sync_arguments.zig");
++const ordinary = @import("native_node_debuglog.zig");
++const collections = @import("native_node_fs_collections.zig");
++const format_time = @import("native_node_debuglog_format_time.zig");
++const time = @import("native_node_debuglog_time.zig");
++const inspect_ops = @import("native_node_inspect_operations.zig");
++const publication = @import("native_node_fs_private_publication.zig");
++const c = a.c;
++const Scope = a.Scope;
++const key = "pi-native:private/original-debuglog-timers";
++const Frame = a.frames.Frame(enum {
++    log_impl, trace_category, trace_buffer, debug_enabled, flags, ensure,
++    internal_start, internal_end, internal_log, init, start_timer, end_timer, log_timer,
++});
++const EmissionFrame = a.frames.Frame(enum { pid, colors, colored_pid });
++const Root = enum(usize) { owner, set, callback, category, buffer, enabled, flags, log_impl, ensure, start, end, log, init };
++const Kind = enum { start, end, log };
++pub const Inputs = struct {
++    /// The exact private exports produced by native_node_debuglog.acquire.
++    debuglog_exports: c.JSValue,
++    /// Actual bootstrap-captured internalBinding('trace_events'). Admission of
++    /// that native binding and the process-wide tracing lifecycle is separate.
++    /// Both named imports are captured once in original order; no replacement
++    /// callback or manufactured Uint8Array is installed by this owner.
++    trace_events: c.JSValue,
++};
++fn value(roots: []const c.JSValue, name: Root) c.JSValue { return roots[@intFromEnum(name)]; }
++fn read(s: *Scope, roots: []const c.JSValue, name: Root) !c.JSValue {
++    return if (name == .set or name == .callback) sync.read(&s.values, value(roots, name))
++        else Frame.read(&s.values, value(roots, name));
++}
++fn intrinsic(s: *Scope, name: [*:0]const u8) !c.JSValue { return s.get(s.engine.intrinsic_clone_operations, name); }
++fn shared(s: *Scope, owner: c.JSValue) !c.JSValue { return s.get(owner, "debugOwner"); }
++fn processValue(s: *Scope, owner: c.JSValue) !c.JSValue { return s.get(try shared(s, owner), "process"); }
++pub fn acquire(engine: *a.v.em.Engine, inputs: Inputs) !c.JSValue {
++    return a.expression(engine, acquireBody, .{inputs});
++}
++fn acquireBody(s: *Scope, inputs: Inputs) anyerror!c.JSValue {
++    const actual_debug = try s.own(try ordinary.requireSharedOwner(s.engine, inputs.debuglog_exports));
++    if (!s.engine.native_module_values.contains("\x00native.fs.SafeMap"))
++        return error.RequiredBootstrappedActualTimerSafeMap;
++    const safe_map = try s.own(try collections.acquireSafeMap(s.engine));
++    if (s.engine.native_module_values.get(key)) |known| {
++        const owner = try s.own(a.duplicate(s.engine, known));
++        if (!s.equal(try s.get(owner, "debugOwner"), actual_debug) or
++            !s.equal(try s.get(owner, "traceBinding"), inputs.trace_events))
++            return error.ActualDebuglogTimerInputIdentityChanged;
++        return a.duplicate(s.engine, try s.get(owner, "exports"));
++    }
++    const candidate = try s.own(try a.expression(s.engine, createOwner, .{actual_debug, inputs.trace_events, safe_map}));
++    const chosen = if (s.engine.native_module_values.get(key)) |known|
++        try s.own(a.duplicate(s.engine, known))
++    else try s.own(try publication.publish(s.engine, key, a.duplicate(s.engine, candidate)));
++    if (!s.equal(try s.get(chosen, "debugOwner"), actual_debug) or
++        !s.equal(try s.get(chosen, "traceBinding"), inputs.trace_events))
++        return error.ActualDebuglogTimerInputIdentityChanged;
++    return a.duplicate(s.engine, try s.get(chosen, "exports"));
++}
++fn createOwner(s: *Scope, debug_owner: c.JSValue, trace_binding: c.JSValue,
++    safe_map: c.JSValue) anyerror!c.JSValue
++{
++    const owner = try s.objectProto(c.pi_js_null());
++    try s.define(owner, "debugOwner", debug_owner, 0);
++    try s.define(owner, "traceBinding", trace_binding, 0);
++    // The original named import order is getCategoryEnabledBuffer then trace.
++    try s.define(owner, "getCategoryEnabledBuffer", try s.get(trace_binding, "getCategoryEnabledBuffer"), 0);
++    try s.define(owner, "trace", try s.get(trace_binding, "trace"), 0);
++    try s.define(owner, "SafeMap", safe_map, 0);
++    try s.define(owner, "tracesStores", c.pi_js_undefined(), c.JS_PROP_WRITABLE);
++    const formatter = try s.own(try format_time.create(s.engine));
++    const operations = try s.own(try time.create(s.engine, .{
++        .process = try s.get(debug_owner, "process"),
++        .trace = try s.get(owner, "trace"),
++        .format_time = formatter,
++    }));
++    try s.define(owner, "operations", operations, 0);
++    const factory = try s.own(try functions.createWithArguments(s.engine, "debugWithTimer", 2, true,
++        .{ .formal_count = 2, .callback = factoryCallback, .hooks = sync.frameHooks(Frame) }, &.{owner}));
++    const exports = try s.objectProto(c.pi_js_null());
++    try s.define(exports, "kNone", c.JS_NewInt32(s.engine.context, 1), 0);
++    try s.define(exports, "kSkipLog", c.JS_NewInt32(s.engine.context, 2), 0);
++    try s.define(exports, "kSkipTrace", c.JS_NewInt32(s.engine.context, 4), 0);
++    try s.define(exports, "formatTime", formatter, 0);
++    inline for (.{ "time", "timeEnd", "timeLog" }) |name| try s.define(exports, name, try s.get(operations, name), 0);
++    try s.define(exports, "debugWithTimer", factory, 0);
++    try s.define(owner, "exports", exports, 0);
++    return a.duplicate(s.engine, owner);
++}
++fn uppercase(s: *Scope, binding: c.JSValue) !c.JSValue {
++    const method = try intrinsic(s, "String.toUpperCase");
++    return a.duplicate(s.engine, try s.call(method, try sync.read(&s.values, binding), &.{}));
++}
++fn initializeStores(s: *Scope, owner: c.JSValue) !c.JSValue {
++    if (c.JS_IsUndefined(try s.get(owner, "tracesStores")))
++        try s.put(owner, "tracesStores", try s.objectProto(c.pi_js_null()));
++    return c.pi_js_undefined();
++}
++fn category(s: *Scope, set: c.JSValue) !c.JSValue {
++    const lower = try s.call(try intrinsic(s, "String.toLowerCase"), set, &.{});
++    return a.duplicate(s.engine, try a.add(s, try s.text("node,node."), try s.toString(lower)));
++}
++fn factoryCallback(engine: *a.v.em.Engine, _: c.JSValue, args: *sync.Arguments,
++    roots: []const c.JSValue) anyerror!c.JSValue
++{
++    return a.expression(engine, factoryBody, .{args, roots[0]});
++}
++fn factoryBody(s: *Scope, args: *sync.Arguments, owner: c.JSValue) anyerror!c.JSValue {
++    const frame = try args.createFrame(&s.values, Frame);
++    const roots = [_]c.JSValue{
++        owner, try args.capture(&s.values, 0), try args.capture(&s.values, 1),
++        try frame.capture(&s.values, .trace_category, "traceCategory"),
++        try frame.capture(&s.values, .trace_buffer, "traceCategoryBuffer"),
++        try frame.capture(&s.values, .debug_enabled, "debugLogCategoryEnabled"),
++        try frame.capture(&s.values, .flags, "timerFlags"),
++        try frame.capture(&s.values, .log_impl, "logImpl"),
++        try frame.capture(&s.values, .ensure, "ensureTimerFlagsAreUpdated"),
++        try frame.capture(&s.values, .internal_start, "internalStartTimer"),
++        try frame.capture(&s.values, .internal_end, "internalEndTimer"),
++        try frame.capture(&s.values, .internal_log, "internalLogTimer"),
++        try frame.capture(&s.values, .init, "init"),
++    };
++    // Hoisted original declarations capture the same Source cells before
++    // executable set coercion. Later let/const slots retain their actual TDZ.
++    try frame.take(.log_impl, functions.createWithArguments(s.engine, "logImpl", 3, true,
++        .{ .formal_count = 3, .callback = emissionCallback, .hooks = sync.frameHooks(EmissionFrame) }, &roots));
++    try frame.take(.ensure, functions.createWithArguments(s.engine, "ensureTimerFlagsAreUpdated", 0, true,
++        .{ .formal_count = 0, .callback = ensureCallback }, &roots));
++    try frame.take(.internal_start, functions.createWithArguments(s.engine, "internalStartTimer", 2, true,
++        .{ .formal_count = 2, .callback = internalCallback(.start) }, &roots));
++    try frame.take(.internal_end, functions.createWithArguments(s.engine, "internalEndTimer", 2, true,
++        .{ .formal_count = 2, .callback = internalCallback(.end) }, &roots));
++    try frame.take(.internal_log, functions.createWithArguments(s.engine, "internalLogTimer", 3, true,
++        .{ .formal_count = 3, .callback = internalCallback(.log) }, &roots));
++    try frame.take(.init, functions.createWithArguments(s.engine, "init", 0, true,
++        .{ .formal_count = 0, .callback = initCallback }, &roots));
++    try args.take(0, a.expression(s.engine, uppercase, .{value(&roots, .set)}));
++    _ = try a.expression(s.engine, initializeStores, .{owner});
++    try frame.take(.trace_category, a.expression(s.engine, category, .{args.get(0)}));
++    try frame.clear(.trace_buffer);
++    try frame.copy(.debug_enabled, a.boolean(s, false));
++    try frame.copy(.flags, c.JS_NewInt32(s.engine.context, 1));
++    try frame.take(.start_timer, functions.createWithArguments(s.engine, "startTimer", 2, false,
++        .{ .formal_count = 2, .callback = outerCallback(.start) }, &roots));
++    try frame.take(.end_timer, functions.createWithArguments(s.engine, "endTimer", 2, false,
++        .{ .formal_count = 2, .callback = outerCallback(.end) }, &roots));
++    try frame.take(.log_timer, functions.createWithArguments(s.engine, "logTimer", 3, false,
++        .{ .formal_count = 3, .callback = outerCallback(.log) }, &roots));
++    const result = try s.object();
++    try s.define(result, "startTimer", frame.get(.start_timer), c.JS_PROP_C_W_E);
++    try s.define(result, "endTimer", frame.get(.end_timer), c.JS_PROP_C_W_E);
++    try s.define(result, "logTimer", frame.get(.log_timer), c.JS_PROP_C_W_E);
++    return a.duplicate(s.engine, result);
++}
++fn invokeEmpty(s: *Scope, binding: c.JSValue) !c.JSValue {
++    _ = try s.call(try Frame.read(&s.values, binding), c.pi_js_undefined(), &.{});
++    return c.pi_js_undefined();
++}
++fn flagsWith(s: *Scope, roots: []const c.JSValue, operation: i32, mask: i32) !c.JSValue {
++    return a.duplicate(s.engine, try s.binary(operation, try read(s, roots, .flags), c.JS_NewInt32(s.engine.context, mask)));
++}
++fn bufferDisabled(s: *Scope, roots: []const c.JSValue) !c.JSValue {
++    const buffer = try read(s, roots, .buffer);
++    const state = try s.getKey(buffer, c.JS_NewInt32(s.engine.context, 0));
++    return a.boolean(s, s.equal(state, c.JS_NewInt32(s.engine.context, 0)));
++}
++fn shouldSkip(s: *Scope, roots: []const c.JSValue) !c.JSValue {
++    const masked = try s.binary(10, try read(s, roots, .flags), c.JS_NewInt32(s.engine.context, 6));
++    return a.boolean(s, s.equal(masked, c.JS_NewInt32(s.engine.context, 6)));
++}
++fn ensureCallback(engine: *a.v.em.Engine, _: c.JSValue, _: *sync.Arguments,
++    roots: []const c.JSValue) anyerror!c.JSValue
++{
++    try Frame.assign(value(roots, .flags), a.expression(engine, flagsWith, .{roots, @as(i32, 10), @as(i32, -5)}));
++    if (try a.condition(engine, bufferDisabled, .{roots}))
++        try Frame.assign(value(roots, .flags), a.expression(engine, flagsWith, .{roots, @as(i32, 11), @as(i32, 4)}));
++    return c.pi_js_undefined();
++}
++
++fn storeAbsent(s: *Scope, roots: []const c.JSValue) !c.JSValue {
++    const stores = try s.get(value(roots, .owner), "tracesStores");
++    return a.boolean(s, c.JS_IsUndefined(try s.getKey(stores, try read(s, roots, .set))));
++}
++fn createStore(s: *Scope, roots: []const c.JSValue) !c.JSValue {
++    const owner = value(roots, .owner);
++    // Preserve the original computed assignment reference before its new RHS.
++    const stores = try s.get(owner, "tracesStores");
++    const set = try read(s, roots, .set);
++    const constructor = try s.get(owner, "SafeMap");
++    const map = try s.construct(constructor, &.{});
++    try inspect_ops.setKey(&s.values, stores, set, map);
++    return c.pi_js_undefined();
++}
++fn warnSet(s: *Scope, roots: []const c.JSValue) !c.JSValue {
++    const owner = try shared(s, value(roots, .owner));
++    const set = try read(s, roots, .set);
++    return ordinary.emitSharedWarning(s.engine, owner, set);
++}
++fn testCategory(s: *Scope, roots: []const c.JSValue) !c.JSValue {
++    const owner = try shared(s, value(roots, .owner));
++    const predicate = try s.get(owner, "testEnabled");
++    const set = try read(s, roots, .set);
++    return a.duplicate(s.engine, try s.call(predicate, c.pi_js_undefined(), &.{set}));
++}
++fn categoryBuffer(s: *Scope, roots: []const c.JSValue) !c.JSValue {
++    const function = try s.get(value(roots, .owner), "getCategoryEnabledBuffer");
++    const label = try read(s, roots, .category);
++    return a.duplicate(s.engine, try s.call(function, c.pi_js_undefined(), &.{label}));
++}
++fn initiallyActive(s: *Scope) !c.JSValue { return c.JS_NewInt32(s.engine.context, 1); }
++fn loggingDisabled(s: *Scope, roots: []const c.JSValue) !c.JSValue {
++    return a.boolean(s, !s.truthy(try read(s, roots, .enabled)));
++}
++fn publishInternalFunctions(s: *Scope, roots: []const c.JSValue) !c.JSValue {
++    const callback = try read(s, roots, .callback);
++    const start = try read(s, roots, .start);
++    const end = try read(s, roots, .end);
++    const log = try read(s, roots, .log);
++    // Original cb is unconditional, including noncallable/undefined values.
++    _ = try s.call(callback, c.pi_js_undefined(), &.{start, end, log});
++    return c.pi_js_undefined();
++}
++fn initCallback(engine: *a.v.em.Engine, _: c.JSValue, _: *sync.Arguments,
++    roots: []const c.JSValue) anyerror!c.JSValue
++{
++    if (try a.condition(engine, storeAbsent, .{roots}))
++        _ = try a.expression(engine, createStore, .{roots});
++    _ = try a.expression(engine, warnSet, .{roots});
++    try Frame.assign(value(roots, .enabled), a.expression(engine, testCategory, .{roots}));
++    try Frame.assign(value(roots, .buffer), a.expression(engine, categoryBuffer, .{roots}));
++    try Frame.assign(value(roots, .flags), a.expression(engine, initiallyActive, .{}));
++    if (try a.condition(engine, loggingDisabled, .{roots}))
++        try Frame.assign(value(roots, .flags), a.expression(engine, flagsWith, .{roots, @as(i32, 11), @as(i32, 2)}));
++    if (try a.condition(engine, bufferDisabled, .{roots}))
++        try Frame.assign(value(roots, .flags), a.expression(engine, flagsWith, .{roots, @as(i32, 11), @as(i32, 4)}));
++    _ = try a.expression(engine, publishInternalFunctions, .{roots});
++    return c.pi_js_undefined();
++}
++fn callOperation(s: *Scope, args: *sync.Arguments, roots: []const c.JSValue,
++    comptime kind: Kind) !c.JSValue
++{
++    const owner = value(roots, .owner);
++    const operations = try s.get(owner, "operations");
++    const function = try s.get(operations, switch (kind) { .start => "time", .end => "timeEnd", .log => "timeLog" });
++    const stores = try s.get(owner, "tracesStores");
++    const store = try s.getKey(stores, try read(s, roots, .set));
++    const trace_category = try read(s, roots, .category);
++    const implementation = try s.text(switch (kind) {
++        .start => "debuglog.time", .end => "debuglog.timeEnd", .log => "debuglog.timeLog",
++    });
++    const flags = try read(s, roots, .flags);
++    if (kind == .start) {
++        _ = try s.call(function, c.pi_js_undefined(),
++            &.{store, trace_category, implementation, flags, args.get(0), args.get(1)});
++    } else {
++        const logger = try read(s, roots, .log_impl);
++        if (kind == .end) {
++            _ = try s.call(function, c.pi_js_undefined(),
++                &.{store, trace_category, implementation, flags, logger, args.get(0), args.get(1)});
++        } else {
++            _ = try s.call(function, c.pi_js_undefined(),
++                &.{store, trace_category, implementation, flags, logger, args.get(0), args.get(1), args.get(2)});
++        }
++    }
++    return c.pi_js_undefined();
++}
++fn internalCallback(comptime kind: Kind) sync.Callback {
++    return struct {
++        fn callback(engine: *a.v.em.Engine, _: c.JSValue, args: *sync.Arguments,
++            roots: []const c.JSValue) anyerror!c.JSValue
++        {
++            _ = try a.expression(engine, invokeEmpty, .{value(roots, .ensure)});
++            if (try a.condition(engine, shouldSkip, .{roots})) return c.pi_js_undefined();
++            _ = try a.expression(engine, callOperation, .{args, roots, kind});
++            return c.pi_js_undefined();
++        }
++    }.callback;
++}
++fn callInternal(s: *Scope, args: *sync.Arguments, roots: []const c.JSValue,
++    comptime kind: Kind) !c.JSValue
++{
++    const function = try read(s, roots, switch (kind) { .start => .start, .end => .end, .log => .log });
++    if (kind == .log) {
++        _ = try s.call(function, c.pi_js_undefined(), &.{args.get(0), args.get(1), args.get(2)});
++    } else {
++        _ = try s.call(function, c.pi_js_undefined(), &.{args.get(0), args.get(1)});
++    }
++    return c.pi_js_undefined();
++}
++fn outerCallback(comptime kind: Kind) sync.Callback {
++    return struct {
++        fn callback(engine: *a.v.em.Engine, _: c.JSValue, args: *sync.Arguments,
++            roots: []const c.JSValue) anyerror!c.JSValue
++        {
++            _ = try a.expression(engine, invokeEmpty, .{value(roots, .init)});
++            if (!try a.condition(engine, shouldSkip, .{roots}))
++                _ = try a.expression(engine, callInternal, .{args, roots, kind});
++            return c.pi_js_undefined();
++        }
++    }.callback;
++}
++fn currentPID(s: *Scope, owner: c.JSValue) !c.JSValue {
++    return a.duplicate(s.engine, try s.get(try processValue(s, owner), "pid"));
++}
++fn emissionColors(s: *Scope, owner: c.JSValue) !c.JSValue {
++    // Object literal allocation precedes its property value expression.
++    const options = try s.object();
++    const debug_owner = try shared(s, owner);
++    const colors = try s.own(try ordinary.acquireSharedColors(s.engine, debug_owner));
++    const should = try s.get(colors, "shouldColorize");
++    const stderr = try s.get(try processValue(s, owner), "stderr");
++    const selected = try s.call(should, colors, &.{stderr});
++    try s.define(options, "colors", selected, c.JS_PROP_C_W_E);
++    return a.duplicate(s.engine, options);
++}
++fn inspectCurrentPID(s: *Scope, owner: c.JSValue, frame: *EmissionFrame) !c.JSValue {
++    const function = try s.get(try shared(s, owner), "inspect");
++    return a.duplicate(s.engine, try s.call(function, c.pi_js_undefined(),
++        &.{frame.get(.pid), frame.get(.colors)}));
++}
++fn writeTimerMessage(s: *Scope, args: *sync.Arguments, roots: []const c.JSValue,
++    frame: *EmissionFrame) !c.JSValue
++{
++    const owner = value(roots, .owner);
++    // This is the second live stderr read. Resolve write before format's RHS.
++    const stderr = try s.get(try processValue(s, owner), "stderr");
++    const write = try s.get(stderr, "write");
++    const debug_owner = try shared(s, owner);
++    const formatter = try s.get(debug_owner, "format");
++    const format_text = try s.text("%s %s %s: %s\n");
++    const set = try read(s, roots, .set);
++    const prefix = [_]c.JSValue{format_text, set, frame.get(.colored_pid), args.get(0), args.get(1)};
++    const message = if (c.JS_IsUndefined(args.get(2)))
++        try s.call(formatter, c.pi_js_undefined(), &prefix)
++    else try s.own(try ordinary.sharedSpreadCall(s.engine, formatter, &prefix,
++        args.get(2), try s.get(debug_owner, "SafeArrayIterator")));
++    _ = try s.call(write, stderr, &.{message});
++    return c.pi_js_undefined();
++}
++fn emissionCallback(engine: *a.v.em.Engine, _: c.JSValue, args: *sync.Arguments,
++    roots: []const c.JSValue) anyerror!c.JSValue
++{
++    return a.expression(engine, emissionBody, .{args, roots});
++}
++fn emissionBody(s: *Scope, args: *sync.Arguments, roots: []const c.JSValue) anyerror!c.JSValue {
++    const frame = try args.createFrame(&s.values, EmissionFrame);
++    const owner = value(roots, .owner);
++    try frame.take(.pid, a.expression(s.engine, currentPID, .{owner}));
++    try frame.take(.colors, a.expression(s.engine, emissionColors, .{owner}));
++    try frame.take(.colored_pid, a.expression(s.engine, inspectCurrentPID, .{owner, frame}));
++    _ = try a.expression(s.engine, writeTimerMessage, .{args, roots, frame});
++    return c.pi_js_undefined();
++}
+--- /dev/null
++++ b/src/native_node_debuglog_timers_test.zig
+@@ -0,0 +1,949 @@
++//! Actual VM controls for the complete original debuglog timer consumer.
++//! The fixture supplies controlled original private trace-binding inputs and
++//! live process.hrtime observations for literal-source comparison. It creates
++//! no production trace binding or hrtime provider and launches no Node process.
++const std = @import("std");
++const a = @import("extensions/native_node_argument_values.zig");
++const debuglog = @import("extensions/native_node_debuglog.zig");
++const timers = @import("extensions/native_node_debuglog_timers.zig");
++const safe_array = @import("extensions/native_node_safe_array_iterator.zig");
++const tty = @import("extensions/native_node_internal_tty.zig");
++const colors = @import("extensions/native_node_util_colors.zig");
++const internal = @import("extensions/native_node_internal_builtin_require.zig");
++const bootstrap = @import("extensions/native_node_argument_bootstrap.zig");
++const collections = @import("extensions/native_node_fs_collections.zig");
++const publication = @import("extensions/native_node_fs_private_publication.zig");
++const functions = @import("extensions/native_node_module_callable.zig");
++const c = a.c;
++const admissions = [_]internal.Binding{
++    .{ .id = "os", .module_name = "node:os" },
++    .{ .id = "internal/tty", .module_name = "internal/tty" },
++    .{ .id = "internal/util/colors", .module_name = "internal/util/colors" },
++};
++const Options = struct {
++    prepare_arguments: bool = true,
++    prepare_require: bool = true,
++    create_tty: bool = true,
++    install_colors: bool = true,
++    create_debug: bool = true,
++    create_timers: bool = true,
++};
++const Fixture = struct {
++    engine: *a.v.em.Engine = undefined,
++    environment: std.process.Environ.Map = undefined,
++    engine_alive: bool = false,
++    environment_alive: bool = false,
++    prepared: ?bootstrap.Prepared = null,
++    native_require: c.JSValue = undefined,
++    safe_map: c.JSValue = undefined,
++    module_value: c.JSValue = undefined,
++    timer_value: c.JSValue = undefined,
++    trace_binding: c.JSValue = undefined,
++    first_fatal: c.JSValue = undefined,
++    probe_class: c.JSClassID = 0,
++    retired: usize = 0,
++    emit_fatal: bool = false,
++
++    fn init(self: *Fixture, options: Options) !void {
++        self.* = .{};
++        self.environment = .init(std.testing.allocator); self.environment_alive = true;
++        errdefer self.deinit();
++        self.engine = try a.v.em.Engine.init(std.testing.allocator, .{}); self.engine_alive = true;
++        self.native_require = c.pi_js_undefined(); self.safe_map = c.pi_js_undefined();
++        self.module_value = c.pi_js_undefined(); self.first_fatal = c.pi_js_undefined();
++        self.timer_value = c.pi_js_undefined(); self.trace_binding = c.pi_js_undefined();
++        try @import("extensions/timers.zig").install(self.engine, std.testing.io);
++        try @import("extensions/native_process.zig").install(self.engine,
++            std.testing.io, &self.environment, &.{"native-debuglog-control"});
++        try @import("extensions/native_node_os.zig").install(self.engine);
++        self.engine.host_control_context = self;
++        try self.engine.bindFunction("debugFatal", rawFatal, 0);
++        try self.engine.bindFunction("debugEphemeral", ephemeral, 0);
++        try self.engine.bindFunction("debugAcquire", rawAcquire, 0);
++        try self.engine.bindFunction("timerAcquire", rawTimerAcquire, 0);
++        const process_record = self.engine.native_module_values.get("node:process").?;
++        const process = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, process_record, "default"));
++        defer self.engine.freeValue(process); try self.publish("P", process);
++        try self.publish("IP", self.engine.intrinsic_clone_operations);
++        try self.evaluate(
++            \\globalThis.lines=[];globalThis.warnings=[];
++            \\Object.defineProperty(P,'pid',{value:17,writable:true,configurable:true});
++            \\Object.defineProperty(P,'stderr',{value:{isTTY:false,write(s){lines.push(s)}},writable:true,configurable:true});
++            \\P.emitWarning=function(s){warnings.push(s)};delete P.env.FORCE_COLOR;
++            \\globalThis.reason=function(fn){try{fn()}catch(e){return e}throw Error('expected failure')};
++        );
++        self.safe_map = try collections.acquireSafeMap(self.engine);
++        if (options.prepare_arguments) {
++            self.prepared = try bootstrap.prepare(self.engine);
++            try self.publish("IM", self.prepared.?.internal_inspect);
++        }
++        if (options.prepare_require) {
++            self.native_require = try internal.acquire(self.engine, .{ .bindings = &admissions });
++            try self.publish("Q", self.native_require);
++        }
++        if (options.create_tty) {
++            const complete_tty = try tty.acquire(self.engine, .{ .require = self.native_require });
++            defer self.engine.freeValue(complete_tty); try self.publish("TT", complete_tty);
++        }
++        if (options.install_colors) try self.installColors();
++        if (options.create_debug) try self.createDebug();
++        try self.evaluate(
++            \\globalThis.events=[];globalThis.traceBuffer=new Uint8Array([1]);globalThis.clock=0;
++            \\P.hrtime=function(previous){events.push(previous===undefined?'hr:start':'hr:delta');return previous===undefined?[clock++,0]:[0,1500000]};
++            \\globalThis.TraceInput={getCategoryEnabledBuffer(category){events.push('buffer:'+category);return globalThis.bufferHook?bufferHook(category):traceBuffer},trace(phase,category,label,id){events.push(['trace',phase,category,label,id]);if(globalThis.traceHook)return traceHook(phase,category,label,id)}};
++        );
++        if (options.create_timers) try self.createTimers();
++    }
++    fn installColors(self: *Fixture) !void {
++        // Exercise the complete actual module body and publish its real default
++        // record. This fixture models an already completed genuine admission;
++        // it does not claim the application's cold builtin loader is assembled.
++        const process = try self.readGlobal("P"); defer self.engine.freeValue(process);
++        const module = try self.engine.checked(c.JS_NewObject(self.engine.context)); defer self.engine.freeValue(module);
++        const initial = try self.engine.checked(c.JS_NewObject(self.engine.context));
++        if (c.JS_DefinePropertyValueStr(self.engine.context, module, "exports", initial, c.JS_PROP_C_W_E) < 0)
++            return error.ActualDebuglogColorsModuleRequired;
++        const completion = try colors.execute(self.engine, .{ .process = process, .module = module, .require = self.native_require });
++        self.engine.freeValue(completion);
++        const exports = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, module, "exports"));
++        defer self.engine.freeValue(exports); try self.publish("Colors", exports);
++        const record = try self.engine.defaultExports(exports);
++        const published = try publication.publish(self.engine, "internal/util/colors", record);
++        self.engine.freeValue(published);
++    }
++    fn createDebug(self: *Fixture) !void {
++        const next = try debuglog.acquire(self.engine, .{ .require = self.native_require });
++        self.engine.freeValue(self.module_value); self.module_value = next;
++        try self.publish("NativeDebug", next);
++        const initialize = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, next, "initializeDebugEnv"));
++        defer self.engine.freeValue(initialize); try self.publish("I", initialize);
++        const factory = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, next, "debuglog"));
++        defer self.engine.freeValue(factory); try self.publish("D", factory);
++        const iterator = try safe_array.acquire(self.engine);
++        defer self.engine.freeValue(iterator); try self.publish("SA", iterator);
++        try self.publish("SM", self.safe_map);
++        try self.evaluate(@embedFile("fixtures/native-node-debuglog-timers-reference.js"));
++    }
++    fn createTimers(self: *Fixture) !void {
++        const binding = try self.readGlobal("TraceInput"); defer self.engine.freeValue(binding);
++        self.engine.freeValue(self.trace_binding); self.trace_binding = a.duplicate(self.engine, binding);
++        const next = try timers.acquire(self.engine, .{ .debuglog_exports = self.module_value, .trace_events = binding });
++        self.engine.freeValue(self.timer_value); self.timer_value = next;
++        try self.publish("T", next);
++    }
++    fn select(self: *Fixture, reference: bool) !void {
++        try self.evaluate(if (reference)
++            "globalThis.A=makeOriginalDebugTimers(TraceInput);globalThis.initialize=A.initializeDebugEnv;"
++        else "globalThis.A=T;globalThis.initialize=I;");
++        try self.evaluate("globalThis.F=A.formatTime;globalThis.DT=A.debugWithTimer;");
++    }
++    fn evaluate(self: *Fixture, source: []const u8) !void {
++        const value = try self.engine.eval(source, "native-debuglog-control.js", c.JS_EVAL_TYPE_GLOBAL);
++        self.engine.freeValue(value); try std.testing.expect(!c.JS_HasException(self.engine.context));
++    }
++    fn publish(self: *Fixture, name: [*:0]const u8, value: c.JSValue) !void {
++        const global = try self.engine.checked(c.JS_GetGlobalObject(self.engine.context)); defer self.engine.freeValue(global);
++        if (c.JS_DefinePropertyValueStr(self.engine.context, global, name,
++            a.duplicate(self.engine, value), c.JS_PROP_C_W_E) < 0) return error.ActualDebuglogControlPublicationRequired;
++    }
++    fn readGlobal(self: *Fixture, name: [*:0]const u8) !c.JSValue {
++        const global = try self.engine.checked(c.JS_GetGlobalObject(self.engine.context)); defer self.engine.freeValue(global);
++        return self.engine.checked(c.JS_GetPropertyStr(self.engine.context, global, name));
++    }
++    fn takeReason(self: *Fixture) !c.JSValue {
++        if (c.JS_HasException(self.engine.context)) return c.JS_GetException(self.engine.context);
++        if (self.engine.captured_exception) |value| { self.engine.captured_exception = null; return value; }
++        return error.ActualDebuglogControlReasonRequired;
++    }
++    fn balanced(self: *Fixture) !void {
++        try std.testing.expectEqual(@as(usize, 0), self.engine.native_exception_diagnostics_suppressed);
++        try std.testing.expect(self.engine.native_fatal_invocation == null);
++    }
++    fn deinit(self: *Fixture) void {
++        self.emit_fatal = false;
++        if (self.engine_alive) {
++            if (self.prepared) |prepared| prepared.deinit(self.engine);
++            self.engine.freeValue(self.timer_value); self.engine.freeValue(self.trace_binding);
++            self.engine.freeValue(self.module_value); self.engine.freeValue(self.safe_map);
++            self.engine.freeValue(self.native_require); self.engine.freeValue(self.first_fatal);
++            self.engine.deinit(); self.engine_alive = false;
++        }
++        if (self.environment_alive) { self.environment.deinit(); self.environment_alive = false; }
++    }
++};
++fn current(context: ?*c.JSContext) *Fixture {
++    const engine = a.v.em.Engine.fromContext(context.?);
++    return @ptrCast(@alignCast(engine.host_control_context.?));
++}
++fn publishFatal(fixture: *Fixture) void {
++    _ = fixture.engine.throwNativeOutOfMemoryFatal();
++    if (c.JS_HasException(fixture.engine.context)) {
++        const value = c.JS_GetException(fixture.engine.context);
++        if (c.JS_IsUndefined(fixture.first_fatal)) fixture.first_fatal = a.duplicate(fixture.engine, value);
++        fixture.engine.freeValue(value);
++    }
++}
++fn rawFatal(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    publishFatal(current(context)); return c.pi_js_undefined();
++}
++fn rawAcquire(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const fixture = current(context);
++    return debuglog.acquire(fixture.engine, .{ .require = fixture.native_require }) catch |err|
++        functions.failure(fixture.engine, err, 0);
++}
++fn rawTimerAcquire(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const fixture = current(context);
++    return timers.acquire(fixture.engine, .{ .debuglog_exports = fixture.module_value, .trace_events = fixture.trace_binding }) catch |err|
++        functions.failure(fixture.engine, err, 0);
++}
++fn retireProbe(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
++    const fixture: *Fixture = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
++    fixture.retired += 1;
++    if (fixture.emit_fatal) publishFatal(fixture);
++}
++fn ephemeralBody(s: *a.Scope, fixture: *Fixture) !c.JSValue {
++    if (fixture.probe_class == 0) {
++        if (c.JS_NewClassID(s.engine.runtime, &fixture.probe_class) == 0) return error.OutOfMemory;
++        const definition: c.JSClassDef = .{ .class_name = "Actual debuglog retirement probe", .finalizer = retireProbe };
++        if (c.JS_NewClass(s.engine.runtime, fixture.probe_class, &definition) < 0) return error.OutOfMemory;
++    }
++    const generation = try s.beforeAllocation();
++    const value = try s.checkedAllocation(c.JS_NewObjectClass(s.engine.context, fixture.probe_class), generation);
++    _ = c.JS_SetOpaque(value, fixture);
++    return a.duplicate(s.engine, value);
++}
++fn ephemeral(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const fixture = current(context);
++    return a.expression(fixture.engine, ephemeralBody, .{fixture}) catch |err| functions.failure(fixture.engine, err, 0);
++}
++fn expectFatal(fixture: *Fixture, source: []const u8) !void {
++    try std.testing.expectError(error.JavaScriptException, fixture.engine.eval(source, "native-debuglog-fatal.js", c.JS_EVAL_TYPE_GLOBAL));
++    fixture.emit_fatal = false;
++    const reason = try fixture.takeReason(); defer fixture.engine.freeValue(reason);
++    try std.testing.expect(c.JS_IsStrictEqual(fixture.engine.context, reason, fixture.first_fatal));
++    try std.testing.expect(c.JS_IsUncatchableError(reason));
++    try fixture.balanced();
++}
++
++
++test "native debug timers preserve original callable shapes and defer category or timestamp observation" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\if(A.kNone!==1||A.kSkipLog!==2||A.kSkipTrace!==4)throw Error('constants');
++            \\for(const [name,length] of [['formatTime',1],['time',4],['timeEnd',5],['timeLog',5],['debugWithTimer',2]])
++            \\ if(A[name].name!==name||A[name].length!==length||!Object.hasOwn(A[name],'prototype'))throw Error(name);
++            \\const timers=DT('mod',()=>{});
++            \\for(const [name,length] of [['startTimer',2],['endTimer',2],['logTimer',3]]){
++            \\ const d=Object.getOwnPropertyDescriptor(timers,name);
++            \\ if(timers[name].name!==name||timers[name].length!==length||Object.hasOwn(timers[name],'prototype')||!d.writable||!d.enumerable||!d.configurable)throw Error('arrows/descriptors');
++            \\}
++            \\if(events.length||lines.length||warnings.length)throw Error('eager native inputs');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers format original thresholds rounding signed zero and nonfinite values" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\const pairs=[[0,'0ms'],[-0,'0ms'],[0.125,'0.125ms'],[-1.25,'-1.25ms'],[999.999,'999.999ms'],[1000,'1.000s'],[59999.9,'60.000s'],[60000,'1:00.000 (m:ss.mmm)'],[3599999.9,'59:60.000 (m:ss.mmm)'],[3600000,'1:00:00.000 (h:mm:ss.mmm)'],[3661001.125,'1:01:01.001 (h:mm:ss.mmm)'],[NaN,'NaNms'],[-Infinity,'-Infinityms'],[Infinity,'Infinity:NaN:NaN.undefined (h:mm:ss.mmm)']];
++            \\for(const [input,expected]of pairs)if(F(input)!==expected)throw Error(String(input)+' '+F(input)+' '+expected);
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers preserve repeated original numeric coercion and Number receiver brands" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\const seen=[];const value={valueOf(){seen.push('number');return 3661001}};
++            \\if(F(value)!=='1:01:01.001 (h:mm:ss.mmm)'||seen.length!==5)throw Error('numeric order');
++            \\seen.length=0;const short={valueOf(){seen.push('number');return 1}};
++            \\if(!(reason(()=>F(short)) instanceof TypeError)||seen.length!==1)throw Error('toFixed brand');
++            \\if(F(new Number(42))!=='42ms')throw Error('boxed Number');
++            \\for(const input of [1n,1001n,Symbol('ms')])if(!(reason(()=>F(input)) instanceof TypeError))throw Error('abrupt numeric input');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers use captured Number Math and string methods after guest replacement" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\const saved={floor:Math.floor,fixed:Number.prototype.toFixed,pad:String.prototype.padStart,split:String.prototype.split,number:Number};
++            \\try{
++            \\ Math.floor=()=>{throw Error('foreign floor')};Number.prototype.toFixed=()=>{throw Error('foreign fixed')};
++            \\ String.prototype.padStart=()=>{throw Error('foreign pad')};String.prototype.split=()=>{throw Error('foreign split')};
++            \\ globalThis.Number=()=>{throw Error('foreign constructor')};
++            \\ if(F(3661001)!=='1:01:01.001 (h:mm:ss.mmm)'||F(7.5)!=='7.5ms')throw Error('capture');
++            \\}finally{globalThis.Number=saved.number;Math.floor=saved.floor;Number.prototype.toFixed=saved.fixed;String.prototype.padStart=saved.pad;String.prototype.split=saved.split}
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers perform split object destructuring index zero before index one" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\const seen=[];const prior=Object.getOwnPropertyDescriptor(String.prototype,Symbol.split);
++            \\try{
++            \\ Object.defineProperty(String.prototype,Symbol.split,{configurable:true,value:function(text,limit){seen.push('split:'+text+':'+limit);return{get 0(){seen.push('zero');return{toString(){seen.push('seconds');return'9'}}},get 1(){seen.push('one');return'123'}}}});
++            \\ if(F(3600000)!=='1:00:09.123 (h:mm:ss.mmm)')throw Error('split result');
++            \\ if(JSON.stringify(seen)!=='["split:0.000:2","zero","one","seconds"]')throw Error('destructuring order '+JSON.stringify(seen));
++            \\}finally{if(prior)Object.defineProperty(String.prototype,Symbol.split,prior);else delete String.prototype[Symbol.split]}
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers escape trace labels and emit begin before the timestamp" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\const store=new SM();A.time(store,'category','implementation',1,'label','a\\b"c');
++            \\if(events.length!==2||events[0][0]!=='trace'||events[0][1]!==98||events[0][2]!=='category'||events[0][3]!==String.fromCharCode(97,92,92,98,92,34,99)||events[0][4]!==0||events[1]!=='hr:start')throw Error(JSON.stringify(events));
++            \\if(store.size!==1||store.get('label')[0]!==0)throw Error('actual SafeMap');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers coerce labels before has and capture set before live hrtime" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\events=[];let selected;
++            \\const label={[Symbol.toPrimitive](hint){events.push('label:'+hint);return'log'}};
++            \\const traceLabel={[Symbol.toPrimitive](hint){events.push('trace:'+hint);return'trace'}};
++            \\const store={get has(){events.push('get:has');return function(k){if(this!==store||k!=='log')throw Error('has');events.push('has');return false}},get set(){events.push('get:set');return function(k,v){if(this!==store)throw Error('set receiver');events.push('set');selected=v}}};
++            \\Object.defineProperty(P,'hrtime',{configurable:true,get(){events.push('get:hr');return function(){if(this!==P||arguments.length)throw Error('hr');events.push('hr');return 17}}});
++            \\A.time(store,'cat','impl',4,label,traceLabel);
++            \\if(selected!==17||JSON.stringify(events)!=='["label:string","trace:string","get:has","has","get:set","get:hr","hr","set"]')throw Error(JSON.stringify(events));
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers default log label applies only to undefined and Symbols stop before has" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\const store=new SM();A.time(store,'cat','impl',4);A.time(store,'cat','impl',4,null);A.time(store,'cat','impl',4,0);
++            \\if(!store.has('default')||!store.has('null')||!store.has('0'))throw Error('default');
++            \\events=[];const guarded={has(){throw Error('should not reach has')}};
++            \\if(!(reason(()=>A.time(guarded,'cat','impl',4,Symbol('x')))instanceof TypeError))throw Error('label Symbol');
++            \\if(!(reason(()=>A.time(guarded,'cat','impl',4,'x',Symbol('y')))instanceof TypeError))throw Error('trace Symbol');
++            \\if(events.length)throw Error('early side effect');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers duplicate warning returns before flag coercion trace and clock" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\const store=new SM([['x',17]]);let coerced=0;const implementation={toString(){coerced++;return'custom'}};
++            \\A.time(store,'cat',implementation,Symbol('flags'),'x');
++            \\if(coerced!==1||warnings[0]!=="Label 'x' already exists for custom"||events.length||store.get('x')!==17)throw Error('duplicate order');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers direct time always stores while only the trace bit controls begin" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\for(const flags of [1,2,4,6]){
++            \\ events=[];const store=new SM();A.time(store,'cat','impl',flags,'x');
++            \\ const kinds=events.map(x=>Array.isArray(x)?x[1]:x);
++            \\ if(JSON.stringify(kinds)!==(flags===1||flags===2?'[98,"hr:start"]':'["hr:start"]')||!store.has('x'))throw Error('direct flags '+flags);
++            \\}
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers missing end label warns then emits end and deletes" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\events=[];P.emitWarning=function(text){events.push(text)};
++            \\const store={get(k){events.push('get:'+k);return undefined},delete(k){events.push('delete:'+k)}};
++            \\A.timeEnd(store,'cat','impl',1,()=>{throw Error('unexpected log')},'x');
++            \\if(JSON.stringify(events)!=='["get:x","No such label \'x\' for impl",["trace",101,"cat","x",0],"delete:x"]')throw Error(JSON.stringify(events));
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers elapsed arithmetic reads and coerces seconds before nanoseconds" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\events=[];const start={};P.hrtime=function(previous){if(this!==P||previous!==start)throw Error('actual argument');events.push('hr');return{get 0(){events.push('zero');return{valueOf(){events.push('seconds');return 1}}},get 1(){events.push('one');return{valueOf(){events.push('nanos');return 500000000}}}}};
++            \\const store={get(k){events.push('get:'+k);return start},delete(k){events.push('delete:'+k)}};
++            \\A.timeEnd(store,'cat','impl',1,function(label,formatted){events.push('log:'+arguments.length+':'+label+':'+formatted)},'x');
++            \\if(JSON.stringify(events)!=='["get:x","hr","zero","seconds","one","nanos","log:2:x:1.500s",["trace",101,"cat","x",0],"delete:x"]')throw Error(JSON.stringify(events));
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers timeLog preserves optional argument arity and keeps the stored timestamp" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\const store=new SM([['x',[0,0]]]);const calls=[];
++            \\for(const extra of [undefined,null,0,['tail']])A.timeLog(store,'cat','impl',4,function(label,formatted,args){calls.push([arguments.length,label,formatted,args])},'x',undefined,extra);
++            \\if(calls.length!==4||calls[0].length!==4||calls[0][0]!==2||calls.slice(1).some(x=>x[0]!==3)||calls.some(x=>x[1]!=='x'||x[2]!=='1.5ms')||!store.has('x'))throw Error('arity/store');
++            \\if(calls[1][3]!==null||calls[2][3]!==0||calls[3][3][0]!=='tail')throw Error('extra forwarding');
++            \\events=[];A.timeLog(store,'cat','impl',3,()=>{throw Error('skip log')},'x');
++            \\if(events.length!==1||events[0][1]!==110||store.size!==1)throw Error('instant');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers end flag combinations retain the original delete and logging order" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\for(const flags of [2,4,6]){
++            \\ events=[];const store={get(){events.push('get');return[0,0]},delete(){events.push('delete')}};
++            \\ A.timeEnd(store,'cat','impl',flags,()=>events.push('log'),'x');
++            \\ const kinds=events.map(x=>Array.isArray(x)?x[1]:x);
++            \\ const expected=flags===2?'[101,"delete"]':flags===4?'["get","hr:delta","log","delete"]':'["delete"]';
++            \\ if(JSON.stringify(kinds)!==expected)throw Error('end flags '+flags+' '+JSON.stringify(kinds));
++            \\}
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers a logger throw prevents end trace and deletion and preserves identity" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\const marker={},store=new SM([['x',[0,0]]]);events=[];
++            \\if(reason(()=>A.timeEnd(store,'cat','impl',1,()=>{throw marker},'x'))!==marker)throw Error('logger identity');
++            \\if(!store.has('x')||JSON.stringify(events)!=='["hr:delta"]')throw Error('continued after log failure');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers a trace throw occurs before start timestamp and after end logging" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\const marker={};traceHook=()=>{throw marker};
++            \\let store=new SM();events=[];if(reason(()=>A.time(store,'cat','impl',1,'x'))!==marker||store.size||events.some(x=>x==='hr:start'))throw Error('start trace');
++            \\store=new SM([['x',[0,0]]]);events=[];let logged=0;
++            \\if(reason(()=>A.timeEnd(store,'cat','impl',1,()=>logged++,'x'))!==marker||logged!==1||!store.has('x')||events[0]!=='hr:delta'||events[1][1]!==101)throw Error('end trace');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers retain live two-step replaceAll and forward its result without extra coercion" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\const descriptor=Object.getOwnPropertyDescriptor(String.prototype,'replaceAll'),seen=[],last={};
++            \\try{
++            \\ Object.defineProperty(String.prototype,'replaceAll',{configurable:true,get(){seen.push('first get');return function(a,b){'use strict';seen.push(['first',this,a,b]);return{get replaceAll(){seen.push('second get');return function(a,b){seen.push(['second',a,b]);return last}}}}}});
++            \\ const store=new SM();A.time(store,'cat','impl',1,'x','trace');
++            \\ if(seen[0]!=='first get'||seen[1][0]!=='first'||seen[1][1]!=='trace'||seen[2]!=='second get'||seen[3][0]!=='second'||events[0][3]!==last)throw Error('chain');
++            \\ if(seen[1][2]!=='\\'||seen[1][3]!=='\\\\'||seen[3][1]!=='"'||seen[3][2]!=='\\"')throw Error('escape operands');
++            \\}finally{Object.defineProperty(String.prototype,'replaceAll',descriptor)}
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers retain the selected set method across hrtime reentry" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\events=[];let stored;const store={has(){return false},set(k,v){events.push('old set');stored=v}};
++            \\P.hrtime=function(){store.set=()=>{throw Error('replacement set')};events.push('hr');return 43};
++            \\A.time(store,'cat','impl',4,'x');
++            \\if(stored!==43||JSON.stringify(events)!=='["hr","old set"]')throw Error('set reference');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers start trace reentry happens before either timestamp is stored" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\events=[];const store=new SM();let nested=false;
++            \\traceHook=()=>{if(!nested){nested=true;A.time(store,'cat','impl',1,'x')}};
++            \\A.time(store,'cat','impl',1,'x');
++            \\if(store.get('x')[0]!==1||events.length!==4||events[0][1]!==98||events[1][1]!==98||events[2]!=='hr:start'||events[3]!=='hr:start')throw Error('trace reentry');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers uppercase the category once at construction with captured string methods" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\events=[];let conversions=0;const set={toString(){conversions++;return'mOd'}};
++            \\const upper=String.prototype.toUpperCase,lower=String.prototype.toLowerCase;
++            \\let timer;
++            \\try{String.prototype.toUpperCase=String.prototype.toLowerCase=()=>{throw Error('foreign primordial')};timer=DT(set,()=>{});}
++            \\finally{String.prototype.toUpperCase=upper;String.prototype.toLowerCase=lower}
++            \\if(conversions!==1||events.length)throw Error('early category observation');
++            \\initialize('mod');timer.startTimer('x');
++            \\if(conversions!==1||events[0]!=='buffer:node,node.mod'||events[1][2]!=='node,node.mod')throw Error('category');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers leave testEnabled uninitialized until explicit initialization and then retry" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\let callbacks=0;const timer=DT('mod',()=>callbacks++);
++            \\if(!(reason(()=>timer.startTimer('x'))instanceof TypeError)||events.length||callbacks)throw Error('uninitialized predicate');
++            \\initialize('mod');timer.startTimer('x');
++            \\if(callbacks!==1||events[0]!=='buffer:node,node.mod'||events.at(-1)!=='hr:start')throw Error('retry');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers invoke the init callback unconditionally even when both paths are disabled" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\initialize(undefined);traceBuffer[0]=0;
++            \\const timer=DT('mod',undefined);
++            \\if(!(reason(()=>timer.startTimer('x'))instanceof TypeError)||events.length!==1||events[0]!=='buffer:node,node.mod')throw Error('callback default was invented');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers skip timestamps labels and output only for the original both-disabled condition" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\initialize(undefined);traceBuffer[0]=0;let callbacks=0;const timer=DT('mod',()=>callbacks++);
++            \\const poison={toString(){throw Error('disabled label')}};
++            \\timer.startTimer(poison);timer.logTimer(poison);timer.endTimer(poison);
++            \\if(callbacks!==3||events.length!==3||events.some(x=>typeof x!=='string'||!x.startsWith('buffer:'))||lines.length||warnings.length)throw Error('disabled branch');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers trace an enabled category without reading pid stderr or logging" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\initialize(undefined);traceBuffer[0]=1;let callbacks=0;const timer=DT('mod',()=>callbacks++);
++            \\Object.defineProperty(P,'pid',{configurable:true,get(){throw Error('trace-only pid')}});
++            \\Object.defineProperty(P,'stderr',{configurable:true,get(){throw Error('trace-only stderr')}});
++            \\timer.startTimer('x');timer.endTimer('x');
++            \\if(callbacks!==2||lines.length||events.filter(x=>Array.isArray(x)).map(x=>x[1]).join(',')!=='98,101'||events.filter(x=>x==='hr:start').length!==1||events.includes('hr:delta'))throw Error('trace-only');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers log through actual colors inspector and format with tracing disabled" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\initialize('mod');traceBuffer[0]=0;const timer=DT('mod',()=>{});
++            \\timer.startTimer('x');timer.endTimer('x');
++            \\if(lines.length!==1||lines[0]!=='MOD 17 x: 1.5ms\n'||events.some(x=>Array.isArray(x))||events.filter(x=>x==='hr:delta').length!==1)throw Error('logging '+JSON.stringify(lines));
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers read the real shared enabled byte on every escaped internal call" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\initialize(undefined);traceBuffer[0]=0;let callbacks=0,start,end,log;
++            \\DT('mod',(s,e,l)=>{callbacks++;start=s;end=e;log=l}).startTimer('ignored');
++            \\events=[];traceBuffer[0]=1;start('x');traceBuffer[0]=0;log('x');traceBuffer[0]=1;end('x');
++            \\if(callbacks!==1||events.some(x=>typeof x==='string'&&x.startsWith('buffer:'))||events.filter(Array.isArray).map(x=>x[1]).join(',')!=='98,101'||events.filter(x=>x==='hr:start').length!==1)throw Error('live enabled byte');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers share one SafeMap per uppercase set across independent factories" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\initialize('mod');traceBuffer[0]=0;const first=DT('mod',()=>{}),second=DT('MOD',()=>{});
++            \\first.startTimer('x');second.startTimer('x');second.endTimer('x');
++            \\if(warnings.length!==1||warnings[0]!=="Label 'x' already exists for debuglog.time"||lines[0]!=='MOD 17 x: 1.5ms\n')throw Error('shared labels');
++            \\first.endTimer('x');
++            \\if(warnings[1]!=="No such label 'x' for debuglog.timeEnd")throw Error('shared deletion');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers recheck the enabled byte after init callback changes it" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\initialize(undefined);traceBuffer[0]=1;let callbacks=0;
++            \\const timer=DT('mod',()=>{callbacks++;traceBuffer[0]=0});
++            \\timer.startTimer('x');
++            \\if(callbacks!==1||events.length!==1||events[0]!=='buffer:node,node.mod')throw Error('post-callback enabled check');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers retain initialized cells after a callback throw and retry the original callback" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\initialize('mod');traceBuffer[0]=0;let failed=true,calls=0,start;const marker={};
++            \\const timer=DT('mod',s=>{calls++;start=s;if(failed){failed=false;throw marker}});
++            \\if(reason(()=>timer.startTimer('x'))!==marker||calls!==1)throw Error('callback identity');
++            \\start('escaped');timer.endTimer('escaped');
++            \\if(calls!==2||lines[0]!=='MOD 17 escaped: 1.5ms\n'||events.filter(x=>typeof x==='string'&&x.startsWith('buffer:')).length!==2)throw Error('callback-state retry');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers run init for every original arrow while escaped internals reuse captures" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\initialize('mod');traceBuffer[0]=0;let callbacks=0,end;
++            \\const timer=DT('mod',(_,e)=>{callbacks++;end=e});
++            \\timer.startTimer('x');end('x');timer.startTimer('y');timer.endTimer('y');
++            \\if(callbacks!==3||lines.length!==2||events.filter(x=>typeof x==='string'&&x.startsWith('buffer:')).length!==3)throw Error('wrapper replacement was invented');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers share original initializeDebugEnv state without retroactively changing escaped flags" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\initialize('mod');traceBuffer[0]=0;let log;const timer=DT('mod',(_,__,l)=>log=l);
++            \\timer.startTimer('x');initialize(undefined);log('x');const count=events.length;timer.logTimer('x');
++            \\if(lines.length!==1||events.length!==count+1||events.at(-1)!=='buffer:node,node.mod')throw Error('shared testEnabled or flag capture');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers emit the original HTTP warning on each init before category observation" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\initialize(undefined);traceBuffer[0]=0;events=[];
++            \\P.emitWarning=function(message){events.push('warning');warnings.push(message)};
++            \\const timer=DT('http',()=>events.push('callback'));
++            \\timer.startTimer('x');timer.endTimer('x');
++            \\if(JSON.stringify(events)!=='["warning","buffer:node,node.http","callback","warning","buffer:node,node.http","callback"]'||warnings.length!==2||!warnings[0].includes("'http'"))throw Error('warning order');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers observe current pid then two live stderr reads with write captured before format" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\initialize('mod');traceBuffer[0]=0;const timer=DT('mod',()=>{});timer.startTimer('x');events=[];
++            \\Object.defineProperty(P,'pid',{configurable:true,get(){events.push('pid');return 42}});
++            \\let reads=0;Object.defineProperty(P,'stderr',{configurable:true,get(){events.push('stderr'+(++reads));if(reads===1)return{isTTY:false};return{get write(){events.push('write:get');return function(message){events.push('write:call');lines.push(message)}}}}});
++            \\timer.endTimer('x');
++            \\if(JSON.stringify(events)!=='["buffer:node,node.mod","hr:delta","pid","stderr1","stderr2","write:get","write:call"]'||lines[0]!=='MOD 42 x: 1.5ms\n')throw Error(JSON.stringify(events));
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers forward ordinary colors options to the actual inspector" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\initialize('mod');traceBuffer[0]=0;const timer=DT('mod',()=>{});timer.startTimer('x');events=[];
++            \\P.pid={[Symbol.for('nodejs.util.inspect.custom')](depth,options,inspector){events.push('inspect');const d=Object.getOwnPropertyDescriptor(options,'colors');if(!d||d.value!==false||!d.enumerable||!d.writable||!d.configurable||typeof inspector!=='function')throw Error('options');return'PID'}};
++            \\Colors.shouldColorize=function(stream){events.push('colors');if(stream!==P.stderr)throw Error('actual stream');return false};
++            \\timer.endTimer('x');
++            \\if(events.indexOf('colors')>=events.indexOf('inspect')||lines[0]!=='MOD PID x: 1.5ms\n')throw Error('actual inspection');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers spread extra values through SafeArrayIterator without reading a guest iterator" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\initialize('mod');traceBuffer[0]=0;const timer=DT('mod',()=>{});timer.startTimer('x');const seen=[];
++            \\const extra={get length(){seen.push('length');return 2},get 0(){seen.push('zero');return'one'},get 1(){seen.push('one');return'two'},get [Symbol.iterator](){throw Error('guest iterator')}};
++            \\timer.logTimer('x',undefined,extra);
++            \\if(JSON.stringify(seen)!=='["length","zero","length","one","length"]'||lines[0]!=='MOD 17 x: 1.5ms\n one two')throw Error('SafeArrayIterator '+JSON.stringify(seen)+' '+JSON.stringify(lines));
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers keep formatter arguments ordered after selecting the second write method" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\initialize('mod');traceBuffer[0]=0;const timer=DT('mod',()=>{});timer.startTimer('x');const seen=[];
++            \\let accesses=0;Object.defineProperty(P,'stderr',{configurable:true,get(){accesses++;if(accesses===1)return{isTTY:false};return{get write(){seen.push('write:get');return function(message){seen.push('write:call');lines.push(message)}}}}});
++            \\const extra={[Symbol.for('nodejs.util.inspect.custom')](){seen.push('format:extra');return'TAIL'}};
++            \\timer.logTimer('x',undefined,[extra]);
++            \\if(JSON.stringify(seen)!=='["write:get","format:extra","write:call"]'||!lines[0].endsWith(' TAIL'))throw Error('write/format order');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++
++test "native debug timers capture trace binding named imports once in original order" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{ .create_timers = false }); defer f.deinit();
++        try f.evaluate(
++            \\globalThis.captureEvents=[];
++            \\globalThis.TraceInput={get getCategoryEnabledBuffer(){captureEvents.push('get:buffer');return category=>{captureEvents.push(category);return traceBuffer}},get trace(){captureEvents.push('get:trace');return phase=>captureEvents.push(phase)}};
++        );
++        if (!reference) try f.createTimers();
++        try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\if(JSON.stringify(captureEvents)!=='["get:buffer","get:trace"]')throw Error('capture order');
++            \\Object.defineProperty(TraceInput,'getCategoryEnabledBuffer',{value:()=>{throw Error('foreign buffer')}});
++            \\Object.defineProperty(TraceInput,'trace',{value:()=>{throw Error('foreign trace')}});
++            \\initialize(undefined);DT('mod',()=>{}).startTimer('x');
++            \\if(JSON.stringify(captureEvents)!=='["get:buffer","get:trace","node,node.mod",98]')throw Error('captured dependencies');
++            \\}
++        );
++        try f.balanced();
++    }
++}
++test "native debug timers require the exact ordinary owner and reject foreign trace identity on reacquisition" {
++    var f: Fixture = undefined; try f.init(.{ .create_timers = false }); defer f.deinit();
++    try f.evaluate("globalThis.foreignDebug={...NativeDebug};globalThis.otherTrace={...TraceInput};");
++    const foreign = try f.readGlobal("foreignDebug"); defer f.engine.freeValue(foreign);
++    const binding = try f.readGlobal("TraceInput"); defer f.engine.freeValue(binding);
++    try std.testing.expectError(error.ActualInitializedDebuglogOwnerIdentityChanged,
++        timers.acquire(f.engine, .{ .debuglog_exports = foreign, .trace_events = binding }));
++    try std.testing.expect(!f.engine.native_module_values.contains("pi-native:private/original-debuglog-timers"));
++    try f.createTimers(); try f.evaluate("if(timerAcquire()!==T)throw Error('shared actual owner');");
++    const other = try f.readGlobal("otherTrace"); defer f.engine.freeValue(other);
++    try std.testing.expectError(error.ActualDebuglogTimerInputIdentityChanged,
++        timers.acquire(f.engine, .{ .debuglog_exports = f.module_value, .trace_events = other }));
++    try std.testing.expect(!f.engine.native_module_names.contains("internal/util/debuglog"));
++    try std.testing.expect((try f.engine.requireBuiltin("internal/util/debuglog")) == null);
++    try f.balanced();
++}
++test "native debug timers require actual prior SafeMap bootstrap and never supply a missing trace binding" {
++    var f: Fixture = undefined; try f.init(.{ .create_timers = false }); defer f.deinit();
++    const binding = try f.readGlobal("TraceInput"); defer f.engine.freeValue(binding);
++    const removed = f.engine.native_module_values.fetchRemove("\x00native.fs.SafeMap").?;
++    try std.testing.expectError(error.RequiredBootstrappedActualTimerSafeMap,
++        timers.acquire(f.engine, .{ .debuglog_exports = f.module_value, .trace_events = binding }));
++    f.engine.native_module_values.putAssumeCapacity("\x00native.fs.SafeMap", removed.value);
++    try std.testing.expectError(error.JavaScriptException,
++        timers.acquire(f.engine, .{ .debuglog_exports = f.module_value, .trace_events = c.pi_js_undefined() }));
++    const reason = try f.takeReason(); defer f.engine.freeValue(reason); try f.publish("failure", reason);
++    try f.evaluate("if(!(failure instanceof TypeError))throw Error('required trace binding');");
++    try std.testing.expect(!f.engine.native_module_values.contains("pi-native:private/original-debuglog-timers"));
++    try f.createTimers(); try f.balanced();
++}
++test "native debug timers preserve reentrant complete owner publication during trace import capture" {
++    var f: Fixture = undefined; try f.init(.{ .create_timers = false }); defer f.deinit();
++    try f.evaluate(
++        \\globalThis.nested=false;globalThis.selectedInner;
++        \\globalThis.TraceInput={get getCategoryEnabledBuffer(){if(!nested){nested=true;selectedInner=timerAcquire()}return ()=>traceBuffer},trace(){}};
++    );
++    try f.createTimers();
++    try f.evaluate("if(selectedInner!==T||timerAcquire()!==T)throw Error('reentrant publication');");
++    try f.balanced();
++}
++test "native debug timers propagate native fatal trace before timestamp storage in literal and native bodies" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate("globalThis.store=new SM();globalThis.traceHook=()=>debugFatal();");
++        try expectFatal(&f, "A.time(store,'cat','impl',1,'x')");
++        try f.evaluate("if(store.size||events.includes('hr:start'))throw Error('continued after fatal trace');");
++    }
++}
++test "native debug timers retire an ignored trace return before timestamp storage" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate("globalThis.store=new SM();globalThis.traceHook=()=>debugEphemeral();");
++        f.emit_fatal = true; try expectFatal(&f, "A.time(store,'cat','impl',1,'x')");
++        try std.testing.expectEqual(@as(usize, 1), f.retired);
++        try f.evaluate("if(store.size||events.includes('hr:start'))throw Error('trace return lifetime');");
++    }
++}
++test "native debug timers retire missing-label warning returns before trace and delete" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate("globalThis.deleted=0;globalThis.store={get(){return undefined},delete(){deleted++}};P.emitWarning=()=>debugEphemeral();");
++        f.emit_fatal = true; try expectFatal(&f, "A.timeEnd(store,'cat','impl',1,()=>{},'x')");
++        try std.testing.expectEqual(@as(usize, 1), f.retired);
++        try f.evaluate("if(deleted||events.length)throw Error('warning return lifetime');");
++    }
++}
++test "native debug timers retire init callback results before entering the original arrow body" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate("initialize('mod');globalThis.timer=DT('mod',()=>debugEphemeral());");
++        f.emit_fatal = true; try expectFatal(&f, "timer.startTimer('x')");
++        try std.testing.expectEqual(@as(usize, 1), f.retired);
++        try f.evaluate("if(events.length!==1||events[0]!=='buffer:node,node.mod')throw Error('callback return retirement');");
++    }
++}
++test "native debug timers retain source pid local through write and retire it on function exit" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\initialize('mod');traceBuffer[0]=0;globalThis.timer=DT('mod',()=>{});timer.startTimer('x');
++            \\Object.defineProperty(P,'pid',{configurable:true,get(){const value=debugEphemeral();value[Symbol.for('nodejs.util.inspect.custom')]=()=> 'PID';return value}});
++        );
++        f.emit_fatal = true; try expectFatal(&f, "timer.endTimer('x')");
++        try std.testing.expectEqual(@as(usize, 1), f.retired);
++        try f.evaluate("if(lines.length!==1||lines[0]!=='MOD PID x: 1.5ms\\n')throw Error('pid retired before write');");
++    }
++}
++
++test "native debug timers box a primitive split result once before both object pattern Gets" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\const savedSplit=Object.getOwnPropertyDescriptor(String.prototype,Symbol.split);
++            \\const savedZero=Object.getOwnPropertyDescriptor(Number.prototype,'0');
++            \\const savedOne=Object.getOwnPropertyDescriptor(Number.prototype,'1');
++            \\const seen=[];let boxed;
++            \\try{
++            \\ Object.defineProperty(String.prototype,Symbol.split,{configurable:true,value:function(text,limit){'use strict';if(this!=='.'||text!=='0.000'||limit!==2)throw Error('split inputs');seen.push('split');return 7}});
++            \\ Object.defineProperty(Number.prototype,'0',{configurable:true,get(){'use strict';if(typeof this!=='object'||Number.prototype.valueOf.call(this)!==7)throw Error('one ToObject required');boxed=this;this.marker='same boxed result';seen.push('zero');return'9'}});
++            \\ Object.defineProperty(Number.prototype,'1',{configurable:true,get(){'use strict';if(this!==boxed||this.marker!=='same boxed result')throw Error('different object wrappers');seen.push('one');return'123'}});
++            \\ if(F(3600000)!=='1:00:09.123 (h:mm:ss.mmm)'||JSON.stringify(seen)!=='["split","zero","one"]')throw Error('boxed destructuring '+JSON.stringify(seen));
++            \\}finally{
++            \\ if(savedSplit)Object.defineProperty(String.prototype,Symbol.split,savedSplit);else delete String.prototype[Symbol.split];
++            \\ if(savedZero)Object.defineProperty(Number.prototype,'0',savedZero);else delete Number.prototype[0];
++            \\ if(savedOne)Object.defineProperty(Number.prototype,'1',savedOne);else delete Number.prototype[1];
++            \\}
++            \\}
++        );
++        try f.balanced();
++    }
++}
++test "native debug timers reject nullish split results at the original object pattern conversion" {
++    for ([_]bool{ false, true }) |reference| {
++        var f: Fixture = undefined; try f.init(.{}); defer f.deinit(); try f.select(reference);
++        try f.evaluate(
++            \\{
++            \\const saved=Object.getOwnPropertyDescriptor(String.prototype,Symbol.split);
++            \\let calls=0;
++            \\try{
++            \\ for(const result of [null,undefined]){
++            \\  Object.defineProperty(String.prototype,Symbol.split,{configurable:true,value:function(){calls++;return result}});
++            \\  if(!(reason(()=>F(3600000)) instanceof TypeError))throw Error('object pattern nullish rejection');
++            \\ }
++            \\ if(calls!==2)throw Error('split call count');
++            \\}finally{if(saved)Object.defineProperty(String.prototype,Symbol.split,saved);else delete String.prototype[Symbol.split]}
++            \\}
++        );
++        try f.balanced();
++    }
++}
+--- /dev/null
++++ b/src/fixtures/native-node-debuglog-timers-reference.js
+@@ -0,0 +1,520 @@
++'use strict';
++// Test-only wrapper around the byte-exact retained complete debuglog body.
++// Inputs are the actual process/inspect/private require/SafeMap/ArrayIterator,
++// plus the explicitly supplied original private trace binding under test.
++globalThis.makeOriginalDebugTimers=(()=>{
++  const Apply=Reflect.apply, ObjectDefineProperty=IP["Object.defineProperty"];
++  const RegExp=IP.RegExp, Exec=IP["RegExp.exec"];
++  const Lower=IP["String.toLowerCase"], Upper=IP["String.toUpperCase"];
++  const Fixed=IP["Number.toFixed"], Split=IP["String.split"], Pad=IP["String.padStart"];
++  const MathFloor=IP["Math.floor"], Number=IP.Number;
++  const RegExpPrototypeExec=(value,...args)=>Apply(Exec,value,args);
++  const StringPrototypeToLowerCase=value=>Apply(Lower,value,[]);
++  const StringPrototypeToUpperCase=value=>Apply(Upper,value,[]);
++  const NumberPrototypeToFixed=(value,...args)=>Apply(Fixed,value,args);
++  const StringPrototypeSplit=(value,...args)=>Apply(Split,value,args);
++  const StringPrototypePadStart=(value,...args)=>Apply(Pad,value,args);
++  const SafeArrayIterator=SA,SafeMap=SM;
++  const {inspect,format,formatWithOptions}=IM;
++  const process=P,require=Q;
++  const kTraceBegin=98,kTraceEnd=101,kTraceInstant=110;
++  return(traceInput)=>{
++    const {getCategoryEnabledBuffer,trace}=traceInput;
++let debugImpls;
++let testEnabled;
++
++
++// `debugEnv` is initial value of process.env.NODE_DEBUG
++function initializeDebugEnv(debugEnv) {
++  debugImpls = { __proto__: null };
++  if (debugEnv) {
++    // This is run before any user code, it's OK not to use primordials.
++    debugEnv = debugEnv.replace(/[|\\{}()[\]^$+?.]/g, '\\$&')
++      .replaceAll('*', '.*')
++      .replaceAll(',', '$|^');
++    const debugEnvRegex = new RegExp(`^${debugEnv}$`, 'i');
++    testEnabled = (str) => RegExpPrototypeExec(debugEnvRegex, str) !== null;
++  } else {
++    testEnabled = () => false;
++  }
++}
++
++// Emits warning when user sets
++// NODE_DEBUG=http or NODE_DEBUG=http2.
++function emitWarningIfNeeded(set) {
++  if ('HTTP' === set || 'HTTP2' === set) {
++    process.emitWarning('Setting the NODE_DEBUG environment variable ' +
++      'to \'' + StringPrototypeToLowerCase(set) + '\' can expose sensitive ' +
++      'data (such as passwords, tokens and authentication headers) ' +
++      'in the resulting log.');
++  }
++}
++
++const noop = () => {};
++
++let utilColors;
++function lazyUtilColors() {
++  utilColors ??= require('internal/util/colors');
++  return utilColors;
++}
++
++function debuglogImpl(enabled, set) {
++  if (debugImpls[set] === undefined) {
++    if (enabled) {
++      const pid = process.pid;
++      emitWarningIfNeeded(set);
++      debugImpls[set] = function debug(...args) {
++        const colors = lazyUtilColors().shouldColorize(process.stderr);
++        const msg = formatWithOptions({ colors }, ...args);
++        const coloredPID = inspect(pid, { colors });
++        process.stderr.write(format('%s %s: %s\n', set, coloredPID, msg));
++      };
++    } else {
++      debugImpls[set] = noop;
++    }
++  }
++  return debugImpls[set];
++}
++
++// debuglogImpl depends on process.pid and process.env.NODE_DEBUG,
++// so it needs to be called lazily in top scopes of internal modules
++// that may be loaded before these run time states are allowed to
++// be accessed.
++function debuglog(set, cb) {
++  function init() {
++    set = StringPrototypeToUpperCase(set);
++    enabled = testEnabled(set);
++  }
++  let debug = (...args) => {
++    init();
++    // Only invokes debuglogImpl() when the debug function is
++    // called for the first time.
++    debug = debuglogImpl(enabled, set);
++    if (typeof cb === 'function') {
++      ObjectDefineProperty(debug, 'enabled', {
++        __proto__: null,
++        get() {
++          return enabled;
++        },
++        configurable: true,
++        enumerable: true,
++      });
++      cb(debug);
++    }
++    switch (args.length) {
++      case 1: return debug(args[0]);
++      case 2: return debug(args[0], args[1]);
++      default: return debug(...new SafeArrayIterator(args));
++    }
++  };
++  let enabled;
++  let test = () => {
++    init();
++    test = () => enabled;
++    return enabled;
++  };
++  const logger = (...args) => {
++    // Improve performance when debug is disabled, avoid calling `new SafeArrayIterator(args)`
++    if (enabled === false) return;
++    switch (args.length) {
++      case 1: return debug(args[0]);
++      case 2: return debug(args[0], args[1]);
++      default: return debug(...new SafeArrayIterator(args));
++    }
++  };
++  ObjectDefineProperty(logger, 'enabled', {
++    __proto__: null,
++    get() {
++      return test();
++    },
++    configurable: true,
++    enumerable: true,
++  });
++  return logger;
++}
++
++function pad(value) {
++  return StringPrototypePadStart(`${value}`, 2, '0');
++}
++
++const kNone = 1 << 0;
++const kSkipLog = 1 << 1;
++const kSkipTrace = 1 << 2;
++const kShouldSkipAll = kSkipLog | kSkipTrace;
++
++const kSecond = 1000;
++const kMinute = 60 * kSecond;
++const kHour = 60 * kMinute;
++
++function formatTime(ms) {
++  let hours = 0;
++  let minutes = 0;
++  let seconds = 0;
++
++  if (ms >= kSecond) {
++    if (ms >= kMinute) {
++      if (ms >= kHour) {
++        hours = MathFloor(ms / kHour);
++        ms = ms % kHour;
++      }
++      minutes = MathFloor(ms / kMinute);
++      ms = ms % kMinute;
++    }
++    seconds = ms / kSecond;
++  }
++
++  if (hours !== 0 || minutes !== 0) {
++    ({ 0: seconds, 1: ms } = StringPrototypeSplit(
++      NumberPrototypeToFixed(seconds, 3),
++      '.',
++      2,
++    ));
++    const res = hours !== 0 ? `${hours}:${pad(minutes)}` : minutes;
++    return `${res}:${pad(seconds)}.${ms} (${hours !== 0 ? 'h:m' : ''}m:ss.mmm)`;
++  }
++
++  if (seconds !== 0) {
++    return `${NumberPrototypeToFixed(seconds, 3)}s`;
++  }
++
++  return `${Number(NumberPrototypeToFixed(ms, 3))}ms`;
++}
++
++function safeTraceLabel(label) {
++  return label.replaceAll('\\', '\\\\').replaceAll('"', '\\"');
++}
++
++/**
++ * @typedef {(label: string, timeFormatted: string, args?: any[]) => void} LogImpl
++ */
++
++/**
++ * Returns true if label was found
++ * @param {string} timesStore
++ * @param {string} implementation
++ * @param {LogImpl} logImp
++ * @param {string} label
++ * @param {any} args
++ * @returns {void}
++ */
++function timeLogImpl(timesStore, implementation, logImp, label, args) {
++  const time = timesStore.get(label);
++  if (time === undefined) {
++    process.emitWarning(`No such label '${label}' for ${implementation}`);
++    return;
++  }
++
++  const duration = process.hrtime(time);
++  const ms = duration[0] * 1000 + duration[1] / 1e6;
++
++  const formatted = formatTime(ms);
++
++  if (args === undefined) {
++    logImp(label, formatted);
++  } else {
++    logImp(label, formatted, args);
++  }
++}
++
++/**
++ * @param {SafeMap} timesStore
++ * @param {string} traceCategory
++ * @param {string} implementation
++ * @param {number} timerFlags
++ * @param {string} logLabel
++ * @param {string} traceLabel
++ * @returns {void}
++ */
++function time(timesStore, traceCategory, implementation, timerFlags, logLabel = 'default', traceLabel = undefined) {
++  // Coerces everything other than Symbol to a string
++  logLabel = `${logLabel}`;
++
++  if (traceLabel !== undefined) {
++    traceLabel = `${traceLabel}`;
++  } else {
++    traceLabel = logLabel;
++  }
++
++  if (timesStore.has(logLabel)) {
++    process.emitWarning(`Label '${logLabel}' already exists for ${implementation}`);
++    return;
++  }
++
++  if ((timerFlags & kSkipTrace) === 0) {
++    traceLabel = safeTraceLabel(traceLabel);
++    trace(kTraceBegin, traceCategory, traceLabel, 0);
++  }
++
++  timesStore.set(logLabel, process.hrtime());
++}
++
++/**
++ * @param {SafeMap} timesStore
++ * @param {string} traceCategory
++ * @param {string} implementation
++ * @param {number} timerFlags
++ * @param {LogImpl} logImpl
++ * @param {string} logLabel
++ * @param {string} traceLabel
++ * @returns {void}
++ */
++function timeEnd(
++  timesStore,
++  traceCategory,
++  implementation,
++  timerFlags,
++  logImpl,
++  logLabel = 'default',
++  traceLabel = undefined,
++) {
++  // Coerces everything other than Symbol to a string
++  logLabel = `${logLabel}`;
++
++  if (traceLabel !== undefined) {
++    traceLabel = `${traceLabel}`;
++  } else {
++    traceLabel = logLabel;
++  }
++
++  if ((timerFlags & kSkipLog) === 0) {
++    timeLogImpl(timesStore, implementation, logImpl, logLabel);
++  }
++
++  if ((timerFlags & kSkipTrace) === 0) {
++    traceLabel = safeTraceLabel(traceLabel);
++    trace(kTraceEnd, traceCategory, traceLabel, 0);
++  }
++
++  timesStore.delete(logLabel);
++}
++
++/**
++ * @param {SafeMap} timesStore
++ * @param {string} traceCategory
++ * @param {string} implementation
++ * @param {number} timerFlags
++ * @param {LogImpl} logImpl
++ * @param {string} logLabel
++ * @param {string} traceLabel
++ * @param {any[]} args
++ * @returns {void}
++ */
++function timeLog(
++  timesStore,
++  traceCategory,
++  implementation,
++  timerFlags,
++  logImpl,
++  logLabel = 'default',
++  traceLabel = undefined,
++  args,
++) {
++  // Coerces everything other than Symbol to a string
++  logLabel = `${logLabel}`;
++
++  if (traceLabel !== undefined) {
++    traceLabel = `${traceLabel}`;
++  } else {
++    traceLabel = logLabel;
++  }
++
++  if ((timerFlags & kSkipLog) === 0) {
++    timeLogImpl(timesStore, implementation, logImpl, logLabel, args);
++  }
++
++  if ((timerFlags & kSkipTrace) === 0) {
++    traceLabel = safeTraceLabel(traceLabel);
++    trace(kTraceInstant, traceCategory, traceLabel, 0);
++  }
++}
++
++/**
++ * @type {Record<string, SafeMap>}
++ */
++let tracesStores;
++
++/**
++ * @typedef {(logLabel: string, traceLabel?: string) => void} TimerStart
++ */
++
++/**
++ * @typedef {(logLabel: string, traceLabel?: string) => void} TimerEnd
++ */
++
++/**
++ * @typedef {(logLabel: string, traceLabel?: string, args?: any[]) => void} TimerLog
++ */
++
++/**
++ * Debuglog with time fns and support for trace
++ * @param {string} set
++ * @param {(startTimer: TimerStart, endTimer: TimerEnd, logTimer: TimerLog) => void} cb
++ * @returns {{startTimer: TimerStart, endTimer: TimerEnd, logTimer: TimerLog}}
++ */
++function debugWithTimer(set, cb) {
++  set = StringPrototypeToUpperCase(set);
++
++  if (tracesStores === undefined) {
++    tracesStores = { __proto__: null };
++  }
++
++  /**
++   * @type {LogImpl}
++   */
++  function logImpl(label, timeFormatted, args) {
++    const pid = process.pid;
++    const colors = { colors: lazyUtilColors().shouldColorize(process.stderr) };
++    const coloredPID = inspect(pid, colors);
++
++    if (args === undefined)
++      process.stderr.write(format('%s %s %s: %s\n', set, coloredPID, label, timeFormatted));
++    else
++      process.stderr.write(
++        format(
++          '%s %s %s: %s\n',
++          set,
++          coloredPID,
++          label,
++          timeFormatted,
++          ...new SafeArrayIterator(args),
++        ),
++      );
++  }
++
++  const traceCategory = `node,node.${StringPrototypeToLowerCase(set)}`;
++  let traceCategoryBuffer;
++  let debugLogCategoryEnabled = false;
++  let timerFlags = kNone;
++
++  function ensureTimerFlagsAreUpdated() {
++    timerFlags &= ~kSkipTrace;
++
++    if (traceCategoryBuffer[0] === 0) {
++      timerFlags |= kSkipTrace;
++    }
++  }
++
++  /**
++   * @type {TimerStart}
++   */
++  function internalStartTimer(logLabel, traceLabel) {
++    ensureTimerFlagsAreUpdated();
++
++    if ((timerFlags & kShouldSkipAll) === kShouldSkipAll) {
++      return;
++    }
++
++    time(
++      tracesStores[set],
++      traceCategory,
++      'debuglog.time',
++      timerFlags,
++      logLabel,
++      traceLabel,
++    );
++  }
++
++  /**
++   * @type {TimerEnd}
++   */
++  function internalEndTimer(logLabel, traceLabel) {
++    ensureTimerFlagsAreUpdated();
++
++    if ((timerFlags & kShouldSkipAll) === kShouldSkipAll) {
++      return;
++    }
++
++    timeEnd(
++      tracesStores[set],
++      traceCategory,
++      'debuglog.timeEnd',
++      timerFlags,
++      logImpl,
++      logLabel,
++      traceLabel,
++    );
++  }
++
++  /**
++   * @type {TimerLog}
++   */
++  function internalLogTimer(logLabel, traceLabel, args) {
++    ensureTimerFlagsAreUpdated();
++
++    if ((timerFlags & kShouldSkipAll) === kShouldSkipAll) {
++      return;
++    }
++
++    timeLog(
++      tracesStores[set],
++      traceCategory,
++      'debuglog.timeLog',
++      timerFlags,
++      logImpl,
++      logLabel,
++      traceLabel,
++      args,
++    );
++  }
++
++  function init() {
++    if (tracesStores[set] === undefined) {
++      tracesStores[set] = new SafeMap();
++    }
++    emitWarningIfNeeded(set);
++    debugLogCategoryEnabled = testEnabled(set);
++    traceCategoryBuffer = getCategoryEnabledBuffer(traceCategory);
++
++    timerFlags = kNone;
++
++    if (!debugLogCategoryEnabled) {
++      timerFlags |= kSkipLog;
++    }
++
++    if (traceCategoryBuffer[0] === 0) {
++      timerFlags |= kSkipTrace;
++    }
++
++    cb(internalStartTimer, internalEndTimer, internalLogTimer);
++  }
++
++  /**
++   * @type {TimerStart}
++   */
++  const startTimer = (logLabel, traceLabel) => {
++    init();
++
++    if ((timerFlags & kShouldSkipAll) !== kShouldSkipAll)
++      internalStartTimer(logLabel, traceLabel);
++  };
++
++  /**
++   * @type {TimerEnd}
++   */
++  const endTimer = (logLabel, traceLabel) => {
++    init();
++
++    if ((timerFlags & kShouldSkipAll) !== kShouldSkipAll)
++      internalEndTimer(logLabel, traceLabel);
++  };
++
++  /**
++   * @type {TimerLog}
++   */
++  const logTimer = (logLabel, traceLabel, args) => {
++    init();
++
++    if ((timerFlags & kShouldSkipAll) !== kShouldSkipAll)
++      internalLogTimer(logLabel, traceLabel, args);
++  };
++
++  return {
++    startTimer,
++    endTimer,
++    logTimer,
++  };
++}
++
++    return {kNone,kSkipLog,kSkipTrace,formatTime,time,timeEnd,timeLog,debuglog,debugWithTimer,initializeDebugEnv};
++  };
++})();
+--- a/build.zig
++++ b/build.zig
+@@ -5150,6 +5150,24 @@
+     }
+     b.step("build-native-node-internal-tty", "Install thirty-six declared private internal TTY controls without running").dependOn(&b.addInstallArtifact(node_internal_tty, .{ .dest_sub_path = b.fmt("native-node-internal-tty{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+ 
++    // Original timer/debugWithTimer bodies over actual shared debuglog state.
++    // Install only; actual process.hrtime and native trace binding admission are separate.
++    const node_debuglog_timers = b.addTest(.{
++        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_debuglog_timers_test.zig"), .target = target, .optimize = optimize }),
++        .use_llvm = use_llvm,
++        .filters = &.{"native debug timers"},
++    });
++    linkQuickJs(b, node_debuglog_timers.root_module, quickjs, sqlite_lib_dir);
++    linkTypeScriptParser(b, node_debuglog_timers.root_module, typescript_parser);
++    linkSqlite(node_debuglog_timers.root_module, sqlite_lib_dir, sqlite_library);
++    node_debuglog_timers.root_module.addImport("catalog_tool", catalog_tool);
++    node_debuglog_timers.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
++    if (target.result.os.tag == .windows) {
++        node_debuglog_timers.root_module.linkSystemLibrary("advapi32", .{});
++        node_debuglog_timers.root_module.linkSystemLibrary("userenv", .{});
++    }
++    b.step("build-native-node-debuglog-timers", "Install forty-seven original timer controls without running").dependOn(&b.addInstallArtifact(node_debuglog_timers, .{ .dest_sub_path = b.fmt("native-node-debuglog-timers{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
++
+     // Genuine shared Node argument errors and actual rest/super controls.
+     // This target only installs the test artifact; no run or Source capture edge.
+     const node_argument_errors = b.addTest(.{

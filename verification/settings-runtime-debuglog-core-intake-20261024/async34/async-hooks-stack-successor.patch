@@ -1,0 +1,1075 @@
+diff --git a/src/extensions/native_node_callback_scope.zig b/src/extensions/native_node_callback_scope.zig
+--- a/src/extensions/native_node_callback_scope.zig
++++ b/src/extensions/native_node_callback_scope.zig
+@@ -428,6 +428,19 @@
+         }
+         return c.pi_js_undefined();
+     }
++    /// Owned acquisition of the genuine Environment execution-resource array.
++    /// Native and JS stack owners share this exact array; no snapshot is made.
++    pub fn acquireExecutionAsyncResources(self: *Environment) !c.JSValue {
++        const engine = try self.requireEngine();
++        _ = self.retain();
++        defer self.release();
++        return a.expression(engine, acquireResourcesBody, .{self});
++    }
++    fn acquireResourcesBody(s: *LocalScope, self: *Environment) !c.JSValue {
++        try s.pending();
++        _ = try self.requireEngine();
++        return a.duplicate(s.engine, try self.jsResources(s));
++    }
+     fn jsResources(self: *Environment, s: *LocalScope) !c.JSValue {
+         if (self.js_resources) |value| return value;
+         const value = try a.array(s);
+diff --git a/src/extensions/native_node_async_hooks_stack.zig b/src/extensions/native_node_async_hooks_stack.zig
+new file mode 100644
+--- /dev/null
++++ b/src/extensions/native_node_async_hooks_stack.zig
+@@ -0,0 +1,333 @@
++// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
++//! Complete selected internal/async_hooks.js ID/stack declarations.
++//! The private bootstrap supplies its actual already-installed async_wrap binding.
++//! This owner does not publish async_hooks or replace the active-hooks/fatalError owner.
++const std = @import("std");
++const a = @import("native_node_argument_values.zig");
++const callbacks = @import("native_node_callback_scope.zig");
++const functions = @import("native_node_module_callable.zig");
++const publication = @import("native_node_fs_private_publication.zig");
++const c = a.c;
++const Scope = a.Scope;
++const Engine = a.v.em.Engine;
++const Environment = callbacks.Environment;
++const key = "pi-native:private/async-hooks-id-stack";
++const Captures = struct {
++    binding: c.JSValue,
++    fields: c.JSValue,
++    uid: c.JSValue,
++    resources: c.JSValue,
++    push_native: c.JSValue,
++    pop_native: c.JSValue,
++    clear_native: c.JSValue,
++};
++const State = struct {
++    engine: *Engine,
++    environment: *Environment,
++    values: Captures,
++    exported: c.JSValue,
++};
++
++fn finalize(runtime: ?*c.JSRuntime, holder: c.JSValue) callconv(.c) void {
++    const data: *State = @ptrCast(@alignCast(c.JS_GetOpaque(holder, c.JS_GetClassID(holder)) orelse return));
++    _ = c.JS_SetOpaque(holder, null);
++    const engine = data.engine;
++    const environment = data.environment;
++    inline for (std.meta.fields(Captures)) |field|
++        c.JS_FreeValueRT(runtime, @field(data.values, field.name));
++    c.JS_FreeValueRT(runtime, data.exported);
++    engine.gpa.destroy(data);
++    c.pi_js_native_memory_release(engine.native_memory_owner, @sizeOf(State));
++    environment.release();
++}
++fn mark(runtime: ?*c.JSRuntime, holder: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
++    const data: *State = @ptrCast(@alignCast(c.JS_GetOpaque(holder, c.JS_GetClassID(holder)) orelse return));
++    inline for (std.meta.fields(Captures)) |field|
++        c.JS_MarkValue(runtime, @field(data.values, field.name), marker);
++    c.JS_MarkValue(runtime, data.exported, marker);
++}
++fn stateOf(engine: *Engine, known: c.JSValue) !*State {
++    // Only the known private cache entry or its callable capture reaches here.
++    const data: *State = @ptrCast(@alignCast(c.JS_GetOpaque(known, c.JS_GetClassID(known)) orelse
++        return error.ActualAsyncIdStackOwnerRequired));
++    if (data.engine != engine or try data.environment.requireEngine() != engine)
++        return error.ActualAsyncIdStackEnvironmentMismatch;
++    return data;
++}
++fn capture(s: *Scope, holder: c.JSValue) !*State {
++    const retained = try s.own(a.duplicate(s.engine, holder));
++    try s.pending();
++    return stateOf(s.engine, retained);
++}
++fn knownBody(s: *Scope, known: c.JSValue, environment: *Environment, binding: c.JSValue) !c.JSValue {
++    const data = try capture(s, known);
++    if (data.environment != environment or !s.equal(data.values.binding, binding))
++        return error.ActualAsyncIdStackInputsConflict;
++    return a.duplicate(s.engine, known);
++}
++fn acquireHolder(engine: *Engine, environment: *Environment, binding: c.JSValue) !c.JSValue {
++    try engine.checkNativeEntry();
++    if (try environment.requireEngine() != engine) return error.ActualAsyncIdStackEnvironmentMismatch;
++    _ = environment.retain();
++    defer environment.release();
++    if (engine.native_module_values.get(key)) |known|
++        return a.expression(engine, knownBody, .{ known, environment, binding });
++    const candidate = try a.expression(engine, createBody, .{ environment, binding });
++    if (engine.native_module_values.get(key)) |known| {
++        var completion = a.owned.Completion.initValue(engine,
++            a.expression(engine, knownBody, .{ known, environment, binding }));
++        completion.release(candidate);
++        return completion.finishValue();
++    }
++    return publication.publish(engine, key, candidate);
++}
++pub fn create(engine: *Engine, environment: *Environment, binding: c.JSValue) !c.JSValue {
++    const holder = try acquireHolder(engine, environment, binding);
++    var s = Scope.init(engine);
++    const retained = s.own(holder) catch |err| return s.finish(err);
++    return s.finish(exportsBody(&s, retained));
++}
++fn exportsBody(s: *Scope, holder: c.JSValue) !c.JSValue {
++    const data = try stateOf(s.engine, holder);
++    return a.duplicate(s.engine, data.exported);
++}
++fn createBody(s: *Scope, environment: *Environment, binding: c.JSValue) !c.JSValue {
++    try s.pending();
++    _ = try s.own(a.duplicate(s.engine, binding));
++    const installed = environment.async_hooks_binding orelse return error.ActualAsyncWrapBindingRequired;
++    if (!s.equal(installed, binding)) return error.ActualAsyncWrapBindingIdentityRequired;
++    // These are the exact captured destructuring reads of the selected Source.
++    // Only the stack property stays live on binding during push/pop.
++    const fields = try s.get(binding, "async_hook_fields");
++    const uid = try s.get(binding, "async_id_fields");
++    const resources = try s.get(binding, "execution_async_resources");
++    if (!s.equal(fields, environment.fields.view orelse return error.ActualAsyncHookFieldsRequired) or
++        !s.equal(uid, environment.uid.view orelse return error.ActualAsyncIdFieldsRequired) or
++        !s.equal(resources, environment.js_resources orelse return error.ActualExecutionResourcesRequired))
++        return error.ActualAsyncWrapSharedViewsRequired;
++    const values: Captures = .{
++        .binding = binding, .fields = fields, .uid = uid, .resources = resources,
++        .push_native = try s.get(binding, "pushAsyncContext"),
++        .pop_native = try s.get(binding, "popAsyncContext"),
++        .clear_native = try s.get(binding, "clearAsyncIdStack"),
++    };
++    if (!c.JS_IsFunction(s.engine.context, values.push_native) or
++        !c.JS_IsFunction(s.engine.context, values.pop_native) or
++        !c.JS_IsFunction(s.engine.context, values.clear_native))
++        return error.ActualAsyncWrapNativeOperationsRequired;
++    // A binding getter may retire its Environment. Never attach a closed owner.
++    if (try environment.requireEngine() != s.engine) return error.ActualAsyncIdStackEnvironmentMismatch;
++    const exported = try s.object();
++    if (c.pi_js_native_memory_reserve(s.engine.native_memory_owner, @sizeOf(State)) == 0)
++        return error.OutOfMemory;
++    var attached = false;
++    errdefer if (!attached) c.pi_js_native_memory_release(s.engine.native_memory_owner, @sizeOf(State));
++    const data = try s.engine.gpa.create(State);
++    errdefer if (!attached) s.engine.gpa.destroy(data);
++    var class_id: c.JSClassID = 0;
++    if (c.JS_NewClassID(s.engine.runtime, &class_id) == 0) return error.OutOfMemory;
++    const definition: c.JSClassDef = .{
++        .class_name = "Native async ID stack declarations",
++        .finalizer = finalize, .gc_mark = mark,
++    };
++    if (c.JS_NewClass(s.engine.runtime, class_id, &definition) < 0) return error.OutOfMemory;
++    const generation = try s.beforeAllocation();
++    const holder = try s.checkedAllocation(
++        c.JS_NewObjectProtoClass(s.engine.context, c.pi_js_null(), class_id), generation);
++    data.* = .{ .engine = s.engine, .environment = environment.retain(),
++        .values = values, .exported = a.duplicate(s.engine, exported) };
++    inline for (std.meta.fields(Captures)) |field|
++        @field(data.values, field.name) = a.duplicate(s.engine, @field(values, field.name));
++    _ = c.JS_SetOpaque(holder, data);
++    attached = true;
++    inline for (.{
++        .{ "newAsyncId", 0, newAsyncId },
++        .{ "getDefaultTriggerAsyncId", 0, getDefaultTriggerAsyncId },
++        .{ "clearDefaultTriggerAsyncId", 0, clearDefaultTriggerAsyncId },
++        .{ "enabledHooksExist", 0, enabledHooksExist },
++        .{ "initHooksExist", 0, initHooksExist },
++        .{ "afterHooksExist", 0, afterHooksExist },
++        .{ "destroyHooksExist", 0, destroyHooksExist },
++        .{ "hasAsyncIdStack", 0, hasAsyncIdStack },
++        .{ "pushAsyncContext", 3, pushAsyncContext },
++        .{ "popAsyncContext", 1, popAsyncContext },
++        .{ "executionAsyncId", 0, executionAsyncId },
++        .{ "triggerAsyncId", 0, triggerAsyncId },
++    }) |entry| {
++        const function_value = try s.own(try functions.create(
++            s.engine, entry[0], entry[1], true, entry[2], &.{holder}));
++        try s.define(exported, entry[0], function_value, c.JS_PROP_C_W_E);
++    }
++    // Source exports the captured native function itself, retaining its identity.
++    try s.define(exported, "clearAsyncIdStack", values.clear_native, c.JS_PROP_C_W_E);
++    return a.duplicate(s.engine, holder);
++}
++
++fn readHookField(s: *Scope, data: *State, index: callbacks.Field) !c.JSValue {
++    try s.pending();
++    return s.checked(c.JS_GetPropertyUint32(s.engine.context, data.values.fields, @intFromEnum(index)));
++}
++fn uidField(s: *Scope, data: *State, index: callbacks.Uid) !c.JSValue {
++    try s.pending();
++    return s.checked(c.JS_GetPropertyUint32(s.engine.context, data.values.uid, @intFromEnum(index)));
++}
++fn putKey(s: *Scope, target: c.JSValue, property: c.JSValue, value: c.JSValue) !void {
++    try s.pending();
++    const status = c.JS_SetPropertyValue(s.engine.context, target,
++        a.duplicate(s.engine, property), a.duplicate(s.engine, value), c.JS_PROP_THROW);
++    try s.pending();
++    if (status < 0) return error.ActualAsyncIdStackWriteReason;
++}
++fn putUid(s: *Scope, data: *State, index: callbacks.Uid, value: c.JSValue) !void {
++    try putKey(s, data.values.uid, c.JS_NewUint32(s.engine.context, @intFromEnum(index)), value);
++}
++fn hasHooksBody(s: *Scope, data: *State, index: callbacks.Field) !c.JSValue {
++    return a.duplicate(s.engine, try s.binary(6, try readHookField(s, data, index), c.JS_NewInt32(s.engine.context, 0)));
++}
++fn predicateBody(s: *Scope, holder: c.JSValue, index: callbacks.Field) !c.JSValue {
++    const data = try capture(s, holder);
++    return hasHooksBody(s, data, index);
++}
++fn enabledHooksExist(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, predicateBody, .{ roots[0], callbacks.Field.check });
++}
++fn initHooksExist(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, predicateBody, .{ roots[0], callbacks.Field.init });
++}
++fn afterHooksExist(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, predicateBody, .{ roots[0], callbacks.Field.after });
++}
++fn destroyHooksExist(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, predicateBody, .{ roots[0], callbacks.Field.destroy });
++}
++fn hasAsyncIdStack(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, predicateBody, .{ roots[0], callbacks.Field.stack_length });
++}
++fn readUidBody(s: *Scope, holder: c.JSValue, index: callbacks.Uid) !c.JSValue {
++    const data = try capture(s, holder);
++    return a.duplicate(s.engine, try uidField(s, data, index));
++}
++fn executionAsyncId(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, readUidBody, .{ roots[0], callbacks.Uid.execution });
++}
++fn triggerAsyncId(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, readUidBody, .{ roots[0], callbacks.Uid.trigger });
++}
++fn newAsyncId(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, newIdBody, .{roots[0]});
++}
++fn newIdBody(s: *Scope, holder: c.JSValue) !c.JSValue {
++    const data = try capture(s, holder);
++    const previous = try uidField(s, data, .counter);
++    try s.pending();
++    const updated = try s.checked(c.JS_PiIncrement(s.engine.context, previous));
++    try putUid(s, data, .counter, updated);
++    return a.duplicate(s.engine, updated);
++}
++fn getDefaultTriggerAsyncId(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, defaultIdBody, .{roots[0]});
++}
++fn defaultIdBody(s: *Scope, holder: c.JSValue) !c.JSValue {
++    const data = try capture(s, holder);
++    const default_id = try uidField(s, data, .default_trigger);
++    if (s.truthy(try s.binary(4, default_id, c.JS_NewInt32(s.engine.context, 0))))
++        return a.duplicate(s.engine, try uidField(s, data, .execution));
++    return a.duplicate(s.engine, default_id);
++}
++fn clearDefaultTriggerAsyncId(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, clearDefaultBody, .{roots[0]});
++}
++fn clearDefaultBody(s: *Scope, holder: c.JSValue) !c.JSValue {
++    const data = try capture(s, holder);
++    try putUid(s, data, .default_trigger, c.JS_NewInt32(s.engine.context, -1));
++    return c.pi_js_undefined();
++}
++
++fn pushAsyncContext(engine: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, pushBody, .{ roots[0], a.arg(args, 0), a.arg(args, 1), a.arg(args, 2) });
++}
++fn resourceAssignment(s: *Scope, data: *State, offset: c.JSValue, resource: c.JSValue) !c.JSValue {
++    try putKey(s, data.values.resources, offset, resource);
++    return c.pi_js_undefined();
++}
++fn stackFull(s: *Scope, data: *State, offset: c.JSValue) !c.JSValue {
++    const twice = try s.binary(2, offset, c.JS_NewInt32(s.engine.context, 2));
++    const stack = try s.get(data.values.binding, "async_ids_stack");
++    const length = try s.get(stack, "length");
++    return a.duplicate(s.engine, try s.binary(7, twice, length));
++}
++fn saveStackSlot(s: *Scope, data: *State, offset: c.JSValue, trigger: bool) !c.JSValue {
++    // Resolve the live left-hand stack before evaluating the index and RHS.
++    const stack = try s.get(data.values.binding, "async_ids_stack");
++    const twice = try s.binary(2, offset, c.JS_NewInt32(s.engine.context, 2));
++    const index = if (trigger) try s.binary(0, twice, c.JS_NewInt32(s.engine.context, 1)) else twice;
++    const value = try uidField(s, data, if (trigger) .trigger else .execution);
++    try putKey(s, stack, index, value);
++    return c.pi_js_undefined();
++}
++fn incrementStackLength(s: *Scope, data: *State) !c.JSValue {
++    const previous = try readHookField(s, data, .stack_length);
++    try s.pending();
++    const updated = try s.checked(c.JS_PiIncrement(s.engine.context, previous));
++    try putKey(s, data.values.fields,
++        c.JS_NewUint32(s.engine.context, @intFromEnum(callbacks.Field.stack_length)), updated);
++    return c.pi_js_undefined();
++}
++fn assignUid(s: *Scope, data: *State, index: callbacks.Uid, value: c.JSValue) !c.JSValue {
++    try putUid(s, data, index, value);
++    return c.pi_js_undefined();
++}
++fn pushBody(s: *Scope, holder: c.JSValue, async_id: c.JSValue, trigger_id: c.JSValue, resource: c.JSValue) !c.JSValue {
++    const data = try capture(s, holder);
++    const offset = try readHookField(s, data, .stack_length);
++    _ = try a.expression(s.engine, resourceAssignment, .{ data, offset, resource });
++    if (try a.condition(s.engine, stackFull, .{ data, offset }))
++        return a.duplicate(s.engine, try s.call(data.values.push_native, c.pi_js_undefined(), &.{ async_id, trigger_id }));
++    _ = try a.expression(s.engine, saveStackSlot, .{ data, offset, false });
++    _ = try a.expression(s.engine, saveStackSlot, .{ data, offset, true });
++    _ = try a.expression(s.engine, incrementStackLength, .{data});
++    _ = try a.expression(s.engine, assignUid, .{ data, callbacks.Uid.execution, async_id });
++    _ = try a.expression(s.engine, assignUid, .{ data, callbacks.Uid.trigger, trigger_id });
++    return c.pi_js_undefined();
++}
++
++fn popAsyncContext(engine: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, popBody, .{ roots[0], a.arg(args, 0) });
++}
++fn idsDiffer(s: *Scope, data: *State, async_id: c.JSValue) !c.JSValue {
++    return a.boolean(s, !s.equal(try uidField(s, data, .execution), async_id));
++}
++fn restoreUid(s: *Scope, data: *State, offset: c.JSValue, trigger: bool) !c.JSValue {
++    const stack = try s.get(data.values.binding, "async_ids_stack");
++    const twice = try s.binary(2, c.JS_NewInt32(s.engine.context, 2), offset);
++    const index = if (trigger) try s.binary(0, twice, c.JS_NewInt32(s.engine.context, 1)) else twice;
++    const value = try s.getKey(stack, index);
++    try putUid(s, data, if (trigger) .trigger else .execution, value);
++    return c.pi_js_undefined();
++}
++fn popResources(s: *Scope, data: *State) !c.JSValue {
++    const function_value = try s.get(data.values.resources, "pop");
++    _ = try s.call(function_value, data.values.resources, &.{});
++    return c.pi_js_undefined();
++}
++fn assignStackLength(s: *Scope, data: *State, offset: c.JSValue) !c.JSValue {
++    try putKey(s, data.values.fields,
++        c.JS_NewUint32(s.engine.context, @intFromEnum(callbacks.Field.stack_length)), offset);
++    return c.pi_js_undefined();
++}
++fn popBody(s: *Scope, holder: c.JSValue, async_id: c.JSValue) !c.JSValue {
++    const data = try capture(s, holder);
++    const stack_length = try readHookField(s, data, .stack_length);
++    if (s.equal(stack_length, c.JS_NewInt32(s.engine.context, 0))) return a.boolean(s, false);
++    if (try a.condition(s.engine, hasHooksBody, .{ data, callbacks.Field.check }) and
++        try a.condition(s.engine, idsDiffer, .{ data, async_id }))
++        return a.duplicate(s.engine, try s.call(data.values.pop_native, c.pi_js_undefined(), &.{async_id}));
++    const offset = try s.binary(1, stack_length, c.JS_NewInt32(s.engine.context, 1));
++    _ = try a.expression(s.engine, restoreUid, .{ data, offset, false });
++    _ = try a.expression(s.engine, restoreUid, .{ data, offset, true });
++    // This is the original JS order, not Environment's native-pop order.
++    // Pop's callee, result and completion retire before committing stackLength.
++    _ = try a.expression(s.engine, popResources, .{data});
++    _ = try a.expression(s.engine, assignStackLength, .{ data, offset });
++    return a.duplicate(s.engine, try s.binary(6, offset, c.JS_NewInt32(s.engine.context, 0)));
++}
+diff --git a/src/native_node_async_hooks_stack_test_support.zig b/src/native_node_async_hooks_stack_test_support.zig
+new file mode 100644
+--- /dev/null
++++ b/src/native_node_async_hooks_stack_test_support.zig
+@@ -0,0 +1,233 @@
++//! Actual-VM and actual-Environment controls for the selected JS async stack.
++//! The three fallback bridges call the existing native Environment operations.
++//! Unselected hook/fatal/queue policies fail explicitly and make no exit claim.
++const std = @import("std");
++pub const a = @import("extensions/native_node_argument_values.zig");
++pub const c = a.c;
++pub const callbacks = @import("extensions/native_node_callback_scope.zig");
++pub const owner = @import("extensions/native_node_async_hooks_stack.zig");
++const functions = @import("extensions/native_node_module_callable.zig");
++pub const owner_key = "pi-native:private/async-hooks-id-stack";
++pub const Fixture = struct {
++    engine: *a.v.em.Engine = undefined,
++    host_environment: std.process.Environ.Map = undefined,
++    engine_alive: bool = false,
++    host_environment_alive: bool = false,
++    environment: ?*callbacks.Environment = null,
++    binding: c.JSValue = undefined,
++    exported: c.JSValue = undefined,
++    first_fatal: c.JSValue = undefined,
++    native_push_count: usize = 0,
++    native_pop_count: usize = 0,
++    native_clear_count: usize = 0,
++    corruption_count: usize = 0,
++    expected_corruption_id: f64 = 0,
++    native_receivers_undefined: bool = true,
++    pub fn init(self: *Fixture, install_owner: bool) !void {
++        return self.initUsing(std.testing.allocator, install_owner);
++    }
++    pub fn initUsing(self: *Fixture, allocator: std.mem.Allocator, install_owner: bool) !void {
++        self.* = .{};
++        self.host_environment = .init(std.testing.allocator);
++        self.host_environment_alive = true;
++        errdefer self.deinit();
++        self.engine = try a.v.em.Engine.init(allocator, .{});
++        self.engine_alive = true;
++        self.binding = c.pi_js_undefined();
++        self.exported = c.pi_js_undefined();
++        self.first_fatal = c.pi_js_undefined();
++        self.engine.host_control_context = self;
++        try @import("extensions/native_process.zig").install(self.engine,
++            std.testing.io, &self.host_environment, &.{"native-async-stack-control"});
++        try self.engine.bindFunction("actualStackPush", nativePush, 2);
++        try self.engine.bindFunction("actualStackPop", nativePop, 1);
++        try self.engine.bindFunction("actualStackClear", nativeClear, 0);
++        try self.engine.bindFunction("stackNativeFatal", rawFatal, 0);
++        try self.engine.bindFunction("stackDropOwner", dropOwner, 0);
++        try self.run("globalThis.stackTrace=[];globalThis.unselectedStackHook=function(){throw Error('unselected async hook')};");
++        self.binding = try a.expression(self.engine, bootstrapBody, .{self});
++        try self.publish("stackBinding", self.binding);
++        const factory = try self.engine.eval(@embedFile("../durable/fixtures/native-node-async-hooks-stack-original.js"),
++            "original-async-stack-selected.js", c.JS_EVAL_TYPE_GLOBAL);
++        defer self.engine.freeValue(factory);
++        const reference = try a.expression(self.engine, referenceBody, .{ factory, self.binding });
++        defer self.engine.freeValue(reference);
++        try self.publish("R", reference);
++        if (install_owner) try self.install();
++    }
++    pub fn env(self: *Fixture) *callbacks.Environment { return self.environment.?; }
++    pub fn install(self: *Fixture) !void {
++        self.exported = try owner.create(self.engine, self.env(), self.binding);
++        try self.publish("S", self.exported);
++    }
++    pub fn run(self: *Fixture, source: []const u8) !void {
++        const result = try self.engine.eval(source, "native-async-stack-control.js", c.JS_EVAL_TYPE_GLOBAL);
++        self.engine.freeValue(result);
++        try std.testing.expect(!c.JS_HasException(self.engine.context));
++    }
++    pub fn check(self: *Fixture, source: []const u8) !void {
++        const result = try self.engine.eval(source, "native-async-stack-control.js", c.JS_EVAL_TYPE_GLOBAL);
++        defer self.engine.freeValue(result);
++        try std.testing.expect(c.JS_IsStrictEqual(self.engine.context, result, c.JS_NewBool(self.engine.context, true)));
++    }
++    pub fn publish(self: *Fixture, name: [*:0]const u8, value: c.JSValue) !void {
++        const global_object = try self.engine.checked(c.JS_GetGlobalObject(self.engine.context));
++        defer self.engine.freeValue(global_object);
++        if (c.JS_DefinePropertyValueStr(self.engine.context, global_object, name,
++            a.duplicate(self.engine, value), c.JS_PROP_C_W_E) < 0)
++            return error.ActualAsyncStackTestPublication;
++    }
++    pub fn get(self: *Fixture, name: [*:0]const u8) !c.JSValue {
++        const global_object = try self.engine.checked(c.JS_GetGlobalObject(self.engine.context));
++        defer self.engine.freeValue(global_object);
++        return self.engine.checked(c.JS_GetPropertyStr(self.engine.context, global_object, name));
++    }
++    pub fn reason(self: *Fixture) !c.JSValue {
++        if (c.JS_HasException(self.engine.context)) return c.JS_GetException(self.engine.context);
++        if (self.engine.captured_exception) |value| { self.engine.captured_exception = null; return value; }
++        return error.ActualAsyncStackTestReason;
++    }
++    pub fn balanced(self: *Fixture) !void {
++        try std.testing.expectEqual(@as(usize, 0), self.engine.native_exception_diagnostics_suppressed);
++        try std.testing.expect(self.engine.native_fatal_invocation == null);
++    }
++    pub fn closeEnvironment(self: *Fixture) !void {
++        const environment = self.environment orelse return;
++        try environment.cleanupRealmAfterIoJoin();
++        try environment.disarm();
++        self.environment = null;
++        environment.release();
++    }
++    pub fn deinit(self: *Fixture) void {
++        self.closeEnvironment() catch @panic("async stack Environment teardown failed");
++        if (self.engine_alive) {
++            self.engine.freeValue(self.exported);
++            self.engine.freeValue(self.binding);
++            self.engine.freeValue(self.first_fatal);
++            self.engine.host_control_context = null;
++            self.engine.deinit();
++            self.engine_alive = false;
++        }
++        if (self.host_environment_alive) {
++            self.host_environment.deinit();
++            self.host_environment_alive = false;
++        }
++    }
++};
++fn bootstrapBody(s: *a.Scope, fixture: *Fixture) !c.JSValue {
++    const global_object = try s.checked(c.JS_GetGlobalObject(s.engine.context));
++    const process_value = try s.get(global_object, "process");
++    const generation = try s.beforeAllocation();
++    const resource_symbol = try s.checkedAllocation(
++        c.JS_NewSymbol(s.engine.context, "node:resource_symbol", false), generation);
++    fixture.environment = try callbacks.Environment.create(s.engine, .{
++        .provider_names = &.{}, .resource_symbol = resource_symbol,
++        .process_object = process_value, .async_context_frame = false,
++        .operations = operations,
++    });
++    const environment = fixture.env();
++    const resources = try s.own(try environment.acquireExecutionAsyncResources());
++    const binding_value = try s.object();
++    try s.define(binding_value, "async_hook_fields", environment.fields.view.?, c.JS_PROP_C_W_E);
++    try s.define(binding_value, "async_id_fields", environment.uid.view.?, c.JS_PROP_C_W_E);
++    try s.define(binding_value, "execution_async_resources", resources, c.JS_PROP_C_W_E);
++    try s.define(binding_value, "async_ids_stack", environment.ids.view.?, c.JS_PROP_C_W_E);
++    try s.define(binding_value, "pushAsyncContext", try s.get(global_object, "actualStackPush"), c.JS_PROP_C_W_E);
++    try s.define(binding_value, "popAsyncContext", try s.get(global_object, "actualStackPop"), c.JS_PROP_C_W_E);
++    try s.define(binding_value, "clearAsyncIdStack", try s.get(global_object, "actualStackClear"), c.JS_PROP_C_W_E);
++    const constants = try s.object();
++    inline for (.{
++        .{ "kInit", callbacks.Field.init }, .{ "kBefore", callbacks.Field.before },
++        .{ "kAfter", callbacks.Field.after }, .{ "kDestroy", callbacks.Field.destroy },
++        .{ "kCheck", callbacks.Field.check }, .{ "kStackLength", callbacks.Field.stack_length },
++    }) |entry| try s.define(constants, entry[0],
++        c.JS_NewUint32(s.engine.context, @intFromEnum(entry[1])), c.JS_PROP_C_W_E);
++    inline for (.{
++        .{ "kExecutionAsyncId", callbacks.Uid.execution },
++        .{ "kTriggerAsyncId", callbacks.Uid.trigger },
++        .{ "kAsyncIdCounter", callbacks.Uid.counter },
++        .{ "kDefaultTriggerAsyncId", callbacks.Uid.default_trigger },
++    }) |entry| try s.define(constants, entry[0],
++        c.JS_NewUint32(s.engine.context, @intFromEnum(entry[1])), c.JS_PROP_C_W_E);
++    try s.define(binding_value, "constants", constants, c.JS_PROP_C_W_E);
++    const guard = try s.get(global_object, "unselectedStackHook");
++    try environment.installHooks(.{
++        .init = guard, .before = guard, .after = guard,
++        .destroy = guard, .promise_resolve = guard,
++    }, binding_value);
++    try s.define(global_object, "stackFields", environment.fields.view.?, c.JS_PROP_C_W_E);
++    try s.define(global_object, "stackUid", environment.uid.view.?, c.JS_PROP_C_W_E);
++    try s.define(global_object, "stackResources", resources, c.JS_PROP_C_W_E);
++    try s.define(global_object, "originalStackView", environment.ids.view.?, c.JS_PROP_C_W_E);
++    return a.duplicate(s.engine, binding_value);
++}
++fn referenceBody(s: *a.Scope, factory: c.JSValue, binding_value: c.JSValue) !c.JSValue {
++    return a.duplicate(s.engine, try s.call(factory, c.pi_js_undefined(), &.{binding_value}));
++}
++fn fixtureFor(context: ?*c.JSContext) *Fixture {
++    const engine = a.v.em.Engine.fromContext(context.?);
++    return @ptrCast(@alignCast(engine.host_control_context.?));
++}
++fn nativePush(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const fixture = fixtureFor(context);
++    fixture.native_push_count += 1;
++    fixture.native_receivers_undefined = fixture.native_receivers_undefined and c.JS_IsUndefined(receiver);
++    if (argc != 2 or !c.JS_IsNumber(argv[0]) or !c.JS_IsNumber(argv[1]))
++        return functions.failure(fixture.engine, error.ActualNativePushTestInputs, 0);
++    var async_id: f64 = 0; var trigger_id: f64 = 0;
++    if (c.JS_ToFloat64(context, &async_id, argv[0]) < 0 or c.JS_ToFloat64(context, &trigger_id, argv[1]) < 0)
++        return functions.failure(fixture.engine, error.JavaScriptException, 0);
++    fixture.env().pushAsyncContext(.{ .async_id = async_id, .trigger_async_id = trigger_id }, null) catch |err|
++        return functions.failure(fixture.engine, err, 0);
++    return c.pi_js_undefined();
++}
++fn nativePop(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const fixture = fixtureFor(context);
++    fixture.native_pop_count += 1;
++    fixture.native_receivers_undefined = fixture.native_receivers_undefined and c.JS_IsUndefined(receiver);
++    if (argc != 1 or !c.JS_IsNumber(argv[0]))
++        return functions.failure(fixture.engine, error.ActualNativePopTestInputs, 0);
++    var expected_id: f64 = 0;
++    if (c.JS_ToFloat64(context, &expected_id, argv[0]) < 0)
++        return functions.failure(fixture.engine, error.JavaScriptException, 0);
++    const remaining = fixture.env().popAsyncContext(expected_id) catch |err|
++        return functions.failure(fixture.engine, err, 0);
++    return c.pi_js_bool(context, @intFromBool(remaining));
++}
++fn nativeClear(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const fixture = fixtureFor(context);
++    fixture.native_clear_count += 1;
++    fixture.env().clearAsyncIdStack() catch |err| return functions.failure(fixture.engine, err, 0);
++    return c.pi_js_undefined();
++}
++fn unselected(_: *callbacks.Environment) anyerror!void { return error.UnselectedActualAsyncStackOperation; }
++fn unselectedCheck(_: *callbacks.Environment, _: callbacks.Check) anyerror { return error.UnselectedActualAsyncStackCheck; }
++fn unselectedCorruption(environment: *callbacks.Environment, expected_id: f64) anyerror {
++    const engine = environment.requireEngine() catch return error.NativeNodeEnvironmentClosed;
++    const fixture: *Fixture = @ptrCast(@alignCast(engine.host_control_context.?));
++    fixture.corruption_count += 1;
++    fixture.expected_corruption_id = expected_id;
++    return error.UnselectedActualCorruptedStackExit;
++}
++const operations: callbacks.Operations = .{
++    .on_hook_exception = unselected, .native_check_failure = unselectedCheck,
++    .fail_corrupted_async_stack = unselectedCorruption, .perform_checkpoint = unselected,
++    .schedule_destroy_immediate = unselected, .request_destroy_interrupt = unselected,
++};
++fn rawFatal(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const fixture = fixtureFor(context);
++    _ = fixture.engine.throwNativeOutOfMemoryFatal();
++    if (c.JS_HasException(fixture.engine.context)) {
++        const value = c.JS_GetException(fixture.engine.context);
++        if (c.JS_IsUndefined(fixture.first_fatal)) fixture.first_fatal = a.duplicate(fixture.engine, value);
++        fixture.engine.freeValue(value);
++    }
++    return c.pi_js_undefined();
++}
++fn dropOwner(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const fixture = fixtureFor(context);
++    var completion = a.owned.Completion.initVoid(fixture.engine, {});
++    if (fixture.engine.native_module_values.fetchRemove(owner_key)) |removed| completion.release(removed.value);
++    completion.finishVoid() catch |err| return functions.failure(fixture.engine, err, 0);
++    return c.pi_js_undefined();
++}
+diff --git a/src/native_node_async_hooks_stack_test.zig b/src/native_node_async_hooks_stack_test.zig
+new file mode 100644
+--- /dev/null
++++ b/src/native_node_async_hooks_stack_test.zig
+@@ -0,0 +1,356 @@
++//! Genuine shared Environment views and exact selected original JS stack bodies.
++//! No hook-emitter, native exit policy or public async_hooks assembly is qualified.
++const std = @import("std");
++const support = @import("native_node_async_hooks_stack_test_support.zig");
++const a = support.a;
++const c = support.c;
++const Fixture = support.Fixture;
++
++test "native async stack selected declarations retain metadata and native clear identity" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.check(
++        \\(()=>{const names=['newAsyncId','getDefaultTriggerAsyncId','clearDefaultTriggerAsyncId',
++        \\ 'enabledHooksExist','initHooksExist','afterHooksExist','destroyHooksExist',
++        \\ 'hasAsyncIdStack','pushAsyncContext','popAsyncContext','executionAsyncId','triggerAsyncId'];
++        \\ for(const n of names){const fn=S[n],ref=R[n];
++        \\ if(fn.name!==ref.name||fn.length!==ref.length||Object.getPrototypeOf(fn)!==Function.prototype||
++        \\ !Object.hasOwn(fn,'prototype'))return false;
++        \\ const d=Object.getOwnPropertyDescriptor(S,n);if(!d.writable||!d.enumerable||!d.configurable)return false}
++        \\ return Object.keys(S).length===13&&S.clearAsyncIdStack===stackBinding.clearAsyncIdStack&&
++        \\ S.clearAsyncIdStack===R.clearAsyncIdStack&&!('emitAfter' in S)})()
++    );
++}
++test "native async stack borrows the exact Environment views and acquired resource array" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    const again = try f.env().acquireExecutionAsyncResources();
++    defer f.engine.freeValue(again);
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, again, f.env().js_resources.?));
++    try f.check("stackFields===stackBinding.async_hook_fields&&stackUid===stackBinding.async_id_fields&&stackResources===stackBinding.execution_async_resources");
++    try f.run("stackUid[0]=31;stackUid[1]=17;stackUid[2]=400;stackFields[2]=3;");
++    try std.testing.expectEqual(@as(f64, 31), f.env().executionAsyncId());
++    try std.testing.expectEqual(@as(f64, 17), f.env().triggerAsyncId());
++    try std.testing.expectEqual(@as(u32, 3), f.env().field(.after).*);
++    try f.check("S.executionAsyncId()===31&&S.triggerAsyncId()===17&&S.afterHooksExist()");
++}
++test "native async stack prefix counter matches original numbers signed zero and NaN" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.check(
++        \\(()=>{for(const start of [1,0,-0,-4,1.5,NaN,Infinity,-Infinity]){
++        \\ stackUid[2]=start;const actual=S.newAsyncId(),stored=stackUid[2];
++        \\ stackUid[2]=start;const expected=R.newAsyncId();
++        \\ if(!Object.is(actual,expected)||!Object.is(stored,stackUid[2]))return false}
++        \\ return true})()
++    );
++}
++test "native async stack default trigger follows original negative test and preserves zero" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.check(
++        \\(()=>{stackUid[0]=88;for(const value of [-4,-1,-0,0,12,NaN,Infinity]){
++        \\ stackUid[3]=value;if(!Object.is(S.getDefaultTriggerAsyncId(),R.getDefaultTriggerAsyncId()))return false}
++        \\ return S.clearDefaultTriggerAsyncId()===undefined&&stackUid[3]===-1&&S.getDefaultTriggerAsyncId()===88})()
++    );
++}
++test "native async stack hook predicates read original independent live counter cells" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.check(
++        \\(()=>{const cases=[['enabledHooksExist',6],['initHooksExist',0],['afterHooksExist',2],
++        \\ ['destroyHooksExist',3],['hasAsyncIdStack',7]];
++        \\ for(const [name,index]of cases){for(const n of [0,1,0xffffffff]){
++        \\ stackFields[index]=n;if(S[name]()!==R[name]()||S[name]()!==(n>0))return false}stackFields[index]=0}
++        \\ return true})()
++    );
++}
++test "native async stack fast push commits actual backing and resource before returning undefined" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run("stackUid[0]=9;stackUid[1]=4;globalThis.resource={tag:'actual'};globalThis.pushResult=S.pushAsyncContext(22,9,resource);");
++    try f.check("pushResult===undefined&&stackFields[7]===1&&stackUid[0]===22&&stackUid[1]===9&&originalStackView[0]===9&&originalStackView[1]===4&&stackResources[0]===resource");
++    try std.testing.expectEqual(@as(usize, 0), f.native_push_count);
++    try std.testing.expectEqual(@as(f64, 22), f.env().executionAsyncId());
++}
++test "native async stack nested fast pop returns remaining stack boolean and restores exact pairs" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.check(
++        \\(()=>{S.pushAsyncContext(2,0,{tag:1});S.pushAsyncContext(3,2,{tag:2});
++        \\ if(S.popAsyncContext(3)!==true||stackFields[7]!==1||stackUid[0]!==2||stackUid[1]!==0||stackResources.length!==1)return false;
++        \\ return S.popAsyncContext(2)===false&&stackFields[7]===0&&stackUid[0]===0&&stackResources.length===0})()
++    );
++    try std.testing.expectEqual(@as(usize, 0), f.native_pop_count);
++}
++test "native async stack empty pop does not resolve stack property or resource pop" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\Object.defineProperty(stackBinding,'async_ids_stack',{get(){throw Error('unselected stack get')},configurable:true});
++        \\Object.defineProperty(stackResources,'pop',{get(){throw Error('unselected resource get')},configurable:true});
++    );
++    try f.check("S.popAsyncContext({})===false&&stackFields[7]===0");
++    try std.testing.expectEqual(@as(usize, 0), f.native_pop_count);
++}
++test "native async stack pop calls live resource method after IDs and before stack length" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\S.pushAsyncContext(12,5,{});
++        \\stackResources.pop=function(){stackTrace.push([this===stackResources,arguments.length,stackUid[0],stackUid[1],stackFields[7]]);return Array.prototype.pop.call(this)};
++    );
++    try f.check("S.popAsyncContext(12)===false&&JSON.stringify(stackTrace)==='[[true,0,0,0,1]]'&&stackFields[7]===0");
++}
++test "native async stack pop resolves two live stack values in original assignment order" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\S.pushAsyncContext(12,5,{});globalThis.stackGets=0;
++        \\Object.defineProperty(stackBinding,'async_ids_stack',{configurable:true,get(){
++        \\ stackTrace.push([++stackGets,stackUid[0],stackUid[1],stackFields[7]]);
++        \\ return stackGets===1?[41,42]:[51,52]}});
++    );
++    try f.check("S.popAsyncContext(12)===false&&stackUid[0]===41&&stackUid[1]===52&&JSON.stringify(stackTrace)==='[[1,12,5,1],[2,41,5,1]]'");
++}
++test "native async stack pop getter exception preserves reason and skips length commit" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\S.pushAsyncContext(12,5,{});globalThis.stackReason={};
++        \\Object.defineProperty(stackResources,'pop',{get(){throw stackReason},configurable:true});
++    );
++    try f.check("(()=>{try{S.popAsyncContext(12)}catch(e){return e===stackReason&&stackUid[0]===0&&stackUid[1]===0&&stackFields[7]===1&&stackResources.length===1}return false})()");
++}
++test "native async stack ordinary throwing pop retains its mutations without committing stack length" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\S.pushAsyncContext(12,5,{});globalThis.stackReason={};
++        \\stackResources.pop=function(){this.length=0;throw stackReason};
++    );
++    try f.check("(()=>{try{S.popAsyncContext(12)}catch(e){return e===stackReason&&stackUid[0]===0&&stackFields[7]===1&&stackResources.length===0}return false})()");
++}
++test "native async stack noncallable resource pop uses actual VM TypeError" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run("S.pushAsyncContext(12,5,{});stackResources.pop=17;");
++    try f.check("(()=>{try{S.popAsyncContext(12)}catch(e){return e instanceof TypeError&&stackFields[7]===1&&stackUid[0]===0}return false})()");
++}
++test "native async stack mismatch routes to captured native corruption operation without live stack reads" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\S.pushAsyncContext(12,5,{});
++        \\Object.defineProperty(stackBinding,'async_ids_stack',{get(){throw Error('unselected fast stack')},configurable:true});
++    );
++    try f.check("(()=>{try{S.popAsyncContext(11)}catch(e){return String(e).includes('UnselectedActualCorruptedStackExit')&&stackFields[7]===1&&stackUid[0]===12}return false})()");
++    try std.testing.expectEqual(@as(usize, 1), f.native_pop_count);
++    try std.testing.expectEqual(@as(usize, 1), f.corruption_count);
++    try std.testing.expectEqual(@as(f64, 11), f.expected_corruption_id);
++    try std.testing.expect(f.native_receivers_undefined);
++}
++test "native async stack disabled check skips mismatch fallback and uses original fast path" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run("S.pushAsyncContext(12,5,{});stackFields[6]=0;");
++    try f.check("S.popAsyncContext(999)===false&&stackUid[0]===0&&stackFields[7]===0");
++    try std.testing.expectEqual(@as(usize, 0), f.native_pop_count);
++}
++test "native async stack resource write precedes condition and preserves lexical offset across reentry" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\Object.defineProperty(stackResources,'0',{configurable:true,set(v){stackTrace.push(['resource',v.tag,stackFields[7]]);stackFields[7]=4}});
++        \\Object.defineProperty(stackBinding,'async_ids_stack',{configurable:true,get(){stackTrace.push(['stack',stackFields[7]]);return originalStackView}});
++        \\S.pushAsyncContext(9,3,{tag:'real'});
++    );
++    try f.check("JSON.stringify(stackTrace)==='[[\"resource\",\"real\",0],[\"stack\",4],[\"stack\",4],[\"stack\",4]]'&&stackFields[7]===5&&stackUid[0]===9&&originalStackView[0]===0");
++}
++test "native async stack resource setter failure precedes every stack read and mutation" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\globalThis.stackReason={};
++        \\Object.defineProperty(stackResources,'0',{configurable:true,set(){throw stackReason}});
++        \\Object.defineProperty(stackBinding,'async_ids_stack',{configurable:true,get(){throw Error('unselected stack')}});
++    );
++    try f.check("(()=>{try{S.pushAsyncContext(9,3,{})}catch(e){return e===stackReason&&stackFields[7]===0&&stackUid[0]===0}return false})()");
++    try std.testing.expectEqual(@as(usize, 0), f.native_push_count);
++}
++test "native async stack push resolves condition and both assignment bases independently" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\stackUid[0]=41;stackUid[1]=42;globalThis.stackGets=0;
++        \\Object.defineProperty(stackBinding,'async_ids_stack',{configurable:true,get(){
++        \\ const which=++stackGets;stackTrace.push(['get',which]);
++        \\ if(which===1)return {length:32};
++        \\ return new Proxy({}, {set(t,k,v){stackTrace.push(['set',which,k,v,stackFields[7]]);return true}})}});
++        \\S.pushAsyncContext(9,3,{});
++    );
++    try f.check("JSON.stringify(stackTrace)==='[[\"get\",1],[\"get\",2],[\"set\",2,\"0\",41,0],[\"get\",3],[\"set\",3,\"1\",42,0]]'&&stackFields[7]===1&&stackUid[0]===9&&stackUid[1]===3");
++}
++test "native async stack second stack setter exception preserves only preceding source effects" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\globalThis.stackReason={};globalThis.stackGets=0;stackUid[0]=41;stackUid[1]=42;
++        \\Object.defineProperty(stackBinding,'async_ids_stack',{configurable:true,get(){
++        \\ if(++stackGets===1)return {length:32};
++        \\ return new Proxy({}, {set(t,k,v){stackTrace.push([k,v]);if(k==='1')throw stackReason;return true}})}});
++    );
++    try f.check("(()=>{try{S.pushAsyncContext(9,3,{})}catch(e){return e===stackReason&&JSON.stringify(stackTrace)==='[[\"0\",41],[\"1\",42]]'&&stackFields[7]===0&&stackUid[0]===41&&stackResources.length===1}return false})()");
++}
++test "native async stack dynamic length coercion selects real fallback with original receiver" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\stackBinding.async_ids_stack={get length(){stackTrace.push('length');return {valueOf(){stackTrace.push('coerce');return 0}}}};
++        \\S.pushAsyncContext(9,3,{});
++    );
++    try f.check("JSON.stringify(stackTrace)==='[\"length\",\"coerce\"]'&&stackFields[7]===1&&stackUid[0]===9&&stackResources.length===1");
++    try std.testing.expectEqual(@as(usize, 1), f.native_push_count);
++    try std.testing.expect(f.native_receivers_undefined);
++}
++test "native async stack overflow grows actual Environment backing while old view stays retained" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run("for(let i=0;i<17;i++)S.pushAsyncContext(i+2,i,{index:i});");
++    try std.testing.expectEqual(@as(usize, 1), f.native_push_count);
++    try std.testing.expectEqual(@as(usize, 96), f.env().ids.data.len);
++    try f.check("stackFields[7]===17&&stackUid[0]===18&&stackResources.length===17&&originalStackView.length===32&&stackBinding.async_ids_stack.length===96&&originalStackView!==stackBinding.async_ids_stack&&stackBinding.async_ids_stack[32]===17");
++    try f.check("(()=>{for(let id=18;id>=2;id--){if(S.popAsyncContext(id)!==(id>2))return false}return stackFields[7]===0&&stackResources.length===0&&stackUid[0]===0})()");
++}
++test "native async stack captured native functions survive later binding replacement" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\const unexpected=function(){throw Error('replaced native callback')};
++        \\stackBinding.pushAsyncContext=unexpected;stackBinding.popAsyncContext=unexpected;stackBinding.clearAsyncIdStack=unexpected;
++        \\for(let i=0;i<17;i++)S.pushAsyncContext(i+2,i,{});
++    );
++    try std.testing.expectEqual(@as(usize, 1), f.native_push_count);
++    try f.check("S.clearAsyncIdStack()===undefined&&stackFields[7]===0&&stackUid[0]===0&&stackResources.length===0&&S.clearAsyncIdStack!==stackBinding.clearAsyncIdStack");
++    try std.testing.expectEqual(@as(usize, 1), f.native_clear_count);
++}
++test "native async stack captured arrays remain original when binding properties are reassigned" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\stackBinding.async_hook_fields=new Uint32Array(9);
++        \\stackBinding.async_id_fields=new Float64Array(4);
++        \\stackBinding.execution_async_resources=[];
++        \\S.pushAsyncContext(15,6,{});
++    );
++    try f.check("stackFields[7]===1&&stackUid[0]===15&&stackResources.length===1&&stackBinding.async_hook_fields[7]===0&&stackBinding.async_id_fields[0]===0&&stackBinding.execution_async_resources.length===0");
++}
++test "native async stack lexical pop offset wins over reentrant resource mutation" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\S.pushAsyncContext(7,3,{});
++        \\stackResources.pop=function(){stackFields[7]=9;return undefined};
++    );
++    try f.check("S.popAsyncContext(7)===false&&stackFields[7]===0&&stackResources.length===1");
++}
++test "native async stack original source differential matrix preserves full shared state" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.check(
++        \\(()=>{function exercise(api){
++        \\ stackFields.fill(0);stackFields[6]=1;stackUid.fill(0);stackUid[2]=1;stackUid[3]=-1;
++        \\ stackResources.length=0;stackBinding.async_ids_stack.fill(0);
++        \\ const results=[api.executionAsyncId(),api.triggerAsyncId(),api.newAsyncId(),api.getDefaultTriggerAsyncId()];
++        \\ for(let i=0;i<6;i++)results.push(api.pushAsyncContext(i+3,i,{index:i}));
++        \\ for(let i=8;i>=3;i--)results.push(api.popAsyncContext(i));
++        \\ api.clearDefaultTriggerAsyncId();results.push(api.hasAsyncIdStack(),api.afterHooksExist());
++        \\ return JSON.stringify([results,Array.from(stackFields),Array.from(stackUid),Array.from(stackBinding.async_ids_stack),stackResources])}
++        \\ return exercise(S)===exercise(R)})()
++    );
++}
++test "native async stack private acquisition is cached and exact binding conflict is rejected" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    c.JS_RunGC(f.engine.runtime);
++    const again = try support.owner.create(f.engine, f.env(), f.binding);
++    defer f.engine.freeValue(again);
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, again, f.exported));
++    const different = try f.engine.checked(c.JS_NewObject(f.engine.context));
++    defer f.engine.freeValue(different);
++    try std.testing.expectError(error.ActualAsyncIdStackInputsConflict,
++        support.owner.create(f.engine, f.env(), different));
++    try f.balanced();
++}
++test "native async stack cold acquisition rejects copied arrays rather than accepting fake backing" {
++    var f: Fixture = undefined; try f.init(false); defer f.deinit();
++    try f.run("stackBinding.async_id_fields=new Float64Array(stackUid);");
++    try std.testing.expectError(error.ActualAsyncWrapSharedViewsRequired,
++        support.owner.create(f.engine, f.env(), f.binding));
++    try std.testing.expect(!f.engine.native_module_values.contains(support.owner_key));
++    try f.balanced();
++}
++test "native async stack cold binding getters preserve original capture read order and reason" {
++    var f: Fixture = undefined; try f.init(false); defer f.deinit();
++    try f.run(
++        \\globalThis.stackReason={};
++        \\for(const name of ['async_hook_fields','async_id_fields','execution_async_resources','pushAsyncContext','popAsyncContext','clearAsyncIdStack']){
++        \\ const value=stackBinding[name];Object.defineProperty(stackBinding,name,{configurable:true,get(){
++        \\ stackTrace.push(name);if(name==='popAsyncContext')throw stackReason;return value}})}
++    );
++    try std.testing.expectError(error.JavaScriptException,
++        support.owner.create(f.engine, f.env(), f.binding));
++    const reason = try f.reason(); defer f.engine.freeValue(reason);
++    try f.publish("observedStackReason", reason);
++    try f.check("observedStackReason===stackReason&&stackTrace.join('|')==='async_hook_fields|async_id_fields|execution_async_resources|pushAsyncContext|popAsyncContext'");
++    try std.testing.expect(!f.engine.native_module_values.contains(support.owner_key));
++    try f.balanced();
++}
++test "native async stack retained callable keeps charged owner after cache removal and GC" {
++    var f: Fixture = undefined; try f.init(false); defer f.deinit();
++    const baseline = c.pi_js_native_memory_used(f.engine.native_memory_owner);
++    try f.install();
++    try f.run("globalThis.retainedStack=S.newAsyncId;delete globalThis.S;stackDropOwner();");
++    f.engine.freeValue(f.exported); f.exported = c.pi_js_undefined();
++    c.JS_RunGC(f.engine.runtime);
++    try std.testing.expect(!f.engine.native_module_values.contains(support.owner_key));
++    try std.testing.expect(c.pi_js_native_memory_used(f.engine.native_memory_owner) > baseline);
++    try f.check("retainedStack()===2&&stackUid[2]===2");
++    try f.run("delete globalThis.retainedStack;");
++    c.JS_RunGC(f.engine.runtime);
++    try std.testing.expectEqual(baseline, c.pi_js_native_memory_used(f.engine.native_memory_owner));
++    try f.balanced();
++}
++test "native async stack pending cold entry wins before allocator failure and publication" {
++    var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
++    var f: Fixture = undefined; try f.initUsing(failing.allocator(), false); defer f.deinit();
++    const original = try f.engine.checked(c.JS_NewError(f.engine.context));
++    defer f.engine.freeValue(original);
++    _ = c.JS_Throw(f.engine.context, a.duplicate(f.engine, original));
++    const index = failing.alloc_index; failing.fail_index = index;
++    const result = support.owner.create(f.engine, f.env(), f.binding);
++    failing.fail_index = std.math.maxInt(usize);
++    try std.testing.expectError(error.JavaScriptException, result);
++    try std.testing.expectEqual(index, failing.alloc_index);
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, original, f.engine.captured_exception.?));
++    try std.testing.expect(!f.engine.native_module_values.contains(support.owner_key));
++    try f.balanced();
++}
++test "native async stack actual cold allocation failure remains fatal and unpublished" {
++    var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
++    var f: Fixture = undefined; try f.initUsing(failing.allocator(), false); defer f.deinit();
++    failing.fail_index = failing.alloc_index;
++    const result = support.owner.create(f.engine, f.env(), f.binding);
++    failing.fail_index = std.math.maxInt(usize);
++    try std.testing.expectError(error.JavaScriptException, result);
++    const observed = try f.reason(); defer f.engine.freeValue(observed);
++    try std.testing.expect(c.JS_IsUncatchableError(observed));
++    try std.testing.expect(!f.engine.native_module_values.contains(support.owner_key));
++    try f.balanced();
++}
++test "native async stack actual fatal pop cannot be swallowed or commit later stack length" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\S.pushAsyncContext(12,5,{});globalThis.stackCaught=false;globalThis.stackReturned=false;
++        \\stackResources.pop=function(){stackNativeFatal();return undefined};
++    );
++    try std.testing.expectError(error.JavaScriptException, f.engine.eval(
++        "try{S.popAsyncContext(12);stackReturned=true}catch(e){stackCaught=true}",
++        "actual-async-stack-fatal.js", c.JS_EVAL_TYPE_GLOBAL));
++    const observed = try f.reason(); defer f.engine.freeValue(observed);
++    try std.testing.expect(c.JS_IsUncatchableError(observed));
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, observed, f.first_fatal));
++    try f.check("stackCaught===false&&stackReturned===false&&stackFields[7]===1&&stackUid[0]===0&&stackUid[1]===0");
++    try f.balanced();
++}
++test "native async stack returned flagged DATA does not become a pending fatal" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    const flagged = try f.engine.checked(c.JS_NewError(f.engine.context));
++    defer f.engine.freeValue(flagged);
++    c.JS_SetUncatchableError(f.engine.context, flagged);
++    try f.publish("stackFlaggedData", flagged);
++    try f.run("S.pushAsyncContext(12,5,{});stackResources.pop=function(){return stackFlaggedData};");
++    try f.check("S.popAsyncContext(12)===false&&stackFields[7]===0&&stackResources.length===1");
++    try f.balanced();
++}
++test "native async stack closed Environment rejects later owner calls while retained views stay valid" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.closeEnvironment();
++    c.JS_RunGC(f.engine.runtime);
++    try f.check("(()=>{try{S.executionAsyncId()}catch(e){return String(e).includes('NativeNodeEnvironmentClosed')&&stackUid instanceof Float64Array&&stackUid[0]===0}return false})()");
++    try f.balanced();
++}
+diff --git a/durable/fixtures/native-node-async-hooks-stack-original.js b/durable/fixtures/native-node-async-hooks-stack-original.js
+new file mode 100644
+--- /dev/null
++++ b/durable/fixtures/native-node-async-hooks-stack-original.js
+@@ -0,0 +1,84 @@
++// Exact selected Node24.13 async_hooks.js bodies; test-only original reference.
++(function(async_wrap) {
++'use strict';
++const {async_hook_fields, async_id_fields, execution_async_resources} = async_wrap;
++const {pushAsyncContext: pushAsyncContext_, popAsyncContext: popAsyncContext_, clearAsyncIdStack} = async_wrap;
++const {kInit,kBefore,kAfter,kDestroy,kCheck,kExecutionAsyncId,kAsyncIdCounter,kTriggerAsyncId,kDefaultTriggerAsyncId,kStackLength} = async_wrap.constants;
++function newAsyncId() {
++  return ++async_id_fields[kAsyncIdCounter];
++}
++
++function getDefaultTriggerAsyncId() {
++  const defaultTriggerAsyncId = async_id_fields[kDefaultTriggerAsyncId];
++  // If defaultTriggerAsyncId isn't set, use the executionAsyncId
++  if (defaultTriggerAsyncId < 0)
++    return async_id_fields[kExecutionAsyncId];
++  return defaultTriggerAsyncId;
++}
++
++function clearDefaultTriggerAsyncId() {
++  async_id_fields[kDefaultTriggerAsyncId] = -1;
++}
++
++function hasHooks(key) {
++  return async_hook_fields[key] > 0;
++}
++
++function enabledHooksExist() {
++  return hasHooks(kCheck);
++}
++
++function initHooksExist() {
++  return hasHooks(kInit);
++}
++
++function afterHooksExist() {
++  return hasHooks(kAfter);
++}
++
++function destroyHooksExist() {
++  return hasHooks(kDestroy);
++}
++
++function hasAsyncIdStack() {
++  return hasHooks(kStackLength);
++}
++
++function pushAsyncContext(asyncId, triggerAsyncId, resource) {
++  const offset = async_hook_fields[kStackLength];
++  execution_async_resources[offset] = resource;
++  if (offset * 2 >= async_wrap.async_ids_stack.length)
++    return pushAsyncContext_(asyncId, triggerAsyncId);
++  async_wrap.async_ids_stack[offset * 2] = async_id_fields[kExecutionAsyncId];
++  async_wrap.async_ids_stack[offset * 2 + 1] = async_id_fields[kTriggerAsyncId];
++  async_hook_fields[kStackLength]++;
++  async_id_fields[kExecutionAsyncId] = asyncId;
++  async_id_fields[kTriggerAsyncId] = triggerAsyncId;
++}
++
++function popAsyncContext(asyncId) {
++  const stackLength = async_hook_fields[kStackLength];
++  if (stackLength === 0) return false;
++
++  if (enabledHooksExist() && async_id_fields[kExecutionAsyncId] !== asyncId) {
++    // Do the same thing as the native code (i.e. crash hard).
++    return popAsyncContext_(asyncId);
++  }
++
++  const offset = stackLength - 1;
++  async_id_fields[kExecutionAsyncId] = async_wrap.async_ids_stack[2 * offset];
++  async_id_fields[kTriggerAsyncId] = async_wrap.async_ids_stack[2 * offset + 1];
++  execution_async_resources.pop();
++  async_hook_fields[kStackLength] = offset;
++  return offset > 0;
++}
++
++function executionAsyncId() {
++  return async_id_fields[kExecutionAsyncId];
++}
++
++function triggerAsyncId() {
++  return async_id_fields[kTriggerAsyncId];
++}
++return {newAsyncId,getDefaultTriggerAsyncId,clearDefaultTriggerAsyncId,enabledHooksExist,initHooksExist,afterHooksExist,destroyHooksExist,hasAsyncIdStack,pushAsyncContext,popAsyncContext,executionAsyncId,triggerAsyncId,clearAsyncIdStack};
++})
+diff --git a/build.zig b/build.zig
+--- a/build.zig
++++ b/build.zig
+@@ -1950,6 +1950,22 @@
+         node_process_uncaught_handler.root_module.linkSystemLibrary("userenv", .{});
+     }
+     b.step("build-native-node-process-uncaught-handler", "Install thirty-six private uncaught-handler controls without running").dependOn(&b.addInstallArtifact(node_process_uncaught_handler, .{ .dest_sub_path = b.fmt("native-node-process-uncaught-handler{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
++
++    // Complete selected original JS async ID/stack declarations over actual Environment views.
++    const node_async_hooks_stack = b.addTest(.{
++        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_async_hooks_stack_test.zig"), .target = target, .optimize = optimize }),
++        .use_llvm = use_llvm,
++        .filters = &.{"native async stack"},
++    });
++    linkQuickJs(b, node_async_hooks_stack.root_module, quickjs, sqlite_lib_dir);
++    linkTypeScriptParser(b, node_async_hooks_stack.root_module, typescript_parser);
++    linkSqlite(node_async_hooks_stack.root_module, sqlite_lib_dir, sqlite_library);
++    node_async_hooks_stack.root_module.addImport("catalog_tool", catalog_tool);
++    if (target.result.os.tag == .windows) {
++        node_async_hooks_stack.root_module.linkSystemLibrary("advapi32", .{});
++        node_async_hooks_stack.root_module.linkSystemLibrary("userenv", .{});
++    }
++    b.step("build-native-node-async-hooks-stack", "Install 34 original JS async stack controls without running").dependOn(&b.addInstallArtifact(node_async_hooks_stack, .{ .dest_sub_path = b.fmt("native-node-async-hooks-stack{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+ 
+     // Original Environment-owned Uint32 abort toggle and borrowed util supplier.
+     const node_abort_uncaught_toggle = b.addTest(.{

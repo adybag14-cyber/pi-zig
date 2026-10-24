@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-default-model-fallback-4954-source.mjs",
+    "bytes": 409,
+    "sha256": "85DB8CCDA81F3DDB7F720CCC5575090366AE15C8D22BA0781793662C18A26C74"
+  },
+  "original_fragment": "function buildFallbackModel(providerModels: [Model<Api>, ...Model<Api>[]], modelId: string): Model<Api> {\n\tconst defaultId = defaultModelPerProvider[providerModels[0].provider as KnownProvider];\n\tconst baseModel = defaultId\n\t\t? (providerModels.find((m) => m.id === defaultId) ?? providerModels[0])\n\t\t: providerModels[0];\n\n\treturn {\n\t\t...baseModel,\n\t\tid: modelId,\n\t\tname: modelId,\n\t};\n}",
+  "original_header": "function buildFallbackModel(providerModels: [Model<Api>, ...Model<Api>[]], modelId: string): Model<Api> {\n",
+  "runtime_header": "function buildFallbackModel(providerModels, modelId) {\n",
+  "body_cast_erasure": {
+    "before": " as KnownProvider",
+    "after": "",
+    "count": 1
+  },
+  "all_other_runtime_bytes_unchanged": true,
+  "candidate_executed": false
+}

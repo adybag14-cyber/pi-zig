@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\original\\build.zig",
+    "bytes": 556915,
+    "sha256": "53162A0B9E7F297B245EE10D622AC9090DE94920B5D2057BD2AC4881A191679D"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 557928,
+    "sha256": "94C9CA53DF37973BAFAF9B94E9498840806B8FC143D934572F12F2E72C0A8A17"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1013,
+    "sha256": "F655F40577ED30ECE1F21D9744689A40649213C0EF362AA48D2E93111FE133DF"
+  },
+  "anchor": "    const module_execution_state_tests = b.addTest(.{\n",
+  "raw_inverse_exact": true,
+  "target": "build-native-sdk-default-model-map",
+  "filter": "native SDK original default model map",
+  "default_artifacts": [
+    "test.exe",
+    "test.pdb"
+  ],
+  "actual_metadata_count": null
+}

@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "root_accepted_selected_original_async_hooks_stack_source",
+  "candidate_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\source-intake.json",
+    "bytes": 25620,
+    "sha256": "FDA0EB42A54A910437F19213B188D65F0B372EE5F413513CE11B60146807B3FF"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-gap-assessment\\async-hooks-stack-independent-source-peer-20261024.json",
+    "bytes": 8806,
+    "sha256": "FD1324E252C899A30F69B9AEC4D4521F42CB743E5A3E6D1FFD7B24389AC9AA79"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\async-hooks-stack-successor.patch",
+    "bytes": 62958,
+    "sha256": "54BC79B80FA8E24C60004A0E523E7026372B1EFD072D77C555D59FC539669FAE"
+  },
+  "changes": [
+    {
+      "destination_relative_path": "src/extensions/native_node_callback_scope.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\original\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 41033,
+        "sha256": "01B48BFFDD03C6A80FA2F8925D8708182FD8E3BAE097F7BDE909691F2B348155"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 41656,
+        "sha256": "B4E4524BCA2BE309E234C3D98E762D279E9FDCDDB256A7D0BC9B8AC8F197A4D0"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_node_async_hooks_stack.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\src\\extensions\\native_node_async_hooks_stack.zig",
+        "bytes": 18238,
+        "sha256": "3B71C963911264E0C957DB649FEDF2913EEA3DB7F1F501FE3A88532188497114"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_node_async_hooks_stack_test_support.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\src\\native_node_async_hooks_stack_test_support.zig",
+        "bytes": 13612,
+        "sha256": "3633934ADE6E20A12112FA2BEC8C69E50CBDDE0AB47A2BFFF86C06EF92CF3072"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_node_async_hooks_stack_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\src\\native_node_async_hooks_stack_test.zig",
+        "bytes": 23359,
+        "sha256": "F3D75679ECBE7135364886B1FFEBE85ED4C20D3CF2FF6B322786F211216D492B"
+      }
+    },
+    {
+      "destination_relative_path": "durable/fixtures/native-node-async-hooks-stack-original.js",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\durable\\fixtures\\native-node-async-hooks-stack-original.js",
+        "bytes": 2873,
+        "sha256": "DD285BAEB7111A4ABFF22D8DC840B55FD3F8D76B611B614103AA69081FDD47E1"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\original\\build.zig",
+        "bytes": 556915,
+        "sha256": "53162A0B9E7F297B245EE10D622AC9090DE94920B5D2057BD2AC4881A191679D"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 558134,
+        "sha256": "92876FABAFBA5B3B3DA01BB992EAD15601081050D0669866031A262635A28E0C"
+      }
+    }
+  ],
+  "source_inverses": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\environment-resource-acquisition-source-inverse.json",
+      "bytes": 1741,
+      "sha256": "84F5252E07191911D235DDE2E3F93E6B2C53971964EE48E0038CE3736CC05B6A"
+    }
+  ],
+  "original_reference_extraction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\original-reference-extraction.json",
+    "bytes": 3094,
+    "sha256": "6BC97A3766A7D021C6E8E6CA7E0B54132EA898B2C28F72221479E4FF0402BB1E"
+  },
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1219,
+    "sha256": "F2984B1B19A9CE63E55D4D9E2F202F9A0A59282E1D07E1CEFCF11A09E66F1D4C"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1280,
+    "sha256": "C587D1A821CF56B91A2195AE9C3B13A845DFB4B39C13B31310D3DFA37ADDA052"
+  },
+  "dependency_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\dependency-handoff.json",
+    "bytes": 3381,
+    "sha256": "B5D08E1FCB7F801729102330086F136E563C86B3FE02D46A538206F97D48B665"
+  },
+  "verification": {
+    "unique_pinned_versions": 44,
+    "sole_Environment_insertion_complete_raw_inverse_bytes": 623,
+    "all13_original_function_bodies_exact": true,
+    "all6_patch_targets_reconstructed": true,
+    "direct_imports": 16,
+    "embeds": 1,
+    "standard_packages": 4,
+    "build_insertion_bytes": 1219,
+    "installed_executable_stem": "native-node-async-hooks-stack",
+    "cached_executable_and_PDB_stem": "test",
+    "declared_controls": 34,
+    "git_apply_check_exit": 0,
+    "Main_clean": true
+  },
+  "Root_semantic_review": [
+    "Read complete18238-byte native owner, literal original2873-byte reference, complete13612-byte support and all34 controls, Environment insertion with installHooks/jsResources/push context, source statement map and dependency handoff.",
+    "Actual same Environment/installed binding and typed/resource views required. Captured native callbacks remain original identities; producer authentication is explicitly outside this packet.",
+    "Original JS stack order preserved: resource assignment before capacity condition; live stack property for each left side; current stack counter increment after guest effects.",
+    "Pop restores both IDs before live resource pop; full pop statement completion retires before stackLength commit. Native Environment.pop is used only through bounded fallback probes.",
+    "Private charged traced State retains Environment and real captured roots through cache removal/reentry/guest retirement; same-owner acquisition and actual fatal/pending/DATA boundaries remain distinct."
+  ],
+  "scope_limits": [
+    "Compose only the 1,219-byte build insertion with other pending packets, preserving its install-only target and native-node-async-hooks-stack executable/test PDB distinction.",
+    "Apply the sole 623-byte Environment acquisition insertion to its pinned baseline or an independently composed successor; retain actual backing and all native methods.",
+    "Supply the real installed async_wrap binding with original native push/pop/clear callback identities and genuine operational policies. Numeric test bridges do not qualify native NumberValue/FromJust/fatal/process-exit behavior.",
+    "Complete the real async_wrap/bootstrap assembly, original active_hooks/emitHookFactory/setupHooks and emitAfterScript. emitAfterScript must use original JS pop semantics, not substitute Environment.popAsyncContext.",
+    "Original fatalError/TriggerUncaughtException, real Message/process-exit/async-fatal/trace-event collaborators and canonical process/require/timers startup publication remain separate dependencies."
+  ],
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "actual_metadata_count": null,
+  "created_utc": "2026-10-24T22:39:31.038416+00:00"
+}

@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "source_body_completed": "Selected original async_hooks.js ID/stack declarations (12 ordinary functions plus exact captured clearAsyncIdStack export); full module is not published",
+  "new_environment_leaf": {
+    "api": "Environment.acquireExecutionAsyncResources() !JSValue",
+    "owned": true,
+    "existing_backing": true,
+    "copy_or_snapshot": false,
+    "selection": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 41656,
+      "sha256": "B4E4524BCA2BE309E234C3D98E762D279E9FDCDDB256A7D0BC9B8AC8F197A4D0"
+    }
+  },
+  "caller_contract": [
+    "Create the real Environment with genuine existing operational policies and original async context selection.",
+    "The genuine async_wrap binding must expose the original same native views, the acquired resource array and the actual original native push/pop/clear callback identities.",
+    "The present private factory requires this exact binding already installed through Environment.installHooks; that ordering remains a bootstrap assembly requirement, not a completed full async_hooks factory.",
+    "Acquire selected exports once per Engine/Environment/binding; repeated mismatched input is rejected, values are independently owned, and retained callables keep the traced charged State and Environment alive."
+  ],
+  "remaining_genuine_suppliers": [
+    {
+      "supplier": "Complete async_wrap binding/bootstrap acquisition and original native callback fatal conversion adapters",
+      "status": "not implemented in this packet; numeric native fallback test bridges are bounded probes"
+    },
+    {
+      "supplier": "Original active_hooks / emitHookFactory / setupHooks and emitAfterScript",
+      "status": "not implemented; use the real original lexical hook state and this JS pop semantics, never substitute Environment.popAsyncContext"
+    },
+    {
+      "supplier": "Original fatalError and native TriggerUncaughtException with actual Message, process exit, async fatal policy and trace-event dependencies",
+      "status": "not implemented; no catchable queued-throw or private rejection-policy substitute"
+    },
+    {
+      "supplier": "Canonical process/require/timers and installation of the accepted uncaught-handler original declarations",
+      "status": "still requires genuine authenticated startup owners; this packet does not publish process._fatalException or diagnostics_channel"
+    }
+  ],
+  "current_uncaught_consumer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_process_uncaught_handler.zig",
+    "bytes": 17799,
+    "sha256": "3A538E596AE0DF3D374B55F908DE87D233D7D99EB72009157E36F82BCACF14C5"
+  },
+  "current_abort_owner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+    "bytes": 41033,
+    "sha256": "01B48BFFDD03C6A80FA2F8925D8708182FD8E3BAE097F7BDE909691F2B348155"
+  },
+  "current_intake_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-six-packet-five-root-source-intake-acceptance-20261024.json",
+    "bytes": 2959,
+    "sha256": "728033A08C592CF7239A7F176CDF9DD091A79083AA542DD3B1B382FECAD2C542"
+  },
+  "native_execution": false,
+  "namespace_publication": false,
+  "product_completion": false
+}

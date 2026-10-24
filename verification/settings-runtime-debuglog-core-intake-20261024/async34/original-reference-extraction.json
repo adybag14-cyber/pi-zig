@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\authority\\lib__internal__async_hooks.js.txt",
+    "bytes": 20504,
+    "sha256": "24F6E0525B52534DF5644C31560A37A317922E8304D38FB03DC4F997D8DDC07A"
+  },
+  "selected_reference": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-async-hooks-stack-sourceonly-20261024\\projected\\durable\\fixtures\\native-node-async-hooks-stack-original.js",
+    "bytes": 2873,
+    "sha256": "DD285BAEB7111A4ABFF22D8DC840B55FD3F8D76B611B614103AA69081FDD47E1"
+  },
+  "exact_function_bodies": [
+    {
+      "name": "newAsyncId",
+      "offset": 14827,
+      "bytes": 70,
+      "sha256": "7736AB3F6859BFBE2DB166A07F2E7C97E7511E3058CF52851DBD4E620E7928C0"
+    },
+    {
+      "name": "getDefaultTriggerAsyncId",
+      "offset": 15272,
+      "bytes": 290,
+      "sha256": "7919D22BC73DA8534E6B18F7CBFB6A419BF1010FF9D8C00B3E5995C493B52B40"
+    },
+    {
+      "name": "clearDefaultTriggerAsyncId",
+      "offset": 15565,
+      "bytes": 89,
+      "sha256": "A45A1475585BB733F12C5EE68DD886EBEAF661D39ACCA285C5D7E177E61055DE"
+    },
+    {
+      "name": "hasHooks",
+      "offset": 16373,
+      "bytes": 63,
+      "sha256": "0D2D4DA977F92E66ACD3C5A69C8279BF036DF868DFEAC55A249BFD05F1CC7956"
+    },
+    {
+      "name": "enabledHooksExist",
+      "offset": 16438,
+      "bytes": 59,
+      "sha256": "E6F8409BD6365694367E3B712A39BB8A7FF326DBE84809CE7953371A132F67E5"
+    },
+    {
+      "name": "initHooksExist",
+      "offset": 16499,
+      "bytes": 55,
+      "sha256": "F275F6D4D88020171E57B74976E6201D8D5E1DD42AD5CDE7FF0891CA1AF9C355"
+    },
+    {
+      "name": "afterHooksExist",
+      "offset": 16556,
+      "bytes": 57,
+      "sha256": "1C38F65540AED784683F874AB89ECB244E9176853E1090DDFA743CBAED845CF8"
+    },
+    {
+      "name": "destroyHooksExist",
+      "offset": 16615,
+      "bytes": 61,
+      "sha256": "709A6CFF51EBBFA009CA069C8D0DE0F547C8B4915B3FCDBBDFA2B18F4752D50C"
+    },
+    {
+      "name": "hasAsyncIdStack",
+      "offset": 17760,
+      "bytes": 63,
+      "sha256": "EDF8A262E9D1BA07FE6F16FF444C45D2BE7994A8720C7E9DE4769924D7A1F015"
+    },
+    {
+      "name": "pushAsyncContext",
+      "offset": 17889,
+      "bytes": 570,
+      "sha256": "55E91405B766B35AD7387C1AEDEB4D60DAB41BDE556229ED42AAB7B1C5F4C1B4"
+    },
+    {
+      "name": "popAsyncContext",
+      "offset": 18524,
+      "bytes": 611,
+      "sha256": "37E2826D709A0CB751F55547C9C5C15B359A22A069029C7A9F1A6E85CC257915"
+    },
+    {
+      "name": "executionAsyncId",
+      "offset": 19138,
+      "bytes": 76,
+      "sha256": "95A358A32F28F052DA36D656876375A027E89EBFC4A369046AF36A42F713A805"
+    },
+    {
+      "name": "triggerAsyncId",
+      "offset": 19216,
+      "bytes": 72,
+      "sha256": "5FD8CD38CC528A8205889953A99DF9E3F146FBB12A58B0AEE02808D775050940"
+    }
+  ],
+  "selected_public_functions": 12,
+  "captured_native_function_identity": "clearAsyncIdStack",
+  "reference_executed": false,
+  "native_execution": false
+}

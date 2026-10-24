@@ -1951,6 +1951,22 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-node-process-uncaught-handler", "Install thirty-six private uncaught-handler controls without running").dependOn(&b.addInstallArtifact(node_process_uncaught_handler, .{ .dest_sub_path = b.fmt("native-node-process-uncaught-handler{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Complete selected original JS async ID/stack declarations over actual Environment views.
+    const node_async_hooks_stack = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_async_hooks_stack_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native async stack"},
+    });
+    linkQuickJs(b, node_async_hooks_stack.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_async_hooks_stack.root_module, typescript_parser);
+    linkSqlite(node_async_hooks_stack.root_module, sqlite_lib_dir, sqlite_library);
+    node_async_hooks_stack.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_async_hooks_stack.root_module.linkSystemLibrary("advapi32", .{});
+        node_async_hooks_stack.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-async-hooks-stack", "Install 34 original JS async stack controls without running").dependOn(&b.addInstallArtifact(node_async_hooks_stack, .{ .dest_sub_path = b.fmt("native-node-async-hooks-stack{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
     // Original Environment-owned Uint32 abort toggle and borrowed util supplier.
     const node_abort_uncaught_toggle = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_abort_uncaught_toggle_test.zig"), .target = target, .optimize = optimize }),
@@ -1967,6 +1983,20 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-node-abort-uncaught-toggle", "Install five actual Environment abort-toggle controls without running").dependOn(&b.addInstallArtifact(node_abort_uncaught_toggle, .{ .dest_sub_path = b.fmt("native-node-abort-uncaught-toggle{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    const main_runtime_helpers_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_main_runtime_helpers_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native Main runtime helpers"},
+    });
+    linkQuickJs(b, main_runtime_helpers_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, main_runtime_helpers_tests.root_module, typescript_parser);
+    linkSqlite(main_runtime_helpers_tests.root_module, sqlite_lib_dir, sqlite_library);
+    main_runtime_helpers_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        main_runtime_helpers_tests.root_module.linkSystemLibrary("advapi32", .{});
+        main_runtime_helpers_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-main-runtime-helpers", "Install actual authenticated Main option and path controls without execution").dependOn(&b.addInstallArtifact(main_runtime_helpers_tests, .{}).step);
+
     const project_trust_resolution_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_project_trust_resolution_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native project trust resolution"},
@@ -1981,6 +2011,61 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-sdk-project-trust-resolution", "Install actual authenticated project-trust resolution controls without execution").dependOn(&b.addInstallArtifact(project_trust_resolution_tests, .{}).step);
 
+    const settings_shared_defaults_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_settings_shared_defaults_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native settings shared defaults"},
+    });
+    linkQuickJs(b, settings_shared_defaults_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, settings_shared_defaults_tests.root_module, typescript_parser);
+    linkSqlite(settings_shared_defaults_tests.root_module, sqlite_lib_dir, sqlite_library);
+    settings_shared_defaults_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        settings_shared_defaults_tests.root_module.linkSystemLibrary("advapi32", .{});
+        settings_shared_defaults_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-settings-shared-defaults", "Install actual shared SettingsManager default accessor controls without execution").dependOn(&b.addInstallArtifact(settings_shared_defaults_tests, .{}).step);
+
+    const default_model_map_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_default_model_map_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native SDK original default model map"},
+    });
+    linkQuickJs(b, default_model_map_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, default_model_map_tests.root_module, typescript_parser);
+    linkSqlite(default_model_map_tests.root_module, sqlite_lib_dir, sqlite_library);
+    default_model_map_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        default_model_map_tests.root_module.linkSystemLibrary("advapi32", .{});
+        default_model_map_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-default-model-map", "Install original shared provider-default map controls without execution").dependOn(&b.addInstallArtifact(default_model_map_tests, .{}).step);
+
+    const settings_diagnostics_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_settings_diagnostics_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native settings diagnostics"},
+    });
+    linkQuickJs(b, settings_diagnostics_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, settings_diagnostics_tests.root_module, typescript_parser);
+    linkSqlite(settings_diagnostics_tests.root_module, sqlite_lib_dir, sqlite_library);
+    settings_diagnostics_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        settings_diagnostics_tests.root_module.linkSystemLibrary("advapi32", .{});
+        settings_diagnostics_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-settings-diagnostics", "Install actual SettingsManager diagnostics controls without execution").dependOn(&b.addInstallArtifact(settings_diagnostics_tests, .{}).step);
+
+    const primitive_string_hooks_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_string_primitive_hooks_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native primitive string hooks"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, primitive_string_hooks_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, primitive_string_hooks_tests.root_module, typescript_parser);
+    linkSqlite(primitive_string_hooks_tests.root_module, sqlite_lib_dir, sqlite_library);
+    primitive_string_hooks_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        primitive_string_hooks_tests.root_module.linkSystemLibrary("advapi32", .{});
+        primitive_string_hooks_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-vm-string-primitive-hooks", "Install target primitive String symbol hook controls without execution").dependOn(&b.addInstallArtifact(primitive_string_hooks_tests, .{}).step);
     const module_execution_state_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_execution_state_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native module execution state"}, .use_llvm = use_llvm,
@@ -5149,6 +5234,42 @@ pub fn build(b: *std.Build) void {
         node_internal_tty.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-node-internal-tty", "Install thirty-six declared private internal TTY controls without running").dependOn(&b.addInstallArtifact(node_internal_tty, .{ .dest_sub_path = b.fmt("native-node-internal-tty{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
+    // Original initialized ordinary debuglog with genuine process/inspect/colors.
+    // Install only; full private bootstrap and timer trace-events remain explicit.
+    const node_debuglog = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_debuglog_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native debuglog"},
+    });
+    linkQuickJs(b, node_debuglog.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_debuglog.root_module, typescript_parser);
+    linkSqlite(node_debuglog.root_module, sqlite_lib_dir, sqlite_library);
+    node_debuglog.root_module.addImport("catalog_tool", catalog_tool);
+    node_debuglog.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+    if (target.result.os.tag == .windows) {
+        node_debuglog.root_module.linkSystemLibrary("advapi32", .{});
+        node_debuglog.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-debuglog", "Install thirty-six ordinary debuglog controls without running").dependOn(&b.addInstallArtifact(node_debuglog, .{ .dest_sub_path = b.fmt("native-node-debuglog{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
+    // Original timer/debugWithTimer bodies over actual shared debuglog state.
+    // Install only; actual process.hrtime and native trace binding admission are separate.
+    const node_debuglog_timers = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_debuglog_timers_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native debug timers"},
+    });
+    linkQuickJs(b, node_debuglog_timers.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_debuglog_timers.root_module, typescript_parser);
+    linkSqlite(node_debuglog_timers.root_module, sqlite_lib_dir, sqlite_library);
+    node_debuglog_timers.root_module.addImport("catalog_tool", catalog_tool);
+    node_debuglog_timers.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+    if (target.result.os.tag == .windows) {
+        node_debuglog_timers.root_module.linkSystemLibrary("advapi32", .{});
+        node_debuglog_timers.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-debuglog-timers", "Install forty-seven original timer controls without running").dependOn(&b.addInstallArtifact(node_debuglog_timers, .{ .dest_sub_path = b.fmt("native-node-debuglog-timers{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
     // Genuine shared Node argument errors and actual rest/super controls.
     // This target only installs the test artifact; no run or Source capture edge.

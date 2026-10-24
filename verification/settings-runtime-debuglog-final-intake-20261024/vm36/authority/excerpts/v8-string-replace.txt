@@ -1,0 +1,161 @@
+TF_BUILTIN(StringPrototypeReplace, StringBuiltinsAssembler) {
+  Label out(this);
+
+  auto receiver = Parameter<JSAny>(Descriptor::kReceiver);
+  const auto search = Parameter<JSAny>(Descriptor::kSearch);
+  const auto replace = Parameter<JSAny>(Descriptor::kReplace);
+  auto context = Parameter<Context>(Descriptor::kContext);
+
+  const TNode<Smi> smi_zero = SmiConstant(0);
+
+  RequireObjectCoercible(context, receiver, "String.prototype.replace");
+
+  // Redirect to replacer method if {search[@@replace]} is not undefined.
+  {
+    Label next(this);
+
+    MaybeCallFunctionAtSymbol(
+        context, search, receiver, isolate()->factory()->replace_symbol(),
+        DescriptorIndexNameValue{
+            JSRegExp::kSymbolReplaceFunctionDescriptorIndex,
+            RootIndex::kreplace_symbol, Context::REGEXP_REPLACE_FUNCTION_INDEX},
+        [=, this]() {
+          Return(CallBuiltin(Builtin::kRegExpReplace, context, search, receiver,
+                             replace));
+        },
+        [=, this](TNode<Object> fn) {
+          Return(Call(context, fn, search, receiver, replace));
+        });
+    Goto(&next);
+
+    BIND(&next);
+  }
+
+  // Convert {receiver} and {search} to strings.
+
+  const TNode<String> subject_string = ToString_Inline(context, receiver);
+  const TNode<String> search_string = ToString_Inline(context, search);
+
+  const TNode<IntPtrT> subject_length = LoadStringLengthAsWord(subject_string);
+  const TNode<IntPtrT> search_length = LoadStringLengthAsWord(search_string);
+
+  // Fast-path single-char {search}, long cons {receiver}, and simple string
+  // {replace}.
+  {
+    Label next(this);
+
+    GotoIfNot(WordEqual(search_length, IntPtrConstant(1)), &next);
+    GotoIfNot(IntPtrGreaterThan(subject_length, IntPtrConstant(0xFF)), &next);
+    GotoIf(TaggedIsSmi(replace), &next);
+    GotoIfNot(IsString(CAST(replace)), &next);
+
+    TNode<String> replace_string = CAST(replace);
+    const TNode<Uint16T> subject_instance_type =
+        LoadInstanceType(subject_string);
+    GotoIfNot(IsConsStringInstanceType(subject_instance_type), &next);
+
+    GotoIf(TaggedIsPositiveSmi(IndexOfDollarChar(context, replace_string)),
+           &next);
+
+    // Searching by traversing a cons string tree and replace with cons of
+    // slices works only when the replaced string is a single character, being
+    // replaced by a simple string and only pays off for long strings.
+    // TODO(jgruber): Reevaluate if this is still beneficial.
+    // TODO(jgruber): TailCallRuntime when it correctly handles adapter frames.
+    Return(CallRuntime(Runtime::kStringReplaceOneCharWithString, context,
+                       subject_string, search_string, replace_string));
+
+    BIND(&next);
+  }
+
+  // TODO(jgruber): Extend StringIndexOf to handle two-byte strings and
+  // longer substrings - we can handle up to 8 chars (one-byte) / 4 chars
+  // (2-byte).
+
+  const TNode<Smi> match_start_index =
+      CAST(CallBuiltin(Builtin::kStringIndexOf, context, subject_string,
+                       search_string, smi_zero));
+
+  // Early exit if no match found.
+  {
+    Label next(this), return_subject(this);
+
+    GotoIfNot(SmiIsNegative(match_start_index), &next);
+
+    // The spec requires to perform ToString(replace) if the {replace} is not
+    // callable even if we are going to exit here.
+    // Since ToString() being applied to Smi does not have side effects for
+    // numbers we can skip it.
+    GotoIf(TaggedIsSmi(replace), &return_subject);
+    GotoIf(IsCallableMap(LoadMap(CAST(replace))), &return_subject);
+
+    // TODO(jgruber): Could introduce ToStringSideeffectsStub which only
+    // performs observable parts of ToString.
+    ToString_Inline(context, replace);
+    Goto(&return_subject);
+
+    BIND(&return_subject);
+    Return(subject_string);
+
+    BIND(&next);
+  }
+
+  const TNode<Smi> match_end_index =
+      SmiAdd(match_start_index, SmiFromIntPtr(search_length));
+
+  TVARIABLE(String, var_result, EmptyStringConstant());
+
+  // Compute the prefix.
+  {
+    Label next(this);
+
+    GotoIf(SmiEqual(match_start_index, smi_zero), &next);
+    const TNode<String> prefix =
+        CAST(CallBuiltin(Builtin::kStringSubstring, context, subject_string,
+                         IntPtrConstant(0), SmiUntag(match_start_index)));
+    var_result = prefix;
+
+    Goto(&next);
+    BIND(&next);
+  }
+
+  // Compute the string to replace with.
+
+  Label if_iscallablereplace(this), if_notcallablereplace(this);
+  GotoIf(TaggedIsSmi(replace), &if_notcallablereplace);
+  Branch(IsCallableMap(LoadMap(CAST(replace))), &if_iscallablereplace,
+         &if_notcallablereplace);
+
+  BIND(&if_iscallablereplace);
+  {
+    const TNode<Object> replacement =
+        Call(context, replace, UndefinedConstant(), search_string,
+             match_start_index, subject_string);
+    const TNode<String> replacement_string =
+        ToString_Inline(context, replacement);
+    var_result = CAST(CallBuiltin(Builtin::kStringAdd_CheckNone, context,
+                                  var_result.value(), replacement_string));
+    Goto(&out);
+  }
+
+  BIND(&if_notcallablereplace);
+  {
+    const TNode<String> replace_string = ToString_Inline(context, replace);
+    const TNode<Object> replacement =
+        GetSubstitution(context, subject_string, match_start_index,
+                        match_end_index, replace_string);
+    var_result = CAST(CallBuiltin(Builtin::kStringAdd_CheckNone, context,
+                                  var_result.value(), replacement));
+    Goto(&out);
+  }
+
+  BIND(&out);
+  {
+    const TNode<Object> suffix =
+        CallBuiltin(Builtin::kStringSubstring, context, subject_string,
+                    SmiUntag(match_end_index), subject_length);
+    const TNode<Object> result = CallBuiltin(
+        Builtin::kStringAdd_CheckNone, context, var_result.value(), suffix);
+    Return(result);
+  }
+}

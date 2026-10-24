@@ -1,0 +1,76 @@
+void StringBuiltinsAssembler::MaybeCallFunctionAtSymbol(
+    const TNode<Context> context, const TNode<JSAny> object,
+    const TNode<Object> maybe_string, Handle<Symbol> symbol,
+    DescriptorIndexNameValue additional_property_to_check,
+    const NodeFunction0& regexp_call, const NodeFunction1& generic_call) {
+  Label out(this), no_protector(this), object_is_heapobject(this);
+  Label get_property_lookup(this);
+
+  // The protector guarantees that that the Number and String wrapper
+  // prototypes do not contain Symbol.{matchAll|replace|split} (aka.
+  // @@matchAll, @@replace @@split).
+  GotoIf(IsNumberStringNotRegexpLikeProtectorCellInvalid(), &no_protector);
+  // Smi is safe thanks to the protector.
+  GotoIf(TaggedIsSmi(object), &out);
+  // String is safe thanks to the protector.
+  GotoIf(IsString(CAST(object)), &out);
+  // HeapNumber is safe thanks to the protector.
+  Branch(IsHeapNumber(CAST(object)), &out, &object_is_heapobject);
+
+  BIND(&no_protector);
+  // Smis have to go through the GetProperty lookup in case Number.prototype or
+  // Object.prototype was modified.
+  Branch(TaggedIsSmi(object), &get_property_lookup, &object_is_heapobject);
+
+  // Take the fast path for RegExps.
+  // There's two conditions: {object} needs to be a fast regexp, and
+  // {maybe_string} must be a string (we can't call ToString on the fast path
+  // since it may mutate {object}).
+  {
+    Label stub_call(this), slow_lookup(this);
+
+    BIND(&object_is_heapobject);
+    TNode<HeapObject> heap_object = CAST(object);
+
+    GotoIf(TaggedIsSmi(maybe_string), &slow_lookup);
+    GotoIfNot(IsString(CAST(maybe_string)), &slow_lookup);
+
+    // Note we don't run a full (= permissive) check here, because passing the
+    // check implies calling the fast variants of target builtins, which assume
+    // we've already made their appropriate fast path checks. This is not the
+    // case though; e.g.: some of the target builtins access flag getters.
+    // TODO(jgruber): Handle slow flag accesses on the fast path and make this
+    // permissive.
+    RegExpBuiltinsAssembler regexp_asm(state());
+    regexp_asm.BranchIfFastRegExp(
+        context, heap_object, LoadMap(heap_object),
+        PrototypeCheckAssembler::kCheckPrototypePropertyConstness,
+        additional_property_to_check, &stub_call, &slow_lookup);
+
+    BIND(&stub_call);
+    // TODO(jgruber): Add a no-JS scope once it exists.
+    regexp_call();
+
+    BIND(&slow_lookup);
+    // Special case null and undefined to skip the property lookup.
+    Branch(IsNullOrUndefined(heap_object), &out, &get_property_lookup);
+  }
+
+  // Fall back to a slow lookup of {heap_object[symbol]}.
+  //
+  // The spec uses GetMethod({heap_object}, {symbol}), which has a few quirks:
+  // * null values are turned into undefined, and
+  // * an exception is thrown if the value is not undefined, null, or callable.
+  // We handle the former by jumping to {out} for null values as well, while
+  // the latter is already handled by the Call({maybe_func}) operation.
+
+  BIND(&get_property_lookup);
+  const TNode<Object> maybe_func = GetProperty(context, object, symbol);
+  GotoIf(IsUndefined(maybe_func), &out);
+  GotoIf(IsNull(maybe_func), &out);
+
+  // Attempt to call the function.
+  generic_call(maybe_func);
+
+  BIND(&out);
+}

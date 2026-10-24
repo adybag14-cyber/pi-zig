@@ -1,0 +1,23 @@
+{
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\original\\build.zig",
+    "bytes": 556915,
+    "sha256": "53162A0B9E7F297B245EE10D622AC9090DE94920B5D2057BD2AC4881A191679D"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 557988,
+    "sha256": "FC661A4509EAB1AA09890045A8C25AAF3B2354146EB0577740FA1B860C390483"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1073,
+    "sha256": "DAF51C9514844764CE6F9D7BFF9DE5A132E903D62AB0ECA944F81810F346C48A"
+  },
+  "anchor": "    const module_execution_state_tests = b.addTest(.{\n",
+  "offset_before": 193625,
+  "all_other_bytes_unchanged": true,
+  "complete_raw_inverse_exact": true,
+  "standalone_projection_only": true,
+  "later_composition": "Apply only the exact insertion at the original anchor, preserving every other accepted build addition."
+}

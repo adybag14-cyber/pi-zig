@@ -1,5 +1,6 @@
 //! Factory initial-model subset of the original findInitialModel algorithm.
-//! Provider defaults follow actual model-resolver.ts at c268154c.
+//! Shared provider defaults follow original model-resolver.ts at 4954d76.
+//! The prior c268 map and full owner remain preserved in the source successor proof.
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
@@ -16,7 +17,7 @@ const defaults = .{
     .{ "azure", "gpt-5.4" },
     .{ "openai-codex", "gpt-6.1-sol" },
     .{ "radius", "balanced" },
-    .{ "nvidia", "nvidia/nemotron-3.5-super-vl-120b-a12b" },
+    .{ "nvidia", "nvidia/nemotron-3-ultra-550b-a55b" },
     .{ "deepseek", "deepseek-v4-pro" },
     .{ "google", "gemini-3.1-pro-preview" },
     .{ "google-vertex", "gemini-3.1-pro-preview" },
@@ -46,10 +47,10 @@ const defaults = .{
     .{ "qwen-token-plan", "qwen3.7-max" },
     .{ "qwen-token-plan-cn", "qwen3.7-max" },
     .{ "qwen-token-plan-individual", "qwen3.8-max" },
-    .{ "xiaomi", "mimo-v2.6-pro" },
-    .{ "xiaomi-token-plan-cn", "mimo-v2.6-pro" },
-    .{ "xiaomi-token-plan-ams", "mimo-v2.6-pro" },
-    .{ "xiaomi-token-plan-sgp", "mimo-v2.6-pro" },
+    .{ "xiaomi", "mimo-v2.5-pro" },
+    .{ "xiaomi-token-plan-cn", "mimo-v2.5-pro" },
+    .{ "xiaomi-token-plan-ams", "mimo-v2.5-pro" },
+    .{ "xiaomi-token-plan-sgp", "mimo-v2.5-pro" },
 };
 /// The exported mutable module binding is shared by every factory namespace.
 pub fn defaultModelPerProvider(engine: *em.Engine) !c.JSValue {

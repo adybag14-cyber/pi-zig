@@ -121,9 +121,9 @@ const Fixture = struct {
         }.body, .{self, receiver, args});
     }
     fn complete(self: *Fixture, status: c_int) !void {
-        const request = self.pending_request orelse return error.WritevRequestRequired;
+        const pending = self.pending_request orelse return error.WritevRequestRequired;
         self.pending_request = null;
-        try request.request.done(status, null);
+        try pending.request.done(status, null);
     }
     fn releaseHeld(self: *Fixture) !void {
         const state = self.held_state orelse return;

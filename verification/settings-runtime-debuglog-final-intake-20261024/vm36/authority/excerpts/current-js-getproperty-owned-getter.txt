@@ -1,0 +1,92 @@
+static JSValue JS_GetPropertyInternal(JSContext *ctx, JSValueConst obj,
+                                      JSAtom prop, JSValueConst this_obj,
+                                      bool throw_ref_error)
+{
+    JSObject *p;
+    JSProperty *pr;
+    JSShapeProperty *prs;
+    uint32_t tag;
+
+    tag = JS_VALUE_GET_TAG(obj);
+    if (unlikely(tag != JS_TAG_OBJECT)) {
+        switch(tag) {
+        case JS_TAG_NULL:
+            return JS_ThrowTypeErrorAtom(ctx, "cannot read property '%s' of null", prop);
+        case JS_TAG_UNDEFINED:
+            return JS_ThrowTypeErrorAtom(ctx, "cannot read property '%s' of undefined", prop);
+        case JS_TAG_EXCEPTION:
+            return JS_EXCEPTION;
+        case JS_TAG_STRING:
+            {
+                JSString *p1 = JS_VALUE_GET_STRING(obj);
+                if (__JS_AtomIsTaggedInt(prop)) {
+                    uint32_t idx, ch;
+                    idx = __JS_AtomToUInt32(prop);
+                    if (idx < p1->len) {
+                        ch = string_get(p1, idx);
+                        return js_new_string_char(ctx, ch);
+                    }
+                } else if (prop == JS_ATOM_length) {
+                    return js_int32(p1->len);
+                }
+            }
+            break;
+        case JS_TAG_STRING_ROPE:
+            {
+                JSStringRope *r = JS_VALUE_GET_STRING_ROPE(obj);
+                if (__JS_AtomIsTaggedInt(prop)) {
+                    uint32_t idx, ch;
+                    idx = __JS_AtomToUInt32(prop);
+                    if (idx < r->len) {
+                        ch = string_rope_get(obj, idx);
+                        return js_new_string_char(ctx, ch);
+                    }
+                } else if (prop == JS_ATOM_length) {
+                    return js_int32(r->len);
+                }
+            }
+            break;
+        default:
+            break;
+        }
+        /* cannot raise an exception */
+        p = JS_VALUE_GET_OBJ(JS_GetPrototypePrimitive(ctx, obj));
+        if (!p)
+            return JS_UNDEFINED;
+    } else {
+        p = JS_VALUE_GET_OBJ(obj);
+    }
+
+    for(;;) {
+        prs = find_own_property(&pr, p, prop);
+        if (prs) {
+            /* found */
+            if (unlikely(prs->flags & JS_PROP_TMASK)) {
+                if ((prs->flags & JS_PROP_TMASK) == JS_PROP_GETSET) {
+                    if (unlikely(!pr->u.getset.getter)) {
+                        return JS_UNDEFINED;
+                    } else {
+                        JSValue func = JS_MKPTR(JS_TAG_OBJECT, pr->u.getset.getter);
+                        /* Note: the field could be removed in the getter */
+                        func = js_dup(func);
+                        return JS_CallFree(ctx, func, this_obj, 0, NULL);
+                    }
+                } else if ((prs->flags & JS_PROP_TMASK) == JS_PROP_VARREF) {
+                    JSValue val = *pr->u.var_ref->pvalue;
+                    if (unlikely(JS_IsUninitialized(val)))
+                        return JS_ThrowReferenceErrorUninitialized(ctx, prs->atom);
+                    return js_dup(val);
+                } else if ((prs->flags & JS_PROP_TMASK) == JS_PROP_AUTOINIT) {
+                    /* Instantiate property and retry */
+                    if (JS_AutoInitProperty(ctx, p, prop, pr, prs))
+                        return JS_EXCEPTION;
+                    continue;
+                }
+            } else {
+                return js_dup(pr->u.value);
+            }
+        }
+        if (unlikely(p->is_exotic)) {
+            /* exotic behaviors */
+            if (p->fast_array) {
+                if (__JS_AtomIsTaggedInt(prop)) {

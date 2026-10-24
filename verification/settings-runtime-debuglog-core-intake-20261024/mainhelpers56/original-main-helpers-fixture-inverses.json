@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\main.ts",
+    "bytes": 35444,
+    "sha256": "BC76D755332764FC80EDDC9C1BFB84F70E70C2B55D958E44F98000B05F08930C"
+  },
+  "selected_range": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\original\\main-runtime-helpers-original.ts",
+    "bytes": 3640,
+    "sha256": "0B71D4F97B9BED33C2FFC0F3857EFD8B1F41E910CD1BE8EFFE654B68AB207168"
+  },
+  "fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-main-runtime-helpers-4954-source.mjs",
+    "bytes": 3474,
+    "sha256": "483A8207BD792B7164020907C44453B2BC4D36D3BAE89151C28FBA9F2CC7F700"
+  },
+  "prefix": "(function(modelsAreEqual, resolveCliModel, isLocalPath, resolvePath) {\n\"use strict\";\n",
+  "suffix": "\nreturn {buildSessionOptions, resolveCliPaths};\n})\n",
+  "type_erasures": [
+    {
+      "before": "function buildSessionOptions(\n\tparsed: Args,\n\tscopedModels: ScopedModel[],\n\thasExistingSession: boolean,\n\tmodelRuntime: ModelRuntime,\n\tsettingsManager: SettingsManager,\n): {\n\toptions: CreateAgentSessionOptions;\n\tcliThinkingFromModel: boolean;\n\tdiagnostics: AgentSessionRuntimeDiagnostic[];\n} {",
+      "after": "function buildSessionOptions(parsed, scopedModels, hasExistingSession, modelRuntime, settingsManager) {",
+      "count": 1
+    },
+    {
+      "before": "const options: CreateAgentSessionOptions = {};",
+      "after": "const options = {};",
+      "count": 1
+    },
+    {
+      "before": "const diagnostics: AgentSessionRuntimeDiagnostic[] = [];",
+      "after": "const diagnostics = [];",
+      "count": 1
+    },
+    {
+      "before": "function resolveCliPaths(cwd: string, paths: string[] | undefined): string[] | undefined {",
+      "after": "function resolveCliPaths(cwd, paths) {",
+      "count": 1
+    }
+  ],
+  "complete_runtime_body_exact": true,
+  "candidate_executed": false,
+  "native_execution": false
+}

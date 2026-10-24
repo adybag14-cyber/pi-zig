@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\original\\src\\extensions\\native_sdk_settings.zig",
+    "bytes": 42856,
+    "sha256": "BE24774B254246221CA948465457DCE8D149D578BFB27C544CA3299F5CA390FA"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings.zig",
+    "bytes": 34847,
+    "sha256": "17DB88DD58BC93AC4636024C38F3C3A33D78F5566B2999501069B0B858C9FA59"
+  },
+  "hunks": [
+    {
+      "before": "const c = engine_mod.c;\n",
+      "after": "const c = engine_mod.c;\nconst default_accessors = @import(\"native_sdk_settings_default_accessors.zig\");\n",
+      "occurrences": 1,
+      "before_offset_bytes": 268
+    },
+    {
+      "before": "    .{ .name = \"getTransport\", .path = \"transport\" },\n",
+      "after": "    .{ .name = \"getTransport\", .path = \"transport\" },\n    .{ .name = \"getSessionShareDestination\", .path = \"sessionShareDestination\", .mode = .special },\n",
+      "occurrences": 1,
+      "before_offset_bytes": 1973
+    },
+    {
+      "before": "    .{ .name = \"setTransport\", .path = \"transport\", .mode = .set },\n",
+      "after": "    .{ .name = \"setTransport\", .path = \"transport\", .mode = .set },\n    .{ .name = \"setSessionShareDestination\", .path = \"sessionShareDestination\", .mode = .set },\n",
+      "occurrences": 1,
+      "before_offset_bytes": 6897
+    },
+    {
+      "before": "pub fn install(engine: *engine_mod.Engine, prototype: c.JSValue) !void {\n    for (fields, 0..) |field, index| {\n        const value = try engine.checked(c.pi_js_function_magic(engine.context, callback, field.name, if (field.mode == .set) 1 else 0, @intCast(index)));\n",
+      "after": "pub fn install(engine: *engine_mod.Engine, prototype: c.JSValue) !void {\n    const imports = try default_accessors.acquire(engine);\n    defer engine.freeValue(imports);\n    for (fields, 0..) |field, index| {\n        const value = if (default_accessors.supports(field.name))\n            try default_accessors.method(engine, field.name, imports)\n        else try engine.checked(c.pi_js_function_magic(engine.context, callback, field.name, if (field.mode == .set) 1 else 0, @intCast(index)));\n",
+      "occurrences": 1,
+      "before_offset_bytes": 10640
+    },
+    {
+      "before": "fn defaults(engine: *engine_mod.Engine, data: c.JSValue) !c.JSValue {\n    const stored = try sdk.get(engine, data, \"accessorDefaults\");\n    if (c.JS_IsObject(stored)) return stored;\n    engine.freeValue(stored);\n    const value = try sdk.jsonObject(engine, @embedFile(\"../coding_agent/assets/SDK-SETTINGS-DEFAULTS-6fb2e78.json\"));\n    errdefer engine.freeValue(value);\n    try sdk.put(engine, data, \"accessorDefaults\", c.JS_DupValue(engine.context, value));\n    return value;\n}\n",
+      "after": "",
+      "occurrences": 1,
+      "before_offset_bytes": 13271
+    },
+    {
+      "before": "    const base = try defaults(engine, data);\n    defer engine.freeValue(base);\n    const default = if (field.path.len > 0) try pathValue(engine, base, field.path) else c.pi_js_undefined();\n    defer engine.freeValue(default);\n    if (field.mode == .normal or field.mode == .truthy) return c.JS_DupValue(engine.context, if (if (field.mode == .truthy) c.JS_ToBool(engine.context, raw) == 1 else !nullish(raw)) raw else default);\n    return special(engine, data, root, field, args, raw, default);\n",
+      "after": "    // Every default-bearing getter is installed by its genuine shared import\n    // owner. Unrelated accessors never read any fallback object.\n    if (field.mode == .normal or field.mode == .truthy) return error.ActualSettingsDefaultAccessorRequired;\n    return special(engine, data, root, field, args, raw);\n",
+      "occurrences": 1,
+      "before_offset_bytes": 27042
+    },
+    {
+      "before": "fn special(engine: *engine_mod.Engine, data: c.JSValue, root: c.JSValue, field: Field, args: []const c.JSValue, raw: c.JSValue, default: c.JSValue) !c.JSValue {",
+      "after": "fn special(engine: *engine_mod.Engine, data: c.JSValue, root: c.JSValue, field: Field, args: []const c.JSValue, raw: c.JSValue) !c.JSValue {",
+      "occurrences": 1,
+      "before_offset_bytes": 27354
+    },
+    {
+      "before": "    if (std.mem.eql(u8, name, \"getOutputPad\")) return c.JS_NewInt32(engine.context, if (c.JS_IsNumber(raw) and try number(engine, raw) == 0) 0 else 1);\n    if (std.mem.eql(u8, name, \"getImageWidthCells\") or std.mem.eql(u8, name, \"getFullscreenWheelScrollLines\")) {\n        if (!c.JS_IsNumber(raw)) return c.JS_DupValue(engine.context, default);\n        const n = try number(engine, raw);\n        if (!std.math.isFinite(n)) return c.JS_DupValue(engine.context, default);\n        return c.JS_NewFloat64(engine.context, @max(1, @min(if (std.mem.eql(u8, name, \"getImageWidthCells\")) std.math.inf(f64) else 100, @floor(n))));\n    }\n",
+      "after": "",
+      "occurrences": 1,
+      "before_offset_bytes": 30269
+    },
+    {
+      "before": "    if (std.mem.eql(u8, name, \"getClearOnShrink\") or std.mem.eql(u8, name, \"getShowHardwareCursor\")) {\n        if (if (std.mem.eql(u8, name, \"getClearOnShrink\")) !c.JS_IsUndefined(raw) else !nullish(raw)) return c.JS_DupValue(engine.context, raw);\n        const value = try env(engine, if (std.mem.eql(u8, name, \"getClearOnShrink\")) \"PI_CLEAR_ON_SHRINK\" else \"PI_HARDWARE_CURSOR\");\n",
+      "after": "    if (std.mem.eql(u8, name, \"getShowHardwareCursor\")) {\n        if (!nullish(raw)) return c.JS_DupValue(engine.context, raw);\n        const value = try env(engine, \"PI_HARDWARE_CURSOR\");\n",
+      "occurrences": 1,
+      "before_offset_bytes": 30269
+    },
+    {
+      "before": "    if (std.mem.eql(u8, name, \"getQuietStartup\")) return c.JS_DupValue(engine.context, if ((c.JS_IsBool(raw) and c.JS_ToBool(engine.context, raw) == 1) or try same(engine, raw, \"header\")) raw else default);\n    inline for (.{ .{ \"getCacheWarmingMode\", \"off\", \"streaming\", \"idle\" }, .{ \"getDefaultProjectTrust\", \"always\", \"never\", \"ask\" }, .{ \"getTuiMode\", \"regular\", \"fullscreen\", \"fullscreen\" }, .{ \"getFullscreenExitOutput\", \"resume-hint\", \"transcript\", \"transcript\" }, .{ \"getFullscreenScrollbar\", \"always\", \"hidden\", \"auto\" }, .{ \"getMermaidRenderingMode\", \"off\", \"final\", \"streaming\" } }) |rule| {\n        if (std.mem.eql(u8, name, rule[0])) return c.JS_DupValue(engine.context, if (try same(engine, raw, rule[1]) or try same(engine, raw, rule[2]) or try same(engine, raw, rule[3])) raw else default);\n    }\n    if (std.mem.eql(u8, name, \"getTreeFilterMode\")) {\n        inline for (.{ \"default\", \"no-tools\", \"user-only\", \"labeled-only\", \"all\" }) |mode| if (try same(engine, raw, mode)) return c.JS_DupValue(engine.context, raw);\n        return c.JS_DupValue(engine.context, default);\n    }\n    if (std.mem.eql(u8, name, \"getRetrySettings\") or std.mem.eql(u8, name, \"getBranchSummarySettings\") or std.mem.eql(u8, name, \"getProviderRetrySettings\")) {\n        const result = try sdk.object(engine);\n        errdefer engine.freeValue(result);\n        const keys: []const [:0]const u8 = if (std.mem.eql(u8, name, \"getRetrySettings\")) &.{ \"enabled\", \"maxRetries\", \"baseDelayMs\", \"maxAgentDelayMs\" } else if (std.mem.eql(u8, name, \"getProviderRetrySettings\")) &.{ \"timeoutMs\", \"maxRetries\", \"maxRetryDelayMs\" } else &.{ \"reserveTokens\", \"skipPrompt\" };\n        for (keys) |key| {\n            const value = if (c.JS_IsObject(raw)) try sdk.get(engine, raw, key) else c.pi_js_undefined();\n            defer engine.freeValue(value);\n            try sdk.put(engine, result, key, if (nullish(value)) if (c.JS_IsObject(default)) try sdk.get(engine, default, key) else c.pi_js_undefined() else c.JS_DupValue(engine.context, value));\n        }\n        return result;\n    }\n",
+      "after": "",
+      "occurrences": 1,
+      "before_offset_bytes": 31204
+    },
+    {
+      "before": "    if (std.mem.startsWith(u8, name, \"getCompaction\")) return compaction(engine, root, name, args);\n",
+      "after": "",
+      "occurrences": 1,
+      "before_offset_bytes": 32732
+    },
+    {
+      "before": "fn compaction(engine: *engine_mod.Engine, root: c.JSValue, name: []const u8, args: []const c.JSValue) !c.JSValue {\n    if (std.mem.eql(u8, name, \"getCompactionSettings\")) {\n        const result = try sdk.object(engine);\n        errdefer engine.freeValue(result);\n        const enabled = try pathValue(engine, root, \"compaction.enabled\");\n        defer engine.freeValue(enabled);\n        try sdk.put(engine, result, \"enabled\", if (nullish(enabled)) c.pi_js_bool(engine.context, 1) else c.JS_DupValue(engine.context, enabled));\n        try sdk.put(engine, result, \"reserveTokens\", try tokenSetting(engine, root, \"reserveTokens\", if (args.len > 0) args[0] else c.pi_js_undefined()));\n        try sdk.put(engine, result, \"keepRecentTokens\", try tokenSetting(engine, root, \"keepRecentTokens\", if (args.len > 0) args[0] else c.pi_js_undefined()));\n        return result;\n    }\n    if (std.mem.eql(u8, name, \"getCompactionTokenSetting\")) {\n        const key = try engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined());\n        defer engine.gpa.free(key);\n        return tokenSetting(engine, root, key, if (args.len > 1) args[1] else c.pi_js_undefined());\n    }\n    return tokenSetting(engine, root, if (std.mem.eql(u8, name, \"getCompactionReserveTokens\")) \"reserveTokens\" else \"keepRecentTokens\", if (args.len > 0) args[0] else c.pi_js_undefined());\n}\nfn tokenFailure(engine: *engine_mod.Engine, label: []const u8, value: c.JSValue, object: bool) !c.JSValue {\n    const raw = try engine.toString(value);\n    defer engine.gpa.free(raw);\n    const message = try std.fmt.allocPrint(engine.gpa, \"Invalid {s} setting: {s}. Expected {s}.\", .{ label, raw, if (object) \"an object\" else \"a non-negative safe integer\" });\n    defer engine.gpa.free(message);\n    const failure = try engine.checked(c.JS_NewError(engine.context));\n    defer engine.freeValue(failure);\n    try sdk.put(engine, failure, \"message\", try sdk.text(engine, message));\n    return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, failure)));\n}\nfn tokenSetting(engine: *engine_mod.Engine, root: c.JSValue, key: []const u8, model: c.JSValue) !c.JSValue {\n    const path = try std.fmt.allocPrint(engine.gpa, \"compaction.{s}\", .{key});\n    defer engine.gpa.free(path);\n    const ordinary = try pathValue(engine, root, path);\n    defer engine.freeValue(ordinary);\n    if (!c.JS_IsUndefined(ordinary)) {\n        const n = try number(engine, ordinary);\n        if (!c.JS_IsNumber(ordinary) or !std.math.isFinite(n) or @floor(n) != n or n < 0 or n > 9007199254740991) return tokenFailure(engine, path, ordinary, false);\n    }\n    var override = c.pi_js_undefined();\n    defer engine.freeValue(override);\n    if (c.JS_ToBool(engine.context, model) == 1) {\n        const provider = try sdk.get(engine, model, \"provider\");\n        defer engine.freeValue(provider);\n        const id = try sdk.get(engine, model, \"id\");\n        defer engine.freeValue(id);\n        const p = try engine.toString(provider);\n        defer engine.gpa.free(p);\n        const m = try engine.toString(id);\n        defer engine.gpa.free(m);\n        const model_key = try std.fmt.allocPrintSentinel(engine.gpa, \"{s}/{s}\", .{ p, m }, 0);\n        defer engine.gpa.free(model_key);\n        const overrides = try pathValue(engine, root, \"compaction.modelOverrides\");\n        defer engine.freeValue(overrides);\n        const entry = if (!nullish(overrides)) try sdk.get(engine, overrides, model_key) else c.pi_js_undefined();\n        defer engine.freeValue(entry);\n        if (!c.JS_IsUndefined(entry)) {\n            const label = try std.fmt.allocPrint(engine.gpa, \"compaction.modelOverrides[\\\"{s}\\\"]\", .{model_key});\n            defer engine.gpa.free(label);\n            if (!c.JS_IsObject(entry) or c.JS_IsArray(entry)) return tokenFailure(engine, label, entry, true);\n            const terminated = try engine.gpa.dupeZ(u8, key);\n            defer engine.gpa.free(terminated);\n            override = try sdk.get(engine, entry, terminated);\n            if (!c.JS_IsUndefined(override)) {\n                const n = try number(engine, override);\n                if (!c.JS_IsNumber(override) or !std.math.isFinite(n) or @floor(n) != n or n < 0 or n > 9007199254740991) {\n                    const full = try std.fmt.allocPrint(engine.gpa, \"{s}.{s}\", .{ label, key });\n                    defer engine.gpa.free(full);\n                    return tokenFailure(engine, full, override, false);\n                }\n            }\n        }\n    }\n    if (!nullish(override)) return c.JS_DupValue(engine.context, override);\n    if (!nullish(ordinary)) return c.JS_DupValue(engine.context, ordinary);\n    return if (std.mem.eql(u8, key, \"reserveTokens\")) c.JS_NewInt32(engine.context, 16384) else if (std.mem.eql(u8, key, \"keepRecentTokens\")) c.JS_NewInt32(engine.context, 20000) else c.pi_js_undefined();\n}\n",
+      "after": "",
+      "occurrences": 1,
+      "before_offset_bytes": 32871
+    }
+  ],
+  "full_raw_inverse": true,
+  "retained_legacy_defaults_asset": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\original\\src\\coding_agent\\assets\\SDK-SETTINGS-DEFAULTS-6fb2e78.json",
+    "bytes": 1141,
+    "sha256": "FB56CCA4C432A8A2A301167E3B9AEDBB9E6ED03E5ABA4939A6DFF58671F55EB6"
+  },
+  "unrelated_default_free_accessors_keep_existing_implementation": true,
+  "Main_mutated": false,
+  "native_execution": false
+}

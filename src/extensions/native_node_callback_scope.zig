@@ -428,6 +428,19 @@ pub const Environment = struct {
         }
         return c.pi_js_undefined();
     }
+    /// Owned acquisition of the genuine Environment execution-resource array.
+    /// Native and JS stack owners share this exact array; no snapshot is made.
+    pub fn acquireExecutionAsyncResources(self: *Environment) !c.JSValue {
+        const engine = try self.requireEngine();
+        _ = self.retain();
+        defer self.release();
+        return a.expression(engine, acquireResourcesBody, .{self});
+    }
+    fn acquireResourcesBody(s: *LocalScope, self: *Environment) !c.JSValue {
+        try s.pending();
+        _ = try self.requireEngine();
+        return a.duplicate(s.engine, try self.jsResources(s));
+    }
     fn jsResources(self: *Environment, s: *LocalScope) !c.JSValue {
         if (self.js_resources) |value| return value;
         const value = try a.array(s);

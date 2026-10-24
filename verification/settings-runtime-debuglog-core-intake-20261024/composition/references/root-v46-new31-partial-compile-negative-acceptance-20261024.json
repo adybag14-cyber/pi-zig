@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "status": "root_accepted_original_v46_new31_partial_compile_negative",
+  "candidate_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "original_job": "job-1792880072539-c23d6335-0fa",
+  "independent_negative_auditor_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v46-new31-partial-compile-negative-auditor-source-acceptance-20261024.json",
+    "bytes": 4390,
+    "sha256": "4C6F414C97526831F1C87F4DE1B9F9C75E381460EF714E8371B74C68994262ED"
+  },
+  "independent_audit_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v46-new31-partial-compile-negative-audit-config-20261024.json",
+    "bytes": 2748,
+    "sha256": "6E9E84A22FDDE97D5B43926262FF15806B33199C204D79DC1A1D52FCDEE5956E"
+  },
+  "independent_audit_terminal_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v46-new31-control-20261024-221411\\independent-negative-audit-job-status.json",
+    "bytes": 1438,
+    "sha256": "EEE1084D18FAE2214A3723A68771FACD924F54396D4FC8828323A95FCFEF7B55"
+  },
+  "independent_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v46-new31-control-20261024-221411\\independent-partial-compile-negative-closure.json",
+    "bytes": 198051,
+    "sha256": "24FF64D8F9EB0BE8E4B666A5B88C218B0227F99F8CAB94A9DE37E9653011B5AE"
+  },
+  "Root_review": {
+    "exact_source_audit_job_succeeded": true,
+    "complete_whole_batch_bookends_identical": true,
+    "current_complete_inventories_and39241_distinct_files_rehashed": true,
+    "certificate_reference_pin_versions_rehashed_again": 457,
+    "all17_native_and_three_controller_instances_independently_absent": true,
+    "current_global_native_process_inventory_empty": true,
+    "original_receipts_and_negative_decisions_preserved": true
+  },
+  "outcome": {
+    "granted_groups": 31,
+    "attempted_groups": 9,
+    "unstarted_groups": 22,
+    "partial_metadata_counts": [
+      14,
+      7,
+      21,
+      9,
+      10,
+      12,
+      9,
+      19
+    ],
+    "actual_partial_metadata": 101,
+    "full_metadata_acceptance": false,
+    "actual_full_metadata_count": null,
+    "actual_tests_started": 0,
+    "all31_groups_unqualified": true
+  },
+  "diagnosis": "First eight selected groups built and queried; group nine has the exact Writev Fixture.complete request local shadow. No group in this partial batch may enter RuntimeOnly. The previous WriteString fixture corrections compiled and returned the original19 test names.",
+  "accepted_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-writev-fixture-correction-source-acceptance-20261024.json",
+    "bytes": 3354,
+    "sha256": "801AAEF7E592EFC72B104E3034189B8B3F34EB271F5D6531F07B113A7603FED4"
+  },
+  "source_mutation_hold_released": true,
+  "source_mutation_scope": "Root may perform the separately reviewed exact next source-intake composition. No old grant is reusable and no new native launch is authorized by this negative acceptance.",
+  "metadata_acceptance": false,
+  "runtime_authority": false,
+  "native_execution_authorized": false,
+  "qualification": false,
+  "created_utc": "2026-10-24T22:36:27.904662+00:00"
+}

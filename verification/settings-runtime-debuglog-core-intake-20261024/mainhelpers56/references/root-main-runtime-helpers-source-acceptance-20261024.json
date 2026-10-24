@@ -1,0 +1,204 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "root_accepted_complete_original_main_runtime_helpers_source",
+  "candidate_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\source-intake.json",
+    "bytes": 54143,
+    "sha256": "639C33CCE0283421E2C59B5D7E729A0E4BF304458CBC8350F758CBBC1F85871B"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\sdk-main-runtime-helpers-independent-source-peer-20261024.json",
+    "bytes": 7162,
+    "sha256": "0EFE538E547985B31C403479FA4CFE1B60AEF2A2D7C4E95D5E5C87C887B10DCC"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\source-diff.patch",
+    "bytes": 84957,
+    "sha256": "7A909E710DF5DAC3D1B605EF3247C54BE515C2338053B75A1034843223A0A1EF"
+  },
+  "changes": [
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\original\\build.zig",
+        "bytes": 556915,
+        "sha256": "53162A0B9E7F297B245EE10D622AC9090DE94920B5D2057BD2AC4881A191679D"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 557953,
+        "sha256": "763ED27D3708A095B2E304B3D7B8BB87AB44FC467C20505A274CCD28EB7CB6F6"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/sdk-main-runtime-helpers-4954-source.mjs",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-main-runtime-helpers-4954-source.mjs",
+        "bytes": 3474,
+        "sha256": "483A8207BD792B7164020907C44453B2BC4D36D3BAE89151C28FBA9F2CC7F700"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/sdk-main-runtime-helpers-observer.mjs",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-main-runtime-helpers-observer.mjs",
+        "bytes": 21103,
+        "sha256": "A1B553832E25F0F183151CE41D8548DA9A8995867B9400FA31C0600A8C1A10F3"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_sdk_application_owner.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\original\\src\\extensions\\native_sdk_application_owner.zig",
+        "bytes": 15739,
+        "sha256": "57ED8EACC4B8FB186C71FFD30F4280F4B6F7B5C120688F23F35F8F8FA684AB61"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_application_owner.zig",
+        "bytes": 16112,
+        "sha256": "8C2C8AF755388255786BC63390A9958DDB7BD6D548ECE7D5F323E305564617A8"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\original\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+        "bytes": 20488,
+        "sha256": "646F16946C40322716877B2A3A4C81F7A5AE8063F83DE312D99598FF751F8417"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+        "bytes": 22809,
+        "sha256": "A7471A8A1C3961385A36AB275C16DDADEA7804277C4F8F5C6B664FDE2B456314"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_sdk_main_runtime_helpers.zig",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_main_runtime_helpers.zig",
+        "bytes": 18497,
+        "sha256": "A470F2E67CE9FDB9F41AF0FEB4EB928D5CD4CB982CF983E997605136042C2DBA"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_sdk_main_runtime_helpers_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\projected\\src\\native_sdk_main_runtime_helpers_test.zig",
+        "bytes": 33784,
+        "sha256": "CC896E0EF252EB26232B5C58C47C1ADEF587ACDF3789C8697DDFD0D8A343DC19"
+      }
+    }
+  ],
+  "source_inverses": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\main-helper-owner-finite-inverses.json",
+    "bytes": 5311,
+    "sha256": "117188F1048CADB50FC45D9532DD2DD4448005AB8341BABCD600DB63F965F46D"
+  },
+  "original_fixture_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\original-main-helpers-fixture-inverses.json",
+    "bytes": 2168,
+    "sha256": "CC771C6957C72EC9690E24DFC7CA833AB41BD3ECDF950860A5A14B3722DCDAE5"
+  },
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1038,
+    "sha256": "DAD2694D136A2ACADAE5B1CBF52AEA5228612A40922D3A9510DD5995856796A2"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\build-insertion-inverse.json",
+    "bytes": 1250,
+    "sha256": "8F5920A6FED1877C7704C555585491BEC4A7B6EAF69A0512F83F1A4F683430AC"
+  },
+  "prerequisites": {
+    "settings43_entry": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\source-intake.json",
+      "bytes": 32986,
+      "sha256": "B9F4E03AB59517E440DE5741E593CA06E2B3FC43194BFD5E593CD39254FF9FB6"
+    },
+    "settings43_Root_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-settings-shared-defaults-source-acceptance-20261024.json",
+      "bytes": 10359,
+      "sha256": "08678EF828C0B023CD609D61AD370F3BFC6E576B3514C49A5025CACEC02314D6"
+    },
+    "model_map6_entry": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\source-intake.json",
+      "bytes": 13361,
+      "sha256": "48E6A2728F08145AF31A5FD042573D64E9FF781992CEC3D92E2A7FDF61ED9A6B"
+    },
+    "model_map6_independent_source_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-controls-review\\sdk-default-model-map-independent-source-peer-20261024.json",
+      "bytes": 7156,
+      "sha256": "51D2589A3ECD65CFFBB1FDEC8424D2430C404F05AB2D4FFB1E6AC0AA616B3750"
+    },
+    "selected_original_map_source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_factory_model.zig",
+      "bytes": 6807,
+      "sha256": "CE13D704B9C2DE36989EBD681361232E68784B4FB72F79767D28BD0048F37B02"
+    },
+    "selected_settings_owner": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings.zig",
+      "bytes": 34847,
+      "sha256": "17DB88DD58BC93AC4636024C38F3C3A33D78F5566B2999501069B0B858C9FA59"
+    },
+    "selected_settings_accessors": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings_default_accessors.zig",
+      "bytes": 26263,
+      "sha256": "1B6AEF1DA6DA98AD3DAA136C95A660EDF190A424A8804FDCB05876E346221286"
+    }
+  },
+  "model_map_Root_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-default-model-map-source-acceptance-20261024.json",
+    "bytes": 7536,
+    "sha256": "75BDCC65D992BF7DF32A032AA2CE6C8BF0477D59846553C45B293704436F5C80"
+  },
+  "verification": {
+    "unique_pinned_versions": 80,
+    "three_owner_hunks_complete_raw_inverse": true,
+    "four_original_type_erasures_exact_full_inverse": true,
+    "all_seven_patch_targets_reconstructed": true,
+    "imports_and_embeds": 72,
+    "standard_packages": 4,
+    "actual_physical_Auth_fixture_suffix_bytes": 12480,
+    "build_insertion_bytes": 1038,
+    "default_artifacts": [
+      "test.exe",
+      "test.pdb"
+    ],
+    "declared_controls": 56,
+    "git_apply_check_exit": 0,
+    "Main_clean": true
+  },
+  "Root_semantic_review": [
+    "Read full18497-byte native owner, full literal3474-byte original, all Auth/Application finite hunks with existing lifecycle context, all56 controls and complete21103-byte observer.",
+    "Actual runtime/platform/path identities retained before guest carrier Gets; no self dereference after potentially retiring guest Get.",
+    "Actual named model/CLI/path imports, live Boolean/options/array methods and repeated property Gets preserve original behavior; savedModel and cwd capture real scoped lexical cells and detach on normal or abrupt exit.",
+    "Array spread uses existing actual OP_append equivalent; pending/fatal/cancellation results retain original ownership retirement boundaries.",
+    "Private complete pair cache, cold reentry guard and authenticated assembly checked. No public Main namespace or runtimeFactory is fabricated."
+  ],
+  "scope_limits": [
+    "Root source acceptance and exact source intake of this packet together with explicit Settings43 and model-map6 prerequisites.",
+    "Compose the install-only build insertion with all other pending additions; do not replace a newer full build projection.",
+    "Future compiler/metadata/runtime qualification under Root exclusive controls; default artifact names are test.exe/test.pdb.",
+    "Complete original createProjectTrustContext, resolveModelScope warning wrapper and cwd/trust-aware createRuntime closure over actual providers.",
+    "Root settings-diagnostics is independent; no implementation duplicated here.",
+    "Existing resolver thinking input remains a trusted native-caller contract; this assembly supplies only the genuine retained CLI binding."
+  ],
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "actual_metadata_count": null,
+  "created_utc": "2026-10-24T22:37:32.537836+00:00"
+}

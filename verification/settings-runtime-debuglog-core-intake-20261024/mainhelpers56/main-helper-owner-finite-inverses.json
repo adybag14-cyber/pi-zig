@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "target": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "original": {
+        "bytes": 20488,
+        "sha256": "646F16946C40322716877B2A3A4C81F7A5AE8063F83DE312D99598FF751F8417"
+      },
+      "projected": {
+        "bytes": 22809,
+        "sha256": "A7471A8A1C3961385A36AB275C16DDADEA7804277C4F8F5C6B664FDE2B456314"
+      },
+      "hunks": [
+        {
+          "before": "    /// Actual Source AuthStorage.inMemory(), without a File backend substitute\n",
+          "after": "    /// Complete private original Main option/path helpers using the same\n    /// authenticated native provider graph. The runtimeFactory remains separate.\n    pub fn createMainRuntimeHelpers(self: *Owner) !c.JSValue {\n        return mainRuntimeHelpersEntry(self);\n    }\n    /// Actual Source AuthStorage.inMemory(), without a File backend substitute\n",
+          "before_count": 1,
+          "input": {
+            "bytes": 20488,
+            "sha256": "646F16946C40322716877B2A3A4C81F7A5AE8063F83DE312D99598FF751F8417"
+          },
+          "output": {
+            "bytes": 20759,
+            "sha256": "653AAE9CA0956DA66435A6F97EC3CA71E10260328B63DE4B1F132A3F655907D2"
+          }
+        },
+        {
+          "before": "fn valueEntry(self: *Owner, in_memory: bool) !c.JSValue {\n",
+          "after": "fn mainRuntimeHelpersEntry(self: *Owner) !c.JSValue {\n    const engine = self.engine;\n    engine.native_exception_diagnostics_suppressed += 1;\n    defer engine.native_exception_diagnostics_suppressed -= 1;\n    try self.check();\n    var invocation: em.Engine.NativeInvocation = .{};\n    engine.enterNativeInvocation(&invocation);\n    var scope: Scope = .{ .engine = engine };\n    const value = completion.finishValue(&scope, mainRuntimeHelpersBody(self, &scope)) catch |err|\n        return engine.checked(engine.leaveNativeInvocation(&invocation, @import(\"native_sdk.zig\").fail(engine, err)));\n    return engine.checked(engine.leaveNativeInvocation(&invocation, value));\n}\nfn mainRuntimeHelpersBody(self: *Owner, scope: *Scope) !c.JSValue {\n    const engine = scope.engine;\n    const o: Ops = .{ .scope = scope };\n    // Root all expected identities before carrier Gets can retire this handle.\n    const imports = try o.own(c.JS_DupValue(engine.context, self.runtime_imports));\n    const expected_imports = try o.own(c.JS_DupValue(engine.context,\n        try installed(engine, \"pi-native:sdk-runtime-imports-native-zig\")));\n    const expected_platform = try o.own(c.JS_DupValue(engine.context,\n        try installed(engine, \"pi-native:actual-sdk-filesystem-platform\")));\n    const expected_paths = try o.own(c.JS_DupValue(engine.context,\n        try installed(engine, \"pi-private:actual-sdk-path-utilities\")));\n    if (!scope.equal(imports, expected_imports)) return error.ActualMainRuntimeNamespaceChanged;\n    const platform = try o.get(imports, \"platform\");\n    if (!scope.equal(platform, expected_platform)) return error.ActualMainPlatformNamespaceChanged;\n    const paths = try o.get(platform, \"pathUtilities\");\n    if (!scope.equal(paths, expected_paths)) return error.ActualMainPathUtilitiesChanged;\n    // No self access after the first guest Get. Helpers capture named members\n    // of the actual imported owners once, preserving legitimate member changes.\n    return @import(\"native_sdk_main_runtime_helpers.zig\").create(engine, paths);\n}\n\nfn valueEntry(self: *Owner, in_memory: bool) !c.JSValue {\n",
+          "before_count": 1,
+          "input": {
+            "bytes": 20759,
+            "sha256": "653AAE9CA0956DA66435A6F97EC3CA71E10260328B63DE4B1F132A3F655907D2"
+          },
+          "output": {
+            "bytes": 22809,
+            "sha256": "A7471A8A1C3961385A36AB275C16DDADEA7804277C4F8F5C6B664FDE2B456314"
+          }
+        }
+      ],
+      "exact_inverse": true
+    },
+    {
+      "target": "src/extensions/native_sdk_application_owner.zig",
+      "original": {
+        "bytes": 15739,
+        "sha256": "57ED8EACC4B8FB186C71FFD30F4280F4B6F7B5C120688F23F35F8F8FA684AB61"
+      },
+      "projected": {
+        "bytes": 16112,
+        "sha256": "8C2C8AF755388255786BC63390A9958DDB7BD6D548ECE7D5F323E305564617A8"
+      },
+      "hunks": [
+        {
+          "before": "    /// Explicit Source mode transitions. Call only at the actual noninteractive\n",
+          "after": "    /// Genuine original Main options and path helpers over the retained Auth\n    /// provider graph; no runtimeFactory or complete Main namespace is fabricated.\n    pub fn createMainRuntimeHelpers(self: *Owner) !c.JSValue {\n        try self.check();\n        return if (self.auth) |*value| value.createMainRuntimeHelpers() else error.ActualSdkApplicationAuthRetired;\n    }\n    /// Explicit Source mode transitions. Call only at the actual noninteractive\n",
+          "before_count": 1,
+          "input": {
+            "bytes": 15739,
+            "sha256": "57ED8EACC4B8FB186C71FFD30F4280F4B6F7B5C120688F23F35F8F8FA684AB61"
+          },
+          "output": {
+            "bytes": 16112,
+            "sha256": "8C2C8AF755388255786BC63390A9958DDB7BD6D548ECE7D5F323E305564617A8"
+          }
+        }
+      ],
+      "exact_inverse": true
+    }
+  ],
+  "candidate_executed": false,
+  "native_execution": false
+}

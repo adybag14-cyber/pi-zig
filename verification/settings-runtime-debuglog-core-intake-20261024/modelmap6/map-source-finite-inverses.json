@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\original\\src\\extensions\\native_sdk_factory_model.zig",
+    "bytes": 6718,
+    "sha256": "C5318978B99C8B0A008A719ED18D77DD756832CB9B794D136B39D1997851E803"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_factory_model.zig",
+    "bytes": 6807,
+    "sha256": "CE13D704B9C2DE36989EBD681361232E68784B4FB72F79767D28BD0048F37B02"
+  },
+  "complete_map_comparison": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\model-defaults-authority-differences.json",
+    "bytes": 17492,
+    "sha256": "21931464C2E9CE5BE6CC5DF4D7B9173C01EA639186B403232DDDE66FC5EE40C0"
+  },
+  "hunks": [
+    {
+      "before": "//! Provider defaults follow actual model-resolver.ts at c268154c.\n",
+      "after": "//! Shared provider defaults follow original model-resolver.ts at 4954d76.\n//! The prior c268 map and full owner remain preserved in the source successor proof.\n",
+      "offset_bytes": 77
+    },
+    {
+      "before": "    .{ \"nvidia\", \"nvidia/nemotron-3.5-super-vl-120b-a12b\" },\n",
+      "after": "    .{ \"nvidia\", \"nvidia/nemotron-3-ultra-550b-a55b\" },\n",
+      "offset_bytes": 873
+    },
+    {
+      "before": "    .{ \"xiaomi\", \"mimo-v2.6-pro\" },\n",
+      "after": "    .{ \"xiaomi\", \"mimo-v2.5-pro\" },\n",
+      "offset_bytes": 2175
+    },
+    {
+      "before": "    .{ \"xiaomi-token-plan-cn\", \"mimo-v2.6-pro\" },\n",
+      "after": "    .{ \"xiaomi-token-plan-cn\", \"mimo-v2.5-pro\" },\n",
+      "offset_bytes": 2211
+    },
+    {
+      "before": "    .{ \"xiaomi-token-plan-ams\", \"mimo-v2.6-pro\" },\n",
+      "after": "    .{ \"xiaomi-token-plan-ams\", \"mimo-v2.5-pro\" },\n",
+      "offset_bytes": 2261
+    },
+    {
+      "before": "    .{ \"xiaomi-token-plan-sgp\", \"mimo-v2.6-pro\" },\n",
+      "after": "    .{ \"xiaomi-token-plan-sgp\", \"mimo-v2.5-pro\" },\n",
+      "offset_bytes": 2312
+    }
+  ],
+  "five_value_deltas": [
+    {
+      "provider": "nvidia",
+      "accepted_c268": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "original_4954": "nvidia/nemotron-3-ultra-550b-a55b",
+      "kind": "replace"
+    },
+    {
+      "provider": "xiaomi",
+      "accepted_c268": "mimo-v2.6-pro",
+      "original_4954": "mimo-v2.5-pro",
+      "kind": "replace"
+    },
+    {
+      "provider": "xiaomi-token-plan-cn",
+      "accepted_c268": "mimo-v2.6-pro",
+      "original_4954": "mimo-v2.5-pro",
+      "kind": "replace"
+    },
+    {
+      "provider": "xiaomi-token-plan-ams",
+      "accepted_c268": "mimo-v2.6-pro",
+      "original_4954": "mimo-v2.5-pro",
+      "kind": "replace"
+    },
+    {
+      "provider": "xiaomi-token-plan-sgp",
+      "accepted_c268": "mimo-v2.6-pro",
+      "original_4954": "mimo-v2.5-pro",
+      "kind": "replace"
+    }
+  ],
+  "full_raw_inverse": true,
+  "all_other_native_bodies_byte_exact": true,
+  "fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-default-model-map-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-default-model-map-4954-source.mjs",
+    "bytes": 1497,
+    "sha256": "D92A9455694C318ECF639B49977589FFB4F6A1C6B4352FDCE6B4D70006C9782C"
+  },
+  "original_map": "export const defaultModelPerProvider: Partial<Record<KnownProvider, string>> = {\n\t\"amazon-bedrock\": \"us.anthropic.claude-opus-4-6-v1\",\n\t\"ant-ling\": \"Ring-2.6-1T\",\n\tanthropic: \"claude-opus-4-8\",\n\topenai: \"gpt-5.5\",\n\tazure: \"gpt-5.4\",\n\t\"openai-codex\": \"gpt-6.1-sol\",\n\tradius: \"balanced\",\n\tnvidia: \"nvidia/nemotron-3-ultra-550b-a55b\",\n\tdeepseek: \"deepseek-v4-pro\",\n\tgoogle: \"gemini-3.1-pro-preview\",\n\t\"google-vertex\": \"gemini-3.1-pro-preview\",\n\t\"github-copilot\": \"gpt-5.4\",\n\topenrouter: \"moonshotai/kimi-k2.6\",\n\t\"vercel-ai-gateway\": \"zai/glm-5.1\",\n\txai: \"grok-4.7\",\n\tgroq: \"openai/gpt-oss-120b\",\n\tcerebras: \"gpt-oss-120b\",\n\tzai: \"glm-5.3\",\n\t\"zai-coding-cn\": \"glm-5.3\",\n\tmistral: \"devstral-medium-latest\",\n\tminimax: \"MiniMax-M2.7\",\n\t\"minimax-cn\": \"MiniMax-M2.7\",\n\tmoonshotai: \"kimi-k2.6\",\n\t\"moonshotai-cn\": \"kimi-k2.6\",\n\thuggingface: \"moonshotai/Kimi-K2.6\",\n\tfireworks: \"accounts/fireworks/models/kimi-k3\",\n\ttogether: \"moonshotai/Kimi-K3\",\n\tbaseten: \"zai-org/GLM-5.2\",\n\topencode: \"kimi-k2.6\",\n\t\"opencode-go\": \"kimi-k3\",\n\t\"kimi-coding\": \"kimi-for-coding\",\n\tmeta: \"muse-spark-1.3\",\n\t\"cloudflare-workers-ai\": \"@cf/moonshotai/kimi-k2.6\",\n\t\"cloudflare-ai-gateway\": \"workers-ai/@cf/moonshotai/kimi-k2.6\",\n\t\"qwen-token-plan\": \"qwen3.7-max\",\n\t\"qwen-token-plan-cn\": \"qwen3.7-max\",\n\t\"qwen-token-plan-individual\": \"qwen3.8-max\",\n\txiaomi: \"mimo-v2.5-pro\",\n\t\"xiaomi-token-plan-cn\": \"mimo-v2.5-pro\",\n\t\"xiaomi-token-plan-ams\": \"mimo-v2.5-pro\",\n\t\"xiaomi-token-plan-sgp\": \"mimo-v2.5-pro\",\n};",
+  "original_header": "export const defaultModelPerProvider: Partial<Record<KnownProvider, string>> = {\n",
+  "runtime_header": "const defaultModelPerProvider = {\n",
+  "fixture_runtime_literal_byte_exact": true,
+  "native_execution": false
+}

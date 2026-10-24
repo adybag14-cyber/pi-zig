@@ -1,0 +1,13 @@
+static int js_is_regexp(JSContext *ctx, JSValueConst obj)
+{
+    JSValue m;
+
+    if (!JS_IsObject(obj))
+        return false;
+    m = JS_GetProperty(ctx, obj, JS_ATOM_Symbol_match);
+    if (JS_IsException(m))
+        return -1;
+    if (!JS_IsUndefined(m))
+        return JS_ToBoolFree(ctx, m);
+    return js_get_regexp(ctx, obj, false) != NULL;
+}

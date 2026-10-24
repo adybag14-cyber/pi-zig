@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "selected_target_count": 6,
+  "exact_patch_reconstructed_targets": [
+    "src/extensions/native_node_callback_scope.zig",
+    "src/extensions/native_node_async_hooks_stack.zig",
+    "src/native_node_async_hooks_stack_test_support.zig",
+    "src/native_node_async_hooks_stack_test.zig",
+    "durable/fixtures/native-node-async-hooks-stack-original.js",
+    "build.zig"
+  ],
+  "complete_environment_insert_inverse": true,
+  "environment_added_bytes": 623,
+  "complete_build_insert_inverse": true,
+  "build_added_bytes": 1219,
+  "selected_original_body_count": 13,
+  "exact_original_body_extraction": true,
+  "direct_import_occurrences": 16,
+  "standard_package_imports": 4,
+  "embed_occurrences": 1,
+  "all_relative_paths_resolved": true,
+  "source_declared_controls": 34,
+  "unique_filter_names": true,
+  "git_apply_check_exit": 0,
+  "git_apply_check_stderr": "",
+  "manual_source_review": [
+    "complete selected original JS functions",
+    "complete new owner and 34 controls",
+    "actual Environment method signatures and existing Scope/owned boundaries",
+    "original async_wrap native callbacks and shared view registration"
+  ],
+  "Zig_syntax_validated": false,
+  "native_execution": false,
+  "candidate_executed": false,
+  "Main_mutated": false
+}

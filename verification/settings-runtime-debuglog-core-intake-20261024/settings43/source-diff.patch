@@ -1,0 +1,1606 @@
+diff --git a/src/extensions/native_sdk_settings_default_accessors.zig b/src/extensions/native_sdk_settings_default_accessors.zig
+new file mode 100644
+--- /dev/null
++++ b/src/extensions/native_sdk_settings_default_accessors.zig
+@@ -0,0 +1,429 @@
++//! Original SettingsManager default-bearing accessors over the one genuine
++//! shared SETTINGS_DEFAULTS import. No per-instance parser or eager fallback.
++const std = @import("std");
++const h = @import("native_sdk_session_locals.zig");
++const v = h.v;
++const c = h.c;
++const Engine = h.Engine;
++const Scope = h.Scope;
++const sync = @import("native_sync_arguments.zig");
++const Frame = @import("native_public_lexical_frame.zig").Frame(enum {
++    value, valid, compaction, ordinary, model_key, entry, override,
++});
++const sdk = @import("native_sdk.zig");
++const cache_key = "pi-private:actual-sdk-settings-accessor-imports";
++const Creating = struct { engine: *Engine, previous: ?*Creating };
++threadlocal var creating: ?*Creating = null;
++
++pub const Kind = enum {
++    getSteeringMode, getFollowUpMode, getTransport, getSessionShareDestination,
++    getCompactionEnabled, getCompactionTokenSetting, getCompactionReserveTokens,
++    getCompactionKeepRecentTokens, getCompactionSettings,
++    getBranchSummarySettings, getBranchSummarySkipPrompt, getRetryEnabled,
++    getRetrySettings, getCacheWarmingMode, getProviderRetrySettings,
++    getHideThinkingBlock, getShowCacheMissNotices, getQuietStartup,
++    getDefaultProjectTrust, getCollapseChangelog, getEnableInstallTelemetry,
++    getEnableAnalytics, getEnableSkillCommands, getShowImages, getImageWidthCells,
++    getClearOnShrink, getShowTerminalProgress, getTuiMode, getFullscreenExitOutput,
++    getFullscreenScrollbar, getFullscreenCopyOnSelect, getFullscreenWheelScrollLines,
++    getImageAutoResize, getBlockImages, getDoubleEscapeAction, getTreeFilterMode,
++    getEditorPaddingX, getOutputPad, getAutocompleteMaxVisible,
++    getCodeBlockIndent, getMermaidRenderingMode,
++};
++
++/// Actual settings-manager module evaluation: the mutable exported mode array
++/// is created first, then the two private compaction defaults are read once.
++/// The original shared defaults object remains live for every later fallback.
++pub fn acquire(engine: *Engine) !c.JSValue {
++    try engine.checkNativeEntry();
++    if (engine.native_module_values.get(cache_key)) |cached| return h.duplicate(engine, cached);
++    var cursor = creating;
++    while (cursor) |current| : (cursor = current.previous)
++        if (current.engine == engine) return error.ActualSettingsAccessorImportsCreationReentry;
++    var entry: Creating = .{ .engine = engine, .previous = creating };
++    creating = &entry; defer creating = entry.previous;
++    const candidate = try h.expression(engine, importsBody, .{});
++    engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1) catch |err| {
++        var selected = v.owned.Completion.initValue(engine, @as(anyerror!c.JSValue, err));
++        selected.release(candidate); return selected.finishValue();
++    };
++    engine.native_module_values.putAssumeCapacity(cache_key, candidate);
++    return h.duplicate(engine, candidate);
++}
++fn importsBody(s: *Scope) !c.JSValue {
++    const defaults = try v.own(s, try @import("native_sdk_settings_defaults.zig").create(s.engine));
++    const modes = try v.array(s);
++    inline for (.{ "off", "streaming", "idle" }, 0..) |mode, index|
++        try v.index(s, modes, @intCast(index), try v.text(s, mode));
++    const tokens = try v.object(s);
++    try v.put(s, tokens, "reserveTokens", try v.own(s, try h.nested(s.engine, defaults, "compaction", "reserveTokens")));
++    try v.put(s, tokens, "keepRecentTokens", try v.own(s, try h.nested(s.engine, defaults, "compaction", "keepRecentTokens")));
++    const result = try v.stateObject(s);
++    try v.put(s, result, "defaults", defaults);
++    try v.put(s, result, "compactionDefaults", tokens);
++    try v.put(s, result, "cacheWarmingModes", modes);
++    return v.duplicate(s, result);
++}
++/// The actual retained export value for a later complete settings-manager module
++/// publisher. This does not publish a stand-in or partial module namespace.
++pub fn cacheWarmingModes(engine: *Engine) !c.JSValue {
++    const imports = try acquire(engine);
++    var s: Scope = .{ .engine = engine };
++    return v.owned.finishValue(&s, cacheModesBody(&s, imports));
++}
++fn cacheModesBody(s: *Scope, incoming: c.JSValue) !c.JSValue {
++    const imports = try v.own(s, incoming);
++    return v.duplicate(s, try v.get(s, imports, "cacheWarmingModes"));
++}
++pub fn supports(name: []const u8) bool {
++    return std.meta.stringToEnum(Kind, name) != null;
++}
++pub fn method(engine: *Engine, name: []const u8, imports: c.JSValue) !c.JSValue {
++    inline for (std.meta.tags(Kind)) |kind| {
++        if (std.mem.eql(u8, name, @tagName(kind))) return h.expression(engine, methodBody, .{ kind, imports });
++    }
++    return error.ActualSettingsDefaultAccessorRequired;
++}
++fn arity(comptime kind: Kind) comptime_int {
++    return switch (kind) {
++        .getCompactionTokenSetting => 2,
++        .getCompactionReserveTokens, .getCompactionKeepRecentTokens, .getCompactionSettings => 1,
++        else => 0,
++    };
++}
++fn methodBody(s: *Scope, comptime kind: Kind, imports: c.JSValue) !c.JSValue {
++    const roots = [_]c.JSValue{
++        try v.get(s, imports, "defaults"), try v.get(s, imports, "compactionDefaults"),
++        try v.get(s, imports, "cacheWarmingModes"),
++    };
++    var boundary: v.guest.Boundary = .{ .engine = s.engine }; try boundary.begin();
++    return v.duplicate(s, try boundary.finishValue(s, v.function.createMethodWithArguments(
++        s.engine, @tagName(kind), arity(kind), .{
++            .formal_count = arity(kind), .callback = callback(kind), .hooks = sync.frameHooks(Frame),
++        }, &roots)));
++}
++fn callback(comptime kind: Kind) sync.Callback {
++    return struct {
++        fn call(engine: *Engine, receiver: c.JSValue, arguments: *sync.Arguments, roots: []const c.JSValue) anyerror!c.JSValue {
++            var s: Scope = .{ .engine = engine };
++            return v.owned.finishValue(&s, accessorBody(&s, kind, receiver, arguments, roots));
++        }
++    }.call;
++}
++fn ownedFieldBody(s: *Scope, incoming: c.JSValue, name: [*:0]const u8) !c.JSValue {
++    const receiver = try v.own(s, incoming);
++    return v.duplicate(s, try v.get(s, receiver, name));
++}
++fn sourcePath(s: *Scope, data: c.JSValue, root_name: [*:0]const u8, path: []const [:0]const u8, optional: bool) !c.JSValue {
++    var current = try h.get(s.engine, data, root_name);
++    for (path, 0..) |part, index| {
++        if (index != 0 and optional and v.nullish(current)) {
++            s.engine.freeValue(current); // Only null or undefined.
++            return c.pi_js_undefined();
++        }
++        // Each ordinary field operation consumes its receiver before the next
++        // source Get, including a sole holder returned by a hostile getter.
++        current = try h.expression(s.engine, ownedFieldBody, .{ current, @as([*:0]const u8, part) });
++    }
++    return current;
++}
++fn defaultsPath(s: *Scope, defaults: c.JSValue, path: []const [:0]const u8) !c.JSValue {
++    var current = v.duplicate(s, defaults);
++    for (path) |part|
++        current = try h.expression(s.engine, ownedFieldBody, .{ current, @as([*:0]const u8, part) });
++    return current;
++}
++fn readPath(engine: *Engine, data: c.JSValue, root_name: [*:0]const u8, path: []const [:0]const u8, optional: bool) !c.JSValue {
++    return h.expression(engine, sourcePath, .{ data, root_name, path, optional });
++}
++fn fallbackBody(s: *Scope, data: c.JSValue, defaults: c.JSValue, path: []const [:0]const u8, use_truthiness: bool) !c.JSValue {
++    const value = try v.own(s, try readPath(s.engine, data, "settings", path, true));
++    if (if (use_truthiness) v.truthy(s, value) else !v.nullish(value)) return v.duplicate(s, value);
++    return defaultsPath(s, defaults, path);
++}
++fn simplePath(comptime kind: Kind) ?[]const [:0]const u8 {
++    return switch (kind) {
++        .getSteeringMode => &.{"steeringMode"}, .getFollowUpMode => &.{"followUpMode"},
++        .getTransport => &.{"transport"}, .getCompactionEnabled => &.{ "compaction", "enabled" },
++        .getBranchSummarySkipPrompt => &.{ "branchSummary", "skipPrompt" },
++        .getRetryEnabled => &.{ "retry", "enabled" },
++        .getHideThinkingBlock => &.{"hideThinkingBlock"}, .getShowCacheMissNotices => &.{"showCacheMissNotices"},
++        .getCollapseChangelog => &.{"collapseChangelog"}, .getEnableInstallTelemetry => &.{"enableInstallTelemetry"},
++        .getEnableAnalytics => &.{"enableAnalytics"}, .getEnableSkillCommands => &.{"enableSkillCommands"},
++        .getShowImages => &.{ "terminal", "showImages" }, .getShowTerminalProgress => &.{ "terminal", "showTerminalProgress" },
++        .getFullscreenCopyOnSelect => &.{"fullscreenCopyOnSelect"},
++        .getImageAutoResize => &.{ "images", "autoResize" }, .getBlockImages => &.{ "images", "blockImages" },
++        .getDoubleEscapeAction => &.{"doubleEscapeAction"}, .getEditorPaddingX => &.{"editorPaddingX"},
++        .getAutocompleteMaxVisible => &.{"autocompleteMaxVisible"}, .getCodeBlockIndent => &.{ "markdown", "codeBlockIndent" },
++        else => null,
++    };
++}
++fn localPath(comptime kind: Kind) []const [:0]const u8 {
++    return switch (kind) {
++        .getSessionShareDestination => &.{"sessionShareDestination"},
++        .getCacheWarmingMode => &.{"cacheWarming"}, .getQuietStartup => &.{"quietStartup"},
++        .getDefaultProjectTrust => &.{"defaultProjectTrust"}, .getImageWidthCells => &.{ "terminal", "imageWidthCells" },
++        .getFullscreenScrollbar => &.{"fullscreenScrollbar"},
++        .getFullscreenWheelScrollLines => &.{"fullscreenWheelScrollLines"},
++        .getTreeFilterMode => &.{"treeFilterMode"}, .getMermaidRenderingMode => &.{ "markdown", "mermaid" },
++        else => unreachable,
++    };
++}
++fn invokeBody(s: *Scope, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
++    const function = try v.get(s, receiver, name);
++    return v.duplicate(s, try v.call(s, function, receiver, args));
++}
++fn globalInvokeBody(s: *Scope, name: [*:0]const u8, method_name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
++    return invokeBody(s, try v.global(s, name), method_name, args);
++}
++fn isFiniteBody(s: *Scope, value: c.JSValue) !c.JSValue {
++    if (!c.JS_IsNumber(value)) return v.boolean(s, false);
++    return v.boolean(s, v.truthy(s, try v.own(s, try h.expression(s.engine, globalInvokeBody,
++        .{ @as([*:0]const u8, "Number"), @as([*:0]const u8, "isFinite"), @as([]const c.JSValue, &.{value}) }))));
++}
++fn minBody(s: *Scope, value: c.JSValue) !c.JSValue {
++    const owner = try v.global(s, "Math");
++    const function = try v.get(s, owner, "min");
++    const floor = try v.own(s, try h.expression(s.engine, globalInvokeBody,
++        .{ @as([*:0]const u8, "Math"), @as([*:0]const u8, "floor"), @as([]const c.JSValue, &.{value}) }));
++    return v.duplicate(s, try v.call(s, function, owner, &.{ v.number(s, 100), floor }));
++}
++fn mathBody(s: *Scope, value: c.JSValue, bounded: bool) !c.JSValue {
++    // Capture the outer callee before evaluating its nested original argument.
++    const owner = try v.global(s, "Math");
++    const function = try v.get(s, owner, "max");
++    const inner = try v.own(s, if (bounded) try h.expression(s.engine, minBody, .{value}) else
++        try h.expression(s.engine, globalInvokeBody,
++            .{ @as([*:0]const u8, "Math"), @as([*:0]const u8, "floor"), @as([]const c.JSValue, &.{value}) }));
++    return v.duplicate(s, try v.call(s, function, owner, &.{ v.number(s, 1), inner }));
++}
++fn includesBody(s: *Scope, array: c.JSValue, value: c.JSValue) !c.JSValue {
++    return v.boolean(s, v.truthy(s, try v.own(s, try h.expression(s.engine, invokeBody,
++        .{ array, @as([*:0]const u8, "includes"), @as([]const c.JSValue, &.{value}) }))));
++}
++fn validModesBody(s: *Scope) !c.JSValue {
++    const array = try v.array(s);
++    inline for (.{ "default", "no-tools", "user-only", "labeled-only", "all" }, 0..) |value, index|
++        try v.index(s, array, @intCast(index), try v.text(s, value));
++    return v.duplicate(s, array);
++}
++fn validated(s: *Scope, comptime kind: Kind, data: c.JSValue, arguments: *sync.Arguments, roots: []const c.JSValue) !c.JSValue {
++    const frame = try arguments.createFrame(s, Frame);
++    const path = comptime localPath(kind);
++    try frame.take(.value, readPath(s.engine, data,
++        if (kind == .getCacheWarmingMode or kind == .getDefaultProjectTrust) "global" else "settings", path, true));
++    const value = frame.get(.value);
++    const accepted = switch (kind) {
++        .getSessionShareDestination => try v.eq(s, value, "gist") or try v.eq(s, value, "radius"),
++        .getQuietStartup => v.equal(s, value, v.boolean(s, true)) or try v.eq(s, value, "header"),
++        .getDefaultProjectTrust => try v.eq(s, value, "always") or try v.eq(s, value, "never"),
++        .getFullscreenScrollbar => try v.eq(s, value, "always") or try v.eq(s, value, "hidden"),
++        .getMermaidRenderingMode => try v.eq(s, value, "off") or try v.eq(s, value, "final"),
++        .getCacheWarmingMode => !c.JS_IsUndefined(value) and h.truthy(s.engine, try h.expression(s.engine, includesBody, .{ roots[2], value })),
++        .getTreeFilterMode => block: {
++            try frame.take(.valid, h.expression(s.engine, validModesBody, .{}));
++            break :block v.truthy(s, value) and h.truthy(s.engine, try h.expression(s.engine, includesBody, .{ frame.get(.valid), value }));
++        },
++        .getImageWidthCells, .getFullscreenWheelScrollLines => h.truthy(s.engine, try h.expression(s.engine, isFiniteBody, .{value})),
++        else => unreachable,
++    };
++    if (!accepted) return defaultsPath(s, roots[0], path);
++    if (kind == .getImageWidthCells or kind == .getFullscreenWheelScrollLines)
++        return h.expression(s.engine, mathBody, .{ value, kind == .getFullscreenWheelScrollLines });
++    return v.duplicate(s, value);
++}
++
++fn comparePathBody(s: *Scope, data: c.JSValue, path: []const [:0]const u8, expected: c.JSValue) !c.JSValue {
++    const value = try v.own(s, try readPath(s.engine, data, "settings", path, true));
++    return v.boolean(s, v.equal(s, value, expected));
++}
++fn definedClearBody(s: *Scope, data: c.JSValue) !c.JSValue {
++    const value = try v.own(s, try readPath(s.engine, data, "settings", &.{ "terminal", "clearOnShrink" }, true));
++    return v.boolean(s, !c.JS_IsUndefined(value));
++}
++fn clearEnvironmentBody(s: *Scope) !c.JSValue {
++    const process = try h.expression(s.engine, globalValueBody, .{@as([*:0]const u8, "process")});
++    const environment = try h.expression(s.engine, ownedFieldBody, .{ process, @as([*:0]const u8, "env") });
++    const value = try v.own(s, try h.expression(s.engine, ownedFieldBody,
++        .{ environment, @as([*:0]const u8, "PI_CLEAR_ON_SHRINK") }));
++    return v.boolean(s, try v.eq(s, value, "1"));
++}
++fn globalValueBody(s: *Scope, name: [*:0]const u8) !c.JSValue {
++    return v.duplicate(s, try v.global(s, name));
++}
++fn literalChoice(s: *Scope, comptime kind: Kind, data: c.JSValue, defaults: c.JSValue) !c.JSValue {
++    const path: []const [:0]const u8 = switch (kind) {
++        .getTuiMode => &.{"tuiMode"}, .getFullscreenExitOutput => &.{"fullscreenExitOutput"},
++        .getOutputPad => &.{"outputPad"}, else => unreachable,
++    };
++    const expected = switch (kind) {
++        .getTuiMode => try v.text(s, "regular"), .getFullscreenExitOutput => try v.text(s, "resume-hint"),
++        .getOutputPad => v.number(s, 0), else => unreachable,
++    };
++    // This comparison consumes its temporary before the fallback Get. These
++    // three original methods have no local binding retaining the compared value.
++    if (h.truthy(s.engine, try h.expression(s.engine, comparePathBody, .{ data, path, expected })))
++        return v.duplicate(s, expected);
++    return defaultsPath(s, defaults, path);
++}
++fn compound(s: *Scope, comptime kind: Kind, receiver: c.JSValue, data: c.JSValue, defaults: c.JSValue, model: c.JSValue) !c.JSValue {
++    const result = try v.object(s);
++    switch (kind) {
++        .getBranchSummarySettings => {
++            inline for (.{ "reserveTokens", "skipPrompt" }) |name|
++                try v.put(s, result, name, try v.own(s, try h.expression(s.engine, fallbackBody,
++                    .{ data, defaults, @as([]const [:0]const u8, &.{ "branchSummary", name }), false })));
++        },
++        .getRetrySettings => {
++            try v.put(s, result, "enabled", try v.own(s, try v.invokeOwned(s.engine, receiver, "getRetryEnabled", &.{})));
++            inline for (.{ "maxRetries", "baseDelayMs", "maxAgentDelayMs" }) |name|
++                try v.put(s, result, name, try v.own(s, try h.expression(s.engine, fallbackBody,
++                    .{ data, defaults, @as([]const [:0]const u8, &.{ "retry", name }), false })));
++        },
++        .getProviderRetrySettings => {
++            inline for (.{ "timeoutMs", "maxRetries" }) |name|
++                try v.put(s, result, name, try v.own(s, try readPath(s.engine, data, "settings", &.{ "retry", "provider", name }, true)));
++            try v.put(s, result, "maxRetryDelayMs", try v.own(s, try h.expression(s.engine, fallbackBody,
++                .{ data, defaults, @as([]const [:0]const u8, &.{ "retry", "provider", "maxRetryDelayMs" }), false })));
++        },
++        .getCompactionSettings => {
++            try v.put(s, result, "enabled", try v.own(s, try v.invokeOwned(s.engine, receiver, "getCompactionEnabled", &.{})));
++            try v.put(s, result, "reserveTokens", try v.own(s, try v.invokeOwned(s.engine, receiver, "getCompactionReserveTokens", &.{model})));
++            try v.put(s, result, "keepRecentTokens", try v.own(s, try v.invokeOwned(s.engine, receiver, "getCompactionKeepRecentTokens", &.{model})));
++        },
++        else => unreachable,
++    }
++    return v.duplicate(s, result);
++}
++fn primitiveFieldBody(s: *Scope, object: c.JSValue, name: [*:0]const u8) !c.JSValue {
++    return v.duplicate(s, try v.stringify(s, try v.get(s, object, name)));
++}
++fn modelKeyBody(s: *Scope, model: c.JSValue) !c.JSValue {
++    const provider = try v.own(s, try h.expression(s.engine, primitiveFieldBody, .{ model, @as([*:0]const u8, "provider") }));
++    const prefix = try h.binary(s, .add, provider, try v.text(s, "/"));
++    const id = try v.own(s, try h.expression(s.engine, primitiveFieldBody, .{ model, @as([*:0]const u8, "id") }));
++    return v.duplicate(s, try h.binary(s, .add, prefix, id));
++}
++fn optionalKeyBody(s: *Scope, object: c.JSValue, key: c.JSValue) !c.JSValue {
++    if (v.nullish(object)) return c.pi_js_undefined();
++    return v.duplicate(s, try v.key(s, object, key));
++}
++fn entryBody(s: *Scope, compaction: c.JSValue, model_key: c.JSValue) !c.JSValue {
++    if (v.nullish(compaction)) return c.pi_js_undefined();
++    const overrides = try v.get(s, compaction, "modelOverrides");
++    if (v.nullish(overrides)) return c.pi_js_undefined();
++    return v.duplicate(s, try v.key(s, overrides, model_key));
++}
++fn globalPredicateBody(s: *Scope, name: [*:0]const u8, method_name: [*:0]const u8, value: c.JSValue) !c.JSValue {
++    const result = try v.own(s, try h.expression(s.engine, globalInvokeBody,
++        .{ name, method_name, @as([]const c.JSValue, &.{value}) }));
++    return v.boolean(s, v.truthy(s, result));
++}
++fn validIntegerBody(s: *Scope, value: c.JSValue) !c.JSValue {
++    if (!c.JS_IsNumber(value)) return v.boolean(s, false);
++    if (!h.truthy(s.engine, try h.expression(s.engine, globalPredicateBody,
++        .{ @as([*:0]const u8, "Number"), @as([*:0]const u8, "isSafeInteger"), value })))
++        return v.boolean(s, false);
++    return v.boolean(s, !v.truthy(s, try h.binary(s, .less, value, v.number(s, 0))));
++}
++fn mergeableBody(s: *Scope, value: c.JSValue) !c.JSValue {
++    // Original typeof value === "object" also admits non-callable proxies,
++    // but excludes functions even though the C VM regards them as objects.
++    if (!c.JS_IsObject(value) or c.JS_IsFunction(s.engine.context, value)) return v.boolean(s, false);
++    return v.boolean(s, !h.truthy(s.engine, try h.expression(s.engine, globalPredicateBody,
++        .{ @as([*:0]const u8, "Array"), @as([*:0]const u8, "isArray"), value })));
++}
++fn globalStringBody(s: *Scope, value: c.JSValue) !c.JSValue {
++    const function = try v.global(s, "String");
++    return v.duplicate(s, try v.stringify(s, try v.call(s, function, c.pi_js_undefined(), &.{value})));
++}
++const TokenFailure = enum { ordinary, entry, override };
++fn failureMessage(s: *Scope, which: TokenFailure, field: c.JSValue, model_key: c.JSValue, value: c.JSValue) !c.JSValue {
++    var message = try v.text(s, if (which == .ordinary) "Invalid compaction." else "Invalid compaction.modelOverrides[\"");
++    if (which == .ordinary) {
++        message = try h.binary(s, .add, message, try v.stringify(s, field));
++    } else {
++        message = try h.binary(s, .add, message, try v.stringify(s, model_key));
++        message = try h.binary(s, .add, message, try v.text(s, "\"]"));
++        if (which == .override) {
++            message = try h.binary(s, .add, message, try v.text(s, "."));
++            message = try h.binary(s, .add, message, try v.stringify(s, field));
++        }
++    }
++    message = try h.binary(s, .add, message, try v.text(s, " setting: "));
++    const displayed = try v.own(s, try h.expression(s.engine, globalStringBody, .{value}));
++    message = try h.binary(s, .add, message, displayed);
++    return v.duplicate(s, try h.binary(s, .add, message, try v.text(s,
++        if (which == .entry) ". Expected an object." else ". Expected a non-negative safe integer.")));
++}
++fn raise(s: *Scope, reason: c.JSValue) anyerror {
++    var boundary: v.guest.Boundary = .{ .engine = s.engine };
++    boundary.begin() catch |err| return err;
++    _ = boundary.finishValue(s, c.JS_Throw(s.engine.context, v.duplicate(s, reason))) catch |err| return err;
++    unreachable;
++}
++fn errorValueBody(s: *Scope, which: TokenFailure, field: c.JSValue, model_key: c.JSValue, value: c.JSValue) !c.JSValue {
++    const constructor = try v.global(s, "Error");
++    const message = try v.own(s, try h.expression(s.engine, failureMessage, .{ which, field, model_key, value }));
++    return v.duplicate(s, try v.construct(s, constructor, &.{message}));
++}
++fn tokenError(s: *Scope, which: TokenFailure, field: c.JSValue, model_key: c.JSValue, value: c.JSValue) !c.JSValue {
++    const reason = try v.own(s, try h.expression(s.engine, errorValueBody, .{ which, field, model_key, value }));
++    return raise(s, reason);
++}
++fn tokensBody(s: *Scope, data: c.JSValue, arguments: *sync.Arguments, defaults: c.JSValue) !c.JSValue {
++    const frame = try arguments.createFrame(s, Frame);
++    const field = arguments.get(0);
++    const model = arguments.get(1);
++    try frame.take(.compaction, readPath(s.engine, data, "settings", &.{"compaction"}, false));
++    try frame.take(.ordinary, h.expression(s.engine, optionalKeyBody, .{ frame.get(.compaction), field }));
++    if (!c.JS_IsUndefined(frame.get(.ordinary)) and
++        !h.truthy(s.engine, try h.expression(s.engine, validIntegerBody, .{frame.get(.ordinary)})))
++        return tokenError(s, .ordinary, field, c.pi_js_undefined(), frame.get(.ordinary));
++    try frame.take(.model_key, if (v.truthy(s, model)) h.expression(s.engine, modelKeyBody, .{model}) else c.pi_js_undefined());
++    try frame.take(.entry, if (!c.JS_IsUndefined(frame.get(.model_key)))
++        h.expression(s.engine, entryBody, .{ frame.get(.compaction), frame.get(.model_key) }) else c.pi_js_undefined());
++    if (!c.JS_IsUndefined(frame.get(.entry)) and
++        !h.truthy(s.engine, try h.expression(s.engine, mergeableBody, .{frame.get(.entry)})))
++        return tokenError(s, .entry, field, frame.get(.model_key), frame.get(.entry));
++    try frame.take(.override, h.expression(s.engine, optionalKeyBody, .{ frame.get(.entry), field }));
++    if (!c.JS_IsUndefined(frame.get(.override)) and
++        !h.truthy(s.engine, try h.expression(s.engine, validIntegerBody, .{frame.get(.override)})))
++        return tokenError(s, .override, field, frame.get(.model_key), frame.get(.override));
++    if (!v.nullish(frame.get(.override))) return v.duplicate(s, frame.get(.override));
++    if (!v.nullish(frame.get(.ordinary))) return v.duplicate(s, frame.get(.ordinary));
++    return v.duplicate(s, try v.key(s, defaults, field));
++}
++fn accessorBody(s: *Scope, comptime kind: Kind, receiver: c.JSValue, arguments: *sync.Arguments, roots: []const c.JSValue) !c.JSValue {
++    // Preserve the existing genuine native SettingsManager storage authority.
++    // Its actual C argument owner retains receiver; duplicate backing data before
++    // any observable field lookup can reenter the host.
++    const owner = try sdk.state(s.engine, receiver);
++    const data = try v.own(s, v.duplicate(s, owner.data));
++    const simple = comptime simplePath(kind);
++    if (simple) |path|
++        return fallbackBody(s, data, roots[0], path, kind == .getSteeringMode or kind == .getFollowUpMode);
++    return switch (kind) {
++        .getSessionShareDestination, .getCacheWarmingMode, .getQuietStartup,
++        .getDefaultProjectTrust, .getImageWidthCells, .getFullscreenScrollbar,
++        .getFullscreenWheelScrollLines, .getTreeFilterMode, .getMermaidRenderingMode =>
++            validated(s, kind, data, arguments, roots),
++        .getTuiMode, .getFullscreenExitOutput, .getOutputPad => literalChoice(s, kind, data, roots[0]),
++        .getClearOnShrink => block: {
++            if (h.truthy(s.engine, try h.expression(s.engine, definedClearBody, .{data})))
++                break :block readPath(s.engine, data, "settings", &.{ "terminal", "clearOnShrink" }, false);
++            if (h.truthy(s.engine, try h.expression(s.engine, clearEnvironmentBody, .{})))
++                break :block v.boolean(s, true);
++            break :block defaultsPath(s, roots[0], &.{ "terminal", "clearOnShrink" });
++        },
++        .getBranchSummarySettings, .getRetrySettings, .getProviderRetrySettings, .getCompactionSettings =>
++            compound(s, kind, receiver, data, roots[0], arguments.get(0)),
++        .getCompactionTokenSetting => tokensBody(s, data, arguments, roots[1]),
++        .getCompactionReserveTokens, .getCompactionKeepRecentTokens => block: {
++            const function = try v.get(s, receiver, "getCompactionTokenSetting");
++            const field = try v.text(s, if (kind == .getCompactionReserveTokens) "reserveTokens" else "keepRecentTokens");
++            break :block v.duplicate(s, try v.call(s, function, receiver, &.{ field, arguments.get(0) }));
++        },
++        else => unreachable,
++    };
++}
+diff --git a/src/extensions/native_sdk_settings.zig b/src/extensions/native_sdk_settings.zig
+--- a/src/extensions/native_sdk_settings.zig
++++ b/src/extensions/native_sdk_settings.zig
+@@ -5,6 +5,7 @@
+ const models = @import("native_sdk_models.zig");
+ const engine_mod = @import("engine.zig");
+ const c = engine_mod.c;
++const default_accessors = @import("native_sdk_settings_default_accessors.zig");
+ const Mode = enum { raw, normal, truthy, array, object, special, set };
+ const Field = struct { name: [:0]const u8, path: []const u8 = "", mode: Mode = .normal };
+ const fields = [_]Field{
+@@ -28,6 +29,7 @@
+     .{ .name = "setProjectPromptTemplatePaths", .path = "prompts", .mode = .set },
+     .{ .name = "setProjectThemePaths", .path = "themes", .mode = .set },
+     .{ .name = "getTransport", .path = "transport" },
++    .{ .name = "getSessionShareDestination", .path = "sessionShareDestination", .mode = .special },
+     .{ .name = "getSteeringMode", .path = "steeringMode", .mode = .truthy },
+     .{ .name = "getFollowUpMode", .path = "followUpMode", .mode = .truthy },
+     .{ .name = "getCompactionEnabled", .path = "compaction.enabled" },
+@@ -91,6 +93,7 @@
+     .{ .name = "setDefaultThinkingLevel", .path = "defaultThinkingLevel", .mode = .set },
+     .{ .name = "setLastChangelogVersion", .path = "lastChangelogVersion", .mode = .set },
+     .{ .name = "setTransport", .path = "transport", .mode = .set },
++    .{ .name = "setSessionShareDestination", .path = "sessionShareDestination", .mode = .set },
+     .{ .name = "setSteeringMode", .path = "steeringMode", .mode = .set },
+     .{ .name = "setFollowUpMode", .path = "followUpMode", .mode = .set },
+     .{ .name = "setTheme", .path = "theme", .mode = .set },
+@@ -138,8 +141,12 @@
+     .{ .name = "getTreeFilterMode", .path = "treeFilterMode", .mode = .special },
+ };
+ pub fn install(engine: *engine_mod.Engine, prototype: c.JSValue) !void {
++    const imports = try default_accessors.acquire(engine);
++    defer engine.freeValue(imports);
+     for (fields, 0..) |field, index| {
+-        const value = try engine.checked(c.pi_js_function_magic(engine.context, callback, field.name, if (field.mode == .set) 1 else 0, @intCast(index)));
++        const value = if (default_accessors.supports(field.name))
++            try default_accessors.method(engine, field.name, imports)
++        else try engine.checked(c.pi_js_function_magic(engine.context, callback, field.name, if (field.mode == .set) 1 else 0, @intCast(index)));
+         if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, value, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
+     }
+ }
+@@ -182,15 +189,6 @@
+         engine.freeValue(target);
+         target = next;
+     }
+-}
+-fn defaults(engine: *engine_mod.Engine, data: c.JSValue) !c.JSValue {
+-    const stored = try sdk.get(engine, data, "accessorDefaults");
+-    if (c.JS_IsObject(stored)) return stored;
+-    engine.freeValue(stored);
+-    const value = try sdk.jsonObject(engine, @embedFile("../coding_agent/assets/SDK-SETTINGS-DEFAULTS-6fb2e78.json"));
+-    errdefer engine.freeValue(value);
+-    try sdk.put(engine, data, "accessorDefaults", c.JS_DupValue(engine.context, value));
+-    return value;
+ }
+ fn shallow(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
+     const result = try sdk.object(engine);
+@@ -429,14 +427,12 @@
+     if (field.mode == .raw) return c.JS_DupValue(engine.context, raw);
+     if (field.mode == .object) return shallow(engine, raw);
+     if (field.mode == .array) return if (nullish(raw)) sdk.array(engine) else sdk.invoke(engine, raw, "slice", &.{});
+-    const base = try defaults(engine, data);
+-    defer engine.freeValue(base);
+-    const default = if (field.path.len > 0) try pathValue(engine, base, field.path) else c.pi_js_undefined();
+-    defer engine.freeValue(default);
+-    if (field.mode == .normal or field.mode == .truthy) return c.JS_DupValue(engine.context, if (if (field.mode == .truthy) c.JS_ToBool(engine.context, raw) == 1 else !nullish(raw)) raw else default);
+-    return special(engine, data, root, field, args, raw, default);
+-}
+-fn special(engine: *engine_mod.Engine, data: c.JSValue, root: c.JSValue, field: Field, args: []const c.JSValue, raw: c.JSValue, default: c.JSValue) !c.JSValue {
++    // Every default-bearing getter is installed by its genuine shared import
++    // owner. Unrelated accessors never read any fallback object.
++    if (field.mode == .normal or field.mode == .truthy) return error.ActualSettingsDefaultAccessorRequired;
++    return special(engine, data, root, field, args, raw);
++}
++fn special(engine: *engine_mod.Engine, data: c.JSValue, root: c.JSValue, field: Field, args: []const c.JSValue, raw: c.JSValue) !c.JSValue {
+     const name = field.name;
+     if (std.mem.eql(u8, name, "getOrCreateDeviceId")) {
+         const global = try sdk.get(engine, data, "global");
+@@ -481,16 +477,9 @@
+         if (!std.math.isFinite(n) or n < 0) return failSetting(engine, field.path, raw);
+         return c.JS_NewFloat64(engine.context, @floor(n));
+     }
+-    if (std.mem.eql(u8, name, "getOutputPad")) return c.JS_NewInt32(engine.context, if (c.JS_IsNumber(raw) and try number(engine, raw) == 0) 0 else 1);
+-    if (std.mem.eql(u8, name, "getImageWidthCells") or std.mem.eql(u8, name, "getFullscreenWheelScrollLines")) {
+-        if (!c.JS_IsNumber(raw)) return c.JS_DupValue(engine.context, default);
+-        const n = try number(engine, raw);
+-        if (!std.math.isFinite(n)) return c.JS_DupValue(engine.context, default);
+-        return c.JS_NewFloat64(engine.context, @max(1, @min(if (std.mem.eql(u8, name, "getImageWidthCells")) std.math.inf(f64) else 100, @floor(n))));
+-    }
+-    if (std.mem.eql(u8, name, "getClearOnShrink") or std.mem.eql(u8, name, "getShowHardwareCursor")) {
+-        if (if (std.mem.eql(u8, name, "getClearOnShrink")) !c.JS_IsUndefined(raw) else !nullish(raw)) return c.JS_DupValue(engine.context, raw);
+-        const value = try env(engine, if (std.mem.eql(u8, name, "getClearOnShrink")) "PI_CLEAR_ON_SHRINK" else "PI_HARDWARE_CURSOR");
++    if (std.mem.eql(u8, name, "getShowHardwareCursor")) {
++        if (!nullish(raw)) return c.JS_DupValue(engine.context, raw);
++        const value = try env(engine, "PI_HARDWARE_CURSOR");
+         defer engine.freeValue(value);
+         return c.pi_js_bool(engine.context, @intFromBool(try same(engine, value, "1")));
+     }
+@@ -506,25 +495,6 @@
+             engine.freeValue(value);
+         }
+         return sdk.text(engine, if (builtin.os.tag == .windows) "notepad" else "nano");
+-    }
+-    if (std.mem.eql(u8, name, "getQuietStartup")) return c.JS_DupValue(engine.context, if ((c.JS_IsBool(raw) and c.JS_ToBool(engine.context, raw) == 1) or try same(engine, raw, "header")) raw else default);
+-    inline for (.{ .{ "getCacheWarmingMode", "off", "streaming", "idle" }, .{ "getDefaultProjectTrust", "always", "never", "ask" }, .{ "getTuiMode", "regular", "fullscreen", "fullscreen" }, .{ "getFullscreenExitOutput", "resume-hint", "transcript", "transcript" }, .{ "getFullscreenScrollbar", "always", "hidden", "auto" }, .{ "getMermaidRenderingMode", "off", "final", "streaming" } }) |rule| {
+-        if (std.mem.eql(u8, name, rule[0])) return c.JS_DupValue(engine.context, if (try same(engine, raw, rule[1]) or try same(engine, raw, rule[2]) or try same(engine, raw, rule[3])) raw else default);
+-    }
+-    if (std.mem.eql(u8, name, "getTreeFilterMode")) {
+-        inline for (.{ "default", "no-tools", "user-only", "labeled-only", "all" }) |mode| if (try same(engine, raw, mode)) return c.JS_DupValue(engine.context, raw);
+-        return c.JS_DupValue(engine.context, default);
+-    }
+-    if (std.mem.eql(u8, name, "getRetrySettings") or std.mem.eql(u8, name, "getBranchSummarySettings") or std.mem.eql(u8, name, "getProviderRetrySettings")) {
+-        const result = try sdk.object(engine);
+-        errdefer engine.freeValue(result);
+-        const keys: []const [:0]const u8 = if (std.mem.eql(u8, name, "getRetrySettings")) &.{ "enabled", "maxRetries", "baseDelayMs", "maxAgentDelayMs" } else if (std.mem.eql(u8, name, "getProviderRetrySettings")) &.{ "timeoutMs", "maxRetries", "maxRetryDelayMs" } else &.{ "reserveTokens", "skipPrompt" };
+-        for (keys) |key| {
+-            const value = if (c.JS_IsObject(raw)) try sdk.get(engine, raw, key) else c.pi_js_undefined();
+-            defer engine.freeValue(value);
+-            try sdk.put(engine, result, key, if (nullish(value)) if (c.JS_IsObject(default)) try sdk.get(engine, default, key) else c.pi_js_undefined() else c.JS_DupValue(engine.context, value));
+-        }
+-        return result;
+     }
+     if (std.mem.eql(u8, name, "getTerminalCapabilityOverrides")) {
+         const result = try sdk.object(engine);
+@@ -550,84 +520,8 @@
+         defer engine.freeValue(levels);
+         return if (nullish(levels)) c.pi_js_undefined() else sdk.get(engine, levels, key);
+     }
+-    if (std.mem.startsWith(u8, name, "getCompaction")) return compaction(engine, root, name, args);
+     if (std.mem.eql(u8, name, "getDefaultTools")) return defaultTools(engine, raw);
+     return error.NativeSDKSettingsMethodUnavailable;
+-}
+-fn compaction(engine: *engine_mod.Engine, root: c.JSValue, name: []const u8, args: []const c.JSValue) !c.JSValue {
+-    if (std.mem.eql(u8, name, "getCompactionSettings")) {
+-        const result = try sdk.object(engine);
+-        errdefer engine.freeValue(result);
+-        const enabled = try pathValue(engine, root, "compaction.enabled");
+-        defer engine.freeValue(enabled);
+-        try sdk.put(engine, result, "enabled", if (nullish(enabled)) c.pi_js_bool(engine.context, 1) else c.JS_DupValue(engine.context, enabled));
+-        try sdk.put(engine, result, "reserveTokens", try tokenSetting(engine, root, "reserveTokens", if (args.len > 0) args[0] else c.pi_js_undefined()));
+-        try sdk.put(engine, result, "keepRecentTokens", try tokenSetting(engine, root, "keepRecentTokens", if (args.len > 0) args[0] else c.pi_js_undefined()));
+-        return result;
+-    }
+-    if (std.mem.eql(u8, name, "getCompactionTokenSetting")) {
+-        const key = try engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined());
+-        defer engine.gpa.free(key);
+-        return tokenSetting(engine, root, key, if (args.len > 1) args[1] else c.pi_js_undefined());
+-    }
+-    return tokenSetting(engine, root, if (std.mem.eql(u8, name, "getCompactionReserveTokens")) "reserveTokens" else "keepRecentTokens", if (args.len > 0) args[0] else c.pi_js_undefined());
+-}
+-fn tokenFailure(engine: *engine_mod.Engine, label: []const u8, value: c.JSValue, object: bool) !c.JSValue {
+-    const raw = try engine.toString(value);
+-    defer engine.gpa.free(raw);
+-    const message = try std.fmt.allocPrint(engine.gpa, "Invalid {s} setting: {s}. Expected {s}.", .{ label, raw, if (object) "an object" else "a non-negative safe integer" });
+-    defer engine.gpa.free(message);
+-    const failure = try engine.checked(c.JS_NewError(engine.context));
+-    defer engine.freeValue(failure);
+-    try sdk.put(engine, failure, "message", try sdk.text(engine, message));
+-    return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, failure)));
+-}
+-fn tokenSetting(engine: *engine_mod.Engine, root: c.JSValue, key: []const u8, model: c.JSValue) !c.JSValue {
+-    const path = try std.fmt.allocPrint(engine.gpa, "compaction.{s}", .{key});
+-    defer engine.gpa.free(path);
+-    const ordinary = try pathValue(engine, root, path);
+-    defer engine.freeValue(ordinary);
+-    if (!c.JS_IsUndefined(ordinary)) {
+-        const n = try number(engine, ordinary);
+-        if (!c.JS_IsNumber(ordinary) or !std.math.isFinite(n) or @floor(n) != n or n < 0 or n > 9007199254740991) return tokenFailure(engine, path, ordinary, false);
+-    }
+-    var override = c.pi_js_undefined();
+-    defer engine.freeValue(override);
+-    if (c.JS_ToBool(engine.context, model) == 1) {
+-        const provider = try sdk.get(engine, model, "provider");
+-        defer engine.freeValue(provider);
+-        const id = try sdk.get(engine, model, "id");
+-        defer engine.freeValue(id);
+-        const p = try engine.toString(provider);
+-        defer engine.gpa.free(p);
+-        const m = try engine.toString(id);
+-        defer engine.gpa.free(m);
+-        const model_key = try std.fmt.allocPrintSentinel(engine.gpa, "{s}/{s}", .{ p, m }, 0);
+-        defer engine.gpa.free(model_key);
+-        const overrides = try pathValue(engine, root, "compaction.modelOverrides");
+-        defer engine.freeValue(overrides);
+-        const entry = if (!nullish(overrides)) try sdk.get(engine, overrides, model_key) else c.pi_js_undefined();
+-        defer engine.freeValue(entry);
+-        if (!c.JS_IsUndefined(entry)) {
+-            const label = try std.fmt.allocPrint(engine.gpa, "compaction.modelOverrides[\"{s}\"]", .{model_key});
+-            defer engine.gpa.free(label);
+-            if (!c.JS_IsObject(entry) or c.JS_IsArray(entry)) return tokenFailure(engine, label, entry, true);
+-            const terminated = try engine.gpa.dupeZ(u8, key);
+-            defer engine.gpa.free(terminated);
+-            override = try sdk.get(engine, entry, terminated);
+-            if (!c.JS_IsUndefined(override)) {
+-                const n = try number(engine, override);
+-                if (!c.JS_IsNumber(override) or !std.math.isFinite(n) or @floor(n) != n or n < 0 or n > 9007199254740991) {
+-                    const full = try std.fmt.allocPrint(engine.gpa, "{s}.{s}", .{ label, key });
+-                    defer engine.gpa.free(full);
+-                    return tokenFailure(engine, full, override, false);
+-                }
+-            }
+-        }
+-    }
+-    if (!nullish(override)) return c.JS_DupValue(engine.context, override);
+-    if (!nullish(ordinary)) return c.JS_DupValue(engine.context, ordinary);
+-    return if (std.mem.eql(u8, key, "reserveTokens")) c.JS_NewInt32(engine.context, 16384) else if (std.mem.eql(u8, key, "keepRecentTokens")) c.JS_NewInt32(engine.context, 20000) else c.pi_js_undefined();
+ }
+ fn defaultTools(engine: *engine_mod.Engine, raw: c.JSValue) !c.JSValue {
+     if (c.JS_IsUndefined(raw)) return c.pi_js_undefined();
+diff --git a/src/native_sdk_settings_shared_defaults_test.zig b/src/native_sdk_settings_shared_defaults_test.zig
+new file mode 100644
+--- /dev/null
++++ b/src/native_sdk_settings_shared_defaults_test.zig
+@@ -0,0 +1,216 @@
++//! Source-only declared controls. The reference uses the retained original
++//! getter bodies on the SAME genuine SettingsManager class/backing-data owner;
++//! no replacement class, filesystem namespace, or production constructor.
++//! Each subject runs in a fresh Engine. Native lifetime traces are compared
++//! against the actual VM execution of the unchanged original getter bodies.
++const std = @import("std");
++const h = @import("extensions/native_sdk_session_locals.zig");
++const v = h.v;
++const c = h.c;
++const sdk = @import("extensions/native_sdk.zig");
++const accessors = @import("extensions/native_sdk_settings_default_accessors.zig");
++const defaults_owner = @import("extensions/native_sdk_settings_defaults.zig");
++const retirement = @import("native_sdk_initial_model_retirement_controls.zig");
++const observer = @embedFile("extensions/fixtures/sdk-settings-shared-defaults-observer.mjs");
++const original = @embedFile("extensions/fixtures/sdk-settings-default-accessors-4954-source.mjs");
++const attach_original =
++    \\(function attachActualOriginalGetters(receiver, data, methods) {
++    \\  Object.defineProperties(receiver, {
++    \\    settings: { configurable:true, get() { return data.settings; } },
++    \\    globalSettings: { configurable:true, get() { return data.global; } },
++    \\  });
++    \\  for (const name of Reflect.ownKeys(methods))
++    \\    if (name !== "constructor")
++    \\      Object.defineProperty(receiver, name, Object.getOwnPropertyDescriptor(methods, name));
++    \\  return receiver;
++    \\})
++;
++fn publish(s: *h.Scope, name: [*:0]const u8, value: c.JSValue) !void {
++    try v.put(s, try v.own(s, c.JS_GetGlobalObject(s.engine.context)), name, value);
++}
++fn prepare(engine: *h.Engine, source: bool) !void {
++    var environment: std.process.Environ.Map = .init(engine.gpa);
++    defer environment.deinit();
++    try @import("extensions/native_process.zig").install(engine, std.testing.io, &environment, &.{"settings-default-control"});
++    try @import("extensions/native_stream.zig").install(engine);
++    return h.statement(engine, prepareBody, .{source});
++}
++fn prepareBody(s: *h.Scope, source: bool) !void {
++    const engine = s.engine;
++    const shared = try v.own(s, try defaults_owner.create(engine));
++    const managers = try v.own(s, try sdk.managerImports(engine));
++    const constructor = try v.get(s, managers, "SettingsManager");
++    const manager = try v.invoke(s, constructor, "inMemory", &.{});
++    const second = try v.invoke(s, constructor, "inMemory", &.{});
++    const data = try v.own(s, v.duplicate(s, (try sdk.state(engine, manager)).data));
++    const second_data = try v.own(s, v.duplicate(s, (try sdk.state(engine, second)).data));
++    var modes = try v.own(s, try accessors.cacheWarmingModes(engine));
++    if (source) {
++        const factory = try v.own(s, try engine.eval(original, "original-settings-getter-definitions.js", c.JS_EVAL_TYPE_GLOBAL));
++        const reference = try v.call(s, factory, c.pi_js_undefined(), &.{shared});
++        modes = try v.get(s, reference, "CACHE_WARMING_MODES");
++        const methods = try v.get(s, reference, "methods");
++        const attach = try v.own(s, try engine.eval(attach_original, "attach-original-getters-to-actual-settings.js", c.JS_EVAL_TYPE_GLOBAL));
++        _ = try v.call(s, attach, c.pi_js_undefined(), &.{ manager, data, methods });
++        _ = try v.call(s, attach, c.pi_js_undefined(), &.{ second, second_data, methods });
++    }
++    const subject = try v.object(s);
++    try v.put(s, subject, "manager", manager);
++    try v.put(s, subject, "second", second);
++    try v.put(s, subject, "data", data);
++    try v.put(s, subject, "defaults", shared);
++    try v.put(s, subject, "modes", modes);
++    try v.put(s, subject, "SettingsManager", constructor);
++    const names = try v.array(s);
++    inline for (std.meta.tags(accessors.Kind), 0..) |kind, index|
++        try v.index(s, names, @intCast(index), try v.text(s, @tagName(kind)));
++    try v.put(s, subject, "names", names);
++    try publish(s, "settingsSubject", subject);
++    try publish(s, "settingsHooks", try v.own(s, try retirement.createNativeRetirementHooks(engine)));
++}
++fn run(engine: *h.Engine, source: []const u8) !void {
++    const evaluation = try engine.evalModule(source, "actual-settings-defaults-control.mjs");
++    defer engine.freeValue(evaluation);
++    engine.freeValue(try engine.awaitValue(evaluation));
++}
++fn clean(engine: *h.Engine) !void {
++    try std.testing.expect(!c.JS_HasException(engine.context));
++    try std.testing.expect(!c.JS_IsJobPending(engine.runtime));
++    try std.testing.expect(engine.native_fatal_invocation == null);
++    try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
++}
++fn observedBody(s: *h.Scope) !c.JSValue {
++    return v.duplicate(s, try v.global(s, "settingsObserved"));
++}
++fn capture(comptime name: []const u8, source: bool) ![]u8 {
++    const engine = try h.Engine.init(std.testing.allocator, .{ .interrupt_budget = 4_000_000 });
++    defer engine.deinit();
++    try prepare(engine, source);
++    try run(engine, observer ++ "\nglobalThis.settingsObserved = JSON.stringify(await " ++ name ++ "(settingsSubject,settingsHooks));\n");
++    const value = try h.expression(engine, observedBody, .{});
++    defer engine.freeValue(value);
++    try std.testing.expect(c.JS_IsString(value));
++    try clean(engine);
++    return engine.toString(value);
++}
++fn both(comptime name: []const u8) !void {
++    const expected = try capture(name, true);
++    defer std.testing.allocator.free(expected);
++    const actual = try capture(name, false);
++    defer std.testing.allocator.free(actual);
++    try std.testing.expectEqualStrings(expected, actual);
++}
++fn recordBody(s: *h.Scope) !c.JSValue {
++    return v.duplicate(s, try v.get(s, try v.global(s, "settingsHooks"), "record"));
++}
++const Fatal = enum { current, retirement, cancelled };
++fn fatal(comptime name: []const u8, comptime kind: Fatal) !void {
++    const engine = try h.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit();
++    try prepare(engine, false);
++    const record = try h.expression(engine, recordBody, .{});
++    defer engine.freeValue(record);
++    try std.testing.expectError(error.JavaScriptException, run(engine,
++        observer ++ "\n" ++ name ++ "(settingsSubject,settingsHooks);\n"));
++    switch (kind) {
++        .current => try retirement.verifyRecordedActualNativeFatal(engine, record),
++        .retirement => try retirement.verifyActualRetirementFatal(engine, record, 0),
++        .cancelled => try retirement.verifyActualCancellationNoGuestClose(engine, record),
++    }
++    try retirement.verifyNoVisits(record, .{1,2,3});
++    try std.testing.expect(engine.native_fatal_invocation == null);
++}
++fn acquireCall(engine: *h.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
++    return accessors.acquire(engine);
++}
++fn coldPrepareBody(s: *h.Scope) !void {
++    try publish(s, "settingsColdDefaults", try v.own(s, try defaults_owner.create(s.engine)));
++    try publish(s, "settingsActualAcquire", try v.ordinary(s, "settingsActualAcquire", 0, acquireCall, &.{}));
++}
++fn cold(source: []const u8) !void {
++    const engine = try h.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit();
++    try h.statement(engine, coldPrepareBody, .{});
++    try run(engine, observer ++ "\n" ++ source);
++    try clean(engine);
++}
++test "native settings shared defaults complete actual getter shapes and original arities" { try both("observeSettingsShapes"); }
++test "native settings shared defaults all twenty-one explicit paths suppress fallback" { try both("observeSettingsDefinedSuppression"); }
++test "native settings shared defaults all twenty-one nullish paths read current object" { try both("observeSettingsLiveFallbacks"); }
++test "native settings shared defaults original nullish and truthy distinctions" { try both("observeSettingsNullishAndTruthy"); }
++test "native settings shared defaults genuine managers share one mutable import" { try both("observeSettingsSharedIdentity"); }
++test "native settings shared defaults trust reads global and ask falls back live" { try both("observeSettingsGlobalTrust"); }
++test "native settings shared defaults session-share original accepted and fallback choices" { try both("observeSettingsShare"); }
++test "native settings shared defaults strict selectors do not eagerly accept default enum values" { try both("observeSettingsStrictChoices"); }
++test "native settings shared defaults session-share setter uses actual storage and queue" { try both("observeSettingsShareSetter"); }
++test "native settings shared defaults unrelated raw and special methods never consult defaults" { try both("observeSettingsUnrelated"); }
++test "native settings shared defaults optional settings parents and required defaults parents" { try both("observeSettingsNestedParents"); }
++test "native settings shared defaults global cache mode uses mutable retained includes owner" { try both("observeSettingsCacheModes"); }
++test "native settings shared defaults tree modes allocate fresh array before predicate" { try both("observeSettingsTreeModes"); }
++test "native settings shared defaults branch compound repeats original parent lookups" { try both("observeSettingsBranchOrder"); }
++test "native settings shared defaults retry compound preserves live getter and field order" { try both("observeSettingsRetryOrder"); }
++test "native settings shared defaults provider compound only defaults final field" { try both("observeSettingsProviderOrder"); }
++test "native settings shared defaults compaction compound preserves actual live collaborators" { try both("observeSettingsCompactionCalls"); }
++test "native settings shared defaults token wrappers capture live method before arguments" { try both("observeSettingsTokenWrappers"); }
++test "native settings shared defaults private token constants capture once while enabled stays live" { try both("observeSettingsCapturedTokens"); }
++test "native settings shared defaults token ordinary validation and exact errors" { try both("observeSettingsTokenValidation"); }
++test "native settings shared defaults ordinary validation precedes model and override precedence" { try both("observeSettingsTokenPrecedence"); }
++test "native settings shared defaults dynamic keys and provider coercion precede id lookup" { try both("observeSettingsTokenKeyOrder"); }
++test "native settings shared defaults false model suppresses override and optional field work" { try both("observeSettingsTokenModelSuppression"); }
++test "native settings shared defaults mergeable entry uses original live Array predicate" { try both("observeSettingsEntryValidation"); }
++test "native settings shared defaults Error callee and String template evaluation order" { try both("observeSettingsErrorOrder"); }
++test "native settings shared defaults thrown safe-integer predicate suppresses later model" { try both("observeSettingsThrownPredicates"); }
++test "native settings shared defaults width resolves max callee before floor argument" { try both("observeSettingsWidthOrder"); }
++test "native settings shared defaults wheel max min floor live receiver order" { try both("observeSettingsWheelOrder"); }
++test "native settings shared defaults numeric type guards suppress Number lookup" { try both("observeSettingsNumericFallback"); }
++test "native settings shared defaults clear-on-shrink rereads defined value and exact environment" { try both("observeSettingsClearOrder"); }
++test "native settings shared defaults original getter exception retains identity" { try both("observeSettingsGetterFailure"); }
++test "native settings shared defaults successful native private Error remains ordinary data" { try both("observeSettingsPrivateData"); }
++test "native settings shared defaults temporary parent lifetime matches actual original VM" { try both("observeSettingsTemporaryOrder"); }
++test "native settings shared defaults validated local lifetime matches actual original VM" { try both("observeSettingsLocalOrder"); }
++test "native settings shared defaults comparison temporary lifetime matches actual original VM" { try both("observeSettingsComparisonOrder"); }
++test "native settings shared defaults numeric predicate result retires before next lookup" { try both("observeSettingsPredicateOrder"); }
++test "native settings shared defaults token locals and extra argument backing match original VM" { try both("observeSettingsTokenLocalOrder"); }
++test "native settings shared defaults current fatal preempts guest catch and return" { try fatal("observeSettingsCurrentFatal", .current); }
++test "native settings shared defaults actual parent retirement fatal prevents fallback" { try fatal("observeSettingsRetirementFatal", .retirement); }
++test "native settings shared defaults actual parent retirement cancellation prevents fallback" { try fatal("observeSettingsRetirementCancel", .cancelled); }
++test "native settings shared defaults module captures two separate original parent reads once" {
++    try cold(
++        \\const order=[];let n=0;
++        \\Object.defineProperty(settingsColdDefaults,"compaction",{configurable:true,get(){order.push("compaction");return {get reserveTokens(){order.push("reserve");return 41;},get keepRecentTokens(){order.push("keep");return 43;}};}});
++        \\const first=settingsActualAcquire(),second=settingsActualAcquire();
++        \\expectSettings(first===second&&first.defaults===settingsColdDefaults,"one actual cached import capsule");
++        \\sameSettings(order,["compaction","reserve","compaction","keep"],"original once-only capture order");
++        \\sameSettings(first.compactionDefaults,{reserveTokens:41,keepRecentTokens:43},"captured original values");
++        \\sameSettings(first.cacheWarmingModes,["off","streaming","idle"],"actual exported array");
++        \\expectSettings(Object.getPrototypeOf(first)===null,"private capsule is not a public namespace");
++    );
++}
++test "native settings shared defaults failed capture publishes no partial cache and can repair" {
++    try cold(
++        \\const sentinel={same:true},order=[];
++        \\Object.defineProperty(settingsColdDefaults,"compaction",{configurable:true,get(){order.push("failed");throw sentinel;}});
++        \\let caught;try{settingsActualAcquire();}catch(e){caught=e;}
++        \\expectSettings(caught===sentinel,"actual first pending reason");
++        \\Object.defineProperty(settingsColdDefaults,"compaction",{configurable:true,value:{reserveTokens:47,keepRecentTokens:53},writable:true});
++        \\const repaired=settingsActualAcquire();
++        \\expectSettings(repaired.compactionDefaults.reserveTokens===47&&repaired.compactionDefaults.keepRecentTokens===53,"no partial captured constants");
++        \\settingsColdDefaults.compaction={reserveTokens:0,keepRecentTokens:0};
++        \\expectSettings(settingsActualAcquire()===repaired,"warm import stable after repair");
++        \\sameSettings(order,["failed"],"failed getter exactly once");
++    );
++}
++test "native settings shared defaults host pending entry precedes cold or warm cache" {
++    inline for (.{ false, true }) |warm| {
++        const engine = try h.Engine.init(std.testing.allocator, .{});
++        defer engine.deinit();
++        if (warm) engine.freeValue(try accessors.acquire(engine));
++        const reason = try sdk.object(engine);
++        defer engine.freeValue(reason);
++        _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason));
++        try std.testing.expectError(error.JavaScriptException, accessors.acquire(engine));
++        try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, engine.captured_exception orelse return error.MissingOriginalPending));
++        try std.testing.expectEqual(warm, engine.native_module_values.contains("pi-private:actual-sdk-settings-accessor-imports"));
++        try std.testing.expect(engine.native_fatal_invocation == null);
++    }
++}
+diff --git a/src/extensions/fixtures/sdk-settings-default-accessors-4954-source.mjs b/src/extensions/fixtures/sdk-settings-default-accessors-4954-source.mjs
+new file mode 100644
+--- /dev/null
++++ b/src/extensions/fixtures/sdk-settings-default-accessors-4954-source.mjs
+@@ -0,0 +1,243 @@
++(function settingsAccessorsOriginal(SETTINGS_DEFAULTS) {
++"use strict";
++const CACHE_WARMING_MODES = ["off", "streaming", "idle"];
++
++const DEFAULT_COMPACTION_TOKEN_SETTINGS = {
++	reserveTokens: SETTINGS_DEFAULTS.compaction.reserveTokens,
++	keepRecentTokens: SETTINGS_DEFAULTS.compaction.keepRecentTokens,
++};
++
++function isMergeableObject(value) {
++	return typeof value === "object" && value !== null && !Array.isArray(value);
++}
++
++class SourceAccessors {
++	getSteeringMode() {
++		return this.settings.steeringMode || SETTINGS_DEFAULTS.steeringMode;
++	}
++
++	getFollowUpMode() {
++		return this.settings.followUpMode || SETTINGS_DEFAULTS.followUpMode;
++	}
++
++	getTransport() {
++		return this.settings.transport ?? SETTINGS_DEFAULTS.transport;
++	}
++
++	getSessionShareDestination() {
++		const destination = this.settings.sessionShareDestination;
++		return destination === "gist" || destination === "radius"
++			? destination
++			: SETTINGS_DEFAULTS.sessionShareDestination;
++	}
++
++	getCompactionEnabled() {
++		return this.settings.compaction?.enabled ?? SETTINGS_DEFAULTS.compaction.enabled;
++	}
++
++	getCompactionTokenSetting(field, model) {
++		const compaction = this.settings.compaction;
++		const ordinary = compaction?.[field];
++		if (ordinary !== undefined && (typeof ordinary !== "number" || !Number.isSafeInteger(ordinary) || ordinary < 0)) {
++			throw new Error(
++				`Invalid compaction.${field} setting: ${String(ordinary)}. Expected a non-negative safe integer.`,
++			);
++		}
++
++		const modelKey = model ? `${model.provider}/${model.id}` : undefined;
++		const entry = modelKey !== undefined ? compaction?.modelOverrides?.[modelKey] : undefined;
++		if (entry !== undefined && !isMergeableObject(entry)) {
++			throw new Error(
++				`Invalid compaction.modelOverrides["${modelKey}"] setting: ${String(entry)}. Expected an object.`,
++			);
++		}
++		const override = entry?.[field];
++		if (override !== undefined && (typeof override !== "number" || !Number.isSafeInteger(override) || override < 0)) {
++			throw new Error(
++				`Invalid compaction.modelOverrides["${modelKey}"].${field} setting: ${String(override)}. Expected a non-negative safe integer.`,
++			);
++		}
++		return override ?? ordinary ?? DEFAULT_COMPACTION_TOKEN_SETTINGS[field];
++	}
++
++	getCompactionReserveTokens(model) {
++		return this.getCompactionTokenSetting("reserveTokens", model);
++	}
++
++	getCompactionKeepRecentTokens(model) {
++		return this.getCompactionTokenSetting("keepRecentTokens", model);
++	}
++
++	getCompactionSettings(model) {
++		return {
++			enabled: this.getCompactionEnabled(),
++			reserveTokens: this.getCompactionReserveTokens(model),
++			keepRecentTokens: this.getCompactionKeepRecentTokens(model),
++		};
++	}
++
++	getBranchSummarySettings() {
++		return {
++			reserveTokens: this.settings.branchSummary?.reserveTokens ?? SETTINGS_DEFAULTS.branchSummary.reserveTokens,
++			skipPrompt: this.settings.branchSummary?.skipPrompt ?? SETTINGS_DEFAULTS.branchSummary.skipPrompt,
++		};
++	}
++
++	getBranchSummarySkipPrompt() {
++		return this.settings.branchSummary?.skipPrompt ?? SETTINGS_DEFAULTS.branchSummary.skipPrompt;
++	}
++
++	getRetryEnabled() {
++		return this.settings.retry?.enabled ?? SETTINGS_DEFAULTS.retry.enabled;
++	}
++
++	getRetrySettings() {
++		return {
++			enabled: this.getRetryEnabled(),
++			maxRetries: this.settings.retry?.maxRetries ?? SETTINGS_DEFAULTS.retry.maxRetries,
++			baseDelayMs: this.settings.retry?.baseDelayMs ?? SETTINGS_DEFAULTS.retry.baseDelayMs,
++			maxAgentDelayMs: this.settings.retry?.maxAgentDelayMs ?? SETTINGS_DEFAULTS.retry.maxAgentDelayMs,
++		};
++	}
++
++	getCacheWarmingMode() {
++		const mode = this.globalSettings.cacheWarming;
++		return mode !== undefined && CACHE_WARMING_MODES.includes(mode) ? mode : SETTINGS_DEFAULTS.cacheWarming;
++	}
++
++	getProviderRetrySettings() {
++		return {
++			timeoutMs: this.settings.retry?.provider?.timeoutMs,
++			maxRetries: this.settings.retry?.provider?.maxRetries,
++			maxRetryDelayMs:
++				this.settings.retry?.provider?.maxRetryDelayMs ?? SETTINGS_DEFAULTS.retry.provider.maxRetryDelayMs,
++		};
++	}
++
++	getHideThinkingBlock() {
++		return this.settings.hideThinkingBlock ?? SETTINGS_DEFAULTS.hideThinkingBlock;
++	}
++
++	getShowCacheMissNotices() {
++		return this.settings.showCacheMissNotices ?? SETTINGS_DEFAULTS.showCacheMissNotices;
++	}
++
++	getQuietStartup() {
++		const value = this.settings.quietStartup;
++		return value === true || value === "header" ? value : SETTINGS_DEFAULTS.quietStartup;
++	}
++
++	getDefaultProjectTrust() {
++		const value = this.globalSettings.defaultProjectTrust;
++		return value === "always" || value === "never" ? value : SETTINGS_DEFAULTS.defaultProjectTrust;
++	}
++
++	getCollapseChangelog() {
++		return this.settings.collapseChangelog ?? SETTINGS_DEFAULTS.collapseChangelog;
++	}
++
++	getEnableInstallTelemetry() {
++		return this.settings.enableInstallTelemetry ?? SETTINGS_DEFAULTS.enableInstallTelemetry;
++	}
++
++	getEnableAnalytics() {
++		return this.settings.enableAnalytics ?? SETTINGS_DEFAULTS.enableAnalytics;
++	}
++
++	getEnableSkillCommands() {
++		return this.settings.enableSkillCommands ?? SETTINGS_DEFAULTS.enableSkillCommands;
++	}
++
++	getShowImages() {
++		return this.settings.terminal?.showImages ?? SETTINGS_DEFAULTS.terminal.showImages;
++	}
++
++	getImageWidthCells() {
++		const width = this.settings.terminal?.imageWidthCells;
++		if (typeof width !== "number" || !Number.isFinite(width)) {
++			return SETTINGS_DEFAULTS.terminal.imageWidthCells;
++		}
++		return Math.max(1, Math.floor(width));
++	}
++
++	getClearOnShrink() {
++		// Settings takes precedence, then env var, then default false
++		if (this.settings.terminal?.clearOnShrink !== undefined) {
++			return this.settings.terminal.clearOnShrink;
++		}
++		if (process.env.PI_CLEAR_ON_SHRINK === "1") return true;
++		return SETTINGS_DEFAULTS.terminal.clearOnShrink;
++	}
++
++	getShowTerminalProgress() {
++		return this.settings.terminal?.showTerminalProgress ?? SETTINGS_DEFAULTS.terminal.showTerminalProgress;
++	}
++
++	getTuiMode() {
++		return this.settings.tuiMode === "regular" ? "regular" : SETTINGS_DEFAULTS.tuiMode;
++	}
++
++	getFullscreenExitOutput() {
++		return this.settings.fullscreenExitOutput === "resume-hint"
++			? "resume-hint"
++			: SETTINGS_DEFAULTS.fullscreenExitOutput;
++	}
++
++	getFullscreenScrollbar() {
++		const mode = this.settings.fullscreenScrollbar;
++		return mode === "always" || mode === "hidden" ? mode : SETTINGS_DEFAULTS.fullscreenScrollbar;
++	}
++
++	getFullscreenCopyOnSelect() {
++		return this.settings.fullscreenCopyOnSelect ?? SETTINGS_DEFAULTS.fullscreenCopyOnSelect;
++	}
++
++	getFullscreenWheelScrollLines() {
++		const lines = this.settings.fullscreenWheelScrollLines;
++		return typeof lines === "number" && Number.isFinite(lines)
++			? Math.max(1, Math.min(100, Math.floor(lines)))
++			: SETTINGS_DEFAULTS.fullscreenWheelScrollLines;
++	}
++
++	getImageAutoResize() {
++		return this.settings.images?.autoResize ?? SETTINGS_DEFAULTS.images.autoResize;
++	}
++
++	getBlockImages() {
++		return this.settings.images?.blockImages ?? SETTINGS_DEFAULTS.images.blockImages;
++	}
++
++	getDoubleEscapeAction() {
++		return this.settings.doubleEscapeAction ?? SETTINGS_DEFAULTS.doubleEscapeAction;
++	}
++
++	getTreeFilterMode() {
++		const mode = this.settings.treeFilterMode;
++		const valid = ["default", "no-tools", "user-only", "labeled-only", "all"];
++		return mode && valid.includes(mode) ? mode : SETTINGS_DEFAULTS.treeFilterMode;
++	}
++
++	getEditorPaddingX() {
++		return this.settings.editorPaddingX ?? SETTINGS_DEFAULTS.editorPaddingX;
++	}
++
++	getOutputPad() {
++		return this.settings.outputPad === 0 ? 0 : SETTINGS_DEFAULTS.outputPad;
++	}
++
++	getAutocompleteMaxVisible() {
++		return this.settings.autocompleteMaxVisible ?? SETTINGS_DEFAULTS.autocompleteMaxVisible;
++	}
++
++	getCodeBlockIndent() {
++		return this.settings.markdown?.codeBlockIndent ?? SETTINGS_DEFAULTS.markdown.codeBlockIndent;
++	}
++
++	getMermaidRenderingMode() {
++		const mode = this.settings.markdown?.mermaid;
++		return mode === "off" || mode === "final" ? mode : SETTINGS_DEFAULTS.markdown.mermaid;
++	}
++}
++
++return { methods: SourceAccessors.prototype, CACHE_WARMING_MODES };
++})
+diff --git a/src/extensions/fixtures/sdk-settings-shared-defaults-observer.mjs b/src/extensions/fixtures/sdk-settings-shared-defaults-observer.mjs
+new file mode 100644
+--- /dev/null
++++ b/src/extensions/fixtures/sdk-settings-shared-defaults-observer.mjs
+@@ -0,0 +1,465 @@
++"use strict";
++function expectSettings(value, message) { if (!value) throw new Error(message); }
++function sameSettings(actual, expected, message) {
++  expectSettings(JSON.stringify(actual) === JSON.stringify(expected), message + ": " + JSON.stringify(actual));
++}
++const simpleSettingsRows = [
++ ["getSteeringMode",["steeringMode"]], ["getFollowUpMode",["followUpMode"]],
++ ["getTransport",["transport"]], ["getCompactionEnabled",["compaction","enabled"]],
++ ["getBranchSummarySkipPrompt",["branchSummary","skipPrompt"]], ["getRetryEnabled",["retry","enabled"]],
++ ["getHideThinkingBlock",["hideThinkingBlock"]], ["getShowCacheMissNotices",["showCacheMissNotices"]],
++ ["getCollapseChangelog",["collapseChangelog"]], ["getEnableInstallTelemetry",["enableInstallTelemetry"]],
++ ["getEnableAnalytics",["enableAnalytics"]], ["getEnableSkillCommands",["enableSkillCommands"]],
++ ["getShowImages",["terminal","showImages"]], ["getShowTerminalProgress",["terminal","showTerminalProgress"]],
++ ["getFullscreenCopyOnSelect",["fullscreenCopyOnSelect"]], ["getImageAutoResize",["images","autoResize"]],
++ ["getBlockImages",["images","blockImages"]], ["getDoubleEscapeAction",["doubleEscapeAction"]],
++ ["getEditorPaddingX",["editorPaddingX"]], ["getAutocompleteMaxVisible",["autocompleteMaxVisible"]],
++ ["getCodeBlockIndent",["markdown","codeBlockIndent"]]
++];
++function settingsParent(root, path) {
++  let value = root;
++  for (const name of path.slice(0,-1)) value = value[name] ??= {};
++  return value;
++}
++function settingsWrite(root,path,value) { settingsParent(root,path)[path.at(-1)] = value; }
++function settingsGet(root,path,get) {
++  Object.defineProperty(settingsParent(root,path),path.at(-1),{get,configurable:true});
++}
++function resetSettings(subject) { subject.data.settings={};subject.data.global={}; }
++function observeSettingsShapes(s) {
++  const arities={getCompactionTokenSetting:2,getCompactionReserveTokens:1,getCompactionKeepRecentTokens:1,getCompactionSettings:1};
++  const names=s.names;
++  expectSettings(names.length===41,"complete selected getter set");
++  for(const name of names) {
++    const fn=s.manager[name];
++    expectSettings(typeof fn==="function" && fn.name===name && fn.length===(arities[name]??0),"method metadata "+name);
++    expectSettings(!Object.hasOwn(fn,"prototype"),"genuine nonconstructible method "+name);
++    let threw=false;try{Reflect.construct(fn,[]);}catch(e){threw=e instanceof TypeError;}
++    expectSettings(threw,"nonconstructible "+name);
++  }
++  expectSettings(s.manager instanceof s.SettingsManager && s.second instanceof s.SettingsManager,"actual manager constructor");
++  expectSettings(typeof s.manager.setSessionShareDestination==="function","original missing setter installed");
++  return names;
++}
++function observeSettingsDefinedSuppression(s) {
++  const seen=[];
++  for(const [method,path] of simpleSettingsRows) {
++    resetSettings(s);
++    const marker={method};
++    settingsWrite(s.data.settings,path,marker);
++    settingsGet(s.defaults,path,()=>{seen.push(method);throw new Error("eager default");});
++    expectSettings(s.manager[method]()===marker,"defined value identity "+method);
++  }
++  sameSettings(seen,[],"no unnecessary fallback Get");
++  return true;
++}
++function observeSettingsLiveFallbacks(s) {
++  const seen=[];
++  for(const [method,path] of simpleSettingsRows) {
++    resetSettings(s);
++    let current={method,version:1};
++    settingsWrite(s.data.settings,path,null);
++    settingsGet(s.defaults,path,()=>{seen.push(method);return current;});
++    expectSettings(s.manager[method]()===current,"null live fallback "+method);
++    current={method,version:2};
++    settingsWrite(s.data.settings,path,undefined);
++    expectSettings(s.manager[method]()===current,"undefined live fallback "+method);
++  }
++  expectSettings(seen.length===42,"one actual fallback per invocation");
++  return seen;
++}
++function observeSettingsNullishAndTruthy(s) {
++  const values=[false,0,"",NaN,null,undefined];
++  for(const [method,path] of simpleSettingsRows) {
++    resetSettings(s);const marker={method};settingsWrite(s.defaults,path,marker);
++    for(const value of values){
++      settingsWrite(s.data.settings,path,value);
++      const truthy=method==="getSteeringMode"||method==="getFollowUpMode";
++      const expected=truthy?!value:value==null;
++      const actual=s.manager[method]();
++      expectSettings(expected?actual===marker:Object.is(actual,value),"nullish versus truthy "+method);
++    }
++  }
++  return true;
++}
++function observeSettingsSharedIdentity(s) {
++  const first={phase:1},second={phase:2};s.defaults.transport=first;
++  expectSettings(s.manager.getTransport()===first&&s.second.getTransport()===first,"shared first value");
++  s.defaults.transport=second;
++  expectSettings(s.manager.getTransport()===second&&s.second.getTransport()===second,"shared replacement");
++  s.data.accessorDefaults={transport:"foreign old per-instance asset"};
++  expectSettings(s.manager.getTransport()===second,"old accessorDefaults cannot shadow actual shared import");
++  return true;
++}
++function observeSettingsGlobalTrust(s) {
++  const order=[];const selected={selected:true};
++  s.data.settings={defaultProjectTrust:"always"};
++  Object.defineProperty(s.data.global,"defaultProjectTrust",{configurable:true,get(){order.push("global");return "ask";}});
++  settingsGet(s.defaults,["defaultProjectTrust"],()=>{order.push("default");return selected;});
++  expectSettings(s.manager.getDefaultProjectTrust()===selected,"ask must select live fallback");
++  for(const policy of ["always","never"]){
++    Object.defineProperty(s.data.global,"defaultProjectTrust",{configurable:true,value:policy,writable:true});
++    expectSettings(s.manager.getDefaultProjectTrust()===policy,"global accepted policy");
++  }
++  sameSettings(order,["global","default"],"trust global and conditional order");
++  return order;
++}
++function observeSettingsShare(s) {
++  const selected={auto:"live"};s.defaults.sessionShareDestination=selected;
++  for(const value of ["auto","other",null,undefined,0]){
++    s.data.settings.sessionShareDestination=value;
++    expectSettings(s.manager.getSessionShareDestination()===selected,"share invalid/live fallback");
++  }
++  settingsGet(s.defaults,["sessionShareDestination"],()=>{throw new Error("accepted share read fallback");});
++  for(const value of ["gist","radius"]){s.data.settings.sessionShareDestination=value;expectSettings(s.manager.getSessionShareDestination()===value,"accepted destination");}
++  return true;
++}
++function observeSettingsStrictChoices(s) {
++  const rows=[
++   ["getQuietStartup",["quietStartup"],[true,"header"],[false,"quiet","other"]],
++   ["getTuiMode",["tuiMode"],["regular"],["fullscreen","other"]],
++   ["getFullscreenExitOutput",["fullscreenExitOutput"],["resume-hint"],["transcript","other"]],
++   ["getFullscreenScrollbar",["fullscreenScrollbar"],["always","hidden"],["auto","other"]],
++   ["getMermaidRenderingMode",["markdown","mermaid"],["off","final"],["streaming","other"]],
++  ];
++  for(const [method,path,accepted,rejected] of rows){
++    resetSettings(s);const marker={method};let reads=0;
++    settingsGet(s.defaults,path,()=>{reads++;return marker;});
++    for(const value of accepted){settingsWrite(s.data.settings,path,value);expectSettings(s.manager[method]()===value,"strict accepted "+method);}
++    expectSettings(reads===0,"strict accepted fallback suppressed");
++    for(const value of [...rejected,null,undefined,{},new String(accepted[0])]){
++      settingsWrite(s.data.settings,path,value);expectSettings(s.manager[method]()===marker,"strict rejected "+method);
++    }
++    expectSettings(reads===rejected.length+4,"strict rejection count");
++  }
++  s.data.settings={outputPad:-0};settingsGet(s.defaults,["outputPad"],()=>{throw new Error("zero fallback");});
++  expectSettings(Object.is(s.manager.getOutputPad(),0),"literal positive zero");
++  return true;
++}
++async function observeSettingsShareSetter(s) {
++  const value=s.manager.setSessionShareDestination("radius");
++  expectSettings(value===undefined,"setter has original void result");
++  const flushed=s.manager.flush();await flushed;
++  expectSettings(s.manager.getSessionShareDestination()==="radius","actual getter after setter/save");
++  expectSettings(s.manager.getGlobalSettings().sessionShareDestination==="radius","actual global storage mutation");
++  sameSettings(s.manager.drainErrors(),[],"memory persistence queue succeeds");
++  return true;
++}
++function observeSettingsUnrelated(s) {
++  for(const name of Object.keys(s.defaults))Object.defineProperty(s.defaults,name,{configurable:true,get(){throw new Error("unrelated fallback "+name);}});
++  s.data.settings={defaultProvider:"real",theme:"dark",enabledModels:["x"],warnings:{first:true},terminal:{images:"kitty",hyperlinks:false}};
++  expectSettings(s.manager.getDefaultProvider()==="real","raw field");
++  expectSettings(s.manager.getThemeSetting()==="dark","unrelated special field");
++  expectSettings(s.manager.getEnabledModels()===s.data.settings.enabledModels,"raw array field");
++  sameSettings(s.manager.getWarnings(),{first:true},"ordinary warnings clone");
++  sameSettings(s.manager.getTerminalCapabilityOverrides(),{images:"kitty",hyperlinks:false},"unrelated compound no default");
++  return true;
++}
++function observeSettingsNestedParents(s) {
++  for(const value of [undefined,null]){
++    s.data.settings={terminal:value};s.defaults.terminal={showImages:"live"};
++    expectSettings(s.manager.getShowImages()==="live","settings parent optional");
++  }
++  s.defaults.terminal=null;
++  let failed=false;try{s.manager.getShowImages();}catch(e){failed=e instanceof TypeError;}
++  expectSettings(failed,"default parent is not optional");
++  s.data.settings=null;let rootFailed=false;try{s.manager.getShowImages();}catch(e){rootFailed=e instanceof TypeError;}
++  expectSettings(rootFailed,"settings field root is not optional");
++  return true;
++}
++function observeSettingsCacheModes(s) {
++  const order=[];const selected={fallback:true};s.defaults.cacheWarming=selected;
++  Object.defineProperty(s.modes,"includes",{configurable:true,get(){order.push("get includes");return function(mode){expectSettings(this===s.modes,"actual mode receiver");order.push(mode);return mode==="custom";};}});
++  s.data.settings.cacheWarming="streaming";
++  expectSettings(s.manager.getCacheWarmingMode()===selected,"only global mode and undefined suppresses includes");
++  s.data.global.cacheWarming="custom";expectSettings(s.manager.getCacheWarmingMode()==="custom","mutable exported mode owner");
++  s.data.global.cacheWarming=null;expectSettings(s.manager.getCacheWarmingMode()===selected,"null calls includes then fallback");
++  sameSettings(order,["get includes","custom","get includes",null],"mode callback order");
++  return order;
++}
++function observeSettingsTreeModes(s) {
++  const original=Object.getOwnPropertyDescriptor(Array.prototype,"includes"),seen=[];
++  try{
++    Object.defineProperty(Array.prototype,"includes",{configurable:true,get(){const array=this;seen.push(array);return function(mode){expectSettings(this===array,"fresh array receiver");return mode==="custom";};}});
++    s.data.settings.treeFilterMode=0;s.defaults.treeFilterMode="fallback";
++    expectSettings(s.manager.getTreeFilterMode()==="fallback"&&seen.length===0,"false mode suppresses method lookup");
++    s.data.settings.treeFilterMode="custom";
++    expectSettings(s.manager.getTreeFilterMode()==="custom"&&s.manager.getTreeFilterMode()==="custom","live fresh includes");
++  }finally{Object.defineProperty(Array.prototype,"includes",original);}
++  expectSettings(seen.length===2&&seen[0]!==seen[1],"one fresh original valid array per invocation");
++  sameSettings(seen[0],["default","no-tools","user-only","labeled-only","all"],"exact valid modes");
++  return true;
++}
++function observeSettingsBranchOrder(s) {
++  const order=[];let parents=0;
++  Object.defineProperty(s.data,"settings",{configurable:true,get(){order.push("settings");return {get branchSummary(){order.push("branch "+(++parents));return parents===1?{reserveTokens:undefined}:{skipPrompt:false};}};}});
++  Object.defineProperty(s.defaults,"branchSummary",{configurable:true,get(){order.push("default branch");return {get reserveTokens(){order.push("default reserve");return 7;},get skipPrompt(){throw new Error("unexpected fallback");}};}});
++  sameSettings(s.manager.getBranchSummarySettings(),{reserveTokens:7,skipPrompt:false},"branch values");
++  sameSettings(order,["settings","branch 1","default branch","default reserve","settings","branch 2"],"repeated original parent Gets");
++  return order;
++}
++function observeSettingsRetryOrder(s) {
++  const order=[];let n=0;s.manager.getRetryEnabled=function(){expectSettings(this===s.manager,"live retry receiver");order.push("enabled");return "override";};
++  Object.defineProperty(s.data,"settings",{configurable:true,get(){order.push("settings");return {get retry(){order.push("retry "+(++n));return n===1?{maxRetries:2}:n===2?{baseDelayMs:null}:{maxAgentDelayMs:9};}};}});
++  Object.defineProperty(s.defaults,"retry",{configurable:true,get(){order.push("default retry");return {get baseDelayMs(){order.push("default delay");return 4;}};}});
++  sameSettings(s.manager.getRetrySettings(),{enabled:"override",maxRetries:2,baseDelayMs:4,maxAgentDelayMs:9},"retry values");
++  sameSettings(order,["enabled","settings","retry 1","settings","retry 2","default retry","default delay","settings","retry 3"],"live call and repeated retry fields");
++  return order;
++}
++function observeSettingsProviderOrder(s) {
++  const order=[];let n=0;
++  Object.defineProperty(s.data,"settings",{configurable:true,get(){order.push("settings");return {get retry(){order.push("retry");return {get provider(){order.push("provider "+(++n));return n===1?{timeoutMs:3}:n===2?{maxRetries:undefined}:null;}};}};}});
++  Object.defineProperty(s.defaults,"retry",{configurable:true,get(){order.push("default retry");return {get provider(){order.push("default provider");return {get maxRetryDelayMs(){order.push("default delay");return 11;}};}};}});
++  const result=s.manager.getProviderRetrySettings();
++  expectSettings(result.timeoutMs===3&&Object.hasOwn(result,"maxRetries")&&result.maxRetries===undefined&&result.maxRetryDelayMs===11,"provider fields and own undefined");
++  sameSettings(order,["settings","retry","provider 1","settings","retry","provider 2","settings","retry","provider 3","default retry","default provider","default delay"],"provider order");
++  return order;
++}
++function observeSettingsCompactionCalls(s) {
++  const order=[],model={provider:"p",id:"m"};
++  for(const [name,result] of [["getCompactionEnabled","enabled"],["getCompactionReserveTokens",17],["getCompactionKeepRecentTokens",19]]){
++    Object.defineProperty(s.manager,name,{configurable:true,get(){order.push("get "+name);return function(...args){expectSettings(this===s.manager,"actual method receiver");expectSettings(name==="getCompactionEnabled"?args.length===0:args.length===1&&args[0]===model,"original model argument");order.push("call "+name);return result;};}});
++  }
++  sameSettings(s.manager.getCompactionSettings(model),{enabled:"enabled",reserveTokens:17,keepRecentTokens:19},"compaction values");
++  return order;
++}
++function observeSettingsTokenWrappers(s) {
++  const model={},order=[];
++  Object.defineProperty(s.manager,"getCompactionTokenSetting",{configurable:true,get(){order.push("get");return function(field,value){expectSettings(this===s.manager&&value===model,"live token wrapper call");order.push(field);return field;};}});
++  expectSettings(s.manager.getCompactionReserveTokens(model)==="reserveTokens","reserve wrapper");
++  expectSettings(s.manager.getCompactionKeepRecentTokens(model)==="keepRecentTokens","keep wrapper");
++  sameSettings(order,["get","reserveTokens","get","keepRecentTokens"],"wrapper field and method order");
++  return order;
++}
++function observeSettingsCapturedTokens(s) {
++  const before=s.manager.getCompactionReserveTokens(),other=s.manager.getCompactionKeepRecentTokens();
++  s.defaults.compaction.reserveTokens=1;s.defaults.compaction.keepRecentTokens=2;s.defaults.compaction.enabled="live-enabled";
++  expectSettings(s.manager.getCompactionReserveTokens()===before&&s.second.getCompactionKeepRecentTokens()===other,"original module captured token defaults");
++  expectSettings(s.manager.getCompactionEnabled()==="live-enabled","unrelated compaction enabled fallback remains live");
++  return [before,other];
++}
++
++function observeSettingsTokenValidation(s) {
++  const good=[0,-0,1,9007199254740991];
++  for(const value of good){s.data.settings={compaction:{reserveTokens:value}};expectSettings(Object.is(s.manager.getCompactionReserveTokens(),value),"exact valid ordinary");}
++  const bad=[null,false,"1",-1,1.5,NaN,Infinity,9007199254740992];
++  const messages=[];
++  for(const value of bad){
++    s.data.settings={compaction:{reserveTokens:value}};
++    let reason;try{s.manager.getCompactionReserveTokens();}catch(e){reason=e;}
++    expectSettings(reason instanceof Error,"invalid ordinary throws actual Error");
++    const expected="Invalid compaction.reserveTokens setting: "+String(value)+". Expected a non-negative safe integer.";
++    expectSettings(reason.message===expected,"exact ordinary error message");messages.push(reason.message);
++  }
++  return messages;
++}
++function observeSettingsTokenPrecedence(s) {
++  const model={provider:"p",id:"m"};
++  s.data.settings={compaction:{reserveTokens:3,modelOverrides:{"p/m":{reserveTokens:9}}}};
++  expectSettings(s.manager.getCompactionReserveTokens(model)===9,"model override wins");
++  s.data.settings.compaction.modelOverrides["p/m"]={};
++  expectSettings(s.manager.getCompactionReserveTokens(model)===3,"ordinary fallback");
++  s.data.settings.compaction.reserveTokens=null;
++  Object.defineProperty(model,"provider",{get(){throw new Error("ordinary must fail before model");}});
++  let reason;try{s.manager.getCompactionReserveTokens(model);}catch(e){reason=e;}
++  expectSettings(reason.message==="Invalid compaction.reserveTokens setting: null. Expected a non-negative safe integer.","ordinary validation precedes model");
++  s.data.settings={compaction:{modelOverrides:{"p/m":{reserveTokens:-2}}}};
++  let overrideReason;try{s.manager.getCompactionReserveTokens({provider:"p",id:"m"});}catch(e){overrideReason=e;}
++  expectSettings(overrideReason.message==='Invalid compaction.modelOverrides["p/m"].reserveTokens setting: -2. Expected a non-negative safe integer.',"override exact message");
++  return true;
++}
++function observeSettingsTokenKeyOrder(s) {
++  const order=[],field={[Symbol.toPrimitive](hint){order.push("field:"+hint);return "reserveTokens";}};
++  const model={get provider(){order.push("provider");return {toString(){order.push("provider string");return "p";}};},
++    get id(){order.push("id");return {toString(){order.push("id string");return "m";}};}};
++  const entry=new Proxy({}, {get(target,key,receiver){order.push("entry:"+String(key));return Reflect.get(target,key,receiver);}});
++  s.data.settings={get compaction(){order.push("compaction");return {get reserveTokens(){order.push("ordinary");return undefined;},get modelOverrides(){order.push("overrides");return {"p/m":entry};}};}};
++  const actual=s.manager.getCompactionTokenSetting(field,model);
++  expectSettings(typeof actual==="number","captured token fallback");
++  sameSettings(order,["compaction","field:string","ordinary","provider","provider string","id","id string","overrides","field:string","entry:reserveTokens","field:string"],"optional dynamic key and template coercion order");
++  return order;
++}
++function observeSettingsTokenModelSuppression(s) {
++  const order=[],field={[Symbol.toPrimitive](){order.push("key");return "reserveTokens";}};
++  s.data.settings={compaction:{get modelOverrides(){throw new Error("false model must suppress overrides");}}};
++  for(const model of [false,0,"",null,undefined])expectSettings(typeof s.manager.getCompactionTokenSetting(field,model)==="number","false model skip");
++  expectSettings(order.length===10,"only ordinary and fallback keys on false models");
++  return order;
++}
++function observeSettingsEntryValidation(s) {
++  const original=Array.isArray,order=[];
++  try{
++    Array.isArray=function(value){expectSettings(this===Array,"Array.isArray receiver");order.push("isArray");return original(value);};
++    for(const value of [null,function(){},[],false,1]){
++      s.data.settings={compaction:{modelOverrides:{"p/m":value}}};
++      let reason;try{s.manager.getCompactionReserveTokens({provider:"p",id:"m"});}catch(e){reason=e;}
++      expectSettings(reason instanceof Error&&reason.message.startsWith('Invalid compaction.modelOverrides["p/m"] setting:'),"bad entry error");
++    }
++    expectSettings(order.length===1,"only array object enters live Array.isArray");
++    Array.isArray=function(value){order.push("permissive");return false;};
++    const array=[];array.reserveTokens=7;s.data.settings.compaction.modelOverrides["p/m"]=array;
++    expectSettings(s.manager.getCompactionReserveTokens({provider:"p",id:"m"})===7,"live predicate accepted array");
++  }finally{Array.isArray=original;}
++  return order;
++}
++function observeSettingsErrorOrder(s) {
++  const originalError=Object.getOwnPropertyDescriptor(globalThis,"Error"),originalString=Object.getOwnPropertyDescriptor(globalThis,"String"),order=[];
++  const errorMarker={selected:true};
++  const raw={toString(){order.push("raw toString");return "raw";}};
++  const field={[Symbol.toPrimitive](hint){order.push("field:"+hint);return "reserveTokens";}};
++  s.data.settings={compaction:{reserveTokens:raw}};
++  try{
++    Object.defineProperty(globalThis,"Error",{configurable:true,get(){order.push("Error");return function(message){order.push("construct:"+message);return errorMarker;};}});
++    Object.defineProperty(globalThis,"String",{configurable:true,get(){order.push("String");return function(value){expectSettings(this===undefined&&value===raw,"String actual argument");order.push("String call");return {toString(){order.push("display stringify");return "display";}};};}});
++    let observed;try{s.manager.getCompactionTokenSetting(field);}catch(e){observed=e;}
++    expectSettings(observed===errorMarker,"actual constructed reason");
++  }finally{Object.defineProperty(globalThis,"Error",originalError);Object.defineProperty(globalThis,"String",originalString);}
++  sameSettings(order,["field:string","Error","field:string","String","String call","display stringify","construct:Invalid compaction.reserveTokens setting: display. Expected a non-negative safe integer."],"error callee before original template/String coercions");
++  return order;
++}
++function observeSettingsThrownPredicates(s) {
++  const original=Number.isSafeInteger,sentinel={same:true},order=[];
++  try{
++    Number.isSafeInteger=function(value){order.push(value);throw sentinel;};
++    s.data.settings={compaction:{reserveTokens:1, get modelOverrides(){throw new Error("later field");}}};
++    let observed;try{s.manager.getCompactionReserveTokens({get provider(){throw new Error("later model");}});}catch(e){observed=e;}
++    expectSettings(observed===sentinel,"predicate pending identity");
++  }finally{Number.isSafeInteger=original;}
++  sameSettings(order,[1],"one predicate call");
++  return order;
++}
++function observeSettingsWidthOrder(s) {
++  const savedNumber=Object.getOwnPropertyDescriptor(globalThis,"Number"),savedMath=Object.getOwnPropertyDescriptor(globalThis,"Math"),order=[];
++  const marker={final:true};
++  const numberOwner={get isFinite(){order.push("isFinite");return function(value){expectSettings(this===numberOwner&&value===3.8,"finite receiver/value");order.push("finite call");return true;};}};
++  let mathCount=0;
++  const maxOwner={get max(){order.push("max");return function(a,b){expectSettings(this===maxOwner&&a===1&&b===3,"max receiver/args");order.push("max call");return marker;};}};
++  const floorOwner={get floor(){order.push("floor");return function(value){expectSettings(this===floorOwner&&value===3.8,"floor receiver/arg");order.push("floor call");return 3;};}};
++  s.data.settings={terminal:{imageWidthCells:3.8}};
++  try{
++    Object.defineProperty(globalThis,"Number",{configurable:true,get(){order.push("Number");return numberOwner;}});
++    Object.defineProperty(globalThis,"Math",{configurable:true,get(){order.push("Math");return ++mathCount===1?maxOwner:floorOwner;}});
++    expectSettings(s.manager.getImageWidthCells()===marker,"actual Math result forwarded");
++  }finally{Object.defineProperty(globalThis,"Number",savedNumber);Object.defineProperty(globalThis,"Math",savedMath);}
++  sameSettings(order,["Number","isFinite","finite call","Math","max","Math","floor","floor call","max call"],"outer callee before nested argument");
++  return order;
++}
++function observeSettingsWheelOrder(s) {
++  const saved=Object.getOwnPropertyDescriptor(globalThis,"Math"),order=[],owners=[];
++  const max={get max(){order.push("max get");return function(a,b){expectSettings(this===max&&a===1&&b===100,"max args");order.push("max call");return 100;};}};
++  const min={get min(){order.push("min get");return function(a,b){expectSettings(this===min&&a===100&&b===130,"min args");order.push("min call");return 100;};}};
++  const floor={get floor(){order.push("floor get");return function(value){expectSettings(this===floor&&value===130.7,"floor args");order.push("floor call");return 130;};}};
++  owners.push(max,min,floor);let i=0;s.data.settings={fullscreenWheelScrollLines:130.7};
++  try{Object.defineProperty(globalThis,"Math",{configurable:true,get(){order.push("Math");return owners[i++];}});expectSettings(s.manager.getFullscreenWheelScrollLines()===100,"bounded wheel result");}
++  finally{Object.defineProperty(globalThis,"Math",saved);}
++  sameSettings(order,["Math","max get","Math","min get","Math","floor get","floor call","min call","max call"],"nested original math order");
++  return order;
++}
++function observeSettingsNumericFallback(s) {
++  const original=Number.isFinite,order=[];
++  s.defaults.terminal.imageWidthCells="live-width";s.defaults.fullscreenWheelScrollLines="live-wheel";
++  try{
++    Number.isFinite=function(value){order.push(value);return false;};
++    for(const value of ["3",null,undefined,{},false]){
++      s.data.settings={terminal:{imageWidthCells:value},fullscreenWheelScrollLines:value};
++      expectSettings(s.manager.getImageWidthCells()==="live-width"&&s.manager.getFullscreenWheelScrollLines()==="live-wheel","non-number fallback");
++    }
++    expectSettings(order.length===0,"typeof suppresses global numeric call");
++    s.data.settings={terminal:{imageWidthCells:2},fullscreenWheelScrollLines:3};
++    expectSettings(s.manager.getImageWidthCells()==="live-width"&&s.manager.getFullscreenWheelScrollLines()==="live-wheel","false live predicate");
++  }finally{Number.isFinite=original;}
++  sameSettings(order,[2,3],"live numeric predicate only on numbers");
++  return order;
++}
++function observeSettingsClearOrder(s) {
++  const order=[];let reads=0;
++  Object.defineProperty(s.data,"settings",{configurable:true,get(){order.push("settings");return {get terminal(){order.push("terminal");return {get clearOnShrink(){order.push("clear "+(++reads));return reads===1?null:"second";}};}};}});
++  expectSettings(s.manager.getClearOnShrink()==="second","defined null causes original second read");
++  sameSettings(order,["settings","terminal","clear 1","settings","terminal","clear 2"],"clear defined branch rereads");
++  Object.defineProperty(s.data,"settings",{configurable:true,value:{},writable:true});
++  s.defaults.terminal.clearOnShrink="live-clear";
++  const old=Object.getOwnPropertyDescriptor(process.env,"PI_CLEAR_ON_SHRINK");
++  try{
++    Object.defineProperty(process.env,"PI_CLEAR_ON_SHRINK",{configurable:true,writable:true,value:"1"});expectSettings(s.manager.getClearOnShrink()===true,"literal env one");
++    process.env.PI_CLEAR_ON_SHRINK=1;expectSettings(s.manager.getClearOnShrink()==="live-clear","number one does not match");
++    process.env.PI_CLEAR_ON_SHRINK="0";expectSettings(s.manager.getClearOnShrink()==="live-clear","env false live fallback");
++  }finally{if(old)Object.defineProperty(process.env,"PI_CLEAR_ON_SHRINK",old);else delete process.env.PI_CLEAR_ON_SHRINK;}
++  return order;
++}
++function observeSettingsGetterFailure(s) {
++  const sentinel={pending:true},order=[];
++  Object.defineProperty(s.data.settings,"transport",{get(){order.push("settings");throw sentinel;}});
++  settingsGet(s.defaults,["transport"],()=>{order.push("default");throw new Error("later fallback");});
++  let observed;try{s.manager.getTransport();}catch(e){observed=e;}
++  expectSettings(observed===sentinel,"original pending identity");sameSettings(order,["settings"],"abrupt getter suppresses fallback");
++  return order;
++}
++function observeSettingsPrivateData(s,h) {
++  const data=h.freshPrivateData();s.defaults.transport=data;
++  expectSettings(s.manager.getTransport()===data&&h.isUnmarkedPrivateData(data),"successful actual private Error remains ordinary data");
++  return true;
++}
++function observeSettingsTemporaryOrder(s,h) {
++  const order=[];
++  s.data.settings={get terminal(){const parent=h.make(0);Object.defineProperty(parent,"showImages",{get(){order.push(["field",h.count(0)]);return undefined;}});return parent;}};
++  Object.defineProperty(s.defaults,"terminal",{configurable:true,get(){order.push(["default parent",h.count(0)]);const parent=h.make(1);Object.defineProperty(parent,"showImages",{get(){order.push(["default field",h.count(1)]);return true;}});return parent;}});
++  expectSettings(s.manager.getShowImages()===true,"temporary path result");
++  order.push(["returned",h.count(0),h.count(1)]);
++  return order;
++}
++function observeSettingsLocalOrder(s,h) {
++  const order=[];
++  s.data.settings={get sessionShareDestination(){return h.make(0);}};
++  settingsGet(s.defaults,["sessionShareDestination"],()=>{order.push(["fallback",h.count(0)]);return "auto";});
++  expectSettings(s.manager.getSessionShareDestination()==="auto","local fallback");
++  order.push(["returned",h.count(0)]);
++  return order;
++}
++function observeSettingsComparisonOrder(s,h) {
++  const order=[];
++  s.data.settings={get tuiMode(){return h.make(0);}};
++  settingsGet(s.defaults,["tuiMode"],()=>{order.push(["fallback",h.count(0)]);return "fullscreen";});
++  expectSettings(s.manager.getTuiMode()==="fullscreen","temporary comparison fallback");
++  order.push(["returned",h.count(0)]);
++  return order;
++}
++function observeSettingsPredicateOrder(s,h) {
++  const saved=Number.isFinite,savedMath=Object.getOwnPropertyDescriptor(globalThis,"Math"),order=[];
++  const actualMath=Math;s.data.settings={terminal:{imageWidthCells:4}};
++  try{
++    Number.isFinite=()=>h.make(0);
++    Object.defineProperty(globalThis,"Math",{configurable:true,get(){order.push(["Math",h.count(0)]);return actualMath;}});
++    expectSettings(s.manager.getImageWidthCells()===4,"truthy predicate result");
++  }finally{Number.isFinite=saved;Object.defineProperty(globalThis,"Math",savedMath);}
++  order.push(["returned",h.count(0)]);return order;
++}
++function observeSettingsTokenLocalOrder(s,h) {
++  const order=[];
++  const model={provider:"p",id:"m"};
++  s.data.settings={get compaction(){const compaction=h.make(0);compaction.reserveTokens=3;compaction.modelOverrides={"p/m":{reserveTokens:5}};return compaction;}};
++  const saved=Number.isSafeInteger;
++  try{Number.isSafeInteger=function(value){order.push([value,h.count(0),h.count(1)]);return true;};
++    s.manager.getCompactionTokenSetting("reserveTokens",model,h.make(1));
++  }finally{Number.isSafeInteger=saved;}
++  order.push(["returned",h.count(0),h.count(1)]);return order;
++}
++function observeSettingsCurrentFatal(s,h) {
++  h.freshPrivateData();
++  settingsGet(s.defaults,["transport"],()=>{h.raiseNativeFatal();h.visit(1);return "never";});
++  try{s.manager.getTransport();}catch(e){h.visit(3);}
++  h.visit(2);
++}
++function observeSettingsRetirementFatal(s,h) {
++  h.armFatal(0);
++  s.data.settings={get terminal(){const value=h.make(0);value.showImages=undefined;return value;}};
++  settingsGet(s.defaults,["terminal","showImages"],()=>{h.visit(1);return true;});
++  try{s.manager.getShowImages();}catch(e){h.visit(3);}
++  h.visit(2);
++}
++function observeSettingsRetirementCancel(s,h) {
++  h.armCancel(0);
++  s.data.settings={get terminal(){const value=h.make(0);value.showImages=undefined;return value;}};
++  settingsGet(s.defaults,["terminal","showImages"],()=>{h.visit(1);return true;});
++  try{s.manager.getShowImages();}catch(e){h.visit(3);}
++  h.visit(2);
++}
+diff --git a/build.zig b/build.zig
+--- a/build.zig
++++ b/build.zig
+@@ -1919,6 +1919,20 @@
+         project_trust_manager_tests.root_module.linkSystemLibrary("userenv", .{});
+     }
+     b.step("build-native-sdk-project-trust-manager", "Install actual shared authenticated trust-manager controls without execution").dependOn(&b.addInstallArtifact(project_trust_manager_tests, .{}).step);
++
++    const settings_shared_defaults_tests = b.addTest(.{
++        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_settings_shared_defaults_test.zig"), .target = target, .optimize = optimize }),
++        .filters = &.{"native settings shared defaults"},
++    });
++    linkQuickJs(b, settings_shared_defaults_tests.root_module, quickjs, sqlite_lib_dir);
++    linkTypeScriptParser(b, settings_shared_defaults_tests.root_module, typescript_parser);
++    linkSqlite(settings_shared_defaults_tests.root_module, sqlite_lib_dir, sqlite_library);
++    settings_shared_defaults_tests.root_module.addImport("catalog_tool", catalog_tool);
++    if (target.result.os.tag == .windows) {
++        settings_shared_defaults_tests.root_module.linkSystemLibrary("advapi32", .{});
++        settings_shared_defaults_tests.root_module.linkSystemLibrary("userenv", .{});
++    }
++    b.step("build-native-sdk-settings-shared-defaults", "Install actual shared SettingsManager default accessor controls without execution").dependOn(&b.addInstallArtifact(settings_shared_defaults_tests, .{}).step);
+ 
+     const module_execution_state_tests = b.addTest(.{
+         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_execution_state_test.zig"), .target = target, .optimize = optimize }),

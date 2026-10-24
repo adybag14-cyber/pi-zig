@@ -1,0 +1,18 @@
+    // Original initialized ordinary debuglog with genuine process/inspect/colors.
+    // Install only; full private bootstrap and timer trace-events remain explicit.
+    const node_debuglog = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_debuglog_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native debuglog"},
+    });
+    linkQuickJs(b, node_debuglog.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_debuglog.root_module, typescript_parser);
+    linkSqlite(node_debuglog.root_module, sqlite_lib_dir, sqlite_library);
+    node_debuglog.root_module.addImport("catalog_tool", catalog_tool);
+    node_debuglog.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+    if (target.result.os.tag == .windows) {
+        node_debuglog.root_module.linkSystemLibrary("advapi32", .{});
+        node_debuglog.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-debuglog", "Install thirty-six ordinary debuglog controls without running").dependOn(&b.addInstallArtifact(node_debuglog, .{ .dest_sub_path = b.fmt("native-node-debuglog{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+

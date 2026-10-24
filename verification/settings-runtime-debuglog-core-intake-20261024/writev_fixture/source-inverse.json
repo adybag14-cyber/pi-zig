@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_stream_writev_test.zig",
+    "sha256": "78386904DA21ECB860D07214D887829B0B5D1189BD530871B106A3C58F99EB93",
+    "bytes": 48060
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-writev-fixture-shadow-correction-sourceonly-20261024\\projected\\src\\native_node_stream_writev_test.zig",
+    "sha256": "2051F0A30887D414ECA4775E50BFE8EF6B45F7463D2AA1E10EAC5E5BAF96EC73",
+    "bytes": 48060
+  },
+  "hunks": [
+    {
+      "before": "    fn complete(self: *Fixture, status: c_int) !void {\n        const request = self.pending_request orelse return error.WritevRequestRequired;\n        self.pending_request = null;\n        try request.request.done(status, null);\n    }\n",
+      "after": "    fn complete(self: *Fixture, status: c_int) !void {\n        const pending = self.pending_request orelse return error.WritevRequestRequired;\n        self.pending_request = null;\n        try pending.request.done(status, null);\n    }\n",
+      "old_occurrences": 1,
+      "new_occurrences": 1,
+      "byte_offset": 5577
+    }
+  ],
+  "identifier_edits": [
+    {
+      "line": 124,
+      "before": "request",
+      "after": "pending",
+      "role": "local binding"
+    },
+    {
+      "line": 126,
+      "before": "request",
+      "after": "pending",
+      "role": "use of the local; following .request field remains exact"
+    }
+  ],
+  "complete_raw_inverse": true,
+  "size_unchanged": true,
+  "unchanged_control_names": [
+    "native Stream vector write encoding aliases use primitive C strings without coercing objects",
+    "native Stream vector write bounded UTF8 preserves scalar boundaries and untouched suffix",
+    "native Stream vector write ASCII Latin1 and UCS2 clip bytes without splitting units",
+    "native Stream vector write base64 preserves garbage padding aliases and bounded fallback",
+    "native Stream vector write wide base64 and hex retain TwoByteValue low byte semantics",
+    "native Stream vector write storage capacities preserve encoded base64 formulas and long UTF8",
+    "native Stream vector write temporary storage uses real charged heap only beyond native stack",
+    "native Stream vector write accepts DataView and every typed array as all buffer chunks",
+    "native Stream vector write empty arrays and ignored odd tails still enter real Write without try",
+    "native Stream vector write all buffers flag requires actual true rather than truthiness",
+    "native Stream vector write two passes repeat Get ToString and encoding in original order",
+    "native Stream vector write buffer chunks skip both encoding getters in mixed mode",
+    "native Stream vector write changed second pass strings share remaining bounded storage",
+    "native Stream vector write changed UTF8 pair cannot fit in a first pass three byte capacity",
+    "native Stream vector write buffer to string transition keeps a genuinely absent backing",
+    "native Stream vector write string to buffer transition still transfers its original positive backing",
+    "native Stream vector write snapshots count before getters extend the array",
+    "native Stream vector write combines all eight encodings in the actual vector callback",
+    "native Stream vector write first pass abrupt Gets and coercions preserve reason and result state",
+    "native Stream vector write second pass abrupt Gets and coercions retire local backing before Write",
+    "native Stream vector write retained local views survive replacement and native collection",
+    "native Stream vector write accepted encoded backing survives input GC completion and native retention",
+    "native Stream vector write synchronous native error transfers backing until its retained owner retires",
+    "native Stream vector write try completion bypasses request publication but counts full bytes",
+    "native Stream vector write partial try advances across vector boundaries without double counting",
+    "native Stream vector write try failure returns full attempted byte count with no WriteWrap",
+    "native Stream vector write seventeen native views use vector heap without inventing backing lease",
+    "native Stream vector write accepted request with later error setter failure preserves default native result",
+    "native Stream vector write ordinary init hook throw still transfers accepted encoded backing",
+    "native Stream vector write real FileHandle dispatch preserves ENOSYS and trigger scope",
+    "native Stream vector write absent and dead dispatch guards precede native argument CHECKs",
+    "native Stream vector write getter reentry uses canonical dispatch and restores outer trigger state"
+  ],
+  "control_declarations": 32,
+  "import_literals_unchanged": true,
+  "production_build_untouched": true,
+  "git_apply_check": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+}

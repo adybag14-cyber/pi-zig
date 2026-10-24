@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "status": "source_only_finite_fixture_identifier_correction",
+  "author": "catalog_review",
+  "base_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "base_git_blob": "fdb657fd4dc45b2c4269468585a90b7c4a36dc40",
+  "reason": "Observed Zig shadow diagnostic in Writev Fixture.complete; rename only local request and its single identifier use to pending. This preserves taking the pending pointer, clearing the field, and invoking the same request.done with the same failure and ownership order.",
+  "diagnostic": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v46-new31-buildquery-20261024-221411\\groups\\native-node-stream-writev\\compile.stderr.log",
+    "sha256": "15C8A1304E4F80E26EB73A52EB90F7F089C52146DF048FA83523588F537837F6",
+    "bytes": 22490
+  },
+  "diagnostic_excerpt": "build-native-node-stream-writev\n+- install test\n   +- compile test Debug native 1 errors\nsrc\\native_node_stream_writev_test.zig:124:15: error: local constant shadows declaration of 'request'\n        const request = self.pending_request orelse return error.WritevRequestRequired;\n              ^~~~~~~\nsrc\\native_node_stream_writev_test.zig:87:5: note: declared here\n    fn request(self: *Fixture) !c.JSValue {\n    ^~\n",
+  "changes": [
+    {
+      "target": "src/native_node_stream_writev_test.zig",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_stream_writev_test.zig",
+        "sha256": "78386904DA21ECB860D07214D887829B0B5D1189BD530871B106A3C58F99EB93",
+        "bytes": 48060
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-writev-fixture-shadow-correction-sourceonly-20261024\\projected\\src\\native_node_stream_writev_test.zig",
+        "sha256": "2051F0A30887D414ECA4775E50BFE8EF6B45F7463D2AA1E10EAC5E5BAF96EC73",
+        "bytes": 48060
+      },
+      "kind": "exact one-hunk, two-identifier rename"
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-writev-fixture-shadow-correction-sourceonly-20261024\\stream-writev-fixture-shadow-correction.patch",
+    "sha256": "01FEF9A6AFCA72CA8ECA76904E9D0ABC23CA83DC5DD298432933674F976B792D",
+    "bytes": 635
+  },
+  "source_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-writev-fixture-shadow-correction-sourceonly-20261024\\source-inverse.json",
+    "sha256": "8073A0400A62F4A4C694A8983E8FC3C292D017C0D2ED2041878B95022D622C16",
+    "bytes": 4927
+  },
+  "selected31_scope_scan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-writev-fixture-shadow-correction-sourceonly-20261024\\selected31-request-shadow-source-scan.json",
+    "sha256": "1A785B8904047969913862CC6388C263D2C240702ED63C56AABB8F27C79928AD",
+    "bytes": 15266
+  },
+  "unchanged_controls": 32,
+  "new_declarations": 0,
+  "actual_metadata_count": null,
+  "baseline_clean": true,
+  "prior_failure_preserved": true,
+  "other_required_corrections": [],
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "main_mutated": false
+}

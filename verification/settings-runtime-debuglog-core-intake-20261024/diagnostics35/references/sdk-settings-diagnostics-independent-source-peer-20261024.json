@@ -1,0 +1,164 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T22:34:56.553447+00:00",
+  "reviewer": "controls_review",
+  "status": "independent_source_peer_accepted",
+  "subject": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\source-intake.json",
+    "bytes": 17492,
+    "sha256": "5939BA07983B17BFF29B7B47AE3AD8103472982BE1741AB5246FC23821DF3527"
+  },
+  "source_basis_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "Main_working_tree_clean": true,
+  "scope": "Complete two-function original SettingsManager diagnostics private native owner and 35 actual-VM source controls",
+  "retained_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\settings-diagnostics.ts",
+      "bytes": 986,
+      "sha256": "8EF3554FF841468A2493D9BAB2754AA7A305471EA5754E54EFCCC363FE0DD0E1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\test\\settings-diagnostics.test.ts",
+      "bytes": 1840,
+      "sha256": "9917A7F5CD35AC5C42FC7277920C1D5EA3F706F29593A4AA1AB9E80D7CE95D9E"
+    }
+  ],
+  "selected_sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings_diagnostics.zig",
+      "bytes": 7641,
+      "sha256": "9DEA7DBF015EFC0229D090DDC1B33DEB0BB6CBA4DF99A1309A4847401E80CB9D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\native_sdk_settings_diagnostics_test.zig",
+      "bytes": 11138,
+      "sha256": "F72AE7B7AFB476F7137500C53AF2D29178E23E8C7FFB4D01976EF18F53A6DDD5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-diagnostics-4954-source.mjs",
+      "bytes": 814,
+      "sha256": "A931B5E5AE416AAE20E9AF21889C62543C5019B21123C79507DD23AEF29DA3C6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-diagnostics-observer.mjs",
+      "bytes": 17879,
+      "sha256": "C83D8103DE3639323224D33213694C72EEFC838DBBE6E16687EBA6FBD937D6D3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-diagnostics-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 557946,
+      "sha256": "749EFC3533404393360AB5D4704F773E3C18AD6CAAEE5833832F63E2F5E53053"
+    }
+  ],
+  "manual_review": [
+    "Complete original settings-diagnostics.ts and its original tests; exact selected two-function native owner",
+    "All 35 authored controls and complete observer fixture, including actual SettingsManager imports/inMemory/fromStorage and native retirement/fatal hooks",
+    "Original single primitive-destructuring ToObject and ordered scope/path/error Gets before object-literal evaluation",
+    "Live Set constructor before live filter; original NUL-key evaluation and live has/add receivers",
+    "Actual sync argument/lexical frame owners for captured seen lifetime, escaped callbacks after throw, and owned completion/fatal precedence"
+  ],
+  "checks": {
+    "unique_rehashed_pin_versions": 31,
+    "fixture_type_module_erasure_hunks": 9,
+    "original_fixture_forward_and_reverse_exact": true,
+    "full_original_body_preserved": true,
+    "complete_patch_targets": 5,
+    "all_patch_targets_reconstructed": true,
+    "direct_import_occurrences": 9,
+    "embed_occurrences": 2,
+    "standard_import_occurrences": 1,
+    "all_direct_resolutions_exact": true,
+    "build_inserted_bytes": 1031,
+    "build_forward_and_reverse_exact": true,
+    "build_helper_arities_current": true,
+    "artifact_stem": "test",
+    "pdb_stem": "test",
+    "declared_controls": 35,
+    "original_source_differentials": 30,
+    "native_fatal_or_cancel_controls": 3,
+    "host_owner_controls": 2,
+    "all_observer_functions_present": true,
+    "git_apply_check_exit_code": 0
+  },
+  "fixture_replay_stages": [
+    {
+      "offset": 0,
+      "before_bytes": 82,
+      "after_bytes": 0,
+      "before_sha256": "8EF3554FF841468A2493D9BAB2754AA7A305471EA5754E54EFCCC363FE0DD0E1",
+      "after_sha256": "EEB0DC0E921DF0B9989D4D6C9E0E7D15CE456AFC13F57B4D7A9C3ABC90E7CEBA"
+    },
+    {
+      "offset": 0,
+      "before_bytes": 62,
+      "after_bytes": 0,
+      "before_sha256": "EEB0DC0E921DF0B9989D4D6C9E0E7D15CE456AFC13F57B4D7A9C3ABC90E7CEBA",
+      "after_sha256": "37C7A52AD5F490B892AD79EF67F7DBBDD406F0C6636572B2DD9005D02CECE87B"
+    },
+    {
+      "offset": 1,
+      "before_bytes": 16,
+      "after_bytes": 9,
+      "before_sha256": "37C7A52AD5F490B892AD79EF67F7DBBDD406F0C6636572B2DD9005D02CECE87B",
+      "after_sha256": "E265DF416DF1BEF10673C1EC22A58BBF2396110C174A5EE8AEA9C91A035525CB"
+    },
+    {
+      "offset": 491,
+      "before_bytes": 16,
+      "after_bytes": 9,
+      "before_sha256": "E265DF416DF1BEF10673C1EC22A58BBF2396110C174A5EE8AEA9C91A035525CB",
+      "after_sha256": "CB664D69B00362A22604025A6751444660DFE5E3F9B77EF5F0C42D0DEEAA14E8"
+    },
+    {
+      "offset": 37,
+      "before_bytes": 32,
+      "after_bytes": 15,
+      "before_sha256": "CB664D69B00362A22604025A6751444660DFE5E3F9B77EF5F0C42D0DEEAA14E8",
+      "after_sha256": "9B4E4B34F0FC9B45450B212A60DB832B6886550810715866324430D1B6765241"
+    },
+    {
+      "offset": 52,
+      "before_bytes": 36,
+      "after_bytes": 3,
+      "before_sha256": "9B4E4B34F0FC9B45450B212A60DB832B6886550810715866324430D1B6765241",
+      "after_sha256": "F6EAD8B9E6E5589F6EA3E0B3CFA457B4050F3995A806E3AC532378DDC4D00F75"
+    },
+    {
+      "offset": 530,
+      "before_bytes": 36,
+      "after_bytes": 3,
+      "before_sha256": "F6EAD8B9E6E5589F6EA3E0B3CFA457B4050F3995A806E3AC532378DDC4D00F75",
+      "after_sha256": "93D8D0A1B2C81FC76740CF42C69AD2938E8C2D649E8013CA193C327323E0EE96"
+    },
+    {
+      "offset": 475,
+      "before_bytes": 53,
+      "after_bytes": 11,
+      "before_sha256": "93D8D0A1B2C81FC76740CF42C69AD2938E8C2D649E8013CA193C327323E0EE96",
+      "after_sha256": "4F797E9318F8CE9BD3860E8546834F96227C3E45D6E43A60CD34544A576F2867"
+    },
+    {
+      "offset": 506,
+      "before_bytes": 17,
+      "after_bytes": 9,
+      "before_sha256": "4F797E9318F8CE9BD3860E8546834F96227C3E45D6E43A60CD34544A576F2867",
+      "after_sha256": "18CDCDDAF41551DF71FF3A43135CD8B02347A64EF0CF87B344C84CE432AF2EF6"
+    }
+  ],
+  "semantic_findings": [
+    "The shared primitive wrapper is owned only for the destructuring statement; the three destructured values remain in the actual lexical frame for later conversions and retirement.",
+    "The production owner preserves live Set/map/filter/has/add access and exact evaluation order. has truthiness and ignored add completion retire at separate original statement boundaries, preserving native fatal/cancellation precedence.",
+    "Each deduplication invocation captures its own actual seen binding. Escaped predicates retain that binding after normal return or a throwing filter, using the existing charged lexical-frame owner.",
+    "The actual SettingsManager drainErrors and storage collaborators are consumed directly. No public SDK/bootstrap namespace is installed by this private owner."
+  ],
+  "findings": [],
+  "limitations": [
+    "Source peer only; no parser, compiler, metadata, native runtime or original JavaScript execution.",
+    "Complete authenticated main/createRuntime callers and broader SettingsManager semantics remain separate integration work.",
+    "Thirty-five is a source declaration count; actual metadata and runtime qualification remain unobserved."
+  ],
+  "candidate_executed": false,
+  "native_execution": false,
+  "Main_mutated": false,
+  "product_qualification": false
+}

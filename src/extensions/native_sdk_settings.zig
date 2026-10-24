@@ -5,6 +5,7 @@ const sdk = @import("native_sdk.zig");
 const models = @import("native_sdk_models.zig");
 const engine_mod = @import("engine.zig");
 const c = engine_mod.c;
+const default_accessors = @import("native_sdk_settings_default_accessors.zig");
 const Mode = enum { raw, normal, truthy, array, object, special, set };
 const Field = struct { name: [:0]const u8, path: []const u8 = "", mode: Mode = .normal };
 const fields = [_]Field{
@@ -28,6 +29,7 @@ const fields = [_]Field{
     .{ .name = "setProjectPromptTemplatePaths", .path = "prompts", .mode = .set },
     .{ .name = "setProjectThemePaths", .path = "themes", .mode = .set },
     .{ .name = "getTransport", .path = "transport" },
+    .{ .name = "getSessionShareDestination", .path = "sessionShareDestination", .mode = .special },
     .{ .name = "getSteeringMode", .path = "steeringMode", .mode = .truthy },
     .{ .name = "getFollowUpMode", .path = "followUpMode", .mode = .truthy },
     .{ .name = "getCompactionEnabled", .path = "compaction.enabled" },
@@ -91,6 +93,7 @@ const fields = [_]Field{
     .{ .name = "setDefaultThinkingLevel", .path = "defaultThinkingLevel", .mode = .set },
     .{ .name = "setLastChangelogVersion", .path = "lastChangelogVersion", .mode = .set },
     .{ .name = "setTransport", .path = "transport", .mode = .set },
+    .{ .name = "setSessionShareDestination", .path = "sessionShareDestination", .mode = .set },
     .{ .name = "setSteeringMode", .path = "steeringMode", .mode = .set },
     .{ .name = "setFollowUpMode", .path = "followUpMode", .mode = .set },
     .{ .name = "setTheme", .path = "theme", .mode = .set },
@@ -138,8 +141,12 @@ const fields = [_]Field{
     .{ .name = "getTreeFilterMode", .path = "treeFilterMode", .mode = .special },
 };
 pub fn install(engine: *engine_mod.Engine, prototype: c.JSValue) !void {
+    const imports = try default_accessors.acquire(engine);
+    defer engine.freeValue(imports);
     for (fields, 0..) |field, index| {
-        const value = try engine.checked(c.pi_js_function_magic(engine.context, callback, field.name, if (field.mode == .set) 1 else 0, @intCast(index)));
+        const value = if (default_accessors.supports(field.name))
+            try default_accessors.method(engine, field.name, imports)
+        else try engine.checked(c.pi_js_function_magic(engine.context, callback, field.name, if (field.mode == .set) 1 else 0, @intCast(index)));
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, value, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
     }
 }
@@ -182,15 +189,6 @@ fn assignPath(engine: *engine_mod.Engine, root: c.JSValue, path: []const u8, val
         engine.freeValue(target);
         target = next;
     }
-}
-fn defaults(engine: *engine_mod.Engine, data: c.JSValue) !c.JSValue {
-    const stored = try sdk.get(engine, data, "accessorDefaults");
-    if (c.JS_IsObject(stored)) return stored;
-    engine.freeValue(stored);
-    const value = try sdk.jsonObject(engine, @embedFile("../coding_agent/assets/SDK-SETTINGS-DEFAULTS-6fb2e78.json"));
-    errdefer engine.freeValue(value);
-    try sdk.put(engine, data, "accessorDefaults", c.JS_DupValue(engine.context, value));
-    return value;
 }
 fn shallow(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
     const result = try sdk.object(engine);
@@ -429,14 +427,12 @@ fn dispatch(engine: *engine_mod.Engine, data: c.JSValue, field: Field, args: []c
     if (field.mode == .raw) return c.JS_DupValue(engine.context, raw);
     if (field.mode == .object) return shallow(engine, raw);
     if (field.mode == .array) return if (nullish(raw)) sdk.array(engine) else sdk.invoke(engine, raw, "slice", &.{});
-    const base = try defaults(engine, data);
-    defer engine.freeValue(base);
-    const default = if (field.path.len > 0) try pathValue(engine, base, field.path) else c.pi_js_undefined();
-    defer engine.freeValue(default);
-    if (field.mode == .normal or field.mode == .truthy) return c.JS_DupValue(engine.context, if (if (field.mode == .truthy) c.JS_ToBool(engine.context, raw) == 1 else !nullish(raw)) raw else default);
-    return special(engine, data, root, field, args, raw, default);
+    // Every default-bearing getter is installed by its genuine shared import
+    // owner. Unrelated accessors never read any fallback object.
+    if (field.mode == .normal or field.mode == .truthy) return error.ActualSettingsDefaultAccessorRequired;
+    return special(engine, data, root, field, args, raw);
 }
-fn special(engine: *engine_mod.Engine, data: c.JSValue, root: c.JSValue, field: Field, args: []const c.JSValue, raw: c.JSValue, default: c.JSValue) !c.JSValue {
+fn special(engine: *engine_mod.Engine, data: c.JSValue, root: c.JSValue, field: Field, args: []const c.JSValue, raw: c.JSValue) !c.JSValue {
     const name = field.name;
     if (std.mem.eql(u8, name, "getOrCreateDeviceId")) {
         const global = try sdk.get(engine, data, "global");
@@ -481,16 +477,9 @@ fn special(engine: *engine_mod.Engine, data: c.JSValue, root: c.JSValue, field: 
         if (!std.math.isFinite(n) or n < 0) return failSetting(engine, field.path, raw);
         return c.JS_NewFloat64(engine.context, @floor(n));
     }
-    if (std.mem.eql(u8, name, "getOutputPad")) return c.JS_NewInt32(engine.context, if (c.JS_IsNumber(raw) and try number(engine, raw) == 0) 0 else 1);
-    if (std.mem.eql(u8, name, "getImageWidthCells") or std.mem.eql(u8, name, "getFullscreenWheelScrollLines")) {
-        if (!c.JS_IsNumber(raw)) return c.JS_DupValue(engine.context, default);
-        const n = try number(engine, raw);
-        if (!std.math.isFinite(n)) return c.JS_DupValue(engine.context, default);
-        return c.JS_NewFloat64(engine.context, @max(1, @min(if (std.mem.eql(u8, name, "getImageWidthCells")) std.math.inf(f64) else 100, @floor(n))));
-    }
-    if (std.mem.eql(u8, name, "getClearOnShrink") or std.mem.eql(u8, name, "getShowHardwareCursor")) {
-        if (if (std.mem.eql(u8, name, "getClearOnShrink")) !c.JS_IsUndefined(raw) else !nullish(raw)) return c.JS_DupValue(engine.context, raw);
-        const value = try env(engine, if (std.mem.eql(u8, name, "getClearOnShrink")) "PI_CLEAR_ON_SHRINK" else "PI_HARDWARE_CURSOR");
+    if (std.mem.eql(u8, name, "getShowHardwareCursor")) {
+        if (!nullish(raw)) return c.JS_DupValue(engine.context, raw);
+        const value = try env(engine, "PI_HARDWARE_CURSOR");
         defer engine.freeValue(value);
         return c.pi_js_bool(engine.context, @intFromBool(try same(engine, value, "1")));
     }
@@ -506,25 +495,6 @@ fn special(engine: *engine_mod.Engine, data: c.JSValue, root: c.JSValue, field: 
             engine.freeValue(value);
         }
         return sdk.text(engine, if (builtin.os.tag == .windows) "notepad" else "nano");
-    }
-    if (std.mem.eql(u8, name, "getQuietStartup")) return c.JS_DupValue(engine.context, if ((c.JS_IsBool(raw) and c.JS_ToBool(engine.context, raw) == 1) or try same(engine, raw, "header")) raw else default);
-    inline for (.{ .{ "getCacheWarmingMode", "off", "streaming", "idle" }, .{ "getDefaultProjectTrust", "always", "never", "ask" }, .{ "getTuiMode", "regular", "fullscreen", "fullscreen" }, .{ "getFullscreenExitOutput", "resume-hint", "transcript", "transcript" }, .{ "getFullscreenScrollbar", "always", "hidden", "auto" }, .{ "getMermaidRenderingMode", "off", "final", "streaming" } }) |rule| {
-        if (std.mem.eql(u8, name, rule[0])) return c.JS_DupValue(engine.context, if (try same(engine, raw, rule[1]) or try same(engine, raw, rule[2]) or try same(engine, raw, rule[3])) raw else default);
-    }
-    if (std.mem.eql(u8, name, "getTreeFilterMode")) {
-        inline for (.{ "default", "no-tools", "user-only", "labeled-only", "all" }) |mode| if (try same(engine, raw, mode)) return c.JS_DupValue(engine.context, raw);
-        return c.JS_DupValue(engine.context, default);
-    }
-    if (std.mem.eql(u8, name, "getRetrySettings") or std.mem.eql(u8, name, "getBranchSummarySettings") or std.mem.eql(u8, name, "getProviderRetrySettings")) {
-        const result = try sdk.object(engine);
-        errdefer engine.freeValue(result);
-        const keys: []const [:0]const u8 = if (std.mem.eql(u8, name, "getRetrySettings")) &.{ "enabled", "maxRetries", "baseDelayMs", "maxAgentDelayMs" } else if (std.mem.eql(u8, name, "getProviderRetrySettings")) &.{ "timeoutMs", "maxRetries", "maxRetryDelayMs" } else &.{ "reserveTokens", "skipPrompt" };
-        for (keys) |key| {
-            const value = if (c.JS_IsObject(raw)) try sdk.get(engine, raw, key) else c.pi_js_undefined();
-            defer engine.freeValue(value);
-            try sdk.put(engine, result, key, if (nullish(value)) if (c.JS_IsObject(default)) try sdk.get(engine, default, key) else c.pi_js_undefined() else c.JS_DupValue(engine.context, value));
-        }
-        return result;
     }
     if (std.mem.eql(u8, name, "getTerminalCapabilityOverrides")) {
         const result = try sdk.object(engine);
@@ -550,84 +520,8 @@ fn special(engine: *engine_mod.Engine, data: c.JSValue, root: c.JSValue, field: 
         defer engine.freeValue(levels);
         return if (nullish(levels)) c.pi_js_undefined() else sdk.get(engine, levels, key);
     }
-    if (std.mem.startsWith(u8, name, "getCompaction")) return compaction(engine, root, name, args);
     if (std.mem.eql(u8, name, "getDefaultTools")) return defaultTools(engine, raw);
     return error.NativeSDKSettingsMethodUnavailable;
-}
-fn compaction(engine: *engine_mod.Engine, root: c.JSValue, name: []const u8, args: []const c.JSValue) !c.JSValue {
-    if (std.mem.eql(u8, name, "getCompactionSettings")) {
-        const result = try sdk.object(engine);
-        errdefer engine.freeValue(result);
-        const enabled = try pathValue(engine, root, "compaction.enabled");
-        defer engine.freeValue(enabled);
-        try sdk.put(engine, result, "enabled", if (nullish(enabled)) c.pi_js_bool(engine.context, 1) else c.JS_DupValue(engine.context, enabled));
-        try sdk.put(engine, result, "reserveTokens", try tokenSetting(engine, root, "reserveTokens", if (args.len > 0) args[0] else c.pi_js_undefined()));
-        try sdk.put(engine, result, "keepRecentTokens", try tokenSetting(engine, root, "keepRecentTokens", if (args.len > 0) args[0] else c.pi_js_undefined()));
-        return result;
-    }
-    if (std.mem.eql(u8, name, "getCompactionTokenSetting")) {
-        const key = try engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined());
-        defer engine.gpa.free(key);
-        return tokenSetting(engine, root, key, if (args.len > 1) args[1] else c.pi_js_undefined());
-    }
-    return tokenSetting(engine, root, if (std.mem.eql(u8, name, "getCompactionReserveTokens")) "reserveTokens" else "keepRecentTokens", if (args.len > 0) args[0] else c.pi_js_undefined());
-}
-fn tokenFailure(engine: *engine_mod.Engine, label: []const u8, value: c.JSValue, object: bool) !c.JSValue {
-    const raw = try engine.toString(value);
-    defer engine.gpa.free(raw);
-    const message = try std.fmt.allocPrint(engine.gpa, "Invalid {s} setting: {s}. Expected {s}.", .{ label, raw, if (object) "an object" else "a non-negative safe integer" });
-    defer engine.gpa.free(message);
-    const failure = try engine.checked(c.JS_NewError(engine.context));
-    defer engine.freeValue(failure);
-    try sdk.put(engine, failure, "message", try sdk.text(engine, message));
-    return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, failure)));
-}
-fn tokenSetting(engine: *engine_mod.Engine, root: c.JSValue, key: []const u8, model: c.JSValue) !c.JSValue {
-    const path = try std.fmt.allocPrint(engine.gpa, "compaction.{s}", .{key});
-    defer engine.gpa.free(path);
-    const ordinary = try pathValue(engine, root, path);
-    defer engine.freeValue(ordinary);
-    if (!c.JS_IsUndefined(ordinary)) {
-        const n = try number(engine, ordinary);
-        if (!c.JS_IsNumber(ordinary) or !std.math.isFinite(n) or @floor(n) != n or n < 0 or n > 9007199254740991) return tokenFailure(engine, path, ordinary, false);
-    }
-    var override = c.pi_js_undefined();
-    defer engine.freeValue(override);
-    if (c.JS_ToBool(engine.context, model) == 1) {
-        const provider = try sdk.get(engine, model, "provider");
-        defer engine.freeValue(provider);
-        const id = try sdk.get(engine, model, "id");
-        defer engine.freeValue(id);
-        const p = try engine.toString(provider);
-        defer engine.gpa.free(p);
-        const m = try engine.toString(id);
-        defer engine.gpa.free(m);
-        const model_key = try std.fmt.allocPrintSentinel(engine.gpa, "{s}/{s}", .{ p, m }, 0);
-        defer engine.gpa.free(model_key);
-        const overrides = try pathValue(engine, root, "compaction.modelOverrides");
-        defer engine.freeValue(overrides);
-        const entry = if (!nullish(overrides)) try sdk.get(engine, overrides, model_key) else c.pi_js_undefined();
-        defer engine.freeValue(entry);
-        if (!c.JS_IsUndefined(entry)) {
-            const label = try std.fmt.allocPrint(engine.gpa, "compaction.modelOverrides[\"{s}\"]", .{model_key});
-            defer engine.gpa.free(label);
-            if (!c.JS_IsObject(entry) or c.JS_IsArray(entry)) return tokenFailure(engine, label, entry, true);
-            const terminated = try engine.gpa.dupeZ(u8, key);
-            defer engine.gpa.free(terminated);
-            override = try sdk.get(engine, entry, terminated);
-            if (!c.JS_IsUndefined(override)) {
-                const n = try number(engine, override);
-                if (!c.JS_IsNumber(override) or !std.math.isFinite(n) or @floor(n) != n or n < 0 or n > 9007199254740991) {
-                    const full = try std.fmt.allocPrint(engine.gpa, "{s}.{s}", .{ label, key });
-                    defer engine.gpa.free(full);
-                    return tokenFailure(engine, full, override, false);
-                }
-            }
-        }
-    }
-    if (!nullish(override)) return c.JS_DupValue(engine.context, override);
-    if (!nullish(ordinary)) return c.JS_DupValue(engine.context, ordinary);
-    return if (std.mem.eql(u8, key, "reserveTokens")) c.JS_NewInt32(engine.context, 16384) else if (std.mem.eql(u8, key, "keepRecentTokens")) c.JS_NewInt32(engine.context, 20000) else c.pi_js_undefined();
 }
 fn defaultTools(engine: *engine_mod.Engine, raw: c.JSValue) !c.JSValue {
     if (c.JS_IsUndefined(raw)) return c.pi_js_undefined();

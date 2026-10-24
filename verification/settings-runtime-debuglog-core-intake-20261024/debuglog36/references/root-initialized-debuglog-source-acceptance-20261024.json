@@ -1,0 +1,115 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "root_source_accepted_initialized_ordinary_debuglog_and_genuine_safe_array_iterator",
+  "observed_current_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "packet_authored_head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\source-intake.json",
+    "bytes": 33159,
+    "sha256": "719435C30C628ACA18BF533F96205CB37BF1CCBAD82E7E365424F4B6AD3DE43C"
+  },
+  "retained_original_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+      "bytes": 12596,
+      "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\cjs-fs-inputs-sourceonly-20261018\\authority\\primordials.js.txt",
+      "bytes": 21700,
+      "sha256": "6C9FC969AABDB7403F89EB44545A5AA0E90BEC8385C71D4B2F70F54A0A8591F8"
+    }
+  ],
+  "source_inverses": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\selected-clone-source-inverses.json",
+      "bytes": 5171,
+      "sha256": "F9DB15C7746A5B84F921EEB25DC376BC2505240A9286EBEECBF7500A13B62D2C"
+    }
+  ],
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1279,
+    "sha256": "805FD415F48AB663E3E6CBC59E65E4E55DA6431E0C4A174E0B4E5DC590A94C03"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1065,
+    "sha256": "AD866C1EF4471020808D4C403B5FCD7BA549C7DC5FBF5D5525239EAE7636448E"
+  },
+  "original_body_fixture_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\literal-reference-source-proof.json",
+    "bytes": 975,
+    "sha256": "E9894E6D3169C9D669C52800288AB39461874AD79D19BE5DB5EC399577A6BB37"
+  },
+  "prerequisites": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\source-intake.json",
+      "bytes": 37041,
+      "sha256": "FE1535DB57170AFFE9A08D83B2E89A01AEB89695038ED7DE90B21CCF69C1DB21"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-internal-tty-source-acceptance-20261024.json",
+      "bytes": 10213,
+      "sha256": "349C358032E14D87260C5D1F0675E38944EC1081D93EFA78E13796F5C54CE0B0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-util-colors-source-peer-20261024.json",
+      "bytes": 3631,
+      "sha256": "A5DA9BFE900C3034BD7432CC66C3A164C7FE1FF327A719A5128552F8B9CDD96D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-format-with-options-source-peer-20261024.json",
+      "bytes": 4276,
+      "sha256": "05D0AAD7CA2AF209E99763F0C23D5898A2F048A32AEF2A3797E86A234BDC9FF9"
+    }
+  ],
+  "semantic_review": [
+    "Root read the complete original debuglog.js, all ordinary production declarations, the full clone successor, all36 tests, complete3254byte literal original fixture and selected primordials definitions.",
+    "Actual already-admitted private require identity, actual node:process data default and actual early inspector are authenticated before complete private owner publication. Reentrant complete publication wins; incomplete candidates are not visible.",
+    "debugImpls and testEnabled start undefined, and genuine bootstrap must explicitly call initializeDebugEnv at the original initial NODE_DEBUG point. No default disabled state or late environment polling is inserted.",
+    "Original reset-before-replacement ordering, chained live replace/replaceAll Gets and calls, regex literal/construction captures, string coercion and case matching remain intact.",
+    "Original lazy init/debug/enabled/test bindings, captured formal reassignment, original TDZ declaration point, memoized enabled getter, shared noop, callback assignment/reentry/failure and cached PID/warning behavior remain represented by actual synchronous formal references and lexical frames.",
+    "Warning reentry is followed by a fresh assignment-table read. Actual lazy colors require retains nullish retry and outer assignment semantics; actual formatter, inspector and colors owners supply output.",
+    "shouldColorize method Get precedes first live stderr Get. Second live stderr and write method resolve before final format call. Function receivers and intermediate native-owned value retirement preserve original order.",
+    "Logger dispatch uses the genuine frozen SafeArrayIterator over actual early-bound uncurried Array iterator/next. The separate formatWithOptions spread stays ordinary. Existing actual VM rest-array, append and call-array operations supply both paths.",
+    "Only three finite clone capture changes are selected. Pristine Function.prototype.call.bind is used before guest mutations; late SafeArrayIterator acquisition reuses those real bound operations and existing complete createSafeIterator class producer.",
+    "Paired original/native retirement and first-fatal controls are meaningful source checks, not observed runtime results. Completed actual colors publication in the fixture is explicitly scoped to already-completed admission."
+  ],
+  "structural_verification": {
+    "status": "root_debuglog36_complete_source_review_structurally_verified",
+    "reference_versions": 47,
+    "whole_patch_targets": 6,
+    "clone_hunks": 3,
+    "direct_imports": 25,
+    "embeds": 1,
+    "package_occurrences": 15,
+    "control_names": 36,
+    "exact_original_body_bytes": 3254,
+    "authority_excerpts": 4,
+    "build_insertion_bytes": 1279,
+    "standalone_and_latest_composed_build_inverse": true,
+    "future_composed_build": {
+      "bytes": 558194,
+      "sha256": "6BD3971892262BD5993B5C9DE3A6031085DBB9565FB9E9EC928508A1BAAD7137"
+    },
+    "current_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+    "Main_clean": true,
+    "git_apply_check": 0,
+    "native_execution": false
+  },
+  "composition_rule": "Apply only the1279-byte build insertion to the latest composed Main; do not replace it with the authored d3a9 standalone projection. Exact current35790 provider bytes and prerequisite InternalTTY imports were reverified.",
+  "remaining_original_owners": [
+    "Original actual bootstrap must supply initial NODE_DEBUG and genuine cold internal-builtin evaluation/admission.",
+    "debugWithTimer/moduleTimer still require real trace_events getCategoryEnabledBuffer/trace and genuine timestamp inputs.",
+    "Complete internal/util/debuglog public namespace, real Module/SourceMap consumers and application startup remain separate assembly."
+  ],
+  "actual_metadata_count": null,
+  "runtime_result": null,
+  "native_execution_authorized": false,
+  "Main_mutated": false,
+  "runtime_qualification": false,
+  "full_application_qualification": false,
+  "created_utc": "2026-10-24T21:58:13.734353+00:00"
+}

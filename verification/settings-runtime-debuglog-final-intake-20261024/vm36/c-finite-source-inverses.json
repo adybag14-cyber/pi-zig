@@ -1,0 +1,56 @@
+{
+  "schema": "quickjs-string-primitive-hooks-finite-c-transform-v1",
+  "source_only": true,
+  "candidate_executed": false,
+  "native_execution": false,
+  "original_current": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+    "bytes": 2409692,
+    "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+  },
+  "preserved_original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\original\\vendor\\quickjs\\quickjs.c",
+    "bytes": 2409692,
+    "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\quickjs-string-split-primitive-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.c",
+    "bytes": 2409752,
+    "sha256": "4ED63B340928E1469098889C48B4802328D83174471A3DDF2B328D53A60915C7"
+  },
+  "unchanged_header": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+    "bytes": 117849,
+    "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+  },
+  "hunks": [
+    {
+      "owner": "js_string_replace (replace and replaceAll)",
+      "offset_before": 1787294,
+      "old_text": "    if (JS_IsObject(searchValue)) {\n",
+      "new_text": "    if (!JS_IsUndefined(searchValue) && !JS_IsNull(searchValue)) {\n",
+      "before_bytes": 2409692,
+      "before_sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C",
+      "after_bytes": 2409723,
+      "after_sha256": "EC397C64913BAE2E21450CA22BB2B29A60AA1DEA962C82D451438CD56AA99B4A"
+    },
+    {
+      "owner": "js_string_split",
+      "offset_before": 1790827,
+      "old_text": "    if (JS_IsObject(separator)) {\n",
+      "new_text": "    if (!JS_IsUndefined(separator) && !JS_IsNull(separator)) {\n",
+      "before_bytes": 2409723,
+      "before_sha256": "EC397C64913BAE2E21450CA22BB2B29A60AA1DEA962C82D451438CD56AA99B4A",
+      "after_bytes": 2409752,
+      "after_sha256": "4ED63B340928E1469098889C48B4802328D83174471A3DDF2B328D53A60915C7"
+    }
+  ],
+  "complete_raw_inverse_exact": true,
+  "all_other_c_bytes_unchanged": true,
+  "public_abi_changed": false,
+  "notes": [
+    "Two existing object-only guards are widened to the exact target non-nullish guard. Complete bodies, js_is_regexp, property access and owned JS_CallFree remain unchanged.",
+    "js_is_regexp returns false immediately for primitives; replaceAll primitive @@match/flags are not observed.",
+    "Fresh native QuickJS compilation is required; no native execution or runtime qualification is claimed."
+  ]
+}

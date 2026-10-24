@@ -1,0 +1,722 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T22:03:30.808337+00:00",
+  "scope": "Complete existing SettingsManager shared-default/accessor reconciliation over the genuine accepted SETTINGS_DEFAULTS owner",
+  "status": "source_only_complete_bounded_successor_uncompiled",
+  "source_basis_head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "latest_read_only_Main_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "changes": [
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\original\\build.zig",
+        "bytes": 550798,
+        "sha256": "4FC880853D3B268E38DA1D9B05B60590384696B0005820F66A9FA70D2747440C"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 551885,
+        "sha256": "AD33906FE1A7F5C6BD4A3B317092E1B0E72D4AD1BFBD842E590EF48D26F85E30"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/sdk-settings-default-accessors-4954-source.mjs",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-default-accessors-4954-source.mjs",
+        "bytes": 7869,
+        "sha256": "0EF20BAE3AA4499E9F7C91A287F8E4F52C3928CF008657FE6626C6770CD2C7F9"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/sdk-settings-shared-defaults-observer.mjs",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-shared-defaults-observer.mjs",
+        "bytes": 32163,
+        "sha256": "F9ED183A05C763149C9AFDED043961D7156A8FD1B769F765A07CB2A63D2E8354"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_sdk_settings.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\original\\src\\extensions\\native_sdk_settings.zig",
+        "bytes": 42856,
+        "sha256": "BE24774B254246221CA948465457DCE8D149D578BFB27C544CA3299F5CA390FA"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings.zig",
+        "bytes": 34847,
+        "sha256": "17DB88DD58BC93AC4636024C38F3C3A33D78F5566B2999501069B0B858C9FA59"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_sdk_settings_default_accessors.zig",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings_default_accessors.zig",
+        "bytes": 26263,
+        "sha256": "1B6AEF1DA6DA98AD3DAA136C95A660EDF190A424A8804FDCB05876E346221286"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_sdk_settings_shared_defaults_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\native_sdk_settings_shared_defaults_test.zig",
+        "bytes": 15789,
+        "sha256": "B7499688B9DD0BEC25AD635362930FC72D04A79AA9B79481C850630D2C81F7B9"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\source-diff.patch",
+    "bytes": 100422,
+    "sha256": "5FF819C25250B106DB78B099411860F8D0A329AAD394B66053C6615CA731ECD0"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\README.md",
+    "bytes": 4894,
+    "sha256": "FC30214DE0F83C89E77DA2094A013D2CAF55C6FAFC08AEC70E7FC4FCDB076A72"
+  },
+  "source_inverses": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\settings-owner-finite-inverses.json",
+      "bytes": 13995,
+      "sha256": "6698777448487888AF2DDCD3588D4FAE22BB41762F513149879E01ACFD4DF531"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\original-accessor-fixture-inverses.json",
+      "bytes": 24379,
+      "sha256": "C30DF5998D3F4911C6E353A0CA055E19BA676AE4B2D903B08F85B7E6EAFE100F"
+    }
+  ],
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1087,
+    "sha256": "9C9DB4D55FE213F289E9D547B02A1ECCF71C8AF19C9F6EA91351A3B7A7585FAE"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\build-insertion-inverse.json",
+    "bytes": 1404,
+    "sha256": "744E9365B4B10E5F0FBDE72E6B7416BF96ED1726CACB442C473432D9539A7E1B"
+  },
+  "retained_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\settings-manager.ts",
+      "bytes": 46845,
+      "sha256": "AEF8FEA51000F291C1C51D81FD9B30F7A2BDD0E68370AD84B969E5FD15667E98"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\settings-defaults.ts",
+      "bytes": 1521,
+      "sha256": "6FB94031CFD462E357723A35AAB328E9A1ED5109C2AA59549D8291345875D5A9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\ai\\src\\utils\\retry.ts",
+      "bytes": 9975,
+      "sha256": "1F7947FA6F30596415E78FCA0C0CBD43345C918509F6160B79CDEEC459881DD8"
+    }
+  ],
+  "current_provider_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk.zig",
+      "bytes": 164658,
+      "sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_manager_imports.zig",
+      "bytes": 4350,
+      "sha256": "7D9C9F0C7B662386F1EF759FBC9510B71DEDB14D1B7194D460F7E09828AC00E0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_settings_storage.zig",
+      "bytes": 23867,
+      "sha256": "F64228FA1E07499702305C326A937912A6809961E8151C4CDCB27DBA1D563201"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_settings_ownership_test.zig",
+      "bytes": 9112,
+      "sha256": "91F155239C596D129AEFDE37EAE325D0E7FA917CE9F18CEBA0F98CF332843533"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_initial_model_retirement_controls.zig",
+      "bytes": 16159,
+      "sha256": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+    }
+  ],
+  "direct_import_resolutions": [
+    {
+      "importer": "src/extensions/native_sdk_settings_default_accessors.zig",
+      "kind": "import",
+      "literal": "native_sdk_session_locals.zig",
+      "selected_target": "src/extensions/native_sdk_session_locals.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_session_locals.zig",
+        "bytes": 9136,
+        "sha256": "2E530FC843E99654A3F72F05207E04A5F77E3713D7D9D19B26117A46D7EC9064"
+      }
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings_default_accessors.zig",
+      "kind": "import",
+      "literal": "native_sync_arguments.zig",
+      "selected_target": "src/extensions/native_sync_arguments.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+        "bytes": 9162,
+        "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+      }
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings_default_accessors.zig",
+      "kind": "import",
+      "literal": "native_public_lexical_frame.zig",
+      "selected_target": "src/extensions/native_public_lexical_frame.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_lexical_frame.zig",
+        "bytes": 17136,
+        "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E"
+      }
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings_default_accessors.zig",
+      "kind": "import",
+      "literal": "native_sdk.zig",
+      "selected_target": "src/extensions/native_sdk.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk.zig",
+        "bytes": 164658,
+        "sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3"
+      }
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings_default_accessors.zig",
+      "kind": "import",
+      "literal": "native_sdk_settings_defaults.zig",
+      "selected_target": "src/extensions/native_sdk_settings_defaults.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings_defaults.zig",
+        "bytes": 5116,
+        "sha256": "864B545AC2B47BB4DDD9DE32986C5549E2D259C2791EC3143CA914797CE77687"
+      }
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings.zig",
+      "kind": "import",
+      "literal": "native_sdk.zig",
+      "selected_target": "src/extensions/native_sdk.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk.zig",
+        "bytes": 164658,
+        "sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3"
+      }
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings.zig",
+      "kind": "import",
+      "literal": "native_sdk_models.zig",
+      "selected_target": "src/extensions/native_sdk_models.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_models.zig",
+        "bytes": 32420,
+        "sha256": "B67254F8B989EE6D9896CED1368E7896B169EF0B656DD7A247A9B12A77285010"
+      }
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings.zig",
+      "kind": "import",
+      "literal": "engine.zig",
+      "selected_target": "src/extensions/engine.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      }
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings.zig",
+      "kind": "import",
+      "literal": "native_sdk_settings_default_accessors.zig",
+      "selected_target": "src/extensions/native_sdk_settings_default_accessors.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings_default_accessors.zig",
+        "bytes": 26263,
+        "sha256": "1B6AEF1DA6DA98AD3DAA136C95A660EDF190A424A8804FDCB05876E346221286"
+      }
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings.zig",
+      "kind": "import",
+      "literal": "dom_exception.zig",
+      "selected_target": "src/extensions/dom_exception.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\dom_exception.zig",
+        "bytes": 17385,
+        "sha256": "A0CA1A00501BCEB7D457F9A3FED88496C00870295CDDFD266A14F25CA4F2DABC"
+      }
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings.zig",
+      "kind": "import",
+      "literal": "native_sdk_config_value.zig",
+      "selected_target": "src/extensions/native_sdk_config_value.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_config_value.zig",
+        "bytes": 10132,
+        "sha256": "5C4B4B00774C9E4F7EDDC8BAF471A11FE561C76BAA8BCAAD84F8EA9C91562766"
+      }
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings.zig",
+      "kind": "import",
+      "literal": "../auth/pkce.zig",
+      "selected_target": "src/auth/pkce.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\auth\\pkce.zig",
+        "bytes": 3966,
+        "sha256": "3919CB65AC12B3C408CDCC970422677BC2154DF5C0509909E032F96CAE7A7463"
+      }
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings.zig",
+      "kind": "import",
+      "literal": "file_urls.zig",
+      "selected_target": "src/extensions/file_urls.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\file_urls.zig",
+        "bytes": 7474,
+        "sha256": "3F5FF86FEDA91DB945FD6DC4057CB30174E2E72CE7A513367D471E345D95ABC9"
+      }
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings.zig",
+      "kind": "import",
+      "literal": "native_sdk_settings_storage.zig",
+      "selected_target": "src/extensions/native_sdk_settings_storage.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_settings_storage.zig",
+        "bytes": 23867,
+        "sha256": "F64228FA1E07499702305C326A937912A6809961E8151C4CDCB27DBA1D563201"
+      }
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings.zig",
+      "kind": "import",
+      "literal": "native_sdk_settings_storage.zig",
+      "selected_target": "src/extensions/native_sdk_settings_storage.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_settings_storage.zig",
+        "bytes": 23867,
+        "sha256": "F64228FA1E07499702305C326A937912A6809961E8151C4CDCB27DBA1D563201"
+      }
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings.zig",
+      "kind": "import",
+      "literal": "native_sdk_settings_storage.zig",
+      "selected_target": "src/extensions/native_sdk_settings_storage.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_settings_storage.zig",
+        "bytes": 23867,
+        "sha256": "F64228FA1E07499702305C326A937912A6809961E8151C4CDCB27DBA1D563201"
+      }
+    },
+    {
+      "importer": "src/native_sdk_settings_shared_defaults_test.zig",
+      "kind": "import",
+      "literal": "extensions/native_sdk_session_locals.zig",
+      "selected_target": "src/extensions/native_sdk_session_locals.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_session_locals.zig",
+        "bytes": 9136,
+        "sha256": "2E530FC843E99654A3F72F05207E04A5F77E3713D7D9D19B26117A46D7EC9064"
+      }
+    },
+    {
+      "importer": "src/native_sdk_settings_shared_defaults_test.zig",
+      "kind": "import",
+      "literal": "extensions/native_sdk.zig",
+      "selected_target": "src/extensions/native_sdk.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk.zig",
+        "bytes": 164658,
+        "sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3"
+      }
+    },
+    {
+      "importer": "src/native_sdk_settings_shared_defaults_test.zig",
+      "kind": "import",
+      "literal": "extensions/native_sdk_settings_default_accessors.zig",
+      "selected_target": "src/extensions/native_sdk_settings_default_accessors.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings_default_accessors.zig",
+        "bytes": 26263,
+        "sha256": "1B6AEF1DA6DA98AD3DAA136C95A660EDF190A424A8804FDCB05876E346221286"
+      }
+    },
+    {
+      "importer": "src/native_sdk_settings_shared_defaults_test.zig",
+      "kind": "import",
+      "literal": "extensions/native_sdk_settings_defaults.zig",
+      "selected_target": "src/extensions/native_sdk_settings_defaults.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings_defaults.zig",
+        "bytes": 5116,
+        "sha256": "864B545AC2B47BB4DDD9DE32986C5549E2D259C2791EC3143CA914797CE77687"
+      }
+    },
+    {
+      "importer": "src/native_sdk_settings_shared_defaults_test.zig",
+      "kind": "import",
+      "literal": "native_sdk_initial_model_retirement_controls.zig",
+      "selected_target": "src/native_sdk_initial_model_retirement_controls.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_initial_model_retirement_controls.zig",
+        "bytes": 16159,
+        "sha256": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+      }
+    },
+    {
+      "importer": "src/native_sdk_settings_shared_defaults_test.zig",
+      "kind": "embedFile",
+      "literal": "extensions/fixtures/sdk-settings-shared-defaults-observer.mjs",
+      "selected_target": "src/extensions/fixtures/sdk-settings-shared-defaults-observer.mjs",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-shared-defaults-observer.mjs",
+        "bytes": 32163,
+        "sha256": "F9ED183A05C763149C9AFDED043961D7156A8FD1B769F765A07CB2A63D2E8354"
+      }
+    },
+    {
+      "importer": "src/native_sdk_settings_shared_defaults_test.zig",
+      "kind": "embedFile",
+      "literal": "extensions/fixtures/sdk-settings-default-accessors-4954-source.mjs",
+      "selected_target": "src/extensions/fixtures/sdk-settings-default-accessors-4954-source.mjs",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-default-accessors-4954-source.mjs",
+        "bytes": 7869,
+        "sha256": "0EF20BAE3AA4499E9F7C91A287F8E4F52C3928CF008657FE6626C6770CD2C7F9"
+      }
+    },
+    {
+      "importer": "src/native_sdk_settings_shared_defaults_test.zig",
+      "kind": "import",
+      "literal": "extensions/native_process.zig",
+      "selected_target": "src/extensions/native_process.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+        "bytes": 6626,
+        "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+      }
+    },
+    {
+      "importer": "src/native_sdk_settings_shared_defaults_test.zig",
+      "kind": "import",
+      "literal": "extensions/native_stream.zig",
+      "selected_target": "src/extensions/native_stream.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_stream.zig",
+        "bytes": 36299,
+        "sha256": "FDB5C3E9930572F0D75AD4C6D88AD208CA2C0774270FA1C2839EE9EF59B7C53A"
+      }
+    }
+  ],
+  "standard_package_imports": [
+    {
+      "importer": "src/extensions/native_sdk_settings_default_accessors.zig",
+      "kind": "import",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings.zig",
+      "kind": "import",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_sdk_settings.zig",
+      "kind": "import",
+      "literal": "builtin"
+    },
+    {
+      "importer": "src/native_sdk_settings_shared_defaults_test.zig",
+      "kind": "import",
+      "literal": "std"
+    }
+  ],
+  "native_dependency_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2409692,
+      "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 117849,
+      "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+    }
+  ],
+  "supporting_vm_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_values.zig",
+      "bytes": 13939,
+      "sha256": "0B1BB422A9C89E7CE8146B32413B27E42D8DFB65285C3245B89EED8AF222022E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_function.zig",
+      "bytes": 14120,
+      "sha256": "232E0F858F21DD002C2FEB6B65C62486EB6DA113F7463B2DD60CC799B3369007"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+      "bytes": 9162,
+      "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_lexical_frame.zig",
+      "bytes": 17136,
+      "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+      "bytes": 15176,
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_guest_operation.zig",
+      "bytes": 7009,
+      "sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    }
+  ],
+  "prerequisites": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\source-intake.json",
+      "bytes": 60267,
+      "sha256": "65C0B2F4033DEB6385CC06A0AC8649B091A84B2EA2C59F8D0EB79871BDA94D4D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-project-trust-resolution-source-acceptance-20261024.json",
+      "bytes": 8112,
+      "sha256": "3DC14275F069FCA548939412F28D2305EDDBCB76908A937FDB25E591DB277796"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_settings_defaults.zig",
+      "bytes": 5116,
+      "sha256": "864B545AC2B47BB4DDD9DE32986C5549E2D259C2791EC3143CA914797CE77687"
+    }
+  ],
+  "retained_historical_asset": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\original\\src\\coding_agent\\assets\\SDK-SETTINGS-DEFAULTS-6fb2e78.json",
+    "bytes": 1141,
+    "sha256": "FB56CCA4C432A8A2A301167E3B9AEDBB9E6ED03E5ABA4939A6DFF58671F55EB6"
+  },
+  "private_api": {
+    "acquire": "one per-Engine charged/traced private import capsule with shared defaults, mutable original cache modes, and once-captured compaction defaults",
+    "method": "actual nonconstructible native class method with Source arity and native SyncArguments/lexical lifetime",
+    "cacheWarmingModes": "returns the actual original mutable exported array for later complete module publication; no partial namespace is published",
+    "receiver": "existing actual native SettingsManager/backing-data owner unchanged"
+  },
+  "affected_getters": [
+    "getSteeringMode",
+    "getFollowUpMode",
+    "getTransport",
+    "getSessionShareDestination",
+    "getCompactionEnabled",
+    "getCompactionTokenSetting",
+    "getCompactionReserveTokens",
+    "getCompactionKeepRecentTokens",
+    "getCompactionSettings",
+    "getBranchSummarySettings",
+    "getBranchSummarySkipPrompt",
+    "getRetryEnabled",
+    "getRetrySettings",
+    "getCacheWarmingMode",
+    "getProviderRetrySettings",
+    "getHideThinkingBlock",
+    "getShowCacheMissNotices",
+    "getQuietStartup",
+    "getDefaultProjectTrust",
+    "getCollapseChangelog",
+    "getEnableInstallTelemetry",
+    "getEnableAnalytics",
+    "getEnableSkillCommands",
+    "getShowImages",
+    "getImageWidthCells",
+    "getClearOnShrink",
+    "getShowTerminalProgress",
+    "getTuiMode",
+    "getFullscreenExitOutput",
+    "getFullscreenScrollbar",
+    "getFullscreenCopyOnSelect",
+    "getFullscreenWheelScrollLines",
+    "getImageAutoResize",
+    "getBlockImages",
+    "getDoubleEscapeAction",
+    "getTreeFilterMode",
+    "getEditorPaddingX",
+    "getOutputPad",
+    "getAutocompleteMaxVisible",
+    "getCodeBlockIndent",
+    "getMermaidRenderingMode"
+  ],
+  "original_defaults_reference_lines": [
+    57,
+    58,
+    724,
+    734,
+    798,
+    811,
+    821,
+    858,
+    884,
+    885,
+    890,
+    894,
+    909,
+    910,
+    911,
+    931,
+    945,
+    954,
+    958,
+    998,
+    1009,
+    1039,
+    1049,
+    1059,
+    1172,
+    1196,
+    1211,
+    1231,
+    1244,
+    1257,
+    1269,
+    1280,
+    1290,
+    1303,
+    1314,
+    1327,
+    1357,
+    1369,
+    1389,
+    1399,
+    1409,
+    1419,
+    1424
+  ],
+  "controls": {
+    "declared_count": 43,
+    "names": [
+      "native settings shared defaults complete actual getter shapes and original arities",
+      "native settings shared defaults all twenty-one explicit paths suppress fallback",
+      "native settings shared defaults all twenty-one nullish paths read current object",
+      "native settings shared defaults original nullish and truthy distinctions",
+      "native settings shared defaults genuine managers share one mutable import",
+      "native settings shared defaults trust reads global and ask falls back live",
+      "native settings shared defaults session-share original accepted and fallback choices",
+      "native settings shared defaults strict selectors do not eagerly accept default enum values",
+      "native settings shared defaults session-share setter uses actual storage and queue",
+      "native settings shared defaults unrelated raw and special methods never consult defaults",
+      "native settings shared defaults optional settings parents and required defaults parents",
+      "native settings shared defaults global cache mode uses mutable retained includes owner",
+      "native settings shared defaults tree modes allocate fresh array before predicate",
+      "native settings shared defaults branch compound repeats original parent lookups",
+      "native settings shared defaults retry compound preserves live getter and field order",
+      "native settings shared defaults provider compound only defaults final field",
+      "native settings shared defaults compaction compound preserves actual live collaborators",
+      "native settings shared defaults token wrappers capture live method before arguments",
+      "native settings shared defaults private token constants capture once while enabled stays live",
+      "native settings shared defaults token ordinary validation and exact errors",
+      "native settings shared defaults ordinary validation precedes model and override precedence",
+      "native settings shared defaults dynamic keys and provider coercion precede id lookup",
+      "native settings shared defaults false model suppresses override and optional field work",
+      "native settings shared defaults mergeable entry uses original live Array predicate",
+      "native settings shared defaults Error callee and String template evaluation order",
+      "native settings shared defaults thrown safe-integer predicate suppresses later model",
+      "native settings shared defaults width resolves max callee before floor argument",
+      "native settings shared defaults wheel max min floor live receiver order",
+      "native settings shared defaults numeric type guards suppress Number lookup",
+      "native settings shared defaults clear-on-shrink rereads defined value and exact environment",
+      "native settings shared defaults original getter exception retains identity",
+      "native settings shared defaults successful native private Error remains ordinary data",
+      "native settings shared defaults temporary parent lifetime matches actual original VM",
+      "native settings shared defaults validated local lifetime matches actual original VM",
+      "native settings shared defaults comparison temporary lifetime matches actual original VM",
+      "native settings shared defaults numeric predicate result retires before next lookup",
+      "native settings shared defaults token locals and extra argument backing match original VM",
+      "native settings shared defaults current fatal preempts guest catch and return",
+      "native settings shared defaults actual parent retirement fatal prevents fallback",
+      "native settings shared defaults actual parent retirement cancellation prevents fallback",
+      "native settings shared defaults module captures two separate original parent reads once",
+      "native settings shared defaults failed capture publishes no partial cache and can repair",
+      "native settings shared defaults host pending entry precedes cold or warm cache"
+    ],
+    "actual_metadata_count": null,
+    "runtime_result": null,
+    "literal_original_differential_controls": 37,
+    "actual_fatal_or_cancel_controls": 3,
+    "cold_warm_capture_pending_controls": 3,
+    "actual_manager_fixture": "Both subjects use the genuine native SettingsManager from sdk.managerImports and actual inMemory backing data; a test-only field mapping allows the unchanged original getter bodies to consume that same retained owner. The Source class is never instantiated.",
+    "runtime_body_erasures": "41 method signature/type erasures plus 3 constant/function signature/export/type erasures; every runtime getter body is byte-exact."
+  },
+  "static_checks": {
+    "receipt": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-settings-shared-defaults-sourceonly-20261024\\static-source-checks.json",
+      "bytes": 18962,
+      "sha256": "2CF570589B81BE98C07CC23EAE7AE928762157729E25C460C17ED891D1D956EB"
+    },
+    "existing_owner_hunks": 12,
+    "full_owner_inverse": true,
+    "complete_six_target_patch_reconstructed": true,
+    "all_41_original_defaults_sites_covered": true,
+    "all_direct_relative_imports_resolved": 25,
+    "standard_package_literal_imports": 4,
+    "git_apply_check_source_only": {
+      "command": "git apply --check --whitespace=nowarn --exclude=build.zig source-diff.patch",
+      "Main_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+      "exit_code": 0
+    },
+    "git_apply_check_full_old_base": {
+      "exit_code": 1,
+      "reason": "Main advanced from d3a9 to clean 35790 while this isolated packet was authored; only build.zig context is stale. The complete 1,087-byte addition and exact original/projected build inverse are preserved for insertion-only composition."
+    },
+    "Main_working_tree_clean_observed": true,
+    "pinned_versions_rehashed": 45
+  },
+  "remaining_integration": [
+    "Root must review and compose the isolated 1,087-byte build insertion into its latest accepted build; do not overwrite newer full build bytes.",
+    "The exact source prerequisites are the accepted Resolver shared defaults owner and existing genuine native SettingsManager, sync argument, lexical-frame, and owned completion collaborators.",
+    "Existing non-default accessors/setters and complete settings-manager module publication retain their prior scope; this packet does not assert full SettingsManager parity.",
+    "Other original SETTINGS_DEFAULTS import sites remain settings-schema.ts, extensions/codemode/tool.ts, extensions/codemode/index.ts, and modes/interactive/components/settings-selector.ts.",
+    "Production createRuntime, actual context/UI/service/session inputs, native compilation, metadata, runtime and product qualification remain separate."
+  ],
+  "not_executed": [
+    "Zig formatter/parser/compiler",
+    "JavaScript parser or candidate fixture",
+    "native build or metadata",
+    "runtime controls",
+    "Node reference capture",
+    "source catalog preparers/binders",
+    "Main mutation"
+  ],
+  "claims": {
+    "Main_modified": false,
+    "native_execution_authorized": false,
+    "native_execution": false,
+    "candidate_executed": false,
+    "runtime_qualification": false,
+    "product_qualification": false,
+    "new_C_ABI": false
+  }
+}

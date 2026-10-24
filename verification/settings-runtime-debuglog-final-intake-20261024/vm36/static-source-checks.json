@@ -1,0 +1,29 @@
+{
+  "source_only": true,
+  "observed_main_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "main_porcelain_empty": true,
+  "c_finite_guards": 2,
+  "full_c_inverse_exact": true,
+  "all_other_c_bytes_unchanged": true,
+  "header_unchanged": true,
+  "build_insertion_bytes": 1073,
+  "full_build_inverse_exact": true,
+  "selected_patch_targets": [
+    "vendor/quickjs/quickjs.c",
+    "src/native_vm_string_primitive_hooks_test.zig",
+    "build.zig"
+  ],
+  "direct_imports": 2,
+  "standard_imports": 1,
+  "declared_controls": 36,
+  "native_fatal_controls": 4,
+  "ordinary_controls": 32,
+  "git_apply_check_exit": 0,
+  "git_apply_check_stdout": "",
+  "git_apply_check_stderr": "",
+  "candidate_executed": false,
+  "native_execution": false,
+  "Node_execution": false,
+  "reference_execution": false,
+  "syntax_parser_executed": false
+}

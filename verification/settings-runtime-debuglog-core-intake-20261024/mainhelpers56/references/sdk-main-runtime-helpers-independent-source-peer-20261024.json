@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "reviewer": "catalog_review",
+  "status": "independent_source_peer_accepted",
+  "scope": "Complete original Main buildSessionOptions and resolveCliPaths plus genuine authenticated Auth/Application assembly; source-only.",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\source-intake.json",
+    "bytes": 54143,
+    "sha256": "639C33CCE0283421E2C59B5D7E729A0E4BF304458CBC8350F758CBBC1F85871B"
+  },
+  "observed_main_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "mechanical": {
+    "unique_pin_versions_rehashed": 80,
+    "source_owner_hunks_forward_and_inverse": 3,
+    "original_type_erasures_forward_and_inverse": 4,
+    "original_authority_exact_span": {
+      "bytes": 3640,
+      "byte_offset": 15869
+    },
+    "whole_seven_target_patch_reproduced": true,
+    "patch_bytes": 84957,
+    "direct_import_and_embed_occurrences": 72,
+    "standard_package_import_occurrences": 4,
+    "actual_auth_fixture_exact_suffix_bytes": 12480,
+    "build_insertion_bytes": 1038,
+    "complete_build_inverse": true,
+    "default_artifact_stem": "test",
+    "git_apply_check": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "main_porcelain_empty": true
+  },
+  "semantic_review": [
+    "Read the complete 18,497-byte new owner, original 3,474-byte JavaScript reference, all three Auth/Application insertions, the full 56-control test root and 21,103-byte observer.",
+    "The selected 3,640-byte original Main range occurs exactly at byte 15,869 in the retained 4954 main.ts. Four explicit type/signature erasures leave both complete runtime bodies exact; the inverse recovers the original span.",
+    "Auth checks the live actual lease, retains runtime imports and all three expected provider identities before carrier Gets, rejects a foreign private assembly carrier without reading its members, and has no self access after the first guest Get. Existing owned completion and native invocation entry/exit retain ordinary pending reasons, fresh native fatal events and retirement order.",
+    "The helper owner requires the actual per-Engine path-utilities namespace, captures named functions once from the genuine native AI/CLI/model-resolver/path owners, and publishes only a completed pair. Warm retrieval preserves captured functions; cold same-engine reentry is explicitly guarded at this private assembly boundary.",
+    "buildSessionOptions preserves the original short-circuit and repeated Gets, warning-before-error order, live global Boolean lookup/call, ordered ordinary object definitions, ordinary option Sets, scoped-model selection, late CLI thinking precedence and live find/map callbacks.",
+    "The original savedModel binding is captured through the real Frame, detached at its block exit through owned completion on normal and abrupt paths, and remains available to escaped callbacks. resolveCliPaths captures the actual cwd formal through the existing sync-argument cell and delegates live map behavior, including holes and arbitrary returns.",
+    "Tool copying calls the existing JS_PiArrayAppend ABI, which dispatches to the same js_append_enumerate used by OP_append. Read the actual fast-array/general iterator paths, two iterator Gets, next acquisition, close-on-step-failure region and exception-preserving close; this packet adds no ABI.",
+    "Read the genuine selected provider bodies against retained authority for modelsAreEqual/getModelType, the seven thinking-level includes operation, path prefix checks and path resolution order. Replayed the retained complete resolveCliModel runtime comparison. Settings43 and matched original4954 ModelMap6 remain explicit source prerequisites.",
+    "All 56 controls are authored and unexecuted: 44 full-original/native comparisons, three real fatal/cancellation controls and nine actual owner/cache/pending/reentry controls. Instrumented pure-function formals and mutable named members belong to the controlled test observations; the Auth/frontend/bootstrap/import owner graph is genuine."
+  ],
+  "inputs": {
+    "patch": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\source-diff.patch",
+      "bytes": 84957,
+      "sha256": "7A909E710DF5DAC3D1B605EF3247C54BE515C2338053B75A1034843223A0A1EF"
+    },
+    "source_inverses": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\main-helper-owner-finite-inverses.json",
+      "bytes": 5311,
+      "sha256": "117188F1048CADB50FC45D9532DD2DD4448005AB8341BABCD600DB63F965F46D"
+    },
+    "original_fixture_inverses": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\original-main-helpers-fixture-inverses.json",
+      "bytes": 2168,
+      "sha256": "CC771C6957C72EC9690E24DFC7CA833AB41BD3ECDF950860A5A14B3722DCDAE5"
+    },
+    "static_checks": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\static-source-checks.json",
+      "bytes": 46421,
+      "sha256": "167A0BC6DA826A234DEE1DAF340DC0DE0CCC1B5F23F11C7112002D541BBF4086"
+    },
+    "build_inverse": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\build-insertion-inverse.json",
+      "bytes": 1250,
+      "sha256": "8F5920A6FED1877C7704C555585491BEC4A7B6EAF69A0512F83F1A4F683430AC"
+    },
+    "original_version_comparison": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-main-runtime-helpers-sourceonly-20261024\\model-defaults-authority-differences.json",
+      "bytes": 17492,
+      "sha256": "21931464C2E9CE5BE6CC5DF4D7B9173C01EA639186B403232DDDE66FC5EE40C0"
+    },
+    "settings_root_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-settings-shared-defaults-source-acceptance-20261024.json",
+      "bytes": 10359,
+      "sha256": "08678EF828C0B023CD609D61AD370F3BFC6E576B3514C49A5025CACEC02314D6"
+    },
+    "model_map_root_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-default-model-map-source-acceptance-20261024.json",
+      "bytes": 7536,
+      "sha256": "75BDCC65D992BF7DF32A032AA2CE6C8BF0477D59846553C45B293704436F5C80"
+    }
+  },
+  "limitations": [
+    "No compiler/parser/formatter, source candidate, Node, metadata or runtime execution was performed.",
+    "No source intake or Main mutation. Future intake must preserve all prerequisite selections and compose only the exact build insertion.",
+    "This source acceptance does not publish Main, complete runtimeFactory, requalify the whole older CLI provider, or qualify application startup."
+  ],
+  "concrete_blockers": [],
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "source_mutation": false,
+  "reviewed_utc": "2026-10-24T22:36:29.418411+00:00"
+}

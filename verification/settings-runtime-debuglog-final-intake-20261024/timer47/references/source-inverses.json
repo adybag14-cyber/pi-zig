@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "status": "selected_finite_source_inverses_verified",
+  "clone_baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+    "bytes": 9712,
+    "sha256": "1419707D2D20C08AFA83EFDD97937BA7604B04BBCA587D92F200A395A9A7F53B"
+  },
+  "clone_candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+    "bytes": 10419,
+    "sha256": "D5A1B80E1358B3976C6947D71023DDA19378FDBA99B491548AF08F81D97D3A3A"
+  },
+  "clone_edits": [
+    {
+      "offset": 983,
+      "before": "\"Array\", \"Object\", \"Symbol\", \"RegExp\"",
+      "after": "\"Array\", \"Object\", \"Symbol\", \"RegExp\", \"Number\"",
+      "input_sha256": "1419707D2D20C08AFA83EFDD97937BA7604B04BBCA587D92F200A395A9A7F53B",
+      "output_sha256": "65FB217DC9756DC040183B468F464AD13864A1CEE583515E86C00355C4DD008F"
+    },
+    {
+      "offset": 6645,
+      "before": "        if (comptime @import(\"std\").mem.eql(u8, name, \"Object\")) {",
+      "after": "        if (comptime @import(\"std\").mem.eql(u8, name, \"Number\")) {\n            const prototype = try checked(c.JS_GetPropertyStr(context, constructor, \"prototype\"));\n            defer c.JS_FreeValue(context, prototype);\n            try put(context, result, \"Number.toFixed\", try checked(c.JS_GetPropertyStr(context, prototype, \"toFixed\")));\n        }\n        if (comptime @import(\"std\").mem.eql(u8, name, \"Object\")) {",
+      "input_sha256": "65FB217DC9756DC040183B468F464AD13864A1CEE583515E86C00355C4DD008F",
+      "output_sha256": "8506EFC43D58BDF8C485EDBFFB1DE14F8FD1B35E153945C4FAD0A237A29AC86C"
+    },
+    {
+      "offset": 8333,
+      "before": "                try put(context, result, \"String.toUpperCase\", try checked(c.JS_GetPropertyStr(context, prototype, \"toUpperCase\")));",
+      "after": "                try put(context, result, \"String.toUpperCase\", try checked(c.JS_GetPropertyStr(context, prototype, \"toUpperCase\")));\n                try put(context, result, \"String.padStart\", try checked(c.JS_GetPropertyStr(context, prototype, \"padStart\")));",
+      "input_sha256": "8506EFC43D58BDF8C485EDBFFB1DE14F8FD1B35E153945C4FAD0A237A29AC86C",
+      "output_sha256": "47D1AA74F3B33A3E2A9A0715ACC7BF033DFF9847F0744DD8D44B1867AD7CE7D0"
+    },
+    {
+      "offset": 9876,
+      "before": "    // Node util's actual private symbol",
+      "after": "    const math = try checked(c.JS_GetPropertyStr(context, global, \"Math\"));\n    defer c.JS_FreeValue(context, math);\n    try put(context, result, \"Math.floor\", try checked(c.JS_GetPropertyStr(context, math, \"floor\")));\n    // Node util's actual private symbol",
+      "input_sha256": "47D1AA74F3B33A3E2A9A0715ACC7BF033DFF9847F0744DD8D44B1867AD7CE7D0",
+      "output_sha256": "D5A1B80E1358B3976C6947D71023DDA19378FDBA99B491548AF08F81D97D3A3A"
+    }
+  ],
+  "shared_baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog.zig",
+    "bytes": 28016,
+    "sha256": "2940F0D9B1E07456923198DB8E8C03C699A92C7F2994773C4DED1F121F949091"
+  },
+  "shared_candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-debuglog-timers-sourceonly-20261024\\projected\\src\\extensions\\native_node_debuglog.zig",
+    "bytes": 29341,
+    "sha256": "35C9ED6C05FD5B3025ECDAD5B003E0DF4AE34F84E2C054A271C2A0FEE902058B"
+  },
+  "shared_append": {
+    "offset": 28016,
+    "text": "\n/// The separately admitted original timer bodies share these exact module\n/// cells and captures. This Zig-only handoff never publishes an extra JS API.\npub fn requireSharedOwner(engine: *a.v.em.Engine, expected_exports: c.JSValue) !c.JSValue {\n    return a.expression(engine, requireSharedOwnerBody, .{expected_exports});\n}\nfn requireSharedOwnerBody(s: *Scope, expected_exports: c.JSValue) anyerror!c.JSValue {\n    const known = s.engine.native_module_values.get(key) orelse\n        return error.RequiredActualInitializedDebuglogOwner;\n    const owner = try s.own(a.duplicate(s.engine, known));\n    if (!s.equal(try member(s, owner, \"exports\"), expected_exports))\n        return error.ActualInitializedDebuglogOwnerIdentityChanged;\n    return a.duplicate(s.engine, owner);\n}\npub fn emitSharedWarning(engine: *a.v.em.Engine, owner: c.JSValue, set: c.JSValue) !c.JSValue {\n    return a.expression(engine, warning, .{owner, set});\n}\npub fn acquireSharedColors(engine: *a.v.em.Engine, owner: c.JSValue) !c.JSValue {\n    return a.expression(engine, lazyColors, .{owner});\n}\npub fn sharedSpreadCall(engine: *a.v.em.Engine, function: c.JSValue, prefix: []const c.JSValue,\n    iterable: c.JSValue, safe_iterator: c.JSValue) !c.JSValue\n{\n    return a.expression(engine, spreadCall, .{function, prefix, iterable, safe_iterator});\n}\n"
+  },
+  "native_execution": false,
+  "ordinary_original_prefix_byte_exact": true,
+  "clone_complete_raw_inverse": true,
+  "shared_complete_raw_inverse": true
+}
