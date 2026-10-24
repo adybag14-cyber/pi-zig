@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "reason": "Current Engine fields are optional native WeakRef captures; unwrap the two required real captures before creating a class, with no substitute or fallback.",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\projected\\src\\extensions\\native_node_weak_reference.zig",
+    "bytes": 8012,
+    "sha256": "44520DDDA5E5F9E3D352F1B1730AE152635A02E90E76DF67817B4DF1FCD96E27"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_weak_reference.zig",
+    "bytes": 8226,
+    "sha256": "881B6895313E71DBF77769E1ECCDFB3CA12567835BFFC163AE27D267E4976BDF"
+  },
+  "engine": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+    "bytes": 99337,
+    "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+  },
+  "edits": [
+    {
+      "offset": 6741,
+      "old": "    try s.engine.checkNativeEntry();\n    var id: c.JSClassID = 0;\n",
+      "new": "    try s.engine.checkNativeEntry();\n    const weak_constructor = s.engine.native_weak_ref_constructor orelse\n        return error.ActualCapturedWeakRefConstructorRequired;\n    const weak_deref = s.engine.native_weak_ref_deref orelse\n        return error.ActualCapturedWeakRefDerefRequired;\n    var id: c.JSClassID = 0;\n",
+      "before_sha256": "44520DDDA5E5F9E3D352F1B1730AE152635A02E90E76DF67817B4DF1FCD96E27",
+      "after_sha256": "50726F12A054897C0E7B406ACF4004672CB5D906B63223D3A063AAE183289475"
+    },
+    {
+      "offset": 7698,
+      "old": "&.{retained_id, s.engine.native_weak_ref_constructor}",
+      "new": "&.{retained_id, weak_constructor}",
+      "before_sha256": "50726F12A054897C0E7B406ACF4004672CB5D906B63223D3A063AAE183289475",
+      "after_sha256": "25B77C23A05DDAD48F9B75B7D189BA9DB815C96949F76DF596D2C9481FD8DAED"
+    },
+    {
+      "offset": 7765,
+      "old": "{retained_id, s.engine.native_weak_ref_deref}",
+      "new": "{retained_id, weak_deref}",
+      "before_sha256": "25B77C23A05DDAD48F9B75B7D189BA9DB815C96949F76DF596D2C9481FD8DAED",
+      "after_sha256": "881B6895313E71DBF77769E1ECCDFB3CA12567835BFFC163AE27D267E4976BDF"
+    }
+  ],
+  "complete_raw_inverse_matches_original": true,
+  "changed_functions": [
+    "createBody"
+  ],
+  "all_other_function_bodies_unchanged": true,
+  "controls_unchanged": true,
+  "build_unchanged": true,
+  "native_executed": false
+}

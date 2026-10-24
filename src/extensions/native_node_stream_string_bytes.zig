@@ -35,7 +35,7 @@ fn width(point: u21) usize {
     return if (point < 0x80) 1 else if (point < 0x800) 2
         else if (point < 0x10000) 3 else 4;
 }
-fn exactUtf8(view: *const c.JSPiStringView) usize {
+pub fn exactUtf8(view: *const c.JSPiStringView) usize {
     var at: usize = 0;
     var size: usize = 0;
     while (at < view.length) size +%= width(scalar(view, &at));
@@ -60,7 +60,7 @@ fn encodeScalar(output: [*c]u8, point: u21) usize {
     output[3] = @intCast(0x80 | (point & 0x3f));
     return 4;
 }
-fn boundedUtf8(view: *const c.JSPiStringView, output: [*c]u8,
+pub fn boundedUtf8(view: *const c.JSPiStringView, output: [*c]u8,
     capacity: usize) usize
 {
     var at: usize = 0;
@@ -74,7 +74,7 @@ fn boundedUtf8(view: *const c.JSPiStringView, output: [*c]u8,
     }
     return size;
 }
-fn flat(s: *a.Scope, string: c.JSValue) !c.JSPiStringView {
+pub fn flat(s: *a.Scope, string: c.JSValue) !c.JSPiStringView {
     if (!c.JS_IsString(string)) check.assertion(s.engine, .{
         .file_line = "src/string_bytes.cc:246",
         .message = "val->IsString() == true",

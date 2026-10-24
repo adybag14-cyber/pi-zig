@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "status": "unsealed_source_only_controls_pending",
+  "transforms": [
+    {
+      "target": "vendor/quickjs/quickjs.h",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 116648,
+        "sha256": "532BFBF4CE23AAA4B1F49D576F1A48D997B234142DFE1A587A2FFE5A340971AA"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 117314,
+        "sha256": "CA4DB7F473A9A1F7FF5C904D197FE25095B5B78B771327AAFA6F0B8819A7F230"
+      },
+      "offset": 75274,
+      "before": "",
+      "after": "/* Original V8 ArrayBufferView::CopyContents. This copies at most the supplied\n   capacity and the original stored view byte length; length-tracking views\n   have a stored length of zero even when ByteLength is nonzero. The caller\n   roots the actual view, obtains ByteLength before allocation, and supplies\n   native destination storage. No guest operation, allocation, backing-store\n   lease, or pending-state change occurs; this is a VM-owner-thread copy. */\nJS_EXTERN size_t JS_PiArrayBufferViewCopyContents(JSValueConst view,\n                                                 void *destination,\n                                                 size_t capacity);\n",
+      "complete_raw_inverse": true
+    },
+    {
+      "target": "vendor/quickjs/quickjs.c",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-publication-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2406379,
+        "sha256": "B23C5114FD01344B5BB1424A4DC2B702506CFFDA0280329044C0763B27A7F754"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2407586,
+        "sha256": "92D0A80DFD4D9AB76181ABAB3F0FE179BFA9827710A3A66A2C1BC651F426076F"
+      },
+      "offset": 2288243,
+      "before": "",
+      "after": "/* Node24.13 util.cc BufferValue consumes V8 api.cc CopyContents, whose\n   source limit is JSArrayBufferView::byte_length(), not GetByteLength().\n   V8 stores zero for length-tracking TypedArrays and DataViews. QuickJS keeps\n   their current length, so the original stored-length projection is explicit.\n   The caller has already bounded capacity by intrinsic ByteLength and retains\n   the view throughout this native copy; no callback can detach its storage. */\nsize_t JS_PiArrayBufferViewCopyContents(JSValueConst view,\n                                       void *destination, size_t capacity)\n{\n    JSObject *p;\n    JSTypedArray *ta;\n    JSArrayBuffer *abuf;\n    size_t count;\n\n    if (JS_VALUE_GET_TAG(view) != JS_TAG_OBJECT || capacity == 0)\n        return 0;\n    p = JS_VALUE_GET_OBJ(view);\n    if (!is_typed_array(p->class_id) && p->class_id != JS_CLASS_DATAVIEW)\n        return 0;\n    ta = p->u.typed_array;\n    if (!ta || ta->track_rab)\n        return 0;\n    abuf = ta->buffer->u.array_buffer;\n    if (abuf->detached)\n        return 0;\n    count = capacity < ta->length ? capacity : ta->length;\n    if (count != 0)\n        memcpy(destination, abuf->data + ta->offset, count);\n    return count;\n}\n\n",
+      "complete_raw_inverse": true
+    },
+    {
+      "target": "src/extensions/native_node_maybe_stack_buffer.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_maybe_stack_buffer.zig",
+        "bytes": 2561,
+        "sha256": "5CF8285B49EFFD29C1B850B2E52CA9D71B792BC7397B6EF24221809023611DEC"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\src\\extensions\\native_node_maybe_stack_buffer.zig",
+        "bytes": 4564,
+        "sha256": "64376192280B2C77C6D61556FD629672BDD7FAB4C49D118E173DFB723AF4D45A"
+      },
+      "offset": 2153,
+      "before": "",
+      "after": "        pub fn capacity(self: *const Self) usize {\n            return if (self.heap) |items| items.len else stack_count;\n        }\n        pub fn capacityData(self: *Self) []T {\n            return if (self.heap) |items| items else self.stack[0..];\n        }\n        /// Original util-inl.h AllocateSufficientStorage, including preserving\n        /// the current logical prefix when storage first leaves the stack.\n        /// A successful smaller request changes length without shrinking.\n        pub fn allocateSufficientStorage(self: *Self, count: usize) !void {\n            if (count > self.capacity()) {\n                const engine = try self.environment.requireEngine();\n                _ = std.math.mul(usize, @sizeOf(T), count) catch\n                    check.assertion(engine, .{\n                        .file_line = \"src/util-inl.h:245\",\n                        .message = \"(b) == (ret / a)\",\n                        .function = \"node::MultiplyWithOverflowCheck\",\n                    });\n                const allocator = self.environment.allocator();\n                const was_allocated = self.heap != null;\n                const replacement = (if (self.heap) |items|\n                    allocator.realloc(items, count) else allocator.alloc(T, count)) catch blk: {\n                    c.JS_RunGC(engine.runtime);\n                    break :blk (if (self.heap) |items|\n                        allocator.realloc(items, count) else allocator.alloc(T, count)) catch\n                        check.assertion(engine, .{\n                            .file_line = \"src/util-inl.h:292\",\n                            .message = \"!(n > 0) || (ret != nullptr)\",\n                            .function = \"node::Realloc\",\n                        });\n                };\n                if (!was_allocated and self.length != 0)\n                    @memcpy(replacement[0..self.length], self.stack[0..self.length]);\n                self.heap = replacement;\n            }\n            self.length = count;\n        }\n",
+      "complete_raw_inverse": true
+    },
+    {
+      "target": "src/extensions/native_node_stream_string_bytes.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-writev-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_stream_string_bytes.zig",
+        "bytes": 11908,
+        "sha256": "8B7621BF39B5E4EB1F160B791CA9BFC56927E871267E0502317F77F626C53681"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\src\\extensions\\native_node_stream_string_bytes.zig",
+        "bytes": 11920,
+        "sha256": "7915E9BE27377D263677FF5E68D40557C52C3E50AFF2273401D081CC17CB02B0"
+      },
+      "edits": [
+        {
+          "offset": 1580,
+          "before": "fn exactUtf8(",
+          "after": "pub fn exactUtf8(",
+          "input_sha256": "8B7621BF39B5E4EB1F160B791CA9BFC56927E871267E0502317F77F626C53681",
+          "output_sha256": "DCBFC8706AB98E9B871A70E859EF7B568C113AD418DD9E0FB2276399BF3630CD"
+        },
+        {
+          "offset": 2479,
+          "before": "fn boundedUtf8(",
+          "after": "pub fn boundedUtf8(",
+          "input_sha256": "DCBFC8706AB98E9B871A70E859EF7B568C113AD418DD9E0FB2276399BF3630CD",
+          "output_sha256": "2C6481E6B5AC38883762972CCC26081503869AD0738DA994834463390D0C1789"
+        },
+        {
+          "offset": 2974,
+          "before": "fn flat(",
+          "after": "pub fn flat(",
+          "input_sha256": "2C6481E6B5AC38883762972CCC26081503869AD0738DA994834463390D0C1789",
+          "output_sha256": "7915E9BE27377D263677FF5E68D40557C52C3E50AFF2273401D081CC17CB02B0"
+        }
+      ],
+      "complete_raw_inverse": true,
+      "only_three_internal_visibility_tokens": true
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.h",
+      "bytes": 117314,
+      "sha256": "CA4DB7F473A9A1F7FF5C904D197FE25095B5B78B771327AAFA6F0B8819A7F230"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2407586,
+      "sha256": "92D0A80DFD4D9AB76181ABAB3F0FE179BFA9827710A3A66A2C1BC651F426076F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\src\\extensions\\native_node_maybe_stack_buffer.zig",
+      "bytes": 4564,
+      "sha256": "64376192280B2C77C6D61556FD629672BDD7FAB4C49D118E173DFB723AF4D45A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\src\\extensions\\native_node_stream_string_bytes.zig",
+      "bytes": 11920,
+      "sha256": "7915E9BE27377D263677FF5E68D40557C52C3E50AFF2273401D081CC17CB02B0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\src\\extensions\\native_node_buffer_value.zig",
+      "bytes": 4399,
+      "sha256": "34AF48BADD5877CBE28A481563C554AD11509BBE356A236C91FA8A1B94CE5144"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\src\\extensions\\native_node_fs_open_path.zig",
+      "bytes": 5014,
+      "sha256": "BB1BFD00E2B1ADEB6399C083874B2EA5533DDF8EFCEE00ACC67E59D0ECFC4F92"
+    }
+  ],
+  "native_execution": false
+}

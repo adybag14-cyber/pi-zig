@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "node_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "method": "Hermes native HTTP excerpts: exact offset union, overlap equality and complete raw-body byte count/SHA256 verified.",
+  "sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\authority\\lib__internal__source_map__source_map_cache.js.txt",
+      "bytes": 15946,
+      "sha256": "03C77C90B7E51CCBB978A579BCA36DBF5EFE07FF211AC7117E64CEA1ADE9B40C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\authority\\lib__internal__source_map__source_map_cache_map.js.txt",
+      "bytes": 3883,
+      "sha256": "56ED03526BDEED4F88FD84A14EDB0C005A29BC4B4616E5596414B535A5926272"
+    }
+  ],
+  "transport": [
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/lib/internal/source_map/source_map_cache.js",
+      "http_status": 200,
+      "body_sha256": "03c77c90b7e51ccbb978a579bca36dbf5efe07ff211ac7117e64cea1ade9b40c",
+      "content_sha256": "03c77c90b7e51ccbb978a579bca36dbf5efe07ff211ac7117e64cea1ade9b40c",
+      "retrieved_at": "2026-10-24T17:59:01.279Z",
+      "validated_at": "2026-10-24T18:00:35.936Z",
+      "text_bytes": 15946,
+      "excerpt_start_byte": 0,
+      "excerpt_end_byte": 4000,
+      "excerpt_chars": 4000
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/lib/internal/source_map/source_map_cache.js",
+      "http_status": 200,
+      "body_sha256": "03c77c90b7e51ccbb978a579bca36dbf5efe07ff211ac7117e64cea1ade9b40c",
+      "content_sha256": "03c77c90b7e51ccbb978a579bca36dbf5efe07ff211ac7117e64cea1ade9b40c",
+      "retrieved_at": "2026-10-24T17:59:01.279Z",
+      "validated_at": "2026-10-24T18:00:35.951Z",
+      "text_bytes": 15946,
+      "excerpt_start_byte": 4496,
+      "excerpt_end_byte": 8496,
+      "excerpt_chars": 4000
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/lib/internal/source_map/source_map_cache.js",
+      "http_status": 200,
+      "body_sha256": "03c77c90b7e51ccbb978a579bca36dbf5efe07ff211ac7117e64cea1ade9b40c",
+      "content_sha256": "03c77c90b7e51ccbb978a579bca36dbf5efe07ff211ac7117e64cea1ade9b40c",
+      "retrieved_at": "2026-10-24T17:59:01.279Z",
+      "validated_at": "2026-10-24T18:00:35.976Z",
+      "text_bytes": 15946,
+      "excerpt_start_byte": 10266,
+      "excerpt_end_byte": 14266,
+      "excerpt_chars": 4000
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/lib/internal/source_map/source_map_cache.js",
+      "http_status": 200,
+      "body_sha256": "03c77c90b7e51ccbb978a579bca36dbf5efe07ff211ac7117e64cea1ade9b40c",
+      "content_sha256": "03c77c90b7e51ccbb978a579bca36dbf5efe07ff211ac7117e64cea1ade9b40c",
+      "retrieved_at": "2026-10-24T17:59:01.279Z",
+      "validated_at": "2026-10-24T18:00:35.963Z",
+      "text_bytes": 15946,
+      "excerpt_start_byte": 11946,
+      "excerpt_end_byte": 15946,
+      "excerpt_chars": 4000
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/lib/internal/source_map/source_map_cache.js",
+      "http_status": 200,
+      "body_sha256": "03c77c90b7e51ccbb978a579bca36dbf5efe07ff211ac7117e64cea1ade9b40c",
+      "content_sha256": "03c77c90b7e51ccbb978a579bca36dbf5efe07ff211ac7117e64cea1ade9b40c",
+      "retrieved_at": "2026-10-24T17:59:01.279Z",
+      "validated_at": "2026-10-24T18:00:40.846Z",
+      "text_bytes": 15946,
+      "excerpt_start_byte": 3182,
+      "excerpt_end_byte": 7182,
+      "excerpt_chars": 4000
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/lib/internal/source_map/source_map_cache.js",
+      "http_status": 200,
+      "body_sha256": "03c77c90b7e51ccbb978a579bca36dbf5efe07ff211ac7117e64cea1ade9b40c",
+      "content_sha256": "03c77c90b7e51ccbb978a579bca36dbf5efe07ff211ac7117e64cea1ade9b40c",
+      "retrieved_at": "2026-10-24T17:59:01.279Z",
+      "validated_at": "2026-10-24T17:59:34.547Z",
+      "text_bytes": 15946,
+      "excerpt_start_byte": 7316,
+      "excerpt_end_byte": 11316,
+      "excerpt_chars": 4000
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/lib/internal/source_map/source_map_cache_map.js",
+      "http_status": 200,
+      "body_sha256": "56ed03526bdeed4f88fd84a14edb0c005a29bc4b4616e5596414b535a5926272",
+      "content_sha256": "56ed03526bdeed4f88fd84a14edb0c005a29bc4b4616e5596414b535a5926272",
+      "retrieved_at": "2026-10-24T17:59:26.833Z",
+      "validated_at": "2026-10-24T17:59:26.833Z",
+      "text_bytes": 3883,
+      "excerpt_start_byte": 0,
+      "excerpt_end_byte": 3883,
+      "excerpt_chars": 3883
+    }
+  ],
+  "code_executed": false,
+  "native_execution": false
+}

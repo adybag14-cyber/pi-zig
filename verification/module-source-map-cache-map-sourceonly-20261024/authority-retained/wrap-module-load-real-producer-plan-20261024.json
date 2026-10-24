@@ -1,0 +1,451 @@
+{
+  "schema": 1,
+  "status": "bounded_read_only_real_wrapModuleLoad_producer_dependency_plan",
+  "reviewer": "controls_review",
+  "created_utc": "2026-10-24T18:52:53.183068+00:00",
+  "inspected_head": "7947d3a0825a356dccc6aca7a327c92d7248b47f",
+  "Main_clean": true,
+  "outcome": "No currently selectable complete producer closes wrap_module_load. Recover the complete original wrapper only together with genuine debugWithTimer and canonical diagnostics channel ownership. Retained private-channel/private-event drafts remain unselected.",
+  "selected_source": false,
+  "native_execution_authorized": false,
+  "Main_mutated": false,
+  "original_reference_execution": false,
+  "code_emitted": false,
+  "product_qualification": false,
+  "authority": {
+    "official_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+    "official_version": "24.14.0",
+    "basis": "Exact existing primary-authority.json and predecessor manifest; no new runtime capture. Retained sources were read from local immutable authority files."
+  },
+  "pinned_inputs": {
+    "actual_consumer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_prototype.zig",
+      "bytes": 12549,
+      "sha256": "BB69BF6D87AF3B80FF1EB33852129C8AC760EC8CAE47147CE00BF964668C9C99"
+    },
+    "current_constructor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_constructor.zig",
+      "bytes": 30628,
+      "sha256": "85330C0B93D291A915AB958507BFE0A436C2C29A245D4A0A50C9B23ECEE15333"
+    },
+    "current_watch_lazy_owner": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_watch.zig",
+      "bytes": 6350,
+      "sha256": "52E59E13411D1AD04D50B52818A57AA50C0EB637D01A8FC0CC79D146A1289534"
+    },
+    "current_native_debug": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_native_debug.h",
+      "bytes": 3449,
+      "sha256": "E11332B46CC5DF6001BBEBF3CF094B5ED2C8C4170F4FB0089B264DC0AE5BF8E8"
+    },
+    "current_environment_store": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_environment_map.zig",
+      "bytes": 5238,
+      "sha256": "A062E1D0D492E1D3D81BC411A768FC4738D7C8C37B736D53D3FDD6C2FF261698"
+    },
+    "current_process": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+      "bytes": 6626,
+      "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+    },
+    "current_process_clock": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process_clock.zig",
+      "bytes": 7827,
+      "sha256": "CBE059EE37ACA5AEDA7AE0920CEA1589ABB8A8850FB53E31BFC8E44EC0909B40"
+    },
+    "current_process_events": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_process_events.zig",
+      "bytes": 12278,
+      "sha256": "D33BBA08FC2807A01D1EDA7695A84D85BF595548B6E4C97970CD2DD67D413C20"
+    },
+    "current_next_tick": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_events.zig",
+      "bytes": 62168,
+      "sha256": "CED7F1DFDE5F396FD71274DB09B53B5BB51889661A6B97D47C18C8A79C0F9AC2"
+    },
+    "current_diagnostic_context": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_diagnostic_context.h",
+      "bytes": 775,
+      "sha256": "4D8E43A6527FED6AA19F86A2A51CD490E5DDEAC6CCC323635B700ED4E8B798C0"
+    },
+    "current_engine_pristine_weakref": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    "current_vm_C": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2406379,
+      "sha256": "B23C5114FD01344B5BB1424A4DC2B702506CFFDA0280329044C0763B27A7F754"
+    },
+    "current_vm_header": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 116648,
+      "sha256": "532BFBF4CE23AAA4B1F49D576F1A48D997B234142DFE1A587A2FFE5A340971AA"
+    },
+    "original_loader": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+      "bytes": 72050,
+      "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+    },
+    "original_internal_util": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__util.js.txt",
+      "bytes": 28980,
+      "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429"
+    },
+    "original_primary_authority": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\primary-authority.json",
+      "bytes": 3386,
+      "sha256": "1C852A94D054E0705D4D098E66749A83FB7AFD01B462F9933A2EC11FFEEC2CC4"
+    },
+    "original_debuglog": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+      "bytes": 12596,
+      "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+    },
+    "original_diagnostics_channel": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\diagnostics_channel.js",
+      "bytes": 10481,
+      "sha256": "B32AB2ECB196B53047979C42A546DEC9B1560635E1327C0FBE0F27DD184C73EB"
+    },
+    "old_source_manifest": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\prepared-owner-successor.json",
+      "bytes": 11379,
+      "sha256": "91A423F8C4E27DB88E9F4DFFA9EA3C82B42054F43019398E488DEFAB5AC3D0F1"
+    },
+    "old_declared_scope": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\OWNER-SCOPE.md",
+      "bytes": 5008,
+      "sha256": "6519F4F4D365C296AB287603D7A6F2F4ECCDD3F1FF56FA9ABE76C20BC6ED6125"
+    },
+    "unselected_wrapper_donor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\src\\extensions\\native_node_commonjs_wrap_load.zig",
+      "bytes": 5070,
+      "sha256": "781C97500526B8DFAD7BD4B6BF7728C1492E39D3DCB16FF6C8845901F51D9517"
+    },
+    "unselected_trace_donor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\src\\extensions\\native_node_commonjs_trace.zig",
+      "bytes": 19518,
+      "sha256": "24468FFA4236918DC39E04A6F351C6FB56C80F66F8759E00BAFC841DF8FEA095"
+    },
+    "unselected_timers_donor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\src\\extensions\\native_node_commonjs_timers.zig",
+      "bytes": 17338,
+      "sha256": "5693CFE8B976AFCF3A6246A4EF0642E82C60BBB8609F05276FBB82D079D927E1"
+    },
+    "unselected_formatter_donor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\src\\extensions\\native_node_commonjs_format.zig",
+      "bytes": 13265,
+      "sha256": "AD6976B2E45ED39758DB191670A3FE3E272D89E3B41F0427924A9FFDA34DD0B7"
+    }
+  },
+  "original_blocks": {
+    "loader_initialization": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+        "bytes": 72050,
+        "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+      },
+      "first_line": 216,
+      "last_line": 224,
+      "bytes": 324,
+      "sha256": "D576A09F7DF1D32D2B84EA3C2D9D417F8A1C4A8350E65EC3C0A69B52A46E3835"
+    },
+    "complete_wrapModuleLoad": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+        "bytes": 72050,
+        "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+      },
+      "first_line": 238,
+      "last_line": 258,
+      "bytes": 686,
+      "sha256": "8E51365299F477934D4874D9B41BE97FD745355580328DC759316B3E72BC430D"
+    },
+    "getLazy": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__util.js.txt",
+        "bytes": 28980,
+        "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429"
+      },
+      "first_line": 813,
+      "last_line": 823,
+      "bytes": 213,
+      "sha256": "E370A760C8D025FBA0538CB154377B3615D92D2FFA0C4C2ADC51AF0505C0DBD9"
+    },
+    "complete_WeakReference": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__util.js.txt",
+        "bytes": 28980,
+        "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429"
+      },
+      "first_line": 906,
+      "last_line": 937,
+      "bytes": 607,
+      "sha256": "FB95642D75B138FE4F7B6F38B9E6387F9CAB4AFD7122A753419B1E88104D92CA"
+    },
+    "initializeDebugEnv": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+        "bytes": 12596,
+        "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+      },
+      "first_line": 25,
+      "last_line": 44,
+      "bytes": 716,
+      "sha256": "49C0BD2FF49C2C0C9CD6168F0046E0B7F0AD91FDE04B808709BA68428EE47429"
+    },
+    "debugWithTimer_helpers": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+        "bytes": 12596,
+        "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+      },
+      "first_line": 140,
+      "last_line": 333,
+      "bytes": 4524,
+      "sha256": "69BB15358DF0E59E9E6220D016612B6BE1BF7AC4847B3E7066FE39C55BFBA437"
+    },
+    "complete_debugWithTimer": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+        "bytes": 12596,
+        "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+      },
+      "first_line": 338,
+      "last_line": 520,
+      "bytes": 3879,
+      "sha256": "32146D80E182ABB0EF6F4F27036D30493D8FD859610AB500BA9B37034660103F"
+    },
+    "canonical_WeakRefMap": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\diagnostics_channel.js",
+        "bytes": 10481,
+        "sha256": "B32AB2ECB196B53047979C42A546DEC9B1560635E1327C0FBE0F27DD184C73EB"
+      },
+      "first_line": 34,
+      "last_line": 65,
+      "bytes": 852,
+      "sha256": "1AAC0F8DAA33840E70949F26890EE819DDBC271653C1E6FC8877B50651F8CA31"
+    },
+    "canonical_channels_and_stores": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\diagnostics_channel.js",
+        "bytes": 10481,
+        "sha256": "B32AB2ECB196B53047979C42A546DEC9B1560635E1327C0FBE0F27DD184C73EB"
+      },
+      "first_line": 67,
+      "last_line": 266,
+      "bytes": 4479,
+      "sha256": "83E29DAED458581E88AFF105CCE7CABB190CD36D8E2849CBE46AFE6708B14F2A"
+    },
+    "tracing_channel_identity_and_sync": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\diagnostics_channel.js",
+        "bytes": 10481,
+        "sha256": "B32AB2ECB196B53047979C42A546DEC9B1560635E1327C0FBE0F27DD184C73EB"
+      },
+      "first_line": 267,
+      "last_line": 345,
+      "bytes": 2045,
+      "sha256": "519557637C2771372A99FC45D382225C487B43DB420130D8BB8715F567F67F6C"
+    },
+    "tracingChannel_factory": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\diagnostics_channel.js",
+        "bytes": 10481,
+        "sha256": "B32AB2ECB196B53047979C42A546DEC9B1560635E1327C0FBE0F27DD184C73EB"
+      },
+      "first_line": 433,
+      "last_line": 444,
+      "bytes": 198,
+      "sha256": "C581E4E166717435D5FA86C3188BD350D05C30844B23A71F358698B7919C91F6"
+    },
+    "engine_pristine_weakref": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      },
+      "first_line": 310,
+      "last_line": 324,
+      "bytes": 854,
+      "sha256": "2A13D59D717D2EA3E2EDF93F8B4D1B7BFD1788F0AF5B42C9B6C035CF8E381A0F"
+    }
+  },
+  "current_consumer": {
+    "path": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_prototype.zig",
+      "bytes": 12549,
+      "sha256": "BB69BF6D87AF3B80FF1EB33852129C8AC760EC8CAE47147CE00BF964668C9C99"
+    },
+    "input_field": "Inputs.wrap_module_load",
+    "call": "requireBody calls the retained callable with id, receiver, false after validation and while require_depth is incremented",
+    "lines": [
+      18,
+      73,
+      85
+    ],
+    "canonical_owner": "The same Module constructor, loader environment and private state must supply the producer; no second Module or registry."
+  },
+  "smallest_complete_producer": {
+    "unit": "Entire original loader.js wrapModuleLoad body plus its loader lexical timer bindings and getLazy onRequire initializer.",
+    "inputs": [
+      "actual canonical Module constructor",
+      "actual initialized internal/util/debuglog.debugWithTimer result for module_timer",
+      "captured actual diagnostics_channel.tracingChannel from the canonical namespace"
+    ],
+    "callback_policy": "The input callables must come from their actual owners. A bool, a noop, a private event sink, a private channel island or unverified callback cannot stand in.",
+    "independent_first_leaf": "The complete 32-line original internal/util WeakReference (906\u2013937) is a small genuine leaf for the canonical channel registry. Current Engine already retains pristine WeakRef constructor/deref; it can be implemented without inventing a native weak-pointer replacement or importing a whole public diagnostics namespace.",
+    "first_leaf_limits": "WeakReference alone does not close wrap_module_load or publish Module. A later complete canonical WeakRefMap/Channel/TracingChannel path and the trace-event/timer branch remain required."
+  },
+  "dependency_rows": [
+    {
+      "producer": "getLazy(onRequire)",
+      "existing": "Current watch owner has the accepted exact retry/reentry/initialized semantics; original util813\u2013823 is retained.",
+      "required": "One per-Module lazy cell invoking the captured genuine tracingChannel(\"module.require\"); preserve successful undefined, retry after throw and outer reentrant assignment.",
+      "scope": "small internal owner; cannot replace with an always-present freshly constructed private channel"
+    },
+    {
+      "producer": "internal/util WeakReference",
+      "existing": "Original complete class906\u2013937 and pristine Engine WeakRef constructor/deref; VM WeakRef/FinalizationRegistry support exists.",
+      "required": "Exact private weak/strong/refCount state, original numeric increment/decrement transitions, public WeakRef kept-object semantics and GC roots.",
+      "scope": "smallest independent complete original leaf"
+    },
+    {
+      "producer": "canonical diagnostics channel identity",
+      "existing": "Original WeakRefMap/Channel/ActiveChannel/TracingChannel bodies retained; no matching current producer found.",
+      "required": "One shared named registry used by public channel()/tracingChannel(), WeakRefMap finalizer conditional deletion, incRef/decRef on subscriber/store mutations and canonical five phase channels.",
+      "scope": "public canonical identity must be shared even if only synchronous traceSync is initially consumed; do not publish incomplete diagnostics namespace"
+    },
+    {
+      "producer": "traceSync/stores/error handling",
+      "existing": "Private draft contains many original synchronous bodies; actual nextTick owner exists in node_events.",
+      "required": "Original subscriber snapshots/prototype transitions/store nesting and nextTick triggerUncaughtException(err,false) path. The genuine uncaught-exception producer has not been located; plain JS_Throw on a tick is not established equivalent.",
+      "scope": "preserve ordinary error/finally and fatal host completion distinction"
+    },
+    {
+      "producer": "initializeDebugEnv/debugWithTimer",
+      "existing": "Original complete debuglog source retained; actual process env/pid/stderr/warning producers are present.",
+      "required": "Initial NODE_DEBUG from actual startup environment; initialized testEnabled policy, original shared per-category SafeMap, lazy callback replacement, real category-enabled buffer and original current buffer reads.",
+      "scope": "NODE_DEBUG_NATIVE EnabledDebugList is a different owner and variable"
+    },
+    {
+      "producer": "trace_events getCategoryEnabledBuffer/trace",
+      "existing": "No producer found in current Main; old timer draft allocates its own Uint8Array/category Map/events array.",
+      "required": "Inspect and port the real original trace-events owner and embedding configuration/transport boundary. Do not route it to the old private array or fabricate a disabled flag.",
+      "scope": "separate actual native producer; source authority beyond the retained JS caller is not yet inspected"
+    },
+    {
+      "producer": "process.hrtime and formatting",
+      "existing": "Current native_process_clock supplies only monotonic performance.now; current process does not install hrtime. Formatter draft is retained but unselected.",
+      "required": "Actual original hrtime callable/delta behavior and live property reads, plus real format/inspect/colors/TTY support needed by enabled logging.",
+      "scope": "Direct awake-clock substitution erases the original process.hrtime call contract; no complete formatter claim from a partial inspector"
+    }
+  ],
+  "original_disabled_paths": [
+    {
+      "path": "NODE_DEBUG logging disabled",
+      "authority": "debuglog.js32\u201343,464\u2013479",
+      "condition": "Only after initializeDebugEnv receives actual initial environment value and testEnabled(MODULE_TIMER) evaluates false.",
+      "must_preserve": "Initialization order and before-initialization failure; no injected disabled policy."
+    },
+    {
+      "path": "Trace events disabled",
+      "authority": "debuglog.js393\u2013399,464\u2013492",
+      "condition": "The actual native category-enabled buffer currently reports zero.",
+      "must_preserve": "Re-read that actual buffer on every internal timer call; mutable category enablement cannot become a constant."
+    },
+    {
+      "path": "No diagnostic subscribers",
+      "authority": "diagnostics_channel.js294\u2013299; loader.js246\u2013255",
+      "condition": "The canonical five phase channels report no subscribers/stores.",
+      "must_preserve": "Active channel may remain true from a bound store even with no subscriber functions. Module._load still uses its real live receiver."
+    },
+    {
+      "path": "Both timer modes disabled",
+      "authority": "loader.js238\u2013258; debuglog.js488\u2013502",
+      "condition": "Genuine initialized logging policy and actual trace buffer both disable work.",
+      "must_preserve": "Wrapper still evaluates both request string conversions, gets the real lazy channel and calls startTimer/endTimer in original order. startTimer throw lies outside try/finally."
+    }
+  ],
+  "wrapper_semantic_controls": [
+    "Two separate request ToString conversions and parent optional id truthiness before onRequire.",
+    "Capture onRequire initial result, call startTimer outside try, inspect live hasSubscribers; second onRequire and live traceSync only on subscriber path.",
+    "Read Module._load before evaluating the null-prototype context parentFilename getter; pass the same Module receiver and all four original arguments.",
+    "Use canonical shared channels so subscribers registered before and after Module acquisition observe the same stream.",
+    "Preserve missing/throwing lazy initializer retry, successful undefined and reentrant outer assignment semantics.",
+    "Run endTimer for ordinary successful/throwing load; a finally throw replaces the ordinary load error; fatal host completion follows existing VM boundary rules.",
+    "Retire return-expression temporaries before finally while retaining the selected returned value or ordinary throw.",
+    "Exercise actual debug environment and native trace category changes; no fixture-disabled constant supplies production behavior."
+  ],
+  "concrete_draft_exclusions": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\src\\extensions\\native_node_commonjs_timers.zig",
+        "bytes": 17338,
+        "sha256": "5693CFE8B976AFCF3A6246A4EF0642E82C60BBB8609F05276FBB82D079D927E1"
+      },
+      "lines": [
+        47,
+        48,
+        49,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        130,
+        135,
+        136,
+        137
+      ],
+      "reason": "Local categories Map, one-byte buffer, awake clock and private JS events array are not the original trace_events owner or live process.hrtime producer."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\src\\extensions\\native_node_commonjs_trace.zig",
+        "bytes": 19518,
+        "sha256": "24468FFA4236918DC39E04A6F351C6FB56C80F66F8759E00BAFC841DF8FEA095"
+      },
+      "lines": [
+        85,
+        94,
+        100,
+        137,
+        138,
+        139,
+        141
+      ],
+      "reason": "Fresh private channels omit named WeakRefMap association/incRef/decRef and cannot receive canonical public subscriptions. late_error directly throws rather than using the original internal error trigger."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\src\\extensions\\native_node_commonjs_wrap_load.zig",
+        "bytes": 5070,
+        "sha256": "781C97500526B8DFAD7BD4B6BF7728C1492E39D3DCB16FF6C8845901F51D9517"
+      },
+      "lines": [
+        15,
+        19,
+        40,
+        68
+      ],
+      "reason": "Useful complete wrapper donor, but the current real collaborator chain must exist and its current argument/ownership boundaries must be reviewed before selection."
+    }
+  ],
+  "execution_sequence": [
+    "Finish independent closure of the current AST negative and fresh selected14/existing63 qualification on current frozen Main.",
+    "Take only bounded original leaf owner work, starting with complete WeakReference and exact canonical registry dependencies if Root selects that lane.",
+    "Inspect actual trace_events and hrtime original owners before claiming timer closure; retain a real missing-input refusal meanwhile.",
+    "After both actual producer chains exist, construct wrapModuleLoad using current canonical Module state, review full original order/ownership and test real collaborators.",
+    "Connect the completed callable to prototype creation only in a later explicitly reviewed source intake; no default/public Module switch from this plan."
+  ],
+  "remaining_whole_Module_limits": [
+    "wrapSafe and canonical compile/source-map chain",
+    "real package/path/permission and ESM/TS policies at their consumed seams",
+    "inspector/startup assembly and final public publication"
+  ],
+  "known_claim_limit": "This is a static dependency trace and bounded plan. It neither qualifies the historical drafts nor claims the whole canonical Module graph is complete."
+}

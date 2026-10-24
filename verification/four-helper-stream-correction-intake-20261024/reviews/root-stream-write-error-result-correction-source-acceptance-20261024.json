@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "reviewed_utc": "2026-10-24T19:22:51.003309+00:00",
+  "reviewer": "Root",
+  "status": "accepted_source_only_for_exact_future_intake",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-error-result-correction-sourceonly-20261024\\source-intake.json",
+    "bytes": 4416,
+    "sha256": "CF754459D6CF8EF0B4E744700FC2B631B0862CA02AC7965869F41E6BAE5B445E"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-gap-assessment\\stream-write-error-result-correction-independent-source-peer-20261024.json",
+    "bytes": 4197,
+    "sha256": "CE1FBD3BDFCDE69FCAB520E0853C6D604D3D9DEF28ED4162E1254FF975070861"
+  },
+  "baseline_owner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_stream_write.zig",
+    "bytes": 13823,
+    "sha256": "F810FF9D38C25CF4CE16FD1787EB8F46CA9577CB487B65EA0ADDA03B95D12CF2"
+  },
+  "selected_owner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-error-result-correction-sourceonly-20261024\\projected\\src\\extensions\\native_node_stream_write.zig",
+    "bytes": 13894,
+    "sha256": "E27A7FE124B4496D0DC1303B34B9B311A4B19394CC452F5358A90BEEAF6D672E"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-error-result-correction-sourceonly-20261024\\source-diff.patch",
+    "bytes": 491,
+    "sha256": "3A1E409E7B06471356475C6A0E04FAFCDD79B361FF60B33E34820A89333F3E47"
+  },
+  "inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-error-result-correction-sourceonly-20261024\\source-inverse.json",
+    "bytes": 839,
+    "sha256": "34FF0CE83A8B681B5FAF026538A2E14B1649382D8ED7066FD3937436F95CA5A3"
+  },
+  "source_review": [
+    "Root authored and independently traced the original stream_base.cc 297-305 and existing Zig writeBuffer/a.raise/Boundary/Scope completion semantics.",
+    "Exactly one 71-byte enlargement explicitly consumes ordinary JavaScriptException after Boundary owns the actual TypeError, allowing the original native zero return; other completion errors propagate.",
+    "Both raw-byte directions at offset10315 verified. All other owner bytes and the existing20-control root remain identical."
+  ],
+  "unchanged_control_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_stream_write_test.zig",
+    "bytes": 31987,
+    "sha256": "C316163DE961093BD4137C3AF426800FE70D4AFC9B47BDFB85EF8C923CFE9B5E"
+  },
+  "native_execution_performed": false,
+  "actual_metadata_count": null,
+  "runtime_result": null,
+  "main_mutation_authorized": false,
+  "production_bridge_removed": false,
+  "application_qualified": false
+}

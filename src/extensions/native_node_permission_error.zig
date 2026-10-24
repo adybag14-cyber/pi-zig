@@ -1,6 +1,6 @@
 // Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
 //! Selected native permission::CreateAccessDeniedError/ThrowAccessDenied for
-//! FileSystemRead. Uses the actual intrinsic Error and native Environment keys.
+//! FileSystemRead/Write. Uses the actual intrinsic Error and native Environment keys.
 const std = @import("std");
 const a = @import("native_node_argument_values.zig");
 const check = @import("native_node_check_failure.zig");
@@ -45,12 +45,24 @@ fn setMaybe(s: *a.Scope, target: c.JSValue, key: c.JSValue,
 pub fn throwFileSystemRead(s: *a.Scope, allocator: std.mem.Allocator,
     keys: Keys, resource: []const u8) !c.JSValue
 {
+    return throwFileSystem(s, allocator, keys, resource, .read);
+}
+pub fn throwFileSystemWrite(s: *a.Scope, allocator: std.mem.Allocator,
+    keys: Keys, resource: []const u8) !c.JSValue
+{
+    return throwFileSystem(s, allocator, keys, resource, .write);
+}
+const FileSystemScope = enum { read, write };
+fn throwFileSystem(s: *a.Scope, allocator: std.mem.Allocator,
+    keys: Keys, resource: []const u8, comptime scope: FileSystemScope) !c.JSValue
+{
     try s.pending();
-    // Native GetErrorFlagSuggestion/FileSystemRead then SPrintF precede every
+    // Native GetErrorFlagSuggestion for this scope then SPrintF precede every
     // VM allocation. The full resource is a separate native string_view below.
     const message = std.fmt.allocPrint(allocator,
         "Access to this API has been restricted. {s}",
-        .{"Use --allow-fs-read to manage permissions."}) catch |err| {
+        .{if (scope == .read) "Use --allow-fs-read to manage permissions."
+          else "Use --allow-fs-write to manage permissions."}) catch |err| {
         if (err == error.OutOfMemory) check.heapOutOfMemory(s.engine, null);
         return err;
     };
@@ -75,7 +87,7 @@ pub fn throwFileSystemRead(s: *a.Scope, allocator: std.mem.Allocator,
 
     // Both native ToV8Value conversions complete before either ordinary Set.
     // Full-length resource bytes retain embedded NUL; no c_str truncation.
-    const permission_value = try s.text("FileSystemRead");
+    const permission_value = try s.text(if (scope == .read) "FileSystemRead" else "FileSystemWrite");
     const resource_value = try s.text(resource);
     try setMaybe(s, reason, keys.permission, permission_value);
     try setMaybe(s, reason, keys.resource, resource_value);

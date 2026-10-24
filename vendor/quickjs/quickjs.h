@@ -1513,6 +1513,15 @@ JS_EXTERN size_t JS_PiArrayBufferViewByteLength(JSValueConst view);
    change occurs. The caller supplies the actual view/storage lifetime; this
    VM-owner-thread borrow is not an asynchronous or cross-thread lease. */
 JS_EXTERN uint8_t *JS_PiArrayBufferViewData(JSValueConst view);
+/* Original V8 ArrayBufferView::CopyContents. This copies at most the supplied
+   capacity and the original stored view byte length; length-tracking views
+   have a stored length of zero even when ByteLength is nonzero. The caller
+   roots the actual view, obtains ByteLength before allocation, and supplies
+   native destination storage. No guest operation, allocation, backing-store
+   lease, or pending-state change occurs; this is a VM-owner-thread copy. */
+JS_EXTERN size_t JS_PiArrayBufferViewCopyContents(JSValueConst view,
+                                                 void *destination,
+                                                 size_t capacity);
 JS_EXTERN JSValue JS_PiGetArrayBufferViewBuffer(JSContext *ctx, JSValueConst obj,
                                                 size_t *pbyte_offset,
                                                 size_t *pbyte_length,

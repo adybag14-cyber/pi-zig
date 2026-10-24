@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-24T18:31:15.358662+00:00",
+  "status": "independently_accepted_source_only_next_separate_permission_supplier",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\source-intake.json",
+    "bytes": 20779,
+    "sha256": "4EC3F12FFECA38780AF49557B01BBB8B95071724F33310ADEC43C5DBACD86B72"
+  },
+  "diff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\source-diff.patch",
+    "bytes": 30963,
+    "sha256": "29D1405055E4A7067B64A1631F4F2D7DD666E662957D3932CC8310F1A2455FCD"
+  },
+  "selected_sources": [
+    {
+      "destination_relative_path": "src/extensions/native_node_fs_open_permissions.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\extensions\\native_node_fs_open_permissions.zig",
+        "bytes": 4270,
+        "sha256": "7EFC4540D39170DE848EBF6A7B200661F2E66436A780309BD73FE7AE0A02B77E"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_node_permission_error.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-commonjs-read-sourceonly-20261024\\projected\\src\\extensions\\native_node_permission_error.zig",
+        "bytes": 4187,
+        "sha256": "843EDF0598E3009FC2A7498230A4A019CA884AA1AB9F65F0050D73E0BDE4917D"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\extensions\\native_node_permission_error.zig",
+        "bytes": 4766,
+        "sha256": "3118B883B126DE9D9721716460667DB03675ED60B6316A592FB65F5410430032"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_node_fs_open_permissions_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\native_node_fs_open_permissions_test.zig",
+        "bytes": 21302,
+        "sha256": "6076D5518EE97E9158636EDEE290F0DBFF6BB79B73E0D660B29176ABFCC07845"
+      }
+    }
+  ],
+  "build_insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\build-addition.zig.txt",
+    "bytes": 1491,
+    "sha256": "5FD16E407F6D27A56B54F6E3C0E67A2B7FDB5FA6735E00C2722BCF80C3069AFF"
+  },
+  "checks": {
+    "complete_three_selected_sources_read": true,
+    "original_Node_CheckOpenPermissions_and_OpenFileHandle_entry_read": true,
+    "original_permission_header_implementation_scopes_read": true,
+    "current_native_permission_ABI_header_read": true,
+    "unique_source_and_dependency_pin_versions_rehashed": 42,
+    "permission_Error_five_edit_full_raw_inverse": true,
+    "single1491byte_build_insertion_inverse": true,
+    "complete_four_target_patch_reconstructed": true,
+    "16unique_control_names_match_actual_source": true
+  },
+  "semantic_findings": [
+    "Actual native permission policy checks read before write; write-only skips read and write-like side effects require the original write scope.",
+    "All requested libuv flag values come from actual target headers; disabled/live policy decisions use native Permission every time.",
+    "The same Engine context and genuine native collaborators are required, and both primitive Error keys are retained across inherited setter reentry.",
+    "FileSystemWrite factors the retained read Error body at compile time; intrinsic Error/code construction, two string conversions, Set order, false-Set acceptance and superseding exceptions remain intact.",
+    "Caller-provided BufferValue spans remain full-length, including embedded NUL. No request route, open descriptor, public binding, Environment defaults or new C ABI is synthesized."
+  ],
+  "source_declared_controls": 16,
+  "actual_metadata_count": null,
+  "native_execution": false,
+  "Main_mutated": false,
+  "included_in_current_pending12": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "remaining": [
+    "Root must close the unrelated failed new2 BuildQuery before its next Main intake.",
+    "Independent peer and Root acceptance of this isolated packet.",
+    "Compose sole build insertion and permission Error successor after combined12.",
+    "Fresh native compilation/metadata/runtime under Root authority.",
+    "Complete real OpenFileHandle BufferValue/path/request/completion routes and genuine native Environment/BindingData bootstrap owners."
+  ]
+}

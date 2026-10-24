@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "date_utc": "2026-10-24T19:01:35.138606+00:00",
+  "status": "exact_source_only_constructor_and_next_supplier_handoff",
+  "current_main_head": "7947d3a0825a356dccc6aca7a327c92d7248b47f",
+  "selected_owner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_source_map_cache_map.zig",
+    "bytes": 21526,
+    "sha256": "E2AEDBDD801EB32063D94E9326C4606A4B81144099FCEC3D8B6995C3334D73E1"
+  },
+  "entry": "create(engine: *Engine, inputs: Inputs{debuglog: JSValue}) !JSValue",
+  "ownership": "Engine borrowed through synchronous call; debuglog borrowed during creation; returned constructor owned by caller. Returned logger/callback and class/method closures own actual marked JS roots. Module data belongs to the real target module; the cache retains only its WeakRef.",
+  "class_consumer": {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\authority\\lib__internal__source_map__source_map_cache.js.txt",
+      "bytes": 15946,
+      "sha256": "03C77C90B7E51CCBB978A579BCA36DBF5EFE07FF211AC7117E64CEA1ADE9B40C"
+    },
+    "lines": [
+      33,
+      35
+    ],
+    "operation": "Canonical source-map-cache module getLazy factory constructs this actual class once on first demand; its existing Module ownership must retain the class and lazy closure."
+  },
+  "genuine_debuglog_requirement": {
+    "authority": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+      "bytes": 12596,
+      "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+    },
+    "ranges": [
+      [
+        25,
+        44
+      ],
+      [
+        46,
+        83
+      ],
+      [
+        87,
+        137
+      ]
+    ],
+    "trace_plan": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-controls-review\\wrap-module-load-real-producer-plan-20261024.json",
+      "bytes": 24784,
+      "sha256": "7668C9D24ADCBB27914D1878559A40B9FA915EACCF0A204A48DAF8F53E87D800"
+    },
+    "current_selected_supplier_found": false,
+    "inputs_required": [
+      "Actual initializeDebugEnv(initial NODE_DEBUG) state from pre-execution, preserving uninitialized state until that call.",
+      "Actual process identity, stderr/color state, formatting/inspection, warning and console-error collaborators for enabled output.",
+      "Original lazy category cache, callback timing, enabled getter and variable argument forwarding."
+    ],
+    "do_not_substitute": [
+      "native_node_native_debug EnabledDebugList implements NODE_DEBUG_NATIVE, not this JavaScript owner.",
+      "The retained MODULE-only commonjs_timers donor is unselected and approximates debug/trace behavior.",
+      "Missing initialization must not become an unconditional disabled logger or a fabricated empty environment."
+    ],
+    "next_minimal_complete_supplier": "Implement the complete original JavaScript debuglog category producer and initializeDebugEnv state, using actual native process/format/console/warning owners. Preserve missing collaborators as explicit constructor inputs until canonical assembly can supply them; do not publish a public debug namespace with defaults."
+  },
+  "maybe_cache_source_map": {
+    "authority": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\authority\\lib__internal__source_map__source_map_cache.js.txt",
+      "bytes": 15946,
+      "sha256": "03C77C90B7E51CCBB978A579BCA36DBF5EFE07FF211AC7117E64CEA1ADE9B40C"
+    },
+    "exact_entry_lines": [
+      157,
+      200
+    ],
+    "concrete_inputs": [
+      "Actual current process.env.NODE_V8_COVERAGE read and real sourceMapsSupport owner.",
+      "Original normalizeReferrerURL and isUnderNodeModules callables.",
+      "Actual dataFromUrl with native URL/fileURL conversion, readFileSync, Buffer decoding and JSON parse.",
+      "Original lineLengths(content) and normalized sourceURL; real module instance for private-data lifetime.",
+      "Actual generated-source Map versus this lazily owned module cache."
+    ],
+    "order": [
+      "Get support, read coverage/enabled gate, then normalize filename.",
+      "Reject undefined filename; apply nodeModules gate; require string sourceMapURL; normalize sourceURL.",
+      "Load data (including original null result for invalid maps), create null-prototype entry with line lengths and exact sourceMapURL fallback.",
+      "Use generated-source cache for generated input; otherwise derive filename/sourceURL alias keys and call this real cache.set(keys,entry,moduleInstance)."
+    ],
+    "later_support_toggle": "Original lines71-94 call native error source-map enablement and select actual stack preparation before publishing the frozen support record; this packet supplies none of those policy/stack owners.",
+    "current_native_compiler_info": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_compile_info.zig",
+      "bytes": 5784,
+      "sha256": "9F6957753B97394694BF19101768032357A07CD139B47AEBB20BD33F4A520081"
+    },
+    "compiler_info_limit": "Actual compiler lexer metadata is available from the accepted current owner; it is not maybeCacheSourceMap or the richer complete compileFunctionForCJSLoader supplier."
+  },
+  "application_limit": "Canonical wrapSafe/wrapModuleLoad, real inspector/TS/ESM and startup Module graph suppliers remain explicit. No public module assembly, print/RPC startup execution, Node-bridge removal or default switch is claimed.",
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false
+}

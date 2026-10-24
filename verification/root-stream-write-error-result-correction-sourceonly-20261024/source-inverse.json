@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_stream_write.zig",
+    "bytes": 13823,
+    "sha256": "F810FF9D38C25CF4CE16FD1787EB8F46CA9577CB487B65EA0ADDA03B95D12CF2"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-error-result-correction-sourceonly-20261024\\projected\\src\\extensions\\native_node_stream_write.zig",
+    "bytes": 13894,
+    "sha256": "E27A7FE124B4496D0DC1303B34B9B311A4B19394CC452F5358A90BEEAF6D672E"
+  },
+  "edits": [
+    {
+      "offset": 10315,
+      "before": "    _ = a.raise(s, reason);\n",
+      "after": "    const raised = a.raise(s, reason);\n    if (raised != error.JavaScriptException) return raised;\n"
+    }
+  ],
+  "complete_raw_inverse": true,
+  "all_other_bytes_unchanged": true
+}

@@ -1,0 +1,28 @@
+{
+  "donor": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-commonjs-read-sourceonly-20261024\\projected\\src\\extensions\\native_node_permission_error.zig",
+  "donor_bytes": 4187,
+  "donor_sha256": "843EDF0598E3009FC2A7498230A4A019CA884AA1AB9F65F0050D73E0BDE4917D",
+  "edits": [
+    {
+      "old": "//! FileSystemRead. Uses the actual intrinsic Error and native Environment keys.",
+      "new": "//! FileSystemRead/Write. Uses the actual intrinsic Error and native Environment keys."
+    },
+    {
+      "old": "pub fn throwFileSystemRead(s: *a.Scope, allocator: std.mem.Allocator,\n    keys: Keys, resource: []const u8) !c.JSValue\n{\n    try s.pending();",
+      "new": "pub fn throwFileSystemRead(s: *a.Scope, allocator: std.mem.Allocator,\n    keys: Keys, resource: []const u8) !c.JSValue\n{\n    return throwFileSystem(s, allocator, keys, resource, .read);\n}\npub fn throwFileSystemWrite(s: *a.Scope, allocator: std.mem.Allocator,\n    keys: Keys, resource: []const u8) !c.JSValue\n{\n    return throwFileSystem(s, allocator, keys, resource, .write);\n}\nconst FileSystemScope = enum { read, write };\nfn throwFileSystem(s: *a.Scope, allocator: std.mem.Allocator,\n    keys: Keys, resource: []const u8, comptime scope: FileSystemScope) !c.JSValue\n{\n    try s.pending();"
+    },
+    {
+      "old": "    // Native GetErrorFlagSuggestion/FileSystemRead then SPrintF precede every",
+      "new": "    // Native GetErrorFlagSuggestion for this scope then SPrintF precede every"
+    },
+    {
+      "old": "        .{\"Use --allow-fs-read to manage permissions.\"}) catch |err| {",
+      "new": "        .{if (scope == .read) \"Use --allow-fs-read to manage permissions.\"\n          else \"Use --allow-fs-write to manage permissions.\"}) catch |err| {"
+    },
+    {
+      "old": "    const permission_value = try s.text(\"FileSystemRead\");",
+      "new": "    const permission_value = try s.text(if (scope == .read) \"FileSystemRead\" else \"FileSystemWrite\");"
+    }
+  ],
+  "raw_inverse_equal": true
+}

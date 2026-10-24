@@ -1,0 +1,12 @@
+--- a/src/extensions/native_node_stream_write.zig
++++ b/src/extensions/native_node_stream_write.zig
+@@ -219,7 +219,8 @@
+     const key = try latin1.fromCString(s, "code", diagnostics);
+     requests.setError(s, reason, key, code) catch
+         check.maybeCheck(s.engine, diagnostics);
+-    _ = a.raise(s, reason);
++    const raised = a.raise(s, reason);
++    if (raised != error.JavaScriptException) return raised;
+ }
+ 
+ pub fn createDefault(stream: *streams.Base, s: *a.Scope,

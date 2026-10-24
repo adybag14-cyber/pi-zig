@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+    "bytes": 536372,
+    "sha256": "0268F0B48FC63AC8750C580AA1941C75C5AD98A42E9FBF8CAB786296E9EADD93"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 537094,
+    "sha256": "85FB58BDBF43C4640508C49D07C6CA2C7CFF6DCDE535116714AF9E2DC0E5D722"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 722,
+    "sha256": "C11F3AD636BAB355A594E6484E933FEA463571E9AC8771843FBB0443733DFBD7"
+  },
+  "anchor": "    const cjs_raw_provider_tests = b.addTest(.{",
+  "replacement_count": 1,
+  "complete_raw_inverse": true,
+  "insert_only_when_composing_with_other_packets": true,
+  "native_execution": false
+}

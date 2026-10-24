@@ -1,0 +1,191 @@
+{
+  "schema": 1,
+  "date_utc": "2026-10-24T19:00:27.845324+00:00",
+  "status": "static_source_checks_only",
+  "main_head": "7947d3a0825a356dccc6aca7a327c92d7248b47f",
+  "Main_clean": true,
+  "changes": [
+    {
+      "target": "src/extensions/native_node_source_map_cache_map.zig",
+      "operation": "add",
+      "baseline": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_source_map_cache_map.zig",
+        "bytes": 21526,
+        "sha256": "E2AEDBDD801EB32063D94E9326C4606A4B81144099FCEC3D8B6995C3334D73E1"
+      }
+    },
+    {
+      "target": "src/extensions/native_clone_intrinsics.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_clone_intrinsics.zig",
+        "bytes": 3671,
+        "sha256": "92BBBEB85369F78E64D4D37A1FB1A34E373F724933E8967F76C1E0901D864DAD"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+        "bytes": 5808,
+        "sha256": "5793E31979FB384F362E6E32FBD8A81C72B273D16E3BAC07C775C41C7D9962A2"
+      }
+    },
+    {
+      "target": "src/native_node_source_map_cache_map_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected\\src\\native_node_source_map_cache_map_test.zig",
+        "bytes": 28775,
+        "sha256": "2E7F9BF6E5EB7AFED331F03157A3E12CB5FC6FDA406EBFBEF0E311CFE55A73DD"
+      }
+    },
+    {
+      "target": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 536372,
+        "sha256": "0268F0B48FC63AC8750C580AA1941C75C5AD98A42E9FBF8CAB786296E9EADD93"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 537094,
+        "sha256": "85FB58BDBF43C4640508C49D07C6CA2C7CFF6DCDE535116714AF9E2DC0E5D722"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\source-map-cache-map-successor.patch",
+    "bytes": 56374,
+    "sha256": "FE669BAE51D1CA03E9AEFDBFDF38655B9743D0BF88C8E30EAEA4780B0E08564E"
+  },
+  "literal_import_occurrences": 18,
+  "direct_import_resolutions": [
+    {
+      "importer": "src/extensions/native_node_source_map_cache_map.zig",
+      "literal": "native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      },
+      "selection": "frozen Main"
+    },
+    {
+      "importer": "src/extensions/native_node_source_map_cache_map.zig",
+      "literal": "native_node_error_class.zig",
+      "target": "src/extensions/native_node_error_class.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_error_class.zig",
+        "bytes": 7317,
+        "sha256": "0192489A134A0D6B287EB1494654FC25391E1989D80A239C9AC37201392E0EE5"
+      },
+      "selection": "frozen Main"
+    },
+    {
+      "importer": "src/extensions/native_node_source_map_cache_map.zig",
+      "literal": "native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      },
+      "selection": "frozen Main"
+    },
+    {
+      "importer": "src/extensions/native_node_source_map_cache_map.zig",
+      "literal": "native_sync_arguments.zig",
+      "target": "src/extensions/native_sync_arguments.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+        "bytes": 9162,
+        "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+      },
+      "selection": "frozen Main"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "engine.zig",
+      "target": "src/extensions/engine.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      },
+      "selection": "frozen Main"
+    },
+    {
+      "importer": "src/native_node_source_map_cache_map_test.zig",
+      "literal": "extensions/engine.zig",
+      "target": "src/extensions/engine.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      },
+      "selection": "frozen Main"
+    },
+    {
+      "importer": "src/native_node_source_map_cache_map_test.zig",
+      "literal": "extensions/native_node_source_map_cache_map.zig",
+      "target": "src/extensions/native_node_source_map_cache_map.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_source_map_cache_map.zig",
+        "bytes": 21526,
+        "sha256": "E2AEDBDD801EB32063D94E9326C4606A4B81144099FCEC3D8B6995C3334D73E1"
+      },
+      "selection": "same packet projection"
+    }
+  ],
+  "package_imports": [
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std",
+      "supplier": "Pinned Zig standard library from repository build; no package source execution"
+    },
+    {
+      "importer": "src/native_node_source_map_cache_map_test.zig",
+      "literal": "std",
+      "supplier": "Pinned Zig standard library from repository build; no package source execution"
+    }
+  ],
+  "exact_clone_capture_hunks": 4,
+  "exact_owner_refinement_hunks": 2,
+  "exact_build_insertion_bytes": 722,
+  "complete_raw_inverses_replayed": true,
+  "direct_control_declarations": [
+    "native source map cache class has the original frozen prototype and hidden private instance state",
+    "native source map cache private brands reject proxies and forged receivers while derived instances work",
+    "native source map cache aliases share the actual per Engine module data key across classes",
+    "native source map cache forEach keeps holes inherited indices length snapshot and getter order",
+    "native source map cache partial key failure preserves earlier insertions before data and registration",
+    "native source map cache set checks WeakRef first and delays receiver brand through empty keys",
+    "native source map cache private data handles frozen modules and revoked proxy wrappers without traps",
+    "native source map cache owns only WeakRefs so actual module and data retire before cleanup jobs",
+    "native source map cache successful dereference keeps its target until the actual host checkpoint",
+    "native source map cache stale finalization leaves an alias replaced with a live module intact",
+    "native source map cache finalization reads the original mutable keys array without copying it",
+    "native source map cache cleanup interpolates keys and resolves debug callee before coercion",
+    "native source map cache disabled logging still coerces keys and ordinary logging failure prevents deletion",
+    "native source map cache logger reentry precedes the original unconditional stale entry delete",
+    "native source map cache iterator is an ordinary own next object with live Map order and recursive dead skips",
+    "native source map cache escaped iterator does not keep module or data alive through the cache",
+    "native source map cache pristine operations survive replaced globals and poisoned live prototypes",
+    "native source map cache current native producer during key coercion prevents debug and deletion",
+    "native source map cache private data retirement publishes replacement before the retained first fatal",
+    "native source map cache debug binding keeps original initialization TDZ and captured flagged data nonfatal"
+  ],
+  "declared_control_count": 20,
+  "potential_local_function_shadow_candidates": [],
+  "lexical_scan_limit": "Finite raw text declaration/local scan only; not a Zig parser or compiler. No claim of compile success.",
+  "production_guest_source_evaluation": false,
+  "native_execution": false,
+  "node_reference_capture": false,
+  "formatter_or_parser_execution": false,
+  "generator_execution": false,
+  "actual_metadata_count": null,
+  "runtime_qualification": false,
+  "product_qualification": false
+}

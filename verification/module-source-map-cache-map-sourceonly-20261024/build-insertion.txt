@@ -1,0 +1,5 @@
+    const source_map_cache_map_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_source_map_cache_map_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native source map cache"}, .use_llvm = use_llvm });
+    linkQuickJs(b, source_map_cache_map_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(source_map_cache_map_tests.root_module, sqlite_lib_dir, sqlite_library);
+    source_map_cache_map_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-node-source-map-cache-map", "Install actual source-map cache weak ownership and order controls").dependOn(&b.addInstallArtifact(source_map_cache_map_tests, .{}).step);

@@ -1,0 +1,400 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T18:18:04.156013+00:00",
+  "scope": "complete original CheckOpenPermissions plus genuine FileSystemWrite access-denied Error specialization",
+  "observed_source_base_head": "eeb59f314c834ed8a060da178251e380a50d0a62",
+  "status": "source_only_awaiting_independent_peer_and_Root_intake",
+  "changes": [
+    {
+      "destination_relative_path": "src/extensions/native_node_fs_open_permissions.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\extensions\\native_node_fs_open_permissions.zig",
+        "bytes": 4270,
+        "sha256": "7EFC4540D39170DE848EBF6A7B200661F2E66436A780309BD73FE7AE0A02B77E"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_node_permission_error.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-commonjs-read-sourceonly-20261024\\projected\\src\\extensions\\native_node_permission_error.zig",
+        "bytes": 4187,
+        "sha256": "843EDF0598E3009FC2A7498230A4A019CA884AA1AB9F65F0050D73E0BDE4917D"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\extensions\\native_node_permission_error.zig",
+        "bytes": 4766,
+        "sha256": "3118B883B126DE9D9721716460667DB03675ED60B6316A592FB65F5410430032"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_node_fs_open_permissions_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\native_node_fs_open_permissions_test.zig",
+        "bytes": 21302,
+        "sha256": "6076D5518EE97E9158636EDEE290F0DBFF6BB79B73E0D660B29176ABFCC07845"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\build.zig",
+        "bytes": 519285,
+        "sha256": "183B59A721E0C0CBEC9604A860E75F2DB7AE8FDEA49675B2AC038F96767A7668"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 520776,
+        "sha256": "D70360A2B0917B9721D76DDB50732A5FDDE95B24569A24DF2693D972AE0FB8FF"
+      }
+    }
+  ],
+  "source_diff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\source-diff.patch",
+    "bytes": 30963,
+    "sha256": "29D1405055E4A7067B64A1631F4F2D7DD666E662957D3932CC8310F1A2455FCD"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\README.md",
+    "bytes": 5130,
+    "sha256": "997BC0D36E94E11770818BDD01AF6B07D50BFB43180F77A891F402987B081319"
+  },
+  "permission_error_transform": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\permission-error-source-transform.json",
+    "bytes": 2047,
+    "sha256": "4B931D911B884774C1E1A208B4CE7AF362A7FA531B3B5B6969306108B8273665"
+  },
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\build-addition.zig.txt",
+    "bytes": 1491,
+    "sha256": "5FD16E407F6D27A56B54F6E3C0E67A2B7FDB5FA6735E00C2722BCF80C3069AFF"
+  },
+  "build_inverse": {
+    "anchor": "        const native_environment_map_tests = b.addTest(.{\n",
+    "insertion_bytes": 1491,
+    "complete_raw_inverse_to_baseline": true,
+    "compose_addition_only_over_newer_combined_build": true
+  },
+  "selected_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-commonjs-read-sourceonly-20261024\\source-intake.json",
+    "bytes": 22002,
+    "sha256": "BE84DF9E50B6DF5EBBCADD4E73BF5E789E51861F7BA6903CBF1B4610D0613184"
+  },
+  "fixture_provenance": {
+    "native_policy_lifecycle": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-commonjs-read-sourceonly-20261024\\projected\\src\\native_node_module_commonjs_read_test.zig",
+      "bytes": 25944,
+      "sha256": "9B349DA7726BF3062A4D4BBF3D411DAF49F4AC7471279612086D7AB4A7ADCCFE"
+    },
+    "charged_storage_and_cimport_only": {
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\native_node_native_debug_test_support.zig",
+      "bytes": 10530,
+      "sha256": "7AF437A515FF85B16457E854B7FCD93BDBF74545C939E7039040158E5285F604"
+    },
+    "differences": "No Module/cache/disk/callback Environment graph. Actual native policy lifecycle retained; wildcard read/write grants use actual Permission::Apply, same-context callback fixture roots keys and supports actual setter reentry."
+  },
+  "retained_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\verification\\native-file-handle-transfer-intake-20261020\\sdk\\authority\\node_file.v24.13.cc",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-environment-os-sourceonly-20261020\\authority\\permission.h.v24.13.txt",
+      "bytes": 6418,
+      "sha256": "4E3D00379FEC7252A2DE67E0DF6F6FE6003DF84716E36359F8A77BDA61BBDF18"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-environment-os-sourceonly-20261020\\authority\\permission.cc.v24.13.txt",
+      "bytes": 6776,
+      "sha256": "DE63A54C60EC53734DF9376C8236AF99044D9394A37EC2B2C75DD0E4D7A32C40"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-environment-os-sourceonly-20261020\\authority\\permission_base.h.v24.13.txt",
+      "bytes": 2402,
+      "sha256": "781460FFF3180CCF3C5BED93CB8195873E6EDACB9F038280457F541584A94901"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-commonjs-read-sourceonly-20261024\\authority\\native-access-denied-error-row.json",
+      "bytes": 7180,
+      "sha256": "7D11B0BBD689FB519CA509326AF234BA62F8AF2001C1F577AA548722C3118FE4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-package-json-binding-sourceonly-20261020\\authority\\native-package-error-source.json",
+      "bytes": 16453,
+      "sha256": "F4CE26EDD850F5F3982E3D03D393F473E7FA9DDD12B74A97ECEC554E09F3749C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\vendor\\node-v24.13.0\\uv\\include\\uv.h",
+      "bytes": 72810,
+      "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\vendor\\node-v24.13.0\\uv\\include\\uv\\unix.h",
+      "bytes": 20057,
+      "sha256": "A246095A1476D76631F5EC85BE171AEE8107EB0423007546EC91C58887C28F02"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\vendor\\node-v24.13.0\\uv\\include\\uv\\win.h",
+      "bytes": 33836,
+      "sha256": "51B6BF729C4C3E66CD89E0B0B0D734998776E675FE0A5EDA9DB77B634EB83EF0"
+    }
+  ],
+  "authority_map": [
+    {
+      "source": "node_file.v24.13.cc",
+      "lines": "2115-2142; 2184-2235",
+      "behavior": "Exact read/write flag masks, read-first permission decisions, synchronous denial before OpenFileHandle request selection."
+    },
+    {
+      "source": "permission.h.v24.13.txt",
+      "lines": "30-41; 91-98",
+      "behavior": "Actual is_granted call and native enabled policy; denial throws and returns immediately."
+    },
+    {
+      "source": "permission.cc.v24.13.txt",
+      "lines": "57-62; 109-153",
+      "behavior": "Native scope-name/suggestion mapping, original intrinsic Error ordering, superseding setter completion."
+    },
+    {
+      "source": "permission_base.h.v24.13.txt",
+      "lines": "17-20",
+      "behavior": "Actual FileSystemRead/Write scopes and --allow-fs-read/write suggestions."
+    },
+    {
+      "source": "uv/unix.h; uv/win.h",
+      "behavior": "Actual target constants including Windows O_TEMPORARY and zero unsupported POSIX counterpart."
+    }
+  ],
+  "direct_import_resolutions": [
+    {
+      "importer": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\extensions\\native_node_fs_open_permissions.zig",
+      "import": "native_node_argument_values.zig",
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_argument_values.zig",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+    },
+    {
+      "importer": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\extensions\\native_node_fs_open_permissions.zig",
+      "import": "native_node_permission_error.zig",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\extensions\\native_node_permission_error.zig",
+      "bytes": 4766,
+      "sha256": "3118B883B126DE9D9721716460667DB03675ED60B6316A592FB65F5410430032"
+    },
+    {
+      "importer": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\extensions\\native_node_fs_open_permissions.zig",
+      "import": "native_env_charged_allocator.zig",
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_env_charged_allocator.zig",
+      "bytes": 3018,
+      "sha256": "2BF55B71DB0AE7A0F2FA151F536D86329C0FC22532D6E6C487D7DFCE5C739E85"
+    },
+    {
+      "importer": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\extensions\\native_node_permission_error.zig",
+      "import": "native_node_argument_values.zig",
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_argument_values.zig",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+    },
+    {
+      "importer": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\extensions\\native_node_permission_error.zig",
+      "import": "native_node_check_failure.zig",
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_check_failure.zig",
+      "bytes": 2857,
+      "sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+    },
+    {
+      "importer": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\native_node_fs_open_permissions_test.zig",
+      "import": "extensions/native_node_argument_values.zig",
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_argument_values.zig",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+    },
+    {
+      "importer": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\native_node_fs_open_permissions_test.zig",
+      "import": "extensions/native_node_fs_open_permissions.zig",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\extensions\\native_node_fs_open_permissions.zig",
+      "bytes": 4270,
+      "sha256": "7EFC4540D39170DE848EBF6A7B200661F2E66436A780309BD73FE7AE0A02B77E"
+    },
+    {
+      "importer": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\native_node_fs_open_permissions_test.zig",
+      "import": "extensions/native_node_function.zig",
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_function.zig",
+      "bytes": 14120,
+      "sha256": "232E0F858F21DD002C2FEB6B65C62486EB6DA113F7463B2DD60CC799B3369007"
+    },
+    {
+      "importer": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\native_node_fs_open_permissions_test.zig",
+      "import": "native_node_native_debug_test_support.zig",
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\native_node_native_debug_test_support.zig",
+      "bytes": 10530,
+      "sha256": "7AF437A515FF85B16457E854B7FCD93BDBF74545C939E7039040158E5285F604"
+    }
+  ],
+  "native_dependency_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_permission.h",
+      "bytes": 3314,
+      "sha256": "6005CBF37A2FA4A6BF310274AB8338F030E886AAA1461EEC95FED2019E3E3C9B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_permission.cpp",
+      "bytes": 15344,
+      "sha256": "4DC0D4C70A659B9405E6D4AC6BFC0B008FB48EFB614F811C87F096A105A73EC8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_permission_internal.hpp",
+      "bytes": 11308,
+      "sha256": "C15AC7ED37DAFB8F672AAFCFCD6FABA2CF87BB64EE26C8CC4AF5A6695D2E712F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_environment_paths.h",
+      "bytes": 3358,
+      "sha256": "E504065537C5D669EF793D3F8F65BC9FB31DFB211F96091DC20EA87F42373B31"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_environment_paths.cpp",
+      "bytes": 15087,
+      "sha256": "B2E838D216E858D7F3DF31347A71C0AFACD0C4AC507CBE5E5E1191460572A395"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_environment_paths_internal.hpp",
+      "bytes": 1285,
+      "sha256": "1B56668AF3BBF9A165CF384AE8D3CA7EE4ECE466E832D781C124B2691B580DC6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_native_debug.h",
+      "bytes": 3449,
+      "sha256": "E11332B46CC5DF6001BBEBF3CF094B5ED2C8C4170F4FB0089B264DC0AE5BF8E8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_native_debug.cpp",
+      "bytes": 6880,
+      "sha256": "AD3446C875DFFD39165AF9514A4A1169125995C5701F4B706706F83CB814A990"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_permission_test_support.h",
+      "bytes": 2741,
+      "sha256": "9D128A71AE35CF2A92AFA92E5F8278BA29F564C0C4FBB85F61CA85E105E7E54B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_permission_test_support.cpp",
+      "bytes": 7661,
+      "sha256": "362826F62F0F4322961AE0F93E835C178251B49FDCAA3BE06D116B307A1F4BC4"
+    }
+  ],
+  "production_integration_trace": [
+    {
+      "path": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_sdk_application_bootstrap.zig",
+        "bytes": 8333,
+        "sha256": "7697315CAB586223A2393D2598C34F278B8CF7549BDEA68C49774BF546C3A6F8"
+      },
+      "finding": "installPlatform invokes node_fs.installWithStreams; no native BindingData assembler is installed here."
+    },
+    {
+      "path": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\node_fs.zig",
+        "bytes": 40147,
+        "sha256": "1EAC38BF57D96BDCEB096A091FFFD6C7D5EBA78101D7DBDFD1E060A5FE9DD7A9"
+      },
+      "finding": "installMode publishes current public fs methods; complete original internal fs/FileHandle assembly is absent."
+    },
+    {
+      "path": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 46648,
+        "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2"
+      },
+      "finding": "pi_uv_fs_open performs physical admission and proves borrowed path bytes copied before return."
+    },
+    {
+      "path": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_fs_request_io.zig",
+        "bytes": 15469,
+        "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996"
+      },
+      "finding": "Controller supplies read and raw read/close routes; no OpenFileHandle completion owner yet."
+    },
+    {
+      "path": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 40069,
+        "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+      },
+      "finding": "Environment requires native hook/checkpoint/destroy operations; no policy is invented here."
+    },
+    {
+      "path": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\vendor\\quickjs\\quickjs.h",
+        "bytes": 115346,
+        "sha256": "05AA4DF250CB642536077C5DF80C08C92C1C40BAA347C18140AFB577B583B0EB"
+      },
+      "finding": "Native Error classification is explicitly bounded; backing-store Try allocation is explicitly one attempt."
+    }
+  ],
+  "control_target": {
+    "step": "build-native-node-fs-open-permissions",
+    "artifact": "native-node-fs-open-permissions",
+    "filter": "native fs open permissions",
+    "source_declared_count": 16,
+    "actual_metadata_count": null,
+    "names": [
+      "native fs open permissions disabled native policy accepts access and side effect modes without errors",
+      "native fs open permissions read only needs the actual read grant",
+      "native fs open permissions write only skips the denied read policy",
+      "native fs open permissions read write checks read first then requires write",
+      "native fs open permissions combined access mode bits require both original comparisons",
+      "native fs open permissions readonly write side effects require real write permission",
+      "native fs open permissions side effects do not skip the prior read denial",
+      "native fs open permissions unrelated flag bits do not invent a write requirement",
+      "native fs open permissions observes live native enable and later scope grants",
+      "native fs open permissions write denial uses fresh intrinsic Error and write flag suggestion",
+      "native fs open permissions code setter reentry repairs actual policy and retains original denial keys",
+      "native fs open permissions thrown permission setter supersedes denial and skips resource",
+      "native fs open permissions thrown resource setter supersedes the completed permission set",
+      "native fs open permissions nonthrowing false code permission resource Sets preserve denial",
+      "native fs open permissions error resource retains the complete BufferValue span including NUL",
+      "native fs open permissions rejects foreign native context and primitive key owners before policy"
+    ]
+  },
+  "static_checks": {
+    "permission_error_five_hunk_raw_inverse": true,
+    "build_single_insertion_raw_inverse": true,
+    "nine_direct_imports_resolved": true,
+    "sixteen_unique_declared_controls": true,
+    "fixture_method_local_identifier_collision_scan_empty": true,
+    "native_flags_and_callable_signature_read": true,
+    "Zig_compiler_parser_formatter_executed": false
+  },
+  "remaining_work": [
+    "Root must close the unrelated failed new2 BuildQuery before its next Main intake.",
+    "Independent peer and Root acceptance of this isolated packet.",
+    "Compose sole build insertion and permission Error successor after combined12.",
+    "Fresh native compilation/metadata/runtime under Root authority.",
+    "Complete real OpenFileHandle BufferValue/path/request/completion routes and genuine native Environment/BindingData bootstrap owners."
+  ],
+  "not_executed": [
+    "Zig compile",
+    "Zig formatter/parser",
+    "metadata",
+    "runtime",
+    "Node capture",
+    "candidate/source generator",
+    "Main mutation",
+    "public fs publication",
+    "default application switch"
+  ],
+  "claims": {
+    "new_C_ABI": false,
+    "current_combined12_includes_this_packet": false,
+    "whole_FileHandle_or_fs_bootstrap_completed": false,
+    "production_bridge_removed": false,
+    "product_qualified": false
+  }
+}

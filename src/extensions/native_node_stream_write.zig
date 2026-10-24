@@ -219,7 +219,8 @@ fn invalidBuffer(s: *a.Scope, diagnostics: ?*const check.Diagnostics) anyerror!v
     const key = try latin1.fromCString(s, "code", diagnostics);
     requests.setError(s, reason, key, code) catch
         check.maybeCheck(s.engine, diagnostics);
-    _ = a.raise(s, reason);
+    const raised = a.raise(s, reason);
+    if (raised != error.JavaScriptException) return raised;
 }
 
 pub fn createDefault(stream: *streams.Base, s: *a.Scope,

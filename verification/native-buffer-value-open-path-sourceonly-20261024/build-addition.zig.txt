@@ -1,0 +1,16 @@
+        // Original BufferValue and OpenFileHandle path/permission pre-request work.
+        // Install only; native compilation, metadata and runtime remain Root-owned.
+        const native_buffer_value_open_path = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_buffer_value_open_path_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native BufferValue"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, native_buffer_value_open_path.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, native_buffer_value_open_path.root_module, typescript_parser);
+        linkSqlite(native_buffer_value_open_path.root_module, sqlite_lib_dir, sqlite_library);
+        native_buffer_value_open_path.root_module.addImport("catalog_tool", catalog_tool);
+        native_buffer_value_open_path.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        if (target.result.os.tag == .windows) {
+            native_buffer_value_open_path.root_module.linkSystemLibrary("advapi32", .{});
+            native_buffer_value_open_path.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-buffer-value-open-path", "Install twenty-eight declared native BufferValue and pre-request path controls without execution").dependOn(&b.addInstallArtifact(native_buffer_value_open_path, .{ .dest_sub_path = b.fmt("native-node-buffer-value-open-path{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);

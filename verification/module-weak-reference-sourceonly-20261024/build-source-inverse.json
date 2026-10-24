@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "kind": "single_additive_install_only_target",
+  "base": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+    "bytes": 536372,
+    "sha256": "0268F0B48FC63AC8750C580AA1941C75C5AD98A42E9FBF8CAB786296E9EADD93"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 537359,
+    "sha256": "1479AA867C6367D66D70E712BA266D3E731073EA5426332A151416192D5C9167"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 987,
+    "sha256": "FC3434CABC7A8576AEB294763479D9C3E3B3A62596CC9CDAA24C6BF40898F4D0"
+  },
+  "offset": 184604,
+  "anchor": "    const public_rpc_jsonl_tests = b.addTest(.{\n",
+  "removed_bytes": 0,
+  "inserted_bytes": 987,
+  "inserted_lines": 13,
+  "raw_inverse_matches_original": true,
+  "new_execution_step": false
+}

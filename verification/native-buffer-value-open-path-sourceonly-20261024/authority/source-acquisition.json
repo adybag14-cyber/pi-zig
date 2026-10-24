@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "original_tag": "nodejs/node v24.13.0",
+  "method": "Bounded static HTTPS source retrieval; no Node runtime or source generator",
+  "sources": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\authority\\v8-js-array-buffer-inl.v24.13.h",
+        "bytes": 15798,
+        "sha256": "544DA80C4E55A14C3CA4C4A1CB6BAD49B5E9D1005906E54D6B32F00152F25338"
+      },
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/objects/js-array-buffer-inl.h"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\authority\\v8-typed-array-createtypedarray.v24.13.tq",
+        "bytes": 20926,
+        "sha256": "6E1E59174929538BB4A7D84E5B04DBF18B32866B47B3904E3EBCEE31FE913579"
+      },
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/builtins/typed-array-createtypedarray.tq"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\authority\\v8-conversions-inl.v24.13.h",
+        "bytes": 12043,
+        "sha256": "9EEE8FDFB6DCC22486A8398DDD9EA1E031208DE0BEF8778F465CCFC22A2B1062"
+      },
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/numbers/conversions-inl.h"
+    }
+  ],
+  "execution": false
+}

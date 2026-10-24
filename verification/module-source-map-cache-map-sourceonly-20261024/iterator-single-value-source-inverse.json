@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected\\src\\extensions\\native_node_source_map_cache_map.zig",
+    "bytes": 21539,
+    "sha256": "A51609DB4902E050B6494E858B77E4749173D6E471E3CBC2D29E8689F061B810"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_source_map_cache_map.zig",
+    "bytes": 21526,
+    "sha256": "E2AEDBDD801EB32063D94E9326C4606A4B81144099FCEC3D8B6995C3334D73E1"
+  },
+  "edits": [
+    {
+      "before": "fn resultElement(s: *Scope, result: c.JSValue, name: [*:0]const u8) !c.JSValue {\n    const entry = try s.get(result, \"value\");\n    return a.duplicate(s.engine, try s.get(entry, name));\n}",
+      "after": "fn unpackResult(s: *Scope, frame: *NextFrame) !c.JSValue {\n    // The original destructuring evaluates result.value once, then reads 0/1.\n    const entry = try s.get(frame.get(.result), \"value\");\n    try frame.take(.key, a.field(s.engine, entry, \"0\"));\n    try frame.take(.weak_ref, a.field(s.engine, entry, \"1\"));\n    return c.pi_js_undefined();\n}",
+      "offset": 17956,
+      "before_sha256": "A51609DB4902E050B6494E858B77E4749173D6E471E3CBC2D29E8689F061B810",
+      "after_sha256": "47AE75E2F7D9C151AFD3CA0B527B0953D43242B3983F7655B3BF42CD2649C7EB"
+    },
+    {
+      "before": "    try frame.take(.key, a.expression(s.engine, resultElement, .{ frame.get(.result), @as([*:0]const u8, \"0\") }));\n    try frame.take(.weak_ref, a.expression(s.engine, resultElement, .{ frame.get(.result), @as([*:0]const u8, \"1\") }));",
+      "after": "    _ = try a.expression(s.engine, unpackResult, .{frame});",
+      "offset": 19383,
+      "before_sha256": "47AE75E2F7D9C151AFD3CA0B527B0953D43242B3983F7655B3BF42CD2649C7EB",
+      "after_sha256": "E2AEDBDD801EB32063D94E9326C4606A4B81144099FCEC3D8B6995C3334D73E1"
+    }
+  ],
+  "complete_raw_forward_and_inverse": true,
+  "reason": "Preserve single result.value evaluation and one destructuring-expression temporary lifetime; no other source changes.",
+  "native_execution": false,
+  "formatter_or_parser_execution": false
+}

@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-24T19:16:34.904810+00:00",
+  "status": "root_source_accepted_exact_WeakReference_v2_not_runtime_qualified",
+  "candidate_head": "7947d3a0825a356dccc6aca7a327c92d7248b47f",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\source-intake-v2.json",
+    "bytes": 17967,
+    "sha256": "FCD81F2AD8ADB29DBB6B262018FF5E647C002D256A9A0AECE51BF4FD6AC16851"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-gap-assessment\\native-weak-reference-v2-independent-source-peer-20261024.json",
+    "bytes": 7467,
+    "sha256": "590F9A76B5F4EDC573135FBCD3FB5FD31B5A2743AD1ABC2944E9576B2BDD4B33"
+  },
+  "selected_changes": [
+    {
+      "intended_relative_path": "src/extensions/native_node_weak_reference.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_weak_reference.zig",
+        "bytes": 8226,
+        "sha256": "881B6895313E71DBF77769E1ECCDFB3CA12567835BFFC163AE27D267E4976BDF"
+      },
+      "operation": "add complete private source"
+    },
+    {
+      "intended_relative_path": "src/native_node_weak_reference_test.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\projected\\src\\native_node_weak_reference_test.zig",
+        "bytes": 19638,
+        "sha256": "33044D42A9A346092452603474580D012AE9E5C4754A56F200574E7DA5E806F3"
+      },
+      "operation": "add complete private source"
+    },
+    {
+      "intended_relative_path": "build.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 536372,
+        "sha256": "0268F0B48FC63AC8750C580AA1941C75C5AD98A42E9FBF8CAB786296E9EADD93"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 537359,
+        "sha256": "1479AA867C6367D66D70E712BA266D3E731073EA5426332A151416192D5C9167"
+      },
+      "operation": "single additive build hunk"
+    }
+  ],
+  "original_body": {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__util.js.txt",
+      "bytes": 28980,
+      "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429"
+    },
+    "lines": [
+      906,
+      937
+    ],
+    "byte_offset": 25623,
+    "fragment": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\authority\\WeakReference-util-906-937.js.txt",
+      "bytes": 607,
+      "sha256": "FB95642D75B138FE4F7B6F38B9E6387F9CAB4AFD7122A753419B1E88104D92CA"
+    },
+    "complete_class": true
+  },
+  "required_capture_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\weak-reference-required-captures-v2-finite-transform.json",
+    "bytes": 2563,
+    "sha256": "E8857F5156634BE54C98FDECF0DA499784F27B9A65D0BA81379BFA6C6BCA26D9"
+  },
+  "root_review": {
+    "complete_original_class_and_selected_owner_read": true,
+    "complete22_controls_read": true,
+    "original_optional_capture_defect_found_by_Root": true,
+    "v2_three_hunks_replayed_both_directions": true,
+    "all_other_owner_test_and_build_bytes_unchanged": true,
+    "unique_file_pin_versions_rehashed": 28,
+    "build_addition_bytes": 987,
+    "build_raw_inverse_exact": true,
+    "six_direct_imports_verified": true,
+    "all22_control_names_verified": true,
+    "git_apply_check": true,
+    "Main_clean_and_unchanged": true
+  },
+  "semantic_review": [
+    "Actual captured WeakRef constructor/deref are explicitly required, retained and reused, with unique per-class private VM brand.",
+    "Number counter preserves negative transitions; exact one strengthens and exact zero clears strong root before retirement/reentry.",
+    "Every get invokes actual WeakRef dereference and preserves host job kept-root behavior.",
+    "Charged instance/root ownership, GC marking and finalization retain real weak/strong semantics and actual pending/fatal identity."
+  ],
+  "source_controls": 22,
+  "Main_integrated": false,
+  "native_execution_authorized": false,
+  "actual_metadata_count": null,
+  "runtime_qualification": false,
+  "application_qualification": false,
+  "source_mutation_hold_released": false,
+  "remaining_work": [
+    "Genuine WeakRefMap/refcount canonical diagnostics owner and canonical channel/tracing channel assembly remain separate follow-ons.",
+    "Real triggerUncaughtException/process/trace/hrtime/debuglog suppliers still required; no disabled defaults or private fresh-channel substitutes."
+  ]
+}

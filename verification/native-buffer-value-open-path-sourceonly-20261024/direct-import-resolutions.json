@@ -1,0 +1,279 @@
+{
+  "schema": 1,
+  "virtual_selection": "This packet, then accepted unintegrated OpenPermissions sources, then frozen Main 7947d3a",
+  "literal_occurrences": 27,
+  "unique_bindings": 27,
+  "rows": [
+    {
+      "importer": "src/extensions/native_node_maybe_stack_buffer.zig",
+      "literal": "native_node_callback_scope.zig",
+      "resolved_destination": "src/extensions/native_node_callback_scope.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 40069,
+        "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_maybe_stack_buffer.zig",
+      "literal": "native_node_check_failure.zig",
+      "resolved_destination": "src/extensions/native_node_check_failure.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_check_failure.zig",
+        "bytes": 2857,
+        "sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_maybe_stack_buffer.zig",
+      "literal": "native_node_argument_values.zig",
+      "resolved_destination": "src/extensions/native_node_argument_values.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_stream_string_bytes.zig",
+      "literal": "native_node_argument_values.zig",
+      "resolved_destination": "src/extensions/native_node_argument_values.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_stream_string_bytes.zig",
+      "literal": "native_node_callback_scope.zig",
+      "resolved_destination": "src/extensions/native_node_callback_scope.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 40069,
+        "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_stream_string_bytes.zig",
+      "literal": "native_node_maybe_stack_buffer.zig",
+      "resolved_destination": "src/extensions/native_node_maybe_stack_buffer.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\src\\extensions\\native_node_maybe_stack_buffer.zig",
+        "bytes": 4564,
+        "sha256": "64376192280B2C77C6D61556FD629672BDD7FAB4C49D118E173DFB723AF4D45A"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_stream_string_bytes.zig",
+      "literal": "native_node_check_failure.zig",
+      "resolved_destination": "src/extensions/native_node_check_failure.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_check_failure.zig",
+        "bytes": 2857,
+        "sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_buffer_value.zig",
+      "literal": "native_node_argument_values.zig",
+      "resolved_destination": "src/extensions/native_node_argument_values.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_buffer_value.zig",
+      "literal": "native_node_callback_scope.zig",
+      "resolved_destination": "src/extensions/native_node_callback_scope.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 40069,
+        "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_buffer_value.zig",
+      "literal": "native_node_maybe_stack_buffer.zig",
+      "resolved_destination": "src/extensions/native_node_maybe_stack_buffer.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\src\\extensions\\native_node_maybe_stack_buffer.zig",
+        "bytes": 4564,
+        "sha256": "64376192280B2C77C6D61556FD629672BDD7FAB4C49D118E173DFB723AF4D45A"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_buffer_value.zig",
+      "literal": "native_node_stream_string_bytes.zig",
+      "resolved_destination": "src/extensions/native_node_stream_string_bytes.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\src\\extensions\\native_node_stream_string_bytes.zig",
+        "bytes": 11920,
+        "sha256": "7915E9BE27377D263677FF5E68D40557C52C3E50AFF2273401D081CC17CB02B0"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_buffer_value.zig",
+      "literal": "native_node_check_failure.zig",
+      "resolved_destination": "src/extensions/native_node_check_failure.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_check_failure.zig",
+        "bytes": 2857,
+        "sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_fs_open_path.zig",
+      "literal": "native_node_argument_values.zig",
+      "resolved_destination": "src/extensions/native_node_argument_values.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_fs_open_path.zig",
+      "literal": "native_node_callback_scope.zig",
+      "resolved_destination": "src/extensions/native_node_callback_scope.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 40069,
+        "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_fs_open_path.zig",
+      "literal": "native_node_buffer_value.zig",
+      "resolved_destination": "src/extensions/native_node_buffer_value.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\src\\extensions\\native_node_buffer_value.zig",
+        "bytes": 4399,
+        "sha256": "34AF48BADD5877CBE28A481563C554AD11509BBE356A236C91FA8A1B94CE5144"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_fs_open_path.zig",
+      "literal": "native_node_fs_open_permissions.zig",
+      "resolved_destination": "src/extensions/native_node_fs_open_permissions.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\extensions\\native_node_fs_open_permissions.zig",
+        "bytes": 4270,
+        "sha256": "7EFC4540D39170DE848EBF6A7B200661F2E66436A780309BD73FE7AE0A02B77E"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_fs_open_path.zig",
+      "literal": "native_node_check_failure.zig",
+      "resolved_destination": "src/extensions/native_node_check_failure.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_check_failure.zig",
+        "bytes": 2857,
+        "sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+      }
+    },
+    {
+      "importer": "src/native_node_buffer_value_open_path_test.zig",
+      "literal": "extensions/native_node_argument_values.zig",
+      "resolved_destination": "src/extensions/native_node_argument_values.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "importer": "src/native_node_buffer_value_open_path_test.zig",
+      "literal": "extensions/native_node_buffer_value.zig",
+      "resolved_destination": "src/extensions/native_node_buffer_value.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\src\\extensions\\native_node_buffer_value.zig",
+        "bytes": 4399,
+        "sha256": "34AF48BADD5877CBE28A481563C554AD11509BBE356A236C91FA8A1B94CE5144"
+      }
+    },
+    {
+      "importer": "src/native_node_buffer_value_open_path_test.zig",
+      "literal": "extensions/native_node_fs_open_path.zig",
+      "resolved_destination": "src/extensions/native_node_fs_open_path.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\src\\extensions\\native_node_fs_open_path.zig",
+        "bytes": 5014,
+        "sha256": "BB1BFD00E2B1ADEB6399C083874B2EA5533DDF8EFCEE00ACC67E59D0ECFC4F92"
+      }
+    },
+    {
+      "importer": "src/native_node_buffer_value_open_path_test.zig",
+      "literal": "extensions/native_node_maybe_stack_buffer.zig",
+      "resolved_destination": "src/extensions/native_node_maybe_stack_buffer.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-buffer-value-open-path-sourceonly-20261024\\projected\\src\\extensions\\native_node_maybe_stack_buffer.zig",
+        "bytes": 4564,
+        "sha256": "64376192280B2C77C6D61556FD629672BDD7FAB4C49D118E173DFB723AF4D45A"
+      }
+    },
+    {
+      "importer": "src/native_node_buffer_value_open_path_test.zig",
+      "literal": "extensions/native_node_fs_open_permissions.zig",
+      "resolved_destination": "src/extensions/native_node_fs_open_permissions.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-open-permissions-sourceonly-20261024\\projected\\src\\extensions\\native_node_fs_open_permissions.zig",
+        "bytes": 4270,
+        "sha256": "7EFC4540D39170DE848EBF6A7B200661F2E66436A780309BD73FE7AE0A02B77E"
+      }
+    },
+    {
+      "importer": "src/native_node_buffer_value_open_path_test.zig",
+      "literal": "extensions/native_node_callback_scope.zig",
+      "resolved_destination": "src/extensions/native_node_callback_scope.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 40069,
+        "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+      }
+    },
+    {
+      "importer": "src/native_node_buffer_value_open_path_test.zig",
+      "literal": "extensions/native_node_async_providers.zig",
+      "resolved_destination": "src/extensions/native_node_async_providers.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_async_providers.zig",
+        "bytes": 1780,
+        "sha256": "5C66F18156086D2C00A4AEE22C62F46E1C6DED84624A410F5900C49D2FECA4CA"
+      }
+    },
+    {
+      "importer": "src/native_node_buffer_value_open_path_test.zig",
+      "literal": "extensions/native_node_function.zig",
+      "resolved_destination": "src/extensions/native_node_function.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_node_function.zig",
+        "bytes": 14120,
+        "sha256": "232E0F858F21DD002C2FEB6B65C62486EB6DA113F7463B2DD60CC799B3369007"
+      }
+    },
+    {
+      "importer": "src/native_node_buffer_value_open_path_test.zig",
+      "literal": "native_node_native_debug_test_support.zig",
+      "resolved_destination": "src/native_node_native_debug_test_support.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\native_node_native_debug_test_support.zig",
+        "bytes": 10530,
+        "sha256": "7AF437A515FF85B16457E854B7FCD93BDBF74545C939E7039040158E5285F604"
+      }
+    },
+    {
+      "importer": "src/native_node_buffer_value_open_path_test.zig",
+      "literal": "extensions/native_process.zig",
+      "resolved_destination": "src/extensions/native_process.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\Main\\src\\extensions\\native_process.zig",
+        "bytes": 6626,
+        "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+      }
+    }
+  ],
+  "execution": false
+}

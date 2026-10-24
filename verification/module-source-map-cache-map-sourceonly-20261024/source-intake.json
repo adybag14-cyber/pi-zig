@@ -1,0 +1,531 @@
+{
+  "schema": 1,
+  "date_utc": "2026-10-24T19:02:39.712001+00:00",
+  "main_base_commit": "7947d3a0825a356dccc6aca7a327c92d7248b47f",
+  "scope": "Complete genuine internal/source_map/source_map_cache_map.js private class with an explicit actual debuglog dependency; real VM Map/WeakRef/FinalizationRegistry ownership, ordinary iterator and frozen class prototype.",
+  "status": "sealed_source_only_candidate_for_independent_review",
+  "changes": [
+    {
+      "target": "src/extensions/native_node_source_map_cache_map.zig",
+      "operation": "add",
+      "baseline": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_source_map_cache_map.zig",
+        "bytes": 21526,
+        "sha256": "E2AEDBDD801EB32063D94E9326C4606A4B81144099FCEC3D8B6995C3334D73E1"
+      }
+    },
+    {
+      "target": "src/extensions/native_clone_intrinsics.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_clone_intrinsics.zig",
+        "bytes": 3671,
+        "sha256": "92BBBEB85369F78E64D4D37A1FB1A34E373F724933E8967F76C1E0901D864DAD"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+        "bytes": 5808,
+        "sha256": "5793E31979FB384F362E6E32FBD8A81C72B273D16E3BAC07C775C41C7D9962A2"
+      }
+    },
+    {
+      "target": "src/native_node_source_map_cache_map_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected\\src\\native_node_source_map_cache_map_test.zig",
+        "bytes": 28775,
+        "sha256": "2E7F9BF6E5EB7AFED331F03157A3E12CB5FC6FDA406EBFBEF0E311CFE55A73DD"
+      }
+    },
+    {
+      "target": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 536372,
+        "sha256": "0268F0B48FC63AC8750C580AA1941C75C5AD98A42E9FBF8CAB786296E9EADD93"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 537094,
+        "sha256": "85FB58BDBF43C4640508C49D07C6CA2C7CFF6DCDE535116714AF9E2DC0E5D722"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\source-map-cache-map-successor.patch",
+    "bytes": 56374,
+    "sha256": "FE669BAE51D1CA03E9AEFDBFDF38655B9743D0BF88C8E30EAEA4780B0E08564E"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\README.md",
+    "bytes": 6549,
+    "sha256": "C7096BBA4531F13691511129F96DEF8043B1DEFB9664DC8F31CB27F2120F9643"
+  },
+  "static_checks": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\static-source-checks.json",
+    "bytes": 9321,
+    "sha256": "32635031AB213A6EECBB22DEBE9AE6589233FF541D7964D107726ED1B32BE0DD"
+  },
+  "original_authority": {
+    "node_version": "24.14.0",
+    "node_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+    "original_complete_cache_class": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\authority\\lib__internal__source_map__source_map_cache_map.js.txt",
+      "bytes": 3883,
+      "sha256": "56ED03526BDEED4F88FD84A14EDB0C005A29BC4B4616E5596414B535A5926272"
+    },
+    "original_next_consumer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\authority\\lib__internal__source_map__source_map_cache.js.txt",
+      "bytes": 15946,
+      "sha256": "03C77C90B7E51CCBB978A579BCA36DBF5EFE07FF211AC7117E64CEA1ADE9B40C"
+    },
+    "original_debuglog": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+      "bytes": 12596,
+      "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+    },
+    "original_private_symbol_declaration": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\src__env_properties.h.txt",
+      "bytes": 40709,
+      "sha256": "AB193F60F8D05B576964DA783A8FCB7F8A074EA20176B9419EE2BA61B02C3C91"
+    },
+    "original_private_symbol_export": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\src__node_util.cc.txt",
+      "bytes": 20372,
+      "sha256": "FBF7DC840F9A730D77E3A565B8A1B241009A8B817CBF0FC9BC2BD39DFF06EB2A"
+    },
+    "original_license": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\LICENSE.txt",
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    },
+    "retained_primary_source_retrieval": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\primary-source-retrieval.json",
+      "bytes": 5024,
+      "sha256": "6535A831F1BC70D3F84437EEBE26D6B2C66984565954BC56A913EAE72B8AE673"
+    },
+    "prior_gap_assessment": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\supplier-gap-assessment.json",
+      "bytes": 11569,
+      "sha256": "3904915C6734B33873681DBBF16FF4FF5FD61DC030096868BEA65156A95793A3"
+    },
+    "bounded_real_debug_supplier_trace": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-controls-review\\wrap-module-load-real-producer-plan-20261024.json",
+      "bytes": 24784,
+      "sha256": "7668C9D24ADCBB27914D1878559A40B9FA915EACCF0A204A48DAF8F53E87D800"
+    }
+  },
+  "authority_excerpts": {
+    "primordials_private_key_and_mutable_debug_binding": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\authority\\lib__internal__source_map__source_map_cache_map.js.txt",
+        "bytes": 3883,
+        "sha256": "56ED03526BDEED4F88FD84A14EDB0C005A29BC4B4616E5596414B535A5926272"
+      },
+      "first_line": 1,
+      "last_line": 18,
+      "bytes": 348,
+      "sha256": "FF3A3E8D4313ADD7A042A2F12DB86EBD735F4854C477077D6479E6D85EBC8671"
+    },
+    "class_private_fields_and_cleanup": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\authority\\lib__internal__source_map__source_map_cache_map.js.txt",
+        "bytes": 3883,
+        "sha256": "56ED03526BDEED4F88FD84A14EDB0C005A29BC4B4616E5596414B535A5926272"
+      },
+      "first_line": 34,
+      "last_line": 57,
+      "bytes": 973,
+      "sha256": "0BDE8B204EC5BAAB681D2791BD4EC098B6E4537560FA59BA5462EFC8EF739A02"
+    },
+    "complete_set_get_size": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\authority\\lib__internal__source_map__source_map_cache_map.js.txt",
+        "bytes": 3883,
+        "sha256": "56ED03526BDEED4F88FD84A14EDB0C005A29BC4B4616E5596414B535A5926272"
+      },
+      "first_line": 67,
+      "last_line": 95,
+      "bytes": 910,
+      "sha256": "AD2A462E0E4EBB52507317073157BF9FB73F51D1EA014C8FE4961307EDEAA551"
+    },
+    "complete_iterator_and_freeze": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\authority\\lib__internal__source_map__source_map_cache_map.js.txt",
+        "bytes": 3883,
+        "sha256": "56ED03526BDEED4F88FD84A14EDB0C005A29BC4B4616E5596414B535A5926272"
+      },
+      "first_line": 97,
+      "last_line": 122,
+      "bytes": 619,
+      "sha256": "A86F80BBF144C8B1940D17178D4E9BA9A1087F19D76FE08CBC3E1A4B7DA68D74"
+    },
+    "original_lazy_cache_consumer": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\authority\\lib__internal__source_map__source_map_cache.js.txt",
+        "bytes": 15946,
+        "sha256": "03C77C90B7E51CCBB978A579BCA36DBF5EFE07FF211AC7117E64CEA1ADE9B40C"
+      },
+      "first_line": 31,
+      "last_line": 36,
+      "bytes": 252,
+      "sha256": "9A5E92B8EEF88A7F63F40B5778923F206757782B99D2631DC1F093F8AA0C302A"
+    },
+    "original_maybeCacheSourceMap_entry": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\authority\\lib__internal__source_map__source_map_cache.js.txt",
+        "bytes": 15946,
+        "sha256": "03C77C90B7E51CCBB978A579BCA36DBF5EFE07FF211AC7117E64CEA1ADE9B40C"
+      },
+      "first_line": 157,
+      "last_line": 200,
+      "bytes": 1521,
+      "sha256": "FF7DF8129F0D622DAE68588F2CF752A8D4DCBA7FC31E1F93E20EEFB024E42EB1"
+    },
+    "debug_initialization": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+        "bytes": 12596,
+        "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+      },
+      "first_line": 25,
+      "last_line": 44,
+      "bytes": 716,
+      "sha256": "49C0BD2FF49C2C0C9CD6168F0046E0B7F0AD91FDE04B808709BA68428EE47429"
+    },
+    "debug_output_and_lazy_category": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+        "bytes": 12596,
+        "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+      },
+      "first_line": 46,
+      "last_line": 137,
+      "bytes": 2685,
+      "sha256": "13076E722E48919DAE393665CBF0C859EC1BFB164F2ABA334D6CCD9FE6ECE2BD"
+    },
+    "existing_private_Set_producer": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2406379,
+        "sha256": "B23C5114FD01344B5BB1424A4DC2B702506CFFDA0280329044C0763B27A7F754"
+      },
+      "first_line": 12703,
+      "last_line": 12764,
+      "bytes": 2483,
+      "sha256": "535B1E7E349224A6DE37D816FA23A9A206E02F0A7758BF8B629D85001AC30CF4"
+    },
+    "actual_Engine_checkpoint": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      },
+      "first_line": 1192,
+      "last_line": 1196,
+      "bytes": 341,
+      "sha256": "E034A19F0D75231FACCB41E8EC70E872544005314316CB34D61AA8660669E78F"
+    }
+  },
+  "source_inverses": {
+    "pristine_capture_successor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\clone-intrinsics-source-inverse.json",
+      "bytes": 5016,
+      "sha256": "5D820FDAF49BE04B3416250DD2F391C1A7DD15C43F7396AC344130C07A3460F1"
+    },
+    "iterator_single_value_refinement": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\iterator-single-value-source-inverse.json",
+      "bytes": 2306,
+      "sha256": "0D2F5C4F755773A4BAEF6944B65BEE588E4392EB3C15432594936F71B59C855D"
+    },
+    "additive_build": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\build-source-inverse.json",
+      "bytes": 977,
+      "sha256": "0CB7B2F477AAED5B5FAC3066F6EBB0F310848910715762E39795B4CF96A31255"
+    },
+    "unselected_first_owner_retained": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected\\src\\extensions\\native_node_source_map_cache_map.zig",
+      "bytes": 21539,
+      "sha256": "A51609DB4902E050B6494E858B77E4749173D6E471E3CBC2D29E8689F061B810"
+    }
+  },
+  "direct_import_resolutions": [
+    {
+      "importer": "src/extensions/native_node_source_map_cache_map.zig",
+      "literal": "native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      },
+      "selection": "frozen Main"
+    },
+    {
+      "importer": "src/extensions/native_node_source_map_cache_map.zig",
+      "literal": "native_node_error_class.zig",
+      "target": "src/extensions/native_node_error_class.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_error_class.zig",
+        "bytes": 7317,
+        "sha256": "0192489A134A0D6B287EB1494654FC25391E1989D80A239C9AC37201392E0EE5"
+      },
+      "selection": "frozen Main"
+    },
+    {
+      "importer": "src/extensions/native_node_source_map_cache_map.zig",
+      "literal": "native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      },
+      "selection": "frozen Main"
+    },
+    {
+      "importer": "src/extensions/native_node_source_map_cache_map.zig",
+      "literal": "native_sync_arguments.zig",
+      "target": "src/extensions/native_sync_arguments.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+        "bytes": 9162,
+        "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+      },
+      "selection": "frozen Main"
+    },
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "engine.zig",
+      "target": "src/extensions/engine.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      },
+      "selection": "frozen Main"
+    },
+    {
+      "importer": "src/native_node_source_map_cache_map_test.zig",
+      "literal": "extensions/engine.zig",
+      "target": "src/extensions/engine.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      },
+      "selection": "frozen Main"
+    },
+    {
+      "importer": "src/native_node_source_map_cache_map_test.zig",
+      "literal": "extensions/native_node_source_map_cache_map.zig",
+      "target": "src/extensions/native_node_source_map_cache_map.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_source_map_cache_map.zig",
+        "bytes": 21526,
+        "sha256": "E2AEDBDD801EB32063D94E9326C4606A4B81144099FCEC3D8B6995C3334D73E1"
+      },
+      "selection": "same packet projection"
+    }
+  ],
+  "package_imports": [
+    {
+      "importer": "src/extensions/native_clone_intrinsics.zig",
+      "literal": "std",
+      "supplier": "Pinned Zig standard library from repository build; no package source execution"
+    },
+    {
+      "importer": "src/native_node_source_map_cache_map_test.zig",
+      "literal": "std",
+      "supplier": "Pinned Zig standard library from repository build; no package source execution"
+    }
+  ],
+  "literal_import_occurrences": 18,
+  "retained_ownership_primitives": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      },
+      "provides": "Actual pre-guest WeakRef constructor/deref capture, existing hidden intrinsic registry lifecycle and end-of-host-job kept-target checkpoint; unchanged."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      },
+      "provides": "Original-expression Scope, lexical Frame and complete owned return primitives."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      },
+      "provides": "Actual nonconstructible strict native callable closures, marked/charged roots and synchronous arguments/Frame hooks."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_error_class.zig",
+        "bytes": 7317,
+        "sha256": "0192489A134A0D6B287EB1494654FC25391E1989D80A239C9AC37201392E0EE5"
+      },
+      "provides": "Existing construct-only native class creation, new.target, public name/length/prototype descriptors and marked/charged roots; no error-specific behavior is added."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+        "bytes": 7087,
+        "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+      },
+      "provides": "Guest-capable pending-event checks and operation-local allocation provenance; retirement-safe completion."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+        "bytes": 9934,
+        "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA"
+      },
+      "provides": "Actual current pending/first-fatal identity and retirement ordering, without treating flagged data as a producer."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_lexical_frame.zig",
+        "bytes": 17136,
+        "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E"
+      },
+      "provides": "Actual retained lexical assignments and native synchronous frame retirement."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+        "bytes": 9162,
+        "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+      },
+      "provides": "Actual synchronous formal arguments and frame ownership."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2406379,
+        "sha256": "B23C5114FD01344B5BB1424A4DC2B702506CFFDA0280329044C0763B27A7F754"
+      },
+      "provides": "Current genuine WeakRef/FinalizationRegistry/Map/private-symbol/private-property VM producers; unchanged."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+        "bytes": 116648,
+        "sha256": "532BFBF4CE23AAA4B1F49D576F1A48D997B234142DFE1A587A2FFE5A340971AA"
+      },
+      "provides": "Existing C ABI only; no new symbol or library ABI in this packet."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_vm_private_property_test.zig",
+        "bytes": 15964,
+        "sha256": "13D9AA73262E469E1C0B6462F91606E669E0515D9E13D18FBBC15262AC4D5162"
+      },
+      "provides": "Retained source controls for own hidden private storage and retirement; no execution result transferred."
+    }
+  ],
+  "constructor_inputs": {
+    "entry": "create(engine: *Engine, inputs: Inputs{debuglog: JSValue}) !JSValue",
+    "debuglog": "Required genuine internal/util/debuglog.debuglog callable. Borrowed during create; the actual returned logger and assignment callback are retained by marked class/method ownership. No implicit logger/policy fallback.",
+    "engine": "Borrowed current Engine with real pristine captures and existing VM private-property implementation.",
+    "result": "Owned actual class constructor. Canonical source-map-cache getLazy owner must retain/construct it; public Module publication is outside this packet."
+  },
+  "semantic_accounting": [
+    "Class-private brands are actual own private slots; derived construction observes real new.target prototype and rejects forged/inherited/proxied receivers.",
+    "Pristine captured Map/WeakRef/FinalizationRegistry/forEach/freeze/symbol operations remain independent of later guest global/prototype replacement.",
+    "set: new WeakRef, original forEach key insertions, shared private module-data Set, then real registry registration holding the original keys object; partial effects and receiver-brand timing remain ordered.",
+    "Each cache owns keys and WeakRefs only. Module-backed source-map data can retire before deferred cleanup; actual deref participates in the Engine host checkpoint.",
+    "Cleanup reads current references so an old registration preserves a newer live replacement. It resolves the current debug callee before template-key ToString, calls it, then unconditionally deletes. Throw/reentry effects remain visible.",
+    "Iterator uses the real live Map iterator; result.value is evaluated once before field0/1 reads. Captured recursive next skips dead refs independently of public next replacement.",
+    "Returned iterator/result descriptors and class frozen prototype match original ordinary objects/methods; no V8 heap/debugger or native-function-source-string claim.",
+    "Assigned native frames and Scope completions retain source bindings through reentry; native producer/finalizer fatal remains actual pending first-fatal identity, and captured flagged Error data remains data."
+  ],
+  "controls": {
+    "root": "src/native_node_source_map_cache_map_test.zig",
+    "build_step": "build-native-node-source-map-cache-map",
+    "filter": "native source map cache",
+    "declared_count": 20,
+    "names": [
+      "native source map cache class has the original frozen prototype and hidden private instance state",
+      "native source map cache private brands reject proxies and forged receivers while derived instances work",
+      "native source map cache aliases share the actual per Engine module data key across classes",
+      "native source map cache forEach keeps holes inherited indices length snapshot and getter order",
+      "native source map cache partial key failure preserves earlier insertions before data and registration",
+      "native source map cache set checks WeakRef first and delays receiver brand through empty keys",
+      "native source map cache private data handles frozen modules and revoked proxy wrappers without traps",
+      "native source map cache owns only WeakRefs so actual module and data retire before cleanup jobs",
+      "native source map cache successful dereference keeps its target until the actual host checkpoint",
+      "native source map cache stale finalization leaves an alias replaced with a live module intact",
+      "native source map cache finalization reads the original mutable keys array without copying it",
+      "native source map cache cleanup interpolates keys and resolves debug callee before coercion",
+      "native source map cache disabled logging still coerces keys and ordinary logging failure prevents deletion",
+      "native source map cache logger reentry precedes the original unconditional stale entry delete",
+      "native source map cache iterator is an ordinary own next object with live Map order and recursive dead skips",
+      "native source map cache escaped iterator does not keep module or data alive through the cache",
+      "native source map cache pristine operations survive replaced globals and poisoned live prototypes",
+      "native source map cache current native producer during key coercion prevents debug and deletion",
+      "native source map cache private data retirement publishes replacement before the retained first fatal",
+      "native source map cache debug binding keeps original initialization TDZ and captured flagged data nonfatal"
+    ],
+    "method": "Actual Engine/Map/WeakRef/FinalizationRegistry with native lifetime probes, host checkpoints and real pending-job execution in authored controls; observation collaborators are test-only.",
+    "executed": false,
+    "actual_metadata_count": null
+  },
+  "build_composition": {
+    "baseline": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+      "bytes": 536372,
+      "sha256": "0268F0B48FC63AC8750C580AA1941C75C5AD98A42E9FBF8CAB786296E9EADD93"
+    },
+    "selected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 537094,
+      "sha256": "85FB58BDBF43C4640508C49D07C6CA2C7CFF6DCDE535116714AF9E2DC0E5D722"
+    },
+    "insertion": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\build-insertion.txt",
+      "bytes": 722,
+      "sha256": "C11F3AD636BAB355A594E6484E933FEA463571E9AC8771843FBB0443733DFBD7"
+    },
+    "anchor": "    const cjs_raw_provider_tests = b.addTest(.{",
+    "replacement_count": 1,
+    "complete_raw_inverse": true,
+    "insert_only_when_composing_with_other_packets": true,
+    "installed_test_root_only": true,
+    "build_run_artifact_added": false
+  },
+  "production_entry_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\production-entry-handoff.json",
+    "bytes": 5862,
+    "sha256": "D45DC98D6894601F10B2479A7A5724376E848E0F49B158BB7363451AC25F26AF"
+  },
+  "not_executed": [
+    "Zig parser/AST/compiler/formatter",
+    "native build/query/runtime",
+    "Node or original reference capture",
+    "source generator/preparer/binder/auditor",
+    "Main mutation/commit/push"
+  ],
+  "claims": {
+    "actual_native_class_source_implemented": true,
+    "Main_integrated": false,
+    "native_execution_authorized": false,
+    "runtime_qualified": false,
+    "application_qualified": false,
+    "maybeCacheSourceMap_implemented": false,
+    "complete_debuglog_supplier_implemented": false,
+    "Module_namespace_published": false,
+    "default_backend_changed": false
+  },
+  "unique_file_pin_versions_verified": 35
+}

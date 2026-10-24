@@ -1,0 +1,255 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T18:05:59.280435+00:00",
+  "reviewer": "catalog_review",
+  "status": "bounded_original_source_supplier_gap_assessment",
+  "candidate_head": "eeb59f314c834ed8a060da178251e380a50d0a62",
+  "original_node_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "sources": {
+    "loader": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+      "bytes": 72050,
+      "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+    },
+    "source_map_cache": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\authority\\lib__internal__source_map__source_map_cache.js.txt",
+      "bytes": 15946,
+      "sha256": "03C77C90B7E51CCBB978A579BCA36DBF5EFE07FF211AC7117E64CEA1ADE9B40C"
+    },
+    "source_map_cache_map": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\authority\\lib__internal__source_map__source_map_cache_map.js.txt",
+      "bytes": 3883,
+      "sha256": "56ED03526BDEED4F88FD84A14EDB0C005A29BC4B4616E5596414B535A5926272"
+    },
+    "private_symbol_authority": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\src__env_properties.h.txt",
+      "bytes": 40709,
+      "sha256": "AB193F60F8D05B576964DA783A8FCB7F8A074EA20176B9419EE2BA61B02C3C91"
+    },
+    "private_symbol_export_authority": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\src__node_util.cc.txt",
+      "bytes": 20372,
+      "sha256": "FBF7DC840F9A730D77E3A565B8A1B241009A8B817CBF0FC9BC2BD39DFF06EB2A"
+    },
+    "http_retrieval": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\primary-source-retrieval.json",
+      "bytes": 5024,
+      "sha256": "6535A831F1BC70D3F84437EEBE26D6B2C66984565954BC56A913EAE72B8AE673"
+    }
+  },
+  "source_ranges": {
+    "loader_wrapSafe": [
+      1701,
+      1751
+    ],
+    "cache": {
+      "function maybeCacheSourceMap": [
+        157
+      ],
+      "function dataFromUrl": [
+        237
+      ],
+      "function sourceMapFromFile": [
+        282
+      ],
+      "function sourceMapFromDataUrl": [
+        295
+      ],
+      "function sourcesToAbsolute": [
+        322
+      ],
+      "function sourceMapCacheToObject": [
+        343
+      ],
+      "function findSourceMap": [
+        369
+      ],
+      "function setSourceMapsSupport": [
+        71
+      ]
+    },
+    "weak_cache": {
+      "class SourceMapCacheMap": [
+        34
+      ],
+      "#cleanup": [
+        45,
+        57
+      ],
+      "#finalizationRegistry": [
+        57,
+        71
+      ],
+      "  set(": [
+        67
+      ],
+      "  get(": [
+        79
+      ],
+      "  get size": [
+        93
+      ],
+      "  [SymbolIterator]": [
+        97,
+        111
+      ],
+      "ObjectFreeze": [
+        5,
+        117
+      ]
+    },
+    "private_symbols": [
+      17,
+      40
+    ],
+    "private_symbol_export": [
+      490,
+      503
+    ]
+  },
+  "current_suppliers": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      },
+      "ranges": [
+        [
+          156,
+          157
+        ],
+        [
+          310,
+          325
+        ],
+        [
+          378,
+          390
+        ],
+        [
+          1100,
+          1114
+        ]
+      ],
+      "provides": "Actual pristine WeakRef constructor/deref captured before extension input, explicit end-of-job kept-target lifecycle, and existing private intrinsic registry lifetime."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_clone_intrinsics.zig",
+        "bytes": 3671,
+        "sha256": "92BBBEB85369F78E64D4D37A1FB1A34E373F724933E8967F76C1E0901D864DAD"
+      },
+      "provides": "Pristine Map constructor, Map.entries iterator method, Map.set and iterator.next already captured before guest code. Missing Map.get/delete/size getter, FinalizationRegistry constructor/register and Array.prototype.forEach for this class."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+        "bytes": 115346,
+        "sha256": "05AA4DF250CB642536077C5DF80C08C92C1C40BAA347C18140AFB577B583B0EB"
+      },
+      "ranges": [
+        [
+          1629,
+          1646
+        ]
+      ],
+      "provides": "Actual VM WeakRef kept-object checkpoint and private-symbol/private-property Set API already exist."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_vm_private_property_test.zig",
+        "bytes": 15964,
+        "sha256": "13D9AA73262E469E1C0B6462F91606E669E0515D9E13D18FBBC15262AC4D5162"
+      },
+      "provides": "Existing source controls exercise actual private-slot creation, own-descriptor access, proxy/nonextensible cases and retirement; no runtime result is transferred."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+        "bytes": 9934,
+        "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA"
+      },
+      "provides": "Current stable native invocation and pending/retirement semantics for private native callbacks."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      },
+      "provides": "Actual private callable closures with owned captured JS roots and native dispatch."
+    }
+  ],
+  "compile_info_prerequisite": {
+    "packet": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-compile-info-sourceonly-20261024\\source-intake.json",
+      "bytes": 16431,
+      "sha256": "810273D34A62A554FEA647BD0238E587842372A18796BCFFF780A06DBE3EAB95"
+    },
+    "root_source_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-module-compile-info-source-peer-20261024.json",
+      "bytes": 14892,
+      "sha256": "77F55D0A2717C3D436233620581C30B5C5C8E27D1CA64B4E7D841FD41A0AF5A7"
+    },
+    "scope": "Actual function/script plus lexer metadata owner is source accepted; it does not provide maybeCacheSourceMap."
+  },
+  "concrete_next_slice": {
+    "owner": "Original SourceMapCacheMap class, as a private native owner with actual JavaScript Map/WeakRef/FinalizationRegistry objects.",
+    "proposed_targets": [
+      "src/extensions/native_clone_intrinsics.zig (narrow pristine captures and shared private key)",
+      "src/extensions/native_node_source_map_cache_map.zig (new complete private cache owner)",
+      "src/native_node_source_map_cache_map_test.zig (focused controls)",
+      "build.zig (one install-only additive hunk)"
+    ],
+    "constructor_inputs": [
+      "Actual Engine and its pre-guest pristine intrinsic registry.",
+      "One source_map_data_private_symbol per Engine/runtime, shared by every cache instance.",
+      "Actual native callable/GC-marked owner for cleanup and iterator closures; genuine registry register operation."
+    ],
+    "no_policy_dependencies": "This cache class stores already-produced entry data. It does not choose source-map enablement, URLs, files, modules or ESM behavior.",
+    "semantics": [
+      "Create a real WeakRef to moduleInstance; alias every supplied key to that WeakRef, attach data to the shared private module slot, then register the real FinalizationRegistry holding keys. Preserve this exact order and partial effects if a later operation fails.",
+      "Own only keys, WeakRefs and registry state in the cache. Entry data stays on the actual module, permitting eager reclamation; do not substitute a strong key-to-data map.",
+      "Cleanup examines the currently mapped WeakRef before deletion. A stale finalization notification must not delete a newer live replacement.",
+      "get returns the current module private slot after genuine deref. Multiple cache instances share the private key, as the per-isolate original does.",
+      "size reports the actual map's estimate including obsolete keys until cleanup. Iteration preserves live Map iterator behavior, skips reclaimed modules and reads their current private slot.",
+      "Capture all used intrinsic operations before guest input and retain native closure/registry state across reentry and retirement."
+    ],
+    "meaningful_controls": [
+      "Alias keys share actual module-backed data; replacing a shared module slot is visible across cache instances.",
+      "WeakRef target is retained until the actual job checkpoint, then reclaimable without the cache retaining source-map data.",
+      "Old cleanup cannot delete a newer live replacement at the same key.",
+      "Iteration skips reclaimed targets, preserves insertion/replacement behavior and returns its own iterator identity.",
+      "Tampered global/prototype methods cannot redirect captured pristine operations.",
+      "Key-array getter/holes and partial-set effects preserve original Array.prototype.forEach ordering.",
+      "Private data remains non-enumerable and does not leak through ordinary symbol enumeration; proxy/nonextensible semantics use the existing actual private-slot API.",
+      "Actual pending/fatal producer and finalizer reentry preserve first-fatal identity while retiring partially created WeakRefs/registry/iterator roots."
+    ]
+  },
+  "required_following_startup_work": [
+    "maybeCacheSourceMap still needs actual process.env.NODE_V8_COVERAGE and sourceMapsSupport ownership; defaulting it to an unconditional no-op would omit original observable decisions.",
+    "Native URL/path normalization and data/file URL handling, Buffer base64 decode and actual readFileSync/JSON parse must feed a real entry before this cache can serve wrapSafe. The original keeps null data entries for invalid maps and coverage.",
+    "Source-map support toggling must update the actual native error/stack-trace owner, then publish the frozen support record in the original order.",
+    "Canonical Module assembly still requires real wrap_module_load/debugWithTimer/tracingChannel suppliers and the remaining inspector/TS/ESM dependencies already recorded."
+  ],
+  "later_full_surface": [
+    "SourceMap V3 decoding/findSourceMap and mapped stack presentation are later full source-map surfaces; this assessment does not claim them implemented.",
+    "Generated-source cache, coverage serialization and original-source file retrieval remain explicit consumers of actual cache state."
+  ],
+  "search_scope": {
+    "current_main_extensions_source_map_owner_found": false,
+    "historical_pathspec_log_matches": 0,
+    "historical_pathspecs": [
+      "src/extensions/*source*map*.zig",
+      "src/extensions/*debug*timer*.zig"
+    ],
+    "note": "Bounded current symbol/file and exact-path history search; not a claim that every archived differently named implementation was inspected."
+  },
+  "implementation_started": false,
+  "Main_mutated": false,
+  "source_or_native_program_executed": false,
+  "native_execution": false,
+  "application_qualification": false,
+  "default_backend_changed": false
+}

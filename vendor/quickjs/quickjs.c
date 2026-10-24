@@ -67758,6 +67758,37 @@ size_t JS_PiArrayBufferViewByteLength(JSValueConst view)
     return remaining & ~(((size_t)1 << typed_array_size_log2(p->class_id)) - 1);
 }
 
+/* Node24.13 util.cc BufferValue consumes V8 api.cc CopyContents, whose
+   source limit is JSArrayBufferView::byte_length(), not GetByteLength().
+   V8 stores zero for length-tracking TypedArrays and DataViews. QuickJS keeps
+   their current length, so the original stored-length projection is explicit.
+   The caller has already bounded capacity by intrinsic ByteLength and retains
+   the view throughout this native copy; no callback can detach its storage. */
+size_t JS_PiArrayBufferViewCopyContents(JSValueConst view,
+                                       void *destination, size_t capacity)
+{
+    JSObject *p;
+    JSTypedArray *ta;
+    JSArrayBuffer *abuf;
+    size_t count;
+
+    if (JS_VALUE_GET_TAG(view) != JS_TAG_OBJECT || capacity == 0)
+        return 0;
+    p = JS_VALUE_GET_OBJ(view);
+    if (!is_typed_array(p->class_id) && p->class_id != JS_CLASS_DATAVIEW)
+        return 0;
+    ta = p->u.typed_array;
+    if (!ta || ta->track_rab)
+        return 0;
+    abuf = ta->buffer->u.array_buffer;
+    if (abuf->detached)
+        return 0;
+    count = capacity < ta->length ? capacity : ta->length;
+    if (count != 0)
+        memcpy(destination, abuf->data + ta->offset, count);
+    return count;
+}
+
 /* Borrow obj; return an owned backing reference. Keep the existing typed-array
    accessor unchanged. DataView spans use the same brand and bounds predicates
    as the interpreter's own DataView getters, including length-tracking RABs. */

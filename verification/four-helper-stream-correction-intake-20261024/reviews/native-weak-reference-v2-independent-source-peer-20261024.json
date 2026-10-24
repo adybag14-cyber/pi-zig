@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "created_at_utc": "2026-10-24T19:15:14.428709+00:00",
+  "reviewer": "handover_review",
+  "scope": "Independent source-only review of complete private internal/util WeakReference class, selected immutable v2.",
+  "verdict": "accepted at source level; no concrete remaining source blocker found",
+  "selected_entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\source-intake-v2.json",
+    "bytes": 17967,
+    "sha256": "FCD81F2AD8ADB29DBB6B262018FF5E647C002D256A9A0AECE51BF4FD6AC16851"
+  },
+  "selected_outputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_weak_reference.zig",
+      "bytes": 8226,
+      "sha256": "881B6895313E71DBF77769E1ECCDFB3CA12567835BFFC163AE27D267E4976BDF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\projected\\src\\native_node_weak_reference_test.zig",
+      "bytes": 19638,
+      "sha256": "33044D42A9A346092452603474580D012AE9E5C4754A56F200574E7DA5E806F3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 537359,
+      "sha256": "1479AA867C6367D66D70E712BA266D3E731073EA5426332A151416192D5C9167"
+    }
+  ],
+  "finite_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\weak-reference-required-captures-v2-finite-transform.json",
+    "bytes": 2563,
+    "sha256": "E8857F5156634BE54C98FDECF0DA499784F27B9A65D0BA81379BFA6C6BCA26D9"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\source-diff-v2.patch",
+    "bytes": 30214,
+    "sha256": "27A20389B40DE7562B280DB3006815DD27F73459FF0D769D47364A0E004749CF"
+  },
+  "original_authority": {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__util.js.txt",
+      "bytes": 28980,
+      "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429"
+    },
+    "lines": [
+      906,
+      937
+    ],
+    "byte_offset": 25623,
+    "fragment": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\authority\\WeakReference-util-906-937.js.txt",
+      "bytes": 607,
+      "sha256": "FB95642D75B138FE4F7B6F38B9E6387F9CAB4AFD7122A753419B1E88104D92CA"
+    },
+    "complete_class": true
+  },
+  "resolved_v1_defect": {
+    "issue": "Engine.native_weak_ref_constructor and native_weak_ref_deref are optional ?JSValue fields. The preserved v1 passed them directly as JSValue roots.",
+    "resolution": "Selected v2 requires both actual captures with explicit orelse errors before any new class allocation, then uses the unwrapped values in constructor and method captures. There is no substitute implementation or fallback.",
+    "edits": 3,
+    "all_intermediate_hashes_checked": true,
+    "forward_and_reverse_raw_bytes_exact": true,
+    "only_changed_function": "createBody",
+    "other_source_bytes_unchanged": true,
+    "tests_and_build_unchanged": true,
+    "entry_deltas": "Only selected owner pin, its direct-import pin, selected patch pin, timestamp and two predecessor/correction provenance fields changed."
+  },
+  "reviewed_source": {
+    "production": "Full production class including constructBody, receiver/brand handling, increase/decrease/read, finalizer/mark and selected v2 createBody.",
+    "tests": "All 22 complete declared actual-VM controls and native finalizer/memory fixtures.",
+    "support": "Original util.js 906-937; current Engine optional fields, pristine captures, eval/finishJob; actual QuickJS constructor/deref, ClearKeptObjects guard and weak reset before class finalizer; callable/error-class owners; source scopes and owned boundary."
+  },
+  "semantic_findings": [
+    "Per-class unique VM class ID implements the original private brand without a public symbol or prototype test. Proxy/revoked/forged receivers are rejected without traps. New-target receiver/prototype allocation precedes genuine WeakRef construction.",
+    "Each charged native instance owns the actual captured WeakRef wrapper and optional strong root. GC marking traces those two JS roots but does not strongly mark the weak target itself. The finalizer clears opaque and fields before freeing roots and returning the aggregate charge.",
+    "The counter uses f64 Number arithmetic, preserves negative counts and binary64 rounding, and strengthens only at exact transition to one. Exact zero clears the strong slot before retirement. Return reads the current counter after potentially reentrant retirement.",
+    "Every get invokes the genuine captured WeakRef.deref even when a strong root exists, preserving actual kept-object behavior. Constructor/deref VM rules, current-stack guard and explicit finishJob boundaries support the controls without a fake weak store.",
+    "Pending entry/callback errors win before mutation. Receiver and newly constructed instance remain rooted through calls and retirement. Required intrinsic unwrapping precedes allocation; no default or optional fallback is invented.",
+    "The retirement control explicitly performs collection before observing its finalizer probe, so it does not assume immediate DECREF. The charged allocation control is consistent with the 32 inline Scope roots and reaches the intended Instance allocation."
+  ],
+  "static_verification": {
+    "normalized_unique_packet_pins_rehashed": 27,
+    "pin_census": "Recursive selected entry, required-capture finite transform and build inverse; selected entry itself was separately checked against FCD81F2A. This is not a full transitive repository census.",
+    "three_v2_hunks_forward_reverse_and_intermediate_pins": true,
+    "complete_three_target_patch_reconstructed_byte_exact": true,
+    "original_complete_class_fragment_at_declared_offset": true,
+    "build_insertion_bytes": 987,
+    "build_raw_inverse_and_unique_anchor_exact": true,
+    "install_only_target": "build-native-node-weak-reference",
+    "build_adds_no_execution_step": true,
+    "direct_imports_reconciled_and_pinned": 6,
+    "declared_test_names_exact_and_unique": 22,
+    "actual_metadata_count": null,
+    "runtime_result": null
+  },
+  "integration_limits": [
+    "Canonical internal/util must retain the genuine class once and supply it to real original consumers; this packet does not publish internal/util or diagnostics_channel.",
+    "Main and all sealed v1/source donors remained unchanged. Compose only the 987-byte additive build insertion with other accepted targets.",
+    "Source acceptance does not replace Root intake, fresh Zig compilation, metadata or runtime validation. No Engine, QuickJS ABI or native-library changes are introduced here."
+  ],
+  "not_executed": [
+    "candidate source bodies",
+    "Zig parser/formatter/compiler/AST",
+    "native metadata or tests",
+    "Node/V8 captures",
+    "source generators",
+    "Main mutation"
+  ],
+  "concrete_blockers": []
+}

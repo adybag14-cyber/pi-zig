@@ -1,0 +1,380 @@
+{
+  "schema": 1,
+  "created_at_utc": "2026-10-24T19:11:43.688100+00:00",
+  "scope": "Complete private original internal/util WeakReference class, source only; constructor and incRef/decRef/get plus actual-VM controls.",
+  "observed_main_head": "7947d3a0825a356dccc6aca7a327c92d7248b47f",
+  "observed_main_porcelain_empty": true,
+  "future_integration_head": null,
+  "changes": [
+    {
+      "intended_relative_path": "src/extensions/native_node_weak_reference.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_weak_reference.zig",
+        "bytes": 8226,
+        "sha256": "881B6895313E71DBF77769E1ECCDFB3CA12567835BFFC163AE27D267E4976BDF"
+      },
+      "operation": "add complete private source"
+    },
+    {
+      "intended_relative_path": "src/native_node_weak_reference_test.zig",
+      "base": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\projected\\src\\native_node_weak_reference_test.zig",
+        "bytes": 19638,
+        "sha256": "33044D42A9A346092452603474580D012AE9E5C4754A56F200574E7DA5E806F3"
+      },
+      "operation": "add complete private source"
+    },
+    {
+      "intended_relative_path": "build.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 536372,
+        "sha256": "0268F0B48FC63AC8750C580AA1941C75C5AD98A42E9FBF8CAB786296E9EADD93"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 537359,
+        "sha256": "1479AA867C6367D66D70E712BA266D3E731073EA5426332A151416192D5C9167"
+      },
+      "operation": "single additive build hunk"
+    }
+  ],
+  "build_exact_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1030,
+    "sha256": "D93B8ECE0BE3E54B644F2551EA62BFF0210981A2D743A74E8CD0539B8BFF3B3E"
+  },
+  "source_diff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\source-diff-v2.patch",
+    "bytes": 30214,
+    "sha256": "27A20389B40DE7562B280DB3006815DD27F73459FF0D769D47364A0E004749CF"
+  },
+  "retained_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__util.js.txt",
+      "bytes": 28980,
+      "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\primary-authority.json",
+      "bytes": 3386,
+      "sha256": "1C852A94D054E0705D4D098E66749A83FB7AFD01B462F9933A2EC11FFEEC2CC4"
+    }
+  ],
+  "original_body": {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__util.js.txt",
+      "bytes": 28980,
+      "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429"
+    },
+    "lines": [
+      906,
+      937
+    ],
+    "byte_offset": 25623,
+    "fragment": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\authority\\WeakReference-util-906-937.js.txt",
+      "bytes": 607,
+      "sha256": "FB95642D75B138FE4F7B6F38B9E6387F9CAB4AFD7122A753419B1E88104D92CA"
+    },
+    "complete_class": true
+  },
+  "authority_map": [
+    {
+      "original_lines": [
+        906,
+        913
+      ],
+      "selected": "Instance + constructBody",
+      "contract": "Unique class brand; weak=null/strong=null/refCount=0 initialization; real WeakRef construction with actual new.target object allocation before constructor body."
+    },
+    {
+      "original_lines": [
+        915,
+        924
+      ],
+      "selected": "increaseBody",
+      "contract": "Increment Number first; only exact transition to one derefs and retains a nonundefined referent; private assignment before old root retirement; read current counter at return."
+    },
+    {
+      "original_lines": [
+        926,
+        932
+      ],
+      "selected": "decreaseBody",
+      "contract": "Decrement Number, including negative values; clear strong only at exact zero before old root retirement; read current counter at return."
+    },
+    {
+      "original_lines": [
+        934,
+        936
+      ],
+      "selected": "readBody",
+      "contract": "Every get calls genuine captured WeakRef.deref with the actual private wrapper, preserving kept objects and collected undefined."
+    }
+  ],
+  "private_api": {
+    "create": "create(engine) -> owned construct-only WeakReference constructor. Each call represents a fresh class evaluation and creates a unique VM brand.",
+    "future_supplier": "Canonical internal/util must retain the actual class once and pass it to its original consumers; no cache or namespace is introduced in this packet.",
+    "instance_lifetime": "Aggregate-charged Instance allocation. JS class finalizer releases actual weak-wrapper and optional strong values; GC mark visits both JS roots without marking WeakRef referent.",
+    "counter": "f64 implements the original Number arithmetic, including negative transitions and binary64 rounding. No unsigned/saturating counter or underflow gate.",
+    "brand": "Per-class VM JSClassID is retained only by charged native constructor/method captures; exact receiver class/Engine required; no public symbols, keys, prototype-based brand or Proxy forwarding.",
+    "completion": "Current Scope/owned Boundary preserves actual pending/fatal through calls and retirement. New target receiver rooted across construction; method receiver retained through retirement/reentry."
+  },
+  "current_prerequisites": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+      "bytes": 9934,
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+      "bytes": 12781,
+      "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_error_class.zig",
+      "bytes": 7317,
+      "sha256": "0192489A134A0D6B287EB1494654FC25391E1989D80A239C9AC37201392E0EE5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_ai_provider_values.zig",
+      "bytes": 2689,
+      "sha256": "2D64F3F5E408790DC0BD374E13F1A9C69EB21E1D62944DAE9C913B87F13629EB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_js_values.zig",
+      "bytes": 9122,
+      "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+      "bytes": 9162,
+      "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2406379,
+      "sha256": "B23C5114FD01344B5BB1424A4DC2B702506CFFDA0280329044C0763B27A7F754"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 116648,
+      "sha256": "532BFBF4CE23AAA4B1F49D576F1A48D997B234142DFE1A587A2FFE5A340971AA"
+    }
+  ],
+  "prerequisite_authority": [
+    {
+      "source": "src/extensions/engine.zig",
+      "lines": [
+        310,
+        324
+      ],
+      "role": "Captures actual WeakRef constructor and deref before extension input; fields remain unchanged."
+    },
+    {
+      "source": "vendor/quickjs/quickjs.c",
+      "lines": [
+        69131,
+        69178
+      ],
+      "role": "Actual constructor/deref maintained kept-object semantics and true weak targets."
+    },
+    {
+      "source": "vendor/quickjs/quickjs.c",
+      "lines": [
+        8317,
+        8353
+      ],
+      "role": "Original fields and weak references reset before class finalizer; used by retirement control without assuming immediate DECREF."
+    },
+    {
+      "source": "vendor/quickjs/quickjs.c",
+      "lines": [
+        46793,
+        46843
+      ],
+      "role": "Custom ordinary class IDs retain Object toString behavior unless guest supplies Symbol.toStringTag."
+    }
+  ],
+  "control_target": {
+    "install_only_target": "build-native-node-weak-reference",
+    "root": "src/native_node_weak_reference_test.zig",
+    "filter": "native WeakReference",
+    "windows_executable": "native-node-weak-reference.exe",
+    "declared_tests": [
+      "native WeakReference original class metadata and private instance surface",
+      "native WeakReference increments and decrements original Number counter",
+      "native WeakReference negative refcounts are preserved rather than clamped",
+      "native WeakReference distinct instances retain independent state and identity",
+      "native WeakReference rejects invalid targets through the genuine WeakRef constructor",
+      "native WeakReference preserves unique symbol and callable targets",
+      "native WeakReference captures pristine WeakRef even after public replacement",
+      "native WeakReference requires new and every prototype method is nonconstructible",
+      "native WeakReference brands reject forged primitive and proxy receivers without traps",
+      "native WeakReference separate class evaluations use separate private brands",
+      "native WeakReference ignores method arguments and frozen instances keep private slots",
+      "native WeakReference derived new target prototype and brand are genuine",
+      "native WeakReference new target prototype throw precedes invalid weak target",
+      "native WeakReference constructor and get keep referent through nested current job collection",
+      "native WeakReference get adds a real kept root without permanently strengthening it",
+      "native WeakReference strong root is traced until exact zero transition",
+      "native WeakReference collected target stays absent through later positive transitions",
+      "native WeakReference pending factory entry wins before any allocation",
+      "native WeakReference pending callback entry prevents counter mutation",
+      "native WeakReference failed charged instance allocation preserves fatal and reusable class",
+      "native WeakReference strong root retirement publishes zero before actual finalizer reentry",
+      "native WeakReference charged instance and strong referent cycle are reclaimed by real GC"
+    ],
+    "declared_count": 22,
+    "actual_metadata_count": null,
+    "runtime_results": null
+  },
+  "fixture_provenance": {
+    "actual_engine": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    "retained_weakref_controls": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_weakref_test.zig",
+      "bytes": 6398,
+      "sha256": "4CD49BA87DFFC893EA5BE1D488F94505F608DE24EA8CAACD15EDDE728BB382CA"
+    },
+    "retained_pending_and_memory_controls": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_module_execution_state_test.zig",
+      "bytes": 10245,
+      "sha256": "0648B77FCA2C7AEC5E0547EEF7E24567252B5716A256C9F73F06EF27DD8863D5"
+    },
+    "native_retirement_pattern": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_async_arguments_test.zig",
+      "bytes": 42748,
+      "sha256": "E353EE7C2F94D3969AE11951EFCBA659F637D0EFB8DC0DD73B669B7C5F221273"
+    },
+    "helpers_copied_verbatim": false,
+    "new_control_scope": "Actual VM constructor/method calls, host job boundary/GC, FailingAllocator, charged memory query and exact native target finalizer probe. No fake weak store or test-selected production behavior."
+  },
+  "direct_import_resolutions": [
+    {
+      "importer": "src/extensions/native_node_weak_reference.zig",
+      "literal": "native_node_argument_values.zig",
+      "intended_relative_path": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_weak_reference.zig",
+      "literal": "native_node_module_callable.zig",
+      "intended_relative_path": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_weak_reference.zig",
+      "literal": "native_node_error_class.zig",
+      "intended_relative_path": "src/extensions/native_node_error_class.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_error_class.zig",
+        "bytes": 7317,
+        "sha256": "0192489A134A0D6B287EB1494654FC25391E1989D80A239C9AC37201392E0EE5"
+      }
+    },
+    {
+      "importer": "src/native_node_weak_reference_test.zig",
+      "literal": "extensions/engine.zig",
+      "intended_relative_path": "src/extensions/engine.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      }
+    },
+    {
+      "importer": "src/native_node_weak_reference_test.zig",
+      "literal": "extensions/native_node_weak_reference.zig",
+      "intended_relative_path": "src/extensions/native_node_weak_reference.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_weak_reference.zig",
+        "bytes": 8226,
+        "sha256": "881B6895313E71DBF77769E1ECCDFB3CA12567835BFFC163AE27D267E4976BDF"
+      }
+    },
+    {
+      "importer": "src/native_node_weak_reference_test.zig",
+      "literal": "extensions/native_js_values.zig",
+      "intended_relative_path": "src/extensions/native_js_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_js_values.zig",
+        "bytes": 9122,
+        "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+      }
+    }
+  ],
+  "static_checks": {
+    "duplicate_test_names": false,
+    "direct_imports_resolved": 6,
+    "production_import_count": 3,
+    "source_declaration_binding_name_collisions": []
+  },
+  "integration_notes": [
+    "Compose the exact additive build-insertion bytes onto the accepted current build; do not replace unrelated future build additions.",
+    "No Engine, QuickJS, ABI, clone-intrinsic, canonical Module, diagnostic channel, trace or debug policy source change.",
+    "All existing packets and current Main preserved byte-for-byte. Root owns future intake, compiler metadata, native builds and runtime qualification."
+  ],
+  "not_executed": [
+    "Zig parser/compiler/ast-check",
+    "native test or metadata process",
+    "Node/V8 capture",
+    "candidate source generator",
+    "Main mutation or commit"
+  ],
+  "remaining_work": [
+    "Independent source peer; future Root-reviewed intake and fresh native qualification.",
+    "Genuine WeakRefMap/refcount canonical diagnostics owner and canonical channel/tracing channel assembly remain separate follow-ons.",
+    "Real triggerUncaughtException/process/trace/hrtime/debuglog suppliers still required; no disabled defaults or private fresh-channel substitutes."
+  ],
+  "claims": {
+    "source_only": true,
+    "main_modified": false,
+    "sealed_predecessors_modified": false,
+    "runtime_qualified": false,
+    "canonical_internal_util_published": false,
+    "canonical_diagnostics_channel_published": false,
+    "wrapModuleLoad_complete": false,
+    "public_Module_published": false,
+    "application_complete": false
+  },
+  "preserved_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\source-intake.json",
+    "bytes": 17332,
+    "sha256": "CCBCCF438A92FBE4F3EA22AA6857E8260104E70225A795ED726E77D14A170076"
+  },
+  "required_capture_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-reference-sourceonly-20261024\\weak-reference-required-captures-v2-finite-transform.json",
+    "bytes": 2563,
+    "sha256": "E8857F5156634BE54C98FDECF0DA499784F27B9A65D0BA81379BFA6C6BCA26D9"
+  }
+}

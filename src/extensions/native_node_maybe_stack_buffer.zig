@@ -42,6 +42,43 @@ pub fn Buffer(comptime T: type, comptime stack_count: usize) type {
             }
             self.length = count;
         }
+        pub fn capacity(self: *const Self) usize {
+            return if (self.heap) |items| items.len else stack_count;
+        }
+        pub fn capacityData(self: *Self) []T {
+            return if (self.heap) |items| items else self.stack[0..];
+        }
+        /// Original util-inl.h AllocateSufficientStorage, including preserving
+        /// the current logical prefix when storage first leaves the stack.
+        /// A successful smaller request changes length without shrinking.
+        pub fn allocateSufficientStorage(self: *Self, count: usize) !void {
+            if (count > self.capacity()) {
+                const engine = try self.environment.requireEngine();
+                _ = std.math.mul(usize, @sizeOf(T), count) catch
+                    check.assertion(engine, .{
+                        .file_line = "src/util-inl.h:245",
+                        .message = "(b) == (ret / a)",
+                        .function = "node::MultiplyWithOverflowCheck",
+                    });
+                const allocator = self.environment.allocator();
+                const was_allocated = self.heap != null;
+                const replacement = (if (self.heap) |items|
+                    allocator.realloc(items, count) else allocator.alloc(T, count)) catch blk: {
+                    c.JS_RunGC(engine.runtime);
+                    break :blk (if (self.heap) |items|
+                        allocator.realloc(items, count) else allocator.alloc(T, count)) catch
+                        check.assertion(engine, .{
+                            .file_line = "src/util-inl.h:292",
+                            .message = "!(n > 0) || (ret != nullptr)",
+                            .function = "node::Realloc",
+                        });
+                };
+                if (!was_allocated and self.length != 0)
+                    @memcpy(replacement[0..self.length], self.stack[0..self.length]);
+                self.heap = replacement;
+            }
+            self.length = count;
+        }
         pub fn data(self: *Self) []T {
             return if (self.heap) |items| items else self.stack[0..self.length];
         }

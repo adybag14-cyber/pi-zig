@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_clone_intrinsics.zig",
+    "bytes": 3671,
+    "sha256": "92BBBEB85369F78E64D4D37A1FB1A34E373F724933E8967F76C1E0901D864DAD"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+    "bytes": 5808,
+    "sha256": "5793E31979FB384F362E6E32FBD8A81C72B273D16E3BAC07C775C41C7D9962A2"
+  },
+  "edits": [
+    {
+      "offset": 911,
+      "before": "\"Map\", \"Set\", \"DataView\", \"String\", \"Function\"",
+      "after": "\"Map\", \"Set\", \"DataView\", \"String\", \"Function\", \"FinalizationRegistry\", \"Array\", \"Object\", \"Symbol\"",
+      "input_sha256": "92BBBEB85369F78E64D4D37A1FB1A34E373F724933E8967F76C1E0901D864DAD",
+      "output_sha256": "9FC7ED8D07CFCD6C42DED4AF7879E7B5E6EAAE30FE70ED20F0B1C30AD3F349E2"
+    },
+    {
+      "offset": 2660,
+      "before": "            try put(context, result, name ++ \".next\", try checked(c.JS_GetPropertyStr(context, iterator, \"next\")));\n",
+      "after": "            try put(context, result, name ++ \".next\", try checked(c.JS_GetPropertyStr(context, iterator, \"next\")));\n            if (is_map) {\n                try put(context, result, \"Map.get\", try checked(c.JS_GetPropertyStr(context, prototype, \"get\")));\n                try put(context, result, \"Map.delete\", try checked(c.JS_GetPropertyStr(context, prototype, \"delete\")));\n                const atom = c.JS_NewAtom(context, \"size\");\n                defer c.JS_FreeAtom(context, atom);\n                var descriptor: c.JSPropertyDescriptor = undefined;\n                if (c.JS_GetOwnProperty(context, &descriptor, prototype, atom) <= 0) return error.OutOfMemory;\n                defer c.JS_FreeValue(context, descriptor.value);\n                defer c.JS_FreeValue(context, descriptor.getter);\n                defer c.JS_FreeValue(context, descriptor.setter);\n                try put(context, result, \"Map.size\", c.JS_DupValue(context, descriptor.getter));\n            }\n",
+      "input_sha256": "9FC7ED8D07CFCD6C42DED4AF7879E7B5E6EAAE30FE70ED20F0B1C30AD3F349E2",
+      "output_sha256": "78C815EEF4B15883F589347A3C2A3317C729A61E33B57176F5293C81B28E19CB"
+    },
+    {
+      "offset": 3645,
+      "before": "        if (comptime @import(\"std\").mem.eql(u8, name, \"DataView\")) {\n",
+      "after": "        if (comptime @import(\"std\").mem.eql(u8, name, \"Array\") or @import(\"std\").mem.eql(u8, name, \"FinalizationRegistry\")) {\n            const prototype = try checked(c.JS_GetPropertyStr(context, constructor, \"prototype\"));\n            defer c.JS_FreeValue(context, prototype);\n            const method = if (comptime @import(\"std\").mem.eql(u8, name, \"Array\")) \"forEach\" else \"register\";\n            try put(context, result, name ++ \".\" ++ method, try checked(c.JS_GetPropertyStr(context, prototype, method)));\n        }\n        if (comptime @import(\"std\").mem.eql(u8, name, \"Object\")) {\n            try put(context, result, \"Object.freeze\", try checked(c.JS_GetPropertyStr(context, constructor, \"freeze\")));\n        }\n        if (comptime @import(\"std\").mem.eql(u8, name, \"Symbol\")) {\n            try put(context, result, \"Symbol.iterator\", try checked(c.JS_GetPropertyStr(context, constructor, \"iterator\")));\n        }\n        if (comptime @import(\"std\").mem.eql(u8, name, \"DataView\")) {\n",
+      "input_sha256": "78C815EEF4B15883F589347A3C2A3317C729A61E33B57176F5293C81B28E19CB",
+      "output_sha256": "DA55C714A41DB556AEE18B3934B9B973AE344561FAD4D1F711CB04FF80852925"
+    },
+    {
+      "offset": 5484,
+      "before": "    return result;\n}\n",
+      "after": "    // Node util's actual private symbol is shared by every cache instance in\n    // this Engine, including independently created SourceMapCacheMap classes.\n    try put(context, result, \"Node.source_map_data_private_symbol\",\n        try checked(c.JS_NewPrivateSymbol(context, \"node:source_map_data\")));\n    return result;\n}\n",
+      "input_sha256": "DA55C714A41DB556AEE18B3934B9B973AE344561FAD4D1F711CB04FF80852925",
+      "output_sha256": "5793E31979FB384F362E6E32FBD8A81C72B273D16E3BAC07C775C41C7D9962A2"
+    }
+  ],
+  "complete_raw_forward_and_inverse": true,
+  "existing_bootstrap_owner": "Engine.init already calls native_clone_intrinsics.create before any guest input; Engine.zig and teardown are unchanged",
+  "captured_actual_intrinsics": [
+    "Map.get",
+    "Map.delete",
+    "Map.size getter",
+    "FinalizationRegistry constructor/register",
+    "Array.prototype.forEach",
+    "Object.freeze",
+    "Symbol.iterator"
+  ],
+  "shared_actual_private_key": "One actual JS_NewPrivateSymbol value per Engine for source_map_data_private_symbol",
+  "existing_WeakRef_constructor_and_deref_reused": true,
+  "native_execution": false,
+  "formatter_or_parser_execution": false
+}

@@ -1858,6 +1858,19 @@ pub fn build(b: *std.Build) void {
         module_execution_state_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-node-module-execution-state", "Install actual Module helper execution-state controls without execution").dependOn(&b.addInstallArtifact(module_execution_state_tests, .{}).step);
+    const weak_reference_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_weak_reference_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native WeakReference"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, weak_reference_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, weak_reference_tests.root_module, typescript_parser);
+    linkSqlite(weak_reference_tests.root_module, sqlite_lib_dir, sqlite_library);
+    weak_reference_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        weak_reference_tests.root_module.linkSystemLibrary("advapi32", .{});
+        weak_reference_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-weak-reference", "Install actual internal util WeakReference controls without execution").dependOn(&b.addInstallArtifact(weak_reference_tests, .{}).step);
     const public_rpc_jsonl_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_public_rpc_jsonl_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"Public RPC JSONL actual"}, .use_llvm = use_llvm,
@@ -4671,6 +4684,11 @@ pub fn build(b: *std.Build) void {
     linkSqlite(module_compile_info_tests.root_module, sqlite_lib_dir, sqlite_library);
     module_compile_info_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-node-module-compile-info", "Install actual compiler-info completion ownership controls").dependOn(&b.addInstallArtifact(module_compile_info_tests, .{}).step);
+    const source_map_cache_map_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_source_map_cache_map_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native source map cache"}, .use_llvm = use_llvm });
+    linkQuickJs(b, source_map_cache_map_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(source_map_cache_map_tests.root_module, sqlite_lib_dir, sqlite_library);
+    source_map_cache_map_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-node-source-map-cache-map", "Install actual source-map cache weak ownership and order controls").dependOn(&b.addInstallArtifact(source_map_cache_map_tests, .{}).step);
     const cjs_raw_provider_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_commonjs_body_compiler_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native CJS raw provider"}, .use_llvm = use_llvm });
     linkQuickJs(b, cjs_raw_provider_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(cjs_raw_provider_tests.root_module, sqlite_lib_dir, sqlite_library);
@@ -5460,6 +5478,38 @@ pub fn build(b: *std.Build) void {
             native_module_commonjs_read.root_module.linkSystemLibrary("userenv", .{});
         }
         b.step("build-native-node-module-commonjs-read", "Install eight declared private native CommonJS package-read controls without execution").dependOn(&b.addInstallArtifact(native_module_commonjs_read, .{ .dest_sub_path = b.fmt("native-node-module-commonjs-read{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        // Private original CheckOpenPermissions with the actual native policy.
+        // Install only; compiler, metadata and runtime remain Root-owned.
+        const native_fs_open_permissions = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_fs_open_permissions_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native fs open permissions"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, native_fs_open_permissions.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, native_fs_open_permissions.root_module, typescript_parser);
+        linkSqlite(native_fs_open_permissions.root_module, sqlite_lib_dir, sqlite_library);
+        native_fs_open_permissions.root_module.addImport("catalog_tool", catalog_tool);
+        native_fs_open_permissions.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        if (target.result.os.tag == .windows) {
+            native_fs_open_permissions.root_module.linkSystemLibrary("advapi32", .{});
+            native_fs_open_permissions.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-fs-open-permissions", "Install sixteen declared native fs open permission controls without execution").dependOn(&b.addInstallArtifact(native_fs_open_permissions, .{ .dest_sub_path = b.fmt("native-node-fs-open-permissions{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        // Original BufferValue and OpenFileHandle path/permission pre-request work.
+        // Install only; native compilation, metadata and runtime remain Root-owned.
+        const native_buffer_value_open_path = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_buffer_value_open_path_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native BufferValue"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, native_buffer_value_open_path.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, native_buffer_value_open_path.root_module, typescript_parser);
+        linkSqlite(native_buffer_value_open_path.root_module, sqlite_lib_dir, sqlite_library);
+        native_buffer_value_open_path.root_module.addImport("catalog_tool", catalog_tool);
+        native_buffer_value_open_path.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        if (target.result.os.tag == .windows) {
+            native_buffer_value_open_path.root_module.linkSystemLibrary("advapi32", .{});
+            native_buffer_value_open_path.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-buffer-value-open-path", "Install twenty-eight declared native BufferValue and pre-request path controls without execution").dependOn(&b.addInstallArtifact(native_buffer_value_open_path, .{ .dest_sub_path = b.fmt("native-node-buffer-value-open-path{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
         const native_environment_map_tests = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_environment_map_test.zig"), .target = target, .optimize = optimize }),
             .filters = &.{"native environment map"}, .use_llvm = use_llvm,
