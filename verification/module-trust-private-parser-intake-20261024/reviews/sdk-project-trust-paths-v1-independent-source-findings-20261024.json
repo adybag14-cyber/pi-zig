@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "status": "finite_checks_complete_one_production_assembly_identity_blocker",
+  "reviewer": "catalog_review",
+  "observed_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\source-intake.json",
+    "bytes": 38328,
+    "sha256": "A293F831AB7C1EEDC3CE3A15093719013129AA6EF81E7C38310D30323A60333B"
+  },
+  "checked_pin_versions": 57,
+  "finite_checks": {
+    "all_source_and_authority_pins_verified": true,
+    "complete_four_target_patch_reconstructed": true,
+    "two_owner_insertions_forward_intermediate_hashes_and_full_inverse": true,
+    "build_1054_byte_insertion_forward_inverse": true,
+    "actual_build_artifact_stem": "test",
+    "direct_import_occurrences": 43,
+    "standard_package_imports": 2,
+    "all22_control_declarations_read": true,
+    "Main_clean_and_unchanged": true
+  },
+  "manual_source_scope": [
+    "Complete original trust-manager.ts read; selected path/resource/options spans30\u201397 and186\u2013208 mapped to the complete327-line native helper.",
+    "Exact original eight mutable resource names; source-normalization order; repeated normalizeCwd for parent; fresh option/update rows and own-data definitions; two live includeSessionOnly Gets and ordinary push calls.",
+    "Live HOME before current-directory normalization, actual homedir fallback on falsy HOME, direct cwd configuration only, live some/real arrow captures, ancestor skills exclusion at canonical home and root termination.",
+    "Actual helper cache root ownership, cold reentry guard, borrowed input rooting, escaped callback captures, frame assignment/retirement and cache publication ordering reviewed.",
+    "Complete22 controls read: real native modules/temp disk, module-capture timing, resource/order mutations, call shapes, exception identity, reentry, retired application rejection and allocation failure. No test execution."
+  ],
+  "identity_provider_sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_runtime_imports.zig",
+      "bytes": 4593,
+      "sha256": "B9E44DAF0B32BF49E0C7CD454D377005197245B83970F0D256A6C504DDDDB0E4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_filesystem_namespaces.zig",
+      "bytes": 9835,
+      "sha256": "B0EACD9198CECDB954C11D1EE6A7253991642B3BE44C18B797251D48D1B943B6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_configuration_production.zig",
+      "bytes": 16760,
+      "sha256": "64EEC1229C9CE7C4E14CB7687F70B28975B5D8D774B9B0C4E5B9C6A43A061B2A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_path_utilities_namespace.zig",
+      "bytes": 12112,
+      "sha256": "7C0AF64A22183B5919169A5C4F3EF150CD4FB03B25555A001BA71B9153D6309E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+      "bytes": 14363,
+      "sha256": "AD2C8AFEBA8DA041AB6470EA29C5C018EDE67E2C85F14511138B6F3AD624425F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_guest_operation.zig",
+      "bytes": 7009,
+      "sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "cold_runtime_provider_substitution",
+      "location": "projectTrustPathsBody in projected/src/extensions/native_sdk_application_owner.zig",
+      "finding": "A genuine live application owner retains the actual publicly registered runtime-imports-native-zig carrier, but its platform/configuration fields and nested provider fields are ordinary mutable properties. The new entry reads these values without strict identity validation against already retained actual module owners. A guest replacement runtime.platform can supply foreign shape-compatible filesystem/path/pathUtilities objects on the first private helper creation.",
+      "required_scope": "Authenticate actual namespace identity at private production assembly using existing per-Engine owners, with expected values retained before guest-capable Gets. Preserve original one-time capture of named imported functions and subsequent ordinary member behavior; introduce no trust policy or user-facing member whitelist.",
+      "known_existing_identity_keys": [
+        "pi-native:actual-sdk-filesystem-platform",
+        "node:fs",
+        "node:path",
+        "pi-private:actual-sdk-path-utilities",
+        "pi-native:sdk-configuration-native-zig"
+      ],
+      "status": "author_and_Root_agreed_immutable_v2_pending"
+    }
+  ],
+  "native_execution": false,
+  "source_candidate_execution": false,
+  "accepted_for_intake": false,
+  "actual_metadata_count": null
+}

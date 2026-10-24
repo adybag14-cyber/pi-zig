@@ -122,7 +122,15 @@ fn acquire(scope: *Scope, owner: c.JSValue, file: c.JSValue, options: c.JSValue,
     const absolute = try checkedCall(scope, try checkedGet(scope, path_module, "resolve"), c.pi_js_undefined(), &.{file});
     const raw = try checkedString(scope, absolute);
     defer scope.engine.gpa.free(raw);
-    const lock_path = try std.fmt.allocPrint(scope.engine.gpa, "{s}.lock", .{raw});
+    // proper-lockfile 4.1.2 getLockFile: the selected realpath:false
+    // consumers supply a String path. Preserve a supplied lockfilePath exactly
+    // (including a relative spelling); only a falsy option selects file.lock.
+    // The owned Lease.path below feeds all physical operations and retirement.
+    const explicit_path = try checkedOptional(scope, options, "lockfilePath");
+    const lock_path = if (scope.truthy(explicit_path))
+        try checkedString(scope, explicit_path)
+    else
+        try std.fmt.allocPrint(scope.engine.gpa, "{s}.lock", .{raw});
     defer scope.engine.gpa.free(lock_path);
     const stale = @max(try number(scope, options, "stale", 10000), 2000);
     const io = scope.engine.native_io orelse return error.NativeAuthFileIoUnavailable;

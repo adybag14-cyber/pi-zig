@@ -1,0 +1,17 @@
+    // Actual formatWithOptions plus complete shared validateObject controls.
+    // Install only; compilation/query/runtime require separate Root authority.
+    const node_format_with_options = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_format_with_options_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{ "native format options", "native validateObject" },
+    });
+    linkQuickJs(b, node_format_with_options.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_format_with_options.root_module, typescript_parser);
+    linkSqlite(node_format_with_options.root_module, sqlite_lib_dir, sqlite_library);
+    node_format_with_options.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_format_with_options.root_module.linkSystemLibrary("advapi32", .{});
+        node_format_with_options.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-format-with-options", "Install twenty-four declared format options and validator controls without running").dependOn(&b.addInstallArtifact(node_format_with_options, .{ .dest_sub_path = b.fmt("native-node-format-with-options{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "hunks": [
+    {
+      "target": "src/extensions/native_node_package_json_cache.zig",
+      "offset": 751,
+      "before": "const parser = @cImport(@cInclude(\"native_node_package_json_parser.h\"));",
+      "after": "const parser = @import(\"native_node_package_json_api.zig\").c;",
+      "base_sha256": "5DF03B411D7BF2945999966B003A8E8B693625150CB962A1DA17EBC3B9ABBFC8",
+      "candidate_sha256": "6975261E58C1731027D4E8EE6FB470F3AA21AE517175AAF70E9BF25E35DEFEAF",
+      "full_raw_inverse": true,
+      "all_other_bytes_unchanged": true
+    },
+    {
+      "target": "src/extensions/native_node_package_json_values.zig",
+      "offset": 334,
+      "before": "const parser = @cImport(@cInclude(\"native_node_package_json_parser.h\"));",
+      "after": "const parser = @import(\"native_node_package_json_api.zig\").c;",
+      "base_sha256": "603FC5166E320E58833BAFCCE1312A92372C89BF4E7E58D4D810CC037B130C2A",
+      "candidate_sha256": "34FCA74C54C617A08ECC7704961D47CD0384F6BEE53152DDFA6E91F448D0FB8E",
+      "full_raw_inverse": true,
+      "all_other_bytes_unchanged": true
+    }
+  ],
+  "new_namespace": {
+    "destination_relative_path": "src/extensions/native_node_package_json_api.zig",
+    "operation": "add",
+    "baseline": null,
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-parser-identity-sourceonly-20261024\\projected\\src\\extensions\\native_node_package_json_api.zig",
+      "bytes": 231,
+      "sha256": "058ABE5FA35E451FFBC5F4A164FBA6351E87392DF40A7C1B9555EA08C220254D"
+    }
+  },
+  "existing_function_bodies_byte_exact": true
+}

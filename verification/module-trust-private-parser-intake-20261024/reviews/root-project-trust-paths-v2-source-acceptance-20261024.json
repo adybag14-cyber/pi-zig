@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T19:58:53.823643+00:00",
+  "status": "Root_accepted_for_source_intake_only",
+  "observed_main_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\source-intake-v2.json",
+    "bytes": 52208,
+    "sha256": "B47A4B98CF1A8E8987E0BBFA0C0CBA4DD0FAE734FC3D8E63F8862FC8409785D1"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\sdk-project-trust-paths-v2-independent-source-peer-20261024.json",
+    "bytes": 6472,
+    "sha256": "1ED98D767D25B3C015D57C54D5C42833B497830E3F0BBA7EADF48CCE77AA75AC"
+  },
+  "selected_sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_project_trust_paths.zig",
+      "bytes": 16748,
+      "sha256": "15F33D337B14FF9BDBFBD46A1C92644CB6D86E84A127C4C216B6F9D5A98C191F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\projected-v2\\src\\extensions\\native_sdk_application_owner.zig",
+      "bytes": 15154,
+      "sha256": "6EF2F47ACD53649507ADE2C6DEB0D5352D02B905AB5C1F93BF53CA9F4B92E3B3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\projected-v2\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+      "bytes": 17972,
+      "sha256": "35897A81D550D64E2BDEF66696F759A1AEF5BDA5B0D8EB863FE409C874F84B4C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\projected-v2\\src\\native_sdk_project_trust_paths_test.zig",
+      "bytes": 46762,
+      "sha256": "93F611E9EE6F52BC5B94A4348EDE6092118AED783B068660E560A13180DF31A0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 542179,
+      "sha256": "D53D4C35DF91DAB4E0187885EDDBA855913A46746E4638E8C9999BFECBCD6E5C"
+    }
+  ],
+  "Root_review": [
+    "Original trust-manager authority and complete helper were read; the helper remains 15F33D33.",
+    "Read both application delegation edits and both auth owner additions; replayed full intermediate hash and raw inverse checks.",
+    "Expected actual modules are rooted before any carrier Get; no Owner field access after that point. Runtime/provider identities are authenticated and ordinary member mutation remains valid before one-time capture.",
+    "Read all eight actual-owner control additions and genuine frontend fixture. Independent peer also read all original22 controls, original authorities, complete current owner and all75 pin versions.",
+    "All current source baselines still match clean frozen Main."
+  ],
+  "source_declared_controls": 30,
+  "original_controls_preserved": 22,
+  "artifact_stem": "test",
+  "remaining_scope": [
+    "ProjectTrustStore, actual file-lock path, project-trust event and resolution, and full runtimeFactory remain incomplete."
+  ],
+  "main_mutated": false,
+  "native_executed": false,
+  "runtime_qualified": false,
+  "product_qualified": false
+}

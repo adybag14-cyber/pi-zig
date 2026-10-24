@@ -1,0 +1,210 @@
+{
+  "schema": 1,
+  "authority": [
+    {
+      "role": "complete original formatter and option forwarding",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-inspect-entry-sourceonly-20261018\\authority\\inspect.js",
+        "bytes": 92944,
+        "sha256": "380AA09FAE68E3279D0FB2469A24D75931A8098C84354347BF7130A38852B597"
+      },
+      "ranges": [
+        [
+          188,
+          196
+        ],
+        [
+          2501,
+          2654
+        ]
+      ]
+    },
+    {
+      "role": "complete original validateObject flags default and ordering",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-fs-promises-mkdir-20261017\\authority\\node24-validators.js",
+        "bytes": 19090,
+        "sha256": "AD6BCC8FE41AFAD0DF0C0D92A5700F4F1797BFCFBD934F00EEA918694DF4539D"
+      },
+      "ranges": [
+        [
+          224,
+          272
+        ]
+      ]
+    },
+    {
+      "role": "existing actual hidden Node error class and hideStackFrames",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-commonjs-internal-builtin-require-sourceonly-20261018\\authority\\internal-errors.js",
+        "bytes": 69406,
+        "sha256": "FD278208FAE3A83B51A0B948540629ED4E5FD8C7860CB8E4775C6DBF25779750"
+      },
+      "ranges": [
+        [
+          403,
+          427
+        ],
+        [
+          464,
+          496
+        ],
+        [
+          531,
+          547
+        ]
+      ]
+    },
+    {
+      "role": "actual enabled debuglog consumer requiring this exact formatter entry",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+        "bytes": 12596,
+        "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+      },
+      "ranges": [
+        [
+          25,
+          44
+        ],
+        [
+          65,
+          80
+        ],
+        [
+          87,
+          137
+        ]
+      ]
+    },
+    {
+      "role": "retained license",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\LICENSE.txt",
+        "bytes": 156926,
+        "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+      },
+      "ranges": []
+    }
+  ],
+  "excerpts": [
+    {
+      "role": "complete original formatter and option forwarding",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-inspect-entry-sourceonly-20261018\\authority\\inspect.js",
+        "bytes": 92944,
+        "sha256": "380AA09FAE68E3279D0FB2469A24D75931A8098C84354347BF7130A38852B597"
+      },
+      "start_line": 188,
+      "end_line": 196,
+      "bytes": 217,
+      "sha256": "7584C548E6206EF9C312D835DBC2812E7DCD5D63547DAE90223E1A317764E7F9",
+      "text": "\nconst assert = require('internal/assert');\n\nconst { BuiltinModule } = require('internal/bootstrap/realm');\nconst {\n  validateObject,\n  validateString,\n  kValidateObjectAllowArray,\n} = require('internal/validators');\n"
+    },
+    {
+      "role": "complete original formatter and option forwarding",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-inspect-entry-sourceonly-20261018\\authority\\inspect.js",
+        "bytes": 92944,
+        "sha256": "380AA09FAE68E3279D0FB2469A24D75931A8098C84354347BF7130A38852B597"
+      },
+      "start_line": 2501,
+      "end_line": 2654,
+      "bytes": 4812,
+      "sha256": "5BF1E2ABFDEA5999CFD96AA8982CC0E54D7F59A7D2614713009CC5FC2CBFB8C2",
+      "text": "function format(...args) {\n  return formatWithOptionsInternal(undefined, args);\n}\n\nfunction formatWithOptions(inspectOptions, ...args) {\n  validateObject(inspectOptions, 'inspectOptions', kValidateObjectAllowArray);\n  return formatWithOptionsInternal(inspectOptions, args);\n}\n\nfunction formatNumberNoColor(number, options) {\n  return formatNumber(\n    stylizeNoColor,\n    number,\n    options?.numericSeparator ?? inspectDefaultOptions.numericSeparator,\n  );\n}\n\nfunction formatBigIntNoColor(bigint, options) {\n  return formatBigInt(\n    stylizeNoColor,\n    bigint,\n    options?.numericSeparator ?? inspectDefaultOptions.numericSeparator,\n  );\n}\n\nfunction formatWithOptionsInternal(inspectOptions, args) {\n  const first = args[0];\n  let a = 0;\n  let str = '';\n  let join = '';\n\n  if (typeof first === 'string') {\n    if (args.length === 1) {\n      return first;\n    }\n    let tempStr;\n    let lastPos = 0;\n\n    for (let i = 0; i < first.length - 1; i++) {\n      if (StringPrototypeCharCodeAt(first, i) === 37) { // '%'\n        const nextChar = StringPrototypeCharCodeAt(first, ++i);\n        if (a + 1 !== args.length) {\n          switch (nextChar) {\n            case 115: { // 's'\n              const tempArg = args[++a];\n              if (typeof tempArg === 'number') {\n                tempStr = formatNumberNoColor(tempArg, inspectOptions);\n              } else if (typeof tempArg === 'bigint') {\n                tempStr = formatBigIntNoColor(tempArg, inspectOptions);\n              } else if (typeof tempArg !== 'object' ||\n                         tempArg === null ||\n                         !hasBuiltInToString(tempArg)) {\n                tempStr = String(tempArg);\n              } else {\n                tempStr = inspect(tempArg, {\n                  ...inspectOptions,\n                  compact: 3,\n                  colors: false,\n                  depth: 0,\n                });\n              }\n              break;\n            }\n            case 106: // 'j'\n              tempStr = tryStringify(args[++a]);\n              break;\n            case 100: { // 'd'\n              const tempNum = args[++a];\n              if (typeof tempNum === 'bigint') {\n                tempStr = formatBigIntNoColor(tempNum, inspectOptions);\n              } else if (typeof tempNum === 'symbol') {\n                tempStr = 'NaN';\n              } else {\n                tempStr = formatNumberNoColor(Number(tempNum), inspectOptions);\n              }\n              break;\n            }\n            case 79: // 'O'\n              tempStr = inspect(args[++a], inspectOptions);\n              break;\n            case 111: // 'o'\n              tempStr = inspect(args[++a], {\n                ...inspectOptions,\n                showHidden: true,\n                showProxy: true,\n                depth: 4,\n              });\n              break;\n            case 105: { // 'i'\n              const tempInteger = args[++a];\n              if (typeof tempInteger === 'bigint') {\n                tempStr = formatBigIntNoColor(tempInteger, inspectOptions);\n              } else if (typeof tempInteger === 'symbol') {\n                tempStr = 'NaN';\n              } else {\n                tempStr = formatNumberNoColor(\n                  NumberParseInt(tempInteger), inspectOptions);\n              }\n              break;\n            }\n            case 102: { // 'f'\n              const tempFloat = args[++a];\n              if (typeof tempFloat === 'symbol') {\n                tempStr = 'NaN';\n              } else {\n                tempStr = formatNumberNoColor(\n                  NumberParseFloat(tempFloat), inspectOptions);\n              }\n              break;\n            }\n            case 99: // 'c'\n              a += 1;\n              tempStr = '';\n              break;\n            case 37: // '%'\n              str += StringPrototypeSlice(first, lastPos, i);\n              lastPos = i + 1;\n              continue;\n            default: // Any other character is not a correct placeholder\n              continue;\n          }\n          if (lastPos !== i - 1) {\n            str += StringPrototypeSlice(first, lastPos, i - 1);\n          }\n          str += tempStr;\n          lastPos = i + 1;\n        } else if (nextChar === 37) {\n          str += StringPrototypeSlice(first, lastPos, i);\n          lastPos = i + 1;\n        }\n      }\n    }\n    if (lastPos !== 0) {\n      a++;\n      join = ' ';\n      if (lastPos < first.length) {\n        str += StringPrototypeSlice(first, lastPos);\n      }\n    }\n  }\n\n  while (a < args.length) {\n    const value = args[a];\n    str += join;\n    str += typeof value !== 'string' ? inspect(value, inspectOptions) : value;\n    join = ' ';\n    a++;\n  }\n  return str;\n}\n\nfunction isZeroWidthCodePoint(code) {\n  return code <= 0x1F || // C0 control codes\n    (code >= 0x7F && code <= 0x9F) || // C1 control codes\n"
+    },
+    {
+      "role": "complete original validateObject flags default and ordering",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-fs-promises-mkdir-20261017\\authority\\node24-validators.js",
+        "bytes": 19090,
+        "sha256": "AD6BCC8FE41AFAD0DF0C0D92A5700F4F1797BFCFBD934F00EEA918694DF4539D"
+      },
+      "start_line": 224,
+      "end_line": 272,
+      "bytes": 1600,
+      "sha256": "2AA42EE49D5187E8599153447C7EF44F9D3CFAB7554CB64AC9F29653DB7D2ECD",
+      "text": "const kValidateObjectNone = 0;\nconst kValidateObjectAllowNullable = 1 << 0;\nconst kValidateObjectAllowArray = 1 << 1;\nconst kValidateObjectAllowFunction = 1 << 2;\nconst kValidateObjectAllowObjects = kValidateObjectAllowArray |\n  kValidateObjectAllowFunction;\nconst kValidateObjectAllowObjectsAndNull = kValidateObjectAllowNullable |\n  kValidateObjectAllowArray |\n  kValidateObjectAllowFunction;\n\n/**\n * @callback validateObject\n * @param {*} value\n * @param {string} name\n * @param {number} [options]\n */\n\n/** @type {validateObject} */\nconst validateObject = hideStackFrames(\n  (value, name, options = kValidateObjectNone) => {\n    if (options === kValidateObjectNone) {\n      if (value === null || ArrayIsArray(value)) {\n        throw new ERR_INVALID_ARG_TYPE(name, 'Object', value);\n      }\n\n      if (typeof value !== 'object') {\n        throw new ERR_INVALID_ARG_TYPE(name, 'Object', value);\n      }\n    } else {\n      const throwOnNullable = (kValidateObjectAllowNullable & options) === 0;\n\n      if (throwOnNullable && value === null) {\n        throw new ERR_INVALID_ARG_TYPE(name, 'Object', value);\n      }\n\n      const throwOnArray = (kValidateObjectAllowArray & options) === 0;\n\n      if (throwOnArray && ArrayIsArray(value)) {\n        throw new ERR_INVALID_ARG_TYPE(name, 'Object', value);\n      }\n\n      const throwOnFunction = (kValidateObjectAllowFunction & options) === 0;\n      const typeofValue = typeof value;\n\n      if (typeofValue !== 'object' && (throwOnFunction || typeofValue !== 'function')) {\n        throw new ERR_INVALID_ARG_TYPE(name, 'Object', value);\n      }\n    }\n  });\n"
+    },
+    {
+      "role": "existing actual hidden Node error class and hideStackFrames",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-commonjs-internal-builtin-require-sourceonly-20261018\\authority\\internal-errors.js",
+        "bytes": 69406,
+        "sha256": "FD278208FAE3A83B51A0B948540629ED4E5FD8C7860CB8E4775C6DBF25779750"
+      },
+      "start_line": 403,
+      "end_line": 427,
+      "bytes": 704,
+      "sha256": "A7A68547535CFBDC094F22C606A92B1FECA8AF44C17E536BAA61A81B7A71AE68",
+      "text": "// This is a special error type that is only used for the E function.\nclass HideStackFramesError extends Error {\n}\n\nfunction makeNodeErrorForHideStackFrame(Base, clazz) {\n  class HideStackFramesError extends Base {\n    constructor(...args) {\n      if (isErrorStackTraceLimitWritable()) {\n        const limit = Error.stackTraceLimit;\n        Error.stackTraceLimit = 0;\n        super(...args);\n        Error.stackTraceLimit = limit;\n      } else {\n        super(...args);\n      }\n    }\n\n    // This is a workaround for wpt tests that expect that the error\n    // constructor has a `name` property of the base class.\n    get ['constructor']() {\n      return clazz;\n    }\n  }\n\n  return HideStackFramesError;\n"
+    },
+    {
+      "role": "existing actual hidden Node error class and hideStackFrames",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-commonjs-internal-builtin-require-sourceonly-20261018\\authority\\internal-errors.js",
+        "bytes": 69406,
+        "sha256": "FD278208FAE3A83B51A0B948540629ED4E5FD8C7860CB8E4775C6DBF25779750"
+      },
+      "start_line": 464,
+      "end_line": 496,
+      "bytes": 778,
+      "sha256": "7446DEA4330034B8E4CDA55170F5A8C2142AE76506A6BCD9DD39D9CD83F7C93F",
+      "text": "    case -1: {\n      class NodeError extends Base {\n        code = key;\n\n        constructor(...args) {\n          super();\n          ObjectDefineProperty(this, 'message', {\n            __proto__: null,\n            value: getMessage(key, args, this),\n            enumerable: false,\n            writable: true,\n            configurable: true,\n          });\n        }\n\n        // This is a workaround for wpt tests that expect that the error\n        // constructor has a `name` property of the base class.\n        get ['constructor']() {\n          return Base;\n        }\n\n        get [kIsNodeError]() {\n          return true;\n        }\n\n        toString() {\n          return `${this.name} [${key}]: ${this.message}`;\n        }\n      }\n      return NodeError;\n    }\n    default: {\n\n"
+    },
+    {
+      "role": "existing actual hidden Node error class and hideStackFrames",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-commonjs-internal-builtin-require-sourceonly-20261018\\authority\\internal-errors.js",
+        "bytes": 69406,
+        "sha256": "FD278208FAE3A83B51A0B948540629ED4E5FD8C7860CB8E4775C6DBF25779750"
+      },
+      "start_line": 531,
+      "end_line": 547,
+      "bytes": 454,
+      "sha256": "A70E49ED99B33EBE9DD31BEC680FE3BD71D4A612419C3EABA408416BF5ABD281",
+      "text": " * This function removes unnecessary frames from Node.js core errors.\n * @template {(...args: unknown[]) => unknown} T\n * @param {T} fn\n * @returns {T}\n */\nfunction hideStackFrames(fn) {\n  function wrappedFn(...args) {\n    try {\n      return ReflectApply(fn, this, args);\n    } catch (error) {\n      Error.stackTraceLimit && ErrorCaptureStackTrace(error, wrappedFn);\n      throw error;\n    }\n  }\n  wrappedFn.withoutStackTrace = fn;\n  return wrappedFn;\n}\n"
+    },
+    {
+      "role": "actual enabled debuglog consumer requiring this exact formatter entry",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+        "bytes": 12596,
+        "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+      },
+      "start_line": 25,
+      "end_line": 44,
+      "bytes": 716,
+      "sha256": "49C0BD2FF49C2C0C9CD6168F0046E0B7F0AD91FDE04B808709BA68428EE47429",
+      "text": "// `debugImpls` and `testEnabled` are deliberately not initialized so any call\n// to `debuglog()` before `initializeDebugEnv()` is called will throw.\nlet debugImpls;\nlet testEnabled;\n\n\n// `debugEnv` is initial value of process.env.NODE_DEBUG\nfunction initializeDebugEnv(debugEnv) {\n  debugImpls = { __proto__: null };\n  if (debugEnv) {\n    // This is run before any user code, it's OK not to use primordials.\n    debugEnv = debugEnv.replace(/[|\\\\{}()[\\]^$+?.]/g, '\\\\$&')\n      .replaceAll('*', '.*')\n      .replaceAll(',', '$|^');\n    const debugEnvRegex = new RegExp(`^${debugEnv}$`, 'i');\n    testEnabled = (str) => RegExpPrototypeExec(debugEnvRegex, str) !== null;\n  } else {\n    testEnabled = () => false;\n  }\n}\n"
+    },
+    {
+      "role": "actual enabled debuglog consumer requiring this exact formatter entry",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+        "bytes": 12596,
+        "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+      },
+      "start_line": 65,
+      "end_line": 80,
+      "bytes": 557,
+      "sha256": "AD930479B56833F82F5FFBE6579B6EEBE45CCC23D96EC11819DE2F2ACF2B05CB",
+      "text": "function debuglogImpl(enabled, set) {\n  if (debugImpls[set] === undefined) {\n    if (enabled) {\n      const pid = process.pid;\n      emitWarningIfNeeded(set);\n      debugImpls[set] = function debug(...args) {\n        const colors = lazyUtilColors().shouldColorize(process.stderr);\n        const msg = formatWithOptions({ colors }, ...args);\n        const coloredPID = inspect(pid, { colors });\n        process.stderr.write(format('%s %s: %s\\n', set, coloredPID, msg));\n      };\n    } else {\n      debugImpls[set] = noop;\n    }\n  }\n  return debugImpls[set];\n"
+    },
+    {
+      "role": "actual enabled debuglog consumer requiring this exact formatter entry",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+        "bytes": 12596,
+        "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+      },
+      "start_line": 87,
+      "end_line": 137,
+      "bytes": 1352,
+      "sha256": "C02A8630ABE80DD9C502D3F968B05598C02463B6BD49C4260AF64BBF032525D0",
+      "text": "function debuglog(set, cb) {\n  function init() {\n    set = StringPrototypeToUpperCase(set);\n    enabled = testEnabled(set);\n  }\n  let debug = (...args) => {\n    init();\n    // Only invokes debuglogImpl() when the debug function is\n    // called for the first time.\n    debug = debuglogImpl(enabled, set);\n    if (typeof cb === 'function') {\n      ObjectDefineProperty(debug, 'enabled', {\n        __proto__: null,\n        get() {\n          return enabled;\n        },\n        configurable: true,\n        enumerable: true,\n      });\n      cb(debug);\n    }\n    switch (args.length) {\n      case 1: return debug(args[0]);\n      case 2: return debug(args[0], args[1]);\n      default: return debug(...new SafeArrayIterator(args));\n    }\n  };\n  let enabled;\n  let test = () => {\n    init();\n    test = () => enabled;\n    return enabled;\n  };\n  const logger = (...args) => {\n    // Improve performance when debug is disabled, avoid calling `new SafeArrayIterator(args)`\n    if (enabled === false) return;\n    switch (args.length) {\n      case 1: return debug(args[0]);\n      case 2: return debug(args[0], args[1]);\n      default: return debug(...new SafeArrayIterator(args));\n    }\n  };\n  ObjectDefineProperty(logger, 'enabled', {\n    __proto__: null,\n    get() {\n      return test();\n    },\n    configurable: true,\n    enumerable: true,\n  });\n  return logger;\n"
+    }
+  ],
+  "note": "Retained original files are referenced once; selected spans are exact raw bytes. No new Node/reference capture was made."
+}

@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\projected\\src\\native_sdk_project_trust_paths_test.zig",
+    "bytes": 29237,
+    "sha256": "264311B613802AC2384727F26AE1EAE00B76B8DC2F1102FA1157B152B1643378"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\projected-v2\\src\\native_sdk_project_trust_paths_test.zig",
+    "bytes": 46762,
+    "sha256": "93F611E9EE6F52BC5B94A4348EDE6092118AED783B068660E560A13180DF31A0"
+  },
+  "preserved_original_bytes": 29237,
+  "additional_declared_controls": 8,
+  "appendix_bytes": 17525,
+  "accepted_actual_frontend_fixture_donor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_application_print_owner_test.zig",
+    "bytes": 16310,
+    "sha256": "13A86E424A5C252DB4EE847595DC93ACE9BB75232A46FC3A2C825881A679BF93"
+  },
+  "fixture_source_lines": [
+    13,
+    77
+  ],
+  "fixture_body_only_indented_into_private_namespace": true,
+  "executed": false
+}

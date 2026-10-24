@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-24T20:05:33.396483+00:00",
+  "status": "Root_accepted_finite_explicit_String_lock_path_supplier_source_only",
+  "observed_main_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\source-intake.json",
+    "bytes": 16927,
+    "sha256": "C25E36E06BA465F38B47E63FF78321CB89B6D4F034379984A741241745EE2846"
+  },
+  "selected_sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\projected\\src\\extensions\\native_auth_directory_lock.zig",
+      "bytes": 29972,
+      "sha256": "FFF94746546ABE64F86A5776232C5665FDB46EAC386F6BDB3559C3952E4329B1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\projected-v2\\src\\native_auth_explicit_lock_path_test.zig",
+      "bytes": 16473,
+      "sha256": "F90D50A34E0FC7A9FCA258AD8C67509E4A44425C57FCF6C44348F673CFC1CDC1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 542189,
+      "sha256": "AB5E42E9098199AA32815B3C7F0ECF36D1D93892F26D94C2F839B07A11A6DE91"
+    }
+  ],
+  "source_inverses": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\lock-path-source-inverse.json",
+      "bytes": 2009,
+      "sha256": "34C20C8D3E8FF1E8C4CC762BE834F4E816836C4B76939DAAC8BF93E5D3699F9E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\heartbeat-control-strict-observation-inverse.json",
+      "bytes": 1599,
+      "sha256": "06F861403426F33293EE341F8368FB1A944F05B7621D1FB346FDD5D744C8CE9C"
+    }
+  ],
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1094,
+    "sha256": "2AADD0F95830733F0198128564FA8E3E9660FC637B021F0FCC5873E33CD22FE1"
+  },
+  "retained_original": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\auth-file-storage-genuine-af-sourceonly-20261018\\authority\\proper-lockfile-4.1.2\\lib\\lockfile.js.txt",
+        "bytes": 10845,
+        "sha256": "C517A976F7A31C8B1768CB8E7AC9936AEE70299AE762548495016A79D64A6434"
+      },
+      "role": "Original getLockFile11-12 and selected acquire/stale/update/unlock/exit consumers"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\auth-file-storage-genuine-af-sourceonly-20261018\\authority\\proper-lockfile-4.1.2\\lib\\adapter.js.txt",
+        "bytes": 1898,
+        "sha256": "C95E2408B91B70E02C625A9B1A42E0C793140DBE6C1BFF8CC183BB88BC267C6C"
+      },
+      "role": "Original synchronous wrapper and async adapter authority retained unchanged"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\auth-file-storage-genuine-af-sourceonly-20261018\\authority\\proper-lockfile-4.1.2\\index.js.txt",
+        "bytes": 1025,
+        "sha256": "C11869AA340B61757C2E7A6739A1D423495FE627AC0A54CB44F8C47C393E2FDD"
+      },
+      "role": "Original lockSync and async lock/release shape"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\auth-file-storage-genuine-af-sourceonly-20261018\\authority\\proper-lockfile-4.1.2\\package.json.txt",
+        "bytes": 1707,
+        "sha256": "23888ECC7ABD83A8E98E132DA556EDA2172792CC04C4E6D157B590667802BD2A"
+      },
+      "role": "Exact retained proper-lockfile4.1.2"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\auth-file-storage-genuine-af-sourceonly-20261018\\authority\\proper-lockfile-4.1.2\\LICENSE.txt",
+        "bytes": 1105,
+        "sha256": "AAA78451B6FECD1B9C4594C796C133C0E90CAD100372FF8BC6DE615E9EF9ADF1"
+      },
+      "role": "Retained upstream license"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\trust-manager.ts",
+        "bytes": 7067,
+        "sha256": "3098117EBEA573AFA6BE81D669B2B0FE9CBC948CB4C10EF4EF12E54CA6758CAC"
+      },
+      "role": "Concrete selected String path caller at138-176; Store getEntry and setMany210-245"
+    }
+  ],
+  "checked_pin_versions": 33,
+  "source_controls": 14,
+  "relative_import_occurrences": 17,
+  "build_addition_bytes": 1064,
+  "artifact_stem": "test",
+  "checks": [
+    "Read original getLockFile, acquire/remove/update/unlock/exit use and original options copy.",
+    "Read the one production hunk, surrounding acquisition and owned Lease.path creation, every physical Lease.path consumer, and checked property/string ownership helpers.",
+    "Read all14 actual directory/timer/async adapter controls, including the strict heartbeat observation successor; no mock filesystem or no-op lock substitutes.",
+    "Replayed the one owner hunk and both test observation hunks with full raw inverses, exact build insertion and direct import resolution; git apply --check passed."
+  ],
+  "scope_limit": "The existing consumed realpath:false String-path profiles for FileAuthStorageBackend and the original ProjectTrustStore literal option. This finite change does not establish full general proper-lockfile behavior for other path representations, realpath:true, arbitrary option-spread/property evaluation, or the yet-unported trust Store/event/runtime consumers.",
+  "native_executed": false,
+  "Main_mutated": false,
+  "runtime_qualification": false,
+  "product_qualification": false
+}

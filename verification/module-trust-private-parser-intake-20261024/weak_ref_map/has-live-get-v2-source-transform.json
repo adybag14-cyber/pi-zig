@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\src\\extensions\\native_node_weak_ref_map.zig",
+    "bytes": 9194,
+    "sha256": "B84291A9B2ABD98239BB740F3E5F942054D0FA052EB0E4D56ECB26CE5DF59FDC"
+  },
+  "successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_weak_ref_map.zig",
+    "bytes": 9388,
+    "sha256": "125B08AE879A8CC23F4D85F91BC725BE1429EAED79B352C2C5555C446C3F2BAD"
+  },
+  "selected_parent": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\source-intake.json",
+    "bytes": 34222,
+    "sha256": "66FA41A28D7E811FED52E111B370BB3465453610BA05264EB6376F51DD0CF8DA"
+  },
+  "hunks": [
+    {
+      "offset": 7310,
+      "before": "fn has(engine: *a.v.em.Engine, receiver: c.JSValue,",
+      "after": "fn hasBody(s: *a.Scope, receiver: c.JSValue, key: c.JSValue) !c.JSValue {\n    const method = try s.get(receiver, \"get\");\n    return a.boolean(s, s.truthy(try s.call(method, receiver, &.{key})));\n}\nfn has(engine: *a.v.em.Engine, receiver: c.JSValue,",
+      "before_sha256": "B84291A9B2ABD98239BB740F3E5F942054D0FA052EB0E4D56ECB26CE5DF59FDC",
+      "after_sha256": "01D53F09F9F915CF868580184C2D8B0F50E6B275B75EE3F945F55649EADF011E"
+    },
+    {
+      "offset": 7623,
+      "before": "    return a.expression(engine, cleanupHas, .{receiver, a.arg(args, 0)});",
+      "after": "    return a.expression(engine, hasBody, .{receiver, a.arg(args, 0)});",
+      "before_sha256": "01D53F09F9F915CF868580184C2D8B0F50E6B275B75EE3F945F55649EADF011E",
+      "after_sha256": "125B08AE879A8CC23F4D85F91BC725BE1429EAED79B352C2C5555C446C3F2BAD"
+    }
+  ],
+  "raw_inverse_exact": true,
+  "unchanged_original_tests": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\src\\native_node_weak_ref_map_test.zig",
+    "bytes": 28820,
+    "sha256": "973218F53F55281A1E8B3A7104661EFFD29495994F6AA27C77FC021105782856"
+  },
+  "declared_count_unchanged": 31,
+  "reason": "Original diagnostics_channel.js54-56 is !!this.get(key). The finalization callback line42 independently calls this.has(key); those live lookups must remain distinct.",
+  "cleanup_has_body_unchanged": true,
+  "quickjs_c_and_header_unchanged": true,
+  "safe_collections_unchanged": true,
+  "native_executed": false,
+  "main_modified": false
+}

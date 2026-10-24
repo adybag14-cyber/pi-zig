@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\original\\build.zig",
+    "bytes": 541125,
+    "sha256": "EAB06B9082B53FB958E34E47193447CBA30DA153803472666401EC0A72D48691"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 542189,
+    "sha256": "AB5E42E9098199AA32815B3C7F0ECF36D1D93892F26D94C2F839B07A11A6DE91"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1064,
+    "sha256": "8822F723AD2D57F10086DAD449C766965B09735FD30841D5B99AD9F9A3C43A4D"
+  },
+  "offset": 170640,
+  "anchor": "    const auth_readonly_af_controls = b.addTest(.{\n",
+  "raw_inverse_exact": true,
+  "install_only": true,
+  "actual_artifact_stem": "test",
+  "execution_step_added": false
+}

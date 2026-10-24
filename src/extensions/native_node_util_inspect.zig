@@ -91,10 +91,10 @@ fn captureBody(s: *v.Scope) !Inputs {
         .well_known = c.JS_DupValue(engine.context, known), .built_in_names = c.JS_DupValue(engine.context, names), .object_assign = c.JS_DupValue(engine.context, object_assign), .object_define_property = c.JS_DupValue(engine.context, object_define_property), .typed_arrays = c.JS_DupValue(engine.context, typed_arrays), .formatting = c.JS_DupValue(engine.context, formatting) };
 }
 pub const Exports = struct {
-    inspect: c.JSValue, format: c.JSValue,
+    inspect: c.JSValue, format: c.JSValue, format_with_options: c.JSValue,
     pub fn deinit(self: Exports, engine: *v.em.Engine) void {
         var completion = owned.Completion.initVoid(engine, {});
-        completion.release(self.inspect); completion.release(self.format);
+        completion.release(self.inspect); completion.release(self.format); completion.release(self.format_with_options);
         completion.finishVoid() catch {};
     }
 };
@@ -144,11 +144,11 @@ fn defaultOptions(s: *v.Scope) !c.JSValue {
 }
 pub fn create(engine: *v.em.Engine, inputs: Inputs) !Exports {
     var stage = Scope.init(engine);
-    var outputs = [_]c.JSValue{c.pi_js_undefined(), c.pi_js_undefined()};
+    var outputs = [_]c.JSValue{c.pi_js_undefined(), c.pi_js_undefined(), c.pi_js_undefined()};
     var host_error: ?anyerror = null;
-    if (createBody(&stage.values, inputs)) |result| outputs = .{result.inspect, result.format} else |err| host_error = err;
+    if (createBody(&stage.values, inputs)) |result| outputs = .{result.inspect, result.format, result.format_with_options} else |err| host_error = err;
     try stage.boundary.finishMany(host_error, &stage.values, &outputs);
-    return .{ .inspect = outputs[0], .format = outputs[1] };
+    return .{ .inspect = outputs[0], .format = outputs[1], .format_with_options = outputs[2] };
 }
 fn createBody(s: *v.Scope, inputs: Inputs) !Exports {
     const engine = s.engine;
@@ -164,6 +164,7 @@ fn createBody(s: *v.Scope, inputs: Inputs) !Exports {
     const classifier = try ops.own(s, try createStringClassifier(engine, inspect));
     try h.put(engine, lexical, "formatter", try ops.own(s, try formatter.create(engine, inputs.formatting, inspect, classifier, defaults, no_color)));
     const format = try ops.own(s, try f.create(engine, "format", 0, true, formatCall, &roots));
+    const format_with_options = try ops.own(s, try f.create(engine, "formatWithOptions", 1, true, formatWithOptionsCall, &roots));
     try h.put(engine, lexical, "inspect", inspect);
     try h.put(engine, inspect, "custom", inputs.custom_symbol);
     const get = try ops.own(s, try f.create(engine, "get", 0, false, defaultsGet, &.{defaults}));
@@ -174,7 +175,7 @@ fn createBody(s: *v.Scope, inputs: Inputs) !Exports {
         .object_define_property = inputs.object_define_property,
     }));
     try h.put(engine, lexical, "stylizeWithColor", color_stylizer);
-    return .{ .inspect = c.JS_DupValue(engine.context, inspect), .format = c.JS_DupValue(engine.context, format) };
+    return .{ .inspect = c.JS_DupValue(engine.context, inspect), .format = c.JS_DupValue(engine.context, format), .format_with_options = c.JS_DupValue(engine.context, format_with_options) };
 }
 fn defaultsGet(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue { try h.pending(engine); return c.JS_DupValue(engine.context, roots[0]); }
 fn defaultsSet(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
@@ -559,6 +560,9 @@ fn inspectCallBody(s: *v.Scope, args: []const c.JSValue, roots: []const c.JSValu
 }
 fn formatCall(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     return formatter.call(engine, args, roots[0]);
+}
+fn formatWithOptionsCall(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return formatter.callWithOptions(engine, args, roots[0]);
 }
 fn hasBuiltInToString(s: *v.Scope, roots: []const c.JSValue, input: c.JSValue) !bool {
     var value = input;

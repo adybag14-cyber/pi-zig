@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\projected\\src\\native_auth_explicit_lock_path_test.zig",
+    "bytes": 16474,
+    "sha256": "013B2323D4F93505F3DA388358C4D1604092C3875FF4C13CB91026FDF59F182C"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\projected-v2\\src\\native_auth_explicit_lock_path_test.zig",
+    "bytes": 16473,
+    "sha256": "F90D50A34E0FC7A9FCA258AD8C67509E4A44425C57FCF6C44348F673CFC1CDC1"
+  },
+  "edits": [
+    {
+      "offset": 15289,
+      "before": "setTimeout(resolve,1200)",
+      "after": "setTimeout(resolve,2200)",
+      "before_sha256": "013B2323D4F93505F3DA388358C4D1604092C3875FF4C13CB91026FDF59F182C",
+      "after_sha256": "A14A7D375973B6EFCFA7FF8756C03461821C731D5EFA009F09560041F6209C42"
+    },
+    {
+      "offset": 15449,
+      "before": "after.mtime.toMilliseconds() >= before.mtime.toMilliseconds()",
+      "after": "after.mtime.toMilliseconds() > before.mtime.toMilliseconds()",
+      "before_sha256": "A14A7D375973B6EFCFA7FF8756C03461821C731D5EFA009F09560041F6209C42",
+      "after_sha256": "F90D50A34E0FC7A9FCA258AD8C67509E4A44425C57FCF6C44348F673CFC1CDC1"
+    }
+  ],
+  "reason": "Wait beyond two real update opportunities so the mtime assertion requires a strict observed heartbeat advance across precision rounding; no merely unchanged timestamp passes.",
+  "raw_inverse": true,
+  "executed": false
+}

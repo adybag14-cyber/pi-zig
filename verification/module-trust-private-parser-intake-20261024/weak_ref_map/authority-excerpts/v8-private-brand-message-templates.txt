@@ -1,0 +1,14 @@
+  T(InvalidPrivateBrandInstance, "Receiver must be an instance of class %")    \
+  T(InvalidPrivateBrandStatic, "Receiver must be class %")                     \
+  T(InvalidPrivateBrandReinitialization,                                       \
+    "Cannot initialize private methods of class % twice on the same object")   \
+  T(InvalidPrivateFieldReinitialization,                                       \
+    "Cannot initialize % twice on the same object")                            \
+  T(InvalidPrivateFieldResolution,                                             \
+    "Private field '%' must be declared in an enclosing class")                \
+  T(InvalidPrivateMemberRead,                                                  \
+    "Cannot read private member % from an object whose class did not declare " \
+    "it")                                                                      \
+  T(InvalidPrivateMemberWrite,                                                 \
+    "Cannot write private member % to an object whose class did not declare "  \
+    "it")                                                                      \

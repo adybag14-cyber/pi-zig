@@ -1,0 +1,164 @@
+{
+  "schema": "pi-zig.weak-ref-map.production-finite-source-proof.v1",
+  "actual_main_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "source_only": true,
+  "native_executed": false,
+  "main_mutated": false,
+  "outputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\src\\extensions\\native_node_fs_collections.zig",
+      "bytes": 16656,
+      "sha256": "3617D02BCF35770944E7804D62E1AFB9699D8A4816BB4E2D45B1C191E7322876"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2409571,
+      "sha256": "EE3E9BBC7342035EE9BAA6BC4A33101B9449BAD9B2081DEC520C5572582261F8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.h",
+      "bytes": 117849,
+      "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\src\\extensions\\native_node_weak_ref_map.zig",
+      "bytes": 9194,
+      "sha256": "B84291A9B2ABD98239BB740F3E5F942054D0FA052EB0E4D56ECB26CE5DF59FDC"
+    }
+  ],
+  "transformations": [
+    {
+      "target": "src/extensions/native_node_fs_collections.zig",
+      "predecessor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_collections.zig",
+        "bytes": 16225,
+        "sha256": "EBC0FE29F1EFE23C34F7EB2A3181597197C07E31A6BB9C5681B3EB53213C007F"
+      },
+      "successor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\src\\extensions\\native_node_fs_collections.zig",
+        "bytes": 16656,
+        "sha256": "3617D02BCF35770944E7804D62E1AFB9699D8A4816BB4E2D45B1C191E7322876"
+      },
+      "hunks": [
+        {
+          "offset": 83,
+          "before": "//! The actual primordials makeSafe Map, Set, WeakMap and Promise subclasses.",
+          "after": "//! The actual primordials makeSafe Map, Set, WeakMap, Promise and FinalizationRegistry subclasses.",
+          "before_sha256": "EBC0FE29F1EFE23C34F7EB2A3181597197C07E31A6BB9C5681B3EB53213C007F",
+          "after_sha256": "3B7BC94F56E07D0FDF3BF771065913F3EB6140A4847AC206AF708246239EEF25"
+        },
+        {
+          "offset": 582,
+          "before": "const Collection = enum { map, set, weak_map, promise };",
+          "after": "const Collection = enum { map, set, weak_map, promise, finalization_registry };",
+          "before_sha256": "3B7BC94F56E07D0FDF3BF771065913F3EB6140A4847AC206AF708246239EEF25",
+          "after_sha256": "70AC7B94373CD8C938FB33AE42E7CEF825D311F2B1532DB0DE012EA6A55FCA53"
+        },
+        {
+          "offset": 891,
+          "before": "        .promise => \"\\x00native.internal.SafePromise\",",
+          "after": "        .promise => \"\\x00native.internal.SafePromise\",\n        .finalization_registry => \"\\x00native.internal.SafeFinalizationRegistry\",",
+          "before_sha256": "70AC7B94373CD8C938FB33AE42E7CEF825D311F2B1532DB0DE012EA6A55FCA53",
+          "after_sha256": "1ED5C9105554CE9AD89622D804D0A3BD9666F501D4F0F8440E1C2BF2E018CCB9"
+        },
+        {
+          "offset": 1163,
+          "before": ".weak_map => \"WeakMap\", .promise => \"Promise\" };",
+          "after": ".weak_map => \"WeakMap\", .promise => \"Promise\", .finalization_registry => \"FinalizationRegistry\" };",
+          "before_sha256": "1ED5C9105554CE9AD89622D804D0A3BD9666F501D4F0F8440E1C2BF2E018CCB9",
+          "after_sha256": "E12C8629F993B0FD8A6DBCB158C4C454AA0941759D40D54B562C991B9E9DB425"
+        },
+        {
+          "offset": 1395,
+          "before": ".weak_map => \"SafeWeakMap\", .promise => \"SafePromise\" };",
+          "after": ".weak_map => \"SafeWeakMap\", .promise => \"SafePromise\", .finalization_registry => \"SafeFinalizationRegistry\" };",
+          "before_sha256": "E12C8629F993B0FD8A6DBCB158C4C454AA0941759D40D54B562C991B9E9DB425",
+          "after_sha256": "D9D47C5FF2DC4662ACB36CADC554205BF74FEB34A2B56CCCCC68B5D17FD9F2C3"
+        },
+        {
+          "offset": 15702,
+          "before": "/// Early primordial bootstrap supplies the actual retained uncurried imports.",
+          "after": "/// Original primordials.js 424-427 uses this complete makeSafe algorithm.\npub fn acquireSafeFinalizationRegistry(engine: *v.em.Engine) !c.JSValue { return acquire(engine, .finalization_registry); }\n\n/// Early primordial bootstrap supplies the actual retained uncurried imports.",
+          "before_sha256": "D9D47C5FF2DC4662ACB36CADC554205BF74FEB34A2B56CCCCC68B5D17FD9F2C3",
+          "after_sha256": "3617D02BCF35770944E7804D62E1AFB9699D8A4816BB4E2D45B1C191E7322876"
+        }
+      ],
+      "raw_inverse_exact": true
+    },
+    {
+      "target": "vendor/quickjs/quickjs.c",
+      "predecessor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2407586,
+        "sha256": "92D0A80DFD4D9AB76181ABAB3F0FE179BFA9827710A3A66A2C1BC651F426076F"
+      },
+      "successor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409571,
+        "sha256": "EE3E9BBC7342035EE9BAA6BC4A33101B9449BAD9B2081DEC520C5572582261F8"
+      },
+      "hunks": [
+        {
+          "offset": 438873,
+          "before": "/* Node's V8 Private keyed Set uses the receiver's own storage, including a",
+          "after": "/* Genuine own-private Get. Public/exotic lookup is deliberately excluded:\n   an absent private field on a Proxy must not reach its target or traps.\n   Receiver/key are borrowed; the result is owned. *found records whether an\n   own slot was located, independently of an undefined value or thrown getter. */\nJSValue JS_PiGetOwnPrivateProperty(JSContext *ctx, JSValueConst receiver,\n                                  JSValueConst private_symbol, int *found)\n{\n    JSObject *p;\n    JSShapeProperty *prs;\n    JSProperty *pr;\n    JSAtom prop;\n\n    *found = false;\n    if (unlikely(JS_VALUE_GET_TAG(receiver) != JS_TAG_OBJECT))\n        return JS_ThrowTypeErrorNotAnObject(ctx);\n    if (unlikely(JS_VALUE_GET_TAG(private_symbol) != JS_TAG_SYMBOL))\n        return JS_ThrowTypeErrorNotASymbol(ctx);\n    prop = js_symbol_to_atom(ctx, private_symbol);\n    if (unlikely(JS_AtomGetKind(ctx, prop) != JS_ATOM_KIND_PRIVATE))\n        return JS_ThrowTypeError(ctx, \"private symbol required\");\n    p = JS_VALUE_GET_OBJ(receiver);\n retry_own:\n    *found = false;\n    prs = find_own_property(&pr, p, prop);\n    if (!prs)\n        return JS_UNDEFINED;\n    *found = true;\n    if (unlikely(prs->flags & JS_PROP_TMASK)) {\n        if ((prs->flags & JS_PROP_TMASK) == JS_PROP_GETSET) {\n            if (!pr->u.getset.getter)\n                return JS_UNDEFINED;\n            return JS_Call(ctx, JS_MKPTR(JS_TAG_OBJECT, pr->u.getset.getter),\n                           receiver, 0, NULL);\n        } else if ((prs->flags & JS_PROP_TMASK) == JS_PROP_VARREF) {\n            JSValue val = *pr->u.var_ref->pvalue;\n            if (unlikely(JS_IsUninitialized(val)))\n                return JS_ThrowReferenceErrorUninitialized(ctx, prs->atom);\n            return js_dup(val);\n        } else if ((prs->flags & JS_PROP_TMASK) == JS_PROP_AUTOINIT) {\n            if (JS_AutoInitProperty(ctx, p, prop, pr, prs))\n                return JS_EXCEPTION;\n            goto retry_own;\n        }\n    }\n    return js_dup(pr->u.value);\n}\n\n/* Node's V8 Private keyed Set uses the receiver's own storage, including a",
+          "before_sha256": "92D0A80DFD4D9AB76181ABAB3F0FE179BFA9827710A3A66A2C1BC651F426076F",
+          "after_sha256": "EE3E9BBC7342035EE9BAA6BC4A33101B9449BAD9B2081DEC520C5572582261F8"
+        }
+      ],
+      "raw_inverse_exact": true
+    },
+    {
+      "target": "vendor/quickjs/quickjs.h",
+      "predecessor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+        "bytes": 117314,
+        "sha256": "CA4DB7F473A9A1F7FF5C904D197FE25095B5B78B771327AAFA6F0B8819A7F230"
+      },
+      "successor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 117849,
+        "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+      },
+      "hunks": [
+        {
+          "offset": 84417,
+          "before": "JS_EXTERN JSValue JS_NewPrivateSymbol(JSContext *ctx, const char *description);\n",
+          "after": "JS_EXTERN JSValue JS_NewPrivateSymbol(JSContext *ctx, const char *description);\n\n/* Borrow receiver/private key; return an owned value. found must be non-null.\n   Only the receiver's own private slots are read: no prototype or exotic trap.\n   found=0 distinguishes absence from a present undefined field. On exception,\n   consume the returned exception normally; found is not a success indicator. */\nJS_EXTERN JSValue JS_PiGetOwnPrivateProperty(JSContext *ctx, JSValueConst receiver,\n                                            JSValueConst private_symbol,\n                                            int *found);\n\n",
+          "before_sha256": "CA4DB7F473A9A1F7FF5C904D197FE25095B5B78B771327AAFA6F0B8819A7F230",
+          "after_sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+        }
+      ],
+      "raw_inverse_exact": true
+    }
+  ],
+  "api": {
+    "name": "JS_PiGetOwnPrivateProperty",
+    "receiver": "borrowed actual object",
+    "key": "borrowed actual private Symbol",
+    "return": "owned JSValue or actual pending exception",
+    "found": "required non-null int*, 0 for absence and 1 once own slot located; not a success flag",
+    "prototype_lookup": false,
+    "exotic_fallback": false,
+    "supported_own_slots": [
+      "data",
+      "accessor",
+      "varref",
+      "autoinit"
+    ],
+    "caller_contract": "check actual pending/exception before found; preserve JSValue return until owned or released"
+  },
+  "later_consumer_sites": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_source_map_cache_map.zig",
+      "function": "ownPrivate",
+      "line": 46,
+      "issue": "Scope.descriptor falls through to Proxy exotic lookup when own private field absent; later finite replacement must use genuine own-private getter without weakening existing control117."
+    }
+  ],
+  "reviewed_unaffected_brand": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_weak_reference.zig",
+    "function": "instance",
+    "reason": "JS_GetOpaque with per-evaluation JSClassID rejects Proxy wrappers without trap or prototype traversal."
+  }
+}

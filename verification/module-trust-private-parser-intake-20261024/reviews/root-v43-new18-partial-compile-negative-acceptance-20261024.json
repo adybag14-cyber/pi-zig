@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "Root_accepted_original_new18_partial_compile_negative_closure",
+  "accepted_utc": "2026-10-24T20:02:36.065052+00:00",
+  "candidate_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "original_job_id": "job-1792870959613-618aacb9-a67",
+  "original_job_terminal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v43-new18-control-20261024-194238\\independent-observed-job-status.json",
+    "bytes": 1522,
+    "sha256": "ADDBC40853028F420EE8E6C1DAAD79C2C449E88372D14B612CCDDE3A607140C3"
+  },
+  "independent_auditor_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-selected18-partial-negative-auditor-source-acceptance-20261024.json",
+    "bytes": 2753,
+    "sha256": "07CAAE9907A9C2E0D025A12E09A3A269227FF7C1C6661D370CAF77B58D83134D"
+  },
+  "independent_audit_job_terminal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v43-new18-control-20261024-194238\\independent-negative-audit-job-terminal.json",
+    "bytes": 1438,
+    "sha256": "6FC440EDA944D49702B9818DDAEEAFB50ED3D2E0E6A0FC0123A2FF7996F548D6"
+  },
+  "closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v43-new18-control-20261024-194238\\independent-partial-compile-negative-closure.json",
+    "bytes": 91748,
+    "sha256": "A3335FA4CA3B5C4C4C1FEAF99A690DA4ECA999BD4576712B557F5B99BE4DF209"
+  },
+  "original_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v43-new18-buildquery-20261024-194238\\result.json",
+    "bytes": 28805,
+    "sha256": "7C16CDE3A9BB024E1F5BDCD83C21C933371C361063A199B8827FCF32BFBAD238"
+  },
+  "before": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v43-new18-buildquery-20261024-194238\\before.json",
+    "bytes": 20152665,
+    "sha256": "A287C80E8A04860B024C7D68E1B98A5B15948532056434E9CA182DA7804D2C8B"
+  },
+  "final": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v43-new18-buildquery-20261024-194238\\final.json",
+    "bytes": 20152665,
+    "sha256": "A287C80E8A04860B024C7D68E1B98A5B15948532056434E9CA182DA7804D2C8B"
+  },
+  "current_inventory_counts": {
+    "source": 19464,
+    "tree": 19477,
+    "vendor": 1489,
+    "compiler": 19546,
+    "controls": 14
+  },
+  "current_distinct_files_rehashed": 39033,
+  "actual_original_process_instances_absent": 6,
+  "granted_groups": 18,
+  "attempted_groups": 2,
+  "unstarted_groups": 16,
+  "partial_first_group_metadata_count": 14,
+  "full_metadata_count": null,
+  "actual_tests_started": 0,
+  "reason": "First stream group compile/metadata terminal0 is partial and inadmissible; second package-input compile terminal1 fails distinct opaque C-import types at modules binding line213. All18 remain unqualified;16 were unstarted.",
+  "original_negative_receipts_preserved": true,
+  "source_mutation_hold_released": true,
+  "source_mutation_scope": "Only subsequent separately accepted exact source integration. No existing63, retry, metadata acceptance or runtime launch is authorized by this closure.",
+  "native_execution_authorized": false,
+  "runtime_qualified": false,
+  "product_qualified": false
+}

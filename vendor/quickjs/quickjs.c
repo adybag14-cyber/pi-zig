@@ -12700,6 +12700,55 @@ int JS_SetProperty(JSContext *ctx, JSValueConst this_obj, JSAtom prop, JSValue v
     return JS_SetPropertyInternal(ctx, this_obj, prop, val, JS_PROP_THROW);
 }
 
+/* Genuine own-private Get. Public/exotic lookup is deliberately excluded:
+   an absent private field on a Proxy must not reach its target or traps.
+   Receiver/key are borrowed; the result is owned. *found records whether an
+   own slot was located, independently of an undefined value or thrown getter. */
+JSValue JS_PiGetOwnPrivateProperty(JSContext *ctx, JSValueConst receiver,
+                                  JSValueConst private_symbol, int *found)
+{
+    JSObject *p;
+    JSShapeProperty *prs;
+    JSProperty *pr;
+    JSAtom prop;
+
+    *found = false;
+    if (unlikely(JS_VALUE_GET_TAG(receiver) != JS_TAG_OBJECT))
+        return JS_ThrowTypeErrorNotAnObject(ctx);
+    if (unlikely(JS_VALUE_GET_TAG(private_symbol) != JS_TAG_SYMBOL))
+        return JS_ThrowTypeErrorNotASymbol(ctx);
+    prop = js_symbol_to_atom(ctx, private_symbol);
+    if (unlikely(JS_AtomGetKind(ctx, prop) != JS_ATOM_KIND_PRIVATE))
+        return JS_ThrowTypeError(ctx, "private symbol required");
+    p = JS_VALUE_GET_OBJ(receiver);
+ retry_own:
+    *found = false;
+    prs = find_own_property(&pr, p, prop);
+    if (!prs)
+        return JS_UNDEFINED;
+    *found = true;
+    if (unlikely(prs->flags & JS_PROP_TMASK)) {
+        if ((prs->flags & JS_PROP_TMASK) == JS_PROP_GETSET) {
+            if (!pr->u.getset.getter)
+                return JS_UNDEFINED;
+            /* Match ordinary Get: the field can be removed by its getter. */
+            JSValue func = JS_MKPTR(JS_TAG_OBJECT, pr->u.getset.getter);
+            func = js_dup(func);
+            return JS_CallFree(ctx, func, receiver, 0, NULL);
+        } else if ((prs->flags & JS_PROP_TMASK) == JS_PROP_VARREF) {
+            JSValue val = *pr->u.var_ref->pvalue;
+            if (unlikely(JS_IsUninitialized(val)))
+                return JS_ThrowReferenceErrorUninitialized(ctx, prs->atom);
+            return js_dup(val);
+        } else if ((prs->flags & JS_PROP_TMASK) == JS_PROP_AUTOINIT) {
+            if (JS_AutoInitProperty(ctx, p, prop, pr, prs))
+                return JS_EXCEPTION;
+            goto retry_own;
+        }
+    }
+    return js_dup(pr->u.value);
+}
+
 /* Node's V8 Private keyed Set uses the receiver's own storage, including a
    Proxy's wrapper, without prototype lookup or interceptor traps. This is
    separate from ECMAScript class private-field initialization and ordinary

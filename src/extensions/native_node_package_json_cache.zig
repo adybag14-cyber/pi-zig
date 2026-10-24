@@ -10,7 +10,7 @@ const c = js.c;
 const Scope = @import("native_node_operation_scope.zig").Scope;
 const ChargedAllocator = @import("native_env_charged_allocator.zig").ChargedAllocator;
 const physical = @import("native_node_package_json_io.zig");
-const parser = @cImport(@cInclude("native_node_package_json_parser.h"));
+const parser = @import("native_node_package_json_api.zig").c;
 
 pub const Entry = struct {
     path: []u8,

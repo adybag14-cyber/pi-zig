@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "selected_parent": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\source-intake-v2.json",
+    "bytes": 35004,
+    "sha256": "430C76B3693ECF630EE4945FCF651BD18F8A2F6AEAFC4BA59B09C38196EB196B"
+  },
+  "C_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.c",
+    "bytes": 2409571,
+    "sha256": "EE3E9BBC7342035EE9BAA6BC4A33101B9449BAD9B2081DEC520C5572582261F8"
+  },
+  "C_successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected-v3\\vendor\\quickjs\\quickjs.c",
+    "bytes": 2409692,
+    "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+  },
+  "C_hunk": {
+    "offset": 440208,
+    "before": "            return JS_Call(ctx, JS_MKPTR(JS_TAG_OBJECT, pr->u.getset.getter),\n                           receiver, 0, NULL);",
+    "after": "            /* Match ordinary Get: the field can be removed by its getter. */\n            JSValue func = JS_MKPTR(JS_TAG_OBJECT, pr->u.getset.getter);\n            func = js_dup(func);\n            return JS_CallFree(ctx, func, receiver, 0, NULL);",
+    "before_sha256": "EE3E9BBC7342035EE9BAA6BC4A33101B9449BAD9B2081DEC520C5572582261F8",
+    "after_sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+  },
+  "original_Get_authority": {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2407586,
+      "sha256": "92D0A80DFD4D9AB76181ABAB3F0FE179BFA9827710A3A66A2C1BC651F426076F"
+    },
+    "lines": [
+      11023,
+      11030
+    ],
+    "byte_offset": 377563,
+    "fragment": "                if ((prs->flags & JS_PROP_TMASK) == JS_PROP_GETSET) {\n                    if (unlikely(!pr->u.getset.getter)) {\n                        return JS_UNDEFINED;\n                    } else {\n                        JSValue func = JS_MKPTR(JS_TAG_OBJECT, pr->u.getset.getter);\n                        /* Note: the field could be removed in the getter */\n                        func = js_dup(func);\n                        return JS_CallFree(ctx, func, this_obj, 0, NULL);\n",
+    "fragment_sha256": "28CB12292D8EC2915DE2758937043D30F2BF2C921D7A584DE8AFA414E13F24C0"
+  },
+  "test_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\src\\native_node_weak_ref_map_test.zig",
+    "bytes": 28820,
+    "sha256": "973218F53F55281A1E8B3A7104661EFFD29495994F6AA27C77FC021105782856"
+  },
+  "test_successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected-v3\\src\\native_node_weak_ref_map_test.zig",
+    "bytes": 32640,
+    "sha256": "E9E78228F50930FB2CED5B48833A5F46B0A96CF975CA5D65C0ED4BF5CD3C96F9"
+  },
+  "test_append": {
+    "offset": 28820,
+    "bytes": 3820,
+    "sha256": "5CD7A34F40C312157D31C58A097ED473B7220D502FCD1BAEA1C103325AFA8BFC",
+    "text": "\nconst OwnPrivateAccessorProbe = struct {\n    private_key: c.JSValue,\n    marker: c.JSValue,\n    retired: usize = 0,\n    retired_during_call: bool = false,\n    called: bool = false,\n};\nfn retireOwnPrivateAccessorProbe(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {\n    const probe: *OwnPrivateAccessorProbe = @ptrCast(@alignCast(\n        c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));\n    probe.retired += 1;\n}\nfn selfRemovingOwnPrivateGetter(context: ?*c.JSContext, receiver: c.JSValue,\n    _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue\n{\n    const ctx = context.?;\n    const probe: *OwnPrivateAccessorProbe = @ptrCast(@alignCast(\n        c.JS_GetOpaque(data[0], c.JS_GetClassID(data[0])).?));\n    probe.called = true;\n    const atom = c.JS_ValueToAtom(ctx, probe.private_key);\n    if (atom == c.JS_ATOM_NULL) return c.pi_js_exception();\n    defer c.JS_FreeAtom(ctx, atom);\n    if (c.JS_DeleteProperty(ctx, receiver, atom, c.JS_PROP_THROW) < 0)\n        return c.pi_js_exception();\n    // The original field was the only external getter root. The accessor call\n    // itself must still retain its native data through explicit collection.\n    c.JS_RunGC(c.JS_GetRuntime(ctx));\n    probe.retired_during_call = probe.retired != 0;\n    return c.JS_DupValue(ctx, probe.marker);\n}\ntest \"native WeakRefMap own private accessor remains owned when it removes its own field\" {\n    var f = try Fixture.init(); defer f.deinit();\n    const private_key = try f.engine.checked(c.JS_NewPrivateSymbol(f.engine.context, \"retiring\"));\n    defer f.engine.freeValue(private_key);\n    const marker = try f.engine.checked(c.JS_NewObject(f.engine.context));\n    defer f.engine.freeValue(marker);\n    const receiver = try f.engine.checked(c.JS_NewObject(f.engine.context));\n    defer f.engine.freeValue(receiver);\n    var probe: OwnPrivateAccessorProbe = .{ .private_key = private_key, .marker = marker };\n    var id: c.JSClassID = 0;\n    if (c.JS_NewClassID(f.engine.runtime, &id) == 0) return error.OutOfMemory;\n    const definition: c.JSClassDef = .{\n        .class_name = \"Own private getter lifetime probe\",\n        .finalizer = retireOwnPrivateAccessorProbe,\n    };\n    if (c.JS_NewClass(f.engine.runtime, id, &definition) < 0) return error.OutOfMemory;\n    {\n        const sentinel = try f.engine.checked(c.JS_NewObjectClass(f.engine.context, id));\n        defer f.engine.freeValue(sentinel);\n        _ = c.JS_SetOpaque(sentinel, &probe);\n        const data = [_]c.JSValue{sentinel};\n        const getter = try f.engine.checked(c.JS_NewCFunctionData(f.engine.context,\n            selfRemovingOwnPrivateGetter, 0, 0, 1, @constCast(&data)));\n        const atom = c.JS_ValueToAtom(f.engine.context, private_key);\n        if (atom == c.JS_ATOM_NULL) {\n            f.engine.freeValue(getter);\n            return js.capture(f.engine);\n        }\n        defer c.JS_FreeAtom(f.engine.context, atom);\n        if (c.JS_DefinePropertyGetSet(f.engine.context, receiver, atom, getter,\n            c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_THROW) < 0)\n            return js.capture(f.engine);\n    }\n    const observed = try readPrivate(f.engine, receiver, private_key);\n    defer f.engine.freeValue(observed.value);\n    try std.testing.expectEqual(@as(c_int, 1), observed.found);\n    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, observed.value, marker));\n    try std.testing.expect(probe.called and !probe.retired_during_call);\n    // No immediate DECREF-finalizer ordering is presumed after the call.\n    f.checkpoint();\n    try std.testing.expectEqual(@as(usize, 1), probe.retired);\n    const absent = try readPrivate(f.engine, receiver, private_key);\n    defer f.engine.freeValue(absent.value);\n    try std.testing.expectEqual(@as(c_int, 0), absent.found);\n}\n"
+  },
+  "raw_inverses_exact": true,
+  "original_31_controls_byte_exact_prefix": true,
+  "new_declared_control_count": 32,
+  "ABI_header_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.h",
+    "bytes": 117849,
+    "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+  },
+  "WeakRefMap_v2_owner_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_weak_ref_map.zig",
+    "bytes": 9388,
+    "sha256": "125B08AE879A8CC23F4D85F91BC725BE1429EAED79B352C2C5555C446C3F2BAD"
+  },
+  "reason": "The property is the only external getter root and can be removed while the getter runs. Duplicate the callee and use actual JS_CallFree exactly as ordinary JS_GetPropertyInternal does.",
+  "lifetime_control": "A real private accessor deletes its own field and runs actual GC while executing; a native data sentinel must stay alive through the call and retire after a host checkpoint. No immediate DECREF retirement timing assumed.",
+  "main_modified": false,
+  "native_executed": false
+}

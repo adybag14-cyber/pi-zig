@@ -69,6 +69,11 @@ pub const Owner = struct {
     pub fn createPrintMode(self: *Owner) !c.JSValue {
         return printModeEntry(self);
     }
+    /// Complete private original trust path/resource/options module over this
+    /// owner's authenticated native runtime and retained provider identities.
+    pub fn createProjectTrustPaths(self: *Owner) !c.JSValue {
+        return projectTrustPathsEntry(self);
+    }
     /// Actual Source AuthStorage.inMemory(), without a File backend substitute
     /// or fabricated resolver. Its genuine module dependencies already exist.
     pub fn inMemory(self: *Owner) !c.JSValue {
@@ -137,6 +142,52 @@ fn printModeBody(self: *Owner, scope: *Scope) !c.JSValue {
     // captured function roots and preserves its existing per-Engine cache.
     return @import("native_public_print_mode.zig").create(engine, .{ .output = output, .shell = shell });
 }
+fn projectTrustPathsEntry(self: *Owner) !c.JSValue {
+    const engine = self.engine;
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    try self.check();
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    var scope: Scope = .{ .engine = engine };
+    const value = completion.finishValue(&scope, projectTrustPathsBody(self, &scope)) catch |err|
+        return engine.checked(engine.leaveNativeInvocation(&invocation, @import("native_sdk.zig").fail(engine, err)));
+    return engine.checked(engine.leaveNativeInvocation(&invocation, value));
+}
+fn projectTrustPathsBody(self: *Owner, scope: *Scope) !c.JSValue {
+    const engine = scope.engine;
+    const o: Ops = .{ .scope = scope };
+    // Snapshot the owned runtime and EVERY expected native module before any
+    // carrier Get can reenter, replace graph fields or retire this host owner.
+    const imports = try o.own(c.JS_DupValue(engine.context, self.runtime_imports));
+    const expected_imports = try o.own(c.JS_DupValue(engine.context, try installed(engine, "pi-native:sdk-runtime-imports-native-zig")));
+    const expected_platform = try o.own(c.JS_DupValue(engine.context, try installed(engine, "pi-native:actual-sdk-filesystem-platform")));
+    const expected_fs = try o.own(c.JS_DupValue(engine.context, try installed(engine, "node:fs")));
+    const expected_paths = try o.own(c.JS_DupValue(engine.context, try installed(engine, "node:path")));
+    const expected_utilities = try o.own(c.JS_DupValue(engine.context, try installed(engine, "pi-private:actual-sdk-path-utilities")));
+    const expected_configuration = try o.own(c.JS_DupValue(engine.context, try installed(engine, "pi-native:sdk-configuration-native-zig")));
+    const os = try o.own(c.JS_DupValue(engine.context, try installed(engine, "node:os")));
+    if (!scope.equal(imports, expected_imports)) return error.ActualSdkTrustRuntimeNamespaceChanged;
+    const platform = try o.get(imports, "platform");
+    if (!scope.equal(platform, expected_platform)) return error.ActualSdkTrustPlatformNamespaceChanged;
+    const filesystem = try o.get(platform, "filesystem");
+    if (!scope.equal(filesystem, expected_fs)) return error.ActualSdkTrustFilesystemNamespaceChanged;
+    const paths = try o.get(platform, "paths");
+    if (!scope.equal(paths, expected_paths)) return error.ActualSdkTrustPathsNamespaceChanged;
+    const path_utilities = try o.get(platform, "pathUtilities");
+    if (!scope.equal(path_utilities, expected_utilities)) return error.ActualSdkTrustUtilitiesNamespaceChanged;
+    const configuration = try o.get(imports, "configuration");
+    if (!scope.equal(configuration, expected_configuration)) return error.ActualSdkTrustConfigurationNamespaceChanged;
+    const config_dir = try o.get(configuration, "CONFIG_DIR_NAME");
+    // Source imports homedir from the installed OS namespace. Preserve ordinary
+    // named-member mutation before capture; no foreign carrier or callable
+    // whitelist is accepted. Never touch self after the first carrier Get.
+    return @import("native_sdk_project_trust_paths.zig").create(engine, .{
+        .filesystem = filesystem, .paths = paths, .os = os,
+        .path_utilities = path_utilities, .config_dir = config_dir,
+    });
+}
+
 fn valueEntry(self: *Owner, in_memory: bool) !c.JSValue {
     const engine = self.engine;
     engine.native_exception_diagnostics_suppressed += 1;

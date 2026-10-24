@@ -1681,6 +1681,21 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-auth-file-genuine-af-controls-artifact", "Build actual file/lock AF controls; runtime requires Root grant and accepted current VM producer").dependOn(&b.addInstallArtifact(auth_file_af_controls, .{}).step);
 
+    const auth_explicit_lock_path_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_auth_explicit_lock_path_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native auth explicit lock path"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, auth_explicit_lock_path_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, auth_explicit_lock_path_tests.root_module, typescript_parser);
+    linkSqlite(auth_explicit_lock_path_tests.root_module, sqlite_lib_dir, sqlite_library);
+    auth_explicit_lock_path_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        auth_explicit_lock_path_tests.root_module.linkSystemLibrary("advapi32", .{});
+        auth_explicit_lock_path_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-auth-explicit-lock-path", "Compile the actual directory lock path controls").dependOn(&b.addInstallArtifact(auth_explicit_lock_path_tests, .{}).step);
+
     const auth_readonly_af_controls = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_auth_readonly_genuine_af_compile_root.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"Auth readonly actual-owner"},
@@ -1845,6 +1860,19 @@ pub fn build(b: *std.Build) void {
         application_print_owner_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-sdk-application-print-owner", "Install actual application print owner assembly controls without execution").dependOn(&b.addInstallArtifact(application_print_owner_tests, .{}).step);
+    const project_trust_paths_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_project_trust_paths_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native project trust paths"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, project_trust_paths_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, project_trust_paths_tests.root_module, typescript_parser);
+    linkSqlite(project_trust_paths_tests.root_module, sqlite_lib_dir, sqlite_library);
+    project_trust_paths_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        project_trust_paths_tests.root_module.linkSystemLibrary("advapi32", .{});
+        project_trust_paths_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-project-trust-paths", "Install actual original project trust path and resource controls without execution").dependOn(&b.addInstallArtifact(project_trust_paths_tests, .{}).step);
     const module_execution_state_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_execution_state_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native module execution state"}, .use_llvm = use_llvm,
@@ -1871,6 +1899,19 @@ pub fn build(b: *std.Build) void {
         weak_reference_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-node-weak-reference", "Install actual internal util WeakReference controls without execution").dependOn(&b.addInstallArtifact(weak_reference_tests, .{}).step);
+    const weak_ref_map_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_weak_ref_map_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native WeakRefMap"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, weak_ref_map_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, weak_ref_map_tests.root_module, typescript_parser);
+    linkSqlite(weak_ref_map_tests.root_module, sqlite_lib_dir, sqlite_library);
+    weak_ref_map_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        weak_ref_map_tests.root_module.linkSystemLibrary("advapi32", .{});
+        weak_ref_map_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-weak-ref-map", "Install genuine WeakRefMap and own-private Get controls without execution").dependOn(&b.addInstallArtifact(weak_ref_map_tests, .{ .dest_sub_path = b.fmt("native-node-weak-ref-map{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
     const public_rpc_jsonl_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_public_rpc_jsonl_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"Public RPC JSONL actual"}, .use_llvm = use_llvm,
@@ -4689,6 +4730,11 @@ pub fn build(b: *std.Build) void {
     linkSqlite(source_map_cache_map_tests.root_module, sqlite_lib_dir, sqlite_library);
     source_map_cache_map_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-node-source-map-cache-map", "Install actual source-map cache weak ownership and order controls").dependOn(&b.addInstallArtifact(source_map_cache_map_tests, .{}).step);
+    const util_colors_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_util_colors_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native util colors"}, .use_llvm = use_llvm });
+    linkQuickJs(b, util_colors_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(util_colors_tests.root_module, sqlite_lib_dir, sqlite_library);
+    util_colors_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-node-util-colors", "Install actual colors module capability and expression order controls").dependOn(&b.addInstallArtifact(util_colors_tests, .{}).step);
     const cjs_raw_provider_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_commonjs_body_compiler_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native CJS raw provider"}, .use_llvm = use_llvm });
     linkQuickJs(b, cjs_raw_provider_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(cjs_raw_provider_tests.root_module, sqlite_lib_dir, sqlite_library);
@@ -4943,6 +4989,23 @@ pub fn build(b: *std.Build) void {
     sdk_public_compaction_file_ops.root_module.addImport("catalog_tool", catalog_tool);
     if (target.result.os.tag == .windows) { sdk_public_compaction_file_ops.root_module.linkSystemLibrary("advapi32", .{}); sdk_public_compaction_file_ops.root_module.linkSystemLibrary("userenv", .{}); }
     b.step("build-native-sdk-public-compaction-file-ops", "Install actual file operations array append and ownership controls without execution").dependOn(&b.addInstallArtifact(sdk_public_compaction_file_ops, .{ .dest_sub_path = b.fmt("native-sdk-public-compaction-file-ops{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
+    // Actual formatWithOptions plus complete shared validateObject controls.
+    // Install only; compilation/query/runtime require separate Root authority.
+    const node_format_with_options = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_format_with_options_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{ "native format options", "native validateObject" },
+    });
+    linkQuickJs(b, node_format_with_options.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_format_with_options.root_module, typescript_parser);
+    linkSqlite(node_format_with_options.root_module, sqlite_lib_dir, sqlite_library);
+    node_format_with_options.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_format_with_options.root_module.linkSystemLibrary("advapi32", .{});
+        node_format_with_options.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-format-with-options", "Install twenty-four declared format options and validator controls without running").dependOn(&b.addInstallArtifact(node_format_with_options, .{ .dest_sub_path = b.fmt("native-node-format-with-options{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
     // Genuine shared Node argument errors and actual rest/super controls.
     // This target only installs the test artifact; no run or Source capture edge.

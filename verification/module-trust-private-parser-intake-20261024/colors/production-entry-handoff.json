@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "entry": "native_node_util_colors.execute(engine, Inputs{process,module,require}) !JSValue",
+  "actual_inputs": {
+    "process": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+        "bytes": 6626,
+        "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+      },
+      "requirement": "Borrowed genuine internal builtin wrapper process, including live actual env and stderr properties."
+    },
+    "stderr": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process_streams.zig",
+        "bytes": 23962,
+        "sha256": "7BF622A1263B1E93A680B5D11936DB0A12BB0922DC973DF505ADC86DA9B4F6A8"
+      },
+      "requirement": "Actual process.stderr is looked up live per original refresh; capability hydration and terminal sink belong to the real frontend."
+    },
+    "module": "Borrowed actual internal Module wrapper object. Ordinary exports setter/getter semantics are preserved; escaped methods retain this exact wrapper.",
+    "require": "Borrowed actual internal builtin require. Forced color calls internal/tty lazily with original nullish cache semantics; no synthetic depth supplier."
+  },
+  "next_required_original_suppliers": [
+    {
+      "name": "internal/tty.getColorDepth",
+      "status": "not present in current selected native application graph; must be supplied by its genuine owner"
+    },
+    {
+      "name": "internal/util/inspect.formatWithOptions",
+      "status": "current native format owner implements undefined-options formatting; exact upstream validation/option forwarding is next bounded source work",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_inspect_format.zig",
+        "bytes": 21670,
+        "sha256": "F40A4D0C75D8474485C33A5C43117D4090E230C1813DD081BCE32802883AB535"
+      }
+    },
+    {
+      "name": "internal/util/debuglog.debuglog and initializeDebugEnv",
+      "status": "not implemented by this leaf; real initialization and enabled path remain required",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\debuglog.js",
+        "bytes": 12596,
+        "sha256": "4471D0BA1B85D272E583AEF5EC9FE05C28377BF59B923523495BCBA46A858FEC"
+      }
+    }
+  ],
+  "consumer": "SourceMapCacheMap requires the genuine initialized JS debuglog function; this colors module is one original dependency of its enabled logger path.",
+  "source_map_entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\source-intake.json",
+    "bytes": 27468,
+    "sha256": "583994729E742306EE868E1B81936F9A756409DAEE539E54738DF68328BED7D2"
+  },
+  "source_map_root_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-source-map-cache-map-source-peer-20261024.json",
+    "bytes": 5652,
+    "sha256": "3ACE3FF4B9A4EBA4DCE9B5E688693BE57F875767B21D66D45C20B811E65FC2FC"
+  },
+  "native_execution_authorized": false,
+  "application_qualification": false
+}

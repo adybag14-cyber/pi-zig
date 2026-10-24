@@ -1,0 +1,811 @@
+--- a/src/extensions/native_node_inspect_format.zig
++++ b/src/extensions/native_node_inspect_format.zig
+@@ -1,6 +1,6 @@
+ // Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
+-//! Actual Node 24.13 internal/util/inspect format(...) and its selected
+-//! formatWithOptionsInternal(undefined, args) path. The outer rest Array and
++//! Actual Node internal/util/inspect format and formatWithOptions entries.
++//! Shared option flow is the original formatWithOptionsInternal. The rest Array and
+ //! inner lexical slots are real VM owners. All primordial callables are
+ //! captured during the genuine inspector bootstrap.
+ const a = @import("native_node_argument_values.zig");
+@@ -11,6 +11,7 @@
+ const arithmetic = @import("native_image_arithmetic.zig");
+ const caught = @import("native_agent_af_values.zig").caught;
+ const RestFrame = a.frames.Frame(enum { rest });
++const OptionsFrame = a.frames.Frame(enum { inspect_options, rest });
+ const StringifyFrame = a.frames.Frame(enum { reason, cycle, circular_error });
+ const FormatFrame = a.frames.Frame(enum {
+     first, str, join, temp_str, temp_arg, temp_num, temp_integer, temp_float,
+@@ -83,13 +84,40 @@
+     // actual rest Array is empty and its prototype supplies an inherited key.
+     try frame.take(.rest, a.expression(s.engine, restBody, .{argv}));
+     const owner = try s.get(lexical, "formatter");
+-    return internal(s.engine, owner, frame.get(.rest));
+-}
+-fn internal(engine: *a.v.em.Engine, owner: c.JSValue, args: c.JSValue) anyerror!c.JSValue {
++    return internal(s.engine, owner, frame.get(.rest), c.pi_js_undefined());
++}
++/// Original formatWithOptions formal option and actual rest Array owners.
++/// The real completed internal/errors graph supplies the same stable validator.
++pub fn callWithOptions(engine: *a.v.em.Engine, argv: []const c.JSValue,
++    lexical: c.JSValue) anyerror!c.JSValue
++{
++    var s = Scope.init(engine);
++    const frame = OptionsFrame.create(&s.values) catch |err|
++        return s.finish(@as(anyerror!c.JSValue, err));
++    return a.finishFrame(&s, frame, optionsCallBody(&s, frame, argv, lexical));
++}
++fn optionsCallBody(s: *Scope, frame: *OptionsFrame, argv: []const c.JSValue,
++    lexical: c.JSValue) anyerror!c.JSValue
++{
++    try frame.copy(.inspect_options, a.arg(argv, 0));
++    const rest = if (argv.len > 0) argv[1..] else argv;
++    try frame.take(.rest, a.expression(s.engine, restBody, .{rest}));
++    _ = try a.expression(s.engine, validateOptions, .{frame.get(.inspect_options)});
++    const owner = try s.get(lexical, "formatter");
++    return internal(s.engine, owner, frame.get(.rest), frame.get(.inspect_options));
++}
++fn validateOptions(s: *Scope, inspect_options: c.JSValue) anyerror!c.JSValue {
++    const validator = try s.own(try @import("native_node_argument_errors.zig").validateObject(s.engine));
++    _ = try s.call(validator, c.pi_js_undefined(),
++        &.{ inspect_options, try s.text("inspectOptions"), c.JS_NewInt32(s.engine.context, 2) });
++    return c.pi_js_undefined();
++}
++fn internal(engine: *a.v.em.Engine, owner: c.JSValue, args: c.JSValue,
++    inspect_options: c.JSValue) anyerror!c.JSValue {
+     var s = Scope.init(engine);
+     const frame = FormatFrame.create(&s.values) catch |err|
+         return s.finish(@as(anyerror!c.JSValue, err));
+-    return a.finishFrame(&s, frame, internalBody(&s, frame, owner, args));
++    return a.finishFrame(&s, frame, internalBody(&s, frame, owner, args, inspect_options));
+ }
+ fn indexed(s: *Scope, array: c.JSValue, index: usize) anyerror!c.JSValue {
+     return dup(s, try s.getKey(array, number(s, index)));
+@@ -140,23 +168,27 @@
+         try s.call(slice, first, &.{number(s, start)});
+     return dup(s, try a.add(s, current, piece));
+ }
+-fn numericBody(s: *Scope, owner: c.JSValue, value: c.JSValue, bigint: bool) anyerror!c.JSValue {
+-    // Public format supplies undefined inspectOptions. Only these actual
+-    // helpers read the shared default numericSeparator, after value conversion.
++fn numericBody(s: *Scope, owner: c.JSValue, value: c.JSValue, bigint: bool,
++    inspect_options: c.JSValue) anyerror!c.JSValue
++{
++    // Original optional Get and nullish fallback occur after value conversion.
++    // Falsy nonnull values suppress the shared default; no options are copied.
+     const no_color = try s.get(owner, "noColor");
+-    const defaults = try s.get(owner, "defaults");
+-    const separator = try s.get(defaults, "numericSeparator");
++    const selected = if (c.JS_IsNull(inspect_options) or c.JS_IsUndefined(inspect_options))
++        c.pi_js_undefined() else try s.get(inspect_options, "numericSeparator");
++    const separator = if (c.JS_IsNull(selected) or c.JS_IsUndefined(selected))
++        try s.get(try s.get(owner, "defaults"), "numericSeparator") else selected;
+     const formatted = if (bigint) try primitive.bigint(&s.values, value, s.truthy(separator))
+         else try primitive.number(&s.values, value, s.truthy(separator));
+     return dup(s, try s.call(no_color, c.pi_js_undefined(),
+         &.{ formatted, try s.text(if (bigint) "bigint" else "number") }));
+ }
+ fn convertedNumber(s: *Scope, owner: c.JSValue, value: c.JSValue,
+-    conversion: [*:0]const u8) anyerror!c.JSValue
++    conversion: [*:0]const u8, inspect_options: c.JSValue) anyerror!c.JSValue
+ {
+     const function = try member(s, owner, conversion);
+     const converted = try expr(s, a.callBody, .{ function, c.pi_js_undefined(), @as([]const c.JSValue, &.{value}) });
+-    return dup(s, try expr(s, numericBody, .{ owner, converted, false }));
++    return dup(s, try expr(s, numericBody, .{ owner, converted, false, inspect_options }));
+ }
+ fn builtIn(s: *Scope, owner: c.JSValue, value: c.JSValue) anyerror!c.JSValue {
+     const function = try s.get(owner, "classifier");
+@@ -168,14 +200,14 @@
+ }
+ const Inspection = enum { ordinary, string, hidden };
+ fn inspection(s: *Scope, owner: c.JSValue, value: c.JSValue,
+-    mode: Inspection) anyerror!c.JSValue
++    mode: Inspection, inspect_options: c.JSValue) anyerror!c.JSValue
+ {
+     const inspect = try s.get(owner, "inspect");
+-    var options = c.pi_js_undefined();
++    var options = inspect_options;
+     if (mode != .ordinary) {
+-        // Actual literal with undefined spread source. Each entry is an own
+-        // data definition; no inherited option setter is invoked.
+-        options = try s.object();
++        // Real CopyDataProperties includes symbols and per-key descriptor/Get
++        // order. Overrides remain own data definitions, not inherited setters.
++        options = try ops.spread(&s.values, inspect_options);
+         if (mode == .string) {
+             try s.define(options, "compact", number(s, 3), c.JS_PROP_C_W_E);
+             try s.define(options, "colors", a.boolean(s, false), c.JS_PROP_C_W_E);
+@@ -188,22 +220,22 @@
+     }
+     return dup(s, try s.call(inspect, c.pi_js_undefined(), &.{ value, options }));
+ }
+-fn stringArgument(s: *Scope, owner: c.JSValue, value: c.JSValue) anyerror!c.JSValue {
+-    if (c.JS_IsNumber(value)) return numericBody(s, owner, value, false);
+-    if (c.JS_IsBigInt(value)) return numericBody(s, owner, value, true);
++fn stringArgument(s: *Scope, owner: c.JSValue, value: c.JSValue, inspect_options: c.JSValue) anyerror!c.JSValue {
++    if (c.JS_IsNumber(value)) return numericBody(s, owner, value, false, inspect_options);
++    if (c.JS_IsBigInt(value)) return numericBody(s, owner, value, true, inspect_options);
+     if (!c.JS_IsObject(value) or c.JS_IsFunction(s.engine.context, value) or c.JS_IsNull(value) or
+         !try a.condition(s.engine, builtIn, .{ owner, value }))
+         return plainString(s, owner, value);
+-    return inspection(s, owner, value, .string);
++    return inspection(s, owner, value, .string, inspect_options);
+ }
+ fn numericArgument(s: *Scope, owner: c.JSValue, value: c.JSValue,
+-    kind: enum { decimal, integer, float }) anyerror!c.JSValue
+-{
+-    if (kind != .float and c.JS_IsBigInt(value)) return numericBody(s, owner, value, true);
++    kind: enum { decimal, integer, float }, inspect_options: c.JSValue) anyerror!c.JSValue
++{
++    if (kind != .float and c.JS_IsBigInt(value)) return numericBody(s, owner, value, true, inspect_options);
+     if (c.JS_IsSymbol(value)) return dup(s, try s.text("NaN"));
+     return convertedNumber(s, owner, value, switch (kind) {
+         .decimal => "Number", .integer => "parseInt", .float => "parseFloat",
+-    });
++    }, inspect_options);
+ }
+ fn stringifyCall(s: *Scope, owner: c.JSValue, value: c.JSValue) anyerror!c.JSValue {
+     const function = try member(s, owner, "stringify");
+@@ -284,15 +316,15 @@
+     return stringify(s.engine, owner, value);
+ }
+ fn indexedInspection(s: *Scope, owner: c.JSValue, args: c.JSValue, index: usize,
+-    mode: Inspection) anyerror!c.JSValue
++    mode: Inspection, inspect_options: c.JSValue) anyerror!c.JSValue
+ {
+     // The Source inspect callee is selected before the indexed argument and
+     // before its following options literal.
+     const inspect = try s.get(owner, "inspect");
+     const value = try s.getKey(args, number(s, index));
+-    var options = c.pi_js_undefined();
++    var options = inspect_options;
+     if (mode == .hidden) {
+-        options = try s.object();
++        options = try ops.spread(&s.values, inspect_options);
+         try s.define(options, "showHidden", a.boolean(s, true), c.JS_PROP_C_W_E);
+         try s.define(options, "showProxy", a.boolean(s, true), c.JS_PROP_C_W_E);
+         try s.define(options, "depth", number(s, 4), c.JS_PROP_C_W_E);
+@@ -300,14 +332,14 @@
+     return dup(s, try s.call(inspect, c.pi_js_undefined(), &.{ value, options }));
+ }
+ fn appendTrailing(s: *Scope, owner: c.JSValue, current: c.JSValue,
+-    value: c.JSValue) anyerror!c.JSValue
++    value: c.JSValue, inspect_options: c.JSValue) anyerror!c.JSValue
+ {
+     const text = if (c.JS_IsString(value)) value else
+-        try expr(s, inspection, .{ owner, value, Inspection.ordinary });
++        try expr(s, inspection, .{ owner, value, Inspection.ordinary, inspect_options });
+     return dup(s, try a.add(s, current, text));
+ }
+ fn internalBody(s: *Scope, frame: *FormatFrame, owner: c.JSValue,
+-    args: c.JSValue) anyerror!c.JSValue
++    args: c.JSValue, inspect_options: c.JSValue) anyerror!c.JSValue
+ {
+     try frame.take(.first, a.expression(s.engine, indexed, .{ args, @as(usize, 0) }));
+     var argument: usize = 0;
+@@ -328,7 +360,7 @@
+                         try frame.clear(.temp_arg);
+                         argument += 1;
+                         try frame.take(.temp_arg, a.expression(s.engine, indexed, .{ args, argument }));
+-                        try frame.take(.temp_str, a.expression(s.engine, stringArgument, .{ owner, frame.get(.temp_arg) }));
++                        try frame.take(.temp_str, a.expression(s.engine, stringArgument, .{ owner, frame.get(.temp_arg), inspect_options }));
+                     },
+                     106 => {
+                         argument += 1;
+@@ -338,24 +370,24 @@
+                         try frame.clear(.temp_num);
+                         argument += 1;
+                         try frame.take(.temp_num, a.expression(s.engine, indexed, .{ args, argument }));
+-                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_num), .decimal }));
++                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_num), .decimal, inspect_options }));
+                     },
+                     79, 111 => {
+                         argument += 1;
+                         try frame.take(.temp_str, a.expression(s.engine, indexedInspection,
+-                            .{ owner, args, argument, if (next == 79) Inspection.ordinary else Inspection.hidden }));
++                            .{ owner, args, argument, if (next == 79) Inspection.ordinary else Inspection.hidden, inspect_options }));
+                     },
+                     105 => {
+                         try frame.clear(.temp_integer);
+                         argument += 1;
+                         try frame.take(.temp_integer, a.expression(s.engine, indexed, .{ args, argument }));
+-                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_integer), .integer }));
++                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_integer), .integer, inspect_options }));
+                     },
+                     102 => {
+                         try frame.clear(.temp_float);
+                         argument += 1;
+                         try frame.take(.temp_float, a.expression(s.engine, indexed, .{ args, argument }));
+-                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_float), .float }));
++                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_float), .float, inspect_options }));
+                     },
+                     99 => {
+                         argument += 1;
+@@ -395,7 +427,7 @@
+         try frame.take(.trailing_value, a.expression(s.engine, indexed, .{ args, argument }));
+         try frame.take(.str, a.expression(s.engine, appendValue, .{ frame.get(.str), frame.get(.join) }));
+         try frame.take(.str, a.expression(s.engine, appendTrailing,
+-            .{ owner, frame.get(.str), frame.get(.trailing_value) }));
++            .{ owner, frame.get(.str), frame.get(.trailing_value), inspect_options }));
+         try frame.take(.join, a.expression(s.engine, stringValue, .{" "}));
+         argument += 1;
+     }
+--- a/src/extensions/native_node_argument_error_registration.zig
++++ b/src/extensions/native_node_argument_error_registration.zig
+@@ -180,3 +180,51 @@
+     const raw = try s.own(try functions.create(s.engine, "", 2, false, abortRaw, &.{hidden}));
+     return wrap(s, raw, error_class, capture, apply);
+ }
++
++fn objectArray(s: *Scope, value: c.JSValue, is_array: c.JSValue) !c.JSValue {
++    return a.boolean(s, s.truthy(try s.call(is_array, c.pi_js_undefined(), &.{value})));
++}
++fn objectFlagUnset(s: *Scope, flag: i32, options: c.JSValue) !c.JSValue {
++    const bits = try s.binary(@intFromEnum(@import("native_image_arithmetic.zig").Operation.bit_and),
++        c.JS_NewInt32(s.engine.context, flag), options);
++    return a.boolean(s, s.equal(bits, c.JS_NewInt32(s.engine.context, 0)));
++}
++fn invalidObject(s: *Scope, args: []const c.JSValue, error_class: c.JSValue) !c.JSValue {
++    return a.raise(s, try s.construct(error_class,
++        &.{a.arg(args, 1), try s.text("Object"), a.arg(args, 0)}));
++}
++fn objectRaw(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, objectBody, .{args, roots[0], roots[1]});
++}
++fn objectBody(s: *Scope, args: []const c.JSValue, error_class: c.JSValue, is_array: c.JSValue) !c.JSValue {
++    const value = a.arg(args, 0);
++    const options = if (c.JS_IsUndefined(a.arg(args, 2))) c.JS_NewInt32(s.engine.context, 0) else a.arg(args, 2);
++    if (s.equal(options, c.JS_NewInt32(s.engine.context, 0))) {
++        if (c.JS_IsNull(value) or try a.condition(s.engine, objectArray, .{value, is_array}))
++            return invalidObject(s, args, error_class);
++        if (!c.JS_IsObject(value) or c.JS_IsFunction(s.engine.context, value))
++            return invalidObject(s, args, error_class);
++    } else {
++        // Each original bitwise expression performs its own actual conversion.
++        const throw_on_nullable = try a.condition(s.engine, objectFlagUnset, .{@as(i32, 1), options});
++        if (throw_on_nullable and c.JS_IsNull(value)) return invalidObject(s, args, error_class);
++        const throw_on_array = try a.condition(s.engine, objectFlagUnset, .{@as(i32, 2), options});
++        if (throw_on_array and try a.condition(s.engine, objectArray, .{value, is_array}))
++            return invalidObject(s, args, error_class);
++        const throw_on_function = try a.condition(s.engine, objectFlagUnset, .{@as(i32, 4), options});
++        const typeof_object = c.JS_IsNull(value) or
++            (c.JS_IsObject(value) and !c.JS_IsFunction(s.engine.context, value));
++        if (!typeof_object and (throw_on_function or !c.JS_IsFunction(s.engine.context, value)))
++            return invalidObject(s, args, error_class);
++    }
++    return c.pi_js_undefined();
++}
++/// Complete original validateObject, including default options, all three
++/// flags, coercion/short-circuit order and the real hidden Error constructor.
++pub fn makeValidateObject(s: *Scope, hidden: c.JSValue, error_class: c.JSValue,
++    capture: c.JSValue, apply: c.JSValue, is_array: c.JSValue) !c.JSValue
++{
++    if (!c.JS_IsFunction(s.engine.context, is_array)) return error.ActualArrayIsArrayPrimordialRequired;
++    const raw = try s.own(try functions.create(s.engine, "", 2, false, objectRaw, &.{hidden, is_array}));
++    return wrap(s, raw, error_class, capture, apply);
++}
+--- a/src/extensions/native_node_argument_errors.zig
++++ b/src/extensions/native_node_argument_errors.zig
+@@ -136,9 +136,16 @@
+     const assertion_class = try registration.register(s, inputs.error_constructor, "ERR_INTERNAL_ASSERTION", inputs.internal_assertion_message, inputs.marker, inputs.assert_function, inputs.reflect_apply);
+     const validate_string = try registration.makeValidateString(s, hidden, inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply);
+     const validate_abort = try registration.makeValidateAbortSignal(s, hidden, inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply);
++    // Reuse the real primordial already captured by this actual message owner.
++    // No late global Array read or alternate argument-error graph is introduced.
++    const message_roots = try @import("native_node_module_callable.zig").capturedRoots(s.engine, inputs.invalid_arg_type_message);
++    if (message_roots.len != 1) return error.ActualArgumentMessageOwnerRequired;
++    const is_array = try s.get(message_roots[0], "isArray");
++    const validate_object = try registration.makeValidateObject(s, hidden, inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply, is_array);
+     try s.put(record, "type", argument); try s.put(record, "hidden", hidden); try s.put(record, "value", value);
+     try s.put(record, "hiddenValue", hidden_value); try s.put(record, "rangeValue", range); try s.put(record, "hiddenRangeValue", hidden_range);
+     try s.put(record, "assertion", assertion_class); try s.put(record, "validateString", validate_string); try s.put(record, "validateAbortSignal", validate_abort);
++    try s.put(record, "validateObject", validate_object);
+     return view(s, record);
+ }
+ fn memberBody(s: *Scope, name: [*:0]const u8) !c.JSValue {
+@@ -152,6 +159,7 @@
+ pub fn rangeValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "rangeValue")}); }
+ pub fn hiddenRangeValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "hiddenRangeValue")}); }
+ pub fn validateAbortSignal(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "validateAbortSignal")}); }
++pub fn validateObject(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "validateObject")}); }
+ 
+ /// Original primordial functions retained by the completed internal/errors owner.
+ pub fn reflectApply(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "reflect_apply")}); }
+--- a/src/extensions/native_node_util_inspect.zig
++++ b/src/extensions/native_node_util_inspect.zig
+@@ -91,10 +91,10 @@
+         .well_known = c.JS_DupValue(engine.context, known), .built_in_names = c.JS_DupValue(engine.context, names), .object_assign = c.JS_DupValue(engine.context, object_assign), .object_define_property = c.JS_DupValue(engine.context, object_define_property), .typed_arrays = c.JS_DupValue(engine.context, typed_arrays), .formatting = c.JS_DupValue(engine.context, formatting) };
+ }
+ pub const Exports = struct {
+-    inspect: c.JSValue, format: c.JSValue,
++    inspect: c.JSValue, format: c.JSValue, format_with_options: c.JSValue,
+     pub fn deinit(self: Exports, engine: *v.em.Engine) void {
+         var completion = owned.Completion.initVoid(engine, {});
+-        completion.release(self.inspect); completion.release(self.format);
++        completion.release(self.inspect); completion.release(self.format); completion.release(self.format_with_options);
+         completion.finishVoid() catch {};
+     }
+ };
+@@ -144,11 +144,11 @@
+ }
+ pub fn create(engine: *v.em.Engine, inputs: Inputs) !Exports {
+     var stage = Scope.init(engine);
+-    var outputs = [_]c.JSValue{c.pi_js_undefined(), c.pi_js_undefined()};
++    var outputs = [_]c.JSValue{c.pi_js_undefined(), c.pi_js_undefined(), c.pi_js_undefined()};
+     var host_error: ?anyerror = null;
+-    if (createBody(&stage.values, inputs)) |result| outputs = .{result.inspect, result.format} else |err| host_error = err;
++    if (createBody(&stage.values, inputs)) |result| outputs = .{result.inspect, result.format, result.format_with_options} else |err| host_error = err;
+     try stage.boundary.finishMany(host_error, &stage.values, &outputs);
+-    return .{ .inspect = outputs[0], .format = outputs[1] };
++    return .{ .inspect = outputs[0], .format = outputs[1], .format_with_options = outputs[2] };
+ }
+ fn createBody(s: *v.Scope, inputs: Inputs) !Exports {
+     const engine = s.engine;
+@@ -164,6 +164,7 @@
+     const classifier = try ops.own(s, try createStringClassifier(engine, inspect));
+     try h.put(engine, lexical, "formatter", try ops.own(s, try formatter.create(engine, inputs.formatting, inspect, classifier, defaults, no_color)));
+     const format = try ops.own(s, try f.create(engine, "format", 0, true, formatCall, &roots));
++    const format_with_options = try ops.own(s, try f.create(engine, "formatWithOptions", 1, true, formatWithOptionsCall, &roots));
+     try h.put(engine, lexical, "inspect", inspect);
+     try h.put(engine, inspect, "custom", inputs.custom_symbol);
+     const get = try ops.own(s, try f.create(engine, "get", 0, false, defaultsGet, &.{defaults}));
+@@ -174,7 +175,7 @@
+         .object_define_property = inputs.object_define_property,
+     }));
+     try h.put(engine, lexical, "stylizeWithColor", color_stylizer);
+-    return .{ .inspect = c.JS_DupValue(engine.context, inspect), .format = c.JS_DupValue(engine.context, format) };
++    return .{ .inspect = c.JS_DupValue(engine.context, inspect), .format = c.JS_DupValue(engine.context, format), .format_with_options = c.JS_DupValue(engine.context, format_with_options) };
+ }
+ fn defaultsGet(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue { try h.pending(engine); return c.JS_DupValue(engine.context, roots[0]); }
+ fn defaultsSet(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+@@ -560,6 +561,9 @@
+ fn formatCall(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+     return formatter.call(engine, args, roots[0]);
+ }
++fn formatWithOptionsCall(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return formatter.callWithOptions(engine, args, roots[0]);
++}
+ fn hasBuiltInToString(s: *v.Scope, roots: []const c.JSValue, input: c.JSValue) !bool {
+     var value = input;
+     while (c.JS_IsProxy(value)) {
+--- a/src/extensions/native_node_internal_inspect_binding.zig
++++ b/src/extensions/native_node_internal_inspect_binding.zig
+@@ -43,5 +43,6 @@
+     const record = try s.object();
+     try s.put(record, "inspect", functions.inspect);
+     try s.put(record, "format", functions.format);
++    try s.put(record, "formatWithOptions", functions.format_with_options);
+     return a.duplicate(s.engine, record);
+ }
+--- /dev/null
++++ b/src/native_node_format_with_options_test.zig
+@@ -0,0 +1,401 @@
++//! Controls for the genuine formatWithOptions and complete validateObject owners.
++//! The real process/Stream/internal-errors bootstrap and native inspector are used.
++const std = @import("std");
++const a = @import("extensions/native_node_argument_values.zig");
++const bootstrap = @import("extensions/native_node_argument_bootstrap.zig");
++const binding = @import("extensions/native_node_internal_inspect_binding.zig");
++const errors = @import("extensions/native_node_argument_errors.zig");
++const c = a.c;
++
++const Fixture = struct {
++    engine: *a.v.em.Engine = undefined,
++    environment: std.process.Environ.Map = undefined,
++    engine_alive: bool = false,
++    environment_alive: bool = false,
++    prepared: ?bootstrap.Prepared = null,
++    probe_class: c.JSClassID = 0,
++    retired: usize = 0,
++    emit_fatal: bool = false,
++    first_fatal: c.JSValue = undefined,
++    fn init(self: *Fixture, prepare_errors: bool) !void {
++        self.* = .{};
++        self.environment = .init(std.testing.allocator);
++        self.environment_alive = true;
++        errdefer self.deinit();
++        self.engine = try a.v.em.Engine.init(std.testing.allocator, .{});
++        self.engine_alive = true;
++        self.first_fatal = c.pi_js_undefined();
++        try @import("extensions/timers.zig").install(self.engine, std.testing.io);
++        try @import("extensions/native_process.zig").install(self.engine,
++            std.testing.io, &self.environment, &.{"native-format-options-control"});
++        try @import("extensions/native_node_os.zig").install(self.engine);
++        self.engine.host_control_context = self;
++        const record = try binding.acquire(self.engine); defer self.engine.freeValue(record);
++        const actual_inspect = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, record, "inspect"));
++        defer self.engine.freeValue(actual_inspect); try self.publish("I", actual_inspect);
++        const format = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, record, "format"));
++        defer self.engine.freeValue(format); try self.publish("G", format);
++        const selected = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, record, "formatWithOptions"));
++        defer self.engine.freeValue(selected); try self.publish("F", selected);
++        if (prepare_errors) try self.prepare();
++        try self.engine.bindFunction("formatNativeFatal", rawFatal, 0);
++        try self.engine.bindFunction("formatEphemeral", ephemeral, 0);
++    }
++    fn prepare(self: *Fixture) !void {
++        self.prepared = try bootstrap.prepare(self.engine);
++        const validator = try errors.validateObject(self.engine); defer self.engine.freeValue(validator);
++        try self.publish("V", validator);
++        try self.publish("ArgumentType", self.prepared.?.arguments.invalid_arg_type);
++    }
++    fn deinit(self: *Fixture) void {
++        self.emit_fatal = false;
++        if (self.engine_alive) {
++            if (self.prepared) |prepared| prepared.deinit(self.engine);
++            self.engine.freeValue(self.first_fatal);
++            self.engine.deinit(); self.engine_alive = false;
++        }
++        if (self.environment_alive) { self.environment.deinit(); self.environment_alive = false; }
++    }
++    fn run(self: *Fixture, source: []const u8) !void {
++        const value = try self.engine.eval(source, "native-format-options-control.js", c.JS_EVAL_TYPE_GLOBAL);
++        self.engine.freeValue(value); try std.testing.expect(!c.JS_HasException(self.engine.context));
++    }
++    fn publish(self: *Fixture, name: [*:0]const u8, value: c.JSValue) !void {
++        const global = try self.engine.checked(c.JS_GetGlobalObject(self.engine.context));
++        defer self.engine.freeValue(global);
++        if (c.JS_DefinePropertyValueStr(self.engine.context, global, name,
++            c.JS_DupValue(self.engine.context, value), c.JS_PROP_C_W_E) < 0)
++            return error.ActualFormatOptionsPublicationRequired;
++    }
++    fn get(self: *Fixture, name: [*:0]const u8) !c.JSValue {
++        const global = try self.engine.checked(c.JS_GetGlobalObject(self.engine.context));
++        defer self.engine.freeValue(global);
++        return self.engine.checked(c.JS_GetPropertyStr(self.engine.context, global, name));
++    }
++    fn reason(self: *Fixture) !c.JSValue {
++        if (c.JS_HasException(self.engine.context)) return c.JS_GetException(self.engine.context);
++        if (self.engine.captured_exception) |value| { self.engine.captured_exception = null; return value; }
++        return error.ActualFormatOptionsReasonRequired;
++    }
++    fn balanced(self: *Fixture) !void {
++        try std.testing.expectEqual(@as(usize, 0), self.engine.native_exception_diagnostics_suppressed);
++        try std.testing.expect(self.engine.native_fatal_invocation == null);
++    }
++};
++fn current(context: ?*c.JSContext) *Fixture {
++    const engine = a.v.em.Engine.fromContext(context.?);
++    return @ptrCast(@alignCast(engine.host_control_context.?));
++}
++fn publishFatal(fixture: *Fixture) void {
++    _ = fixture.engine.throwNativeOutOfMemoryFatal();
++    if (c.JS_HasException(fixture.engine.context)) {
++        const reason_value = c.JS_GetException(fixture.engine.context);
++        if (c.JS_IsUndefined(fixture.first_fatal)) fixture.first_fatal = a.duplicate(fixture.engine, reason_value);
++        fixture.engine.freeValue(reason_value);
++    }
++}
++fn rawFatal(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    publishFatal(current(context)); return c.pi_js_undefined();
++}
++fn retireProbe(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
++    const fixture: *Fixture = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
++    fixture.retired += 1;
++    if (fixture.emit_fatal) publishFatal(fixture);
++}
++fn ephemeralBody(s: *a.Scope, fixture: *Fixture) !c.JSValue {
++    if (fixture.probe_class == 0) {
++        if (c.JS_NewClassID(s.engine.runtime, &fixture.probe_class) == 0) return error.OutOfMemory;
++        const definition: c.JSClassDef = .{ .class_name = "Actual format options retirement probe", .finalizer = retireProbe };
++        if (c.JS_NewClass(s.engine.runtime, fixture.probe_class, &definition) < 0) return error.OutOfMemory;
++    }
++    const generation = try s.beforeAllocation();
++    const value = try s.checkedAllocation(c.JS_NewObjectClass(s.engine.context, fixture.probe_class), generation);
++    _ = c.JS_SetOpaque(value, fixture);
++    return a.duplicate(s.engine, value);
++}
++fn ephemeral(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const fixture = current(context);
++    return a.expression(fixture.engine, ephemeralBody, .{fixture}) catch |err|
++        @import("extensions/native_node_module_callable.zig").failure(fixture.engine, err, 0);
++}
++
++test "native format options exposes genuine callable shape and shares the completed private owners" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\if(F.name!=='formatWithOptions'||F.length!==1||Object.getPrototypeOf(F)!==Function.prototype||!Object.hasOwn(F,'prototype'))throw Error('original function shape');
++        \\if(V.name!=='wrappedFn'||V.length!==0||typeof V.withoutStackTrace!=='function'||V.withoutStackTrace.length!==2||Object.hasOwn(V.withoutStackTrace,'prototype'))throw Error('original validator wrapper');
++        \\if(F({},'literal')!=='literal'||F({})!==''||G('%d',1000)!=='1000')throw Error('basic exact entries');
++    );
++    const second = try bootstrap.prepare(f.engine); defer second.deinit(f.engine);
++    const selected = try f.engine.checked(c.JS_GetPropertyStr(f.engine.context, second.internal_inspect, "formatWithOptions"));
++    defer f.engine.freeValue(selected);
++    const first = try f.get("F"); defer f.engine.freeValue(first);
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, selected, first));
++    const validator = try errors.validateObject(f.engine); defer f.engine.freeValue(validator);
++    const expected = try f.get("V"); defer f.engine.freeValue(expected);
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, validator, expected));
++    try f.balanced();
++}
++test "native format options allows arrays objects and revoked object proxies without option enumeration on literal return" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\const poison=new Proxy({},{get(){throw Error('option Get')},ownKeys(){throw Error('option ownKeys')}});
++        \\const revoked=Proxy.revocable({},{});revoked.revoke();
++        \\for(const options of [{},[],Object.create(null),new Number(1),poison,revoked.proxy])if(F(options,'literal')!=='literal')throw Error('valid Object options');
++        \\if(F(poison)!=='')throw Error('empty rest enumerated options');
++    );
++}
++test "native format options rejects primitives and functions with the actual hidden argument error before formatting" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\let converted=0;const tail={toString(){converted++;return 'bad'}};
++        \\for(const options of [undefined,null,true,0,1n,'',Symbol('x'),function named(){}]){
++        \\  let reason;try{F(options,'%s',tail)}catch(e){reason=e}
++        \\  if(!(reason instanceof TypeError)||reason.code!=='ERR_INVALID_ARG_TYPE'||reason.constructor!==TypeError||!reason.message.includes('"inspectOptions"'))throw Error('genuine validation error');
++        \\}
++        \\if(converted!==0)throw Error('invalid options entered formatter');
++    );
++    try f.balanced();
++}
++test "native format options numeric separator uses explicit values and only nullish shared defaults" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\if(F({numericSeparator:true,colors:true},'%d %i %f %s',1000,1234n,1234.5,1000n)!=='1_000 1_234n 1_234.5 1_000n')throw Error('number bigint option');
++        \\I.defaultOptions.numericSeparator=true;
++        \\for(const selected of [undefined,null])if(F({numericSeparator:selected},'%d',1000)!=='1_000')throw Error('nullish defaults');
++        \\for(const selected of [false,0,''])if(F({numericSeparator:selected},'%d',1000)!=='1000')throw Error('falsy override');
++        \\const truthy={valueOf(){throw Error('separator coerced')}};if(F({numericSeparator:truthy},'%d',1000)!=='1_000')throw Error('separator truthiness');
++        \\I.defaultOptions.numericSeparator=false;if(G('%d',1000)!=='1000')throw Error('plain format changed');
++    );
++}
++test "native format options reads numeric separator after each original value conversion" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\const order=[];const options={get numericSeparator(){order.push('option');return true}};
++        \\const decimal={valueOf(){order.push('decimal');return 1000}},integer={toString(){order.push('integer');return '1234x'}},float={toString(){order.push('float');return '1234.5x'}};
++        \\if(F(options,'%d %i %f',decimal,integer,float)!=='1_000 1_234 1_234.5'||order.join(',')!=='decimal,option,integer,option,float,option')throw Error('numeric conversion order '+order);
++    );
++}
++test "native format options nonnumeric placeholders do not consult numeric separator" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\const options={get numericSeparator(){throw Error('unused numeric option')}};
++        \\const result=F(options,'%d %i %f %s %j %c %%',Symbol(),Symbol(),Symbol(),Symbol('s'),{x:1},'discard');
++        \\if(result!=='NaN NaN NaN Symbol(s) {"x":1}  %')throw Error('nonnumeric placeholder route '+result);
++        \\if(F(options,'%s',{toString(){return 'custom'}})!=='custom')throw Error('custom String path');
++    );
++}
++test "native format options string placeholder copies options then overrides compact colors and depth" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\const order=[],token=Symbol('token'),options={};
++        \\for(const [key,value] of [['compact',9],['colors',true],['depth',99],['customOption','kept']])Object.defineProperty(options,key,{enumerable:true,get(){order.push(key);return value}});
++        \\Object.defineProperty(options,token,{enumerable:true,get(){order.push('symbol');return 7}});
++        \\const input={[I.custom](depth,selected,inspector){if(this!==input||inspector!==I||depth!==0||selected.depth!==0||selected.compact!==3||selected.colors!==false||selected.customOption!=='kept'||selected[token]!==7)throw Error('string overrides');return 'observed'}};
++        \\if(F(options,'%s',input)!=='observed'||order.join(',')!=='compact,colors,depth,customOption,symbol')throw Error('string spread order '+order);
++    );
++}
++test "native format options hidden placeholder preserves own key descriptor Get order before overrides" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\const seen=[],token=Symbol('token'),target={depth:1,showHidden:false,showProxy:false,customOption:'kept'};
++        \\Object.defineProperty(target,'hidden',{enumerable:false,get(){throw Error('nonenumerable copied')}});
++        \\Object.defineProperty(target,token,{enumerable:true,value:7});
++        \\const options=new Proxy(target,{ownKeys(t){seen.push('keys');return Reflect.ownKeys(t)},getOwnPropertyDescriptor(t,k){seen.push('desc:'+String(k));return Reflect.getOwnPropertyDescriptor(t,k)},get(t,k,r){seen.push('get:'+String(k));return Reflect.get(t,k,r)}});
++        \\const input={[I.custom](depth,selected){if(depth!==4||selected.depth!==4||!selected.showHidden||!selected.showProxy||selected[token]!==7||selected.customOption!=='kept'||Object.hasOwn(selected,'hidden'))throw Error('hidden overrides');return 'observed'}};
++        \\if(F(options,'%o',input)!=='observed')throw Error('hidden result');
++        \\if(seen.join('|')!=='keys|desc:depth|get:depth|desc:showHidden|get:showHidden|desc:showProxy|get:showProxy|desc:customOption|get:customOption|desc:hidden|desc:Symbol(token)|get:Symbol(token)')throw Error('CopyDataProperties order '+seen);
++    );
++}
++test "native format options ordinary placeholder forwards the actual options without eager spreading" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\let reads=0,keys=0;const token=Symbol('unused'),target={get depth(){if(this!==options)throw Error('actual options receiver');reads++;return 1}};
++        \\Object.defineProperty(target,token,{enumerable:true,get(){throw Error('ordinary options eagerly spread symbol')}});
++        \\const options=new Proxy(target,{ownKeys(t){keys++;return Reflect.ownKeys(t)}});
++        \\const value={a:{b:{c:1}}};const result=F(options,'%O',value);
++        \\if(!result.includes('[Object]')||reads!==1||keys!==1)throw Error('actual ordinary options flow');
++    );
++}
++test "native format options trailing objects use the same options and trailing strings stay uninspected" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\let calls=0;const input={[I.custom](depth,selected,inspector){calls++;if(inspector!==I||selected.depth!==1||depth!==1)throw Error('trailing options');return 'object'}};
++        \\if(F({depth:1},'lead',input,'tail')!=='lead object tail'||calls!==1)throw Error('trailing selected inspector');
++    );
++}
++
++test "native format options performs nullish default lookup after the live separator getter" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\const order=[],options={get numericSeparator(){order.push('get');I.defaultOptions.numericSeparator=true;return undefined}};
++        \\if(F(options,'%d',1000)!=='1_000'||order.join(',')!=='get')throw Error('fallback preceded getter');
++        \\I.defaultOptions.numericSeparator=false;
++        \\const arrayOptions=[];arrayOptions.numericSeparator=true;if(F(arrayOptions,'%d',1000)!=='1_000')throw Error('actual array options');
++    );
++}
++test "native format options preserves ordinary getter failures and suppresses later argument work" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\const marker={tag:'numeric Get'};let later=0,reason;
++        \\try{F({get numericSeparator(){throw marker}},'%d %s',1000,{toString(){later++;return 'late'}})}catch(e){reason=e}
++        \\if(reason!==marker||later!==0)throw Error('numeric Get failure changed');
++        \\const spreadMarker={tag:'spread Get'},order=[];reason=undefined;
++        \\const options={get depth(){order.push('depth');throw spreadMarker},get colors(){order.push('colors');return true}};
++        \\const input={[I.custom](){later++;return 'late'}};
++        \\try{F(options,'%s',input)}catch(e){reason=e}
++        \\if(reason!==spreadMarker||order.join(',')!=='depth'||later!==0)throw Error('spread failure ordering');
++    );
++    try f.balanced();
++}
++test "native format options retains independent option frames across recursive getter calls" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\const order=[];let inner;
++        \\const outer={get numericSeparator(){order.push('outer');inner=F({get numericSeparator(){order.push('inner');return false}},'%d',2000);return true}};
++        \\if(F(outer,'%d',1000)!=='1_000'||inner!=='2000'||order.join(',')!=='outer,inner')throw Error('reentrant frame alias');
++        \\let inspected=0;const input={[I.custom](depth,options){inspected++;if(depth!==3||options.depth!==3)throw Error('reentrant options changed');return F({numericSeparator:true},'%d',3000)}};
++        \\if(F({depth:3},'%O',input)!=='3_000'||inspected!==1)throw Error('nested inspector format');
++    );
++    try f.balanced();
++}
++test "native validateObject preserves all three original flags and actual hidden error identity" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\const values=[null,[],function named(){},{},Object.create(null),new Number(1),undefined,1,'value',true,1n,Symbol('v')];
++        \\for(let flags=0;flags<8;flags++)for(let index=0;index<values.length;index++){
++        \\  const expected=index===0?!!(flags&1):index===1?!!(flags&2):index===2?!!(flags&4):index<6;
++        \\  let reason;try{if(V(values[index],'input',flags)!==undefined)throw Error('validator return')}catch(e){reason=e}
++        \\  if(expected?reason!==undefined:!(reason instanceof TypeError&&reason.code==='ERR_INVALID_ARG_TYPE'&&reason.constructor===TypeError))throw Error('flag acceptance '+flags+':'+index);
++        \\}
++        \\if(V({},'input')!==undefined||V({},'input',undefined)!==undefined||V({},'input',-0)!==undefined)throw Error('default zero flags');
++        \\let direct;try{V.withoutStackTrace([],'input')}catch(e){direct=e}
++        \\if(!(direct instanceof TypeError)||direct.code!=='ERR_INVALID_ARG_TYPE'||direct.constructor!==TypeError)throw Error('raw shares hidden class');
++    );
++}
++test "native validateObject performs three independent bit coercions with original short circuit points" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\let seen=[];const flags={valueOf(){seen.push(seen.length);return [1,2,4][seen.length-1]}};
++        \\V(function accepted(){},'input',flags);if(seen.join(',')!=='0,1,2')throw Error('three flag conversions');
++        \\seen=[];let reason;const deny={valueOf(){seen.push('bit');return 0}};
++        \\try{V(null,'input',deny)}catch(e){reason=e}
++        \\if(reason?.code!=='ERR_INVALID_ARG_TYPE'||seen.length!==1)throw Error('null short circuit');
++        \\seen=[];reason=undefined;try{V([],'input',deny)}catch(e){reason=e}
++        \\if(reason?.code!=='ERR_INVALID_ARG_TYPE'||seen.length!==2)throw Error('array short circuit');
++        \\seen=[];V({},'input',deny);if(seen.length!==3)throw Error('ordinary object bit order');
++        \\seen=[];V(null,'input',{valueOf(){seen.push('bit');return 1}});if(seen.length!==3)throw Error('nullable still evaluates other flags');
++    );
++}
++test "native validateObject preserves primitive flag conversion failures and original thrown values" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\for(const flags of [1n,Symbol('flags')]){let reason;try{V({},'input',flags)}catch(e){reason=e}if(!(reason instanceof TypeError)||Object.hasOwn(reason,'code'))throw Error('actual bitwise type failure')}
++        \\const marker={tag:'flags'};let seen=0,reason;
++        \\try{V({},'input',{valueOf(){seen++;throw marker}})}catch(e){reason=e}
++        \\if(reason!==marker||seen!==1)throw Error('coercion throw changed');
++        \\V({},'input',null);V({},'input',false);V({},'input','7');
++    );
++    try f.balanced();
++}
++test "native validateObject uses the captured real ArrayIsArray including revoked proxy behavior" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\const original=Array.isArray;Array.isArray=()=>false;
++        \\try{
++        \\  let reason;try{V(new Proxy([],{}),'input')}catch(e){reason=e}
++        \\  if(reason?.code!=='ERR_INVALID_ARG_TYPE')throw Error('array proxy brand bypassed');
++        \\  const revoked=Proxy.revocable({},{});revoked.revoke();reason=undefined;
++        \\  try{V(revoked.proxy,'input')}catch(e){reason=e}
++        \\  if(!(reason instanceof TypeError)||Object.hasOwn(reason,'code'))throw Error('actual revoked ArrayIsArray failure');
++        \\  if(V(revoked.proxy,'input',2)!==undefined||F(revoked.proxy,'literal')!=='literal')throw Error('allowed array bypass not preserved');
++        \\}finally{Array.isArray=original}
++    );
++}
++test "native format options uses original numeric String and Apply primordials after guest mutation" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\const saved=[Number,String,parseInt,parseFloat,Reflect.apply],poison=()=>{throw Error('late primordial read')};
++        \\Number=String=parseInt=parseFloat=Reflect.apply=poison;
++        \\try{
++        \\  if(F({numericSeparator:true},'%d %i %f %s','1000','2345x','3456.5x',Symbol('s'))!=='1_000 2_345 3_456.5 Symbol(s)')throw Error('original primordial lost');
++        \\  if(V({},'input')!==undefined)throw Error('original ReflectApply lost');
++        \\}finally{[Number,String,parseInt,parseFloat,Reflect.apply]=saved}
++    );
++}
++test "native format options spread defines actual own symbol data without inherited setter calls" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run(
++        \\const token=Symbol('option'),options={customOption:true};let assigned=0;
++        \\Object.defineProperty(options,token,{enumerable:true,value:17});
++        \\Object.defineProperty(Object.prototype,token,{configurable:true,set(){assigned++;throw Error('inherited symbol setter')}});
++        \\try{
++        \\  const input={[I.custom](depth,selected){const d=Object.getOwnPropertyDescriptor(selected,token);if(!d||d.value!==17||!d.writable||!d.enumerable||!d.configurable)throw Error('own symbol descriptor');return 'observed'}};
++        \\  if(F(options,'%s',input)!=='observed'||assigned!==0)throw Error('CopyDataProperties used ordinary Set');
++        \\}finally{delete Object.prototype[token]}
++    );
++}
++test "native format options current native getter fatal stops later placeholders with first reason" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try std.testing.expectError(error.JavaScriptException, f.run(
++        \\var later=0;
++        \\F({get numericSeparator(){formatNativeFatal();return true}},'%d %s',1000,{toString(){later++;return 'late'}});
++    ));
++    const caught_reason = try f.reason(); defer f.engine.freeValue(caught_reason);
++    try std.testing.expect(c.JS_IsUncatchableError(caught_reason));
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, caught_reason, f.first_fatal));
++    try f.run("if(later!==0)throw Error('later placeholder entered')");
++    try f.balanced();
++}
++test "native format options retires the separator temporary before the next placeholder" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit(); f.emit_fatal = true;
++    try std.testing.expectError(error.JavaScriptException, f.run(
++        \\var later=0;
++        \\F({get numericSeparator(){return formatEphemeral()}},'%d %s',1000,{toString(){later++;return 'late'}});
++    ));
++    const caught_reason = try f.reason(); defer f.engine.freeValue(caught_reason);
++    try std.testing.expectEqual(@as(usize, 1), f.retired);
++    try std.testing.expect(c.JS_IsUncatchableError(caught_reason));
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, caught_reason, f.first_fatal));
++    try f.run("if(later!==0)throw Error('separator retired after later placeholder')");
++    try f.balanced();
++}
++test "native format options retires overwritten spread values before entering inspect" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit(); f.emit_fatal = true;
++    try std.testing.expectError(error.JavaScriptException, f.run(
++        \\var entered=0;
++        \\F({get colors(){return formatEphemeral()}},'%s',{[I.custom](){entered++;return 'late'}});
++    ));
++    const caught_reason = try f.reason(); defer f.engine.freeValue(caught_reason);
++    try std.testing.expectEqual(@as(usize, 1), f.retired);
++    try std.testing.expect(c.JS_IsUncatchableError(caught_reason));
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, caught_reason, f.first_fatal));
++    try f.run("if(entered!==0)throw Error('overwritten value retired after inspector')");
++    try f.balanced();
++}
++test "native format options accepts flagged error values as data without an actual pending event" {
++    var f: Fixture = undefined; try f.init(true); defer f.deinit();
++    try f.run("var marked=new Error('diagnostic-only'),later=0");
++    const marked = try f.get("marked"); defer f.engine.freeValue(marked);
++    c.JS_SetUncatchableError(f.engine.context, marked);
++    try f.run(
++        \\if(F(marked,'literal')!=='literal'||F({numericSeparator:marked},'%d %s',1000,{toString(){later++;return 'tail'}})!=='1_000 tail'||later!==1)throw Error('flag-only data became a pending failure');
++    );
++    try std.testing.expect(c.JS_IsUncatchableError(marked));
++    try std.testing.expect(c.JS_IsUndefined(f.first_fatal));
++    try f.balanced();
++}
++test "native format options requires the actual errors bootstrap and reuses its original inspector function" {
++    var f: Fixture = undefined; try f.init(false); defer f.deinit();
++    try std.testing.expectError(error.ActualInternalErrorsNotInitialized, errors.validateObject(f.engine));
++    try std.testing.expect(!f.engine.native_module_values.contains("pi-native:private/argument-error-owner"));
++    const before = try f.get("F"); defer f.engine.freeValue(before);
++    try std.testing.expectError(error.JavaScriptException, f.run("F({},'literal')"));
++    const caught_reason = try f.reason(); defer f.engine.freeValue(caught_reason);
++    try std.testing.expect(!f.engine.native_module_values.contains("pi-native:private/argument-error-owner"));
++    try f.prepare();
++    const after = try f.get("F"); defer f.engine.freeValue(after);
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, before, after));
++    try f.run("if(F({},'literal')!=='literal'||V({},'input')!==undefined)throw Error('actual graph not shared')");
++    try f.balanced();
++}
+--- a/build.zig
++++ b/build.zig
+@@ -4944,6 +4944,23 @@
+     if (target.result.os.tag == .windows) { sdk_public_compaction_file_ops.root_module.linkSystemLibrary("advapi32", .{}); sdk_public_compaction_file_ops.root_module.linkSystemLibrary("userenv", .{}); }
+     b.step("build-native-sdk-public-compaction-file-ops", "Install actual file operations array append and ownership controls without execution").dependOn(&b.addInstallArtifact(sdk_public_compaction_file_ops, .{ .dest_sub_path = b.fmt("native-sdk-public-compaction-file-ops{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+ 
++    // Actual formatWithOptions plus complete shared validateObject controls.
++    // Install only; compilation/query/runtime require separate Root authority.
++    const node_format_with_options = b.addTest(.{
++        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_format_with_options_test.zig"), .target = target, .optimize = optimize }),
++        .use_llvm = use_llvm,
++        .filters = &.{ "native format options", "native validateObject" },
++    });
++    linkQuickJs(b, node_format_with_options.root_module, quickjs, sqlite_lib_dir);
++    linkTypeScriptParser(b, node_format_with_options.root_module, typescript_parser);
++    linkSqlite(node_format_with_options.root_module, sqlite_lib_dir, sqlite_library);
++    node_format_with_options.root_module.addImport("catalog_tool", catalog_tool);
++    if (target.result.os.tag == .windows) {
++        node_format_with_options.root_module.linkSystemLibrary("advapi32", .{});
++        node_format_with_options.root_module.linkSystemLibrary("userenv", .{});
++    }
++    b.step("build-native-node-format-with-options", "Install twenty-four declared format options and validator controls without running").dependOn(&b.addInstallArtifact(node_format_with_options, .{ .dest_sub_path = b.fmt("native-node-format-with-options{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
++
+     // Genuine shared Node argument errors and actual rest/super controls.
+     // This target only installs the test artifact; no run or Source capture edge.
+     const node_argument_errors = b.addTest(.{

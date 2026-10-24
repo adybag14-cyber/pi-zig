@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-24T20:04:12.222250+00:00",
+  "status": "accepted_complete_private_WeakRefMap_v4_source_only",
+  "observed_Main_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\source-intake-v4.json",
+    "bytes": 36142,
+    "sha256": "6A45358172ED9FD34B95EEDDDC478FF7216F5332579D90BCD700BD9073C8A3F8"
+  },
+  "selected_sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_weak_ref_map.zig",
+      "bytes": 9388,
+      "sha256": "125B08AE879A8CC23F4D85F91BC725BE1429EAED79B352C2C5555C446C3F2BAD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\src\\extensions\\native_node_fs_collections.zig",
+      "bytes": 16656,
+      "sha256": "3617D02BCF35770944E7804D62E1AFB9699D8A4816BB4E2D45B1C191E7322876"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected-v3\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2409692,
+      "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.h",
+      "bytes": 117849,
+      "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected-v4\\src\\native_node_weak_ref_map_test.zig",
+      "bytes": 32654,
+      "sha256": "8DE4D15EE70647489C02467790E2E504DB216E0CC81D476EEFDE040F27A65966"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 542205,
+      "sha256": "70745823A64741AF5DD258406E54500E86ED903A0D504A9353CACCF7DA34ADD9"
+    }
+  ],
+  "static_pin_versions": 47,
+  "finite_production_hunks": 8,
+  "has_correction_hunks": 2,
+  "owned_accessor_correction_hunks": 1,
+  "test_string_syntax_hunks": 1,
+  "build_addition_bytes": 1080,
+  "direct_relative_imports": 15,
+  "source_declared_controls": 32,
+  "git_apply_check": true,
+  "manual_review": [
+    "Read complete original diagnostics_channel WeakRefMap authority, relevant primordials and current QuickJS ordinary Get producer.",
+    "Read complete selected class owner, makeSafe collection owner, every C/header delta, and all32 control bodies.",
+    "The original has method calls live get; cleanup independently calls live has then conditional delete. Real SafeMap, FinalizationRegistry and WeakReference state retain original registration/refcount/cleanup ordering.",
+    "Own-private lookup never traverses Proxy traps or prototypes. Actual accessor function is duplicated and consumed by JS_CallFree; new real self-removing getter/GC control checks lifetime.",
+    "All original31 control oracles remain; one invalid Zig character literal uses equivalent multiline string syntax. New32nd control preserves getter native data until return and verifies later retirement.",
+    "All staged production/build full inverses and current source baseline bytes verified. No native code or Zig parser was executed."
+  ],
+  "source_only": true,
+  "main_mutated": false,
+  "fresh_QuickJS_required": true,
+  "runtime_qualified": false,
+  "product_qualified": false
+}

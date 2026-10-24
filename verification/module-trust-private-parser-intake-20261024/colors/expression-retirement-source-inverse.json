@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\projected\\src\\extensions\\native_node_util_colors.zig",
+    "bytes": 7084,
+    "sha256": "FE336AC70E6F4B1873FA3C9C253CA9733461F269ECE8A9655B5DAD5C3AEB993B"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_util_colors.zig",
+    "bytes": 8033,
+    "sha256": "E0ADAEDA0F2FDA41DA25713E775C4AA3B5CE153A2DBC1386D4764CA1CE2CEBFA"
+  },
+  "edits": [
+    {
+      "offset": 3611,
+      "before": "fn forcedDepth(s: *Scope, owner: c.JSValue) !c.JSValue {\n    const tty = try s.own(try a.expression(s.engine, lazyInternalTTY, .{owner}));\n    const method = try s.get(tty, \"getColorDepth\");\n    const depth = try s.call(method, tty, &.{});\n    return a.duplicate(s.engine, try s.binary(@intFromEnum(arithmetic.Operation.greater),\n        depth, c.JS_NewInt32(s.engine.context, 2)));\n}",
+      "after": "fn forcedDepthValue(s: *Scope, owner: c.JSValue) !c.JSValue {\n    const tty = try s.own(try a.expression(s.engine, lazyInternalTTY, .{owner}));\n    const method = try s.get(tty, \"getColorDepth\");\n    return a.duplicate(s.engine, try s.call(method, tty, &.{}));\n}\nfn forcedDepth(s: *Scope, owner: c.JSValue) !c.JSValue {\n    // The method/reference temporaries retire before relational coercion.\n    const depth = try s.own(try a.expression(s.engine, forcedDepthValue, .{owner}));\n    return a.duplicate(s.engine, try s.binary(@intFromEnum(arithmetic.Operation.greater),\n        depth, c.JS_NewInt32(s.engine.context, 2)));\n}",
+      "input_sha256": "FE336AC70E6F4B1873FA3C9C253CA9733461F269ECE8A9655B5DAD5C3AEB993B",
+      "output_sha256": "0518BB0E6F626EEC8E275AB8E877F22176C2BB1AD1E97EA3C58464CFE89AFB6C"
+    },
+    {
+      "offset": 4236,
+      "before": "fn streamColor(s: *Scope, stream: c.JSValue) !c.JSValue {\n    // Optional access and && preserve undefined/null/raw falsy property values.\n    if (c.JS_IsNull(stream) or c.JS_IsUndefined(stream)) return c.pi_js_undefined();\n    const tty = try s.get(stream, \"isTTY\");\n    if (!s.truthy(tty)) return a.duplicate(s.engine, tty);\n    const selected = try s.get(stream, \"getColorDepth\");\n    if (!c.JS_IsFunction(s.engine.context, selected)) return a.boolean(s, true);\n    // typeof stream.getColorDepth and stream.getColorDepth() are TWO reads.\n    const method = try s.get(stream, \"getColorDepth\");\n    const depth = try s.call(method, stream, &.{});\n    return a.duplicate(s.engine, try s.binary(@intFromEnum(arithmetic.Operation.greater),\n        depth, c.JS_NewInt32(s.engine.context, 2)));\n}",
+      "after": "fn streamTTY(s: *Scope, stream: c.JSValue) !c.JSValue {\n    if (c.JS_IsNull(stream) or c.JS_IsUndefined(stream)) return c.pi_js_undefined();\n    return a.duplicate(s.engine, try s.get(stream, \"isTTY\"));\n}\nfn hasDepthMethod(s: *Scope, stream: c.JSValue) !c.JSValue {\n    const selected = try s.get(stream, \"getColorDepth\");\n    return a.boolean(s, c.JS_IsFunction(s.engine.context, selected));\n}\nfn streamDepthValue(s: *Scope, stream: c.JSValue) !c.JSValue {\n    // The typeof check's earlier method has already retired before this read.\n    const method = try s.get(stream, \"getColorDepth\");\n    return a.duplicate(s.engine, try s.call(method, stream, &.{}));\n}\nfn streamColor(s: *Scope, stream: c.JSValue) !c.JSValue {\n    // Optional access and && preserve undefined/null/raw falsy property values.\n    const tty = try a.expression(s.engine, streamTTY, .{stream});\n    if (!s.truthy(tty)) return tty;\n    // A truthy left operand is discarded before the right operand starts.\n    var completion = a.owned.Completion.initVoid(s.engine, {});\n    completion.release(tty);\n    try completion.finishVoid();\n    if (!try a.condition(s.engine, hasDepthMethod, .{stream})) return a.boolean(s, true);\n    // typeof stream.getColorDepth and stream.getColorDepth() are TWO reads.\n    const depth = try s.own(try a.expression(s.engine, streamDepthValue, .{stream}));\n    return a.duplicate(s.engine, try s.binary(@intFromEnum(arithmetic.Operation.greater),\n        depth, c.JS_NewInt32(s.engine.context, 2)));\n}",
+      "input_sha256": "0518BB0E6F626EEC8E275AB8E877F22176C2BB1AD1E97EA3C58464CFE89AFB6C",
+      "output_sha256": "E27DDC7D910300E4C443E82A7DDAD50F4E5CC19C694A6CBDC69CBC960D0E9A46"
+    },
+    {
+      "offset": 6523,
+      "before": "    return a.duplicate(s.engine, try s.call(method, target, &.{stream}));\n}\nfn setColor",
+      "after": "    return a.boolean(s, s.truthy(try s.call(method, target, &.{stream})));\n}\nfn setColor",
+      "input_sha256": "E27DDC7D910300E4C443E82A7DDAD50F4E5CC19C694A6CBDC69CBC960D0E9A46",
+      "output_sha256": "E0ADAEDA0F2FDA41DA25713E775C4AA3B5CE153A2DBC1386D4764CA1CE2CEBFA"
+    }
+  ],
+  "full_inverse": true,
+  "reason": "Retire ephemeral left/typeof/callee values at original expression boundaries and return a boolean from the condition helper, avoiding a temporary object leak.",
+  "native_execution": false
+}

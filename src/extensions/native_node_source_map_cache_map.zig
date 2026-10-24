@@ -43,16 +43,18 @@ fn ownPrivate(s: *Scope, receiver: c.JSValue, key: c.JSValue, require_brand: boo
         // A later primitive property Get has no own internal private storage.
         return c.pi_js_undefined();
     }
-    var descriptor = try s.descriptor(receiver, key) orelse {
+    // A missing private slot must not fall through to an exotic descriptor
+    // trap or to a Proxy target. The genuine own-private producer also retains
+    // an accessor callee through self-removal and preserves its actual result.
+    var found: c_int = 0;
+    try s.pending();
+    const value = try s.checked(c.JS_PiGetOwnPrivateProperty(
+        s.engine.context, receiver, key, &found));
+    if (found == 0) {
         if (require_brand) return typeError(s, "Receiver has no SourceMapCacheMap private field");
         return c.pi_js_undefined();
-    };
-    defer s.releaseDescriptor(&descriptor);
-    if (descriptor.flags & c.JS_PROP_GETSET != 0) {
-        if (c.JS_IsUndefined(descriptor.getter)) return c.pi_js_undefined();
-        return a.duplicate(s.engine, try s.call(descriptor.getter, receiver, &.{}));
     }
-    return a.duplicate(s.engine, descriptor.value);
+    return a.duplicate(s.engine, value);
 }
 fn branded(s: *Scope, owner: c.JSValue, receiver: c.JSValue, field: [*:0]const u8) !c.JSValue {
     const key = try s.get(owner, field);

@@ -1,0 +1,28 @@
+--- a/src/extensions/native_node_package_json_cache.zig
++++ b/src/extensions/native_node_package_json_cache.zig
+@@ -10,7 +10,7 @@
+ const Scope = @import("native_node_operation_scope.zig").Scope;
+ const ChargedAllocator = @import("native_env_charged_allocator.zig").ChargedAllocator;
+ const physical = @import("native_node_package_json_io.zig");
+-const parser = @cImport(@cInclude("native_node_package_json_parser.h"));
++const parser = @import("native_node_package_json_api.zig").c;
+ 
+ pub const Entry = struct {
+     path: []u8,
+--- a/src/extensions/native_node_package_json_values.zig
++++ b/src/extensions/native_node_package_json_values.zig
+@@ -4,7 +4,7 @@
+ const std = @import("std");
+ const a = @import("native_node_argument_values.zig");
+ const c = a.c;
+-const parser = @cImport(@cInclude("native_node_package_json_parser.h"));
++const parser = @import("native_node_package_json_api.zig").c;
+ 
+ /// The binding's actual CHECK has already admitted a primitive String. Normal
+ /// UTF8 conversion joins pairs; lone surrogate code points are replaced exactly
+--- /dev/null
++++ b/src/extensions/native_node_package_json_api.zig
+@@ -0,0 +1,3 @@
++//! Shared native package parser C namespace. The cache and serializer exchange
++//! opaque Config pointers from this one import, preserving their actual type.
++pub const c = @cImport(@cInclude("native_node_package_json_parser.h"));

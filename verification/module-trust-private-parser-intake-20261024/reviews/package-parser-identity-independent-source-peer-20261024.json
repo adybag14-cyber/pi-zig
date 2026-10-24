@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "status": "independently_accepted_exact_shared_package_parser_C_namespace_source_only",
+  "reviewer": "catalog_review",
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-parser-identity-sourceonly-20261024\\source-intake.json",
+    "bytes": 5234,
+    "sha256": "1FEAD1A54B4965C019C219D628D30A8686048A9A0E4FA3802B49CEE99FB0678E"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-parser-identity-sourceonly-20261024\\source.patch",
+    "bytes": 1378,
+    "sha256": "410EB16BCE83E4DA0155A5301CDA4E2696A6EC933804DF9C5024B942953C7E19"
+  },
+  "inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-parser-identity-sourceonly-20261024\\source-inverse.json",
+    "bytes": 1596,
+    "sha256": "68DE5F5643061345CA049AA1E87EEC8FAFEE068F4FB88E61463F44B163B4635D"
+  },
+  "observed_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "checked_pin_versions": 12,
+  "checks": [
+    "Both exact import substitutions replayed at their recorded byte offsets and fully inverted; every original function byte is unchanged.",
+    "Complete three-target 1378-byte patch reconstructed and git apply --check passed against clean frozen a226; no Main mutation.",
+    "Both cache and serializer now resolve the identical native_node_package_json_api.zig module and its single 231-byte C namespace. No casts or type aliases conceal incompatible opaque types.",
+    "Full cache and serializer source read; native header declares PiNodePackageJsonConfig once as an opaque struct. Cache.Entry.config flows through BindingData.serializePackageBody into serialize's const pointer to that same shared declaration.",
+    "Read actual compile diagnostic at BindingData line213 and serializer line48. Bounded src/extensions search found the only package parser C imports/Config declarations at these two consumers.",
+    "Header, binding consumer, build and all existing package-input controls are unchanged and rehashed."
+  ],
+  "selected_namespace": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-parser-identity-sourceonly-20261024\\projected\\src\\extensions\\native_node_package_json_api.zig",
+    "bytes": 231,
+    "sha256": "058ABE5FA35E451FFBC5F4A164FBA6351E87392DF40A7C1B9555EA08C220254D"
+  },
+  "source_declaration_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_package_json_parser.h",
+    "bytes": 3025,
+    "sha256": "48ABD313181A409DD521166D25C39E957FAD6FD0DA594E4CD1A666C45FE43EEE"
+  },
+  "consumer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_modules_binding_data.zig",
+    "bytes": 12397,
+    "sha256": "3CF4292A826730575E79A091FDC5558308DCD78DFC131CB9EEEFBF2C6CF1505E"
+  },
+  "failure_evidence": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v43-new18-buildquery-20261024-194238\\groups\\native-node-module-package-inputs\\compile.stderr.log",
+    "bytes": 21904,
+    "sha256": "1F52410C4B09B3B9EF3E5838AA31398A320CEAA9A8E58BA244A87CD0BCDC641F"
+  },
+  "verdict": "No concrete source blocker. This addresses the observed distinct @cImport opaque-type identity without changing runtime semantics.",
+  "limitations": [
+    "The failed native attempt remains failed and requires its separate exact negative closure.",
+    "No compiler/query/runtime was run here; later fresh native validation is required."
+  ],
+  "native_execution": false,
+  "source_candidate_execution": false,
+  "Main_mutated": false,
+  "actual_metadata_count": null,
+  "runtime_qualification": false,
+  "product_qualification": false
+}

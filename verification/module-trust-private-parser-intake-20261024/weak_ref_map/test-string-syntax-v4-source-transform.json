@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "selected_parent": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\source-intake-v3.json",
+    "bytes": 35650,
+    "sha256": "52737C398AECBC72E7A04848D46A92325953D6BA8371328FD8B25B2D3FB1A0BE"
+  },
+  "test_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected-v3\\src\\native_node_weak_ref_map_test.zig",
+    "bytes": 32640,
+    "sha256": "E9E78228F50930FB2CED5B48833A5F46B0A96CF975CA5D65C0ED4BF5CD3C96F9"
+  },
+  "test_successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected-v4\\src\\native_node_weak_ref_map_test.zig",
+    "bytes": 32654,
+    "sha256": "8DE4D15EE70647489C02467790E2E504DB216E0CC81D476EEFDE040F27A65966"
+  },
+  "hunk": {
+    "offset": 16996,
+    "before": "    try f.check('events.join(\"|\")===\"has:get|true|true|delete:get|true|true\"&&m.size===0');\n",
+    "after": "    try f.check(\n        \\\\events.join(\"|\")===\"has:get|true|true|delete:get|true|true\"&&m.size===0\n    );\n",
+    "before_sha256": "E9E78228F50930FB2CED5B48833A5F46B0A96CF975CA5D65C0ED4BF5CD3C96F9",
+    "after_sha256": "8DE4D15EE70647489C02467790E2E504DB216E0CC81D476EEFDE040F27A65966"
+  },
+  "raw_inverse_exact": true,
+  "same_JavaScript_expression": "events.join(\"|\")===\"has:get|true|true|delete:get|true|true\"&&m.size===0",
+  "JavaScript_expression_sha256": "19D11A16C692CFE40E3162546C5852A5D53004667D7B4737123A3498F4FA1EFA",
+  "all_32_test_names_and_order_unchanged": true,
+  "only_one_call_string_notation_changed": true,
+  "all_other_test_bytes_unchanged": true,
+  "all_32_assertion_semantics_unchanged": true,
+  "selected_production_and_build_unchanged": [
+    {
+      "intended_relative_path": "src/extensions/native_node_weak_ref_map.zig",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_weak_ref_map.zig",
+        "bytes": 9388,
+        "sha256": "125B08AE879A8CC23F4D85F91BC725BE1429EAED79B352C2C5555C446C3F2BAD"
+      }
+    },
+    {
+      "intended_relative_path": "src/extensions/native_node_fs_collections.zig",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\src\\extensions\\native_node_fs_collections.zig",
+        "bytes": 16656,
+        "sha256": "3617D02BCF35770944E7804D62E1AFB9699D8A4816BB4E2D45B1C191E7322876"
+      }
+    },
+    {
+      "intended_relative_path": "vendor/quickjs/quickjs.c",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected-v3\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409692,
+        "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+      }
+    },
+    {
+      "intended_relative_path": "vendor/quickjs/quickjs.h",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 117849,
+        "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+      }
+    },
+    {
+      "intended_relative_path": "build.zig",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 542205,
+        "sha256": "70745823A64741AF5DD258406E54500E86ED903A0D504A9353CACCF7DA34ADD9"
+      }
+    }
+  ],
+  "reason": "Replace an invalid Zig single-quoted multi-character literal with the proper Zig multiline string while preserving its complete JavaScript expression and oracle.",
+  "main_modified": false,
+  "native_executed": false,
+  "Zig_parser_executed": false
+}

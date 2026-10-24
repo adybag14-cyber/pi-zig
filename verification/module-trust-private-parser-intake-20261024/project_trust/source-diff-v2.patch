@@ -1,0 +1,1216 @@
+--- /dev/null
++++ b/src/extensions/native_sdk_project_trust_paths.zig
+@@ -0,0 +1,327 @@
++//! Complete private trust-manager.ts path/resource/option suppliers.
++//! The application owner passes its genuine imported modules. The original
++//! mutable resource array and import captures belong to one Engine evaluation;
++//! no Store, policy decision, runtimeFactory or public namespace is fabricated.
++const h = @import("native_sdk_session_locals.zig");
++const v = h.v;
++const c = h.c;
++const Engine = h.Engine;
++const Scope = h.Scope;
++
++pub const Inputs = struct {
++    filesystem: c.JSValue,
++    paths: c.JSValue,
++    os: c.JSValue,
++    path_utilities: c.JSValue,
++    config_dir: c.JSValue,
++};
++
++const cache_key = "pi-private:actual-sdk-project-trust-paths";
++const input_names = .{ "filesystem", "paths", "os", "path_utilities", "config_dir" };
++const Creating = struct { engine: *Engine, previous: ?*Creating };
++threadlocal var creating: ?*Creating = null;
++
++pub fn create(engine: *Engine, inputs: Inputs) anyerror!c.JSValue {
++    try engine.checkNativeEntry();
++    if (engine.native_module_values.get(cache_key)) |cached|
++        return h.expression(engine, cachedBody, .{ cached, inputs });
++    var cursor = creating;
++    while (cursor) |current_creation| : (cursor = current_creation.previous)
++        if (current_creation.engine == engine) return error.ActualProjectTrustPathsCreationReentry;
++    var entry: Creating = .{ .engine = engine, .previous = creating };
++    creating = &entry;
++    defer creating = entry.previous;
++    var invocation: Engine.NativeInvocation = .{};
++    engine.enterNativeInvocation(&invocation);
++    engine.native_exception_diagnostics_suppressed += 1;
++    defer engine.native_exception_diagnostics_suppressed -= 1;
++    const result = createOwned(engine, inputs) catch |err|
++        return engine.checked(engine.leaveNativeInvocation(&invocation,
++            @import("native_sdk.zig").fail(engine, err)));
++    return engine.checked(engine.leaveNativeInvocation(&invocation, result));
++}
++
++fn cachedBody(s: *Scope, cached: c.JSValue, inputs: Inputs) anyerror!c.JSValue {
++    inline for (input_names) |name| {
++        if (!v.equal(s, try v.get(s, cached, name), @field(inputs, name)))
++            return error.ActualProjectTrustPathsImportsChanged;
++    }
++    return v.duplicate(s, try v.get(s, cached, "exports"));
++}
++
++fn createOwned(engine: *Engine, inputs: Inputs) anyerror!c.JSValue {
++    const graph = try h.expression(engine, createBody, .{inputs});
++    const exports_value = h.get(engine, graph, "exports") catch |err| {
++        var completion = v.owned.Completion.initValue(engine, err);
++        completion.release(graph);
++        return completion.finishValue();
++    };
++    // All guest-capable imports, local retirement and export acquisition finish
++    // before this single private publication. Reserve after possible reentry.
++    engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1) catch |err| {
++        var completion = v.owned.Completion.initValue(engine, err);
++        completion.release(exports_value);
++        completion.release(graph);
++        return completion.finishValue();
++    };
++    engine.native_module_values.putAssumeCapacity(cache_key, graph);
++    return exports_value;
++}
++
++fn requiredFunction(s: *Scope, owner: c.JSValue, name: [*:0]const u8) anyerror!c.JSValue {
++    const binding = try v.get(s, owner, name);
++    if (!c.JS_IsFunction(s.engine.context, binding))
++        return error.ActualProjectTrustPathImportRequired;
++    return binding;
++}
++
++fn createBody(s: *Scope, inputs: Inputs) anyerror!c.JSValue {
++    // Retain each real module before any imported property can execute guest JS.
++    inline for (input_names) |name| _ = try v.own(s, v.duplicate(s, @field(inputs, name)));
++    const exists_sync = try requiredFunction(s, inputs.filesystem, "existsSync");
++    const home_dir = try requiredFunction(s, inputs.os, "homedir");
++    const dirname = try requiredFunction(s, inputs.paths, "dirname");
++    const join = try requiredFunction(s, inputs.paths, "join");
++    const canonicalize = try requiredFunction(s, inputs.path_utilities, "canonicalizePath");
++    const resolve = try requiredFunction(s, inputs.path_utilities, "resolvePath");
++    const resource_names = try v.array(s);
++    inline for (.{
++        "settings.json", "mcp.json", "extensions", "skills",
++        "prompts", "themes", "SYSTEM.md", "APPEND_SYSTEM.md",
++    }, 0..) |name, index| try v.index(s, resource_names, @intCast(index), try v.text(s, name));
++    const normalize_function = try v.ordinary(s, "normalizeCwd", 1, normalizeCallback,
++        &.{ canonicalize, resolve });
++    const parent_function = try v.ordinary(s, "getProjectTrustParentPath", 1,
++        parentCallback, &.{ normalize_function, dirname });
++    const options_function = try v.ordinary(s, "getProjectTrustOptions", 2,
++        optionsCallback, &.{ normalize_function, parent_function });
++    const resources_function = try v.ordinary(s, "hasTrustRequiringProjectResources", 1,
++        resourcesCallback, &.{
++            exists_sync, home_dir, dirname, join, inputs.config_dir,
++            canonicalize, resolve, resource_names,
++        });
++    const exports_value = try v.object(s);
++    try v.put(s, exports_value, "getProjectTrustParentPath", parent_function);
++    try v.put(s, exports_value, "getProjectTrustOptions", options_function);
++    try v.put(s, exports_value, "hasTrustRequiringProjectResources", resources_function);
++    const graph = try v.stateObject(s);
++    inline for (input_names) |name| try v.put(s, graph, name, @field(inputs, name));
++    try v.put(s, graph, "exports", exports_value);
++    return v.duplicate(s, graph);
++}
++
++fn normalizeCallback(engine: *Engine, _: c.JSValue, args: []const c.JSValue,
++    roots: []const c.JSValue) anyerror!c.JSValue
++{
++    return h.expression(engine, normalizeBody, .{ roots[0], roots[1], v.arg(args, 0) });
++}
++fn normalizeBody(s: *Scope, canonicalize: c.JSValue, resolve: c.JSValue,
++    cwd: c.JSValue) anyerror!c.JSValue
++{
++    const resolved = try v.call(s, resolve, c.pi_js_undefined(), &.{cwd});
++    return v.duplicate(s, try v.call(s, canonicalize, c.pi_js_undefined(), &.{resolved}));
++}
++fn callOwned(engine: *Engine, function_value: c.JSValue,
++    args: []const c.JSValue) anyerror!c.JSValue
++{
++    return h.expression(engine, callBody, .{ function_value, args });
++}
++fn callBody(s: *Scope, function_value: c.JSValue,
++    args: []const c.JSValue) anyerror!c.JSValue
++{
++    return v.duplicate(s, try v.call(s, function_value, c.pi_js_undefined(), args));
++}
++
++const ParentFrame = h.Frame(enum { trust_path, parent_dir });
++fn parentCallback(engine: *Engine, _: c.JSValue, args: []const c.JSValue,
++    roots: []const c.JSValue) anyerror!c.JSValue
++{
++    var frame = ParentFrame.init(engine);
++    return frame.finish(parentBody(&frame, v.arg(args, 0), roots));
++}
++fn parentBody(frame: *ParentFrame, cwd: c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
++    try frame.set(.trust_path, callOwned(frame.engine, roots[0], &.{cwd}));
++    try frame.set(.parent_dir, callOwned(frame.engine, roots[1], &.{frame.get(.trust_path)}));
++    if (c.JS_IsStrictEqual(frame.engine.context, frame.get(.parent_dir), frame.get(.trust_path)))
++        return c.pi_js_undefined();
++    return h.duplicate(frame.engine, frame.get(.parent_dir));
++}
++
++const OptionKind = enum { trust, parent, trust_session, distrust, distrust_session };
++fn updateRow(s: *Scope, path_value: c.JSValue, decision: c.JSValue) anyerror!c.JSValue {
++    const result = try v.object(s);
++    try v.put(s, result, "path", path_value);
++    try v.put(s, result, "decision", decision);
++    return result;
++}
++fn optionRow(s: *Scope, trust_path: c.JSValue, parent_path: c.JSValue,
++    comptime kind: OptionKind) anyerror!c.JSValue
++{
++    const result = try v.object(s);
++    const label = if (kind == .parent) blk: {
++        const text = try v.stringify(s, parent_path);
++        const prefix = try v.binary(s, 0, try v.text(s, "Trust parent folder ("), text);
++        break :blk try v.binary(s, 0, prefix, try v.text(s, ")"));
++    } else try v.text(s, switch (kind) {
++        .trust => "Trust", .trust_session => "Trust (this session only)",
++        .distrust => "Do not trust", .distrust_session => "Do not trust (this session only)",
++        .parent => unreachable,
++    });
++    try v.put(s, result, "label", label);
++    const trusted = kind == .trust or kind == .parent or kind == .trust_session;
++    try v.put(s, result, "trusted", v.boolean(s, trusted));
++    const updates = try v.array(s);
++    const session_only = kind == .trust_session or kind == .distrust_session;
++    if (!session_only) {
++        try v.index(s, updates, 0, try updateRow(s,
++            if (kind == .parent) parent_path else trust_path, v.boolean(s, trusted)));
++        if (kind == .parent)
++            try v.index(s, updates, 1, try updateRow(s, trust_path, c.pi_js_null()));
++    }
++    try v.put(s, result, "updates", updates);
++    if (!session_only)
++        try v.put(s, result, "savedPath", if (kind == .parent) parent_path else trust_path);
++    return result;
++}
++fn firstOptionsBody(s: *Scope, trust_path: c.JSValue) anyerror!c.JSValue {
++    const result = try v.array(s);
++    try v.index(s, result, 0, try optionRow(s, trust_path, c.pi_js_undefined(), .trust));
++    return v.duplicate(s, result);
++}
++fn pushOptionBody(s: *Scope, target: c.JSValue, trust_path: c.JSValue,
++    parent_path: c.JSValue, comptime kind: OptionKind) anyerror!void
++{
++    // Original Get(push) happens before its object-literal argument is built.
++    const push = try v.get(s, target, "push");
++    const row = try optionRow(s, trust_path, parent_path, kind);
++    _ = try v.call(s, push, target, &.{row});
++}
++fn includeSessionBody(s: *Scope, options_value: c.JSValue) anyerror!c.JSValue {
++    return v.boolean(s, !v.nullish(options_value) and
++        v.truthy(s, try v.get(s, options_value, "includeSessionOnly")));
++}
++const OptionsFrame = h.Frame(enum { trust_path, trust_options, parent_path });
++fn optionsCallback(engine: *Engine, _: c.JSValue, args: []const c.JSValue,
++    roots: []const c.JSValue) anyerror!c.JSValue
++{
++    var frame = OptionsFrame.init(engine);
++    return frame.finish(optionsBody(&frame, v.arg(args, 0), v.arg(args, 1), roots));
++}
++fn optionsBody(frame: *OptionsFrame, cwd: c.JSValue, options_value: c.JSValue,
++    roots: []const c.JSValue) anyerror!c.JSValue
++{
++    const engine = frame.engine;
++    try frame.set(.trust_path, callOwned(engine, roots[0], &.{cwd}));
++    try frame.set(.trust_options, h.expression(engine, firstOptionsBody, .{frame.get(.trust_path)}));
++    // This is a second normalization, as in getProjectTrustParentPath(cwd).
++    try frame.set(.parent_path, callOwned(engine, roots[1], &.{cwd}));
++    if (!c.JS_IsUndefined(frame.get(.parent_path)))
++        try h.statement(engine, pushOptionBody, .{
++            frame.get(.trust_options), frame.get(.trust_path), frame.get(.parent_path), .parent,
++        });
++    if (h.truthy(engine, try h.expression(engine, includeSessionBody, .{options_value})))
++        try h.statement(engine, pushOptionBody, .{
++            frame.get(.trust_options), frame.get(.trust_path), frame.get(.parent_path), .trust_session,
++        });
++    try h.statement(engine, pushOptionBody, .{
++        frame.get(.trust_options), frame.get(.trust_path), frame.get(.parent_path), .distrust,
++    });
++    // Keep this second optional Get separate, including its possible reentry.
++    if (h.truthy(engine, try h.expression(engine, includeSessionBody, .{options_value})))
++        try h.statement(engine, pushOptionBody, .{
++            frame.get(.trust_options), frame.get(.trust_path), frame.get(.parent_path), .distrust_session,
++        });
++    return h.duplicate(engine, frame.get(.trust_options));
++}
++
++const ResourceImport = enum { exists_sync, home_dir, dirname, join, config_dir, canonicalize, resolve, resource_names };
++fn resourceRoot(roots: []const c.JSValue, comptime name: ResourceImport) c.JSValue {
++    return roots[@intFromEnum(name)];
++}
++fn homeBody(s: *Scope, roots: []const c.JSValue) anyerror!c.JSValue {
++    // process is an ordinary live global in the original module, not a frozen
++    // HOME string or a captured replacement. The imported homedir is separate.
++    const process = try v.global(s, "process");
++    const environment = try v.get(s, process, "env");
++    const supplied_home = try v.get(s, environment, "HOME");
++    const home = if (v.truthy(s, supplied_home)) supplied_home else
++        try v.call(s, resourceRoot(roots, .home_dir), c.pi_js_undefined(), &.{});
++    return normalizeBody(s, resourceRoot(roots, .canonicalize),
++        resourceRoot(roots, .resolve), home);
++}
++fn resourceCwdBody(s: *Scope, roots: []const c.JSValue, cwd: c.JSValue) anyerror!c.JSValue {
++    return normalizeBody(s, resourceRoot(roots, .canonicalize), resourceRoot(roots, .resolve), cwd);
++}
++fn skillsPathBody(s: *Scope, roots: []const c.JSValue, directory: c.JSValue) anyerror!c.JSValue {
++    return v.duplicate(s, try v.call(s, resourceRoot(roots, .join), c.pi_js_undefined(),
++        &.{ directory, try v.text(s, ".agents"), try v.text(s, "skills") }));
++}
++fn configPathBody(s: *Scope, roots: []const c.JSValue, directory: c.JSValue) anyerror!c.JSValue {
++    return v.duplicate(s, try v.call(s, resourceRoot(roots, .join), c.pi_js_undefined(),
++        &.{ directory, resourceRoot(roots, .config_dir) }));
++}
++fn someCallback(engine: *Engine, _: c.JSValue, args: []const c.JSValue,
++    roots: []const c.JSValue) anyerror!c.JSValue
++{
++    return h.expression(engine, someCallbackBody, .{ roots, v.arg(args, 0) });
++}
++fn someCallbackBody(s: *Scope, roots: []const c.JSValue, resource_name: c.JSValue) anyerror!c.JSValue {
++    const joined = try v.call(s, roots[1], c.pi_js_undefined(), &.{ roots[2], resource_name });
++    return v.duplicate(s, try v.call(s, roots[0], c.pi_js_undefined(), &.{joined}));
++}
++fn anyConfigBody(s: *Scope, roots: []const c.JSValue, directory: c.JSValue) anyerror!c.JSValue {
++    const names = resourceRoot(roots, .resource_names);
++    // Keep the original live Array.prototype.some Get and fresh arrow. A
++    // replacement some may retain the arrow or mutate the private source array.
++    const some = try v.get(s, names, "some");
++    const callback = try v.arrow(s, "", 1, someCallback, &.{
++        resourceRoot(roots, .exists_sync), resourceRoot(roots, .join), directory,
++    });
++    return v.duplicate(s, try v.call(s, some, names, &.{callback}));
++}
++fn hasSkillsBody(s: *Scope, roots: []const c.JSValue, skills_path: c.JSValue,
++    user_skills_path: c.JSValue) anyerror!c.JSValue
++{
++    return v.boolean(s, !v.equal(s, skills_path, user_skills_path) and
++        v.truthy(s, try v.call(s, resourceRoot(roots, .exists_sync),
++            c.pi_js_undefined(), &.{skills_path})));
++}
++const ResourcesFrame = h.Frame(enum {
++    home_dir, user_skills_dir, current_dir, config_dir, agents_skills_dir, parent_dir,
++});
++fn resourcesCallback(engine: *Engine, _: c.JSValue, args: []const c.JSValue,
++    roots: []const c.JSValue) anyerror!c.JSValue
++{
++    var frame = ResourcesFrame.init(engine);
++    return frame.finish(resourcesBody(&frame, v.arg(args, 0), roots));
++}
++fn resourcesBody(frame: *ResourcesFrame, cwd: c.JSValue,
++    roots: []const c.JSValue) anyerror!c.JSValue
++{
++    const engine = frame.engine;
++    try frame.set(.home_dir, h.expression(engine, homeBody, .{roots}));
++    try frame.set(.user_skills_dir, h.expression(engine, skillsPathBody, .{ roots, frame.get(.home_dir) }));
++    try frame.set(.current_dir, h.expression(engine, resourceCwdBody, .{ roots, cwd }));
++    try frame.set(.config_dir, h.expression(engine, configPathBody, .{ roots, frame.get(.current_dir) }));
++    const config_result = try h.expression(engine, anyConfigBody, .{ roots, frame.get(.config_dir) });
++    // The original if consumes the returned value before entering the loop.
++    var config_completion = v.owned.Completion.initVoid(engine, {});
++    const has_config = h.truthy(engine, config_result);
++    config_completion.release(config_result);
++    try config_completion.finishVoid();
++    if (has_config) return c.JS_NewBool(engine.context, true);
++    var steps: usize = 0;
++    while (true) {
++        try v.poll(engine, &steps);
++        try frame.set(.agents_skills_dir,
++            h.expression(engine, skillsPathBody, .{ roots, frame.get(.current_dir) }));
++        if (h.truthy(engine, try h.expression(engine, hasSkillsBody,
++            .{ roots, frame.get(.agents_skills_dir), frame.get(.user_skills_dir) })))
++            return c.JS_NewBool(engine.context, true);
++        try frame.set(.parent_dir, callOwned(engine, resourceRoot(roots, .dirname),
++            &.{frame.get(.current_dir)}));
++        if (c.JS_IsStrictEqual(engine.context, frame.get(.parent_dir), frame.get(.current_dir)))
++            return c.JS_NewBool(engine.context, false);
++        try frame.set(.current_dir, h.duplicate(engine, frame.get(.parent_dir)));
++    }
++}
+--- a/src/extensions/native_sdk_application_owner.zig
++++ b/src/extensions/native_sdk_application_owner.zig
+@@ -70,6 +70,13 @@
+     pub fn createPrintMode(self: *Owner) !c.JSValue {
+         try self.check();
+         return if (self.auth) |*value| value.createPrintMode() else error.ActualSdkApplicationAuthRetired;
++    }
++    /// Complete private original trust path/resource/options helpers over this
++    /// owner's genuine filesystem, path, OS, configuration and path utilities.
++    /// Store/event policy and the full Main runtimeFactory are separate owners.
++    pub fn createProjectTrustPaths(self: *Owner) !c.JSValue {
++        try self.check();
++        return if (self.auth) |*value| value.createProjectTrustPaths() else error.ActualSdkApplicationAuthRetired;
+     }
+     /// Explicit Source mode transitions. Call only at the actual noninteractive
+     /// or RPC transition, never infer takeover from TTY state or a mode boolean.
+--- a/src/extensions/native_sdk_auth_runtime_owner.zig
++++ b/src/extensions/native_sdk_auth_runtime_owner.zig
+@@ -69,6 +69,11 @@
+     pub fn createPrintMode(self: *Owner) !c.JSValue {
+         return printModeEntry(self);
+     }
++    /// Complete private original trust path/resource/options module over this
++    /// owner's authenticated native runtime and retained provider identities.
++    pub fn createProjectTrustPaths(self: *Owner) !c.JSValue {
++        return projectTrustPathsEntry(self);
++    }
+     /// Actual Source AuthStorage.inMemory(), without a File backend substitute
+     /// or fabricated resolver. Its genuine module dependencies already exist.
+     pub fn inMemory(self: *Owner) !c.JSValue {
+@@ -137,6 +142,52 @@
+     // captured function roots and preserves its existing per-Engine cache.
+     return @import("native_public_print_mode.zig").create(engine, .{ .output = output, .shell = shell });
+ }
++fn projectTrustPathsEntry(self: *Owner) !c.JSValue {
++    const engine = self.engine;
++    engine.native_exception_diagnostics_suppressed += 1;
++    defer engine.native_exception_diagnostics_suppressed -= 1;
++    try self.check();
++    var invocation: em.Engine.NativeInvocation = .{};
++    engine.enterNativeInvocation(&invocation);
++    var scope: Scope = .{ .engine = engine };
++    const value = completion.finishValue(&scope, projectTrustPathsBody(self, &scope)) catch |err|
++        return engine.checked(engine.leaveNativeInvocation(&invocation, @import("native_sdk.zig").fail(engine, err)));
++    return engine.checked(engine.leaveNativeInvocation(&invocation, value));
++}
++fn projectTrustPathsBody(self: *Owner, scope: *Scope) !c.JSValue {
++    const engine = scope.engine;
++    const o: Ops = .{ .scope = scope };
++    // Snapshot the owned runtime and EVERY expected native module before any
++    // carrier Get can reenter, replace graph fields or retire this host owner.
++    const imports = try o.own(c.JS_DupValue(engine.context, self.runtime_imports));
++    const expected_imports = try o.own(c.JS_DupValue(engine.context, try installed(engine, "pi-native:sdk-runtime-imports-native-zig")));
++    const expected_platform = try o.own(c.JS_DupValue(engine.context, try installed(engine, "pi-native:actual-sdk-filesystem-platform")));
++    const expected_fs = try o.own(c.JS_DupValue(engine.context, try installed(engine, "node:fs")));
++    const expected_paths = try o.own(c.JS_DupValue(engine.context, try installed(engine, "node:path")));
++    const expected_utilities = try o.own(c.JS_DupValue(engine.context, try installed(engine, "pi-private:actual-sdk-path-utilities")));
++    const expected_configuration = try o.own(c.JS_DupValue(engine.context, try installed(engine, "pi-native:sdk-configuration-native-zig")));
++    const os = try o.own(c.JS_DupValue(engine.context, try installed(engine, "node:os")));
++    if (!scope.equal(imports, expected_imports)) return error.ActualSdkTrustRuntimeNamespaceChanged;
++    const platform = try o.get(imports, "platform");
++    if (!scope.equal(platform, expected_platform)) return error.ActualSdkTrustPlatformNamespaceChanged;
++    const filesystem = try o.get(platform, "filesystem");
++    if (!scope.equal(filesystem, expected_fs)) return error.ActualSdkTrustFilesystemNamespaceChanged;
++    const paths = try o.get(platform, "paths");
++    if (!scope.equal(paths, expected_paths)) return error.ActualSdkTrustPathsNamespaceChanged;
++    const path_utilities = try o.get(platform, "pathUtilities");
++    if (!scope.equal(path_utilities, expected_utilities)) return error.ActualSdkTrustUtilitiesNamespaceChanged;
++    const configuration = try o.get(imports, "configuration");
++    if (!scope.equal(configuration, expected_configuration)) return error.ActualSdkTrustConfigurationNamespaceChanged;
++    const config_dir = try o.get(configuration, "CONFIG_DIR_NAME");
++    // Source imports homedir from the installed OS namespace. Preserve ordinary
++    // named-member mutation before capture; no foreign carrier or callable
++    // whitelist is accepted. Never touch self after the first carrier Get.
++    return @import("native_sdk_project_trust_paths.zig").create(engine, .{
++        .filesystem = filesystem, .paths = paths, .os = os,
++        .path_utilities = path_utilities, .config_dir = config_dir,
++    });
++}
++
+ fn valueEntry(self: *Owner, in_memory: bool) !c.JSValue {
+     const engine = self.engine;
+     engine.native_exception_diagnostics_suppressed += 1;
+--- /dev/null
++++ b/src/native_sdk_project_trust_paths_test.zig
+@@ -0,0 +1,778 @@
++//! Source-only controls for original trust path/resource/options helpers.
++//! Real installed fs/path/process/OS and Source path utilities are used. Guest
++//! wrappers below observe or mutate original public operations; they are not
++//! production providers. Nothing in this file has been executed in this packet.
++const std = @import("std");
++const em = @import("extensions/engine.zig");
++const c = em.c;
++const h = @import("extensions/native_sdk_session_locals.zig");
++const v = h.v;
++const trust = @import("extensions/native_sdk_project_trust_paths.zig");
++const application = @import("extensions/native_sdk_application_owner.zig");
++const gpa = std.testing.allocator;
++
++const Disk = struct {
++    temporary: std.testing.TmpDir,
++    root: []u8,
++    fn init() !Disk {
++        var temporary = std.testing.tmpDir(.{});
++        errdefer temporary.cleanup();
++        var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
++        const count = try temporary.dir.realPath(std.testing.io, &buffer);
++        return .{ .temporary = temporary, .root = try gpa.dupe(u8, buffer[0..count]) };
++    }
++    fn path(self: *Disk, relative: []const u8) ![]u8 {
++        return std.fs.path.join(gpa, &.{ self.root, relative });
++    }
++    fn directory(self: *Disk, relative: []const u8) !void {
++        try self.temporary.dir.createDirPath(std.testing.io, relative);
++    }
++    fn write(self: *Disk, relative: []const u8) !void {
++        if (std.fs.path.dirname(relative)) |directory_name| try self.directory(directory_name);
++        try self.temporary.dir.writeFile(std.testing.io, .{ .sub_path = relative, .data = "actual trust resource\n" });
++    }
++    fn deinit(self: *Disk) void {
++        gpa.free(self.root);
++        self.temporary.cleanup();
++    }
++};
++const Fixture = struct {
++    disk: Disk,
++    environment: std.process.Environ.Map,
++    engine: *em.Engine = undefined,
++    engine_alive: bool = false,
++    utilities: ?c.JSValue = null,
++    os: ?c.JSValue = null,
++    config_dir: ?c.JSValue = null,
++    inputs: trust.Inputs = undefined,
++
++    fn init(self: *Fixture) !void { return self.initWithAllocator(gpa); }
++    fn initWithAllocator(self: *Fixture, allocator: std.mem.Allocator) !void {
++        self.* = .{ .disk = try Disk.init(), .environment = .init(gpa) };
++        errdefer self.deinit();
++        try self.disk.directory("home");
++        try self.disk.directory("project/child");
++        const home_path = try self.disk.path("home");
++        defer gpa.free(home_path);
++        try self.environment.put("HOME", home_path);
++        self.engine = try em.Engine.init(allocator, .{});
++        self.engine_alive = true;
++        try @import("extensions/timers.zig").install(self.engine, std.testing.io);
++        try @import("extensions/native_process.zig").install(self.engine, std.testing.io, &self.environment, &.{"trust-path-controls"});
++        try @import("extensions/node_path.zig").install(self.engine, std.testing.io);
++        try @import("extensions/node_url.zig").install(self.engine);
++        try @import("extensions/node_fs.zig").install(self.engine, std.testing.io);
++        try @import("extensions/native_node_os.zig").install(self.engine);
++        const filesystem = self.engine.native_module_values.get("node:fs") orelse return error.ActualFilesystemRequired;
++        const paths = self.engine.native_module_values.get("node:path") orelse return error.ActualPathsRequired;
++        const os_module = self.engine.native_module_values.get("node:os") orelse return error.ActualOSRequired;
++        self.os = try h.get(self.engine, os_module, "default");
++        self.utilities = try @import("extensions/native_sdk_path_utilities_namespace.zig").create(self.engine, filesystem);
++        self.config_dir = try h.text(self.engine, @import("config.zig").CONFIG_DIR_NAME);
++        self.inputs = .{ .filesystem = filesystem, .paths = paths, .os = self.os.?,
++            .path_utilities = self.utilities.?, .config_dir = self.config_dir.? };
++        try self.expose("trustFS", filesystem);
++        try self.expose("trustPath", paths);
++        try self.expose("trustOS", self.os.?);
++        try self.expose("trustUtils", self.utilities.?);
++        try self.expose("trustConfigDir", self.config_dir.?);
++        try self.text("trustRoot", self.disk.root);
++        try self.text("trustHome", home_path);
++        const cwd_path = try self.disk.path("project/child");
++        defer gpa.free(cwd_path);
++        try self.text("trustCwd", cwd_path);
++        try self.run("globalThis.trustOriginalProcess=process;");
++    }
++    fn deinit(self: *Fixture) void {
++        if (self.engine_alive) {
++            if (self.utilities) |value| self.engine.freeValue(value);
++            if (self.os) |value| self.engine.freeValue(value);
++            if (self.config_dir) |value| self.engine.freeValue(value);
++            self.engine.deinit();
++            self.engine_alive = false;
++        }
++        self.environment.deinit();
++        self.disk.deinit();
++    }
++    fn exposeBody(s: *v.Scope, name: [*:0]const u8, value: c.JSValue) !void {
++        const global = try v.own(s, c.JS_GetGlobalObject(s.engine.context));
++        try v.put(s, global, name, value);
++    }
++    fn expose(self: *Fixture, name: [*:0]const u8, value: c.JSValue) !void {
++        try h.statement(self.engine, exposeBody, .{ name, value });
++    }
++    fn text(self: *Fixture, name: [*:0]const u8, bytes: []const u8) !void {
++        const value = try h.text(self.engine, bytes);
++        defer self.engine.freeValue(value);
++        try self.expose(name, value);
++    }
++    fn start(self: *Fixture) !void {
++        const api = try trust.create(self.engine, self.inputs);
++        defer self.engine.freeValue(api);
++        try self.expose("trustPaths", api);
++    }
++    fn run(self: *Fixture, source: []const u8) !void {
++        const result = try self.engine.eval(source, "actual-trust-path-control.js", c.JS_EVAL_TYPE_GLOBAL);
++        self.engine.freeValue(result);
++    }
++    fn expect(self: *Fixture, source: []const u8) !void {
++        const result = try self.engine.eval(source, "actual-trust-path-assertion.js", c.JS_EVAL_TYPE_GLOBAL);
++        defer self.engine.freeValue(result);
++        try std.testing.expect(c.JS_ToBool(self.engine.context, result) == 1);
++    }
++    fn collect(self: *Fixture) void {
++        self.engine.finishJob();
++        c.JS_RunGC(self.engine.runtime);
++    }
++};
++
++test "native project trust paths retains actual imports and one private helper evaluation" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    try f.start();
++    const again = try trust.create(f.engine, f.inputs);
++    defer f.engine.freeValue(again);
++    try f.expose("trustAgain", again);
++    try f.expect(
++        \\trustPaths===trustAgain &&
++        \\Object.keys(trustPaths).join(',')==='getProjectTrustParentPath,getProjectTrustOptions,hasTrustRequiringProjectResources' &&
++        \\trustPaths.getProjectTrustParentPath.name==='getProjectTrustParentPath' &&
++        \\trustPaths.getProjectTrustParentPath.length===1 &&
++        \\trustPaths.getProjectTrustOptions.length===2 &&
++        \\trustPaths.hasTrustRequiringProjectResources.length===1 &&
++        \\Object.hasOwn(trustPaths.getProjectTrustOptions,'prototype')
++    );
++    try std.testing.expect(!f.engine.native_module_names.contains("pi-private:actual-sdk-project-trust-paths"));
++}
++test "native project trust paths returns exact ordered persistent choices and fresh update ownership" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.start();
++    try f.expect(
++        \\(()=>{const a=trustPaths.getProjectTrustOptions(trustCwd);
++        \\const b=trustPaths.getProjectTrustOptions(trustCwd);
++        \\const current=trustFS.realpathSync(trustCwd),parent=trustPath.dirname(current);
++        \\return a.length===3 && a[0].label==='Trust' && a[0].trusted===true &&
++        \\a[0].savedPath===current && a[0].updates.length===1 &&
++        \\a[0].updates[0].path===current && a[0].updates[0].decision===true &&
++        \\a[1].label==='Trust parent folder ('+parent+')' && a[1].trusted===true &&
++        \\a[1].savedPath===parent && a[1].updates.length===2 &&
++        \\a[1].updates[0].path===parent && a[1].updates[0].decision===true &&
++        \\a[1].updates[1].path===current && a[1].updates[1].decision===null &&
++        \\a[2].label==='Do not trust' && a[2].trusted===false &&
++        \\a[2].updates[0].decision===false && a[2].savedPath===current &&
++        \\Object.keys(a[1]).join(',')==='label,trusted,updates,savedPath' &&
++        \\Object.keys(a[1].updates[1]).join(',')==='path,decision' &&
++        \\a!==b && a[0]!==b[0] && a[0].updates!==b[0].updates &&
++        \\a[0].updates[0]!==b[0].updates[0];})()
++    );
++}
++test "native project trust paths session choices have no saved path or persistent updates" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.start();
++    try f.expect(
++        \\(()=>{const a=trustPaths.getProjectTrustOptions(trustCwd,{includeSessionOnly:true});
++        \\return a.length===5 && a[2].label==='Trust (this session only)' &&
++        \\a[2].trusted===true && a[2].updates.length===0 && !Object.hasOwn(a[2],'savedPath') &&
++        \\a[3].label==='Do not trust' && a[4].label==='Do not trust (this session only)' &&
++        \\a[4].trusted===false && a[4].updates.length===0 && !Object.hasOwn(a[4],'savedPath') &&
++        \\a[2].updates!==a[4].updates &&
++        \\Object.keys(a[2]).join(',')==='label,trusted,updates';})()
++    );
++}
++test "native project trust paths reads includeSessionOnly twice with original reentry order" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.start();
++    try f.expect(
++        \\(()=>{let reads=0,nested;
++        \\const a=trustPaths.getProjectTrustOptions(trustCwd,{get includeSessionOnly(){
++        \\reads++;if(reads===1){nested=trustPaths.getProjectTrustOptions(trustCwd);return true;}return false;}});
++        \\return reads===2 && nested.length===3 && a.length===4 &&
++        \\a[2].label==='Trust (this session only)' && a[3].label==='Do not trust';})()
++    );
++}
++test "native project trust paths options repeats live cwd normalization rather than caching first path" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.start();
++    try f.run(
++        \\globalThis.trustCwdReads=0;
++        \\globalThis.process=new Proxy(trustOriginalProcess,{get(t,k,r){
++        \\if(k==='cwd')return ()=>{trustCwdReads++;return trustCwdReads===1?trustRoot:trustPath.join(trustRoot,'project');};
++        \\return Reflect.get(t,k,r);}});
++        \\globalThis.trustDifferent=trustPaths.getProjectTrustOptions('child');
++        \\globalThis.process=trustOriginalProcess;
++    );
++    try f.expect(
++        \\trustCwdReads===2 &&
++        \\trustDifferent[0].savedPath===trustPath.resolve(trustRoot,'child') &&
++        \\trustDifferent[1].savedPath===trustFS.realpathSync(trustPath.join(trustRoot,'project')) &&
++        \\trustDifferent[1].updates[1].path===trustPath.resolve(trustRoot,'child')
++    );
++}
++test "native project trust paths root parent is undefined and original functions remain constructible" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.start();
++    try f.expect(
++        \\(()=>{const root=trustPath.parse(trustCwd).root;
++        \\const a=trustPaths.getProjectTrustOptions(root,{includeSessionOnly:true});
++        \\return trustPaths.getProjectTrustParentPath(root)===undefined &&
++        \\a.length===4 && a[0].label==='Trust' && a[1].label==='Trust (this session only)' &&
++        \\a[2].label==='Do not trust' && a[3].label==='Do not trust (this session only)' &&
++        \\Array.isArray(new trustPaths.getProjectTrustOptions(trustCwd)) &&
++        \\Object.getPrototypeOf(new trustPaths.getProjectTrustParentPath(root))===trustPaths.getProjectTrustParentPath.prototype;})()
++    );
++}
++
++test "native project trust paths canonicalizes actual directories and falls back on a missing target" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.start();
++    try f.expect(
++        \\(()=>{const spelling=trustPath.join(trustCwd,'.','..','child');
++        \\const missing=trustPath.join(trustCwd,'not-created','deeper');
++        \\const actual=trustPaths.getProjectTrustOptions(spelling);
++        \\const absent=trustPaths.getProjectTrustOptions(missing);
++        \\return actual[0].savedPath===trustFS.realpathSync(trustCwd) &&
++        \\absent[0].savedPath===trustPath.resolve(missing) &&
++        \\absent[1].savedPath===trustPath.dirname(trustPath.resolve(missing));})()
++    );
++}
++test "native project trust paths detects every original config resource using actual disk and short circuit order" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    try f.run(
++        \\globalThis.trustExistsCalls=[];
++        \\globalThis.trustOriginalExists=trustFS.existsSync;
++        \\trustFS.existsSync=function(value){trustExistsCalls[trustExistsCalls.length]=value;return trustOriginalExists(value);};
++    );
++    try f.start();
++    const names = [_][]const u8{ "settings.json", "mcp.json", "extensions", "skills", "prompts", "themes", "SYSTEM.md", "APPEND_SYSTEM.md" };
++    for (names, 0..) |name, index| {
++        const relative = try std.fmt.allocPrint(gpa, "resource-{d}/.pi/{s}", .{ index, name });
++        defer gpa.free(relative);
++        try f.disk.write(relative);
++        const directory = try std.fmt.allocPrint(gpa, "resource-{d}", .{index});
++        defer gpa.free(directory);
++        const absolute = try f.disk.path(directory);
++        defer gpa.free(absolute);
++        try f.text("trustCandidate", absolute);
++        try f.expose("trustResourceIndex", c.JS_NewUint32(f.engine.context, @intCast(index)));
++        try f.expect(
++            \\(()=>{trustExistsCalls.length=0;
++            \\const found=trustPaths.hasTrustRequiringProjectResources(trustCandidate);
++            \\const names=['settings.json','mcp.json','extensions','skills','prompts','themes','SYSTEM.md','APPEND_SYSTEM.md'];
++            \\return found===true && trustExistsCalls.length===trustResourceIndex+1 &&
++            \\trustExistsCalls.every((value,index)=>value===trustPath.join(trustCandidate,'.pi',names[index]));})()
++        );
++    }
++}
++test "native project trust paths checks only the original eight config entries and only cwd config directory" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    try f.disk.write("project/child/.pi/packages.json");
++    try f.disk.directory("project/child/.pi/npm");
++    try f.disk.directory("project/child/.pi/git");
++    try f.disk.write("project/.pi/settings.json");
++    try f.run(
++        \\globalThis.trustExistsCalls=[];
++        \\globalThis.trustOriginalExists=trustFS.existsSync;
++        \\trustFS.existsSync=function(value){trustExistsCalls[trustExistsCalls.length]=value;return trustOriginalExists(value);};
++    );
++    try f.start();
++    try f.run("trustPaths.hasTrustRequiringProjectResources(trustCwd);");
++    try f.expect(
++        \\(()=>{const config=trustPath.join(trustCwd,'.pi');
++        \\const wanted=['settings.json','mcp.json','extensions','skills','prompts','themes','SYSTEM.md','APPEND_SYSTEM.md'];
++        \\return trustExistsCalls.slice(0,8).every((value,index)=>value===trustPath.join(config,wanted[index])) &&
++        \\trustExistsCalls.filter(value=>value.startsWith(config+trustPath.sep)).length===8 &&
++        \\!trustExistsCalls.includes(trustPath.join(trustRoot,'project','.pi','settings.json'));})()
++    );
++}
++test "native project trust paths detects actual cwd and ancestor agent skills before reaching higher parents" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    try f.disk.directory("project/.agents/skills");
++    try f.run(
++        \\globalThis.trustExistsCalls=[];
++        \\globalThis.trustOriginalExists=trustFS.existsSync;
++        \\trustFS.existsSync=function(value){trustExistsCalls[trustExistsCalls.length]=value;return trustOriginalExists(value);};
++    );
++    try f.start();
++    try f.expect(
++        \\trustPaths.hasTrustRequiringProjectResources(trustCwd)===true &&
++        \\trustExistsCalls.length===10 &&
++        \\trustExistsCalls[8]===trustPath.join(trustCwd,'.agents','skills') &&
++        \\trustExistsCalls[9]===trustPath.join(trustRoot,'project','.agents','skills')
++    );
++    try f.disk.directory("project/child/.agents/skills");
++    try f.expect(
++        \\(()=>{trustExistsCalls.length=0;return trustPaths.hasTrustRequiringProjectResources(trustCwd)===true &&
++        \\trustExistsCalls.length===9 && trustExistsCalls[8]===trustPath.join(trustCwd,'.agents','skills');})()
++    );
++}
++test "native project trust paths excludes the canonical user skills path without probing its existence" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    try f.disk.directory("home/.agents/skills");
++    try f.disk.directory("home/work");
++    try f.run(
++        \\globalThis.trustExistsCalls=[];
++        \\globalThis.trustOriginalExists=trustFS.existsSync;
++        \\trustFS.existsSync=function(value){trustExistsCalls[trustExistsCalls.length]=value;return trustOriginalExists(value);};
++    );
++    try f.start();
++    try f.run("trustPaths.hasTrustRequiringProjectResources(trustPath.join(trustHome,'work'));");
++    try f.expect(
++        \\!trustExistsCalls.includes(trustPath.join(trustFS.realpathSync(trustHome),'.agents','skills')) &&
++        \\trustExistsCalls.includes(trustPath.join(trustHome,'work','.agents','skills'))
++    );
++    // No assertion assumes that unrelated real host ancestors lack resources.
++}
++test "native project trust paths reads live HOME before cwd and invokes imported homedir only for falsy HOME" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    try f.run(
++        \\globalThis.trustHomeEvents=[];
++        \\globalThis.trustOriginalHomedir=trustOS.homedir;
++        \\trustOS.homedir=function(){trustHomeEvents[trustHomeEvents.length]='homedir';return trustOriginalHomedir();};
++    );
++    try f.start();
++    try f.run(
++        \\globalThis.process=new Proxy(trustOriginalProcess,{get(t,k,r){
++        \\if(k==='env')return {get HOME(){trustHomeEvents[trustHomeEvents.length]='HOME';return '';}};
++        \\if(k==='cwd')return ()=>{trustHomeEvents[trustHomeEvents.length]='cwd';return trustOriginalProcess.cwd();};
++        \\return Reflect.get(t,k,r);}});
++        \\trustPaths.hasTrustRequiringProjectResources(trustCwd);
++        \\globalThis.process=trustOriginalProcess;
++    );
++    try f.expect("trustHomeEvents[0]==='HOME' && trustHomeEvents[1]==='homedir' && trustHomeEvents.indexOf('cwd')>1");
++    try f.run(
++        \\trustHomeEvents.length=0;
++        \\globalThis.process=new Proxy(trustOriginalProcess,{get(t,k,r){
++        \\if(k==='env')return {get HOME(){trustHomeEvents[trustHomeEvents.length]='HOME';return trustHome;}};
++        \\if(k==='cwd')return ()=>{trustHomeEvents[trustHomeEvents.length]='cwd';return trustOriginalProcess.cwd();};
++        \\return Reflect.get(t,k,r);}});
++        \\trustPaths.hasTrustRequiringProjectResources(trustCwd);
++        \\globalThis.process=trustOriginalProcess;
++    );
++    try f.expect("trustHomeEvents[0]==='HOME' && !trustHomeEvents.includes('homedir') && trustHomeEvents.indexOf('cwd')===1");
++}
++test "native project trust paths live some observes the resource array and retains an authentic arrow after return" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    try f.disk.write("project/child/.pi/mcp.json");
++    try f.start();
++    try f.run(
++        \\globalThis.trustOriginalSome=Array.prototype.some;
++        \\globalThis.trustSomeGets=0;
++        \\Object.defineProperty(Array.prototype,'some',{configurable:true,get(){
++        \\trustSomeGets++;return function(callback){globalThis.trustSavedArrow=callback;
++        \\globalThis.trustSavedNames=this;return false;};}});
++        \\trustPaths.hasTrustRequiringProjectResources(trustCwd);
++        \\Object.defineProperty(Array.prototype,'some',{configurable:true,writable:true,value:trustOriginalSome});
++    );
++    f.collect();
++    try f.expect(
++        \\trustSomeGets===1 && trustSavedNames.join(',')==='settings.json,mcp.json,extensions,skills,prompts,themes,SYSTEM.md,APPEND_SYSTEM.md' &&
++        \\trustSavedArrow.name==='' && trustSavedArrow.length===1 && !Object.hasOwn(trustSavedArrow,'prototype') &&
++        \\trustSavedArrow.call({ignored:true},'mcp.json')===true &&
++        \\trustSavedArrow('not-present.json')===false &&
++        \\(()=>{try{Reflect.construct(trustSavedArrow,['mcp.json']);return false;}catch(e){return e instanceof TypeError;}})()
++    );
++}
++test "native project trust paths preserves mutations to the one original private resource array" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    try f.disk.write("project/child/.pi/custom-resource");
++    try f.start();
++    try f.run(
++        \\globalThis.trustOriginalSome=Array.prototype.some;
++        \\Array.prototype.some=function(callback){globalThis.trustMutableNames=this;
++        \\this[0]='custom-resource';return Reflect.apply(trustOriginalSome,this,[callback]);};
++        \\globalThis.trustFoundCustom=trustPaths.hasTrustRequiringProjectResources(trustCwd);
++        \\Array.prototype.some=trustOriginalSome;
++    );
++    f.collect();
++    try f.expect(
++        \\trustFoundCustom===true && trustMutableNames[0]==='custom-resource' &&
++        \\trustPaths.hasTrustRequiringProjectResources(trustCwd)===true
++    );
++}
++
++test "native project trust paths captures real named imports before later public replacement" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    try f.disk.write("project/child/.pi/mcp.json");
++    try f.start();
++    try f.run(
++        \\globalThis.trustImportPoison={};
++        \\trustFS.existsSync=()=>{throw trustImportPoison;};
++        \\trustPath.dirname=()=>{throw trustImportPoison;};
++        \\trustUtils.resolvePath=()=>{throw trustImportPoison;};
++        \\trustUtils.canonicalizePath=()=>{throw trustImportPoison;};
++    );
++    try f.expect(
++        \\trustPaths.hasTrustRequiringProjectResources(trustCwd)===true &&
++        \\trustPaths.getProjectTrustParentPath(trustCwd)===trustPath.join(trustRoot,'project') &&
++        \\trustPaths.getProjectTrustOptions(trustCwd).length===3
++    );
++}
++test "native project trust paths preserves thrown some and options getter identities without writing trust decisions" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.start();
++    try f.expect(
++        \\(()=>{const reason=Object.create(null);let optionsCaught=false,someCaught=false;
++        \\try{trustPaths.getProjectTrustOptions(trustCwd,{get includeSessionOnly(){throw reason;}});}catch(e){optionsCaught=e===reason;}
++        \\const descriptor=Object.getOwnPropertyDescriptor(Array.prototype,'some');
++        \\Object.defineProperty(Array.prototype,'some',{configurable:true,get(){throw reason;}});
++        \\try{trustPaths.hasTrustRequiringProjectResources(trustCwd);}catch(e){someCaught=e===reason;}
++        \\finally{Object.defineProperty(Array.prototype,'some',descriptor);}
++        \\return optionsCaught && someCaught && trustPaths.getProjectTrustOptions(trustCwd).length===3 &&
++        \\!trustFS.existsSync(trustPath.join(trustCwd,'.pi','trust.json'));})()
++    );
++}
++test "native project trust paths refuses mismatched warm owners while preserving the existing helper identity" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.start();
++    const impostor = try f.engine.checked(c.JS_NewObject(f.engine.context));
++    defer f.engine.freeValue(impostor);
++    var changed = f.inputs;
++    changed.filesystem = impostor;
++    try std.testing.expectError(error.ActualProjectTrustPathsImportsChanged, trust.create(f.engine, changed));
++    const again = try trust.create(f.engine, f.inputs);
++    defer f.engine.freeValue(again);
++    try f.expose("trustAfterMismatch", again);
++    try f.expect("trustAfterMismatch===trustPaths && trustPaths.getProjectTrustOptions(trustCwd).length===3");
++}
++test "native project trust paths pending entry wins before import Gets or private cache publication" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    try f.run(
++        \\globalThis.trustImportGets=0;
++        \\globalThis.trustOriginalExists=trustFS.existsSync;
++        \\Object.defineProperty(trustFS,'existsSync',{configurable:true,get(){trustImportGets++;return trustOriginalExists;}});
++    );
++    const reason = try f.engine.checked(c.JS_NewError(f.engine.context));
++    defer f.engine.freeValue(reason);
++    _ = c.JS_Throw(f.engine.context, c.JS_DupValue(f.engine.context, reason));
++    try std.testing.expectError(error.JavaScriptException, trust.create(f.engine, f.inputs));
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, reason,
++        f.engine.captured_exception orelse return error.ActualPendingTrustReasonRequired));
++    try std.testing.expect(!f.engine.native_module_values.contains("pi-private:actual-sdk-project-trust-paths"));
++    try f.expect("trustImportGets===0");
++    try f.start();
++    try f.expect("trustImportGets===1");
++}
++var active_fixture: ?*Fixture = null;
++var reentry_calls: usize = 0;
++fn reenterCreate(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue,
++    _: []const c.JSValue) !c.JSValue
++{
++    const current = active_fixture orelse return error.ActualTrustReentryFixtureRequired;
++    if (current.engine != engine) return error.ActualTrustReentryEngineRequired;
++    try std.testing.expect(!engine.native_module_values.contains("pi-private:actual-sdk-project-trust-paths"));
++    reentry_calls += 1;
++    return trust.create(engine, current.inputs);
++}
++test "native project trust paths import getter reentry cannot publish a partial private evaluation" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    active_fixture = &f; defer active_fixture = null; reentry_calls = 0;
++    const reenter = try v.function.create(f.engine, "reenterTrustCreation", 0, reenterCreate, &.{});
++    defer f.engine.freeValue(reenter);
++    try f.expose("reenterTrustCreation", reenter);
++    try f.run(
++        \\globalThis.trustOriginalExists=trustFS.existsSync;
++        \\globalThis.trustCreationReentry=false;
++        \\Object.defineProperty(trustFS,'existsSync',{configurable:true,get(){
++        \\try{reenterTrustCreation();}catch(e){trustCreationReentry=e instanceof TypeError && e.message.includes('ActualProjectTrustPathsCreationReentry');}
++        \\return trustOriginalExists;}});
++    );
++    try f.start();
++    try std.testing.expectEqual(@as(usize, 1), reentry_calls);
++    try f.expect("trustCreationReentry && trustPaths.getProjectTrustOptions(trustCwd).length===3");
++}
++test "native project trust paths actual application entry rejects a retired owner before reading its imports" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    var retired: application.Owner = .{ .engine = f.engine, .inputs = null, .auth = null,
++        .application = c.pi_js_undefined(), .live = false };
++    try std.testing.expectError(error.ActualSdkApplicationOwnerRetired, retired.createProjectTrustPaths());
++    try std.testing.expect(!f.engine.native_module_values.contains("pi-private:actual-sdk-project-trust-paths"));
++}
++test "native project trust paths genuine allocation failure publishes no cache and preserves native fatal reason" {
++    var failing = std.testing.FailingAllocator.init(gpa, .{});
++    var f: Fixture = undefined; try f.initWithAllocator(failing.allocator()); defer f.deinit();
++    failing.fail_index = failing.alloc_index;
++    const attempted = trust.create(f.engine, f.inputs);
++    failing.fail_index = std.math.maxInt(usize);
++    try std.testing.expectError(error.JavaScriptException, attempted);
++    const reason = f.engine.captured_exception orelse return error.ActualTrustAllocationReasonRequired;
++    try std.testing.expect(c.JS_IsUncatchableError(reason));
++    try std.testing.expect(f.engine.native_fatal_invocation == null);
++    try std.testing.expect(!f.engine.native_module_values.contains("pi-private:actual-sdk-project-trust-paths"));
++    c.JS_ClearUncatchableError(f.engine.context, reason);
++    try f.start();
++    try f.expect("trustPaths.getProjectTrustOptions(trustCwd).length===3");
++}
++test "native project trust paths preserves ordinary push calls and object literal data definitions" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit(); try f.start();
++    try f.expect(
++        \\(()=>{const original=Object.getOwnPropertyDescriptor(Array.prototype,'push');
++        \\const labels=Object.getOwnPropertyDescriptor(Object.prototype,'label');
++        \\let gets=0,calls=0,sets=0;
++        \\Object.defineProperty(Object.prototype,'label',{configurable:true,set(){sets++;throw new Error('wrong object assignment');}});
++        \\Object.defineProperty(Array.prototype,'push',{configurable:true,get(){gets++;return function(row){calls++;
++        \\return Reflect.apply(original.value,this,[row]);};}});
++        \\let choices;try{choices=trustPaths.getProjectTrustOptions(trustCwd,{includeSessionOnly:true});}
++        \\finally{Object.defineProperty(Array.prototype,'push',original);
++        \\if(labels)Object.defineProperty(Object.prototype,'label',labels);else delete Object.prototype.label;}
++        \\return gets===4 && calls===4 && sets===0 && choices.length===5 &&
++        \\Object.hasOwn(choices[0],'label') && choices[0].label==='Trust';})()
++    );
++}
++
++// Genuine auth/frontend fixture from the accepted application print-owner
++// controls. This assembles the real runtime imports without manufacturing a
++// completed application/session or canonical Module owner.
++const ActualTrustApplication = struct {
++    const auth = @import("extensions/native_sdk_auth_runtime_owner.zig");
++    const capture = @import("extensions/native_child_process_frontend_inputs.zig");
++    const internal = @import("extensions/native_node_internal_builtin_require.zig");
++    const Frontend = @import("extensions/native_stdio_frontend.zig").Frontend;
++    const Fixture = struct {
++        environment: std.process.Environ.Map,
++        engine: *v.em.Engine,
++        frontend: Frontend,
++        require: c.JSValue,
++        actual: ?auth.Owner = null,
++
++        fn init(self: *Fixture) !void {
++            self.actual = null;
++            self.environment = .init(std.testing.allocator);
++            errdefer self.environment.deinit();
++            self.engine = try v.em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000, .interrupt_budget = 1_000_000 });
++            errdefer self.engine.deinit();
++            try @import("extensions/native_sdk_application_bootstrap.zig").installPlatform(self.engine, std.testing.io, &self.environment, &.{"actual-application-print-owner"});
++            self.require = try internal.acquire(self.engine, .{ .bindings = &.{
++                .{ .id = "util", .module_name = "node:util" }, .{ .id = "stream", .module_name = "node:stream" },
++                .{ .id = "process", .module_name = "node:process" }, .{ .id = "timers", .module_name = "node:timers" },
++            } });
++            errdefer self.engine.freeValue(self.require);
++            try self.frontend.init(self.engine, std.testing.io);
++            errdefer {
++                if (self.engine.native_env_deinit) |close| close(self.engine);
++                self.frontend.deinit();
++            }
++            // This control's actual bootstrap explicitly has permission disabled.
++            // The production method receives no policy and cannot infer a default.
++            var inputs = try capture.capture(self.engine, &self.frontend, .{ .internal_require = self.require, .permission = .disabled });
++            var actual = createAuth(self.engine, &inputs) catch |err| {
++                var failed = v.owned.Completion.initVoid(self.engine, err);
++                inputs.retireInto(&failed);
++                try failed.finishVoid();
++                unreachable;
++            };
++            var selected = v.owned.Completion.initVoid(self.engine, {});
++            inputs.retireInto(&selected);
++            selected.finishVoid() catch |err| {
++                var failed = v.owned.Completion.initVoid(self.engine, err);
++                actual.retireInto(&failed);
++                try failed.finishVoid();
++                unreachable;
++            };
++            self.actual = actual;
++        }
++        fn owner(self: *Fixture) *auth.Owner {
++            return if (self.actual) |*actual| actual else unreachable;
++        }
++        fn deinit(self: *Fixture) void {
++            if (self.actual) |*actual| {
++                if (actual.live) actual.deinit() catch {};
++            }
++            self.actual = null;
++            // The physical frontend and its descriptor owners remain alive through
++            // every owner operation. Cached JS roots do not own this native pointer.
++            if (self.engine.native_env_deinit) |close| close(self.engine);
++            self.frontend.deinit();
++            self.engine.freeValue(self.require);
++            self.engine.deinit();
++            self.environment.deinit();
++        }
++    };
++    fn createAuth(engine: *v.em.Engine, inputs: *capture.Owned) !auth.Owner {
++        const url = try engine.checked(c.JS_NewString(engine.context, "file:///C:/Users/adyba/pi-zig/upstream/pi/packages/coding-agent/src/config.ts"));
++        defer engine.freeValue(url); // Primitive, so retirement cannot run guest code.
++        return auth.create(engine, .{ .frontend = try inputs.view(engine), .config_module_url = url });
++    }
++
++    const Behavior = enum { retire_owner, pending_ordinary, pending_fatal };
++    const Probe = struct {
++        engine: *em.Engine,
++        owner: *auth.Owner,
++        platform: c.JSValue,
++        filesystem: c.JSValue,
++        reason: c.JSValue,
++        behavior: Behavior,
++        platform_reads: usize = 0,
++        filesystem_reads: usize = 0,
++    };
++    fn finalizeProbe(runtime: ?*c.JSRuntime, holder: c.JSValue) callconv(.c) void {
++        const probe: *Probe = @ptrCast(@alignCast(c.JS_GetOpaque(holder, c.JS_GetClassID(holder)) orelse return));
++        c.JS_FreeValueRT(runtime, probe.platform);
++        c.JS_FreeValueRT(runtime, probe.filesystem);
++        c.JS_FreeValueRT(runtime, probe.reason);
++        probe.engine.gpa.destroy(probe);
++    }
++    fn markProbe(runtime: ?*c.JSRuntime, holder: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
++        const probe: *Probe = @ptrCast(@alignCast(c.JS_GetOpaque(holder, c.JS_GetClassID(holder)) orelse return));
++        c.JS_MarkValue(runtime, probe.platform, marker);
++        c.JS_MarkValue(runtime, probe.filesystem, marker);
++        c.JS_MarkValue(runtime, probe.reason, marker);
++    }
++    fn readPlatform(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
++        const probe: *Probe = @ptrCast(@alignCast(c.JS_GetOpaque(roots[0], c.JS_GetClassID(roots[0])).?));
++        probe.platform_reads += 1;
++        switch (probe.behavior) {
++            .retire_owner => probe.owner.deinit() catch |err| return @import("extensions/native_sdk.zig").fail(probe.engine, err),
++            .pending_ordinary => { _ = c.JS_Throw(context, c.JS_DupValue(context, probe.reason)); },
++            .pending_fatal => {
++                _ = probe.engine.throwNativeOutOfMemoryFatal();
++                const reason = c.JS_GetException(context);
++                if (c.JS_IsUndefined(probe.reason)) probe.reason = c.JS_DupValue(context, reason);
++                _ = c.JS_Throw(context, reason);
++            },
++        }
++        return c.JS_DupValue(context, probe.platform);
++    }
++    fn readFilesystem(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
++        const probe: *Probe = @ptrCast(@alignCast(c.JS_GetOpaque(roots[0], c.JS_GetClassID(roots[0])).?));
++        probe.filesystem_reads += 1;
++        return c.JS_DupValue(context, probe.filesystem);
++    }
++    fn getter(engine: *em.Engine, object: c.JSValue, name: [*:0]const u8, function: c.JSValue) !void {
++        const atom = c.JS_NewAtom(engine.context, name);
++        if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
++        defer c.JS_FreeAtom(engine.context, atom);
++        if (c.JS_DefinePropertyGetSet(engine.context, object, atom, c.JS_DupValue(engine.context, function), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0)
++            return @import("extensions/native_js_values.zig").capture(engine);
++        _ = try engine.checked(c.pi_js_undefined());
++    }
++    fn installProbe(s: *v.Scope, actual: *auth.Owner, behavior: Behavior) !*Probe {
++        const engine = s.engine;
++        const platform = try v.get(s, actual.runtime_imports, "platform");
++        const filesystem = try v.get(s, platform, "filesystem");
++        const reason = if (behavior == .pending_fatal) c.pi_js_undefined() else try v.own(s, try engine.checked(c.JS_NewError(engine.context)));
++        var class: c.JSClassID = 0;
++        _ = c.JS_NewClassID(engine.runtime, &class);
++        const definition: c.JSClassDef = .{ .class_name = "Actual trust provider input probe", .finalizer = finalizeProbe, .gc_mark = markProbe };
++        if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
++        const holder = try v.own(s, try engine.checked(c.JS_NewObjectClass(engine.context, class)));
++        const probe = try engine.gpa.create(Probe);
++        probe.* = .{ .engine = engine, .owner = actual, .platform = c.JS_DupValue(engine.context, platform),
++            .filesystem = c.JS_DupValue(engine.context, filesystem), .reason = c.JS_DupValue(engine.context, reason), .behavior = behavior };
++        _ = c.JS_SetOpaque(holder, probe);
++        var roots = [_]c.JSValue{holder};
++        const platform_get = try v.own(s, try engine.checked(c.JS_NewCFunctionData2(engine.context, readPlatform, "get actual platform", 0, 0, roots.len, &roots)));
++        const filesystem_get = try v.own(s, try engine.checked(c.JS_NewCFunctionData2(engine.context, readFilesystem, "get actual filesystem", 0, 0, roots.len, &roots)));
++        try getter(engine, actual.runtime_imports, "platform", platform_get);
++        try getter(engine, platform, "filesystem", filesystem_get);
++        return probe;
++    }
++    fn expectForeign(s: *v.Scope, actual: *auth.Owner, name: []const u8) !void {
++        const count = s.engine.native_module_values.count();
++        try std.testing.expectError(error.JavaScriptException, actual.createProjectTrustPaths());
++        const reason = s.engine.captured_exception orelse return error.RequiredForeignTrustOwnerRejection;
++        const message = try v.get(s, reason, "message");
++        const included = try v.call(s, try v.get(s, message, "includes"), message, &.{try v.text(s, name)});
++        try std.testing.expect(c.JS_IsStrictEqual(s.engine.context, included, c.JS_NewBool(s.engine.context, true)));
++        try std.testing.expect(c.JS_IsStrictEqual(s.engine.context, try v.global(s, "__trustForeignReads"), c.JS_NewInt32(s.engine.context, 0)));
++        try std.testing.expectEqual(count, s.engine.native_module_values.count());
++        try std.testing.expect(!s.engine.native_module_values.contains("pi-private:actual-sdk-project-trust-paths"));
++    }
++    fn foreign(s: *v.Scope) !c.JSValue {
++        return v.own(s, try s.engine.eval(
++            \\globalThis.__trustForeignReads=0;
++            \\new Proxy({}, {get(){__trustForeignReads++;throw Error("foreign trust carrier must not be read")}})
++        , "actual-trust-foreign-carrier.js", c.JS_EVAL_TYPE_GLOBAL));
++    }
++    fn verifyPending(comptime fatal: bool) !void {
++        var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit();
++        var s: v.Scope = .{ .engine = fixture.engine }; defer s.deinit();
++        const probe = try installProbe(&s, fixture.owner(), if (fatal) .pending_fatal else .pending_ordinary);
++        const count = s.engine.native_module_values.count();
++        const generation = s.engine.native_allocation_generation;
++        const suppression = s.engine.native_exception_diagnostics_suppressed;
++        const invocation = s.engine.native_fatal_invocation;
++        try std.testing.expectError(error.JavaScriptException, fixture.owner().createProjectTrustPaths());
++        const caught = s.engine.captured_exception orelse return error.RequiredActualTrustOwnerFailure;
++        try std.testing.expect(c.JS_IsStrictEqual(s.engine.context, caught, probe.reason));
++        try std.testing.expectEqual(@as(usize, 1), probe.platform_reads);
++        try std.testing.expectEqual(@as(usize, 0), probe.filesystem_reads);
++        try std.testing.expectEqual(count, s.engine.native_module_values.count());
++        try std.testing.expectEqual(suppression, s.engine.native_exception_diagnostics_suppressed);
++        try std.testing.expectEqual(invocation, s.engine.native_fatal_invocation);
++        try std.testing.expect(c.JS_IsUncatchableError(caught) == fatal);
++        if (fatal) try std.testing.expect(s.engine.native_allocation_generation -% generation != 0);
++    }
++};
++
++test "native project trust paths genuine auth owner creates one module surviving host retirement" {
++    var fixture: ActualTrustApplication.Fixture = undefined; try fixture.init(); defer fixture.deinit();
++    var s: v.Scope = .{ .engine = fixture.engine }; defer s.deinit();
++    const api = try v.own(&s, try fixture.owner().createProjectTrustPaths());
++    const repeated = try v.own(&s, try fixture.owner().createProjectTrustPaths());
++    try std.testing.expect(c.JS_IsStrictEqual(s.engine.context, api, repeated));
++    try fixture.owner().deinit();
++    try std.testing.expectError(error.ActualSdkAuthOwnerRetired, fixture.owner().createProjectTrustPaths());
++    const options = try v.call(&s, try v.get(&s, api, "getProjectTrustOptions"), c.pi_js_undefined(), &.{try v.text(&s, ".")});
++    const length = try v.get(&s, options, "length");
++    try std.testing.expect(!c.JS_IsUndefined(length));
++    try std.testing.expect(c.JS_IsFunction(s.engine.context, try v.get(&s, api, "hasTrustRequiringProjectResources")));
++}
++test "native project trust paths genuine auth rejects a foreign runtime before property access" {
++    var fixture: ActualTrustApplication.Fixture = undefined; try fixture.init(); defer fixture.deinit();
++    var s: v.Scope = .{ .engine = fixture.engine }; defer s.deinit();
++    const invalid = try ActualTrustApplication.foreign(&s);
++    const actual = fixture.owner();
++    const previous = actual.runtime_imports;
++    actual.runtime_imports = c.JS_DupValue(s.engine.context, invalid);
++    s.engine.freeValue(previous);
++    try ActualTrustApplication.expectForeign(&s, actual, "ActualSdkTrustRuntimeNamespaceChanged");
++}
++test "native project trust paths genuine auth rejects a foreign platform before child imports" {
++    var fixture: ActualTrustApplication.Fixture = undefined; try fixture.init(); defer fixture.deinit();
++    var s: v.Scope = .{ .engine = fixture.engine }; defer s.deinit();
++    try v.put(&s, fixture.owner().runtime_imports, "platform", try ActualTrustApplication.foreign(&s));
++    try ActualTrustApplication.expectForeign(&s, fixture.owner(), "ActualSdkTrustPlatformNamespaceChanged");
++}
++test "native project trust paths authenticates each filesystem path utilities and config provider" {
++    inline for (.{
++        .{ "filesystem", "ActualSdkTrustFilesystemNamespaceChanged", false },
++        .{ "paths", "ActualSdkTrustPathsNamespaceChanged", false },
++        .{ "pathUtilities", "ActualSdkTrustUtilitiesNamespaceChanged", false },
++        .{ "configuration", "ActualSdkTrustConfigurationNamespaceChanged", true },
++    }) |entry| {
++        var fixture: ActualTrustApplication.Fixture = undefined; try fixture.init(); defer fixture.deinit();
++        var s: v.Scope = .{ .engine = fixture.engine }; defer s.deinit();
++        const target = if (entry[2]) fixture.owner().runtime_imports else try v.get(&s, fixture.owner().runtime_imports, "platform");
++        try v.put(&s, target, entry[0], try ActualTrustApplication.foreign(&s));
++        try ActualTrustApplication.expectForeign(&s, fixture.owner(), entry[1]);
++    }
++}
++test "native project trust paths actual owner preserves public member mutation before one time capture" {
++    var fixture: ActualTrustApplication.Fixture = undefined; try fixture.init(); defer fixture.deinit();
++    var disk = try Disk.init(); defer disk.deinit();
++    var s: v.Scope = .{ .engine = fixture.engine }; defer s.deinit();
++    const filesystem = s.engine.native_module_values.get("node:fs") orelse return error.RequiredActualFilesystem;
++    const global = try v.own(&s, c.JS_GetGlobalObject(s.engine.context));
++    try v.put(&s, global, "__trustActualFilesystem", filesystem);
++    _ = try v.own(&s, try s.engine.eval(
++        \\globalThis.__trustActualExistsCalls=0;
++        \\{const original=__trustActualFilesystem.existsSync;
++        \\__trustActualFilesystem.existsSync=function(...args){__trustActualExistsCalls++;return Reflect.apply(original,this,args)};}
++    , "actual-trust-member-capture.js", c.JS_EVAL_TYPE_GLOBAL));
++    const api = try v.own(&s, try fixture.owner().createProjectTrustPaths());
++    _ = try v.own(&s, try s.engine.eval(
++        \\__trustActualFilesystem.existsSync=function(){throw Error("captured actual member must survive later mutation")};
++    , "actual-trust-after-capture.js", c.JS_EVAL_TYPE_GLOBAL));
++    const result = try v.call(&s, try v.get(&s, api, "hasTrustRequiringProjectResources"), c.pi_js_undefined(), &.{try v.text(&s, disk.root)});
++    try std.testing.expect(c.JS_IsBool(result));
++    const checked = try v.own(&s, try s.engine.eval("__trustActualExistsCalls>=8", "actual-trust-member-count.js", c.JS_EVAL_TYPE_GLOBAL));
++    try std.testing.expect(c.JS_ToBool(s.engine.context, checked) == 1);
++}
++test "native project trust paths actual module roots survive carrier getter owner retirement" {
++    var fixture: ActualTrustApplication.Fixture = undefined; try fixture.init(); defer fixture.deinit();
++    var s: v.Scope = .{ .engine = fixture.engine }; defer s.deinit();
++    const probe = try ActualTrustApplication.installProbe(&s, fixture.owner(), .retire_owner);
++    const api = try v.own(&s, try fixture.owner().createProjectTrustPaths());
++    try std.testing.expect(!fixture.owner().live);
++    try std.testing.expectEqual(@as(usize, 1), probe.platform_reads);
++    try std.testing.expectEqual(@as(usize, 1), probe.filesystem_reads);
++    try std.testing.expect(c.JS_IsFunction(s.engine.context, try v.get(&s, api, "getProjectTrustOptions")));
++    _ = try v.call(&s, try v.get(&s, api, "getProjectTrustOptions"), c.pi_js_undefined(), &.{try v.text(&s, ".")});
++}
++test "native project trust paths pending carrier exception stops identity reads and private publication" {
++    try ActualTrustApplication.verifyPending(false);
++}
++test "native project trust paths actual fatal carrier completion survives provider root retirement" {
++    try ActualTrustApplication.verifyPending(true);
++}
+--- a/build.zig
++++ b/build.zig
+@@ -1845,6 +1845,19 @@
+         application_print_owner_tests.root_module.linkSystemLibrary("userenv", .{});
+     }
+     b.step("build-native-sdk-application-print-owner", "Install actual application print owner assembly controls without execution").dependOn(&b.addInstallArtifact(application_print_owner_tests, .{}).step);
++    const project_trust_paths_tests = b.addTest(.{
++        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_project_trust_paths_test.zig"), .target = target, .optimize = optimize }),
++        .filters = &.{"native project trust paths"}, .use_llvm = use_llvm,
++    });
++    linkQuickJs(b, project_trust_paths_tests.root_module, quickjs, sqlite_lib_dir);
++    linkTypeScriptParser(b, project_trust_paths_tests.root_module, typescript_parser);
++    linkSqlite(project_trust_paths_tests.root_module, sqlite_lib_dir, sqlite_library);
++    project_trust_paths_tests.root_module.addImport("catalog_tool", catalog_tool);
++    if (target.result.os.tag == .windows) {
++        project_trust_paths_tests.root_module.linkSystemLibrary("advapi32", .{});
++        project_trust_paths_tests.root_module.linkSystemLibrary("userenv", .{});
++    }
++    b.step("build-native-sdk-project-trust-paths", "Install actual original project trust path and resource controls without execution").dependOn(&b.addInstallArtifact(project_trust_paths_tests, .{}).step);
+     const module_execution_state_tests = b.addTest(.{
+         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_execution_state_test.zig"), .target = target, .optimize = optimize }),
+         .filters = &.{"native module execution state"}, .use_llvm = use_llvm,

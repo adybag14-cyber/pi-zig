@@ -1,0 +1,232 @@
+{
+  "schema": 1,
+  "created_at_utc": "2026-10-24T19:55:58.517996+00:00",
+  "scope": "Finite SourceMapCacheMap ownPrivate correction to the genuine own-private getter; original complete owner and all20 controls retained.",
+  "observed_main_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "observed_main_porcelain_empty": true,
+  "future_integration_head": null,
+  "preserved_original_packet": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-sourceonly-20261024\\source-intake.json",
+    "bytes": 27468,
+    "sha256": "583994729E742306EE868E1B81936F9A756409DAEE539E54738DF68328BED7D2"
+  },
+  "retained_original_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\wrapsafe-source-map-gap-20261024\\authority\\lib__internal__source_map__source_map_cache_map.js.txt",
+    "bytes": 3883,
+    "sha256": "56ED03526BDEED4F88FD84A14EDB0C005A29BC4B4616E5596414B535A5926272"
+  },
+  "changes": [
+    {
+      "intended_relative_path": "src/extensions/native_node_source_map_cache_map.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_source_map_cache_map.zig",
+        "bytes": 21526,
+        "sha256": "E2AEDBDD801EB32063D94E9326C4606A4B81144099FCEC3D8B6995C3334D73E1"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-own-private-sourceonly-20261024\\projected\\src\\extensions\\native_node_source_map_cache_map.zig",
+        "bytes": 21606,
+        "sha256": "6DCC9B0B563CB31B5CD03419E2F40124B06A32E2CAE63B70F000E9192D57FD34"
+      },
+      "operation": "one finite ownPrivate consumer correction"
+    }
+  ],
+  "source_diff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-own-private-sourceonly-20261024\\source-map-cache-map-own-private.patch",
+    "bytes": 1400,
+    "sha256": "2ADDED1E634E6306B4BE37E715E1E4A3632ABD6700386EC1CE91534053A2140C"
+  },
+  "source_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-own-private-sourceonly-20261024\\own-private-consumer-source-transform.json",
+    "bytes": 4270,
+    "sha256": "DDB044FDED44CC9EABD24E4BB53EC13DA33B76CE3A63261501E8933AD1227F9D"
+  },
+  "required_pending_abi": {
+    "source_entry": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\source-intake-v3.json",
+      "bytes": 35650,
+      "sha256": "52737C398AECBC72E7A04848D46A92325953D6BA8371328FD8B25B2D3FB1A0BE"
+    },
+    "C": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected-v3\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2409692,
+      "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+    },
+    "header": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.h",
+      "bytes": 117849,
+      "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+    },
+    "owned_accessor_proof": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\owned-private-accessor-v3-source-transform.json",
+      "bytes": 8405,
+      "sha256": "B6BA68CAB5667FAB0308A2CE3FF16B279CBB31E1CE527BA6FF0E2D5F76E03F4B"
+    },
+    "requires_root_source_acceptance": true,
+    "requires_actual_fresh_native_library": true,
+    "unchanged_existing_engine_abi_header": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine_abi.h",
+      "bytes": 2003,
+      "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5"
+    },
+    "old_archive_usable": false
+  },
+  "controls": {
+    "root": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_source_map_cache_map_test.zig",
+      "bytes": 28775,
+      "sha256": "2E7F9BF6E5EB7AFED331F03157A3E12CB5FC6FDA406EBFBEF0E311CFE55A73DD"
+    },
+    "build_step": "build-native-node-source-map-cache-map",
+    "filter": "native source map cache",
+    "artifact": "test.exe",
+    "declared_count": 20,
+    "declared_tests": [
+      "native source map cache class has the original frozen prototype and hidden private instance state",
+      "native source map cache private brands reject proxies and forged receivers while derived instances work",
+      "native source map cache aliases share the actual per Engine module data key across classes",
+      "native source map cache forEach keeps holes inherited indices length snapshot and getter order",
+      "native source map cache partial key failure preserves earlier insertions before data and registration",
+      "native source map cache set checks WeakRef first and delays receiver brand through empty keys",
+      "native source map cache private data handles frozen modules and revoked proxy wrappers without traps",
+      "native source map cache owns only WeakRefs so actual module and data retire before cleanup jobs",
+      "native source map cache successful dereference keeps its target until the actual host checkpoint",
+      "native source map cache stale finalization leaves an alias replaced with a live module intact",
+      "native source map cache finalization reads the original mutable keys array without copying it",
+      "native source map cache cleanup interpolates keys and resolves debug callee before coercion",
+      "native source map cache disabled logging still coerces keys and ordinary logging failure prevents deletion",
+      "native source map cache logger reentry precedes the original unconditional stale entry delete",
+      "native source map cache iterator is an ordinary own next object with live Map order and recursive dead skips",
+      "native source map cache escaped iterator does not keep module or data alive through the cache",
+      "native source map cache pristine operations survive replaced globals and poisoned live prototypes",
+      "native source map cache current native producer during key coercion prevents debug and deletion",
+      "native source map cache private data retirement publishes replacement before the retained first fatal",
+      "native source map cache debug binding keeps original initialization TDZ and captured flagged data nonfatal"
+    ],
+    "all_original_bytes_unchanged": true,
+    "actual_metadata_count": null,
+    "runtime_results": null
+  },
+  "direct_import_resolutions": [
+    {
+      "importer": "src/extensions/native_node_source_map_cache_map.zig",
+      "literal": "native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_source_map_cache_map.zig",
+      "literal": "native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_source_map_cache_map.zig",
+      "literal": "native_node_error_class.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_error_class.zig",
+        "bytes": 7317,
+        "sha256": "0192489A134A0D6B287EB1494654FC25391E1989D80A239C9AC37201392E0EE5"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_source_map_cache_map.zig",
+      "literal": "native_sync_arguments.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+        "bytes": 9162,
+        "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+      }
+    }
+  ],
+  "static_checks": {
+    "all_other_owner_bytes_unchanged": true,
+    "unchanged_function_names": [
+      "intrinsic",
+      "privateSymbol",
+      "typeError",
+      "privateSet",
+      "branded",
+      "defineSymbol",
+      "defineSize",
+      "debugAssignment",
+      "debugCallback",
+      "create",
+      "createBody",
+      "initializeMap",
+      "initializeCleanup",
+      "initializeRegistry",
+      "constructBody",
+      "constructClass",
+      "weakReference",
+      "dereference",
+      "setOne",
+      "setKeyCallback",
+      "setKeys",
+      "setData",
+      "registerModule",
+      "setBody",
+      "setCallback",
+      "lookup",
+      "moduleData",
+      "getBody",
+      "getCallback",
+      "sizeBody",
+      "sizeCallback",
+      "deadReference",
+      "debugObsolete",
+      "deleteKey",
+      "cleanupKeyBody",
+      "cleanupKeyCallback",
+      "cleanupBody",
+      "cleanupCallback",
+      "iteratorSelf",
+      "nextResult",
+      "unpackResult",
+      "nextAgain",
+      "yieldedPair",
+      "nextBody",
+      "nextCallback",
+      "iteratorBody",
+      "iteratorCallback"
+    ],
+    "unchanged_function_count": 47,
+    "one_hunk_raw_inverse_exact": true,
+    "control_names_and_bytes_exact": true,
+    "compile_executed": false
+  },
+  "semantic_accounting": [
+    "The original private-brand Proxy rejection control remains unchanged; no accepted failure is converted to success by test weakening.",
+    "Real own storage on a revoked/stamped Proxy is read without forwarding to its target or consulting a handler.",
+    "Primitive, nullish, missing-brand and optional-private-data decisions remain exactly the same caller code.",
+    "The pending C leaf supports actual own accessor invocation with an owned callee; the operation Scope adopts its owned result and preserves actual pending/fatal completion.",
+    "No class, cache key, Map/WeakRef/FR identity, debug binding, iteration, cleanup or constructor body is otherwise changed."
+  ],
+  "integration_notes": [
+    "Select only this owner replacement; no build or test file is replaced by this correction packet.",
+    "Compose with the selected own-private C/header dependency from WeakRefMap v3 and regenerate the genuine native QuickJS library.",
+    "Keep the original SourceMapCacheMap58399472 and WeakRefMap v1/v2 source packets as immutable predecessors."
+  ],
+  "not_executed": [
+    "native compile",
+    "metadata/runtime controls",
+    "Node/reference capture",
+    "generator/candidate execution",
+    "Main mutation"
+  ],
+  "claims": {
+    "source_only": true,
+    "Main_modified": false,
+    "native_executed": false,
+    "runtime_qualified": false,
+    "Module_namespace_published": false,
+    "application_qualified": false,
+    "default_backend_changed": false
+  }
+}

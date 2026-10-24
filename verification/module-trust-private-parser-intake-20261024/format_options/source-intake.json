@@ -1,0 +1,258 @@
+{
+  "schema": 1,
+  "status": "source_only_ready_for_independent_review",
+  "source_base_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "selected_scope": "Complete original formatWithOptions entry and validateObject, joined to the existing actual private inspector and argument-error graph.",
+  "changes": [
+    {
+      "target": "src/extensions/native_node_inspect_format.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_inspect_format.zig",
+        "bytes": 21670,
+        "sha256": "F40A4D0C75D8474485C33A5C43117D4090E230C1813DD081BCE32802883AB535"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\projected\\src\\extensions\\native_node_inspect_format.zig",
+        "bytes": 23953,
+        "sha256": "F8FD66A60374C32286DF4E5E11D71F8B6AF17DE552E66A432144713EB658992C"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_argument_error_registration.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_error_registration.zig",
+        "bytes": 12126,
+        "sha256": "7B3EDB7E6E01D4B8C2866D24918212B55F958BA7F3B1A254412741CA59275BE3"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\projected\\src\\extensions\\native_node_argument_error_registration.zig",
+        "bytes": 15160,
+        "sha256": "088CCD9556A8F3CE467011FEB8B391C457E1CDE11E79CCFDD2794FE309CBEFAD"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_argument_errors.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_errors.zig",
+        "bytes": 10088,
+        "sha256": "2D45015AC5845A9D841D073188CA67BBCB41DAD2B433D9B7D2142988B499840B"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\projected\\src\\extensions\\native_node_argument_errors.zig",
+        "bytes": 10884,
+        "sha256": "6C8D3213D323E17E2316A727D39FA66AEC52AC32DB23E5F992B1120DD5E14F2D"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_util_inspect.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_util_inspect.zig",
+        "bytes": 43751,
+        "sha256": "8AEB5ED9735E575141B4482BC64EC2D66758E642748956539A4FA2DF94A54B2B"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\projected\\src\\extensions\\native_node_util_inspect.zig",
+        "bytes": 44308,
+        "sha256": "31D459759B8E679BA1CB03C7E5E9669178D45897EB725DFB64E30A5AF0908276"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_internal_inspect_binding.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_internal_inspect_binding.zig",
+        "bytes": 2273,
+        "sha256": "0B297684B7AA9F40161F4511ACDC29AB8894462F2D6D372BCBFEC0E09E4B8838"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\projected\\src\\extensions\\native_node_internal_inspect_binding.zig",
+        "bytes": 2348,
+        "sha256": "6C1DBB9A9F3458C7B6316C2F5FFB3428CC7CA9E04DAEB468D9415D8840A05C15"
+      }
+    },
+    {
+      "target": "src/native_node_format_with_options_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\projected\\src\\native_node_format_with_options_test.zig",
+        "bytes": 27364,
+        "sha256": "5CB193FFE1330FCBD0F5C565606794ACBDBAE74DE9337D2DD4256A6F94E52192"
+      }
+    },
+    {
+      "target": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 541125,
+        "sha256": "EAB06B9082B53FB958E34E47193447CBA30DA153803472666401EC0A72D48691"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 542481,
+        "sha256": "1557C6F712DE5617B4924BF5852FAD3F68C486013159C61E792D5E51B572E765"
+      }
+    }
+  ],
+  "production_inverses": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\production-source-inverses.json",
+    "bytes": 22629,
+    "sha256": "34F1552227CC8D12A9C10E19A8ADBA4EC4C30A4ACDFD62B7BF82E4A59B207063"
+  },
+  "build_composition": {
+    "baseline": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+      "bytes": 541125,
+      "sha256": "EAB06B9082B53FB958E34E47193447CBA30DA153803472666401EC0A72D48691"
+    },
+    "selected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 542481,
+      "sha256": "1557C6F712DE5617B4924BF5852FAD3F68C486013159C61E792D5E51B572E765"
+    },
+    "insertion": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\build-insertion.txt",
+      "bytes": 1356,
+      "sha256": "8133C7518DD5D6EE7A99106D977DDACBD72C7A15869E8FEA8FD5ED97A8D9AAB2"
+    },
+    "anchor": "    // Genuine shared Node argument errors and actual rest/super controls.\n",
+    "replacement_count": 1,
+    "complete_raw_inverse": true,
+    "insert_only_when_composing_with_other_packets": true,
+    "install_step": "build-native-node-format-with-options",
+    "group_name": "native-node-format-with-options",
+    "artifact_stem": "native-node-format-with-options",
+    "filters": [
+      "native format options",
+      "native validateObject"
+    ],
+    "build_run_artifact_added": false
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\format-with-options-successor.patch",
+    "bytes": 54171,
+    "sha256": "25D035349B43BD26B1B191F7B01AD7C7FCE99E6978A77FA54FEA6A7264A2C76D"
+  },
+  "authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\original-authority.json",
+    "bytes": 19100,
+    "sha256": "F55BD3925040FB34ACC820F0CA82982D983E913832C7664C8C0FFFDE70B56840"
+  },
+  "direct_imports": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\direct-imports.json",
+    "bytes": 19208,
+    "sha256": "FD46D4807276923BF106380400F10765A27B2D39834F5CD08893BA42B52D48F7"
+  },
+  "required_current_owner_pins": [
+    {
+      "relative_path": "src/extensions/native_node_argument_bootstrap.zig",
+      "current": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_bootstrap.zig",
+        "bytes": 4905,
+        "sha256": "435957EED6F561AD47B2AAA68EA07BC5FBDCCE28D2F077B8824098B309A98484"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_argument_messages.zig",
+      "current": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_messages.zig",
+        "bytes": 21602,
+        "sha256": "C703B46B6390900E87A629BDEDE9789D50EB774FFF15FC9D5E2D68A530F61CF7"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_inspect_operations.zig",
+      "current": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_inspect_operations.zig",
+        "bytes": 13187,
+        "sha256": "D03966DE89E0ACEE266150FAD4337FAB2C0DC49C4F4FBFCD9F13FE73DD4D3C84"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_operation_scope.zig",
+      "current": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+        "bytes": 7087,
+        "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_public_lexical_frame.zig",
+      "current": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_lexical_frame.zig",
+        "bytes": 17136,
+        "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_sdk_owned_completion.zig",
+      "current": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+        "bytes": 15176,
+        "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+      }
+    }
+  ],
+  "controls": {
+    "root": "src/native_node_format_with_options_test.zig",
+    "source_declared_controls": 24,
+    "names": [
+      "native format options exposes genuine callable shape and shares the completed private owners",
+      "native format options allows arrays objects and revoked object proxies without option enumeration on literal return",
+      "native format options rejects primitives and functions with the actual hidden argument error before formatting",
+      "native format options numeric separator uses explicit values and only nullish shared defaults",
+      "native format options reads numeric separator after each original value conversion",
+      "native format options nonnumeric placeholders do not consult numeric separator",
+      "native format options string placeholder copies options then overrides compact colors and depth",
+      "native format options hidden placeholder preserves own key descriptor Get order before overrides",
+      "native format options ordinary placeholder forwards the actual options without eager spreading",
+      "native format options trailing objects use the same options and trailing strings stay uninspected",
+      "native format options performs nullish default lookup after the live separator getter",
+      "native format options preserves ordinary getter failures and suppresses later argument work",
+      "native format options retains independent option frames across recursive getter calls",
+      "native validateObject preserves all three original flags and actual hidden error identity",
+      "native validateObject performs three independent bit coercions with original short circuit points",
+      "native validateObject preserves primitive flag conversion failures and original thrown values",
+      "native validateObject uses the captured real ArrayIsArray including revoked proxy behavior",
+      "native format options uses original numeric String and Apply primordials after guest mutation",
+      "native format options spread defines actual own symbol data without inherited setter calls",
+      "native format options current native getter fatal stops later placeholders with first reason",
+      "native format options retires the separator temporary before the next placeholder",
+      "native format options retires overwritten spread values before entering inspect",
+      "native format options accepts flagged error values as data without an actual pending event",
+      "native format options requires the actual errors bootstrap and reuses its original inspector function"
+    ],
+    "actual_metadata_count": null,
+    "compiled": false,
+    "queried": false,
+    "executed": false
+  },
+  "static_checks": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\static-source-checks.json",
+    "bytes": 3793,
+    "sha256": "FB72DDEAC6733D305CD2E6650B3F994275624AED9E9C8099D6008C0FBCC75653"
+  },
+  "next_supplier_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\next-supplier-handoff.json",
+    "bytes": 1465,
+    "sha256": "E497EC8F0CE89016E7B41E8CC52DE29432FAAC570E1FDF67F526A4138EB09F0D"
+  },
+  "README": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\README.md",
+    "bytes": 3665,
+    "sha256": "72C90357DEFD68FA77ADA2D9F437967076A972214CBA36A284936FBFED2EFE34"
+  },
+  "source_only": true,
+  "Main_modified": false,
+  "source_generator_executed": false,
+  "Node_reference_capture_executed": false,
+  "default_backend_changed": false,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false
+}

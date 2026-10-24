@@ -71,6 +71,13 @@ pub const Owner = struct {
         try self.check();
         return if (self.auth) |*value| value.createPrintMode() else error.ActualSdkApplicationAuthRetired;
     }
+    /// Complete private original trust path/resource/options helpers over this
+    /// owner's genuine filesystem, path, OS, configuration and path utilities.
+    /// Store/event policy and the full Main runtimeFactory are separate owners.
+    pub fn createProjectTrustPaths(self: *Owner) !c.JSValue {
+        try self.check();
+        return if (self.auth) |*value| value.createProjectTrustPaths() else error.ActualSdkApplicationAuthRetired;
+    }
     /// Explicit Source mode transitions. Call only at the actual noninteractive
     /// or RPC transition, never infer takeover from TTY state or a mode boolean.
     pub fn takeOverStdout(self: *Owner) !void { return stdoutTransition(self, false); }

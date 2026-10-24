@@ -1,0 +1,15 @@
+    const auth_explicit_lock_path_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_auth_explicit_lock_path_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native auth explicit lock path"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, auth_explicit_lock_path_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, auth_explicit_lock_path_tests.root_module, typescript_parser);
+    linkSqlite(auth_explicit_lock_path_tests.root_module, sqlite_lib_dir, sqlite_library);
+    auth_explicit_lock_path_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        auth_explicit_lock_path_tests.root_module.linkSystemLibrary("advapi32", .{});
+        auth_explicit_lock_path_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-auth-explicit-lock-path", "Compile the actual directory lock path controls").dependOn(&b.addInstallArtifact(auth_explicit_lock_path_tests, .{}).step);
+

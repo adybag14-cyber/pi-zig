@@ -1,0 +1,5 @@
+    const util_colors_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_util_colors_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native util colors"}, .use_llvm = use_llvm });
+    linkQuickJs(b, util_colors_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(util_colors_tests.root_module, sqlite_lib_dir, sqlite_library);
+    util_colors_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-node-util-colors", "Install actual colors module capability and expression order controls").dependOn(&b.addInstallArtifact(util_colors_tests, .{}).step);

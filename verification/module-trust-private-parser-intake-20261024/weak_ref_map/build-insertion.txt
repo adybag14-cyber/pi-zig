@@ -1,0 +1,13 @@
+    const weak_ref_map_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_weak_ref_map_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native WeakRefMap"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, weak_ref_map_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, weak_ref_map_tests.root_module, typescript_parser);
+    linkSqlite(weak_ref_map_tests.root_module, sqlite_lib_dir, sqlite_library);
+    weak_ref_map_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        weak_ref_map_tests.root_module.linkSystemLibrary("advapi32", .{});
+        weak_ref_map_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-weak-ref-map", "Install genuine WeakRefMap and own-private Get controls without execution").dependOn(&b.addInstallArtifact(weak_ref_map_tests, .{ .dest_sub_path = b.fmt("native-node-weak-ref-map{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);

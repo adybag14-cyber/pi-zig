@@ -1,5 +1,5 @@
 // Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
-//! The actual primordials makeSafe Map, Set, WeakMap and Promise subclasses.
+//! The actual primordials makeSafe Map, Set, WeakMap, Promise and FinalizationRegistry subclasses.
 //! Iterator probes retain Source call order and one shared captured next method.
 const v = @import("native_ai_provider_values.zig");
 const c = v.c;
@@ -7,20 +7,21 @@ const Scope = @import("native_node_operation_scope.zig").Scope;
 const functions = @import("native_node_module_callable.zig");
 const classes = @import("native_node_fs_class.zig");
 const publication = @import("native_node_fs_private_publication.zig");
-const Collection = enum { map, set, weak_map, promise };
+const Collection = enum { map, set, weak_map, promise, finalization_registry };
 fn cacheKey(comptime collection: Collection) []const u8 {
     return switch (collection) {
         .map => "\x00native.fs.SafeMap",
         .set => "\x00native.fs.SafeSet",
         .weak_map => "\x00native.internal.SafeWeakMap",
         .promise => "\x00native.internal.SafePromise",
+        .finalization_registry => "\x00native.internal.SafeFinalizationRegistry",
     };
 }
 fn unsafeName(comptime collection: Collection) [*:0]const u8 {
-    return switch (collection) { .map => "Map", .set => "Set", .weak_map => "WeakMap", .promise => "Promise" };
+    return switch (collection) { .map => "Map", .set => "Set", .weak_map => "WeakMap", .promise => "Promise", .finalization_registry => "FinalizationRegistry" };
 }
 fn safeName(comptime collection: Collection) [:0]const u8 {
-    return switch (collection) { .map => "SafeMap", .set => "SafeSet", .weak_map => "SafeWeakMap", .promise => "SafePromise" };
+    return switch (collection) { .map => "SafeMap", .set => "SafeSet", .weak_map => "SafeWeakMap", .promise => "SafePromise", .finalization_registry => "SafeFinalizationRegistry" };
 }
 fn constructCollection(engine: *v.em.Engine, target: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s = Scope.init(engine);
@@ -265,6 +266,9 @@ pub fn acquireSafeWeakMap(engine: *v.em.Engine) !c.JSValue { return acquire(engi
 
 /// The same makeSafe algorithm retains the genuine Promise constructor.
 pub fn acquireSafePromise(engine: *v.em.Engine) !c.JSValue { return acquire(engine, .promise); }
+
+/// Original primordials.js 424-427 uses this complete makeSafe algorithm.
+pub fn acquireSafeFinalizationRegistry(engine: *v.em.Engine) !c.JSValue { return acquire(engine, .finalization_registry); }
 
 /// Early primordial bootstrap supplies the actual retained uncurried imports.
 /// Returns one completed owned class; no independent iterator cache is created.

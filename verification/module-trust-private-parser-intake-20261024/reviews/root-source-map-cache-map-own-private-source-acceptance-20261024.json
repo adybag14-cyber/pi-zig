@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T19:58:53.829664+00:00",
+  "status": "Root_accepted_finite_consumer_source_only_with_exact_pending_ABI",
+  "intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-own-private-sourceonly-20261024\\source-intake.json",
+    "bytes": 10997,
+    "sha256": "F4B1375ED0B7A4CC73276A0E388C4EA42139DF102762F682DB2D8F06F44283C5"
+  },
+  "inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-own-private-sourceonly-20261024\\own-private-consumer-source-transform.json",
+    "bytes": 4270,
+    "sha256": "DDB044FDED44CC9EABD24E4BB53EC13DA33B76CE3A63261501E8933AD1227F9D"
+  },
+  "selected_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-own-private-sourceonly-20261024\\projected\\src\\extensions\\native_node_source_map_cache_map.zig",
+    "bytes": 21606,
+    "sha256": "6DCC9B0B563CB31B5CD03419E2F40124B06A32E2CAE63B70F000E9192D57FD34"
+  },
+  "required_C": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected-v3\\vendor\\quickjs\\quickjs.c",
+    "bytes": 2409692,
+    "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+  },
+  "required_header": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.h",
+    "bytes": 117849,
+    "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+  },
+  "required_owned_accessor_fix": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\owned-private-accessor-v3-source-transform.json",
+    "bytes": 8405,
+    "sha256": "B6BA68CAB5667FAB0308A2CE3FF16B279CBB31E1CE527BA6FF0E2D5F76E03F4B"
+  },
+  "unchanged_controls": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_source_map_cache_map_test.zig",
+    "bytes": 28775,
+    "sha256": "2E7F9BF6E5EB7AFED331F03157A3E12CB5FC6FDA406EBFBEF0E311CFE55A73DD"
+  },
+  "source_controls": 20,
+  "review": [
+    "Read whole ownPrivate delta and verified full forward/inverse bytes; all bytes outside the single hunk are unchanged.",
+    "The genuine own-private getter distinguishes absence from stored undefined and bypasses exotic descriptor and Proxy-target fallback.",
+    "Scope checked adopts the owned guest-capable producer result; accessor callee is duplicated and consumed by JS_CallFree in the exact required C implementation.",
+    "Existing private brand Proxy/revoked Proxy and lifetime controls remain byte exact. WeakRefMap control-string syntax successor is separate and does not alter the required C/header bytes."
+  ],
+  "native_executed": false,
+  "main_mutated": false,
+  "fresh_native_library_required": true,
+  "runtime_qualified": false
+}

@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "status": "finite_genuine_runtime_identity_successor",
+  "helper_body_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_project_trust_paths.zig",
+    "bytes": 16748,
+    "sha256": "15F33D337B14FF9BDBFBD46A1C92644CB6D86E84A127C4C216B6F9D5A98C191F"
+  },
+  "application_delegate": {
+    "baseline": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_application_owner.zig",
+      "bytes": 16725,
+      "sha256": "50C65DC5557791329324B221D2D0D1FECE9D9C3502D390102025BDA255206973"
+    },
+    "candidate": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\projected-v2\\src\\extensions\\native_sdk_application_owner.zig",
+      "bytes": 15154,
+      "sha256": "6EF2F47ACD53649507ADE2C6DEB0D5352D02B905AB5C1F93BF53CA9F4B92E3B3"
+    },
+    "edits": [
+      {
+        "offset": 3854,
+        "before": "    pub fn createProjectTrustPaths(self: *Owner) !c.JSValue {\n        return projectTrustPathsEntry(self);\n    }\n",
+        "after": "    pub fn createProjectTrustPaths(self: *Owner) !c.JSValue {\n        try self.check();\n        return if (self.auth) |*value| value.createProjectTrustPaths() else error.ActualSdkApplicationAuthRetired;\n    }\n",
+        "before_sha256": "50C65DC5557791329324B221D2D0D1FECE9D9C3502D390102025BDA255206973",
+        "after_sha256": "D2861A7F7E68DC593029F980D0D94ABF65A00DF3C1F87EA31F6B0656A788E29D"
+      },
+      {
+        "offset": 5912,
+        "before": "fn projectTrustPathsEntry(self: *Owner) !c.JSValue {\n    try self.check();\n    const engine = self.engine;\n    var invocation: em.Engine.NativeInvocation = .{};\n    engine.enterNativeInvocation(&invocation);\n    engine.native_exception_diagnostics_suppressed += 1;\n    defer engine.native_exception_diagnostics_suppressed -= 1;\n    var s: Scope = .{ .engine = engine };\n    const result = owned.finishValue(&s, projectTrustPathsBody(self, &s)) catch |err|\n        return engine.checked(engine.leaveNativeInvocation(&invocation, sdk.fail(engine, err)));\n    return engine.checked(engine.leaveNativeInvocation(&invocation, result));\n}\nfn projectTrustPathsBody(self: *Owner, s: *Scope) !c.JSValue {\n    const core = if (self.auth) |*value| value else return error.ActualSdkApplicationAuthRetired;\n    // Snapshot the actual owned runtime before imported Gets can reenter and\n    // retire this host handle. No borrowed Owner field is read after that point.\n    const runtime = try root(s, c.JS_DupValue(s.engine.context, core.runtime_imports));\n    const platform = try get(s, runtime, \"platform\");\n    const filesystem = try get(s, platform, \"filesystem\");\n    const paths = try get(s, platform, \"paths\");\n    const os = try builtinDefault(s, \"node:os\");\n    const path_utilities = try get(s, platform, \"pathUtilities\");\n    const configuration = try get(s, runtime, \"configuration\");\n    const config_dir = try get(s, configuration, \"CONFIG_DIR_NAME\");\n    return @import(\"native_sdk_project_trust_paths.zig\").create(s.engine, .{\n        .filesystem = filesystem, .paths = paths, .os = os,\n        .path_utilities = path_utilities, .config_dir = config_dir,\n    });\n}\n",
+        "after": "",
+        "before_sha256": "D2861A7F7E68DC593029F980D0D94ABF65A00DF3C1F87EA31F6B0656A788E29D",
+        "after_sha256": "6EF2F47ACD53649507ADE2C6DEB0D5352D02B905AB5C1F93BF53CA9F4B92E3B3"
+      }
+    ],
+    "complete_raw_inverse": true
+  },
+  "auth_owner": {
+    "baseline": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\original\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+      "bytes": 14363,
+      "sha256": "AD2C8AFEBA8DA041AB6470EA29C5C018EDE67E2C85F14511138B6F3AD624425F"
+    },
+    "candidate": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\projected-v2\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+      "bytes": 17972,
+      "sha256": "35897A81D550D64E2BDEF66696F759A1AEF5BDA5B0D8EB863FE409C874F84B4C"
+    },
+    "edits": [
+      {
+        "offset": 3337,
+        "before": "    /// Actual Source AuthStorage.inMemory(), without a File backend substitute\n",
+        "after": "    /// Complete private original trust path/resource/options module over this\n    /// owner's authenticated native runtime and retained provider identities.\n    pub fn createProjectTrustPaths(self: *Owner) !c.JSValue {\n        return projectTrustPathsEntry(self);\n    }\n    /// Actual Source AuthStorage.inMemory(), without a File backend substitute\n",
+        "before_sha256": "AD2C8AFEBA8DA041AB6470EA29C5C018EDE67E2C85F14511138B6F3AD624425F",
+        "after_sha256": "9E356458CC57F9A2BE80A2E2C62096DA3B337B89537E925E416338EBB212CC8A"
+      },
+      {
+        "offset": 7378,
+        "before": "fn valueEntry(self: *Owner, in_memory: bool) !c.JSValue {\n",
+        "after": "fn projectTrustPathsEntry(self: *Owner) !c.JSValue {\n    const engine = self.engine;\n    engine.native_exception_diagnostics_suppressed += 1;\n    defer engine.native_exception_diagnostics_suppressed -= 1;\n    try self.check();\n    var invocation: em.Engine.NativeInvocation = .{};\n    engine.enterNativeInvocation(&invocation);\n    var scope: Scope = .{ .engine = engine };\n    const value = completion.finishValue(&scope, projectTrustPathsBody(self, &scope)) catch |err|\n        return engine.checked(engine.leaveNativeInvocation(&invocation, @import(\"native_sdk.zig\").fail(engine, err)));\n    return engine.checked(engine.leaveNativeInvocation(&invocation, value));\n}\nfn projectTrustPathsBody(self: *Owner, scope: *Scope) !c.JSValue {\n    const engine = scope.engine;\n    const o: Ops = .{ .scope = scope };\n    // Snapshot the owned runtime and EVERY expected native module before any\n    // carrier Get can reenter, replace graph fields or retire this host owner.\n    const imports = try o.own(c.JS_DupValue(engine.context, self.runtime_imports));\n    const expected_imports = try o.own(c.JS_DupValue(engine.context, try installed(engine, \"pi-native:sdk-runtime-imports-native-zig\")));\n    const expected_platform = try o.own(c.JS_DupValue(engine.context, try installed(engine, \"pi-native:actual-sdk-filesystem-platform\")));\n    const expected_fs = try o.own(c.JS_DupValue(engine.context, try installed(engine, \"node:fs\")));\n    const expected_paths = try o.own(c.JS_DupValue(engine.context, try installed(engine, \"node:path\")));\n    const expected_utilities = try o.own(c.JS_DupValue(engine.context, try installed(engine, \"pi-private:actual-sdk-path-utilities\")));\n    const expected_configuration = try o.own(c.JS_DupValue(engine.context, try installed(engine, \"pi-native:sdk-configuration-native-zig\")));\n    const os = try o.own(c.JS_DupValue(engine.context, try installed(engine, \"node:os\")));\n    if (!scope.equal(imports, expected_imports)) return error.ActualSdkTrustRuntimeNamespaceChanged;\n    const platform = try o.get(imports, \"platform\");\n    if (!scope.equal(platform, expected_platform)) return error.ActualSdkTrustPlatformNamespaceChanged;\n    const filesystem = try o.get(platform, \"filesystem\");\n    if (!scope.equal(filesystem, expected_fs)) return error.ActualSdkTrustFilesystemNamespaceChanged;\n    const paths = try o.get(platform, \"paths\");\n    if (!scope.equal(paths, expected_paths)) return error.ActualSdkTrustPathsNamespaceChanged;\n    const path_utilities = try o.get(platform, \"pathUtilities\");\n    if (!scope.equal(path_utilities, expected_utilities)) return error.ActualSdkTrustUtilitiesNamespaceChanged;\n    const configuration = try o.get(imports, \"configuration\");\n    if (!scope.equal(configuration, expected_configuration)) return error.ActualSdkTrustConfigurationNamespaceChanged;\n    const config_dir = try o.get(configuration, \"CONFIG_DIR_NAME\");\n    // Source imports homedir from the installed OS namespace. Preserve ordinary\n    // named-member mutation before capture; no foreign carrier or callable\n    // whitelist is accepted. Never touch self after the first carrier Get.\n    return @import(\"native_sdk_project_trust_paths.zig\").create(engine, .{\n        .filesystem = filesystem, .paths = paths, .os = os,\n        .path_utilities = path_utilities, .config_dir = config_dir,\n    });\n}\n\nfn valueEntry(self: *Owner, in_memory: bool) !c.JSValue {\n",
+        "before_sha256": "9E356458CC57F9A2BE80A2E2C62096DA3B337B89537E925E416338EBB212CC8A",
+        "after_sha256": "35897A81D550D64E2BDEF66696F759A1AEF5BDA5B0D8EB863FE409C874F84B4C"
+      }
+    ],
+    "complete_raw_inverse": true
+  },
+  "native_execution": false,
+  "Main_mutated": false
+}

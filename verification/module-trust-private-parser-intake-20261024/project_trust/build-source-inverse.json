@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "baseline_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "baseline_snapshot": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\original\\build.zig",
+    "bytes": 541125,
+    "sha256": "EAB06B9082B53FB958E34E47193447CBA30DA153803472666401EC0A72D48691"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 542179,
+    "sha256": "D53D4C35DF91DAB4E0187885EDDBA855913A46746E4638E8C9999BFECBCD6E5C"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1054,
+    "sha256": "494B7238C168268F736ECC52D5A30B1090ACF97782C1ED22A55DB5D4C8EBDBB2"
+  },
+  "offset": 183526,
+  "anchor": "    const module_execution_state_tests = b.addTest(.{\n",
+  "raw_inverse_exact": true,
+  "install_only": true,
+  "source_execution_step_added": false
+}

@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_source_map_cache_map.zig",
+    "bytes": 21526,
+    "sha256": "E2AEDBDD801EB32063D94E9326C4606A4B81144099FCEC3D8B6995C3334D73E1"
+  },
+  "successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-source-map-cache-map-own-private-sourceonly-20261024\\projected\\src\\extensions\\native_node_source_map_cache_map.zig",
+    "bytes": 21606,
+    "sha256": "6DCC9B0B563CB31B5CD03419E2F40124B06A32E2CAE63B70F000E9192D57FD34"
+  },
+  "hunk": {
+    "offset": 2512,
+    "before": "    var descriptor = try s.descriptor(receiver, key) orelse {\n        if (require_brand) return typeError(s, \"Receiver has no SourceMapCacheMap private field\");\n        return c.pi_js_undefined();\n    };\n    defer s.releaseDescriptor(&descriptor);\n    if (descriptor.flags & c.JS_PROP_GETSET != 0) {\n        if (c.JS_IsUndefined(descriptor.getter)) return c.pi_js_undefined();\n        return a.duplicate(s.engine, try s.call(descriptor.getter, receiver, &.{}));\n    }\n    return a.duplicate(s.engine, descriptor.value);",
+    "after": "    // A missing private slot must not fall through to an exotic descriptor\n    // trap or to a Proxy target. The genuine own-private producer also retains\n    // an accessor callee through self-removal and preserves its actual result.\n    var found: c_int = 0;\n    try s.pending();\n    const value = try s.checked(c.JS_PiGetOwnPrivateProperty(\n        s.engine.context, receiver, key, &found));\n    if (found == 0) {\n        if (require_brand) return typeError(s, \"Receiver has no SourceMapCacheMap private field\");\n        return c.pi_js_undefined();\n    }\n    return a.duplicate(s.engine, value);",
+    "before_sha256": "E2AEDBDD801EB32063D94E9326C4606A4B81144099FCEC3D8B6995C3334D73E1",
+    "after_sha256": "6DCC9B0B563CB31B5CD03419E2F40124B06A32E2CAE63B70F000E9192D57FD34"
+  },
+  "raw_inverse_exact": true,
+  "unchanged_prefix_bytes": 2512,
+  "unchanged_suffix_bytes": 18495,
+  "all_bytes_outside_ownPrivate_unchanged": true,
+  "all_original_20_controls_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_source_map_cache_map_test.zig",
+    "bytes": 28775,
+    "sha256": "2E7F9BF6E5EB7AFED331F03157A3E12CB5FC6FDA406EBFBEF0E311CFE55A73DD"
+  },
+  "pending_dependency_entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\source-intake-v3.json",
+    "bytes": 35650,
+    "sha256": "52737C398AECBC72E7A04848D46A92325953D6BA8371328FD8B25B2D3FB1A0BE"
+  },
+  "selected_C": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected-v3\\vendor\\quickjs\\quickjs.c",
+    "bytes": 2409692,
+    "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+  },
+  "selected_header": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\projected\\vendor\\quickjs\\quickjs.h",
+    "bytes": 117849,
+    "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+  },
+  "owned_accessor_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-weak-ref-map-sourceonly-20261024\\owned-private-accessor-v3-source-transform.json",
+    "bytes": 8405,
+    "sha256": "B6BA68CAB5667FAB0308A2CE3FF16B279CBB31E1CE527BA6FF0E2D5F76E03F4B"
+  },
+  "semantic_delta": "Absent own private fields no longer invoke exotic getOwnPropertyDescriptor or Proxy-target lookup. Present data/accessor/var-ref/auto-init semantics are supplied by the genuine helper; owned result is adopted into the same Scope before duplication and return.",
+  "preserved": [
+    "non-object/nullish and require_brand decisions",
+    "actual private field TypeError branch",
+    "present undefined distinguished from absent",
+    "accessor receiver and thrown/pending/fatal completion",
+    "current key, field order and all other method bodies",
+    "Scope owned-result and call-boundary lifetime"
+  ],
+  "main_modified": false,
+  "native_executed": false
+}

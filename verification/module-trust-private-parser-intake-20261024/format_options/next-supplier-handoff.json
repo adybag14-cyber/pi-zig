@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "status": "genuine_source_supplier_ready_for_independent_review",
+  "native_entry": "native_node_internal_inspect_binding.acquire(engine) returns the same cached real private inspector with its actual formatWithOptions function.",
+  "required_bootstrap": "Complete native_node_argument_bootstrap.prepare(engine) with real process/Stream/SystemError owners before invoking formatWithOptions. Private inspector construction does not recursively bootstrap errors or invent a graph.",
+  "validator_entry": "native_node_argument_errors.validateObject(engine) returns the same stable hidden-error validator. Calling before the actual graph exists returns ActualInternalErrorsNotInitialized.",
+  "next_original_owner": "Complete internal/tty.getColorDepth using real process/platform/environment and original capability inputs, then initialize and assemble actual JS debuglog. The accepted colors owner and this formatter are inputs; no implicit debug environment, no default tty capability and no no-op logger are supplied.",
+  "remaining_inspector_gates": "Existing explicit unsupported custom-stylizer context, proxy/showHidden layout, circular/exotic layouts and other inherited inspector gates remain unchanged. This packet completes formatWithOptions/validateObject, not all util.inspect surface parity.",
+  "public_loader_publication": false,
+  "default_backend_changed": false,
+  "native_qualification": false,
+  "actual_metadata_count": null
+}

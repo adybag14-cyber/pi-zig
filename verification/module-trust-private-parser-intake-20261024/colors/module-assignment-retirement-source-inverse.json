@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "status": "source_only_unexecuted",
+  "reason": "The original module.exports assignment discards its RHS before the following module.exports.refresh statement. A setter may decline to retain that RHS, so its actual retirement must complete before reading refresh.",
+  "input": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_util_colors.zig",
+    "bytes": 8033,
+    "sha256": "E0ADAEDA0F2FDA41DA25713E775C4AA3B5CE153A2DBC1386D4764CA1CE2CEBFA"
+  },
+  "output": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\projected-v3\\src\\extensions\\native_node_util_colors.zig",
+    "bytes": 8214,
+    "sha256": "3ABFB0B79C9E52FF3FAE5AB344F2F9B534B7EA52E8762108AB2C9B3DF793C827"
+  },
+  "hunks": [
+    {
+      "offset_before": 1410,
+      "before_utf8": "    const exports = try s.object();\n    inline for (.{ \"blue\", \"green\", \"white\", \"red\", \"gray\", \"clear\", \"reset\" }) |name|\n        try s.define(exports, name, try s.text(\"\"), c.JS_PROP_C_W_E);\n    try s.define(exports, \"hasColors\", a.boolean(s, false), c.JS_PROP_C_W_E);\n    const should = try s.own(try functions.createWithArguments(s.engine,\n        \"shouldColorize\", 1, false, .{ .formal_count = 1, .callback = shouldColorizeCallback }, &.{owner}));\n    const refresh = try s.own(try functions.createWithArguments(s.engine,\n        \"refresh\", 0, false, .{ .formal_count = 0, .callback = refreshCallback }, &.{owner}));\n    try s.define(exports, \"shouldColorize\", should, c.JS_PROP_C_W_E);\n    try s.define(exports, \"refresh\", refresh, c.JS_PROP_C_W_E);\n    try s.put(inputs.module, \"exports\", exports);\n",
+      "after_utf8": "    _ = try a.expression(s.engine, assignExports, .{owner, inputs.module});\n"
+    },
+    {
+      "offset_after_first": 1732,
+      "before_utf8": "",
+      "after_utf8": "fn assignExports(s: *Scope, owner: c.JSValue, module: c.JSValue) !c.JSValue {\n    const exports = try s.object();\n    inline for (.{ \"blue\", \"green\", \"white\", \"red\", \"gray\", \"clear\", \"reset\" }) |name|\n        try s.define(exports, name, try s.text(\"\"), c.JS_PROP_C_W_E);\n    try s.define(exports, \"hasColors\", a.boolean(s, false), c.JS_PROP_C_W_E);\n    const should = try s.own(try functions.createWithArguments(s.engine,\n        \"shouldColorize\", 1, false, .{ .formal_count = 1, .callback = shouldColorizeCallback }, &.{owner}));\n    const refresh = try s.own(try functions.createWithArguments(s.engine,\n        \"refresh\", 0, false, .{ .formal_count = 0, .callback = refreshCallback }, &.{owner}));\n    try s.define(exports, \"shouldColorize\", should, c.JS_PROP_C_W_E);\n    try s.define(exports, \"refresh\", refresh, c.JS_PROP_C_W_E);\n    try s.put(module, \"exports\", exports);\n    return c.pi_js_undefined();\n}\n"
+    }
+  ],
+  "full_raw_inverse": true,
+  "production_execution": false
+}

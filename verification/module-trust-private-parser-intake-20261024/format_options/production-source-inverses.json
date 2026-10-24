@@ -1,0 +1,339 @@
+{
+  "schema": 1,
+  "status": "source_only_unexecuted",
+  "production_execution": false,
+  "changes": [
+    {
+      "target": "src/extensions/native_node_inspect_format.zig",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_inspect_format.zig",
+        "bytes": 21670,
+        "sha256": "F40A4D0C75D8474485C33A5C43117D4090E230C1813DD081BCE32802883AB535"
+      },
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\projected\\src\\extensions\\native_node_inspect_format.zig",
+        "bytes": 23953,
+        "sha256": "F8FD66A60374C32286DF4E5E11D71F8B6AF17DE552E66A432144713EB658992C"
+      },
+      "hunks": [
+        {
+          "old_offset": 83,
+          "before_utf8": "//! Actual Node 24.13 internal/util/inspect format(...) and its selected\n//! formatWithOptionsInternal(undefined, args) path. The outer rest Array and\n",
+          "after_utf8": "//! Actual Node internal/util/inspect format and formatWithOptions entries.\n//! Shared option flow is the original formatWithOptionsInternal. The rest Array and\n",
+          "new_offset": 83
+        },
+        {
+          "old_offset": 749,
+          "before_utf8": "",
+          "after_utf8": "const OptionsFrame = a.frames.Frame(enum { inspect_options, rest });\n",
+          "new_offset": 759
+        },
+        {
+          "old_offset": 4637,
+          "before_utf8": "    return internal(s.engine, owner, frame.get(.rest));\n",
+          "after_utf8": "    return internal(s.engine, owner, frame.get(.rest), c.pi_js_undefined());\n",
+          "new_offset": 4716
+        },
+        {
+          "old_offset": 4695,
+          "before_utf8": "fn internal(engine: *a.v.em.Engine, owner: c.JSValue, args: c.JSValue) anyerror!c.JSValue {\n",
+          "after_utf8": "/// Original formatWithOptions formal option and actual rest Array owners.\n/// The real completed internal/errors graph supplies the same stable validator.\npub fn callWithOptions(engine: *a.v.em.Engine, argv: []const c.JSValue,\n    lexical: c.JSValue) anyerror!c.JSValue\n{\n    var s = Scope.init(engine);\n    const frame = OptionsFrame.create(&s.values) catch |err|\n        return s.finish(@as(anyerror!c.JSValue, err));\n    return a.finishFrame(&s, frame, optionsCallBody(&s, frame, argv, lexical));\n}\nfn optionsCallBody(s: *Scope, frame: *OptionsFrame, argv: []const c.JSValue,\n    lexical: c.JSValue) anyerror!c.JSValue\n{\n    try frame.copy(.inspect_options, a.arg(argv, 0));\n    const rest = if (argv.len > 0) argv[1..] else argv;\n    try frame.take(.rest, a.expression(s.engine, restBody, .{rest}));\n    _ = try a.expression(s.engine, validateOptions, .{frame.get(.inspect_options)});\n    const owner = try s.get(lexical, \"formatter\");\n    return internal(s.engine, owner, frame.get(.rest), frame.get(.inspect_options));\n}\nfn validateOptions(s: *Scope, inspect_options: c.JSValue) anyerror!c.JSValue {\n    const validator = try s.own(try @import(\"native_node_argument_errors.zig\").validateObject(s.engine));\n    _ = try s.call(validator, c.pi_js_undefined(),\n        &.{ inspect_options, try s.text(\"inspectOptions\"), c.JS_NewInt32(s.engine.context, 2) });\n    return c.pi_js_undefined();\n}\nfn internal(engine: *a.v.em.Engine, owner: c.JSValue, args: c.JSValue,\n    inspect_options: c.JSValue) anyerror!c.JSValue {\n",
+          "new_offset": 4795
+        },
+        {
+          "old_offset": 4934,
+          "before_utf8": "    return a.finishFrame(&s, frame, internalBody(&s, frame, owner, args));\n",
+          "after_utf8": "    return a.finishFrame(&s, frame, internalBody(&s, frame, owner, args, inspect_options));\n",
+          "new_offset": 6462
+        },
+        {
+          "old_offset": 7487,
+          "before_utf8": "fn numericBody(s: *Scope, owner: c.JSValue, value: c.JSValue, bigint: bool) anyerror!c.JSValue {\n    // Public format supplies undefined inspectOptions. Only these actual\n    // helpers read the shared default numericSeparator, after value conversion.\n",
+          "after_utf8": "fn numericBody(s: *Scope, owner: c.JSValue, value: c.JSValue, bigint: bool,\n    inspect_options: c.JSValue) anyerror!c.JSValue\n{\n    // Original optional Get and nullish fallback occur after value conversion.\n    // Falsy nonnull values suppress the shared default; no options are copied.\n",
+          "new_offset": 9032
+        },
+        {
+          "old_offset": 7789,
+          "before_utf8": "    const defaults = try s.get(owner, \"defaults\");\n    const separator = try s.get(defaults, \"numericSeparator\");\n",
+          "after_utf8": "    const selected = if (c.JS_IsNull(inspect_options) or c.JS_IsUndefined(inspect_options))\n        c.pi_js_undefined() else try s.get(inspect_options, \"numericSeparator\");\n    const separator = if (c.JS_IsNull(selected) or c.JS_IsUndefined(selected))\n        try s.get(try s.get(owner, \"defaults\"), \"numericSeparator\") else selected;\n",
+          "new_offset": 9371
+        },
+        {
+          "old_offset": 8274,
+          "before_utf8": "    conversion: [*:0]const u8) anyerror!c.JSValue\n",
+          "after_utf8": "    conversion: [*:0]const u8, inspect_options: c.JSValue) anyerror!c.JSValue\n",
+          "new_offset": 10077
+        },
+        {
+          "old_offset": 8499,
+          "before_utf8": "    return dup(s, try expr(s, numericBody, .{ owner, converted, false }));\n",
+          "after_utf8": "    return dup(s, try expr(s, numericBody, .{ owner, converted, false, inspect_options }));\n",
+          "new_offset": 10330
+        },
+        {
+          "old_offset": 9125,
+          "before_utf8": "    mode: Inspection) anyerror!c.JSValue\n",
+          "after_utf8": "    mode: Inspection, inspect_options: c.JSValue) anyerror!c.JSValue\n",
+          "new_offset": 10973
+        },
+        {
+          "old_offset": 9217,
+          "before_utf8": "    var options = c.pi_js_undefined();\n",
+          "after_utf8": "    var options = inspect_options;\n",
+          "new_offset": 11093
+        },
+        {
+          "old_offset": 9285,
+          "before_utf8": "        // Actual literal with undefined spread source. Each entry is an own\n        // data definition; no inherited option setter is invoked.\n        options = try s.object();\n",
+          "after_utf8": "        // Real CopyDataProperties includes symbols and per-key descriptor/Get\n        // order. Overrides remain own data definitions, not inherited setters.\n        options = try ops.spread(&s.values, inspect_options);\n",
+          "new_offset": 11157
+        },
+        {
+          "old_offset": 10093,
+          "before_utf8": "fn stringArgument(s: *Scope, owner: c.JSValue, value: c.JSValue) anyerror!c.JSValue {\n    if (c.JS_IsNumber(value)) return numericBody(s, owner, value, false);\n    if (c.JS_IsBigInt(value)) return numericBody(s, owner, value, true);\n",
+          "after_utf8": "fn stringArgument(s: *Scope, owner: c.JSValue, value: c.JSValue, inspect_options: c.JSValue) anyerror!c.JSValue {\n    if (c.JS_IsNumber(value)) return numericBody(s, owner, value, false, inspect_options);\n    if (c.JS_IsBigInt(value)) return numericBody(s, owner, value, true, inspect_options);\n",
+          "new_offset": 12008
+        },
+        {
+          "old_offset": 10534,
+          "before_utf8": "    return inspection(s, owner, value, .string);\n",
+          "after_utf8": "    return inspection(s, owner, value, .string, inspect_options);\n",
+          "new_offset": 12511
+        },
+        {
+          "old_offset": 10651,
+          "before_utf8": "    kind: enum { decimal, integer, float }) anyerror!c.JSValue\n",
+          "after_utf8": "    kind: enum { decimal, integer, float }, inspect_options: c.JSValue) anyerror!c.JSValue\n",
+          "new_offset": 12645
+        },
+        {
+          "old_offset": 10716,
+          "before_utf8": "    if (kind != .float and c.JS_IsBigInt(value)) return numericBody(s, owner, value, true);\n",
+          "after_utf8": "    if (kind != .float and c.JS_IsBigInt(value)) return numericBody(s, owner, value, true, inspect_options);\n",
+          "new_offset": 12738
+        },
+        {
+          "old_offset": 11010,
+          "before_utf8": "    });\n",
+          "after_utf8": "    }, inspect_options);\n",
+          "new_offset": 13049
+        },
+        {
+          "old_offset": 15131,
+          "before_utf8": "    mode: Inspection) anyerror!c.JSValue\n",
+          "after_utf8": "    mode: Inspection, inspect_options: c.JSValue) anyerror!c.JSValue\n",
+          "new_offset": 17187
+        },
+        {
+          "old_offset": 15401,
+          "before_utf8": "    var options = c.pi_js_undefined();\n",
+          "after_utf8": "    var options = inspect_options;\n",
+          "new_offset": 17485
+        },
+        {
+          "old_offset": 15467,
+          "before_utf8": "        options = try s.object();\n",
+          "after_utf8": "        options = try ops.spread(&s.values, inspect_options);\n",
+          "new_offset": 17547
+        },
+        {
+          "old_offset": 15893,
+          "before_utf8": "    value: c.JSValue) anyerror!c.JSValue\n",
+          "after_utf8": "    value: c.JSValue, inspect_options: c.JSValue) anyerror!c.JSValue\n",
+          "new_offset": 18001
+        },
+        {
+          "old_offset": 15990,
+          "before_utf8": "        try expr(s, inspection, .{ owner, value, Inspection.ordinary });\n",
+          "after_utf8": "        try expr(s, inspection, .{ owner, value, Inspection.ordinary, inspect_options });\n",
+          "new_offset": 18126
+        },
+        {
+          "old_offset": 16179,
+          "before_utf8": "    args: c.JSValue) anyerror!c.JSValue\n",
+          "after_utf8": "    args: c.JSValue, inspect_options: c.JSValue) anyerror!c.JSValue\n",
+          "new_offset": 18332
+        },
+        {
+          "old_offset": 17374,
+          "before_utf8": "                        try frame.take(.temp_str, a.expression(s.engine, stringArgument, .{ owner, frame.get(.temp_arg) }));\n",
+          "after_utf8": "                        try frame.take(.temp_str, a.expression(s.engine, stringArgument, .{ owner, frame.get(.temp_arg), inspect_options }));\n",
+          "new_offset": 19555
+        },
+        {
+          "old_offset": 17959,
+          "before_utf8": "                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_num), .decimal }));\n",
+          "after_utf8": "                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_num), .decimal, inspect_options }));\n",
+          "new_offset": 20157
+        },
+        {
+          "old_offset": 18282,
+          "before_utf8": "                            .{ owner, args, argument, if (next == 79) Inspection.ordinary else Inspection.hidden }));\n",
+          "after_utf8": "                            .{ owner, args, argument, if (next == 79) Inspection.ordinary else Inspection.hidden, inspect_options }));\n",
+          "new_offset": 20497
+        },
+        {
+          "old_offset": 18656,
+          "before_utf8": "                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_integer), .integer }));\n",
+          "after_utf8": "                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_integer), .integer, inspect_options }));\n",
+          "new_offset": 20888
+        },
+        {
+          "old_offset": 19048,
+          "before_utf8": "                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_float), .float }));\n",
+          "after_utf8": "                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_float), .float, inspect_options }));\n",
+          "new_offset": 21297
+        },
+        {
+          "old_offset": 21456,
+          "before_utf8": "            .{ owner, frame.get(.str), frame.get(.trailing_value) }));\n",
+          "after_utf8": "            .{ owner, frame.get(.str), frame.get(.trailing_value), inspect_options }));\n",
+          "new_offset": 23722
+        }
+      ],
+      "forward_and_inverse_exact": true
+    },
+    {
+      "target": "src/extensions/native_node_argument_error_registration.zig",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_error_registration.zig",
+        "bytes": 12126,
+        "sha256": "7B3EDB7E6E01D4B8C2866D24918212B55F958BA7F3B1A254412741CA59275BE3"
+      },
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\projected\\src\\extensions\\native_node_argument_error_registration.zig",
+        "bytes": 15160,
+        "sha256": "088CCD9556A8F3CE467011FEB8B391C457E1CDE11E79CCFDD2794FE309CBEFAD"
+      },
+      "hunks": [
+        {
+          "old_offset": 12126,
+          "before_utf8": "",
+          "after_utf8": "\nfn objectArray(s: *Scope, value: c.JSValue, is_array: c.JSValue) !c.JSValue {\n    return a.boolean(s, s.truthy(try s.call(is_array, c.pi_js_undefined(), &.{value})));\n}\nfn objectFlagUnset(s: *Scope, flag: i32, options: c.JSValue) !c.JSValue {\n    const bits = try s.binary(@intFromEnum(@import(\"native_image_arithmetic.zig\").Operation.bit_and),\n        c.JS_NewInt32(s.engine.context, flag), options);\n    return a.boolean(s, s.equal(bits, c.JS_NewInt32(s.engine.context, 0)));\n}\nfn invalidObject(s: *Scope, args: []const c.JSValue, error_class: c.JSValue) !c.JSValue {\n    return a.raise(s, try s.construct(error_class,\n        &.{a.arg(args, 1), try s.text(\"Object\"), a.arg(args, 0)}));\n}\nfn objectRaw(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {\n    return a.expression(engine, objectBody, .{args, roots[0], roots[1]});\n}\nfn objectBody(s: *Scope, args: []const c.JSValue, error_class: c.JSValue, is_array: c.JSValue) !c.JSValue {\n    const value = a.arg(args, 0);\n    const options = if (c.JS_IsUndefined(a.arg(args, 2))) c.JS_NewInt32(s.engine.context, 0) else a.arg(args, 2);\n    if (s.equal(options, c.JS_NewInt32(s.engine.context, 0))) {\n        if (c.JS_IsNull(value) or try a.condition(s.engine, objectArray, .{value, is_array}))\n            return invalidObject(s, args, error_class);\n        if (!c.JS_IsObject(value) or c.JS_IsFunction(s.engine.context, value))\n            return invalidObject(s, args, error_class);\n    } else {\n        // Each original bitwise expression performs its own actual conversion.\n        const throw_on_nullable = try a.condition(s.engine, objectFlagUnset, .{@as(i32, 1), options});\n        if (throw_on_nullable and c.JS_IsNull(value)) return invalidObject(s, args, error_class);\n        const throw_on_array = try a.condition(s.engine, objectFlagUnset, .{@as(i32, 2), options});\n        if (throw_on_array and try a.condition(s.engine, objectArray, .{value, is_array}))\n            return invalidObject(s, args, error_class);\n        const throw_on_function = try a.condition(s.engine, objectFlagUnset, .{@as(i32, 4), options});\n        const typeof_object = c.JS_IsNull(value) or\n            (c.JS_IsObject(value) and !c.JS_IsFunction(s.engine.context, value));\n        if (!typeof_object and (throw_on_function or !c.JS_IsFunction(s.engine.context, value)))\n            return invalidObject(s, args, error_class);\n    }\n    return c.pi_js_undefined();\n}\n/// Complete original validateObject, including default options, all three\n/// flags, coercion/short-circuit order and the real hidden Error constructor.\npub fn makeValidateObject(s: *Scope, hidden: c.JSValue, error_class: c.JSValue,\n    capture: c.JSValue, apply: c.JSValue, is_array: c.JSValue) !c.JSValue\n{\n    if (!c.JS_IsFunction(s.engine.context, is_array)) return error.ActualArrayIsArrayPrimordialRequired;\n    const raw = try s.own(try functions.create(s.engine, \"\", 2, false, objectRaw, &.{hidden, is_array}));\n    return wrap(s, raw, error_class, capture, apply);\n}\n",
+          "new_offset": 12126
+        }
+      ],
+      "forward_and_inverse_exact": true
+    },
+    {
+      "target": "src/extensions/native_node_argument_errors.zig",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_errors.zig",
+        "bytes": 10088,
+        "sha256": "2D45015AC5845A9D841D073188CA67BBCB41DAD2B433D9B7D2142988B499840B"
+      },
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\projected\\src\\extensions\\native_node_argument_errors.zig",
+        "bytes": 10884,
+        "sha256": "6C8D3213D323E17E2316A727D39FA66AEC52AC32DB23E5F992B1120DD5E14F2D"
+      },
+      "hunks": [
+        {
+          "old_offset": 7516,
+          "before_utf8": "",
+          "after_utf8": "    // Reuse the real primordial already captured by this actual message owner.\n    // No late global Array read or alternate argument-error graph is introduced.\n    const message_roots = try @import(\"native_node_module_callable.zig\").capturedRoots(s.engine, inputs.invalid_arg_type_message);\n    if (message_roots.len != 1) return error.ActualArgumentMessageOwnerRequired;\n    const is_array = try s.get(message_roots[0], \"isArray\");\n    const validate_object = try registration.makeValidateObject(s, hidden, inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply, is_array);\n",
+          "new_offset": 7516
+        },
+        {
+          "old_offset": 7939,
+          "before_utf8": "",
+          "after_utf8": "    try s.put(record, \"validateObject\", validate_object);\n",
+          "new_offset": 8536
+        },
+        {
+          "old_offset": 8945,
+          "before_utf8": "",
+          "after_utf8": "pub fn validateObject(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, \"validateObject\")}); }\n",
+          "new_offset": 9600
+        }
+      ],
+      "forward_and_inverse_exact": true
+    },
+    {
+      "target": "src/extensions/native_node_util_inspect.zig",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_util_inspect.zig",
+        "bytes": 43751,
+        "sha256": "8AEB5ED9735E575141B4482BC64EC2D66758E642748956539A4FA2DF94A54B2B"
+      },
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\projected\\src\\extensions\\native_node_util_inspect.zig",
+        "bytes": 44308,
+        "sha256": "31D459759B8E679BA1CB03C7E5E9669178D45897EB725DFB64E30A5AF0908276"
+      },
+      "hunks": [
+        {
+          "old_offset": 6773,
+          "before_utf8": "    inspect: c.JSValue, format: c.JSValue,\n",
+          "after_utf8": "    inspect: c.JSValue, format: c.JSValue, format_with_options: c.JSValue,\n",
+          "new_offset": 6773
+        },
+        {
+          "old_offset": 6942,
+          "before_utf8": "        completion.release(self.inspect); completion.release(self.format);\n",
+          "after_utf8": "        completion.release(self.inspect); completion.release(self.format); completion.release(self.format_with_options);\n",
+          "new_offset": 6974
+        },
+        {
+          "old_offset": 10392,
+          "before_utf8": "    var outputs = [_]c.JSValue{c.pi_js_undefined(), c.pi_js_undefined()};\n",
+          "after_utf8": "    var outputs = [_]c.JSValue{c.pi_js_undefined(), c.pi_js_undefined(), c.pi_js_undefined()};\n",
+          "new_offset": 10470
+        },
+        {
+          "old_offset": 10504,
+          "before_utf8": "    if (createBody(&stage.values, inputs)) |result| outputs = .{result.inspect, result.format} else |err| host_error = err;\n",
+          "after_utf8": "    if (createBody(&stage.values, inputs)) |result| outputs = .{result.inspect, result.format, result.format_with_options} else |err| host_error = err;\n",
+          "new_offset": 10603
+        },
+        {
+          "old_offset": 10700,
+          "before_utf8": "    return .{ .inspect = outputs[0], .format = outputs[1] };\n",
+          "after_utf8": "    return .{ .inspect = outputs[0], .format = outputs[1], .format_with_options = outputs[2] };\n",
+          "new_offset": 10827
+        },
+        {
+          "old_offset": 12662,
+          "before_utf8": "",
+          "after_utf8": "    const format_with_options = try ops.own(s, try f.create(engine, \"formatWithOptions\", 1, true, formatWithOptionsCall, &roots));\n",
+          "new_offset": 12824
+        },
+        {
+          "old_offset": 13341,
+          "before_utf8": "    return .{ .inspect = c.JS_DupValue(engine.context, inspect), .format = c.JS_DupValue(engine.context, format) };\n",
+          "after_utf8": "    return .{ .inspect = c.JS_DupValue(engine.context, inspect), .format = c.JS_DupValue(engine.context, format), .format_with_options = c.JS_DupValue(engine.context, format_with_options) };\n",
+          "new_offset": 13634
+        },
+        {
+          "old_offset": 42016,
+          "before_utf8": "",
+          "after_utf8": "fn formatWithOptionsCall(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {\n    return formatter.callWithOptions(engine, args, roots[0]);\n}\n",
+          "new_offset": 42384
+        }
+      ],
+      "forward_and_inverse_exact": true
+    },
+    {
+      "target": "src/extensions/native_node_internal_inspect_binding.zig",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_internal_inspect_binding.zig",
+        "bytes": 2273,
+        "sha256": "0B297684B7AA9F40161F4511ACDC29AB8894462F2D6D372BCBFEC0E09E4B8838"
+      },
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-format-with-options-sourceonly-20261024\\projected\\src\\extensions\\native_node_internal_inspect_binding.zig",
+        "bytes": 2348,
+        "sha256": "6C1DBB9A9F3458C7B6316C2F5FFB3428CC7CA9E04DAEB468D9415D8840A05C15"
+      },
+      "hunks": [
+        {
+          "old_offset": 2229,
+          "before_utf8": "",
+          "after_utf8": "    try s.put(record, \"formatWithOptions\", functions.format_with_options);\n",
+          "new_offset": 2229
+        }
+      ],
+      "forward_and_inverse_exact": true
+    }
+  ]
+}

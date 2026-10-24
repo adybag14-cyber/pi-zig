@@ -43,5 +43,6 @@ fn createBody(s: *a.Scope) !c.JSValue {
     const record = try s.object();
     try s.put(record, "inspect", functions.inspect);
     try s.put(record, "format", functions.format);
+    try s.put(record, "formatWithOptions", functions.format_with_options);
     return a.duplicate(s.engine, record);
 }

@@ -180,3 +180,51 @@ pub fn makeValidateAbortSignal(s: *Scope, hidden: c.JSValue, error_class: c.JSVa
     const raw = try s.own(try functions.create(s.engine, "", 2, false, abortRaw, &.{hidden}));
     return wrap(s, raw, error_class, capture, apply);
 }
+
+fn objectArray(s: *Scope, value: c.JSValue, is_array: c.JSValue) !c.JSValue {
+    return a.boolean(s, s.truthy(try s.call(is_array, c.pi_js_undefined(), &.{value})));
+}
+fn objectFlagUnset(s: *Scope, flag: i32, options: c.JSValue) !c.JSValue {
+    const bits = try s.binary(@intFromEnum(@import("native_image_arithmetic.zig").Operation.bit_and),
+        c.JS_NewInt32(s.engine.context, flag), options);
+    return a.boolean(s, s.equal(bits, c.JS_NewInt32(s.engine.context, 0)));
+}
+fn invalidObject(s: *Scope, args: []const c.JSValue, error_class: c.JSValue) !c.JSValue {
+    return a.raise(s, try s.construct(error_class,
+        &.{a.arg(args, 1), try s.text("Object"), a.arg(args, 0)}));
+}
+fn objectRaw(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return a.expression(engine, objectBody, .{args, roots[0], roots[1]});
+}
+fn objectBody(s: *Scope, args: []const c.JSValue, error_class: c.JSValue, is_array: c.JSValue) !c.JSValue {
+    const value = a.arg(args, 0);
+    const options = if (c.JS_IsUndefined(a.arg(args, 2))) c.JS_NewInt32(s.engine.context, 0) else a.arg(args, 2);
+    if (s.equal(options, c.JS_NewInt32(s.engine.context, 0))) {
+        if (c.JS_IsNull(value) or try a.condition(s.engine, objectArray, .{value, is_array}))
+            return invalidObject(s, args, error_class);
+        if (!c.JS_IsObject(value) or c.JS_IsFunction(s.engine.context, value))
+            return invalidObject(s, args, error_class);
+    } else {
+        // Each original bitwise expression performs its own actual conversion.
+        const throw_on_nullable = try a.condition(s.engine, objectFlagUnset, .{@as(i32, 1), options});
+        if (throw_on_nullable and c.JS_IsNull(value)) return invalidObject(s, args, error_class);
+        const throw_on_array = try a.condition(s.engine, objectFlagUnset, .{@as(i32, 2), options});
+        if (throw_on_array and try a.condition(s.engine, objectArray, .{value, is_array}))
+            return invalidObject(s, args, error_class);
+        const throw_on_function = try a.condition(s.engine, objectFlagUnset, .{@as(i32, 4), options});
+        const typeof_object = c.JS_IsNull(value) or
+            (c.JS_IsObject(value) and !c.JS_IsFunction(s.engine.context, value));
+        if (!typeof_object and (throw_on_function or !c.JS_IsFunction(s.engine.context, value)))
+            return invalidObject(s, args, error_class);
+    }
+    return c.pi_js_undefined();
+}
+/// Complete original validateObject, including default options, all three
+/// flags, coercion/short-circuit order and the real hidden Error constructor.
+pub fn makeValidateObject(s: *Scope, hidden: c.JSValue, error_class: c.JSValue,
+    capture: c.JSValue, apply: c.JSValue, is_array: c.JSValue) !c.JSValue
+{
+    if (!c.JS_IsFunction(s.engine.context, is_array)) return error.ActualArrayIsArrayPrimordialRequired;
+    const raw = try s.own(try functions.create(s.engine, "", 2, false, objectRaw, &.{hidden, is_array}));
+    return wrap(s, raw, error_class, capture, apply);
+}

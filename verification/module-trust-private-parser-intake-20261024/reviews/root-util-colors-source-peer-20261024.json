@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "reviewed_utc": "2026-10-24T19:26:15.053782+00:00",
+  "reviewer": "Root",
+  "status": "accepted_source_only_complete_colors_module_body",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\source-intake.json",
+    "bytes": 15395,
+    "sha256": "404ACD785D524522FB21B84B047948397C8026BB1CE26D0723B1ED5A05C6A96F"
+  },
+  "owner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\projected-v3\\src\\extensions\\native_node_util_colors.zig",
+    "bytes": 8214,
+    "sha256": "3ABFB0B79C9E52FF3FAE5AB344F2F9B534B7EA52E8762108AB2C9B3DF793C827"
+  },
+  "test_root": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\projected\\src\\native_node_util_colors_test.zig",
+    "bytes": 26171,
+    "sha256": "503C671E7B5EF9AB81E4121C89D8DF20AB944F59EA9AF87EF85DB6EAF8BEFD4F"
+  },
+  "original_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-cjs-operation-boundary-20261018\\verification\\node-public-cjs-composition-sourceonly-20261018\\authority\\colors.js",
+    "bytes": 1321,
+    "sha256": "F6B6702F24ABE359726F05115767142148BCD5F87B84896DAB47488DB08AF516"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\util-colors-successor.patch",
+    "bytes": 36623,
+    "sha256": "AB284DDA48AEE433B0F4D42B538DE00D63DE4AA1844CD18DA52270DC11940151"
+  },
+  "review_scope": [
+    "Complete1321-byte original,8214-byte selected owner and all23 controls read; reviewed actual process/Scope/argument/QuickJS Set producer semantics.",
+    "Preserves original exports key order including yellow added by refresh, actual borrowed wrapper inputs, escaped closures, final live exports refresh selection, and exact ANSI payloads.",
+    "FORCE_COLOR checks definedness on live actual process.env. Lazy internal/tty requires exact nullish caching, retry and reentrant outer assignment; no depth or environment policy is synthesized.",
+    "Optional stream and logical-and retain raw falsy values. typeof and actual getColorDepth call perform two separate Gets, preserving receiver and relational coercion.",
+    "All refresh assignments reread module.exports; condition and discarded assignment lifetimes end before following operations. Existing actual ownership/fatal producers handle retirement without classifying captured flagged data as a fatal event.",
+    "Strict Set uses existing JS_SetPropertyStr -> JS_SetPropertyInternal(JS_PROP_THROW). Actual process owner is installed in controls and linkQuickJs links its existing durable support."
+  ],
+  "static_verification": {
+    "unique_recursive_pin_versions": 27,
+    "expression_hunks_forward_reverse": 3,
+    "assignment_hunks_forward_reverse": 2,
+    "build_addition_bytes": 658,
+    "whole_build_inverse": true,
+    "direct_imports": 9,
+    "declarations": 23,
+    "git_apply_check": true
+  },
+  "limits": [
+    "No compilation, parser, metadata query or runtime was performed.",
+    "The real internal/tty getColorDepth producer and genuine initialized debuglog remain required assembly suppliers.",
+    "This packet is outside the fixed four-helper/18-root intake; it requires later exact source composition and fresh qualification."
+  ],
+  "native_execution_authorized": false,
+  "Main_mutated": false,
+  "actual_metadata_count": null,
+  "runtime_qualified": false,
+  "application_qualified": false
+}

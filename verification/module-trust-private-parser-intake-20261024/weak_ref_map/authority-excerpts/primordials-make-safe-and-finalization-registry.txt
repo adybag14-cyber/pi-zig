@@ -1,0 +1,77 @@
+const copyProps = (src, dest) => {
+  ArrayPrototypeForEach(ReflectOwnKeys(src), (key) => {
+    if (!ReflectGetOwnPropertyDescriptor(dest, key)) {
+      ReflectDefineProperty(
+        dest,
+        key,
+        { __proto__: null, ...ReflectGetOwnPropertyDescriptor(src, key) });
+    }
+  });
+};
+
+/**
+ * @type {typeof primordials.makeSafe}
+ */
+const makeSafe = (unsafe, safe) => {
+  if (SymbolIterator in unsafe.prototype) {
+    const dummy = new unsafe();
+    let next; // We can reuse the same `next` method.
+
+    ArrayPrototypeForEach(ReflectOwnKeys(unsafe.prototype), (key) => {
+      if (!ReflectGetOwnPropertyDescriptor(safe.prototype, key)) {
+        const desc = ReflectGetOwnPropertyDescriptor(unsafe.prototype, key);
+        if (
+          typeof desc.value === 'function' &&
+          desc.value.length === 0 &&
+          SymbolIterator in (FunctionPrototypeCall(desc.value, dummy) ?? {})
+        ) {
+          const createIterator = uncurryThis(desc.value);
+          next ??= uncurryThis(createIterator(dummy).next);
+          const SafeIterator = createSafeIterator(createIterator, next);
+          desc.value = function() {
+            return new SafeIterator(this);
+          };
+        }
+        ReflectDefineProperty(safe.prototype, key, { __proto__: null, ...desc });
+      }
+    });
+  } else {
+    copyProps(unsafe.prototype, safe.prototype);
+  }
+  copyProps(unsafe, safe);
+
+  ObjectSetPrototypeOf(safe.prototype, null);
+  ObjectFreeze(safe.prototype);
+  ObjectFreeze(safe);
+  return safe;
+};
+primordials.makeSafe = makeSafe;
+
+// Subclass the constructors because we need to use their prototype
+// methods later.
+primordials.SafeMap = makeSafe(
+  Map,
+  class SafeMap extends Map {},
+);
+primordials.SafeWeakMap = makeSafe(
+  WeakMap,
+  class SafeWeakMap extends WeakMap {},
+);
+
+primordials.SafeSet = makeSafe(
+  Set,
+  class SafeSet extends Set {},
+);
+primordials.SafeWeakSet = makeSafe(
+  WeakSet,
+  class SafeWeakSet extends WeakSet {},
+);
+
+primordials.SafeFinalizationRegistry = makeSafe(
+  FinalizationRegistry,
+  class SafeFinalizationRegistry extends FinalizationRegistry {},
+);
+primordials.SafeWeakRef = makeSafe(
+  WeakRef,
+  class SafeWeakRef extends WeakRef {},
+);

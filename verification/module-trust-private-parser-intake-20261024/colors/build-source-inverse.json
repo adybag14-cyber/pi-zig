@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "before": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+    "bytes": 536372,
+    "sha256": "0268F0B48FC63AC8750C580AA1941C75C5AD98A42E9FBF8CAB786296E9EADD93"
+  },
+  "after": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 537030,
+    "sha256": "D08B7E7B5A6706B7F0C2433498AE6D8B7FC587C8BB4C36B01EBEBF3E92B40211"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 658,
+    "sha256": "493497DF7F9B437E919BB7D1ED7C72545AB5288006498BFD26DD0DF5935A5B3C"
+  },
+  "anchor": "    const cjs_raw_provider_tests = b.addTest(.{",
+  "offset": 461866,
+  "full_raw_inverse": true,
+  "compose_by_insertion_only": true
+}

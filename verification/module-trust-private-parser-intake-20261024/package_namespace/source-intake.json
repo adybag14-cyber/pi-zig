@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T19:56:56.687581+00:00",
+  "scope": "Single native package parser C type identity shared by cache and intrinsic serializer",
+  "observed_main_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "main_porcelain_empty": true,
+  "changes": [
+    {
+      "destination_relative_path": "src/extensions/native_node_package_json_cache.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_package_json_cache.zig",
+        "bytes": 7658,
+        "sha256": "5DF03B411D7BF2945999966B003A8E8B693625150CB962A1DA17EBC3B9ABBFC8"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-parser-identity-sourceonly-20261024\\projected\\src\\extensions\\native_node_package_json_cache.zig",
+        "bytes": 7647,
+        "sha256": "6975261E58C1731027D4E8EE6FB470F3AA21AE517175AAF70E9BF25E35DEFEAF"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_node_package_json_values.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_package_json_values.zig",
+        "bytes": 3175,
+        "sha256": "603FC5166E320E58833BAFCCE1312A92372C89BF4E7E58D4D810CC037B130C2A"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-parser-identity-sourceonly-20261024\\projected\\src\\extensions\\native_node_package_json_values.zig",
+        "bytes": 3164,
+        "sha256": "34FCA74C54C617A08ECC7704961D47CD0384F6BEE53152DDFA6E91F448D0FB8E"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_node_package_json_api.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-parser-identity-sourceonly-20261024\\projected\\src\\extensions\\native_node_package_json_api.zig",
+        "bytes": 231,
+        "sha256": "058ABE5FA35E451FFBC5F4A164FBA6351E87392DF40A7C1B9555EA08C220254D"
+      }
+    }
+  ],
+  "source_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-parser-identity-sourceonly-20261024\\source-inverse.json",
+    "bytes": 1596,
+    "sha256": "68DE5F5643061345CA049AA1E87EEC8FAFEE068F4FB88E61463F44B163B4635D"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-parser-identity-sourceonly-20261024\\source.patch",
+    "bytes": 1378,
+    "sha256": "410EB16BCE83E4DA0155A5301CDA4E2696A6EC933804DF9C5024B942953C7E19"
+  },
+  "failure_evidence": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v43-new18-buildquery-20261024-194238\\groups\\native-node-module-package-inputs\\compile.stderr.log",
+    "bytes": 21904,
+    "sha256": "1F52410C4B09B3B9EF3E5838AA31398A320CEAA9A8E58BA244A87CD0BCDC641F"
+  },
+  "authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_package_json_parser.h",
+    "bytes": 3025,
+    "sha256": "48ABD313181A409DD521166D25C39E957FAD6FD0DA594E4CD1A666C45FE43EEE"
+  },
+  "binding_consumer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_modules_binding_data.zig",
+    "bytes": 12397,
+    "sha256": "3CF4292A826730575E79A091FDC5558308DCD78DFC131CB9EEEFBF2C6CF1505E"
+  },
+  "build_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+    "bytes": 541125,
+    "sha256": "EAB06B9082B53FB958E34E47193447CBA30DA153803472666401EC0A72D48691"
+  },
+  "reason": "Separate @cImport evaluations produced distinct opaque PiNodePackageJsonConfig types at native_node_modules_binding_data.zig:213. Both consumers now import the same canonical C namespace. The parser ABI and all implementation bodies are unchanged.",
+  "private_imports": [
+    {
+      "importer": "src/extensions/native_node_package_json_cache.zig",
+      "literal": "native_node_package_json_api.zig",
+      "resolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-parser-identity-sourceonly-20261024\\projected\\src\\extensions\\native_node_package_json_api.zig",
+        "bytes": 231,
+        "sha256": "058ABE5FA35E451FFBC5F4A164FBA6351E87392DF40A7C1B9555EA08C220254D"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_package_json_values.zig",
+      "literal": "native_node_package_json_api.zig",
+      "resolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-package-parser-identity-sourceonly-20261024\\projected\\src\\extensions\\native_node_package_json_api.zig",
+        "bytes": 231,
+        "sha256": "058ABE5FA35E451FFBC5F4A164FBA6351E87392DF40A7C1B9555EA08C220254D"
+      }
+    }
+  ],
+  "preserved_controls": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_module_package_inputs_test.zig",
+    "bytes": 17613,
+    "sha256": "540F3AF4828DB693266169079FC808C7351177A5145A71A3ECA3824EEAE5717D"
+  },
+  "static_checks": {
+    "git_apply_check": true,
+    "two_exact_import_replacements": true,
+    "all_other_original_bytes_unchanged": true,
+    "new_module_only_shared_cimport": true,
+    "new_pointer_casts": 0,
+    "test_changes": 0
+  },
+  "native_execution": false,
+  "main_modified": false,
+  "runtime_qualified": false
+}

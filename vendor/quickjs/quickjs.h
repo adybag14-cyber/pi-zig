@@ -1669,6 +1669,15 @@ JS_EXTERN JSValue JS_NewSettledPromise(JSContext *ctx, bool is_reject, JSValueCo
 JS_EXTERN JSValue JS_NewSymbol(JSContext *ctx, const char *description, bool is_global);
 // a symbol that is only visible to C code
 JS_EXTERN JSValue JS_NewPrivateSymbol(JSContext *ctx, const char *description);
+
+/* Borrow receiver/private key; return an owned value. found must be non-null.
+   Only the receiver's own private slots are read: no prototype or exotic trap.
+   found=0 distinguishes absence from a present undefined field. On exception,
+   consume the returned exception normally; found is not a success indicator. */
+JS_EXTERN JSValue JS_PiGetOwnPrivateProperty(JSContext *ctx, JSValueConst receiver,
+                                            JSValueConst private_symbol,
+                                            int *found);
+
 /* Own private-key Set for actual Node internal bindings. Receiver and key are
    borrowed; val is consumed on every path. Only JS_NewPrivateSymbol keys are
    admitted. Returns 1 on success or -1 with the actual pending exception.

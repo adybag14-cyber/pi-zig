@@ -136,9 +136,16 @@ fn body(s: *Scope, inputs: Inputs, attempt: *?c.JSValue) ![5]c.JSValue {
     const assertion_class = try registration.register(s, inputs.error_constructor, "ERR_INTERNAL_ASSERTION", inputs.internal_assertion_message, inputs.marker, inputs.assert_function, inputs.reflect_apply);
     const validate_string = try registration.makeValidateString(s, hidden, inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply);
     const validate_abort = try registration.makeValidateAbortSignal(s, hidden, inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply);
+    // Reuse the real primordial already captured by this actual message owner.
+    // No late global Array read or alternate argument-error graph is introduced.
+    const message_roots = try @import("native_node_module_callable.zig").capturedRoots(s.engine, inputs.invalid_arg_type_message);
+    if (message_roots.len != 1) return error.ActualArgumentMessageOwnerRequired;
+    const is_array = try s.get(message_roots[0], "isArray");
+    const validate_object = try registration.makeValidateObject(s, hidden, inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply, is_array);
     try s.put(record, "type", argument); try s.put(record, "hidden", hidden); try s.put(record, "value", value);
     try s.put(record, "hiddenValue", hidden_value); try s.put(record, "rangeValue", range); try s.put(record, "hiddenRangeValue", hidden_range);
     try s.put(record, "assertion", assertion_class); try s.put(record, "validateString", validate_string); try s.put(record, "validateAbortSignal", validate_abort);
+    try s.put(record, "validateObject", validate_object);
     return view(s, record);
 }
 fn memberBody(s: *Scope, name: [*:0]const u8) !c.JSValue {
@@ -152,6 +159,7 @@ pub fn hiddenValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine
 pub fn rangeValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "rangeValue")}); }
 pub fn hiddenRangeValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "hiddenRangeValue")}); }
 pub fn validateAbortSignal(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "validateAbortSignal")}); }
+pub fn validateObject(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "validateObject")}); }
 
 /// Original primordial functions retained by the completed internal/errors owner.
 pub fn reflectApply(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "reflect_apply")}); }

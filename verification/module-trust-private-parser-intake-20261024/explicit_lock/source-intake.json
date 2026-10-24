@@ -1,0 +1,382 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T20:02:23.455225+00:00",
+  "scope": "Finite original getLockFile selection for consumed realpath:false String paths",
+  "status": "source_only_complete_bounded_supplier_pending_independent_peer_and_native_qualification",
+  "observed_main_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "changes": [
+    {
+      "destination_relative_path": "src/extensions/native_auth_directory_lock.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\original\\src\\extensions\\native_auth_directory_lock.zig",
+        "bytes": 29486,
+        "sha256": "C5A71EB69B6776EC97B2EEF9FD7C376B44C91865F42BAC2130971650B54ED02B"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\projected\\src\\extensions\\native_auth_directory_lock.zig",
+        "bytes": 29972,
+        "sha256": "FFF94746546ABE64F86A5776232C5665FDB46EAC386F6BDB3559C3952E4329B1"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_auth_explicit_lock_path_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\projected-v2\\src\\native_auth_explicit_lock_path_test.zig",
+        "bytes": 16473,
+        "sha256": "F90D50A34E0FC7A9FCA258AD8C67509E4A44425C57FCF6C44348F673CFC1CDC1"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\original\\build.zig",
+        "bytes": 541125,
+        "sha256": "EAB06B9082B53FB958E34E47193447CBA30DA153803472666401EC0A72D48691"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 542189,
+        "sha256": "AB5E42E9098199AA32815B3C7F0ECF36D1D93892F26D94C2F839B07A11A6DE91"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\source-diff.patch",
+    "bytes": 19712,
+    "sha256": "9354F183447814BA22752144D615AE08B39693728801FEA61DD6768FAF7B1514"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\README.md",
+    "bytes": 2913,
+    "sha256": "4BF3B2019FEB2D3D57EF9142688AB1A5D68A6CA514DA4F8EF0D60C72B9265EB2"
+  },
+  "source_inverses": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\lock-path-source-inverse.json",
+      "bytes": 2009,
+      "sha256": "34C20C8D3E8FF1E8C4CC762BE834F4E816836C4B76939DAAC8BF93E5D3699F9E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\heartbeat-control-strict-observation-inverse.json",
+      "bytes": 1599,
+      "sha256": "06F861403426F33293EE341F8368FB1A944F05B7621D1FB346FDD5D744C8CE9C"
+    }
+  ],
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1064,
+    "sha256": "8822F723AD2D57F10086DAD449C766965B09735FD30841D5B99AD9F9A3C43A4D"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1094,
+    "sha256": "2AADD0F95830733F0198128564FA8E3E9660FC637B021F0FCC5873E33CD22FE1"
+  },
+  "retained_authority": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\auth-file-storage-genuine-af-sourceonly-20261018\\authority\\proper-lockfile-4.1.2\\lib\\lockfile.js.txt",
+        "bytes": 10845,
+        "sha256": "C517A976F7A31C8B1768CB8E7AC9936AEE70299AE762548495016A79D64A6434"
+      },
+      "role": "Original getLockFile11-12 and selected acquire/stale/update/unlock/exit consumers"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\auth-file-storage-genuine-af-sourceonly-20261018\\authority\\proper-lockfile-4.1.2\\lib\\adapter.js.txt",
+        "bytes": 1898,
+        "sha256": "C95E2408B91B70E02C625A9B1A42E0C793140DBE6C1BFF8CC183BB88BC267C6C"
+      },
+      "role": "Original synchronous wrapper and async adapter authority retained unchanged"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\auth-file-storage-genuine-af-sourceonly-20261018\\authority\\proper-lockfile-4.1.2\\index.js.txt",
+        "bytes": 1025,
+        "sha256": "C11869AA340B61757C2E7A6739A1D423495FE627AC0A54CB44F8C47C393E2FDD"
+      },
+      "role": "Original lockSync and async lock/release shape"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\auth-file-storage-genuine-af-sourceonly-20261018\\authority\\proper-lockfile-4.1.2\\package.json.txt",
+        "bytes": 1707,
+        "sha256": "23888ECC7ABD83A8E98E132DA556EDA2172792CC04C4E6D157B590667802BD2A"
+      },
+      "role": "Exact retained proper-lockfile4.1.2"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\auth-file-storage-genuine-af-sourceonly-20261018\\authority\\proper-lockfile-4.1.2\\LICENSE.txt",
+        "bytes": 1105,
+        "sha256": "AAA78451B6FECD1B9C4594C796C133C0E90CAD100372FF8BC6DE615E9EF9ADF1"
+      },
+      "role": "Retained upstream license"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\trust-manager.ts",
+        "bytes": 7067,
+        "sha256": "3098117EBEA573AFA6BE81D669B2B0FE9CBC948CB4C10EF4EF12E54CA6758CAC"
+      },
+      "role": "Concrete selected String path caller at138-176; Store getEntry and setMany210-245"
+    }
+  ],
+  "direct_import_resolutions": [
+    {
+      "importer": "src/extensions/native_auth_directory_lock.zig",
+      "literal": "native_ai_provider_values.zig",
+      "target": "src/extensions/native_ai_provider_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_ai_provider_values.zig",
+        "bytes": 2689,
+        "sha256": "2D64F3F5E408790DC0BD374E13F1A9C69EB21E1D62944DAE9C913B87F13629EB"
+      }
+    },
+    {
+      "importer": "src/extensions/native_auth_directory_lock.zig",
+      "literal": "native_async_body.zig",
+      "target": "src/extensions/native_async_body.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_async_body.zig",
+        "bytes": 5615,
+        "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+      }
+    },
+    {
+      "importer": "src/extensions/native_auth_directory_lock.zig",
+      "literal": "native_sdk_owned_completion.zig",
+      "target": "src/extensions/native_sdk_owned_completion.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+        "bytes": 15176,
+        "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+      }
+    },
+    {
+      "importer": "src/extensions/native_auth_directory_lock.zig",
+      "literal": "native_agent_af_values.zig",
+      "target": "src/extensions/native_agent_af_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_agent_af_values.zig",
+        "bytes": 8615,
+        "sha256": "3836B2F939A7443861BDCF2250C343E8F343EEE381DED4DC62BF2154E2A54656"
+      }
+    },
+    {
+      "importer": "src/extensions/native_auth_directory_lock.zig",
+      "literal": "native_node_function.zig",
+      "target": "src/extensions/native_node_function.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_function.zig",
+        "bytes": 14120,
+        "sha256": "232E0F858F21DD002C2FEB6B65C62486EB6DA113F7463B2DD60CC799B3369007"
+      }
+    },
+    {
+      "importer": "src/extensions/native_auth_directory_lock.zig",
+      "literal": "native_auth_file_io.zig",
+      "target": "src/extensions/native_auth_file_io.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_auth_file_io.zig",
+        "bytes": 7944,
+        "sha256": "7E1B23F5565B9DD9596C1F924E715B1CD5229E529115AAA3AE281EF2EDD785B1"
+      }
+    },
+    {
+      "importer": "src/extensions/native_auth_directory_lock.zig",
+      "literal": "native_auth_file_io.zig",
+      "target": "src/extensions/native_auth_file_io.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_auth_file_io.zig",
+        "bytes": 7944,
+        "sha256": "7E1B23F5565B9DD9596C1F924E715B1CD5229E529115AAA3AE281EF2EDD785B1"
+      }
+    },
+    {
+      "importer": "src/extensions/native_auth_directory_lock.zig",
+      "literal": "native_sdk.zig",
+      "target": "src/extensions/native_sdk.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk.zig",
+        "bytes": 164658,
+        "sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3"
+      }
+    },
+    {
+      "importer": "src/extensions/native_auth_directory_lock.zig",
+      "literal": "native_jiti_budget.zig",
+      "target": "src/extensions/native_jiti_budget.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_jiti_budget.zig",
+        "bytes": 1767,
+        "sha256": "B3ECB37B66C11A0FDC343BAC9BA6D259EAB796463065825F4EED29E457AE35A8"
+      }
+    },
+    {
+      "importer": "src/native_auth_explicit_lock_path_test.zig",
+      "literal": "extensions/engine.zig",
+      "target": "src/extensions/engine.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      }
+    },
+    {
+      "importer": "src/native_auth_explicit_lock_path_test.zig",
+      "literal": "extensions/native_public_values.zig",
+      "target": "src/extensions/native_public_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_values.zig",
+        "bytes": 13939,
+        "sha256": "0B1BB422A9C89E7CE8146B32413B27E42D8DFB65285C3245B89EED8AF222022E"
+      }
+    },
+    {
+      "importer": "src/native_auth_explicit_lock_path_test.zig",
+      "literal": "extensions/native_sdk_session_locals.zig",
+      "target": "src/extensions/native_sdk_session_locals.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_session_locals.zig",
+        "bytes": 9136,
+        "sha256": "2E530FC843E99654A3F72F05207E04A5F77E3713D7D9D19B26117A46D7EC9064"
+      }
+    },
+    {
+      "importer": "src/native_auth_explicit_lock_path_test.zig",
+      "literal": "extensions/native_auth_directory_lock.zig",
+      "target": "src/extensions/native_auth_directory_lock.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\projected\\src\\extensions\\native_auth_directory_lock.zig",
+        "bytes": 29972,
+        "sha256": "FFF94746546ABE64F86A5776232C5665FDB46EAC386F6BDB3559C3952E4329B1"
+      }
+    },
+    {
+      "importer": "src/native_auth_explicit_lock_path_test.zig",
+      "literal": "extensions/native_process.zig",
+      "target": "src/extensions/native_process.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+        "bytes": 6626,
+        "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+      }
+    },
+    {
+      "importer": "src/native_auth_explicit_lock_path_test.zig",
+      "literal": "extensions/timers.zig",
+      "target": "src/extensions/timers.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\timers.zig",
+        "bytes": 52715,
+        "sha256": "4AB5926421C7601B752F92E4306DC31A455C16437F8C904F80875EEE4B70CCCC"
+      }
+    },
+    {
+      "importer": "src/native_auth_explicit_lock_path_test.zig",
+      "literal": "extensions/node_path.zig",
+      "target": "src/extensions/node_path.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_path.zig",
+        "bytes": 31004,
+        "sha256": "377B41F044812F61066B61D0A70723A90019E1F41FD2617DF4DC252BBCBC02B5"
+      }
+    },
+    {
+      "importer": "src/native_auth_explicit_lock_path_test.zig",
+      "literal": "extensions/native_auth_file_io.zig",
+      "target": "src/extensions/native_auth_file_io.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_auth_file_io.zig",
+        "bytes": 7944,
+        "sha256": "7E1B23F5565B9DD9596C1F924E715B1CD5229E529115AAA3AE281EF2EDD785B1"
+      }
+    }
+  ],
+  "standard_package_imports": [
+    {
+      "importer": "src/extensions/native_auth_directory_lock.zig",
+      "literal": "std"
+    },
+    {
+      "importer": "src/extensions/native_auth_directory_lock.zig",
+      "literal": "builtin"
+    },
+    {
+      "importer": "src/native_auth_explicit_lock_path_test.zig",
+      "literal": "std"
+    }
+  ],
+  "fixture_style_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_auth_file_genuine_af_test.zig",
+    "bytes": 28573,
+    "sha256": "9166C05531F394823ADB70B18D19140F713C96FBF68773633C85AC09418BABD0"
+  },
+  "controls": {
+    "target": "build-native-auth-explicit-lock-path",
+    "test_root": "src/native_auth_explicit_lock_path_test.zig",
+    "filter": "native auth explicit lock path",
+    "source_declaration_count": 14,
+    "names": [
+      "native auth explicit lock path selects the trust file sibling and ordinary release",
+      "native auth explicit lock path preserves the original absent option default",
+      "native auth explicit lock path uses the default for every supplied falsy value",
+      "native auth explicit lock path does not append a suffix to a nondefault spelling",
+      "native auth explicit lock path retains relative spelling through acquire and release",
+      "native auth explicit lock path contention reports the canonical target rather than lock path",
+      "native auth explicit lock path missing parent preserves its actual mkdir failure path",
+      "native auth explicit lock path stale recovery replaces only the selected directory",
+      "native auth explicit lock path copies the selected option before later option mutation",
+      "native auth explicit lock path throwing option stops every physical side effect",
+      "native auth explicit lock path nonempty release error preserves foreign contents",
+      "native auth explicit lock path genuine async adapter keeps its selected lease until release",
+      "native auth explicit lock path actual heartbeat refreshes the selected lease",
+      "native auth explicit lock path realm cleanup leaves an unrelated default directory intact"
+    ],
+    "actual_artifact_stem": "test",
+    "actual_windows_artifacts": [
+      "test.exe",
+      "test.pdb"
+    ],
+    "actual_metadata_count": null,
+    "runtime_result": null
+  },
+  "static_checks": {
+    "existing_owner_hunks": 1,
+    "owner_raw_inverse_exact": true,
+    "all_other_owner_bytes_preserved": true,
+    "build_single_insertion_raw_inverse": true,
+    "direct_relative_import_occurrences": 17,
+    "package_import_occurrences": 3,
+    "all_resolved": true,
+    "source_test_names_unique": true
+  },
+  "remaining_integration": [
+    "Source peer of exact bounded consumed String-path supplier",
+    "Native qualification after Root intake and new build",
+    "Actual ProjectTrustStore owner with original lock/read/write/retry/finally behavior",
+    "Original event/resolution/createRuntime consumers"
+  ],
+  "not_executed": [
+    "Zig parser",
+    "Zig formatter",
+    "compiler",
+    "metadata",
+    "runtime",
+    "Node capture",
+    "candidate generator"
+  ],
+  "claims": {
+    "Main_mutated": false,
+    "donor_bytes_mutated": false,
+    "full_proper_lockfile_API": false,
+    "public_trust_namespace": false,
+    "execution_authority": false,
+    "native_qualification": false
+  }
+}

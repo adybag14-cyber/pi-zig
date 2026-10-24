@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "root_accepted_exact_four_helpers_plus_stream_correction_source_intake",
+  "source_basis_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "prior_head": "7947d3a0825a356dccc6aca7a327c92d7248b47f",
+  "candidate_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-four-helper-stream-correction-intake-sourceonly-20261024\\source-intake-plan.json",
+    "bytes": 157261,
+    "sha256": "971D15C068358494F297A520BBCD92A21AEF341FC6B4F274C48F84C6ADD2DA8B"
+  },
+  "prior_intake_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending-twelve-fixture-v2-source-intake-acceptance-20261024.json",
+    "bytes": 3779,
+    "sha256": "E2F9B38F1399867A210C3D0FFADE0F3055489A2B7AE1D6C1645D835C132553D6"
+  },
+  "original_negative_closure_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v42-new14-first-compile-negative-acceptance-20261024.json",
+    "bytes": 3305,
+    "sha256": "F3E3101B05E2D2708229C9B5CED42D1ABF1C3BC9D43402A56A320B7ACD25B0BC"
+  },
+  "counts": {
+    "pending_paths": 70,
+    "source_build_paths": 17,
+    "evidence_paths": 53,
+    "cumulative_selected_paths": 237,
+    "cumulative_source_build_paths_from_origin": 66,
+    "new_test_roots": 4,
+    "new_declared_controls": 86,
+    "fresh_selected_roots": 18,
+    "fresh_source_declared_controls": 271
+  },
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "actual_metadata_count": null,
+  "accepted_utc": "2026-10-24T19:28:30.651726+00:00",
+  "independent_composition_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-gap-assessment\\four-helper-stream-correction-independent-composition-peer-20261024.json",
+    "bytes": 10487,
+    "sha256": "983C9F429C288A6B23E8301D58AD85FAD0268FEE71782FF9477E8FE657DEE802"
+  },
+  "preintake_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-four-helper-stream-correction-preintake-acceptance-20261024.json",
+    "bytes": 1379,
+    "sha256": "FF0CDED5D21032924495F77008094E5431FECB94B20B6B50881B7A9FD5F0958B"
+  },
+  "materialization": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-four-helper-stream-correction-materialization-20261024.json",
+    "bytes": 1837,
+    "sha256": "4BA30C1B523449C86A4EDA56B0EF97EADFAEB9FD538A392B0AE98F4341E1E63B"
+  },
+  "commit_parent": "7947d3a0825a356dccc6aca7a327c92d7248b47f",
+  "working_tree_clean": true,
+  "all70_committed_blob_bytes_exact": true,
+  "only_expected_changed_paths": true,
+  "fresh_QuickJS_required": true,
+  "source_declarations_only": true,
+  "build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+    "bytes": 541125,
+    "sha256": "EAB06B9082B53FB958E34E47193447CBA30DA153803472666401EC0A72D48691"
+  },
+  "preserved_progress": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+    "bytes": 885114,
+    "sha256": "08264BCEBE780FE2473B0D996A1C28AB5C94B036CD57FE74D6B171242CEFBA3A"
+  },
+  "production_bridge_removed": false,
+  "main_frozen_for_next_native_qualification": true
+}

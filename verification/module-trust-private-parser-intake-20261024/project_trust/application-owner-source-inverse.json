@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "observed_main_head": "7947d3a0825a356dccc6aca7a327c92d7248b47f",
+  "intended_relative_path": "src/extensions/native_sdk_application_owner.zig",
+  "original_snapshot": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\original\\src\\extensions\\native_sdk_application_owner.zig",
+    "bytes": 14704,
+    "sha256": "7AFB0ABC565B118D8B0C22D06CD5C0B4D2FBE83EDCEDE1F2D9EBBA5694DBD544"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-paths-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_application_owner.zig",
+    "bytes": 16725,
+    "sha256": "50C65DC5557791329324B221D2D0D1FECE9D9C3502D390102025BDA255206973"
+  },
+  "edits": [
+    {
+      "offset": 3613,
+      "old": "",
+      "new": "    /// Complete private original trust path/resource/options helpers over this\n    /// owner's genuine filesystem, path, OS, configuration and path utilities.\n    /// Store/event policy and the full Main runtimeFactory are separate owners.\n    pub fn createProjectTrustPaths(self: *Owner) !c.JSValue {\n        return projectTrustPathsEntry(self);\n    }\n",
+      "anchor": "    /// Explicit Source mode transitions. Call only at the actual noninteractive\n",
+      "before_sha256": "7AFB0ABC565B118D8B0C22D06CD5C0B4D2FBE83EDCEDE1F2D9EBBA5694DBD544",
+      "after_sha256": "4486574360E2F3C3CDD5FC6B6115BFF4DD12D223C0497D55F2E593990C88C2A2"
+    },
+    {
+      "offset": 5816,
+      "old": "",
+      "new": "fn projectTrustPathsEntry(self: *Owner) !c.JSValue {\n    try self.check();\n    const engine = self.engine;\n    var invocation: em.Engine.NativeInvocation = .{};\n    engine.enterNativeInvocation(&invocation);\n    engine.native_exception_diagnostics_suppressed += 1;\n    defer engine.native_exception_diagnostics_suppressed -= 1;\n    var s: Scope = .{ .engine = engine };\n    const result = owned.finishValue(&s, projectTrustPathsBody(self, &s)) catch |err|\n        return engine.checked(engine.leaveNativeInvocation(&invocation, sdk.fail(engine, err)));\n    return engine.checked(engine.leaveNativeInvocation(&invocation, result));\n}\nfn projectTrustPathsBody(self: *Owner, s: *Scope) !c.JSValue {\n    const core = if (self.auth) |*value| value else return error.ActualSdkApplicationAuthRetired;\n    // Snapshot the actual owned runtime before imported Gets can reenter and\n    // retire this host handle. No borrowed Owner field is read after that point.\n    const runtime = try root(s, c.JS_DupValue(s.engine.context, core.runtime_imports));\n    const platform = try get(s, runtime, \"platform\");\n    const filesystem = try get(s, platform, \"filesystem\");\n    const paths = try get(s, platform, \"paths\");\n    const os = try builtinDefault(s, \"node:os\");\n    const path_utilities = try get(s, platform, \"pathUtilities\");\n    const configuration = try get(s, runtime, \"configuration\");\n    const config_dir = try get(s, configuration, \"CONFIG_DIR_NAME\");\n    return @import(\"native_sdk_project_trust_paths.zig\").create(s.engine, .{\n        .filesystem = filesystem, .paths = paths, .os = os,\n        .path_utilities = path_utilities, .config_dir = config_dir,\n    });\n}\n",
+      "anchor": "fn stdoutTransition(self: *Owner, restore: bool) !void {\n",
+      "before_sha256": "4486574360E2F3C3CDD5FC6B6115BFF4DD12D223C0497D55F2E593990C88C2A2",
+      "after_sha256": "50C65DC5557791329324B221D2D0D1FECE9D9C3502D390102025BDA255206973"
+    }
+  ],
+  "complete_raw_inverse": true,
+  "main_mutated": false
+}

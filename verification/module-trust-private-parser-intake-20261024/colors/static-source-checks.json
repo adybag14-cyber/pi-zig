@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "kind": "bounded_static_source_accounting_only",
+  "selected_inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\projected-v3\\src\\extensions\\native_node_util_colors.zig",
+      "bytes": 8214,
+      "sha256": "3ABFB0B79C9E52FF3FAE5AB344F2F9B534B7EA52E8762108AB2C9B3DF793C827"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\projected\\src\\native_node_util_colors_test.zig",
+      "bytes": 26171,
+      "sha256": "503C671E7B5EF9AB81E4121C89D8DF20AB944F59EA9AF87EF85DB6EAF8BEFD4F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 537030,
+      "sha256": "D08B7E7B5A6706B7F0C2433498AE6D8B7FC587C8BB4C36B01EBEBF3E92B40211"
+    }
+  ],
+  "relative_import_occurrences": [
+    {
+      "source_target": "src/extensions/native_node_util_colors.zig",
+      "literal": "native_node_argument_values.zig",
+      "resolved_target": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "source_target": "src/extensions/native_node_util_colors.zig",
+      "literal": "native_node_module_callable.zig",
+      "resolved_target": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "source_target": "src/extensions/native_node_util_colors.zig",
+      "literal": "native_sync_arguments.zig",
+      "resolved_target": "src/extensions/native_sync_arguments.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+        "bytes": 9162,
+        "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+      }
+    },
+    {
+      "source_target": "src/extensions/native_node_util_colors.zig",
+      "literal": "native_image_arithmetic.zig",
+      "resolved_target": "src/extensions/native_image_arithmetic.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_image_arithmetic.zig",
+        "bytes": 6819,
+        "sha256": "1CF3B862D1665FBFFFE3AC93C281A5C1040B44132C4289EB5F02644706AE2016"
+      }
+    },
+    {
+      "source_target": "src/native_node_util_colors_test.zig",
+      "literal": "extensions/native_node_argument_values.zig",
+      "resolved_target": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "source_target": "src/native_node_util_colors_test.zig",
+      "literal": "extensions/native_node_util_colors.zig",
+      "resolved_target": "src/extensions/native_node_util_colors.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\projected-v3\\src\\extensions\\native_node_util_colors.zig",
+        "bytes": 8214,
+        "sha256": "3ABFB0B79C9E52FF3FAE5AB344F2F9B534B7EA52E8762108AB2C9B3DF793C827"
+      }
+    },
+    {
+      "source_target": "src/native_node_util_colors_test.zig",
+      "literal": "extensions/native_node_module_callable.zig",
+      "resolved_target": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "source_target": "src/native_node_util_colors_test.zig",
+      "literal": "extensions/native_sync_arguments.zig",
+      "resolved_target": "src/extensions/native_sync_arguments.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+        "bytes": 9162,
+        "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+      }
+    },
+    {
+      "source_target": "src/native_node_util_colors_test.zig",
+      "literal": "extensions/native_process.zig",
+      "resolved_target": "src/extensions/native_process.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+        "bytes": 6626,
+        "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+      }
+    }
+  ],
+  "relative_import_count": 9,
+  "all_import_targets_resolve_to_current_main_or_selected_owner": true,
+  "declared_tests": [
+    "native util colors executes original exports initialization and refresh with actual process",
+    "native util colors optional stream and logical and preserve original raw falsy results",
+    "native util colors noncallable depth chooses true without coercing the property",
+    "native util colors reads a callable depth twice and preserves receiver and relational coercion",
+    "native util colors second depth lookup may become noncallable and throw",
+    "native util colors any defined FORCE_COLOR enters actual lazy tty capability branch",
+    "native util colors reads current process env FORCE_COLOR and stderr without defaults",
+    "native util colors lazy require retries ordinary failure and nullish results",
+    "native util colors lazy require retains nonnull falsy values and retries null values",
+    "native util colors nested lazy require preserves outer assignment after reentry",
+    "native util colors refresh resolves the current method before stderr and uses its exports receiver",
+    "native util colors refresh resolves module exports separately for every assignment",
+    "native util colors refresh preserves earlier assignments when a middle setter throws",
+    "native util colors disabled refresh clears the palette and a noncallable condition prevents writes",
+    "native util colors final statement rereads a replacement chosen by the module exports setter",
+    "native util colors ordinary module assignment failure keeps its exact reason and skips refresh",
+    "native util colors escaped methods retain actual wrapper owners after replacement and collection",
+    "native util colors current native fatal from FORCE_COLOR getter prevents tty and stream work",
+    "native util colors truthy isTTY temporary retires before the depth property read",
+    "native util colors first typeof depth function retires before the second property read",
+    "native util colors refresh condition result retires before its first assignment",
+    "native util colors discarded assignment literal retires before final refresh selection",
+    "native util colors captured flagged Error remains data unless an actual producer publishes it"
+  ],
+  "declared_count": 23,
+  "exact_additive_build_inverse": true,
+  "build_insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 658,
+    "sha256": "493497DF7F9B437E919BB7D1ED7C72545AB5288006498BFD26DD0DF5935A5B3C"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-util-colors-sourceonly-20261024\\util-colors-successor.patch",
+    "bytes": 36623,
+    "sha256": "AB284DDA48AEE433B0F4D42B538DE00D63DE4AA1844CD18DA52270DC11940151"
+  },
+  "manual_source_checks": [
+    "Read the complete original colors.js and selected module body.",
+    "Original nullish lazy cache, strict undefined gate, optional/raw falsy return, double method Get, original receiver and relational coercion order are explicit.",
+    "Refresh condition and each original assignment have separate actual completion boundaries.",
+    "Module assignment RHS retires before the final live refresh read.",
+    "23 declarations manually checked; actual process/stderr plus explicit test-only TTY collaborator; native fatal producers, flagged data and retirement probes exercise owner boundaries."
+  ],
+  "compiler_ast_formatter_or_native_execution": false,
+  "actual_metadata_count": null
+}

@@ -1,6 +1,6 @@
 // Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
-//! Actual Node 24.13 internal/util/inspect format(...) and its selected
-//! formatWithOptionsInternal(undefined, args) path. The outer rest Array and
+//! Actual Node internal/util/inspect format and formatWithOptions entries.
+//! Shared option flow is the original formatWithOptionsInternal. The rest Array and
 //! inner lexical slots are real VM owners. All primordial callables are
 //! captured during the genuine inspector bootstrap.
 const a = @import("native_node_argument_values.zig");
@@ -11,6 +11,7 @@ const primitive = @import("native_node_util_inspect_primitive.zig");
 const arithmetic = @import("native_image_arithmetic.zig");
 const caught = @import("native_agent_af_values.zig").caught;
 const RestFrame = a.frames.Frame(enum { rest });
+const OptionsFrame = a.frames.Frame(enum { inspect_options, rest });
 const StringifyFrame = a.frames.Frame(enum { reason, cycle, circular_error });
 const FormatFrame = a.frames.Frame(enum {
     first, str, join, temp_str, temp_arg, temp_num, temp_integer, temp_float,
@@ -83,13 +84,40 @@ fn restCallBody(s: *Scope, frame: *RestFrame, argv: []const c.JSValue,
     // actual rest Array is empty and its prototype supplies an inherited key.
     try frame.take(.rest, a.expression(s.engine, restBody, .{argv}));
     const owner = try s.get(lexical, "formatter");
-    return internal(s.engine, owner, frame.get(.rest));
+    return internal(s.engine, owner, frame.get(.rest), c.pi_js_undefined());
 }
-fn internal(engine: *a.v.em.Engine, owner: c.JSValue, args: c.JSValue) anyerror!c.JSValue {
+/// Original formatWithOptions formal option and actual rest Array owners.
+/// The real completed internal/errors graph supplies the same stable validator.
+pub fn callWithOptions(engine: *a.v.em.Engine, argv: []const c.JSValue,
+    lexical: c.JSValue) anyerror!c.JSValue
+{
+    var s = Scope.init(engine);
+    const frame = OptionsFrame.create(&s.values) catch |err|
+        return s.finish(@as(anyerror!c.JSValue, err));
+    return a.finishFrame(&s, frame, optionsCallBody(&s, frame, argv, lexical));
+}
+fn optionsCallBody(s: *Scope, frame: *OptionsFrame, argv: []const c.JSValue,
+    lexical: c.JSValue) anyerror!c.JSValue
+{
+    try frame.copy(.inspect_options, a.arg(argv, 0));
+    const rest = if (argv.len > 0) argv[1..] else argv;
+    try frame.take(.rest, a.expression(s.engine, restBody, .{rest}));
+    _ = try a.expression(s.engine, validateOptions, .{frame.get(.inspect_options)});
+    const owner = try s.get(lexical, "formatter");
+    return internal(s.engine, owner, frame.get(.rest), frame.get(.inspect_options));
+}
+fn validateOptions(s: *Scope, inspect_options: c.JSValue) anyerror!c.JSValue {
+    const validator = try s.own(try @import("native_node_argument_errors.zig").validateObject(s.engine));
+    _ = try s.call(validator, c.pi_js_undefined(),
+        &.{ inspect_options, try s.text("inspectOptions"), c.JS_NewInt32(s.engine.context, 2) });
+    return c.pi_js_undefined();
+}
+fn internal(engine: *a.v.em.Engine, owner: c.JSValue, args: c.JSValue,
+    inspect_options: c.JSValue) anyerror!c.JSValue {
     var s = Scope.init(engine);
     const frame = FormatFrame.create(&s.values) catch |err|
         return s.finish(@as(anyerror!c.JSValue, err));
-    return a.finishFrame(&s, frame, internalBody(&s, frame, owner, args));
+    return a.finishFrame(&s, frame, internalBody(&s, frame, owner, args, inspect_options));
 }
 fn indexed(s: *Scope, array: c.JSValue, index: usize) anyerror!c.JSValue {
     return dup(s, try s.getKey(array, number(s, index)));
@@ -140,23 +168,27 @@ fn appendSlice(s: *Scope, owner: c.JSValue, current: c.JSValue,
         try s.call(slice, first, &.{number(s, start)});
     return dup(s, try a.add(s, current, piece));
 }
-fn numericBody(s: *Scope, owner: c.JSValue, value: c.JSValue, bigint: bool) anyerror!c.JSValue {
-    // Public format supplies undefined inspectOptions. Only these actual
-    // helpers read the shared default numericSeparator, after value conversion.
+fn numericBody(s: *Scope, owner: c.JSValue, value: c.JSValue, bigint: bool,
+    inspect_options: c.JSValue) anyerror!c.JSValue
+{
+    // Original optional Get and nullish fallback occur after value conversion.
+    // Falsy nonnull values suppress the shared default; no options are copied.
     const no_color = try s.get(owner, "noColor");
-    const defaults = try s.get(owner, "defaults");
-    const separator = try s.get(defaults, "numericSeparator");
+    const selected = if (c.JS_IsNull(inspect_options) or c.JS_IsUndefined(inspect_options))
+        c.pi_js_undefined() else try s.get(inspect_options, "numericSeparator");
+    const separator = if (c.JS_IsNull(selected) or c.JS_IsUndefined(selected))
+        try s.get(try s.get(owner, "defaults"), "numericSeparator") else selected;
     const formatted = if (bigint) try primitive.bigint(&s.values, value, s.truthy(separator))
         else try primitive.number(&s.values, value, s.truthy(separator));
     return dup(s, try s.call(no_color, c.pi_js_undefined(),
         &.{ formatted, try s.text(if (bigint) "bigint" else "number") }));
 }
 fn convertedNumber(s: *Scope, owner: c.JSValue, value: c.JSValue,
-    conversion: [*:0]const u8) anyerror!c.JSValue
+    conversion: [*:0]const u8, inspect_options: c.JSValue) anyerror!c.JSValue
 {
     const function = try member(s, owner, conversion);
     const converted = try expr(s, a.callBody, .{ function, c.pi_js_undefined(), @as([]const c.JSValue, &.{value}) });
-    return dup(s, try expr(s, numericBody, .{ owner, converted, false }));
+    return dup(s, try expr(s, numericBody, .{ owner, converted, false, inspect_options }));
 }
 fn builtIn(s: *Scope, owner: c.JSValue, value: c.JSValue) anyerror!c.JSValue {
     const function = try s.get(owner, "classifier");
@@ -168,14 +200,14 @@ fn plainString(s: *Scope, owner: c.JSValue, value: c.JSValue) anyerror!c.JSValue
 }
 const Inspection = enum { ordinary, string, hidden };
 fn inspection(s: *Scope, owner: c.JSValue, value: c.JSValue,
-    mode: Inspection) anyerror!c.JSValue
+    mode: Inspection, inspect_options: c.JSValue) anyerror!c.JSValue
 {
     const inspect = try s.get(owner, "inspect");
-    var options = c.pi_js_undefined();
+    var options = inspect_options;
     if (mode != .ordinary) {
-        // Actual literal with undefined spread source. Each entry is an own
-        // data definition; no inherited option setter is invoked.
-        options = try s.object();
+        // Real CopyDataProperties includes symbols and per-key descriptor/Get
+        // order. Overrides remain own data definitions, not inherited setters.
+        options = try ops.spread(&s.values, inspect_options);
         if (mode == .string) {
             try s.define(options, "compact", number(s, 3), c.JS_PROP_C_W_E);
             try s.define(options, "colors", a.boolean(s, false), c.JS_PROP_C_W_E);
@@ -188,22 +220,22 @@ fn inspection(s: *Scope, owner: c.JSValue, value: c.JSValue,
     }
     return dup(s, try s.call(inspect, c.pi_js_undefined(), &.{ value, options }));
 }
-fn stringArgument(s: *Scope, owner: c.JSValue, value: c.JSValue) anyerror!c.JSValue {
-    if (c.JS_IsNumber(value)) return numericBody(s, owner, value, false);
-    if (c.JS_IsBigInt(value)) return numericBody(s, owner, value, true);
+fn stringArgument(s: *Scope, owner: c.JSValue, value: c.JSValue, inspect_options: c.JSValue) anyerror!c.JSValue {
+    if (c.JS_IsNumber(value)) return numericBody(s, owner, value, false, inspect_options);
+    if (c.JS_IsBigInt(value)) return numericBody(s, owner, value, true, inspect_options);
     if (!c.JS_IsObject(value) or c.JS_IsFunction(s.engine.context, value) or c.JS_IsNull(value) or
         !try a.condition(s.engine, builtIn, .{ owner, value }))
         return plainString(s, owner, value);
-    return inspection(s, owner, value, .string);
+    return inspection(s, owner, value, .string, inspect_options);
 }
 fn numericArgument(s: *Scope, owner: c.JSValue, value: c.JSValue,
-    kind: enum { decimal, integer, float }) anyerror!c.JSValue
+    kind: enum { decimal, integer, float }, inspect_options: c.JSValue) anyerror!c.JSValue
 {
-    if (kind != .float and c.JS_IsBigInt(value)) return numericBody(s, owner, value, true);
+    if (kind != .float and c.JS_IsBigInt(value)) return numericBody(s, owner, value, true, inspect_options);
     if (c.JS_IsSymbol(value)) return dup(s, try s.text("NaN"));
     return convertedNumber(s, owner, value, switch (kind) {
         .decimal => "Number", .integer => "parseInt", .float => "parseFloat",
-    });
+    }, inspect_options);
 }
 fn stringifyCall(s: *Scope, owner: c.JSValue, value: c.JSValue) anyerror!c.JSValue {
     const function = try member(s, owner, "stringify");
@@ -284,15 +316,15 @@ fn indexedStringify(s: *Scope, owner: c.JSValue, args: c.JSValue, index: usize) 
     return stringify(s.engine, owner, value);
 }
 fn indexedInspection(s: *Scope, owner: c.JSValue, args: c.JSValue, index: usize,
-    mode: Inspection) anyerror!c.JSValue
+    mode: Inspection, inspect_options: c.JSValue) anyerror!c.JSValue
 {
     // The Source inspect callee is selected before the indexed argument and
     // before its following options literal.
     const inspect = try s.get(owner, "inspect");
     const value = try s.getKey(args, number(s, index));
-    var options = c.pi_js_undefined();
+    var options = inspect_options;
     if (mode == .hidden) {
-        options = try s.object();
+        options = try ops.spread(&s.values, inspect_options);
         try s.define(options, "showHidden", a.boolean(s, true), c.JS_PROP_C_W_E);
         try s.define(options, "showProxy", a.boolean(s, true), c.JS_PROP_C_W_E);
         try s.define(options, "depth", number(s, 4), c.JS_PROP_C_W_E);
@@ -300,14 +332,14 @@ fn indexedInspection(s: *Scope, owner: c.JSValue, args: c.JSValue, index: usize,
     return dup(s, try s.call(inspect, c.pi_js_undefined(), &.{ value, options }));
 }
 fn appendTrailing(s: *Scope, owner: c.JSValue, current: c.JSValue,
-    value: c.JSValue) anyerror!c.JSValue
+    value: c.JSValue, inspect_options: c.JSValue) anyerror!c.JSValue
 {
     const text = if (c.JS_IsString(value)) value else
-        try expr(s, inspection, .{ owner, value, Inspection.ordinary });
+        try expr(s, inspection, .{ owner, value, Inspection.ordinary, inspect_options });
     return dup(s, try a.add(s, current, text));
 }
 fn internalBody(s: *Scope, frame: *FormatFrame, owner: c.JSValue,
-    args: c.JSValue) anyerror!c.JSValue
+    args: c.JSValue, inspect_options: c.JSValue) anyerror!c.JSValue
 {
     try frame.take(.first, a.expression(s.engine, indexed, .{ args, @as(usize, 0) }));
     var argument: usize = 0;
@@ -328,7 +360,7 @@ fn internalBody(s: *Scope, frame: *FormatFrame, owner: c.JSValue,
                         try frame.clear(.temp_arg);
                         argument += 1;
                         try frame.take(.temp_arg, a.expression(s.engine, indexed, .{ args, argument }));
-                        try frame.take(.temp_str, a.expression(s.engine, stringArgument, .{ owner, frame.get(.temp_arg) }));
+                        try frame.take(.temp_str, a.expression(s.engine, stringArgument, .{ owner, frame.get(.temp_arg), inspect_options }));
                     },
                     106 => {
                         argument += 1;
@@ -338,24 +370,24 @@ fn internalBody(s: *Scope, frame: *FormatFrame, owner: c.JSValue,
                         try frame.clear(.temp_num);
                         argument += 1;
                         try frame.take(.temp_num, a.expression(s.engine, indexed, .{ args, argument }));
-                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_num), .decimal }));
+                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_num), .decimal, inspect_options }));
                     },
                     79, 111 => {
                         argument += 1;
                         try frame.take(.temp_str, a.expression(s.engine, indexedInspection,
-                            .{ owner, args, argument, if (next == 79) Inspection.ordinary else Inspection.hidden }));
+                            .{ owner, args, argument, if (next == 79) Inspection.ordinary else Inspection.hidden, inspect_options }));
                     },
                     105 => {
                         try frame.clear(.temp_integer);
                         argument += 1;
                         try frame.take(.temp_integer, a.expression(s.engine, indexed, .{ args, argument }));
-                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_integer), .integer }));
+                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_integer), .integer, inspect_options }));
                     },
                     102 => {
                         try frame.clear(.temp_float);
                         argument += 1;
                         try frame.take(.temp_float, a.expression(s.engine, indexed, .{ args, argument }));
-                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_float), .float }));
+                        try frame.take(.temp_str, a.expression(s.engine, numericArgument, .{ owner, frame.get(.temp_float), .float, inspect_options }));
                     },
                     99 => {
                         argument += 1;
@@ -395,7 +427,7 @@ fn internalBody(s: *Scope, frame: *FormatFrame, owner: c.JSValue,
         try frame.take(.trailing_value, a.expression(s.engine, indexed, .{ args, argument }));
         try frame.take(.str, a.expression(s.engine, appendValue, .{ frame.get(.str), frame.get(.join) }));
         try frame.take(.str, a.expression(s.engine, appendTrailing,
-            .{ owner, frame.get(.str), frame.get(.trailing_value) }));
+            .{ owner, frame.get(.str), frame.get(.trailing_value), inspect_options }));
         try frame.take(.join, a.expression(s.engine, stringValue, .{" "}));
         argument += 1;
     }

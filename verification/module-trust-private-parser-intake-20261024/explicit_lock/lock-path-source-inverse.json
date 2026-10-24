@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "scope": "Original getLockFile explicit path selection for consumed realpath:false String path profiles",
+  "observed_main_head": "a22613294ffe05baeb2bfd3cd43a7d6ad0c9dcc5",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\original\\src\\extensions\\native_auth_directory_lock.zig",
+    "bytes": 29486,
+    "sha256": "C5A71EB69B6776EC97B2EEF9FD7C376B44C91865F42BAC2130971650B54ED02B"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-auth-explicit-lock-path-sourceonly-20261024\\projected\\src\\extensions\\native_auth_directory_lock.zig",
+    "bytes": 29972,
+    "sha256": "FFF94746546ABE64F86A5776232C5665FDB46EAC386F6BDB3559C3952E4329B1"
+  },
+  "edits": [
+    {
+      "offset": 6970,
+      "before": "    const lock_path = try std.fmt.allocPrint(scope.engine.gpa, \"{s}.lock\", .{raw});\n    defer scope.engine.gpa.free(lock_path);\n",
+      "after": "    // proper-lockfile 4.1.2 getLockFile: the selected realpath:false\n    // consumers supply a String path. Preserve a supplied lockfilePath exactly\n    // (including a relative spelling); only a falsy option selects file.lock.\n    // The owned Lease.path below feeds all physical operations and retirement.\n    const explicit_path = try checkedOptional(scope, options, \"lockfilePath\");\n    const lock_path = if (scope.truthy(explicit_path))\n        try checkedString(scope, explicit_path)\n    else\n        try std.fmt.allocPrint(scope.engine.gpa, \"{s}.lock\", .{raw});\n    defer scope.engine.gpa.free(lock_path);\n",
+      "before_sha256": "C5A71EB69B6776EC97B2EEF9FD7C376B44C91865F42BAC2130971650B54ED02B",
+      "after_sha256": "FFF94746546ABE64F86A5776232C5665FDB46EAC386F6BDB3559C3952E4329B1"
+    }
+  ],
+  "complete_raw_inverse": true,
+  "all_other_source_bytes_unchanged": true,
+  "Main_mutated": false,
+  "native_execution": false
+}

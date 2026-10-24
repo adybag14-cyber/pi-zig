@@ -4,7 +4,7 @@
 const std = @import("std");
 const a = @import("native_node_argument_values.zig");
 const c = a.c;
-const parser = @cImport(@cInclude("native_node_package_json_parser.h"));
+const parser = @import("native_node_package_json_api.zig").c;
 
 /// The binding's actual CHECK has already admitted a primitive String. Normal
 /// UTF8 conversion joins pairs; lone surrogate code points are replaced exactly
