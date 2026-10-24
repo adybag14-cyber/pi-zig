@@ -44,7 +44,14 @@ fn createBody(s: *Scope, inputs: Inputs) ![3]c.JSValue {
     inline for (.{ .{ "includes", "includes" }, .{ "indexOf", "indexOf" }, .{ "push", "push" },
         .{ "splice", "splice" }, .{ "arraySlice", "slice" }, .{ "join", "join" } }) |pair|
         try s.put(roots, pair[0], try s.get(arrays, pair[1]));
-    const strings = try s.get(try s.get(global, "String"), "prototype");
+    const number_primordials = try s.get(global, "Number");
+    try s.put(roots, "NumberIsInteger", try s.get(number_primordials, "isInteger"));
+    try s.put(roots, "NumberMIN_SAFE_INTEGER", try s.get(number_primordials, "MIN_SAFE_INTEGER"));
+    try s.put(roots, "NumberMAX_SAFE_INTEGER", try s.get(number_primordials, "MAX_SAFE_INTEGER"));
+    try s.put(roots, "MathAbs", try s.get(try s.get(global, "Math"), "abs"));
+    const string_constructor = try s.get(global, "String");
+    try s.put(roots, "String", string_constructor);
+    const strings = try s.get(string_constructor, "prototype");
     inline for (.{ .{ "endsWith", "endsWith" }, .{ "stringIncludes", "includes" },
         .{ "lower", "toLowerCase" }, .{ "stringSlice", "slice" } }) |pair|
         try s.put(roots, pair[0], try s.get(strings, pair[1]));

@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\extensions\\runner.ts",
+    "bytes": 52023,
+    "sha256": "3CD6D1AD18E8E4C7ADF722AED9291BC64F06E3A7D461755C21E3CBA4819F4E5E"
+  },
+  "retained_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\authority\\runner.ts",
+    "bytes": 52023,
+    "sha256": "3CD6D1AD18E8E4C7ADF722AED9291BC64F06E3A7D461755C21E3CBA4819F4E5E"
+  },
+  "selected_ranges": [
+    [
+      276,
+      278
+    ],
+    [
+      302,
+      329
+    ]
+  ],
+  "selected_original_text": "function snapshotEventHandlers(extensions: Extension[], event: ExtensionEvent[\"type\"]) {\n\treturn extensions.map((ext) => ({ ext, handlers: ext.handlers.get(event)?.slice() ?? [] }));\n}\nexport async function emitProjectTrustEvent(\n\textensionsResult: LoadExtensionsResult,\n\tevent: ProjectTrustEvent,\n\tctx: ProjectTrustContext,\n): Promise<{ result?: ProjectTrustEventResult; errors: ExtensionError[] }> {\n\tconst errors: ExtensionError[] = [];\n\tfor (const { ext, handlers } of snapshotEventHandlers(extensionsResult.extensions, \"project_trust\")) {\n\t\t// A single extension may register multiple handlers for the same event.\n\t\t// The first project_trust handler that returns yes/no wins; undecided falls through.\n\t\tfor (const handler of handlers) {\n\t\t\ttry {\n\t\t\t\tconst handlerResult = (await handler(event, ctx)) as ProjectTrustEventResult;\n\t\t\t\tif (handlerResult.trusted === \"undecided\") {\n\t\t\t\t\tcontinue;\n\t\t\t\t}\n\t\t\t\treturn { result: handlerResult, errors };\n\t\t\t} catch (error) {\n\t\t\t\terrors.push({\n\t\t\t\t\textensionPath: ext.path,\n\t\t\t\t\tevent: event.type,\n\t\t\t\t\terror: error instanceof Error ? error.message : String(error),\n\t\t\t\t\tstack: error instanceof Error ? error.stack : undefined,\n\t\t\t\t});\n\t\t\t}\n\t\t}\n\t}\n\treturn { errors };\n}\n",
+  "fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-project-trust-event-original.mjs",
+    "bytes": 1043,
+    "sha256": "14F1F1EDDF9790E1D750E5E5C0A42F2CCDF806CC00AC2A04D185E2BD3CE9D017"
+  },
+  "wrapper_prefix": "(() => {\n\"use strict\";\n",
+  "wrapper_suffix": "return emitProjectTrustEvent;\n})()\n",
+  "finite_type_erasure": [
+    {
+      "before": "function snapshotEventHandlers(extensions: Extension[], event: ExtensionEvent[\"type\"]) {",
+      "after": "function snapshotEventHandlers(extensions, event) {",
+      "occurrences": 1
+    },
+    {
+      "before": "export async function emitProjectTrustEvent(\n\textensionsResult: LoadExtensionsResult,\n\tevent: ProjectTrustEvent,\n\tctx: ProjectTrustContext,\n): Promise<{ result?: ProjectTrustEventResult; errors: ExtensionError[] }> {",
+      "after": "async function emitProjectTrustEvent(extensionsResult, event, ctx) {",
+      "occurrences": 1
+    },
+    {
+      "before": "const errors: ExtensionError[] = [];",
+      "after": "const errors = [];",
+      "occurrences": 1
+    },
+    {
+      "before": "(await handler(event, ctx)) as ProjectTrustEventResult",
+      "after": "(await handler(event, ctx))",
+      "occurrences": 1
+    }
+  ],
+  "exact_original_body_and_comments_retained": true,
+  "full_inverse_checked": true,
+  "fixture_executed": false
+}

@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-string-fixture-correction-sourceonly-20261024\\baseline\\src\\native_node_stream_write_string_test.zig",
+    "bytes": 31099,
+    "sha256": "6316A714C3B80C82E3F114040E0796658CF1801F1A7B652AF6920A712E77BBF1"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-string-fixture-correction-sourceonly-20261024\\projected\\src\\native_node_stream_write_string_test.zig",
+    "bytes": 31116,
+    "sha256": "C75431B56B89B57160C815FF1F6CD0172CF3788B0A16F23105130A299A538B14"
+  },
+  "edits": [
+    {
+      "offset": 5611,
+      "before": "        const request = self.pending_request orelse return error.StringWriteRequestRequired;\n        self.pending_request = null;\n        return request.request.done(status, null);",
+      "after": "        const pending = self.pending_request orelse return error.StringWriteRequestRequired;\n        self.pending_request = null;\n        return pending.request.done(status, null);",
+      "input_sha256": "6316A714C3B80C82E3F114040E0796658CF1801F1A7B652AF6920A712E77BBF1",
+      "output_sha256": "F5273F459368819CE9F6C537FBA74B9CE9AD51CF97371CAC60996FC42150D9FB"
+    },
+    {
+      "offset": 12131,
+      "before": "    var file = try support.File.init(); defer file.deinit();",
+      "after": "    var file: support.File = undefined; try file.init(); defer file.deinit();",
+      "input_sha256": "F5273F459368819CE9F6C537FBA74B9CE9AD51CF97371CAC60996FC42150D9FB",
+      "output_sha256": "C75431B56B89B57160C815FF1F6CD0172CF3788B0A16F23105130A299A538B14"
+    }
+  ],
+  "complete_raw_inverse": true,
+  "unchanged_control_names": [
+    "native Stream string write borrowed view preserves actual primitive code units without coercion",
+    "native Stream string write all four dispatch methods keep physical FileHandle ENOSYS and provider52",
+    "native Stream string write ASCII and Latin1 preserve low bytes high bits NUL and surrogate units",
+    "native Stream string write UTF8 combines pairs replaces lone surrogates and preserves embedded NUL",
+    "native Stream string write UCS2 emits little endian code units without surrogate replacement",
+    "native Stream string write direct complete try bypasses template backing and native request",
+    "native Stream string write direct try error counts only consumed bytes but reports the whole string",
+    "native Stream string write partial try copies the exact remaining byte suffix and never retries",
+    "native Stream string write accepted partial backing survives completion Dispose until native retirement",
+    "native Stream string write full async backing owns encoded bytes after the input root is released",
+    "native Stream string write 16KiB shortcut uses StorageSize including the UTF8 triple",
+    "native Stream string write long UTF8 retains original Size then StorageSize capacity",
+    "native Stream string write empty nontry input still uses zero backing and a real native request",
+    "native Stream string write nonIPC object handle does not disable direct try or select handle Set",
+    "native Stream string write failed error Set after partial native error preserves prefix result and reason",
+    "native Stream string write ordinary init hook throw still transfers accepted async backing",
+    "native Stream string write all new JSMethod entries preserve absent and dead receiver guards",
+    "native Stream string write flattens an actual VM rope before borrowing or UTF8 encoding"
+  ]
+}

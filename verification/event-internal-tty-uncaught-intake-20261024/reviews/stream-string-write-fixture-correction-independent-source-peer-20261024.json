@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "status": "independent_source_only_stream_string_write_fixture_correction_accepted",
+  "reviewer": "catalog_review",
+  "candidate_head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-string-fixture-correction-sourceonly-20261024\\entry.json",
+    "bytes": 2401,
+    "sha256": "1163219A7994491CA5B62F0086AD6B6B808480486BCC052351535DA1827C1873"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-string-fixture-correction-sourceonly-20261024\\baseline\\src\\native_node_stream_write_string_test.zig",
+    "bytes": 31099,
+    "sha256": "6316A714C3B80C82E3F114040E0796658CF1801F1A7B652AF6920A712E77BBF1"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-string-fixture-correction-sourceonly-20261024\\projected\\src\\native_node_stream_write_string_test.zig",
+    "bytes": 31116,
+    "sha256": "C75431B56B89B57160C815FF1F6CD0172CF3788B0A16F23105130A299A538B14"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-string-fixture-correction-sourceonly-20261024\\fixture-correction.patch",
+    "bytes": 1132,
+    "sha256": "D2039A2A0446A2D691E5C5E9997E56A87F002FBC1583AACB89806CFB658DFAD9"
+  },
+  "inverses": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-string-fixture-correction-sourceonly-20261024\\source-inverses.json",
+    "bytes": 3544,
+    "sha256": "6E938D85A10BB31AF4180520D68EF9E1869334957B7A498CBF57FF20C668B89F"
+  },
+  "actual_File_support": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test_support.zig",
+    "bytes": 33411,
+    "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+  },
+  "actual_compiler_stderr": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v45-new26-buildquery-20261024-211838\\groups\\native-node-stream-write-string\\compile.stderr.log",
+    "bytes": 22885,
+    "sha256": "740390D0973AE1791E56223299917AFB05AE91D5DC0C4E9DF620862C57ADF2E4"
+  },
+  "checks": {
+    "entry_and_all_six_input_pins_rehashed": true,
+    "baseline_equals_current_Main": true,
+    "exact_two_forward_hunks_and_raw_inverse": true,
+    "full_patch_reconstructed": true,
+    "git_apply_check_passed": true,
+    "all_18_control_names_identical": true,
+    "all_testing_assertion_lines_identical": true,
+    "all_other_source_bytes_identical": true,
+    "actual_File_instance_api_and_cleanup_read": true,
+    "actual_request_declaration_and_complete_helper_read": true,
+    "both_original_compiler_diagnostics_match": true,
+    "Main_clean_and_head_unchanged": true
+  },
+  "semantic_review": [
+    "The completion helper only renames its local request value to pending. It still selects the same non-null pending_request, clears that slot before reentrant done(), and passes exactly the original status and null completion argument. This removes the observed conflict with Fixture.request without changing the callback or lifetime order.",
+    "The selected support.File declares init(self:*File)!void and initializes every field via self.*=.{} before its existing errdefer cleanup. A concrete local File initialized through file.init() matches that actual API; deferred file.deinit() is registered only after success, and the original file.take()/physical FileHandle checks are unchanged.",
+    "The compiler receipt reports precisely the local declaration conflict and missing self argument at the two changed sites. The patch changes neither production code nor test declarations, assertions, behavior or native authority."
+  ],
+  "concrete_blockers": [],
+  "source_or_compiler_or_native_executed": false,
+  "Main_mutated": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "created_utc": "2026-10-24T21:32:12.816074+00:00"
+}

@@ -1,0 +1,133 @@
+{
+  "schema": 1,
+  "status": "source_only_static_checks_passed_unexecuted",
+  "observed_main_head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "main_porcelain_empty": true,
+  "selected_paths": 7,
+  "existing_source_hunks": 6,
+  "selected_draft_guard_hunks": 1,
+  "selected_test_integer_boolean_fix_hunks": 1,
+  "full_patch_exact_selected_diff": true,
+  "build_insertion_bytes": 1335,
+  "build_raw_forward_inverse": true,
+  "all_existing_source_raw_inverses": true,
+  "Inputs_and_Exports_bytes_unchanged": true,
+  "argument_bootstrap_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_bootstrap.zig",
+    "bytes": 4905,
+    "sha256": "435957EED6F561AD47B2AAA68EA07BC5FBDCCE28D2F077B8824098B309A98484"
+  },
+  "private_require_executable_bytes_unchanged": true,
+  "direct_import_occurrences": 35,
+  "package_import_occurrences": 3,
+  "literal_embeds": 0,
+  "declared_test_count": 36,
+  "test_names": [
+    "native internal tty publishes one complete private module with original descriptors and callable shapes",
+    "native internal tty private require fails before actual assembly and retries the completed same backend",
+    "native internal tty assembly rejects a foreign require before any module publication",
+    "native internal tty requires the complete preselected private admission subset",
+    "native internal tty requires actual shared integer bootstrap and permits a later real completion",
+    "native internal tty incoming ordinary pending survives armed quota before assembly allocation",
+    "native internal tty requires the actual cached SafeMap without late recapture",
+    "native internal tty authenticates process default data without invoking a foreign accessor",
+    "native internal tty pending assembly rejects reentry before completed publication",
+    "native internal tty failed genuine initialization publishes no backend and permits exact retry",
+    "native internal tty assembly retirement fatal prevents module publication",
+    "native internal tty hasColors matches original overloads and exact color-capacity boundaries",
+    "native internal tty explicit environment keeps undefined null function and primitive count validation",
+    "native internal tty noninteger and out-of-bound counts fail before depth with original messages",
+    "native internal tty object overload starts environment access without count coercion",
+    "native internal tty retains lexical depth while original exports remain mutable",
+    "native internal tty live environment belongs to retained actual process",
+    "native internal tty depth and hasColors share the genuine lazy OS release cache",
+    "native internal tty nested environment getters preserve original outer execution",
+    "native internal tty current fatal in an environment getter bypasses ordinary catches",
+    "native internal tty out of range uses the shared registered RangeError and hidden class",
+    "native internal tty numeric range message matches original separators including exponent strings",
+    "native internal tty bigint range message preserves strict threshold grouping and suffix",
+    "native internal tty arbitrary range input uses the actual live private inspector",
+    "native internal tty range replace-default branch retains template and compound-assignment coercion order",
+    "native internal tty range assertion and ordinary thrown identity precede later message work",
+    "native internal tty validator has original wrapper and raw arrow callable semantics",
+    "native internal tty validator matches full original defaults and separate bounds",
+    "native internal tty validator performs relational bounds before ordered template substitutions",
+    "native internal tty validator type and integer failures do not coerce caller bounds",
+    "native internal tty validators and range messages retain actual early primordials after global mutation",
+    "native internal tty range template failure retains original Symbol conversion ordering",
+    "native internal tty current range-inspector fatal survives the real validator wrapper",
+    "native internal tty range received local retires before constructor success",
+    "native internal tty received-local retirement fatal supersedes an ordinary template throw",
+    "native internal tty object overload retains reassigned formals until actual terminal retirement"
+  ],
+  "selected_outputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected\\src\\extensions\\native_node_argument_range.zig",
+      "bytes": 12332,
+      "sha256": "243CEBBA277FAA0CBED856287E5155126CF5E4995E18335311042861DA741F97"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected\\src\\extensions\\native_node_argument_messages.zig",
+      "bytes": 22126,
+      "sha256": "CC7E03C7B47C3D26628B89AD24C94FE29EC17C246C12535C8E645A61568B9975"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected\\src\\extensions\\native_node_argument_errors.zig",
+      "bytes": 12154,
+      "sha256": "0394138090036A340F6B726CBB14F9E6424FF81664160B9DB115D9318E84E923"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected\\src\\extensions\\native_node_internal_builtin_require.zig",
+      "bytes": 8984,
+      "sha256": "02A9B4AD917C19E365024EDA8911FB8A3E3AE5A38DB03E48BC9C74FF99535D70"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_internal_tty.zig",
+      "bytes": 10475,
+      "sha256": "A30E0292243D92202072F67C699C2073CA4638128E477A1AFC71DB9D8F6A10E5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected-v2\\src\\native_node_internal_tty_test.zig",
+      "bytes": 41241,
+      "sha256": "5E6F32CD7ABE7616D544AD38DBA5A2AE14BDCDEAF506BA75A14C77A57E14492B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 547672,
+      "sha256": "222D00B582CC1E3715DFC2AFB5213D6CAF6F2C1A07B5E76ECE6FDD16B0E4AD03"
+    }
+  ],
+  "source_inverses": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\source-inverses.json",
+    "bytes": 11267,
+    "sha256": "2054BC380DA430CF00141EEFE806DD1A4252305C4A21941C5D97C57E36E959B4"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\source-diff.patch",
+    "bytes": 73219,
+    "sha256": "4EAEDE1C00C3E1F91C72F5CC0FE94546FCF006E110B3B1357B23AFC60D25C7CE"
+  },
+  "authority_excerpts": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\authority-source-excerpts.json",
+    "bytes": 5683,
+    "sha256": "8A357CE9D5C505BAC8B846554E9E99D9D48F058621EAA126FDA5F5872404E95F"
+  },
+  "module_admission_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\module-admission-source-authority.json",
+    "bytes": 4702,
+    "sha256": "9C622F7B07C8561EE2376BFE800CF99FDC246579436342B2DF1BEFD272A96368"
+  },
+  "preexisting_getColorDepth_bytes_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\src\\extensions\\native_node_tty_color_depth.zig",
+    "bytes": 18770,
+    "sha256": "6A6D7B2D4DA8FA43D82B0B91722C098B0A64B0E682DDA744AEEA3FE29EDE96AA"
+  },
+  "preexisting_29_controls_bytes_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-tty-color-depth-sourceonly-20261024\\projected\\src\\native_node_tty_color_depth_test.zig",
+    "bytes": 31063,
+    "sha256": "778344B6B920ED7A857F02CAB81E32CBF771A3F6DBF16F5DD6E2CFCD9300FBAB"
+  },
+  "scope": "Raw byte inverse/import/source declaration accounting only; no parser, compiler, formatter, candidate, Node capture or native run.",
+  "actual_metadata_count": null,
+  "runtime_result": null
+}

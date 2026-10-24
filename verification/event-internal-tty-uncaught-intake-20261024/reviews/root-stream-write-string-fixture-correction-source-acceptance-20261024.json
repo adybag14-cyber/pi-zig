@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "status": "root_source_only_two_hunk_fixture_correction_accepted",
+  "candidate_head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-string-fixture-correction-sourceonly-20261024\\entry.json",
+    "bytes": 2401,
+    "sha256": "1163219A7994491CA5B62F0086AD6B6B808480486BCC052351535DA1827C1873"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\stream-string-write-fixture-correction-independent-source-peer-20261024.json",
+    "bytes": 3879,
+    "sha256": "8A978ACAF0DBDB3EEACD2ADF05017C9706786E8ED8D27C4646955C54F5D9301D"
+  },
+  "accepted_projected_file": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-string-fixture-correction-sourceonly-20261024\\projected\\src\\native_node_stream_write_string_test.zig",
+    "bytes": 31116,
+    "sha256": "C75431B56B89B57160C815FF1F6CD0172CF3788B0A16F23105130A299A538B14"
+  },
+  "source_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-string-fixture-correction-sourceonly-20261024\\source-inverses.json",
+    "bytes": 3544,
+    "sha256": "6E938D85A10BB31AF4180520D68EF9E1869334957B7A498CBF57FF20C668B89F"
+  },
+  "reason": "The actual pinned compiler reported exactly a Fixture.request shadow and a missing self argument for File.init. The two reviewed source-only changes correct those API violations while preserving completion lifetime order, physical file setup/cleanup, all 18 test names and assertions.",
+  "Main_mutated": false,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "production_behavior_changed": false,
+  "integration_requires_original_failed_batch_independent_closure": true,
+  "created_utc": "2026-10-24T21:32:52.261061+00:00"
+}

@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "full_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-qualification-sourceonly-20261017\\verification\\node-tty-sourceonly-20261017\\authority\\internal-tty.js",
+      "bytes": 7150,
+      "sha256": "996AE301EE60854817401545811FD908C332CD3ED071C6A498D211CCDD9A932D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-qualification-sourceonly-20261017\\verification\\node-tty-sourceonly-20261017\\authority\\internal-validators.js",
+      "bytes": 19090,
+      "sha256": "AD6BCC8FE41AFAD0DF0C0D92A5700F4F1797BFCFBD934F00EEA918694DF4539D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-qualification-sourceonly-20261017\\verification\\node-tty-sourceonly-20261017\\authority\\internal-errors.js",
+      "bytes": 69406,
+      "sha256": "FD278208FAE3A83B51A0B948540629ED4E5FD8C7860CB8E4775C6DBF25779750"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-qualification-sourceonly-20261017\\verification\\node-tty-sourceonly-20261017\\authority\\LICENSE.txt",
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    }
+  ],
+  "excerpts": [
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-qualification-sourceonly-20261017\\verification\\node-tty-sourceonly-20261017\\authority\\internal-tty.js",
+        "bytes": 7150,
+        "sha256": "996AE301EE60854817401545811FD908C332CD3ED071C6A498D211CCDD9A932D"
+      },
+      "offset": 6823,
+      "bytes": 274,
+      "sha256": "5DDBE3452FBACA3D19CE751C491B0D057446911D7A5AB8CABE200F400DC92395",
+      "line_start": 245,
+      "line_end": 256,
+      "text": "function hasColors(count, env) {\n  if (env === undefined &&\n      (count === undefined || (typeof count === 'object' && count !== null))) {\n    env = count;\n    count = 16;\n  } else {\n    validateInteger(count, 'count', 2);\n  }\n\n  return count <= 2 ** getColorDepth(env);\n}\n"
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-qualification-sourceonly-20261017\\verification\\node-tty-sourceonly-20261017\\authority\\internal-tty.js",
+        "bytes": 7150,
+        "sha256": "996AE301EE60854817401545811FD908C332CD3ED071C6A498D211CCDD9A932D"
+      },
+      "offset": 7098,
+      "bytes": 52,
+      "sha256": "5165C21370046AB96778FAAC6C91CC9F96E2AF667DBB82ED2A2CC40E97A4C6DA",
+      "line_start": 257,
+      "line_end": 261,
+      "text": "module.exports = {\n  getColorDepth,\n  hasColors,\n};\n"
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-qualification-sourceonly-20261017\\verification\\node-tty-sourceonly-20261017\\authority\\internal-validators.js",
+        "bytes": 19090,
+        "sha256": "AD6BCC8FE41AFAD0DF0C0D92A5700F4F1797BFCFBD934F00EEA918694DF4539D"
+      },
+      "offset": 2473,
+      "bytes": 429,
+      "sha256": "E72D4C0B040E90BE1B1D242E3ADA79968CDB020EC648B046F0F6E285FDD0DD20",
+      "line_start": 95,
+      "line_end": 105,
+      "text": "const validateInteger = hideStackFrames(\n  (value, name, min = NumberMIN_SAFE_INTEGER, max = NumberMAX_SAFE_INTEGER) => {\n    if (typeof value !== 'number')\n      throw new ERR_INVALID_ARG_TYPE(name, 'number', value);\n    if (!NumberIsInteger(value))\n      throw new ERR_OUT_OF_RANGE(name, 'an integer', value);\n    if (value < min || value > max)\n      throw new ERR_OUT_OF_RANGE(name, `>= ${min} && <= ${max}`, value);\n  },\n);\n"
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-qualification-sourceonly-20261017\\verification\\node-tty-sourceonly-20261017\\authority\\internal-errors.js",
+        "bytes": 69406,
+        "sha256": "FD278208FAE3A83B51A0B948540629ED4E5FD8C7860CB8E4775C6DBF25779750"
+      },
+      "offset": 23803,
+      "bytes": 269,
+      "sha256": "26CBCB99222285EBFEF37385A6586FA757DCF3FE0D5E7A6BF3617F1A5F0EB602",
+      "line_start": 870,
+      "line_end": 879,
+      "text": "function addNumericalSeparator(val) {\n  let res = '';\n  let i = val.length;\n  const start = val[0] === '-' ? 1 : 0;\n  for (; i >= start + 4; i -= 3) {\n    res = `_${StringPrototypeSlice(val, i - 3, i)}${res}`;\n  }\n  return `${StringPrototypeSlice(val, 0, i)}${res}`;\n}\n"
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-qualification-sourceonly-20261017\\verification\\node-tty-sourceonly-20261017\\authority\\internal-errors.js",
+        "bytes": 69406,
+        "sha256": "FD278208FAE3A83B51A0B948540629ED4E5FD8C7860CB8E4775C6DBF25779750"
+      },
+      "offset": 54970,
+      "bytes": 759,
+      "sha256": "42B81AC1EC348D119418C5CEFA456B4002ECA634706CB7836401F96D7E461C72",
+      "line_start": 1627,
+      "line_end": 1647,
+      "text": "E('ERR_OUT_OF_RANGE',\n  (str, range, input, replaceDefaultBoolean = false) => {\n    assert(range, 'Missing \"range\" argument');\n    let msg = replaceDefaultBoolean ? str :\n      `The value of \"${str}\" is out of range.`;\n    let received;\n    if (NumberIsInteger(input) && MathAbs(input) > 2 ** 32) {\n      received = addNumericalSeparator(String(input));\n    } else if (typeof input === 'bigint') {\n      received = String(input);\n      if (input > 2n ** 32n || input < -(2n ** 32n)) {\n        received = addNumericalSeparator(received);\n      }\n      received += 'n';\n    } else {\n      received = lazyInternalUtilInspect().inspect(input);\n    }\n    msg += ` It must be ${range}. Received ${received}`;\n    return msg;\n  }, RangeError, HideStackFramesError);\n"
+    }
+  ]
+}

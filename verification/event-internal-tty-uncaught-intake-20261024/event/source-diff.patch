@@ -1,0 +1,1214 @@
+diff --git a/src/extensions/native_sdk_project_trust_event.zig b/src/extensions/native_sdk_project_trust_event.zig
+new file mode 100644
+--- /dev/null
++++ b/src/extensions/native_sdk_project_trust_event.zig
+@@ -0,0 +1,467 @@
++//! Original runner.ts emitProjectTrustEvent with intrinsic native Await.
++//! Snapshot every extension before dispatch; preserve ordinary iterators, catches,
++//! live error formatting and close order. No fake extension or context is made.
++const h = @import("native_sdk_session_locals.zig");
++const v = h.v;
++const c = h.c;
++const Engine = h.Engine;
++const Scope = h.Scope;
++const af = v.af;
++const caught = @import("native_agent_af_values.zig").caught;
++const cache_key = "pi-private:actual-sdk-project-trust-event";
++const Local = enum { errors, ext, handlers, handler, handler_result, caught_error };
++const Loop = enum { outer, inner };
++const ReturnPhase = enum { none, inner, outer };
++const Iterator = struct {
++    receiver: c.JSValue,
++    next: c.JSValue,
++    active: bool = false,
++};
++
++const State = struct {
++    engine: *Engine,
++    owner: c.JSValue,
++    locals: [6]c.JSValue,
++    outer: Iterator,
++    inner: Iterator,
++    return_value: c.JSValue,
++    return_phase: ReturnPhase = .none,
++    closed: bool = false,
++    steps: usize = 0,
++
++    fn create(s: *Scope) !*State {
++        var class_id: c.JSClassID = 0;
++        if (c.JS_NewClassID(s.engine.runtime, &class_id) == 0) return error.OutOfMemory;
++        const definition: c.JSClassDef = .{
++            .class_name = "Actual project trust event activation",
++            .finalizer = finalize, .gc_mark = mark,
++        };
++        if (c.JS_NewClass(s.engine.runtime, class_id, &definition) < 0) return error.OutOfMemory;
++        const owner = try v.objectClass(s, class_id);
++        if (c.pi_js_native_memory_reserve(s.engine.native_memory_owner, @sizeOf(State)) == 0)
++            return error.OutOfMemory;
++        errdefer c.pi_js_native_memory_release(s.engine.native_memory_owner, @sizeOf(State));
++        const self = try s.engine.gpa.create(State);
++        const empty: Iterator = .{ .receiver = c.pi_js_undefined(), .next = c.pi_js_undefined() };
++        self.* = .{ .engine = s.engine, .owner = owner,
++            .locals = @splat(c.pi_js_undefined()), .outer = empty, .inner = empty,
++            .return_value = c.pi_js_undefined() };
++        _ = c.JS_SetOpaque(owner, self);
++        return self;
++    }
++    fn from(owner: c.JSValue) *State {
++        return @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)).?));
++    }
++    fn get(self: *const State, comptime name: Local) c.JSValue {
++        return self.locals[@intFromEnum(name)];
++    }
++    fn take(self: *State, comptime name: Local, incoming: anyerror!c.JSValue) !void {
++        try self.replace(&self.locals[@intFromEnum(name)], incoming);
++    }
++    fn replace(self: *State, slot: *c.JSValue, incoming: anyerror!c.JSValue) !void {
++        const next = try incoming;
++        const previous = slot.*;
++        slot.* = next;
++        var selected = v.owned.Completion.initVoid(self.engine, {});
++        selected.release(previous);
++        return selected.finishVoid();
++    }
++    fn iterator(self: *State, comptime which: Loop) *Iterator {
++        return if (which == .outer) &self.outer else &self.inner;
++    }
++    fn retire(slot: *c.JSValue, selected: *v.owned.Completion) void {
++        const previous = slot.*; slot.* = c.pi_js_undefined(); selected.release(previous);
++    }
++    fn close(self: *State, selected: *v.owned.Completion) void {
++        if (self.closed) return;
++        self.closed = true;
++        // Original uncaptured function locals retire in declaration order.
++        for (&self.locals) |*slot| retire(slot, selected);
++        // In an actual fatal exit the VM retains its operand stack. emit_return
++        // rotates the return operand below the iterator currently being closed.
++        if (self.return_phase == .outer) retire(&self.return_value, selected);
++        retire(&self.outer.receiver, selected);
++        retire(&self.outer.next, selected);
++        if (self.return_phase != .outer) retire(&self.return_value, selected);
++        retire(&self.inner.receiver, selected);
++        retire(&self.inner.next, selected);
++    }
++    fn terminal(engine: *Engine, owner: c.JSValue) !void {
++        if (!c.JS_IsLiveObject(engine.runtime, owner)) return;
++        const raw = c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return;
++        const self: *State = @ptrCast(@alignCast(raw));
++        var selected = v.owned.Completion.initVoid(engine, {});
++        self.close(&selected);
++        return selected.finishVoid();
++    }
++    fn freeSlot(runtime: ?*c.JSRuntime, slot: *c.JSValue) void {
++        const value = slot.*; slot.* = c.pi_js_undefined(); c.JS_FreeValueRT(runtime, value);
++    }
++    fn finalize(runtime: ?*c.JSRuntime, owner: c.JSValue) callconv(.c) void {
++        const self: *State = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return));
++        for (&self.locals) |*slot| freeSlot(runtime, slot);
++        if (self.return_phase == .outer) freeSlot(runtime, &self.return_value);
++        freeSlot(runtime, &self.outer.receiver);
++        freeSlot(runtime, &self.outer.next);
++        if (self.return_phase != .outer) freeSlot(runtime, &self.return_value);
++        freeSlot(runtime, &self.inner.receiver);
++        freeSlot(runtime, &self.inner.next);
++        const engine = self.engine;
++        engine.gpa.destroy(self);
++        c.pi_js_native_memory_release(engine.native_memory_owner, @sizeOf(State));
++    }
++    fn mark(runtime: ?*c.JSRuntime, owner: c.JSValue, visit: ?*const c.JS_MarkFunc) callconv(.c) void {
++        const self: *State = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return));
++        for (self.locals) |value| c.JS_MarkValue(runtime, value, visit);
++        c.JS_MarkValue(runtime, self.outer.receiver, visit);
++        c.JS_MarkValue(runtime, self.outer.next, visit);
++        c.JS_MarkValue(runtime, self.inner.receiver, visit);
++        c.JS_MarkValue(runtime, self.inner.next, visit);
++        c.JS_MarkValue(runtime, self.return_value, visit);
++    }
++};
++
++/// Owned genuine AsyncFunction, for the original runner import binding.
++pub fn create(engine: *Engine) !c.JSValue {
++    try engine.checkNativeEntry();
++    if (engine.native_module_values.get(cache_key)) |existing| return h.duplicate(engine, existing);
++    const candidate = try h.expression(engine, createBody, .{});
++    if (engine.native_module_values.get(cache_key)) |existing| {
++        var selected = v.owned.Completion.initValue(engine, h.duplicate(engine, existing));
++        selected.release(candidate);
++        return selected.finishValue();
++    }
++    engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1) catch |err| {
++        var selected = v.owned.Completion.initValue(engine, @as(anyerror!c.JSValue, err));
++        selected.release(candidate);
++        return selected.finishValue();
++    };
++    engine.native_module_values.putAssumeCapacity(cache_key, candidate);
++    return h.duplicate(engine, candidate);
++}
++fn createBody(s: *Scope) !c.JSValue {
++    const snapshot = try v.ordinary(s, "snapshotEventHandlers", 2, snapshotCall, &.{});
++    var boundary: v.guest.Boundary = .{ .engine = s.engine };
++    try boundary.begin();
++    const function = try boundary.finishValue(s,
++        af.createResumableWithClose(s.engine, "emitProjectTrustEvent", 3, emit, &.{snapshot}, State.terminal));
++    return v.duplicate(s, function);
++}
++fn snapshotCall(engine: *Engine, _: c.JSValue, args: []const c.JSValue,
++    _: []const c.JSValue) !c.JSValue
++{
++    return h.expression(engine, snapshotBody, .{ v.arg(args, 0), v.arg(args, 1) });
++}
++fn snapshotBody(s: *Scope, extensions: c.JSValue, event: c.JSValue) !c.JSValue {
++    const map = try v.get(s, extensions, "map");
++    const callback = try v.arrow(s, "", 1, snapshotRowCall, &.{event});
++    return v.duplicate(s, try v.call(s, map, extensions, &.{callback}));
++}
++fn snapshotRowCall(engine: *Engine, _: c.JSValue, args: []const c.JSValue,
++    roots: []const c.JSValue) !c.JSValue
++{
++    return h.expression(engine, snapshotRowBody, .{ v.arg(args, 0), roots[0] });
++}
++fn snapshotRowBody(s: *Scope, ext: c.JSValue, event: c.JSValue) !c.JSValue {
++    const result = try v.object(s);
++    try v.put(s, result, "ext", ext);
++    const selected = try h.expression(s.engine, selectHandlersBody, .{ ext, event });
++    const sliced = try v.own(s, try h.expression(s.engine, sliceHandlersBody, .{selected}));
++    try v.put(s, result, "handlers", if (v.nullish(sliced)) try v.array(s) else sliced);
++    return v.duplicate(s, result);
++}
++fn selectHandlersBody(s: *Scope, ext: c.JSValue, event: c.JSValue) !c.JSValue {
++    const handlers = try v.get(s, ext, "handlers");
++    return v.duplicate(s, try v.invoke(s, handlers, "get", &.{event}));
++}
++fn sliceHandlersBody(s: *Scope, incoming: c.JSValue) !c.JSValue {
++    const selected = try v.own(s, incoming);
++    if (v.nullish(selected)) return c.pi_js_undefined();
++    // The call receiver retires after its called method, before row definition.
++    return try h.expression(s.engine, callSliceBody, .{selected});
++}
++fn callSliceBody(s: *Scope, selected: c.JSValue) !c.JSValue {
++    return v.duplicate(s, try v.invoke(s, selected, "slice", &.{}));
++}
++fn snapshotEntry(s: *Scope, snapshot: c.JSValue, extensions_result: c.JSValue) !c.JSValue {
++    const extensions = try v.get(s, extensions_result, "extensions");
++    return v.duplicate(s, try v.call(s, snapshot, c.pi_js_undefined(),
++        &.{ extensions, try v.text(s, "project_trust") }));
++}
++fn emptyErrors(s: *Scope) !c.JSValue { return v.duplicate(s, try v.array(s)); }
++
++fn iteratorCallBody(s: *Scope, iterable: c.JSValue) !c.JSValue {
++    const method = try v.key(s, iterable, try v.iteratorSymbol(s));
++    if (!c.JS_IsFunction(s.engine.context, method)) return v.typeError(s, "value is not iterable");
++    return v.duplicate(s, try v.call(s, method, iterable, &.{}));
++}
++fn iteratorObjectBody(s: *Scope, incoming: c.JSValue) !c.JSValue {
++    const iterable = try v.own(s, incoming);
++    // GetIterator's called method retires before result validation; the original
++    // iterable operand retires only after the iterator has been produced.
++    const receiver = try v.own(s, try h.expression(s.engine, iteratorCallBody, .{iterable}));
++    if (!c.JS_IsObject(receiver)) return v.typeError(s, "not an object");
++    return v.duplicate(s, receiver);
++}
++fn startLoop(state: *State, comptime which: Loop, incoming: c.JSValue) !void {
++    const record = state.iterator(which);
++    // Retire the iterable operand before Get(next), as js_for_of_start does.
++    try state.replace(&record.receiver, h.expression(state.engine, iteratorObjectBody, .{incoming}));
++    try state.replace(&record.next, h.get(state.engine, record.receiver, "next"));
++    record.active = true; // The actual iterator catch record now exists.
++}
++fn doneBody(s: *Scope, result: c.JSValue) !c.JSValue {
++    return v.boolean(s, v.truthy(s, try v.get(s, result, "done")));
++}
++fn nextBody(s: *Scope, receiver: c.JSValue, next_function: c.JSValue, done: *bool) !c.JSValue {
++    const result = try v.call(s, next_function, receiver, &.{});
++    if (!c.JS_IsObject(result)) return v.typeError(s, "iterator must return an object");
++    done.* = h.truthy(s.engine, try h.expression(s.engine, doneBody, .{result}));
++    return if (done.*) c.pi_js_undefined() else v.duplicate(s, try v.get(s, result, "value"));
++}
++fn nextLoop(state: *State, comptime which: Loop) !?c.JSValue {
++    const record = state.iterator(which);
++    try v.poll(state.engine, &state.steps);
++    var s: Scope = .{ .engine = state.engine };
++    var done = false;
++    const result = v.owned.finishValue(&s, nextBody(&s, record.receiver, record.next, &done)) catch |err| {
++        record.active = false;
++        // Step/value errors discard the receiver and never call this iterator's
++        // return. Its cached next operand is retired by the enclosing unwind.
++        var selected = v.owned.Completion.initVoid(state.engine, err);
++        State.retire(&record.receiver, &selected);
++        try selected.finishVoid();
++        unreachable;
++    };
++    if (!done) return result;
++    record.active = false;
++    var selected = v.owned.Completion.initValue(state.engine, result);
++    State.retire(&record.receiver, &selected);
++    const terminal = try selected.finishValue();
++    state.engine.freeValue(terminal); // primitive undefined
++    return null;
++}
++fn finishDone(state: *State, comptime which: Loop) !void {
++    try state.replace(&state.iterator(which).next, c.pi_js_undefined());
++}
++fn invokeReturnBody(s: *Scope, receiver: c.JSValue, called: *bool) !c.JSValue {
++    const method = try v.get(s, receiver, "return");
++    if (v.nullish(method)) return c.pi_js_undefined();
++    called.* = true;
++    return v.duplicate(s, try v.call(s, method, receiver, &.{}));
++}
++fn closeBody(s: *Scope, receiver: c.JSValue, validate_result: bool) !void {
++    var called = false;
++    // JS_CallFree retires the method before checking the returned object.
++    const result = try v.own(s, try h.expression(s.engine, invokeReturnBody, .{ receiver, &called }));
++    if (called and validate_result and !c.JS_IsObject(result)) return v.typeError(s, "not an object");
++}
++fn closeNormal(state: *State, comptime which: Loop) !void {
++    const record = state.iterator(which);
++    const active = record.active;
++    record.active = false;
++    try state.replace(&record.next, c.pi_js_undefined());
++    if (active) try h.statement(state.engine, closeBody, .{ record.receiver, true });
++    try state.replace(&record.receiver, c.pi_js_undefined());
++}
++fn preservedCloseBody(s: *Scope, receiver: c.JSValue, incoming: c.JSValue) !af.Action {
++    const original = try v.own(s, incoming);
++    closeBody(s, receiver, false) catch |err| {
++        _ = try v.own(s, try caught(s.engine, err));
++    };
++    return .{ .thrown = v.duplicate(s, original) };
++}
++fn closeAbrupt(state: *State, comptime which: Loop, incoming: c.JSValue) !c.JSValue {
++    const record = state.iterator(which);
++    const active = record.active; record.active = false;
++    var next_retirement = v.owned.Completion.initAction(state.engine, .{ .thrown = incoming });
++    State.retire(&record.next, &next_retirement);
++    const original = switch (try next_retirement.finishAction()) {
++        .thrown => |reason| reason, .returned, .awaited => unreachable,
++    };
++    const selected_action: af.Action = if (active) blk: {
++        var s: Scope = .{ .engine = state.engine };
++        break :blk try v.owned.finishAction(&s, preservedCloseBody(&s, record.receiver, original));
++    } else .{ .thrown = original };
++    var receiver_retirement = v.owned.Completion.initAction(state.engine, selected_action);
++    State.retire(&record.receiver, &receiver_retirement);
++    return switch (try receiver_retirement.finishAction()) {
++        .thrown => |reason| reason, .returned, .awaited => unreachable,
++    };
++}
++fn retireReturn(state: *State, incoming: c.JSValue) !c.JSValue {
++    var selected = v.owned.Completion.initAction(state.engine, .{ .thrown = incoming });
++    State.retire(&state.return_value, &selected);
++    return switch (try selected.finishAction()) {
++        .thrown => |reason| reason, .returned, .awaited => unreachable,
++    };
++}
++fn abrupt(state: *State, err: anyerror) !af.Action {
++    // Actual fatal events bypass ordinary catch and IteratorClose. The terminal
++    // owner then retires the remaining actual locals/operand roots in VM order.
++    var reason = try caught(state.engine, err);
++    reason = try closeAbrupt(state, .inner, reason);
++    if (state.return_phase != .outer) reason = try retireReturn(state, reason);
++    reason = try closeAbrupt(state, .outer, reason);
++    if (state.return_phase == .outer) reason = try retireReturn(state, reason);
++    return .{ .thrown = reason };
++}
++
++fn bindOuterBody(s: *Scope, state: *State, incoming: c.JSValue) !void {
++    const value = try v.own(s, incoming);
++    // Original object binding boxes once, so both Gets share their receiver.
++    const row = try v.guest.toObject(s, value);
++    try state.take(.ext, h.get(s.engine, row, "ext"));
++    try state.take(.handlers, h.get(s.engine, row, "handlers"));
++}
++fn attemptHandler(engine: *Engine, handler: c.JSValue, event: c.JSValue, context: c.JSValue) !af.Action {
++    var s: Scope = .{ .engine = engine };
++    const outcome: anyerror!af.Action = if (v.call(&s, handler, c.pi_js_undefined(), &.{ event, context })) |value|
++        .{ .returned = v.duplicate(&s, value) } else |err| err;
++    return v.owned.finishAction(&s, outcome);
++}
++fn inspectBody(s: *Scope, state: *State) !af.Action {
++    const result = state.get(.handler_result);
++    if (try h.fieldEqual(s.engine, result, "trusted", "undecided"))
++        return .{ .returned = c.pi_js_undefined() };
++    // Original accepts every non-undecided result without yes/no validation.
++    const returned = try v.object(s);
++    try v.put(s, returned, "result", result);
++    try v.put(s, returned, "errors", state.get(.errors));
++    return .{ .returned = v.duplicate(s, returned) };
++}
++fn inspectResult(state: *State) !af.Action {
++    var s: Scope = .{ .engine = state.engine };
++    return v.owned.finishAction(&s, inspectBody(&s, state));
++}
++fn isErrorBody(s: *Scope, value: c.JSValue) !c.JSValue {
++    const constructor = try v.global(s, "Error");
++    var boundary: v.guest.Boundary = .{ .engine = s.engine };
++    try boundary.begin();
++    const result = c.JS_IsInstanceOf(s.engine.context, value, constructor);
++    try boundary.finishStatus(result);
++    return v.boolean(s, result != 0);
++}
++fn errorMessageBody(s: *Scope, value: c.JSValue) !c.JSValue {
++    const is_error = h.truthy(s.engine, try h.expression(s.engine, isErrorBody, .{value}));
++    return v.duplicate(s, if (is_error) try v.get(s, value, "message") else
++        try v.call(s, try v.global(s, "String"), c.pi_js_undefined(), &.{value}));
++}
++fn errorStackBody(s: *Scope, value: c.JSValue) !c.JSValue {
++    const is_error = h.truthy(s.engine, try h.expression(s.engine, isErrorBody, .{value}));
++    return if (is_error) v.duplicate(s, try v.get(s, value, "stack")) else c.pi_js_undefined();
++}
++fn reportBody(s: *Scope, state: *State, event: c.JSValue) !void {
++    const errors = state.get(.errors);
++    const push = try v.get(s, errors, "push");
++    const row = try v.object(s);
++    try v.put(s, row, "extensionPath", try v.get(s, state.get(.ext), "path"));
++    try v.put(s, row, "event", try v.get(s, event, "type"));
++    const reason = state.get(.caught_error);
++    const message = try v.own(s, try h.expression(s.engine, errorMessageBody, .{reason}));
++    try v.put(s, row, "error", message);
++    // This is a second live Error lookup/instanceof, after message/coercion.
++    const stack = try v.own(s, try h.expression(s.engine, errorStackBody, .{reason}));
++    try v.put(s, row, "stack", stack);
++    _ = try v.call(s, push, errors, &.{row});
++}
++fn report(state: *State, event: c.JSValue) !void {
++    return h.statement(state.engine, reportBody, .{ state, event });
++}
++fn normalReturn(state: *State, incoming: c.JSValue) !af.Action {
++    try state.replace(&state.return_value, incoming);
++    state.return_phase = .inner;
++    try closeNormal(state, .inner);
++    state.return_phase = .outer;
++    try closeNormal(state, .outer);
++    const returned = state.return_value;
++    state.return_value = c.pi_js_undefined();
++    state.return_phase = .none;
++    return .{ .returned = returned };
++}
++fn afterHandler(state: *State, event: c.JSValue) !?af.Action {
++    switch (try inspectResult(state)) {
++        .returned => |value| {
++            if (c.JS_IsUndefined(value)) return null;
++            return try normalReturn(state, value);
++        },
++        .thrown => |reason| {
++            try state.take(.caught_error, reason);
++            try report(state, event);
++            return null;
++        },
++        .awaited => unreachable,
++    }
++}
++fn emptyResult(s: *Scope, errors: c.JSValue) !c.JSValue {
++    const result = try v.object(s);
++    try v.put(s, result, "errors", errors);
++    return v.duplicate(s, result);
++}
++fn dispatch(state: *State, args: []const c.JSValue, roots: []const c.JSValue,
++    completion: af.Completion, input: c.JSValue) !af.Action
++{
++    const engine = state.engine;
++    const event = v.arg(args, 1);
++    const context = v.arg(args, 2);
++    switch (completion) {
++        .start => {
++            try state.take(.errors, h.expression(engine, emptyErrors, .{}));
++            const snapshot = try h.expression(engine, snapshotEntry, .{ roots[0], v.arg(args, 0) });
++            try startLoop(state, .outer, snapshot);
++        },
++        .fulfilled => {
++            try state.take(.handler_result, c.JS_DupValue(engine.context, input));
++            if (try afterHandler(state, event)) |action| return action;
++        },
++        .rejected => {
++            // Await rejection is borrowed DATA, including a historical private
++            // tag or flag. Actual pending completion was checked at body entry.
++            try state.take(.caught_error, c.JS_DupValue(engine.context, input));
++            try report(state, event);
++        },
++    }
++    while (true) {
++        if (!state.inner.active) {
++            const next_outer = try nextLoop(state, .outer);
++            if (next_outer) |row| {
++                try h.statement(engine, bindOuterBody, .{ state, row });
++                // The nested lexical-head scope is entered for each outer body.
++                try state.take(.handler, c.pi_js_undefined());
++                try startLoop(state, .inner, c.JS_DupValue(engine.context, state.get(.handlers)));
++            } else {
++                try finishDone(state, .outer);
++                return .{ .returned = try h.expression(engine, emptyResult, .{state.get(.errors)}) };
++            }
++        }
++        const next_inner = try nextLoop(state, .inner);
++        if (next_inner) |handler| {
++            try state.take(.handler, handler);
++            // Source enters its try body after assigning the next loop head.
++            try state.take(.handler_result, c.pi_js_undefined());
++            switch (try attemptHandler(engine, state.get(.handler), event, context)) {
++                .returned => |value| return .{ .awaited = value },
++                .thrown => |reason| {
++                    try state.take(.caught_error, reason);
++                    try report(state, event);
++                },
++                .awaited => unreachable,
++            }
++        } else try finishDone(state, .inner);
++    }
++}
++fn emit(engine: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue,
++    owner_slot: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action
++{
++    if (completion == .rejected)
++        try @import("native_async_body.zig").enterRejectedContinuation(engine);
++    var s: Scope = .{ .engine = engine };
++    const state = if (completion == .start) block: {
++        const created = State.create(&s) catch |err| return v.owned.finishAction(&s, err);
++        af.replaceState(engine, owner_slot, v.duplicate(&s, created.owner));
++        break :block created;
++    } else State.from(owner_slot.*);
++    const outcome = dispatch(state, args, roots, completion, input) catch |err|
++        return v.owned.finishAction(&s, abrupt(state, err));
++    return v.owned.finishAction(&s, outcome);
++}
+diff --git a/src/native_sdk_project_trust_event_test.zig b/src/native_sdk_project_trust_event_test.zig
+new file mode 100644
+--- /dev/null
++++ b/src/native_sdk_project_trust_event_test.zig
+@@ -0,0 +1,232 @@
++//! Actual original runner function and native owner, in separate VM realms.
++//! Source-only authored controls; no compiler, metadata, or runtime result claimed.
++const std = @import("std");
++const h = @import("extensions/native_sdk_session_locals.zig");
++const v = h.v;
++const c = h.c;
++const subject_owner = @import("extensions/native_sdk_project_trust_event.zig");
++const retirement = @import("native_sdk_initial_model_retirement_controls.zig");
++const observer = @embedFile("extensions/fixtures/sdk-project-trust-event-observer.mjs");
++
++fn brand(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
++    return c.pi_js_bool(context, @intFromBool(argc > 0 and c.JS_IsAsyncFunction(argv[0])));
++}
++fn collect(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    c.JS_RunGC(c.JS_GetRuntime(context));
++    return c.pi_js_undefined();
++}
++fn promisePending(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
++    return c.pi_js_bool(context, @intFromBool(argc > 0 and
++        c.JS_PromiseState(context, argv[0]) == c.JS_PROMISE_PENDING));
++}
++fn pendingNormal(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const global = c.JS_GetGlobalObject(context);
++    const reason = c.JS_GetPropertyStr(context, global, "trustPendingReason");
++    c.JS_FreeValue(context, global);
++    _ = c.JS_Throw(context, reason); // Actual pending event plus a normal return.
++    return c.JS_NewInt32(context, 17);
++}
++fn prepareBody(s: *h.Scope) !void {
++    const engine = s.engine;
++    engine.native_io = std.testing.io;
++    const global = try v.own(s, c.JS_GetGlobalObject(engine.context));
++    const native = try v.own(s, try subject_owner.create(engine));
++    const repeated = try v.own(s, try subject_owner.create(engine));
++    try std.testing.expect(v.equal(s, native, repeated));
++    const source = try v.own(s, try engine.eval(
++        @embedFile("extensions/fixtures/sdk-project-trust-event-original.mjs"),
++        "original-runner-project-trust-function.js", c.JS_EVAL_TYPE_GLOBAL));
++    try v.put(s, global, "trustEventNative", native);
++    try v.put(s, global, "trustEventSource", source);
++    try v.put(s, global, "trustEventHooks", try v.own(s, try retirement.createNativeRetirementHooks(engine)));
++    try v.put(s, global, "trustEventIsAsync", try v.own(s, try engine.checked(
++        c.JS_NewCFunction(engine.context, brand, "trustEventIsAsync", 1))));
++    try v.put(s, global, "trustEventGC", try v.own(s, try engine.checked(
++        c.JS_NewCFunction(engine.context, collect, "trustEventGC", 0))));
++    try v.put(s, global, "trustEventPromisePending", try v.own(s, try engine.checked(
++        c.JS_NewCFunction(engine.context, promisePending, "trustEventPromisePending", 1))));
++    try v.put(s, global, "trustEventPendingNormal", try v.own(s, try engine.checked(
++        c.JS_NewCFunction(engine.context, pendingNormal, "trustEventPendingNormal", 0))));
++}
++fn prepare(engine: *h.Engine) !void { return h.statement(engine, prepareBody, .{}); }
++fn run(engine: *h.Engine, source: []const u8) !void {
++    engine.freeValue(try engine.evalModule(source, "native-project-trust-event-control.mjs"));
++}
++fn clean(engine: *h.Engine) !void {
++    try std.testing.expect(!c.JS_HasException(engine.context));
++    try std.testing.expect(!c.JS_IsJobPending(engine.runtime));
++    try std.testing.expect(engine.native_fatal_invocation == null);
++    try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
++}
++fn both(comptime name: []const u8, comptime arguments: []const u8) !void {
++    inline for (.{ "trustEventSource", "trustEventNative" }) |selected| {
++        const engine = try h.Engine.init(std.testing.allocator, .{ .interrupt_budget = 2_000_000 });
++        defer engine.deinit();
++        try prepare(engine);
++        try run(engine, observer ++ "\nawait " ++ name ++ "(" ++ selected ++ arguments ++ ");\n");
++        try clean(engine);
++    }
++}
++fn recordBody(s: *h.Scope) !c.JSValue {
++    return v.duplicate(s, try v.get(s, try v.global(s, "trustEventHooks"), "record"));
++}
++fn record(engine: *h.Engine) !c.JSValue { return h.expression(engine, recordBody, .{}); }
++
++test "native project trust event genuine AsyncFunction cached identity and fresh empty result" {
++    try both("observeTrustEventShape", "");
++}
++test "native project trust event snapshots every extension through live map get slice before dispatch" {
++    try both("observeTrustEventSnapshot", "");
++}
++test "native project trust event optional slice and nullish fallback allocate distinct arrays" {
++    try both("observeTrustEventNullish", "");
++}
++test "native project trust event handlers and extension list are snapshotted across intrinsic Await" {
++    try both("observeTrustEventSnapshotMutation", "");
++}
++test "native project trust event plain handler values suspend before trusted lookup" {
++    try both("observeTrustEventPlainAwait", "");
++}
++test "native project trust event intrinsic Await adopts thenable without public Promise then" {
++    try both("observeTrustEventThenable", "");
++}
++test "native project trust event synchronous throw records error and continues before returning Promise" {
++    try both("observeTrustEventFailures", ",false");
++}
++test "native project trust event genuine rejected Await uses original catch and first deciding result" {
++    try both("observeTrustEventFailures", ",true");
++}
++test "native project trust event null result is caught and undefined trusted still wins" {
++    try both("observeTrustEventLooseResult", "");
++}
++test "native project trust event trusted getter remains inside catch with ordinary String fallback" {
++    try both("observeTrustEventTrustedFailure", "");
++}
++test "native project trust event push path type and repeated live Error checks follow object literal order" {
++    try both("observeTrustEventFormatOrder", ",false");
++}
++test "native project trust event live String call and second independent instanceof remain observable" {
++    try both("observeTrustEventFormatOrder", ",true");
++}
++test "native project trust event snapshot failure prevents every handler before any iterator starts" {
++    try both("observeTrustEventSnapshotFailure", "");
++}
++test "native project trust event generic outer and inner iterators cache next and exhaust without return" {
++    try both("observeTrustEventGenericIteration", "");
++}
++test "native project trust event primitive snapshot row is boxed once for both binding getters" {
++    try both("observeTrustEventPrimitiveRow", "");
++}
++test "native project trust event failed inner next skips its own return and closes outer" {
++    try both("observeTrustEventStepFailure", ",'innerStepFailure'");
++}
++test "native project trust event failed iterator value lookup skips own return and closes outer" {
++    try both("observeTrustEventStepFailure", ",'valueFailure'");
++}
++test "native project trust event failed iterator done lookup skips own return and closes outer" {
++    try both("observeTrustEventStepFailure", ",'doneFailure'");
++}
++test "native project trust event nonobject next result rejects before inner IteratorClose" {
++    try both("observeTrustEventStepFailure", ",'nonobjectStep'");
++}
++test "native project trust event failed outer next never calls its own return" {
++    try both("observeTrustEventStepFailure", ",'outerStepFailure'");
++}
++test "native project trust event inner next getter failure precedes creation of its catch record" {
++    try both("observeTrustEventStartFailure", ",false");
++}
++test "native project trust event noniterable inner value closes existing outer record" {
++    try both("observeTrustEventStartFailure", ",true");
++}
++test "native project trust event successful result closes inner then outer with exact receivers" {
++    try both("observeTrustEventReturnClose", "");
++}
++test "native project trust event primitive inner return is TypeError and later outer throw cannot replace it" {
++    try both("observeTrustEventBadClose", ",'inner'");
++}
++test "native project trust event primitive outer return fails outside handler catch" {
++    try both("observeTrustEventBadClose", ",'outer'");
++}
++test "native project trust event noncallable return method fails and closes outer" {
++    try both("observeTrustEventBadClose", ",'noncallable'");
++}
++test "native project trust event formatting getter failure closes both iterators preserving first throw" {
++    try both("observeTrustEventFormattingFailure", ",false");
++}
++test "native project trust event errors push getter precedes row fields and its throw closes both iterators" {
++    try both("observeTrustEventFormattingFailure", ",true");
++}
++test "native project trust event throw IteratorClose ignores primitive close results" {
++    try both("observeTrustEventThrowClosePrimitive", "");
++}
++test "native project trust event nested invocation retains independent suspended activation" {
++    try both("observeTrustEventReentry", "");
++}
++test "native project trust event successful private DATA thrown synchronously remains ordinary" {
++    try both("observeTrustEventPrivateData", ",trustEventHooks,false");
++}
++test "native project trust event private DATA in rejected Await is not inferred to be fatal" {
++    try both("observeTrustEventPrivateData", ",trustEventHooks,true");
++}
++test "native project trust event actual arguments unused extra argument and receiver survive GC across Await" {
++    try both("observeTrustEventAwaitRoots", ",trustEventHooks");
++}
++test "native project trust event abandoned actual suspension retires arguments without settling outer Promise" {
++    try both("observeTrustEventAbandonedRoots", ",trustEventHooks");
++}
++test "native project trust event actual pending exception beats a normal native handler return" {
++    const engine = try h.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit(); try prepare(engine);
++    try run(engine, observer ++ "\nawait observeTrustEventPendingNormal(trustEventNative);");
++    try clean(engine);
++}
++test "native project trust event actual native fatal before Await bypasses catch formatting and iterator close" {
++    const engine = try h.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit(); try prepare(engine);
++    const original = try record(engine); defer engine.freeValue(original);
++    try std.testing.expectError(error.JavaScriptException, run(engine, observer ++
++        "\nawait observeTrustEventFatal(trustEventNative,trustEventHooks,false);"));
++    try retirement.verifyRecordedActualNativeFatal(engine, original);
++    try retirement.verifyNoVisits(original, .{ 1, 2, 3 });
++    try std.testing.expect(engine.native_fatal_invocation == null);
++}
++test "native project trust event actual native fatal after Await bypasses handler catch and outer catch" {
++    const engine = try h.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit(); try prepare(engine);
++    const original = try record(engine); defer engine.freeValue(original);
++    try std.testing.expectError(error.JavaScriptException, run(engine, observer ++
++        "\nawait observeTrustEventFatal(trustEventNative,trustEventHooks,true);"));
++    try retirement.verifyRecordedActualNativeFatal(engine, original);
++    try retirement.verifyNoVisits(original, .{ 1, 2, 3 });
++    try std.testing.expect(engine.native_fatal_invocation == null);
++}
++test "native project trust event trusted temporary retirement fatal occurs before normal IteratorClose" {
++    const engine = try h.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit(); try prepare(engine);
++    const original = try record(engine); defer engine.freeValue(original);
++    try std.testing.expectError(error.JavaScriptException, run(engine, observer ++
++        "\nawait observeTrustEventRetirementFatal(trustEventNative,trustEventHooks,false);"));
++    try retirement.verifyActualRetirementFatal(engine, original, 0);
++    try retirement.verifyNoVisits(original, .{ 1, 2, 3 });
++    try std.testing.expect(engine.native_fatal_invocation == null);
++}
++test "native project trust event trusted temporary cancellation bypasses guest catch and close" {
++    const engine = try h.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit(); try prepare(engine);
++    const original = try record(engine); defer engine.freeValue(original);
++    try std.testing.expectError(error.JavaScriptException, run(engine, observer ++
++        "\nawait observeTrustEventRetirementFatal(trustEventNative,trustEventHooks,true);"));
++    try retirement.verifyActualCancellationNoGuestClose(engine, original);
++    try retirement.verifyNoVisits(original, .{ 1, 2, 3 });
++    try std.testing.expect(engine.native_fatal_invocation == null);
++}
++
++test "native project trust event escaped snapshot arrow retains original captured event after activation exits" {
++    try both("observeTrustEventEscapedSnapshot", "");
++}
++test "native project trust event instanceof constructor operands retire before message and stack getters" {
++    try both("observeTrustEventConstructorRetirement", ",trustEventHooks");
++}
++test "native project trust event trusted comparison temporary retires before normal IteratorClose" {
++    try both("observeTrustEventTrustedRetirement", ",trustEventHooks");
++}
+diff --git a/src/extensions/fixtures/sdk-project-trust-event-original.mjs b/src/extensions/fixtures/sdk-project-trust-event-original.mjs
+new file mode 100644
+--- /dev/null
++++ b/src/extensions/fixtures/sdk-project-trust-event-original.mjs
+@@ -0,0 +1,31 @@
++(() => {
++"use strict";
++function snapshotEventHandlers(extensions, event) {
++	return extensions.map((ext) => ({ ext, handlers: ext.handlers.get(event)?.slice() ?? [] }));
++}
++async function emitProjectTrustEvent(extensionsResult, event, ctx) {
++	const errors = [];
++	for (const { ext, handlers } of snapshotEventHandlers(extensionsResult.extensions, "project_trust")) {
++		// A single extension may register multiple handlers for the same event.
++		// The first project_trust handler that returns yes/no wins; undecided falls through.
++		for (const handler of handlers) {
++			try {
++				const handlerResult = (await handler(event, ctx));
++				if (handlerResult.trusted === "undecided") {
++					continue;
++				}
++				return { result: handlerResult, errors };
++			} catch (error) {
++				errors.push({
++					extensionPath: ext.path,
++					event: event.type,
++					error: error instanceof Error ? error.message : String(error),
++					stack: error instanceof Error ? error.stack : undefined,
++				});
++			}
++		}
++	}
++	return { errors };
++}
++return emitProjectTrustEvent;
++})()
+diff --git a/src/extensions/fixtures/sdk-project-trust-event-observer.mjs b/src/extensions/fixtures/sdk-project-trust-event-observer.mjs
+new file mode 100644
+--- /dev/null
++++ b/src/extensions/fixtures/sdk-project-trust-event-observer.mjs
+@@ -0,0 +1,440 @@
++const trustAssert = (condition, message) => { if (!condition) throw new Error(message); };
++const trustSame = (actual, expected, message) =>
++  trustAssert(JSON.stringify(actual) === JSON.stringify(expected), message + ": " + JSON.stringify(actual));
++const trustExtension = (path, handlers) => ({ path, handlers: new Map([["project_trust", handlers]]) });
++const trustInput = handlers => ({ extensions: [trustExtension("/extension", handlers)] });
++const trustEvent = () => ({ type: "project_trust", cwd: "/project" });
++async function trustRejected(promise) {
++  try { await promise; } catch (reason) { return reason; }
++  throw new Error("Expected actual rejection");
++}
++async function observeTrustEventShape(subject) {
++  trustAssert(trustEventIsAsync(subject), "actual AsyncFunction brand");
++  trustAssert(subject.name === "emitProjectTrustEvent" && subject.length === 3, "original function shape");
++  trustAssert(!Object.hasOwn(subject, "prototype"), "async function is not a constructor");
++  let constructorRejected = false;
++  try { Reflect.construct(subject, []); } catch (e) { constructorRejected = e instanceof TypeError; }
++  trustAssert(constructorRejected, "genuine nonconstructor");
++  const a = await subject({ extensions: [] }, trustEvent(), {});
++  const b = await subject({ extensions: [] }, trustEvent(), {});
++  trustSame(Object.keys(a), ["errors"], "only original empty result field");
++  trustAssert(Array.isArray(a.errors) && a.errors.length === 0 && a.errors !== b.errors, "fresh errors");
++}
++async function observeTrustEventSnapshot(subject) {
++  const log = [], rows = [], input = {};
++  const event = trustEvent(), ctx = {}, winner = { trusted: "yes" };
++  function ext(label) {
++    return { path: label, get handlers() {
++      log.push(label + ".handlers");
++      return { get get() {
++        log.push(label + ".get");
++        return function(key) {
++          trustAssert(this !== undefined && key === "project_trust", "get receiver and event");
++          log.push(label + ".get()");
++          return { get slice() {
++            log.push(label + ".slice");
++            return function() {
++              trustAssert(this !== undefined && arguments.length === 0, "slice receiver and arity");
++              log.push(label + ".slice()");
++              return [function(e, c) { "use strict";
++                log.push(label + ".handler");
++                trustAssert(this === undefined && e === event && c === ctx, "exact call inputs");
++                return winner;
++              }];
++            };
++          }};
++        };
++      }};
++    }};
++  }
++  const one = ext("one"), two = ext("two");
++  Object.defineProperty(input, "extensions", { get() {
++    log.push("extensions");
++    return { get map() { log.push("map"); return function(callback) {
++      log.push("map()");
++      trustAssert(callback.length === 1 && !Object.hasOwn(callback, "prototype"), "source arrow shape");
++      rows.push(callback.call({ ignored: true }, one), callback(two));
++      return rows;
++    }; }};
++  }});
++  const result = await subject(input, event, ctx);
++  trustAssert(result.result === winner && rows[0].ext === one && rows[1].ext === two, "identity");
++  trustSame(log, ["extensions","map","map()","one.handlers","one.get","one.get()","one.slice","one.slice()",
++    "two.handlers","two.get","two.get()","two.slice","two.slice()","one.handler"], "snapshot all first");
++}
++async function observeTrustEventNullish(subject) {
++  const rows = [];
++  const selections = [undefined, null, { slice() { return undefined; } }, { slice() { return null; } }];
++  const input = { extensions: { map(callback) {
++    for (const selected of selections) rows.push(callback({ handlers: { get() { return selected; } } }));
++    return rows;
++  }}};
++  const result = await subject(input, trustEvent(), {});
++  trustAssert(result.errors.length === 0 && rows.length === 4, "nullish cases");
++  trustAssert(rows.every(row => Array.isArray(row.handlers) && row.handlers.length === 0), "nullish fresh arrays");
++  trustAssert(new Set(rows.map(row => row.handlers)).size === 4, "each fallback allocates its own array");
++}
++async function observeTrustEventSnapshotMutation(subject) {
++  const log = [];
++  let resume;
++  const gate = new Promise(resolve => { resume = resolve; });
++  const second = [() => { log.push("original-second"); return { trusted: "yes" }; }];
++  const first = [() => { log.push("first"); return gate; }];
++  const input = { extensions: [trustExtension("first", first), trustExtension("second", second)] };
++  const pending = subject(input, trustEvent(), {});
++  trustSame(log, ["first"], "one handler entered before Await");
++  first.push(() => { throw Error("new first must not run"); });
++  second.splice(0, 1, () => { throw Error("replacement must not run"); });
++  input.extensions.push(trustExtension("new", [() => { throw Error("new extension"); }]));
++  resume({ trusted: "undecided" });
++  const result = await pending;
++  trustSame(log, ["first","original-second"], "initial snapshot retained across Await");
++  trustAssert(result.result.trusted === "yes", "original winner");
++}
++async function observeTrustEventPlainAwait(subject) {
++  const log = [];
++  const result = { get trusted() { log.push("trusted"); return "yes"; } };
++  const pending = subject(trustInput([() => { log.push("handler"); return result; }]), trustEvent(), {});
++  log.push("caller");
++  const output = await pending;
++  trustSame(log, ["handler","caller","trusted"], "plain values still Await");
++  trustAssert(output.result === result, "unwrapped result identity");
++}
++async function observeTrustEventThenable(subject) {
++  const log = [], result = { trusted: "yes" }, original = Promise.prototype.then;
++  try {
++    Promise.prototype.then = function() { throw Error("public Promise.then is not intrinsic Await"); };
++    const output = await subject(trustInput([() => ({ get then() {
++      log.push("get-then"); return function(resolve) {
++        log.push("call-then"); resolve(result);
++      };
++    }})]), trustEvent(), {});
++    trustAssert(output.result === result, "actual thenable adoption");
++  } finally { Promise.prototype.then = original; }
++  trustSame(log, ["get-then","call-then"], "genuine Await thenable protocol");
++}
++async function observeTrustEventFailures(subject, asynchronous) {
++  const reason = new Error("first failure"); reason.stack = "fixed-stack";
++  const log = [], winner = { trusted: "no" }, event = trustEvent();
++  const pending = subject(trustInput([
++    () => { log.push("first"); if (asynchronous) return Promise.reject(reason); throw reason; },
++    () => { log.push("undecided"); return { trusted: "undecided" }; },
++    () => { log.push("winner"); return winner; },
++    () => { throw Error("late handler"); }
++  ]), event, {});
++  if (!asynchronous) trustSame(log, ["first","undecided"], "ordinary synchronous catch continues immediately");
++  const output = await pending;
++  trustSame(log, ["first","undecided","winner"], "sequential failures and winner");
++  trustAssert(output.result === winner, "first deciding object unchanged");
++  trustSame(output.errors, [{ extensionPath: "/extension", event: "project_trust",
++    error: "first failure", stack: "fixed-stack" }], "original error record");
++}
++async function observeTrustEventLooseResult(subject) {
++  const winner = {}, event = trustEvent();
++  const output = await subject(trustInput([
++    () => null,
++    () => winner,
++    () => { throw Error("undefined trusted already wins"); }
++  ]), event, {});
++  trustAssert(output.result === winner && output.errors.length === 1, "no added yes/no validation");
++  trustAssert(typeof output.errors[0].error === "string" && Object.hasOwn(output.errors[0], "stack"), "null result caught");
++}
++async function observeTrustEventTrustedFailure(subject) {
++  const marker = { toString() { return "trusted-get failure"; } }, winner = { trusted: "yes" };
++  const output = await subject(trustInput([
++    () => ({ get trusted() { throw marker; } }),
++    () => winner
++  ]), trustEvent(), {});
++  trustAssert(output.result === winner, "trusted Get remains inside catch");
++  trustSame(Object.keys(output.errors[0]), ["extensionPath","event","error","stack"], "record property order");
++  trustAssert(output.errors[0].error === "trusted-get failure" && output.errors[0].stack === undefined, "String fallback");
++}
++async function observeTrustEventFormatOrder(subject, fallback) {
++  const savedError = Object.getOwnPropertyDescriptor(globalThis, "Error");
++  const savedString = Object.getOwnPropertyDescriptor(globalThis, "String");
++  const savedPush = Object.getOwnPropertyDescriptor(Array.prototype, "push");
++  const append = savedPush.value, log = [], add = value => Reflect.apply(append, log, [value]);
++  let checks = 0, savedRow;
++  const reason = { get message() { add("message"); return "message"; }, get stack() { add("stack"); return "stack"; } };
++  const event = { get type() { add("event"); return "kind"; } };
++  const ext = { get path() { add("path"); return "where"; }, handlers: new Map([["project_trust", [() => { throw reason; }]]]) };
++  try {
++    Object.defineProperty(Array.prototype, "push", { configurable: true, get() {
++      add("push"); return function(row) { add("push()"); savedRow = row; return Reflect.apply(append, this, [row]); };
++    }});
++    Object.defineProperty(globalThis, "Error", { configurable: true, get() {
++      add("Error"); return { [Symbol.hasInstance](value) {
++        add("instanceof"); if (value !== reason) throw new savedError.value("reason identity");
++        return ++checks === 1 ? !fallback : true;
++      }};
++    }});
++    Object.defineProperty(globalThis, "String", { configurable: true, get() {
++      add("String"); return function(value) { "use strict"; add("String()");
++        if (this !== undefined || value !== reason) throw new savedError.value("String call inputs"); return "coerced"; };
++    }});
++    const output = await subject({ extensions: [ext] }, event, {});
++    if (output.errors[0] !== savedRow) throw new savedError.value("push receives actual error row");
++  } finally {
++    Object.defineProperty(globalThis, "Error", savedError);
++    Object.defineProperty(globalThis, "String", savedString);
++    Object.defineProperty(Array.prototype, "push", savedPush);
++  }
++  trustSame(log, fallback ?
++    ["push","path","event","Error","instanceof","String","String()","Error","instanceof","stack","push()"] :
++    ["push","path","event","Error","instanceof","message","Error","instanceof","stack","push()"], "live formatting order");
++  trustSame(Object.keys(savedRow), ["extensionPath","event","error","stack"], "actual object literal order");
++  trustAssert(savedRow.error === (fallback ? "coerced" : "message") && savedRow.stack === "stack", "independent instanceof decisions");
++}
++async function observeTrustEventSnapshotFailure(subject) {
++  let called = false; const marker = {};
++  const input = { extensions: [trustExtension("first", [() => { called = true; }]),
++    { get handlers() { throw marker; } }] };
++  trustAssert(await trustRejected(subject(input, trustEvent(), {})) === marker && !called, "snapshot errors precede all handlers");
++}
++function trustLoops(log, handler, changes = {}) {
++  const add = value => { log[log.length] = value; };
++  const ext = { get path() { add("path"); if (changes.pathFailure) throw changes.pathFailure; return "/loop"; } };
++  let innerIndex = 0, outerIndex = 0;
++  const inner = {
++    [Symbol.iterator]() { add("inner.iterator"); return this; },
++    get next() { add("inner.get-next"); if (changes.nextGetterFailure) throw changes.nextGetterFailure;
++      return function() {
++        add("inner.next"); if (changes.innerStepFailure) throw changes.innerStepFailure;
++        if (changes.nonobjectStep) return 1;
++        if (innerIndex++) return { done: true };
++        return { get done() { add("inner.done"); if (changes.doneFailure) throw changes.doneFailure; return false; },
++          get value() { add("inner.value"); if (changes.valueFailure) throw changes.valueFailure; return handler; } };
++      };
++    },
++    get return() { add("inner.get-return"); if (changes.innerReturnGetterFailure) throw changes.innerReturnGetterFailure;
++      if (changes.innerReturnValue !== undefined) return changes.innerReturnValue;
++      return function() { add("inner.return"); trustAssert(this === inner, "inner close receiver");
++        if (changes.innerCloseFailure) throw changes.innerCloseFailure;
++        return changes.innerPrimitive ? 7 : {};
++      };
++    }
++  };
++  const row = { get ext() { add("row.ext"); return ext; },
++    get handlers() { add("row.handlers"); return changes.notIterable ? {} : inner; } };
++  const outer = {
++    [Symbol.iterator]() { add("outer.iterator"); return this; },
++    get next() { add("outer.get-next"); return function() {
++      add("outer.next"); if (changes.outerStepFailure) throw changes.outerStepFailure;
++      return outerIndex++ ? { done: true } : { get done() { add("outer.done"); return false; },
++        get value() { add("outer.value"); return row; } };
++    }; },
++    get return() { add("outer.get-return"); return function() { add("outer.return");
++      trustAssert(this === outer, "outer close receiver");
++      if (changes.outerCloseFailure) throw changes.outerCloseFailure;
++      return changes.outerPrimitive ? 8 : {};
++    }; }
++  };
++  return { input: { extensions: { map() { add("map"); return outer; } } }, inner, outer, ext };
++}
++async function observeTrustEventGenericIteration(subject) {
++  const log = [];
++  const loops = trustLoops(log, () => { log.push("handler"); return { trusted: "undecided" }; });
++  const output = await subject(loops.input, trustEvent(), {});
++  trustSame(Object.keys(output), ["errors"], "exhaustion result");
++  trustSame(log, ["map","outer.iterator","outer.get-next","outer.next","outer.done","outer.value",
++    "row.ext","row.handlers","inner.iterator","inner.get-next","inner.next","inner.done","inner.value",
++    "handler","inner.next","outer.next"], "cached next and full for-of order");
++}
++async function observeTrustEventPrimitiveRow(subject) {
++  let wrapper;
++  const extDescriptor = Object.getOwnPropertyDescriptor(Number.prototype, "ext");
++  const handlersDescriptor = Object.getOwnPropertyDescriptor(Number.prototype, "handlers");
++  const winner = { trusted: "yes" };
++  try {
++    Object.defineProperty(Number.prototype, "ext", { configurable: true, get() { "use strict";
++      trustAssert(typeof this === "object" && +this === 13, "object-binding ToObject");
++      wrapper = this; return {};
++    }});
++    Object.defineProperty(Number.prototype, "handlers", { configurable: true, get() { "use strict";
++      trustAssert(this === wrapper, "both destructuring Gets use one wrapper");
++      return [() => winner];
++    }});
++    const result = await subject({ extensions: { map() { return [13]; } } }, trustEvent(), {});
++    trustAssert(result.result === winner, "primitive row accepted by original object binding");
++  } finally {
++    if (extDescriptor) Object.defineProperty(Number.prototype, "ext", extDescriptor); else delete Number.prototype.ext;
++    if (handlersDescriptor) Object.defineProperty(Number.prototype, "handlers", handlersDescriptor); else delete Number.prototype.handlers;
++  }
++}
++async function observeTrustEventStepFailure(subject, kind) {
++  const log = [], marker = {}, changes = { [kind]: marker };
++  if (kind === "nonobjectStep") changes.nonobjectStep = true;
++  const loops = trustLoops(log, () => { throw Error("handler must not run"); }, changes);
++  const reason = await trustRejected(subject(loops.input, trustEvent(), {}));
++  trustAssert(kind === "nonobjectStep" ? reason instanceof TypeError : reason === marker, "actual step completion");
++  trustAssert(!log.includes("inner.get-return"), "failing next/value never closes its own iterator");
++  if (kind === "outerStepFailure") trustAssert(!log.includes("outer.get-return"), "outer next failure does not close itself");
++  else trustSame(log.slice(-2), ["outer.get-return","outer.return"], "enclosing outer closes");
++}
++async function observeTrustEventStartFailure(subject, missing) {
++  const log = [], marker = {};
++  const loops = trustLoops(log, () => ({}), missing ? { notIterable: true } : { nextGetterFailure: marker });
++  const reason = await trustRejected(subject(loops.input, trustEvent(), {}));
++  trustAssert(missing ? reason instanceof TypeError : reason === marker, "start failure reason");
++  trustAssert(!log.includes("inner.get-return"), "no inner catch record on failed start");
++  trustSame(log.slice(-2), ["outer.get-return","outer.return"], "outer record still closes");
++}
++async function observeTrustEventReturnClose(subject) {
++  const log = [], winner = { get trusted() { log.push("trusted"); return "yes"; } };
++  const loops = trustLoops(log, () => winner);
++  const output = await subject(loops.input, trustEvent(), {});
++  trustAssert(output.result === winner, "selected result survives both closes");
++  trustSame(log.slice(-5), ["trusted","inner.get-return","inner.return","outer.get-return","outer.return"], "normal close order");
++}
++async function observeTrustEventBadClose(subject, kind) {
++  const log = [], marker = {};
++  const changes = kind === "inner" ? { innerPrimitive: true, outerCloseFailure: marker } :
++    kind === "outer" ? { outerPrimitive: true } : { innerReturnValue: 1, outerCloseFailure: marker };
++  const loops = trustLoops(log, () => ({ trusted: "yes" }), changes);
++  const reason = await trustRejected(subject(loops.input, trustEvent(), {}));
++  trustAssert(reason instanceof TypeError, "invalid normal close rejects with TypeError");
++  trustSame(log.slice(-2), ["outer.get-return","outer.return"], "outer close still happens and keeps original inner failure");
++  trustAssert(!log.includes("path"), "iterator-close failure is outside handler catch");
++}
++async function observeTrustEventFormattingFailure(subject, pushFailure) {
++  const log = [], marker = {}, later = {};
++  const changes = { innerCloseFailure: later, outerCloseFailure: later };
++  if (!pushFailure) changes.pathFailure = marker;
++  const loops = trustLoops(log, () => { throw "handler"; }, changes);
++  const savedPush = Object.getOwnPropertyDescriptor(Array.prototype, "push");
++  let reason;
++  try {
++    if (pushFailure) Object.defineProperty(Array.prototype, "push", { configurable: true,
++      get() { log[log.length] = "push-get"; throw marker; } });
++    reason = await trustRejected(subject(loops.input, trustEvent(), {}));
++  } finally { Object.defineProperty(Array.prototype, "push", savedPush); }
++  trustAssert(reason === marker, "ordinary close failures cannot replace formatting throw");
++  trustSame(log.slice(-4), ["inner.get-return","inner.return","outer.get-return","outer.return"], "throw closes inner then outer");
++  if (pushFailure) trustAssert(!log.includes("path"), "push lookup is before object literal fields");
++}
++async function observeTrustEventThrowClosePrimitive(subject) {
++  const log = [], marker = {};
++  const loops = trustLoops(log, () => { throw "handler"; }, {
++    pathFailure: marker, innerPrimitive: true, outerPrimitive: true
++  });
++  trustAssert(await trustRejected(subject(loops.input, trustEvent(), {})) === marker, "throw close ignores primitive result");
++  trustSame(log.slice(-4), ["inner.get-return","inner.return","outer.get-return","outer.return"], "both throw-close methods called");
++}
++async function observeTrustEventReentry(subject) {
++  const log = [], innerResult = { trusted: "yes", inner: true }, outerResult = { trusted: "no" };
++  const input = trustInput([async () => {
++    log.push("outer");
++    const inner = await subject(trustInput([() => { log.push("inner"); return innerResult; }]), trustEvent(), {});
++    trustAssert(inner.result === innerResult, "independent nested activation");
++    return { trusted: "undecided" };
++  }, () => { log.push("outer-next"); return outerResult; }]);
++  const output = await subject(input, trustEvent(), {});
++  trustAssert(output.result === outerResult && output.errors.length === 0, "outer state survived nested Await");
++  trustSame(log, ["outer","inner","outer-next"], "reentry order");
++}
++async function observeTrustEventPrivateData(subject, hooks, asynchronous) {
++  const data = hooks.freshPrivateData(), winner = { trusted: "yes" };
++  trustAssert(hooks.isUnmarkedPrivateData(data), "real successful native private DATA");
++  const output = await subject(trustInput([
++    () => { if (asynchronous) return Promise.reject(data); throw data; }, () => winner
++  ]), trustEvent(), {});
++  trustAssert(output.result === winner && output.errors.length === 1, "DATA caught and dispatch continues");
++  trustAssert(output.errors[0].error === data.message && hooks.isUnmarkedPrivateData(data), "private provenance did not become fatal");
++}
++async function observeTrustEventAwaitRoots(subject, hooks) {
++  let resolve;
++  const gate = new Promise(r => { resolve = r; });
++  const pending = Reflect.apply(subject, hooks.make(4), [
++    Object.assign(hooks.make(3), { extensions: [trustExtension("/roots", [() => gate])] }),
++    hooks.make(0), hooks.make(1), hooks.make(2)
++  ]);
++  trustEventGC();
++  for (let slot = 0; slot < 5; slot++) trustAssert(hooks.count(slot) === 0, "actual argument/receiver root before Await");
++  resolve({ trusted: "yes" });
++  const output = await pending;
++  trustAssert(output.result.trusted === "yes", "genuine resumed body");
++  trustEventGC();
++  for (let slot = 0; slot < 5; slot++) trustAssert(hooks.count(slot) === 1, "all original argument roots retired once");
++}
++async function observeTrustEventAbandonedRoots(subject, hooks) {
++  globalThis.trustAbandonedGate = new Promise(() => {});
++  const pending = subject(Object.assign(hooks.make(0), {
++    extensions: [trustExtension("/abandoned", [() => globalThis.trustAbandonedGate])]
++  }), hooks.make(1), hooks.make(2));
++  trustEventGC();
++  for (let slot = 0; slot < 3; slot++) trustAssert(hooks.count(slot) === 0, "suspended owner roots retained");
++  delete globalThis.trustAbandonedGate;
++  trustEventGC();
++  for (let slot = 0; slot < 3; slot++) trustAssert(hooks.count(slot) === 1, "abandoned activation releases original roots");
++  trustAssert(trustEventPromisePending(pending), "outer Promise remains genuinely unsettled");
++}
++async function observeTrustEventFatal(subject, hooks, afterAwait) {
++  hooks.freshPrivateData();
++  const log = [];
++  const loops = trustLoops(log, () => {
++    if (afterAwait) return { get trusted() { hooks.raiseNativeFatal(); } };
++    hooks.raiseNativeFatal();
++  });
++  Object.defineProperty(loops.inner, "return", { get() { hooks.visit(2); return () => ({}); } });
++  Object.defineProperty(loops.ext, "path", { get() { hooks.visit(1); return "/unexpected-catch"; } });
++  try { await subject(loops.input, trustEvent(), {}); }
++  catch (_) { hooks.visit(3); }
++  hooks.record.guestReached = true;
++}
++async function observeTrustEventRetirementFatal(subject, hooks, cancel) {
++  hooks.freshPrivateData();
++  const loops = trustLoops([], () => ({ get trusted() {
++    if (cancel) hooks.armCancel(0); else hooks.armFatal(0);
++    return hooks.make(0);
++  }}));
++  Object.defineProperty(loops.inner, "return", { get() { hooks.visit(2); return () => ({}); } });
++  Object.defineProperty(loops.ext, "path", { get() { hooks.visit(1); return "/unexpected-catch"; } });
++  try { await subject(loops.input, trustEvent(), {}); }
++  catch (_) { hooks.visit(3); }
++  hooks.record.guestReached = true;
++}
++async function observeTrustEventPendingNormal(subject) {
++  const marker = new Error("actual ordinary pending"), winner = { trusted: "yes" };
++  globalThis.trustPendingReason = marker;
++  const output = await subject(trustInput([trustEventPendingNormal, () => winner]), trustEvent(), {});
++  trustAssert(output.result === winner && output.errors.length === 1 &&
++    output.errors[0].error === marker.message, "pending exception beats successful native return");
++  delete globalThis.trustPendingReason;
++}
++async function observeTrustEventEscapedSnapshot(subject) {
++  let captured;
++  const first = await subject({ extensions: { map(callback) { captured = callback; return []; } } }, trustEvent(), {});
++  trustAssert(first.errors.length === 0, "snapshot invocation completed");
++  let observed;
++  const handler = () => ({ trusted: "yes" });
++  const ext = { handlers: { get(event) { observed = event; return [handler]; } } };
++  const row = captured.call({ ignored: true }, ext);
++  trustAssert(observed === "project_trust" && row.ext === ext && row.handlers[0] === handler, "escaped arrow keeps original import-call capture");
++}
++async function observeTrustEventConstructorRetirement(subject, hooks) {
++  const saved = Object.getOwnPropertyDescriptor(globalThis, "Error");
++  const RealError = saved.value;
++  let count = 0;
++  const reason = {
++    get message() { if (hooks.count(0) !== 1) throw new RealError("first constructor operand retained"); return "message"; },
++    get stack() { if (hooks.count(1) !== 1) throw new RealError("second constructor operand retained"); return "stack"; }
++  };
++  let output;
++  try {
++    Object.defineProperty(globalThis, "Error", { configurable: true, get() {
++      return Object.assign(hooks.make(count++), { [Symbol.hasInstance](value) { return value === reason; } });
++    }});
++    output = await subject(trustInput([() => { throw reason; }]), trustEvent(), {});
++  } finally { Object.defineProperty(globalThis, "Error", saved); }
++  trustAssert(output.errors.length === 1 && output.errors[0].error === "message" &&
++    output.errors[0].stack === "stack" && count === 2, "instanceof operand retirement before branch Gets");
++}
++async function observeTrustEventTrustedRetirement(subject, hooks) {
++  const loops = trustLoops([], () => ({ get trusted() { return hooks.make(0); } }));
++  Object.defineProperty(loops.inner, "return", { get() {
++    trustAssert(hooks.count(0) === 1, "comparison operand retired before IteratorClose");
++    return () => ({});
++  }});
++  const output = await subject(loops.input, trustEvent(), {});
++  trustAssert(Object.hasOwn(output, "result") && output.errors.length === 0, "non-undecided object still wins");
++}
+diff --git a/build.zig b/build.zig
+--- a/build.zig
++++ b/build.zig
+@@ -1899,6 +1899,20 @@
+         project_trust_manager_tests.root_module.linkSystemLibrary("userenv", .{});
+     }
+     b.step("build-native-sdk-project-trust-manager", "Install actual shared authenticated trust-manager controls without execution").dependOn(&b.addInstallArtifact(project_trust_manager_tests, .{}).step);
++
++    const project_trust_event_tests = b.addTest(.{
++        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_project_trust_event_test.zig"), .target = target, .optimize = optimize }),
++        .filters = &.{"native project trust event"}, .use_llvm = use_llvm,
++    });
++    linkQuickJs(b, project_trust_event_tests.root_module, quickjs, sqlite_lib_dir);
++    linkTypeScriptParser(b, project_trust_event_tests.root_module, typescript_parser);
++    linkSqlite(project_trust_event_tests.root_module, sqlite_lib_dir, sqlite_library);
++    project_trust_event_tests.root_module.addImport("catalog_tool", catalog_tool);
++    if (target.result.os.tag == .windows) {
++        project_trust_event_tests.root_module.linkSystemLibrary("advapi32", .{});
++        project_trust_event_tests.root_module.linkSystemLibrary("userenv", .{});
++    }
++    b.step("build-native-sdk-project-trust-event", "Install actual intrinsic-Await project trust event controls without execution").dependOn(&b.addInstallArtifact(project_trust_event_tests, .{}).step);
+ 
+     const module_execution_state_tests = b.addTest(.{
+         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_execution_state_test.zig"), .target = target, .optimize = optimize }),

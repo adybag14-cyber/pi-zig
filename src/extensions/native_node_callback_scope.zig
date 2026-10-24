@@ -106,6 +106,7 @@ const Fields = Alias(u32, c.JS_TYPED_ARRAY_UINT32);
 const Uids = Alias(f64, c.JS_TYPED_ARRAY_FLOAT64);
 const Ticks = Alias(u8, c.JS_TYPED_ARRAY_UINT8);
 const IdStack = Alias(f64, c.JS_TYPED_ARRAY_FLOAT64);
+const AbortOnUncaughtToggle = Alias(u32, c.JS_TYPED_ARRAY_UINT32);
 const StreamBaseState = Alias(i32, c.JS_TYPED_ARRAY_INT32);
 
 /// Caller-owned, intrusive realm cleanup slot. The owning native wrap list
@@ -134,6 +135,7 @@ pub const Environment = struct {
     uid: Uids = .{},
     ticks: Ticks = .{},
     ids: IdStack = .{},
+    should_abort_on_uncaught_toggle: AbortOnUncaughtToggle = .{},
     stream_base_state: StreamBaseState = .{},
     managed_buffers: ManagedBuffers.Store = .{},
     native_resources: std.ArrayList(?*const c.JSValue) = .empty,
@@ -206,6 +208,7 @@ pub const Environment = struct {
         self.field(.check).* = 1;
         self.uidField(.default_trigger).* = -1;
         self.uidField(.counter).* = 1;
+        self.should_abort_on_uncaught_toggle = try AbortOnUncaughtToggle.create(s, 1);
         self.stream_base_state = try StreamBaseState.create(s, 4);
         self.managed_buffers.init(@ptrCast(allocation + storage_layout.offset));
         self.resource_symbol = a.duplicate(s.engine, input.resource_symbol);
@@ -214,6 +217,9 @@ pub const Environment = struct {
         @memset(self.provider_strings, c.pi_js_undefined());
         for (input.provider_names, self.provider_strings) |name, *value|
             value.* = a.duplicate(s.engine, try s.text(name));
+        // Original InitializeMainContext sets this existing aliased cell to 1.
+        // The selected fresh initialized Environment is not exposed before it.
+        self.should_abort_on_uncaught_toggle.data[0] = 1;
         output.* = self;
         return c.pi_js_undefined();
     }
@@ -263,6 +269,14 @@ pub const Environment = struct {
     pub fn field(self: *Environment, index: Field) *u32 { return &self.fields.data[@intFromEnum(index)]; }
     pub fn uidField(self: *Environment, index: Uid) *f64 { return &self.uid.data[@intFromEnum(index)]; }
     pub fn tickField(self: *Environment, index: Tick) *u8 { return &self.ticks.data[@intFromEnum(index)]; }
+    /// Borrowed original util-binding supplier: the same Environment-owned
+    /// Uint32Array, never a copy and never reset by repeated acquisition.
+    /// The bootstrap retains it through its ordinary checked owner boundary.
+    pub fn abortOnUncaughtToggle(self: *Environment) !c.JSValue {
+        _ = try self.requireEngine();
+        return self.should_abort_on_uncaught_toggle.view orelse
+            return error.ActualNodeAbortOnUncaughtToggleRequired;
+    }
     pub fn streamBaseField(self: *Environment, index: StreamBaseField) *i32 {
         return &self.stream_base_state.data[@intFromEnum(index)];
     }
@@ -606,6 +620,7 @@ pub const Environment = struct {
     fn retireRoots(self: *Environment, s: *LocalScope) void {
         self.managed_buffers.deinit();
         self.stream_base_state.release(s);
+        self.should_abort_on_uncaught_toggle.release(s);
         self.ids.release(s);
         self.fields.release(s);
         self.uid.release(s);

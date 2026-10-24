@@ -6,6 +6,7 @@ const v = a.v;
 const c = a.c;
 const Scope = a.Scope;
 const registration = @import("native_node_argument_error_registration.zig");
+const argument_range = @import("native_node_argument_range.zig");
 const key = "pi-native:private/argument-error-owner";
 pub const Inputs = struct {
     error_constructor: c.JSValue,
@@ -146,6 +147,15 @@ fn body(s: *Scope, inputs: Inputs, attempt: *?c.JSValue) ![5]c.JSValue {
     try s.put(record, "hiddenValue", hidden_value); try s.put(record, "rangeValue", range); try s.put(record, "hiddenRangeValue", hidden_range);
     try s.put(record, "assertion", assertion_class); try s.put(record, "validateString", validate_string); try s.put(record, "validateAbortSignal", validate_abort);
     try s.put(record, "validateObject", validate_object);
+    const range_message = try s.own(try argument_range.makeMessage(s, message_roots[0]));
+    const out_of_range_class = try registration.register(s, inputs.range_error, "ERR_OUT_OF_RANGE",
+        range_message, inputs.marker, inputs.assert_function, inputs.reflect_apply);
+    const hidden_out_of_range = try registration.hide(s, out_of_range_class, inputs.range_error, inputs.error_constructor);
+    const validate_integer = try argument_range.makeValidateInteger(s, hidden, hidden_out_of_range,
+        inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply, message_roots[0]);
+    try s.put(record, "outOfRange", out_of_range_class);
+    try s.put(record, "hiddenOutOfRange", hidden_out_of_range);
+    try s.put(record, "validateInteger", validate_integer);
     return view(s, record);
 }
 fn memberBody(s: *Scope, name: [*:0]const u8) !c.JSValue {
@@ -160,6 +170,9 @@ pub fn rangeValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine,
 pub fn hiddenRangeValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "hiddenRangeValue")}); }
 pub fn validateAbortSignal(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "validateAbortSignal")}); }
 pub fn validateObject(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "validateObject")}); }
+pub fn outOfRange(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "outOfRange")}); }
+pub fn hiddenOutOfRange(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "hiddenOutOfRange")}); }
+pub fn validateInteger(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "validateInteger")}); }
 
 /// Original primordial functions retained by the completed internal/errors owner.
 pub fn reflectApply(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "reflect_apply")}); }

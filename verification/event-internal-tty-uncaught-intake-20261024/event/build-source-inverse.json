@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "accepted_supplier": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 548462,
+    "sha256": "0DDAF5D48CF0366FBFB798E4FC5AC75CF6DAE48D1E563C1A3316F6E8AC81190F"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\original\\build.zig",
+    "bytes": 548462,
+    "sha256": "0DDAF5D48CF0366FBFB798E4FC5AC75CF6DAE48D1E563C1A3316F6E8AC81190F"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 549512,
+    "sha256": "6A5F862C61B3ACA5DA5723F419CC40519879D986C7595140837C5A59D2D145E0"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1050,
+    "sha256": "BF636FF50A75536FE3DEAE4B1D427EE23CAE5344B122E18A8CF4C5FB9FEB81F4"
+  },
+  "anchor": "    const module_execution_state_tests = b.addTest(.{\n",
+  "occurrences": 1,
+  "insertion_bytes": 1050,
+  "full_inverse_equal": true,
+  "composition": "Apply this sole addition to the latest integrated build. Do not replace it with this predecessor-based projection.",
+  "target": "build-native-sdk-project-trust-event",
+  "filter": "native project trust event",
+  "actual_artifact_stem": "test",
+  "native_execution_authorized": false
+}

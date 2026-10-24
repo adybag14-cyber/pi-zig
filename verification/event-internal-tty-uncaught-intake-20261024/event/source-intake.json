@@ -1,0 +1,432 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T21:09:52.376330+00:00",
+  "scope": "Complete original emitProjectTrustEvent with genuine native AsyncFunction/Await and retained iteration/ownership semantics",
+  "status": "source_only_authored",
+  "source_basis_head": "de0d35e7920c77b4a3bb81a0ec115568c7adc36a",
+  "changes": [
+    {
+      "destination_relative_path": "src/extensions/native_sdk_project_trust_event.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_project_trust_event.zig",
+        "bytes": 23002,
+        "sha256": "FCF4D08C844CC3F5EDD86E441CF2349DC63AF300B6309AE21AEBBC17FDC519C4"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_sdk_project_trust_event_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\projected\\src\\native_sdk_project_trust_event_test.zig",
+        "bytes": 13151,
+        "sha256": "9C9464BE4B10A13A831ED0303257A410E839FA6CB2D6C2D6CE21852F3D1BF18A"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/sdk-project-trust-event-original.mjs",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-project-trust-event-original.mjs",
+        "bytes": 1043,
+        "sha256": "14F1F1EDDF9790E1D750E5E5C0A42F2CCDF806CC00AC2A04D185E2BD3CE9D017"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/sdk-project-trust-event-observer.mjs",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-project-trust-event-observer.mjs",
+        "bytes": 25859,
+        "sha256": "8244FFDB8F0F5BE2A26493BF4BB0B7240DB043AC6A8CE19F3DCE8C4260595A10"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\original\\build.zig",
+        "bytes": 548462,
+        "sha256": "0DDAF5D48CF0366FBFB798E4FC5AC75CF6DAE48D1E563C1A3316F6E8AC81190F"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 549512,
+        "sha256": "6A5F862C61B3ACA5DA5723F419CC40519879D986C7595140837C5A59D2D145E0"
+      },
+      "accepted_supplier_baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 548462,
+        "sha256": "0DDAF5D48CF0366FBFB798E4FC5AC75CF6DAE48D1E563C1A3316F6E8AC81190F"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\source-diff.patch",
+    "bytes": 66840,
+    "sha256": "1F3E762A74E55D155A6D9BFB9DDE19EB9F225DB40FB2470C8BF1CE769375B9EA"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\README.md",
+    "bytes": 2778,
+    "sha256": "9315A6A1E9395873070E8826B67D2DFCF242DD1CB9423986D86A1579930D18BD"
+  },
+  "source_inverses": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\original-function-erasure-proof.json",
+      "bytes": 3481,
+      "sha256": "6E92ACF191E3A6CEF3BB5DD57F641BB69B83F1BABAFC8E61874CE87880591EAE"
+    }
+  ],
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1050,
+    "sha256": "BF636FF50A75536FE3DEAE4B1D427EE23CAE5344B122E18A8CF4C5FB9FEB81F4"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1610,
+    "sha256": "D60E14821B77EE9D5BC2E92C4F6DDFA95C0BF00FCDB42988BD8B268DC078123D"
+  },
+  "retained_authority": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\extensions\\runner.ts",
+        "bytes": 52023,
+        "sha256": "3CD6D1AD18E8E4C7ADF722AED9291BC64F06E3A7D461755C21E3CBA4819F4E5E"
+      },
+      "retained_copy": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\authority\\runner.ts",
+        "bytes": 52023,
+        "sha256": "3CD6D1AD18E8E4C7ADF722AED9291BC64F06E3A7D461755C21E3CBA4819F4E5E"
+      },
+      "read_scope": "runner.ts lines 276-278 and 302-329",
+      "role": "Complete original snapshot helper and emitProjectTrustEvent"
+    }
+  ],
+  "current_provider_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_async_function.zig",
+      "bytes": 10559,
+      "sha256": "841611400E3F5BF3D9190C60CAFC8A0365E9174CECC50EB1582EAF7AD2F206AC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_async_body.zig",
+      "bytes": 5615,
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_session_locals.zig",
+      "bytes": 9136,
+      "sha256": "2E530FC843E99654A3F72F05207E04A5F77E3713D7D9D19B26117A46D7EC9064"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_values.zig",
+      "bytes": 13939,
+      "sha256": "0B1BB422A9C89E7CE8146B32413B27E42D8DFB65285C3245B89EED8AF222022E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_agent_af_values.zig",
+      "bytes": 8615,
+      "sha256": "3836B2F939A7443861BDCF2250C343E8F343EEE381DED4DC62BF2154E2A54656"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+      "bytes": 15176,
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_lexical_frame.zig",
+      "bytes": 17136,
+      "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_guest_operation.zig",
+      "bytes": 7009,
+      "sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_function.zig",
+      "bytes": 14120,
+      "sha256": "232E0F858F21DD002C2FEB6B65C62486EB6DA113F7463B2DD60CC799B3369007"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_interrupt.zig",
+      "bytes": 1877,
+      "sha256": "7501E2EDA766BD831320F2878547C39083DEF09D21124D85E55545C342532B6C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_initial_model_retirement_controls.zig",
+      "bytes": 16159,
+      "sha256": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+    }
+  ],
+  "direct_import_resolutions": [
+    {
+      "from_destination": "src/extensions/native_sdk_project_trust_event.zig",
+      "kind": "import",
+      "literal": "native_sdk_session_locals.zig",
+      "resolved_destination": "src/extensions/native_sdk_session_locals.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_session_locals.zig",
+        "bytes": 9136,
+        "sha256": "2E530FC843E99654A3F72F05207E04A5F77E3713D7D9D19B26117A46D7EC9064"
+      }
+    },
+    {
+      "from_destination": "src/extensions/native_sdk_project_trust_event.zig",
+      "kind": "import",
+      "literal": "native_agent_af_values.zig",
+      "resolved_destination": "src/extensions/native_agent_af_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_agent_af_values.zig",
+        "bytes": 8615,
+        "sha256": "3836B2F939A7443861BDCF2250C343E8F343EEE381DED4DC62BF2154E2A54656"
+      }
+    },
+    {
+      "from_destination": "src/extensions/native_sdk_project_trust_event.zig",
+      "kind": "import",
+      "literal": "native_async_body.zig",
+      "resolved_destination": "src/extensions/native_async_body.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_async_body.zig",
+        "bytes": 5615,
+        "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+      }
+    },
+    {
+      "from_destination": "src/native_sdk_project_trust_event_test.zig",
+      "kind": "import",
+      "literal": "extensions/native_sdk_session_locals.zig",
+      "resolved_destination": "src/extensions/native_sdk_session_locals.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_session_locals.zig",
+        "bytes": 9136,
+        "sha256": "2E530FC843E99654A3F72F05207E04A5F77E3713D7D9D19B26117A46D7EC9064"
+      }
+    },
+    {
+      "from_destination": "src/native_sdk_project_trust_event_test.zig",
+      "kind": "import",
+      "literal": "extensions/native_sdk_project_trust_event.zig",
+      "resolved_destination": "src/extensions/native_sdk_project_trust_event.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_project_trust_event.zig",
+        "bytes": 23002,
+        "sha256": "FCF4D08C844CC3F5EDD86E441CF2349DC63AF300B6309AE21AEBBC17FDC519C4"
+      }
+    },
+    {
+      "from_destination": "src/native_sdk_project_trust_event_test.zig",
+      "kind": "import",
+      "literal": "native_sdk_initial_model_retirement_controls.zig",
+      "resolved_destination": "src/native_sdk_initial_model_retirement_controls.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_initial_model_retirement_controls.zig",
+        "bytes": 16159,
+        "sha256": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+      }
+    },
+    {
+      "from_destination": "src/native_sdk_project_trust_event_test.zig",
+      "kind": "embedFile",
+      "literal": "extensions/fixtures/sdk-project-trust-event-observer.mjs",
+      "resolved_destination": "src/extensions/fixtures/sdk-project-trust-event-observer.mjs",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-project-trust-event-observer.mjs",
+        "bytes": 25859,
+        "sha256": "8244FFDB8F0F5BE2A26493BF4BB0B7240DB043AC6A8CE19F3DCE8C4260595A10"
+      }
+    },
+    {
+      "from_destination": "src/native_sdk_project_trust_event_test.zig",
+      "kind": "embedFile",
+      "literal": "extensions/fixtures/sdk-project-trust-event-original.mjs",
+      "resolved_destination": "src/extensions/fixtures/sdk-project-trust-event-original.mjs",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-project-trust-event-original.mjs",
+        "bytes": 1043,
+        "sha256": "14F1F1EDDF9790E1D750E5E5C0A42F2CCDF806CC00AC2A04D185E2BD3CE9D017"
+      }
+    }
+  ],
+  "standard_package_imports": [
+    {
+      "from_destination": "src/native_sdk_project_trust_event_test.zig",
+      "literal": "std"
+    }
+  ],
+  "native_dependency_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2409692,
+      "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 117849,
+      "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+    }
+  ],
+  "supporting_vm_authority": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2409692,
+        "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+      },
+      "ranges": [
+        [
+          19305,
+          19425
+        ],
+        [
+          21748,
+          21813
+        ],
+        [
+          23387,
+          23447
+        ],
+        [
+          32616,
+          32668
+        ],
+        [
+          32994,
+          33313
+        ],
+        [
+          39630,
+          39662
+        ]
+      ],
+      "role": "Actual IteratorClose, for-of records, lexical binding and terminal argument/local/operand retirement"
+    }
+  ],
+  "prerequisites": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\source-intake.json",
+      "bytes": 49843,
+      "sha256": "14F573C49CDFC6D21D0A10BB412CC0246E9F4C46A248C1C18226D881770A8566"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-project-trust-manager-source-acceptance-20261024.json",
+      "bytes": 7908,
+      "sha256": "C9562D3754D95D3388DD149EAD3CA334E23C296CDD1FC18F74111D8651398127"
+    }
+  ],
+  "private_api": {
+    "create": "create(engine) -> owned genuine emitProjectTrustEvent AsyncFunction",
+    "cache_key": "pi-private:actual-sdk-project-trust-event",
+    "required_source_arguments": [
+      "extensionsResult",
+      "event",
+      "ctx"
+    ],
+    "callback_policy": "All Source live methods and getters retained; no synthetic event handlers or context"
+  },
+  "baseline_note": "Only the additive build hunk depends on the accepted manager build projection. All production code in this packet is new; compose the insertion with newer builds.",
+  "controls": {
+    "target": "build-native-sdk-project-trust-event",
+    "test_root": "src/native_sdk_project_trust_event_test.zig",
+    "filter": "native project trust event",
+    "source_declaration_count": 42,
+    "names": [
+      "native project trust event genuine AsyncFunction cached identity and fresh empty result",
+      "native project trust event snapshots every extension through live map get slice before dispatch",
+      "native project trust event optional slice and nullish fallback allocate distinct arrays",
+      "native project trust event handlers and extension list are snapshotted across intrinsic Await",
+      "native project trust event plain handler values suspend before trusted lookup",
+      "native project trust event intrinsic Await adopts thenable without public Promise then",
+      "native project trust event synchronous throw records error and continues before returning Promise",
+      "native project trust event genuine rejected Await uses original catch and first deciding result",
+      "native project trust event null result is caught and undefined trusted still wins",
+      "native project trust event trusted getter remains inside catch with ordinary String fallback",
+      "native project trust event push path type and repeated live Error checks follow object literal order",
+      "native project trust event live String call and second independent instanceof remain observable",
+      "native project trust event snapshot failure prevents every handler before any iterator starts",
+      "native project trust event generic outer and inner iterators cache next and exhaust without return",
+      "native project trust event primitive snapshot row is boxed once for both binding getters",
+      "native project trust event failed inner next skips its own return and closes outer",
+      "native project trust event failed iterator value lookup skips own return and closes outer",
+      "native project trust event failed iterator done lookup skips own return and closes outer",
+      "native project trust event nonobject next result rejects before inner IteratorClose",
+      "native project trust event failed outer next never calls its own return",
+      "native project trust event inner next getter failure precedes creation of its catch record",
+      "native project trust event noniterable inner value closes existing outer record",
+      "native project trust event successful result closes inner then outer with exact receivers",
+      "native project trust event primitive inner return is TypeError and later outer throw cannot replace it",
+      "native project trust event primitive outer return fails outside handler catch",
+      "native project trust event noncallable return method fails and closes outer",
+      "native project trust event formatting getter failure closes both iterators preserving first throw",
+      "native project trust event errors push getter precedes row fields and its throw closes both iterators",
+      "native project trust event throw IteratorClose ignores primitive close results",
+      "native project trust event nested invocation retains independent suspended activation",
+      "native project trust event successful private DATA thrown synchronously remains ordinary",
+      "native project trust event private DATA in rejected Await is not inferred to be fatal",
+      "native project trust event actual arguments unused extra argument and receiver survive GC across Await",
+      "native project trust event abandoned actual suspension retires arguments without settling outer Promise",
+      "native project trust event actual pending exception beats a normal native handler return",
+      "native project trust event actual native fatal before Await bypasses catch formatting and iterator close",
+      "native project trust event actual native fatal after Await bypasses handler catch and outer catch",
+      "native project trust event trusted temporary retirement fatal occurs before normal IteratorClose",
+      "native project trust event trusted temporary cancellation bypasses guest catch and close",
+      "native project trust event escaped snapshot arrow retains original captured event after activation exits",
+      "native project trust event instanceof constructor operands retire before message and stack getters",
+      "native project trust event trusted comparison temporary retires before normal IteratorClose"
+    ],
+    "actual_metadata_count": null,
+    "runtime_result": null,
+    "actual_artifact_stem": "test",
+    "actual_windows_artifacts": [
+      "test.exe",
+      "test.pdb"
+    ]
+  },
+  "static_checks": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\static-source-checks.json",
+    "bytes": 14537,
+    "sha256": "10521D59BE1F4486BA5F0EDAA5D271F2B00F4F6F251275CA2770FA25BB86A00B"
+  },
+  "remaining_integration": [
+    "Original resolveProjectTrust with actual manager, emitter, APP_NAME and SETTINGS_DEFAULTS inputs",
+    "Authenticated production resolver assembly",
+    "Complete original cwd/trust-aware createRuntime factory",
+    "Fresh native compile, metadata and runtime qualification under Root"
+  ],
+  "not_executed": [
+    "Zig parser",
+    "Zig formatter",
+    "JavaScript parser",
+    "compiler",
+    "metadata",
+    "runtime",
+    "Node capture",
+    "candidate source generator"
+  ],
+  "claims": {
+    "Main_mutated": false,
+    "predecessor_packets_mutated": false,
+    "complete_original_trust_event_function": true,
+    "public_runner_namespace_registered": false,
+    "full_runtime_factory_complete": false,
+    "native_abi_changed": false,
+    "native_qualification": false
+  }
+}

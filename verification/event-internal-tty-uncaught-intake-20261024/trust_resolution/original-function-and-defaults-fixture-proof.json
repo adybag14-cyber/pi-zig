@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\project-trust.ts",
+    "bytes": 3018,
+    "sha256": "7E5875D8786C7A6B28E8263D879F1454E6273C6CD432A8DA76D75EE5FF51088F"
+  },
+  "runtime_original_text": "function formatProjectTrustPrompt(cwd: string): string {\n\treturn `Trust project folder?\\n${cwd}\\n\\nThis allows ${APP_NAME} to load ${CONFIG_DIR_NAME} settings and resources, install missing project packages, and execute project extensions.`;\n}\n\nasync function selectProjectTrustOption(\n\tcwd: string,\n\tctx: ProjectTrustContext,\n): Promise<ProjectTrustOption | undefined> {\n\tconst options = getProjectTrustOptions(cwd, { includeSessionOnly: true });\n\tconst selected = await ctx.ui.select(\n\t\tformatProjectTrustPrompt(cwd),\n\t\toptions.map((option) => option.label),\n\t);\n\treturn options.find((option) => option.label === selected);\n}\n\nfunction saveProjectTrustPromptResult(trustStore: ProjectTrustStore, result: ProjectTrustOption): void {\n\tif (result.updates.length > 0) {\n\t\ttrustStore.setMany(result.updates);\n\t}\n}\n\nexport async function resolveProjectTrusted(options: ResolveProjectTrustedOptions): Promise<boolean> {\n\tif (options.trustOverride !== undefined) {\n\t\treturn options.trustOverride;\n\t}\n\tif (!hasTrustRequiringProjectResources(options.cwd)) {\n\t\treturn true;\n\t}\n\n\tif (options.extensionsResult) {\n\t\tconst { result, errors } = await emitProjectTrustEvent(\n\t\t\toptions.extensionsResult,\n\t\t\t{ type: \"project_trust\", cwd: options.cwd },\n\t\t\toptions.projectTrustContext,\n\t\t);\n\t\tfor (const error of errors) {\n\t\t\toptions.onExtensionError?.(`Extension \"${error.extensionPath}\" project_trust error: ${error.error}`);\n\t\t}\n\t\tif (result) {\n\t\t\tconst trusted = result.trusted === \"yes\";\n\t\t\tif (result.remember === true) {\n\t\t\t\toptions.trustStore.set(options.cwd, trusted);\n\t\t\t}\n\t\t\treturn trusted;\n\t\t}\n\t}\n\n\tconst decision = options.trustStore.get(options.cwd);\n\tif (decision !== null) {\n\t\treturn decision;\n\t}\n\n\tswitch (options.defaultProjectTrust ?? SETTINGS_DEFAULTS.defaultProjectTrust) {\n\t\tcase \"always\":\n\t\t\treturn true;\n\t\tcase \"never\":\n\t\t\treturn false;\n\t\tcase \"ask\":\n\t\t\tbreak;\n\t}\n\n\tif (!options.projectTrustContext.hasUI) {\n\t\treturn false;\n\t}\n\n\tconst selected = await selectProjectTrustOption(options.cwd, options.projectTrustContext);\n\tif (selected !== undefined) {\n\t\tsaveProjectTrustPromptResult(options.trustStore, selected);\n\t\treturn selected.trusted;\n\t}\n\treturn false;\n}\n",
+  "fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-project-trust-resolution-original.mjs",
+    "bytes": 2162,
+    "sha256": "A57F4F91E86AAAFCA4220982FE73D3C4ECC2E517C3229207B6CF6ACE096E5B1E"
+  },
+  "wrapper_prefix": "((APP_NAME, CONFIG_DIR_NAME, emitProjectTrustEvent, SETTINGS_DEFAULTS, getProjectTrustOptions, hasTrustRequiringProjectResources) => {\n\"use strict\";\n",
+  "wrapper_suffix": "return { resolveProjectTrusted };\n})\n",
+  "exact_signature_type_erasures": [
+    {
+      "before": "function formatProjectTrustPrompt(cwd: string): string {",
+      "after": "function formatProjectTrustPrompt(cwd) {",
+      "occurrences": 1
+    },
+    {
+      "before": "async function selectProjectTrustOption(\n\tcwd: string,\n\tctx: ProjectTrustContext,\n): Promise<ProjectTrustOption | undefined> {",
+      "after": "async function selectProjectTrustOption(cwd, ctx) {",
+      "occurrences": 1
+    },
+    {
+      "before": "function saveProjectTrustPromptResult(trustStore: ProjectTrustStore, result: ProjectTrustOption): void {",
+      "after": "function saveProjectTrustPromptResult(trustStore, result) {",
+      "occurrences": 1
+    },
+    {
+      "before": "export async function resolveProjectTrusted(options: ResolveProjectTrustedOptions): Promise<boolean> {",
+      "after": "async function resolveProjectTrusted(options) {",
+      "occurrences": 1
+    }
+  ],
+  "settings_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\settings-defaults.ts",
+    "bytes": 1521,
+    "sha256": "6FB94031CFD462E357723A35AAB328E9A1ED5109C2AA59549D8291345875D5A9"
+  },
+  "settings_fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-settings-defaults-original.mjs",
+    "bytes": 1437,
+    "sha256": "1E9BB66B3A14F25404B44A78C6B73A303200E723E0D0E4BC2EB54104182A9880"
+  },
+  "settings_constant_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\ai\\src\\utils\\retry.ts",
+    "bytes": 9975,
+    "sha256": "1F7947FA6F30596415E78FCA0C0CBD43345C918509F6160B79CDEEC459881DD8"
+  },
+  "constant_exact_declaration": "export const DEFAULT_MAX_AGENT_RETRY_DELAY_MS = 60_000;",
+  "settings_only_changes": [
+    "remove export from declaration",
+    "erase TypeScript as const",
+    "supply exact immutable imported constant",
+    "test-only strict IIFE return"
+  ],
+  "runtime_statements_unchanged": true,
+  "source_executed": false
+}

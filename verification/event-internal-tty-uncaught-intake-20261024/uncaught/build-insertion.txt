@@ -1,0 +1,17 @@
+    // Complete original private uncaught-handler declarations with explicit inputs.
+    // Install only; native qualification and authenticated bootstrap remain separate.
+    const node_process_uncaught_handler = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_process_uncaught_handler_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native uncaught handler"},
+    });
+    linkQuickJs(b, node_process_uncaught_handler.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_process_uncaught_handler.root_module, typescript_parser);
+    linkSqlite(node_process_uncaught_handler.root_module, sqlite_lib_dir, sqlite_library);
+    node_process_uncaught_handler.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_process_uncaught_handler.root_module.linkSystemLibrary("advapi32", .{});
+        node_process_uncaught_handler.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-process-uncaught-handler", "Install thirty-six private uncaught-handler controls without running").dependOn(&b.addInstallArtifact(node_process_uncaught_handler, .{ .dest_sub_path = b.fmt("native-node-process-uncaught-handler{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+

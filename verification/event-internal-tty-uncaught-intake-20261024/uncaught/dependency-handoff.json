@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "status": "private_original_body_with_explicit_unavailable_assembly_suppliers",
+  "observed_main_head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "candidate_executed": false,
+  "native_execution": false,
+  "required_bootstrap_inputs": [
+    "process",
+    "require",
+    "should_abort_on_uncaught_toggle",
+    "invalid_arg_type",
+    "capture_already_set",
+    "execution_async_id",
+    "clear_default_trigger_async_id",
+    "clear_async_id_stack",
+    "has_async_id_stack",
+    "after_hooks_exist",
+    "emit_after",
+    "pop_async_context"
+  ],
+  "inputs_authenticated_by_this_packet": false,
+  "pinned_owners": {
+    "actual_callback_environment": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+    },
+    "actual_process": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+      "bytes": 6626,
+      "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+    },
+    "actual_process_events": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_process_events.zig",
+      "bytes": 12278,
+      "sha256": "D33BBA08FC2807A01D1EDA7695A84D85BF595548B6E4C97970CD2DD67D413C20"
+    },
+    "actual_timers_install": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\timers.zig",
+      "bytes": 52715,
+      "sha256": "4AB5926421C7601B752F92E4306DC31A455C16437F8C904F80875EEE4B70CCCC"
+    },
+    "actual_internal_builtin_require": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_internal_builtin_require.zig",
+      "bytes": 8889,
+      "sha256": "E5C93743C8285705C646875C42F3EAD46C1750244BE3F8A7989F1607EA30B1EA"
+    },
+    "actual_options": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_options_config.zig",
+      "bytes": 20006,
+      "sha256": "1E00540ADCE1D3CE012578C64F582776E06FE6027F79D71BE8ED0EF5F91E076E"
+    },
+    "actual_engine": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    "actual_operation_scope": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+    },
+    "actual_vm_C": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2409692,
+      "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+    },
+    "actual_vm_header": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 117849,
+      "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+    },
+    "original_environment": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\src__env.cc.txt",
+      "bytes": 84987,
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+    },
+    "original_util_binding": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\src__node_util.cc.txt",
+      "bytes": 20372,
+      "sha256": "FBF7DC840F9A730D77E3A565B8A1B241009A8B817CBF0FC9BC2BD39DFF06EB2A"
+    },
+    "original_trigger_uncaught": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\src__node_errors.cc.txt",
+      "bytes": 43095,
+      "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9"
+    },
+    "original_license": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\LICENSE.txt",
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    }
+  },
+  "original_handler_block": {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\authority\\lib__internal__process__execution.js.txt",
+      "bytes": 17264,
+      "sha256": "0E1CA1425E44469425AD6658907A81C4A96322ACB779F5E4B402CD0015292C41"
+    },
+    "first_line": 107,
+    "last_line": 194,
+    "bytes": 3260,
+    "sha256": "9F4AC9E1433E0EDBE01600AC8AFAD6FC8D314152A9D2DBAE18CAA3CDCCBF2ECF"
+  },
+  "original_toggle_initialization_expression": "should_abort_on_uncaught_toggle_[0] = 1;",
+  "current_alias_and_environment_blocks": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 40069,
+        "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+      },
+      "first_line": 73,
+      "last_line": 109,
+      "bytes": 1930,
+      "sha256": "298E06CAF6A93D1F18833CAFE42660C34347C40A0C8B97A6E664DBDB3239E32B"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 40069,
+        "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+      },
+      "first_line": 122,
+      "last_line": 218,
+      "bytes": 4650,
+      "sha256": "AC1746D3F5D505A096ADBCEE7969E3E4E7DFCC4575410094D40F5799B2F162E5"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 40069,
+        "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+      },
+      "first_line": 482,
+      "last_line": 524,
+      "bytes": 2436,
+      "sha256": "2CBB983B234FF5195BBFDCB288B787A69664E5C2F99D1EDD0D30766AAB1811FA"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 40069,
+        "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+      },
+      "first_line": 556,
+      "last_line": 568,
+      "bytes": 887,
+      "sha256": "0F1C106E83FFD2944B8895B326CFFA27D2B25CF55B533FB6D005540EA259705F"
+    }
+  ],
+  "remaining_suppliers": [
+    {
+      "supplier": "should_abort_on_uncaught_toggle",
+      "required_original": "The same Environment-owned AliasedUint32Array exposed by internalBinding(util), initialized [0]=1; native abort policy must read this same backing.",
+      "existing": "native_node_callback_scope.Alias(u32, JS_TYPED_ARRAY_UINT32) already owns an intrinsic aliased backing; Environment has no abort-toggle member.",
+      "smallest_next_owner": "Add that one Environment alias with exact init/mark/retire/disarm and real binding acquisition, then connect the actual native abort consumer.",
+      "packet_status": "Required input only. Fixture Uint32Array is an explicit observable probe, not canonical alias authentication."
+    },
+    {
+      "supplier": "seven internal async-hook functions",
+      "required_original": "executionAsyncId, clearDefaultTriggerAsyncId, clearAsyncIdStack, hasAsyncIdStack, afterHooksExist, emitAfter, popAsyncContext from the same original internal async-hooks owner.",
+      "existing": "Actual Environment has UID/field/stack state and native methods. Environment.emitAfter only emits; original JS emitAfterScript also pops.",
+      "smallest_next_owner": "Connect complete JS wrappers and their actual native Environment, retaining emit-after/pop ordering and native failure policy.",
+      "packet_status": "Required captured callable identities remain explicit. Focused tests use identified VM observation probes."
+    },
+    {
+      "supplier": "process and require/timers",
+      "required_original": "The bootstrap passes canonical process and builtin require; process.emit/report are live; require(timers).setImmediate is read and invoked with the module receiver.",
+      "existing": "native_process, node_process_events, timers, internal_builtin_require exist, but this packet does not authenticate a complete original timers/uncaught assembly.",
+      "smallest_next_owner": "Bind real assembler identities and canonical scheduling owner; do not inject callback substitutes into production.",
+      "packet_status": "No process._fatalException or namespace publication. Actual installed process is used for the fixture; require/setImmediate are explicit probes."
+    },
+    {
+      "supplier": "registered error identities",
+      "required_original": "Canonical ERR_INVALID_ARG_TYPE and ERR_UNCAUGHT_EXCEPTION_CAPTURE_ALREADY_SET from the same internal errors owner.",
+      "existing": "Genuine argument bootstrap and string-error registration owners are used in focused tests.",
+      "smallest_next_owner": "Bootstrap the exact already-set registration into the canonical errors registry and pass those authenticated identities.",
+      "packet_status": "Required constructor inputs; shape/equality checks do not authenticate bootstrap identity."
+    },
+    {
+      "supplier": "native TriggerUncaughtException / Message / exit",
+      "required_original": "Live process._fatalException acquisition, IsStackOverflowError/TryCatch semantics, fatal report, exact handled-vs-false policy, at-exit/environment exit with real platform/trace cleanup.",
+      "existing": "Original full node_errors.cc retained; current private rejection policy is not a substitute.",
+      "smallest_next_owner": "Separate original native error and Environment exit owners; no guessed constructorName fallback, queued JS_Throw, noop cleanup or private trace store.",
+      "packet_status": "Explicitly unimplemented. This packet supplies only the complete selected JS declaration bodies."
+    },
+    {
+      "supplier": "canonical diagnostics and wrapModuleLoad",
+      "required_original": "One canonical named channel registry, full Channel/TracingChannel body and nextTick triggerUncaughtException, genuine debugWithTimer/category buffer/hrtime producers.",
+      "existing": "WeakReference/WeakRefMap are accepted; separate debuglog source work is in progress.",
+      "smallest_next_owner": "Complete original producer chain after authenticated uncaught/async/trace inputs exist.",
+      "packet_status": "Not published and not qualified by this packet."
+    }
+  ],
+  "no_complete_exception_owner_claim": true
+}

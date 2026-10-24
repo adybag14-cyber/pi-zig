@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "status": "root_source_only_uncaught_handler_declarations_accepted",
+  "candidate_head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\source-intake.json",
+    "bytes": 25382,
+    "sha256": "3E97DF8CC896617724D66B5CB7D361AC95BA9865CC6C7A3E6EBCB383105DB241"
+  },
+  "selected_changes": [
+    {
+      "destination_relative_path": "src/extensions/native_node_process_uncaught_handler.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_process_uncaught_handler.zig",
+        "bytes": 17799,
+        "sha256": "3A538E596AE0DF3D374B55F908DE87D233D7D99EB72009157E36F82BCACF14C5"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_node_process_uncaught_handler_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\projected\\src\\native_node_process_uncaught_handler_test.zig",
+        "bytes": 35715,
+        "sha256": "E78CA786F75264A5F1A132EBC2618A355D4ED8758B36389E30EE597BEC99E5FA"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\original\\build.zig",
+        "bytes": 550798,
+        "sha256": "4FC880853D3B268E38DA1D9B05B60590384696B0005820F66A9FA70D2747440C"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 552184,
+        "sha256": "108A35B46E0DB988A2375CFF3A0C617520250256D8314A119368C38571020D24"
+      }
+    }
+  ],
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1386,
+    "sha256": "AFE905BF54F36BC7E8FA7E7A663C437FA4A29D9305F7A13234BD4BAC3610480D"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1469,
+    "sha256": "2F7D6F6ADA58925935E24196D7290B0B9BB1C140A9D083153D1530FDF0EEDF2C"
+  },
+  "dependency_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\dependency-handoff.json",
+    "bytes": 10594,
+    "sha256": "5517D8BD8756255ACA1A5D9769905C80F83FA888096E5273F7D093BDC3404635"
+  },
+  "original_review_patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\uncaught-handler-successor.patch",
+    "bytes": 56874,
+    "sha256": "29BFBA0EB712DA2D2A10A2EE0FBC82AEEDAF34E8381CB62D951BFE3A34B57AD3"
+  },
+  "applicable_patch_metadata_supplement": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-uncaught36-applicable-source-20261024.patch",
+    "bytes": 56916,
+    "sha256": "302552C698E6E8D6E3B4528C2CEC126FA13435FC52317A1A87284B7FD5260D98"
+  },
+  "checks": {
+    "complete_original_imports_and_107_194_declaration_block_read": true,
+    "complete_selected_native_owner_read": true,
+    "all_36_controls_read": true,
+    "all_41_reference_pin_versions_rehashed": true,
+    "all_three_exact_patch_targets_reproduced": true,
+    "all_15_direct_imports_resolved": true,
+    "all_36_control_names_match": true,
+    "build_addition_raw_inverse": true,
+    "original_Uint32_refinement_raw_inverse": true,
+    "Main_clean_at_review": true
+  },
+  "semantic_findings": [
+    "Ordinary mutable capture state, callback this, two live capture Gets, null reset ordering and both live report receiver resolutions match the original declarations.",
+    "Canonical error constructors remain required inputs; validation precedes capture-state inspection. No callback result or thenable is interpreted as a handled policy.",
+    "Every factory returns a fresh anonymous arrow. Trigger clear, monitor, capture-or-uncaught, original narrow exit catch, actual require(timers).setImmediate expression, do-while after/pop order and final clear remain ordered.",
+    "Only the original exit catch consumes ordinary throws; real native pending fatal, allocation and termination provenance remains uncatchable through the existing owner boundary.",
+    "The private GC owner retains and marks actual dependencies and closes on construction failure, cache retirement and finalization. Exact repeated inputs reuse state; different inputs cannot replace it."
+  ],
+  "packaging_observation": "The retained review patch omitted new-file mode lines in its two additions. Root retained the original and created a separate metadata-only supplement adding those two lines; all projected source bytes remain identical and git apply --check passes for that supplemental patch.",
+  "remaining_original_owners": [
+    "Environment-owned abort-toggle alias and real native abort consumer",
+    "Seven complete authentic internal async-hook wrappers including emitAfterScript pop ordering",
+    "Canonical process/builtin require/timers/error-registry bootstrap binding",
+    "Native TriggerUncaughtException Message/report/exit and at-exit lifecycle"
+  ],
+  "source_declarations": 36,
+  "actual_metadata_count": null,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "complete_execution_module": false,
+  "process_fatalException_published": false,
+  "Main_mutated": false,
+  "created_utc": "2026-10-24T21:36:27.760330+00:00"
+}

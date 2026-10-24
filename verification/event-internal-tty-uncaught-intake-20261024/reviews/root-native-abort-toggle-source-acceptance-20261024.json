@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "status": "root_and_independent_peer_source_accepted_Environment_abort_toggle_supplier",
+  "candidate_head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\source-intake.json",
+    "bytes": 9754,
+    "sha256": "025D0BBF4E51011B9E9384A7C1F78BE6CEACE749F50AF99F83E72170216A989E"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\native-abort-toggle-independent-source-peer-20261024.json",
+    "bytes": 3847,
+    "sha256": "2DFC0006DC7B6235AED134E2B5DB703727F38087D091F18D13506A291F0AC1B1"
+  },
+  "source_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\source-inverses.json",
+    "bytes": 3890,
+    "sha256": "78762E3E551DA32F57164B3E9959813A92E6A9A9B73470770BCD82836AA83747"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 927,
+    "sha256": "805D80521714E317C2159ABC6C33A5361F4EA8EC6D59AB873271BF13CCFC1C5F"
+  },
+  "source_declarations": 5,
+  "original_authority_review": "Root and the independent peer read the real env.h Uint32 member, env.cc one-element constructor and InitializeMainContext [0]=1, and node_util GetJSArray publication; the existing no-snapshot initialized Environment is not exposed until this field is initialized.",
+  "semantic_review": [
+    "The actual existing Alias owner supplies a native u32 slice and intrinsic Uint32Array over the same four backing bytes.",
+    "The borrowed acquisition follows existing Environment resource/provider access and returns the same live view without resetting its contents.",
+    "Constructor failure and disarm use the existing retireRoots/charged native owner. Alias.release clears the native data and view slots before retiring its owned JS value.",
+    "All five controls test actual native/VM backing identity, full-width writes, per-Environment identity/GC and retained-view lifetime after disarm."
+  ],
+  "source_checks": {
+    "six_exact_production_hunks_and_raw_inverse": true,
+    "exact_1260_byte_build_insertion_and_inverse": true,
+    "all_7_direct_imports_resolved": true,
+    "whole_patch_reconstructed_and_apply_check_passed": true,
+    "all_5_controls_independently_read": true,
+    "all_21_reference_pin_versions_plus_entry_verified": true
+  },
+  "remaining_original_owners": [
+    "Native abort option/scope consumer",
+    "Authenticated complete uncaught bootstrap binding",
+    "Complete util namespace and native exit/Message owner"
+  ],
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "Main_mutated": false,
+  "created_utc": "2026-10-24T21:46:16.751531+00:00"
+}

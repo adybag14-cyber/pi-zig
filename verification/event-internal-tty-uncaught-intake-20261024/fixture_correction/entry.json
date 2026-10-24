@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "status": "source_only_compiler_observed_fixture_correction",
+  "candidate_head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "target": "src/native_node_stream_write_string_test.zig",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-string-fixture-correction-sourceonly-20261024\\baseline\\src\\native_node_stream_write_string_test.zig",
+    "bytes": 31099,
+    "sha256": "6316A714C3B80C82E3F114040E0796658CF1801F1A7B652AF6920A712E77BBF1"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-string-fixture-correction-sourceonly-20261024\\projected\\src\\native_node_stream_write_string_test.zig",
+    "bytes": 31116,
+    "sha256": "C75431B56B89B57160C815FF1F6CD0172CF3788B0A16F23105130A299A538B14"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-string-fixture-correction-sourceonly-20261024\\fixture-correction.patch",
+    "bytes": 1132,
+    "sha256": "D2039A2A0446A2D691E5C5E9997E56A87F002FBC1583AACB89806CFB658DFAD9"
+  },
+  "inverses": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-string-fixture-correction-sourceonly-20261024\\source-inverses.json",
+    "bytes": 3544,
+    "sha256": "6E938D85A10BB31AF4180520D68EF9E1869334957B7A498CBF57FF20C668B89F"
+  },
+  "original_compile_error": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v45-new26-buildquery-20261024-211838\\groups\\native-node-stream-write-string\\compile.stderr.log",
+    "bytes": 22885,
+    "sha256": "740390D0973AE1791E56223299917AFB05AE91D5DC0C4E9DF620862C57ADF2E4"
+  },
+  "actual_File_support": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test_support.zig",
+    "bytes": 33411,
+    "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+  },
+  "changes": [
+    "Rename the completion helper local to pending so it does not shadow Fixture.request; preserve its value, nulling and done call.",
+    "Initialize a concrete support.File instance through its existing init(self:*File) API before preserving the same deferred deinit."
+  ],
+  "control_count": 18,
+  "all_control_names_and_assertions_preserved": true,
+  "production_source_changed": false,
+  "Main_mutated": false,
+  "native_executed": false,
+  "runtime_qualified": false,
+  "created_utc": "2026-10-24T21:31:24.785044+00:00"
+}

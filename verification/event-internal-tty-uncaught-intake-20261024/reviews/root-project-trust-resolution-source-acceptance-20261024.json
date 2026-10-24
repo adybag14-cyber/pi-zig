@@ -1,0 +1,136 @@
+{
+  "schema": 1,
+  "status": "root_source_accepted_complete_private_project_trust_resolution_and_shared_defaults",
+  "candidate_head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\source-intake.json",
+    "bytes": 60267,
+    "sha256": "65C0B2F4033DEB6385CC06A0AC8649B091A84B2EA2C59F8D0EB79871BDA94D4D"
+  },
+  "original_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\project-trust.ts",
+      "bytes": 3018,
+      "sha256": "7E5875D8786C7A6B28E8263D879F1454E6273C6CD432A8DA76D75EE5FF51088F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\settings-defaults.ts",
+      "bytes": 1521,
+      "sha256": "6FB94031CFD462E357723A35AAB328E9A1ED5109C2AA59549D8291345875D5A9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\ai\\src\\utils\\retry.ts",
+      "bytes": 9975,
+      "sha256": "1F7947FA6F30596415E78FCA0C0CBD43345C918509F6160B79CDEEC459881DD8"
+    }
+  ],
+  "prerequisites": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\source-intake.json",
+      "bytes": 20776,
+      "sha256": "6E8328AE8C0ECFAF57EA2C9F34047D37CFE63A9DF7057911AD3BA67300843543"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-project-trust-event-source-acceptance-20261024.json",
+      "bytes": 8113,
+      "sha256": "65A06BF9BA066CE90D671DABE07EDA2986E879053E13DACD696F4B378A2D1CA0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\source-intake.json",
+      "bytes": 49843,
+      "sha256": "14F573C49CDFC6D21D0A10BB412CC0246E9F4C46A248C1C18226D881770A8566"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-project-trust-manager-source-acceptance-20261024.json",
+      "bytes": 7908,
+      "sha256": "C9562D3754D95D3388DD149EAD3CA334E23C296CDD1FC18F74111D8651398127"
+    }
+  ],
+  "source_inverses": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\production-owner-finite-inverses.json",
+      "bytes": 6017,
+      "sha256": "06094609FA5FE7285E51DEE934E1D36CFBDDBF03BBB77D71C55C585C4C410C29"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\original-function-and-defaults-fixture-proof.json",
+      "bytes": 5381,
+      "sha256": "8452A030ACA6D6F0CF8F133EA658EDA3482CBE6BB1EB3E2753FC0EC3FB2BC3D3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\fixture-provenance.json",
+      "bytes": 638,
+      "sha256": "EC53C36906CD0FFFA72EB11D044325807A1FE655206DF60835F9C0C59A80A544"
+    }
+  ],
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1086,
+    "sha256": "5CF7AEC04C7BCCB28089E1E412586E39E276FE90093A8457212642A05835DED3"
+  },
+  "build_inverse": {
+    "before": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\original\\build.zig",
+      "bytes": 550798,
+      "sha256": "4FC880853D3B268E38DA1D9B05B60590384696B0005820F66A9FA70D2747440C"
+    },
+    "after": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 551884,
+      "sha256": "CAA2D3594D9E5B3A1D4C683CD4F310B757C50DD744E1017BAA530CCFA7781DCF"
+    },
+    "anchor": "    const module_execution_state_tests = b.addTest(.{\n",
+    "addition_bytes": 1086,
+    "full_raw_inverse": true,
+    "target": "build-native-sdk-project-trust-resolution",
+    "test_filter": "native project trust resolution",
+    "install_only": true,
+    "artifact_stem": "test",
+    "artifact_names": [
+      "test.exe",
+      "test.pdb"
+    ],
+    "composition": "Compose this single resolver insertion over the latest accepted Main; accepted Event has its own separate 1050-byte insertion."
+  },
+  "source_declarations": 51,
+  "semantic_review": [
+    "Root manually read the complete original project-trust.ts runtime declarations, original complete settings-defaults literal, and actual immutable 60000ms retry constant authority.",
+    "Root manually read both complete native owners, all 51 controls, the full original-body observer and all three finite Auth/Application production hunks.",
+    "Actual Auth entry roots the genuine configuration before manager carrier Gets can retire its host; it does not dereference self after that guest boundary. Actual manager, event and shared defaults supply the private resolver.",
+    "Defined override is read twice as original. No-resource return precedes extension/Store/UI inputs. Extension Await retains separate result/error bindings, cached-next error iteration, optional reporter receiver and argument timing, and original first-throw IteratorClose behavior.",
+    "Persisted decision falls through only on strict null. Trusted yes, remember true, defaults nullish selection and policy switch preserve original strict comparisons and live property access.",
+    "Actual separate AsyncFunction selection helper preserves both original Await boundaries, fresh includeSessionOnly literal, live UI/select receiver, options map/find behavior and escaped selected lexical binding.",
+    "Saving uses the original nonempty updates check followed by live Store method and repeated updates Get; original cwd retention and post-Await Store/report/context rereads are explicit controls.",
+    "Shared defaults are a complete ordinary mutable literal once per actual Engine, with genuine captured retry constant and sessionShareDestination. Construction avoids global constructor and inherited-setter contamination.",
+    "Pending and fatal native completions, failed capture retry, cold reentry, owner retirement and escaped/abandoned frame lifetime are explicitly covered in source controls; no complete startup qualification is inferred."
+  ],
+  "structural_verification": {
+    "distinct_reference_versions": 83,
+    "whole_patch_targets": 9,
+    "all_direct_import_or_embed_rows": 71,
+    "standard_package_rows": 4,
+    "finite_production_hunks_and_raw_inverses": 3,
+    "exact_signature_type_erasures": 4,
+    "complete_settings_fixture_and_constant_reconstructed": true,
+    "unchanged_actual_auth_fixture_reconstructed": true,
+    "build_insertion_bytes": 1086,
+    "build_raw_inverse": true,
+    "all_51_control_names_exact": true,
+    "whole_patch_reconstructed": true,
+    "git_apply_check_passed": true,
+    "Main_clean": true
+  },
+  "composition_rule": "Compose only this 1086-byte build insertion over latest accepted Main; accepted Event owns a separate 1050-byte insertion. This packet does not replace other selected build additions.",
+  "remaining_original_owners": [
+    "Existing SettingsManager still uses older per-instance default asset/accessors and needs the genuine shared-default successor before complete factory qualification.",
+    "Original createRuntime/session-options/CLI context/resource/model-scope and all required real collaborators remain to be closed.",
+    "Production Node bridge remains until full installed startup and native behavior are qualified."
+  ],
+  "actual_metadata_count": null,
+  "runtime_result": null,
+  "native_execution_authorized": false,
+  "Main_mutated": false,
+  "full_startup_qualified": false,
+  "legacy_bridge_removed": false,
+  "created_utc": "2026-10-24T21:50:06.849568+00:00"
+}

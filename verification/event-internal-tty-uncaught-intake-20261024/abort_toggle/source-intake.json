@@ -1,0 +1,250 @@
+{
+  "schema": 1,
+  "status": "source_only_complete_original_Environment_abort_toggle_supplier",
+  "observed_main_head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "changes": [
+    {
+      "destination_relative_path": "src/extensions/native_node_callback_scope.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\original\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 40069,
+        "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\projected\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 41033,
+        "sha256": "01B48BFFDD03C6A80FA2F8925D8708182FD8E3BAE097F7BDE909691F2B348155"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_node_abort_uncaught_toggle_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\projected\\src\\native_node_abort_uncaught_toggle_test.zig",
+        "bytes": 5391,
+        "sha256": "230B338AEF9C7DF8B0CA1EF3DBCB2E08F8A149EB2B5CBFC8E6868DBD27F9FBB5"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\original\\build.zig",
+        "bytes": 550798,
+        "sha256": "4FC880853D3B268E38DA1D9B05B60590384696B0005820F66A9FA70D2747440C"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 552058,
+        "sha256": "5E65606F9CA94985C52B5305D8177D699F6F15E1F1862E13AB15D274C41C7D40"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\abort-toggle-source.patch",
+    "bytes": 10772,
+    "sha256": "63C9CB4EA283F66A129F798D5F53EC8F151744EABFEC30BF6B7DB907AA6D2AA1"
+  },
+  "source_inverses": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\source-inverses.json",
+      "bytes": 3890,
+      "sha256": "78762E3E551DA32F57164B3E9959813A92E6A9A9B73470770BCD82836AA83747"
+    }
+  ],
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1260,
+    "sha256": "428500797BF147DEA0A8D6216BB742F99D3B598428931358326832755D35C8AA"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 927,
+    "sha256": "805D80521714E317C2159ABC6C33A5361F4EA8EC6D59AB873271BF13CCFC1C5F"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\README.md",
+    "bytes": 1588,
+    "sha256": "210FCE3DCD965AD40E1827C8A07A043295043CB649CB98D34C003F4A3283CF32"
+  },
+  "retained_authority": [
+    {
+      "role": "original alias constructor and main-context initialization",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\src__env.cc.txt",
+        "bytes": 84987,
+        "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+      },
+      "selected_lines": [
+        [
+          803,
+          809
+        ],
+        [
+          964,
+          980
+        ]
+      ]
+    },
+    {
+      "role": "same original GetJSArray publication",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\src__node_util.cc.txt",
+        "bytes": 20372,
+        "sha256": "FBF7DC840F9A730D77E3A565B8A1B241009A8B817CBF0FC9BC2BD39DFF06EB2A"
+      },
+      "selected_lines": [
+        [
+          587,
+          593
+        ]
+      ]
+    },
+    {
+      "role": "original header AliasedUint32Array member",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\authority\\abort-toggle-native-binding-source-evidence.json",
+        "bytes": 20433,
+        "sha256": "03E39CFE238875B29EE1E4DBAB59BA00B20E9CC2D931FE1DB4F59DC99A96689B"
+      }
+    },
+    {
+      "role": "actual shared intrinsic typed-array API",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+        "bytes": 117849,
+        "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+      },
+      "selected_lines": [
+        [
+          1496,
+          1499
+        ]
+      ]
+    }
+  ],
+  "direct_import_resolutions": [
+    {
+      "importer": "src/extensions/native_node_callback_scope.zig",
+      "line": 6,
+      "literal": "engine.zig",
+      "target": "src/extensions/engine.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_callback_scope.zig",
+      "line": 7,
+      "literal": "native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_callback_scope.zig",
+      "line": 9,
+      "literal": "native_sdk_owned_completion.zig",
+      "target": "src/extensions/native_sdk_owned_completion.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+        "bytes": 15176,
+        "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_callback_scope.zig",
+      "line": 10,
+      "literal": "native_env_charged_allocator.zig",
+      "target": "src/extensions/native_env_charged_allocator.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_env_charged_allocator.zig",
+        "bytes": 3018,
+        "sha256": "2BF55B71DB0AE7A0F2FA151F536D86329C0FC22532D6E6C487D7DFCE5C739E85"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_callback_scope.zig",
+      "line": 11,
+      "literal": "native_node_request_state.zig",
+      "target": "src/extensions/native_node_request_state.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_request_state.zig",
+        "bytes": 5818,
+        "sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_callback_scope.zig",
+      "line": 12,
+      "literal": "native_node_managed_buffers.zig",
+      "target": "src/extensions/native_node_managed_buffers.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_managed_buffers.zig",
+        "bytes": 2875,
+        "sha256": "BE567B795D5129373EEFCF2A7C95E9017C481E020F17472E2C35838689F22B88"
+      }
+    },
+    {
+      "importer": "src/native_node_abort_uncaught_toggle_test.zig",
+      "line": 4,
+      "literal": "native_node_file_handle_owner_test_support.zig",
+      "target": "src/native_node_file_handle_owner_test_support.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 33411,
+        "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+      }
+    }
+  ],
+  "standard_package_imports": [
+    {
+      "importer": "src/extensions/native_node_callback_scope.zig",
+      "line": 5,
+      "literal": "std"
+    },
+    {
+      "importer": "src/native_node_abort_uncaught_toggle_test.zig",
+      "line": 3,
+      "literal": "std"
+    }
+  ],
+  "controls": {
+    "group": "native-node-abort-uncaught-toggle",
+    "target": "build-native-node-abort-uncaught-toggle",
+    "test_root": "src/native_node_abort_uncaught_toggle_test.zig",
+    "filter": "native abort toggle",
+    "artifact_stem": "native-node-abort-uncaught-toggle",
+    "pdb_stem": "test",
+    "source_declaration_count": 5,
+    "names": [
+      "native abort toggle is the original one-cell Uint32Array on the actual native backing",
+      "native abort toggle guest and native writes share the same full 32-bit cell",
+      "native abort toggle repeated acquisition and GC retain identity without resetting state",
+      "native abort toggle belongs to each actual Environment rather than shared process-global storage",
+      "native abort toggle disarm clears native pointers while an independently retained VM view stays valid"
+    ]
+  },
+  "checks": {
+    "complete_six_hunk_raw_inverse": true,
+    "one_exact_build_insertion_inverse": true,
+    "all_imports_resolved": true,
+    "git_apply_check_passed": true
+  },
+  "claims": {
+    "Main_mutated": false,
+    "native_execution": false,
+    "native_qualification": false,
+    "util_namespace_published": false,
+    "uncaught_bootstrap_assembled": false,
+    "native_abort_consumer_complete": false
+  },
+  "created_utc": "2026-10-24T21:43:13.845832+00:00"
+}

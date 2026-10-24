@@ -1,0 +1,16 @@
+    // Original Environment-owned Uint32 abort toggle and borrowed util supplier.
+    const node_abort_uncaught_toggle = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_abort_uncaught_toggle_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native abort toggle"},
+    });
+    linkQuickJs(b, node_abort_uncaught_toggle.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_abort_uncaught_toggle.root_module, typescript_parser);
+    linkSqlite(node_abort_uncaught_toggle.root_module, sqlite_lib_dir, sqlite_library);
+    node_abort_uncaught_toggle.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_abort_uncaught_toggle.root_module.linkSystemLibrary("advapi32", .{});
+        node_abort_uncaught_toggle.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-abort-uncaught-toggle", "Install five actual Environment abort-toggle controls without running").dependOn(&b.addInstallArtifact(node_abort_uncaught_toggle, .{ .dest_sub_path = b.fmt("native-node-abort-uncaught-toggle{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+

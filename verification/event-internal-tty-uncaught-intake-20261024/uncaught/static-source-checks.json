@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "scope": "bounded source/data inspection only; not a Zig parse or compile",
+  "head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "main_clean": true,
+  "selected_pin_count": 3,
+  "direct_import_occurrences": 15,
+  "standard_package_import_import_occurrences": 2,
+  "all_direct_import_paths_resolved": true,
+  "source_declaration_count": 36,
+  "all_names_unique_and_filtered": true,
+  "full_patch_reconstruction_exact": true,
+  "build_single_raw_inverse_exact": true,
+  "selected_build_preserves_entire_baseline": true,
+  "linkSqlite_argument_count": 3,
+  "source_type_refinement_exact_one_token_inverse": true,
+  "ordinary_JS_fixture_probes_explicit": true,
+  "unavailable_inputs_not_claimed_authenticated": true,
+  "selected_sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_process_uncaught_handler.zig",
+      "bytes": 17799,
+      "sha256": "3A538E596AE0DF3D374B55F908DE87D233D7D99EB72009157E36F82BCACF14C5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\projected\\src\\native_node_process_uncaught_handler_test.zig",
+      "bytes": 35715,
+      "sha256": "E78CA786F75264A5F1A132EBC2618A355D4ED8758B36389E30EE597BEC99E5FA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 552184,
+      "sha256": "108A35B46E0DB988A2375CFF3A0C617520250256D8314A119368C38571020D24"
+    }
+  ],
+  "source_supplement": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\authority\\supplemental-original-source-evidence.json",
+    "bytes": 40880,
+    "sha256": "5F61597EC4D5915AF8CC73FE461EFB51BEF5A22F266ED92BC70EB644C9D5768B"
+  },
+  "unselected_draft": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\projected\\src\\extensions\\native_node_process_uncaught_handler.zig",
+    "bytes": 17798,
+    "sha256": "5A38F348742624C9FE03B892EFCF320427C61EEB9194026CC1907305B3EFD69E"
+  },
+  "native_execution": false,
+  "candidate_executed": false
+}

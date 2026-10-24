@@ -1920,6 +1920,67 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-sdk-project-trust-manager", "Install actual shared authenticated trust-manager controls without execution").dependOn(&b.addInstallArtifact(project_trust_manager_tests, .{}).step);
 
+    const project_trust_event_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_project_trust_event_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native project trust event"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, project_trust_event_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, project_trust_event_tests.root_module, typescript_parser);
+    linkSqlite(project_trust_event_tests.root_module, sqlite_lib_dir, sqlite_library);
+    project_trust_event_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        project_trust_event_tests.root_module.linkSystemLibrary("advapi32", .{});
+        project_trust_event_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-project-trust-event", "Install actual intrinsic-Await project trust event controls without execution").dependOn(&b.addInstallArtifact(project_trust_event_tests, .{}).step);
+
+    // Complete original private uncaught-handler declarations with explicit inputs.
+    // Install only; native qualification and authenticated bootstrap remain separate.
+    const node_process_uncaught_handler = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_process_uncaught_handler_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native uncaught handler"},
+    });
+    linkQuickJs(b, node_process_uncaught_handler.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_process_uncaught_handler.root_module, typescript_parser);
+    linkSqlite(node_process_uncaught_handler.root_module, sqlite_lib_dir, sqlite_library);
+    node_process_uncaught_handler.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_process_uncaught_handler.root_module.linkSystemLibrary("advapi32", .{});
+        node_process_uncaught_handler.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-process-uncaught-handler", "Install thirty-six private uncaught-handler controls without running").dependOn(&b.addInstallArtifact(node_process_uncaught_handler, .{ .dest_sub_path = b.fmt("native-node-process-uncaught-handler{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
+    // Original Environment-owned Uint32 abort toggle and borrowed util supplier.
+    const node_abort_uncaught_toggle = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_abort_uncaught_toggle_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native abort toggle"},
+    });
+    linkQuickJs(b, node_abort_uncaught_toggle.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_abort_uncaught_toggle.root_module, typescript_parser);
+    linkSqlite(node_abort_uncaught_toggle.root_module, sqlite_lib_dir, sqlite_library);
+    node_abort_uncaught_toggle.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_abort_uncaught_toggle.root_module.linkSystemLibrary("advapi32", .{});
+        node_abort_uncaught_toggle.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-abort-uncaught-toggle", "Install five actual Environment abort-toggle controls without running").dependOn(&b.addInstallArtifact(node_abort_uncaught_toggle, .{ .dest_sub_path = b.fmt("native-node-abort-uncaught-toggle{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
+    const project_trust_resolution_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_project_trust_resolution_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native project trust resolution"},
+    });
+    linkQuickJs(b, project_trust_resolution_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, project_trust_resolution_tests.root_module, typescript_parser);
+    linkSqlite(project_trust_resolution_tests.root_module, sqlite_lib_dir, sqlite_library);
+    project_trust_resolution_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        project_trust_resolution_tests.root_module.linkSystemLibrary("advapi32", .{});
+        project_trust_resolution_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-project-trust-resolution", "Install actual authenticated project-trust resolution controls without execution").dependOn(&b.addInstallArtifact(project_trust_resolution_tests, .{}).step);
+
     const module_execution_state_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_execution_state_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native module execution state"}, .use_llvm = use_llvm,
@@ -5070,6 +5131,24 @@ pub fn build(b: *std.Build) void {
         node_tty_color_depth.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-node-tty-color-depth", "Install twenty-nine declared TTY color-depth controls without running").dependOn(&b.addInstallArtifact(node_tty_color_depth, .{ .dest_sub_path = b.fmt("native-node-tty-color-depth{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
+    // Complete private internal/tty and shared integer/range-error suppliers.
+    // Install only; the caller selects the real private builtin admission set.
+    const node_internal_tty = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_internal_tty_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native internal tty"},
+    });
+    linkQuickJs(b, node_internal_tty.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_internal_tty.root_module, typescript_parser);
+    linkSqlite(node_internal_tty.root_module, sqlite_lib_dir, sqlite_library);
+    node_internal_tty.root_module.addImport("catalog_tool", catalog_tool);
+    node_internal_tty.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+    if (target.result.os.tag == .windows) {
+        node_internal_tty.root_module.linkSystemLibrary("advapi32", .{});
+        node_internal_tty.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-internal-tty", "Install thirty-six declared private internal TTY controls without running").dependOn(&b.addInstallArtifact(node_internal_tty, .{ .dest_sub_path = b.fmt("native-node-internal-tty{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
     // Genuine shared Node argument errors and actual rest/super controls.
     // This target only installs the test artifact; no run or Source capture edge.

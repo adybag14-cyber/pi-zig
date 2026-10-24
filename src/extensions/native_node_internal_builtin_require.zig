@@ -12,7 +12,8 @@ const key = "pi-native:private/internal-builtin-require";
 pub const Binding = struct {
     /// Actual realm builtin id, e.g. util (never node:util).
     id: []const u8,
-    /// Canonical Engine.registerDefaultModule record, e.g. node:util.
+    /// Completed native default record, e.g. node:util or private internal/tty.
+    /// Public Engine.native_module_names admission is a separate operation.
     module_name: []const u8,
 };
 pub const Inputs = struct {
@@ -68,7 +69,7 @@ fn actualExports(s:*Scope,binding:Binding)!c.JSValue {
     var owned=[_]c.JSValue{descriptor.value,descriptor.getter,descriptor.setter};
     defer for(&owned)|*value|s.boundary.release(value);
     try s.pending();
-    // registerDefaultModule publishes an OWN DATA binding. An inherited or
+    // Native default-record producers publish an OWN DATA binding. An inherited or
     // getter-synthesized default cannot declare a native backend completed.
     if(descriptor.flags&c.JS_PROP_GETSET!=0 or c.JS_IsUndefined(owned[0]))return error.ActualInternalBuiltinDefaultRequired;
     return s.own(c.JS_DupValue(s.engine.context,owned[0]));

@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\original\\src\\extensions\\native_node_callback_scope.zig",
+    "bytes": 40069,
+    "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\projected\\src\\extensions\\native_node_callback_scope.zig",
+    "bytes": 41033,
+    "sha256": "01B48BFFDD03C6A80FA2F8925D8708182FD8E3BAE097F7BDE909691F2B348155"
+  },
+  "edits": [
+    {
+      "offset": 5438,
+      "before": "const StreamBaseState = Alias(i32, c.JS_TYPED_ARRAY_INT32);",
+      "after": "const AbortOnUncaughtToggle = Alias(u32, c.JS_TYPED_ARRAY_UINT32);\nconst StreamBaseState = Alias(i32, c.JS_TYPED_ARRAY_INT32);",
+      "input_sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E",
+      "output_sha256": "DDB9ABB244C305C8ACCB39F372D96274DCE0FE4B0FA64C366CD77BEA9CE5401A"
+    },
+    {
+      "offset": 6515,
+      "before": "    stream_base_state: StreamBaseState = .{},",
+      "after": "    should_abort_on_uncaught_toggle: AbortOnUncaughtToggle = .{},\n    stream_base_state: StreamBaseState = .{},",
+      "input_sha256": "DDB9ABB244C305C8ACCB39F372D96274DCE0FE4B0FA64C366CD77BEA9CE5401A",
+      "output_sha256": "B9EEF52949A6310F0872999E4CE87159C82F2905524303586FE588EE0E9E9E79"
+    },
+    {
+      "offset": 10087,
+      "before": "        self.stream_base_state = try StreamBaseState.create(s, 4);",
+      "after": "        self.should_abort_on_uncaught_toggle = try AbortOnUncaughtToggle.create(s, 1);\n        self.stream_base_state = try StreamBaseState.create(s, 4);",
+      "input_sha256": "B9EEF52949A6310F0872999E4CE87159C82F2905524303586FE588EE0E9E9E79",
+      "output_sha256": "2A223D4029531B368AAFECAED90CAFD8B3BEA96F387784E6CF8CDA999B3512B5"
+    },
+    {
+      "offset": 10768,
+      "before": "        output.* = self;\n        return c.pi_js_undefined();",
+      "after": "        // Original InitializeMainContext sets this existing aliased cell to 1.\n        // The selected fresh initialized Environment is not exposed before it.\n        self.should_abort_on_uncaught_toggle.data[0] = 1;\n        output.* = self;\n        return c.pi_js_undefined();",
+      "input_sha256": "2A223D4029531B368AAFECAED90CAFD8B3BEA96F387784E6CF8CDA999B3512B5",
+      "output_sha256": "C8653BF0EC2EE253602F4903899D83B896C444476A0CF819007FB9AE6277F672"
+    },
+    {
+      "offset": 13560,
+      "before": "    pub fn streamBaseField(self: *Environment, index: StreamBaseField) *i32 {",
+      "after": "    /// Borrowed original util-binding supplier: the same Environment-owned\n    /// Uint32Array, never a copy and never reset by repeated acquisition.\n    /// The bootstrap retains it through its ordinary checked owner boundary.\n    pub fn abortOnUncaughtToggle(self: *Environment) !c.JSValue {\n        _ = try self.requireEngine();\n        return self.should_abort_on_uncaught_toggle.view orelse\n            return error.ActualNodeAbortOnUncaughtToggleRequired;\n    }\n    pub fn streamBaseField(self: *Environment, index: StreamBaseField) *i32 {",
+      "input_sha256": "C8653BF0EC2EE253602F4903899D83B896C444476A0CF819007FB9AE6277F672",
+      "output_sha256": "284D90BA3181078725EA48B2E224C112B7B739998696C12A3994AF32B98BFE98"
+    },
+    {
+      "offset": 32526,
+      "before": "        self.stream_base_state.release(s);\n        self.ids.release(s);",
+      "after": "        self.stream_base_state.release(s);\n        self.should_abort_on_uncaught_toggle.release(s);\n        self.ids.release(s);",
+      "input_sha256": "284D90BA3181078725EA48B2E224C112B7B739998696C12A3994AF32B98BFE98",
+      "output_sha256": "01B48BFFDD03C6A80FA2F8925D8708182FD8E3BAE097F7BDE909691F2B348155"
+    }
+  ],
+  "complete_raw_inverse": true
+}

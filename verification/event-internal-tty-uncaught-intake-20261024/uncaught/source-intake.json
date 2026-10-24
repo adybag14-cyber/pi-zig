@@ -1,0 +1,523 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-24T21:32:37.158976+00:00",
+  "scope": "Complete private original execution.js uncaught-handler declaration bodies with explicit unavailable authenticated assembly inputs",
+  "status": "sealed_source_only_pending_independent_review_and_native_qualification",
+  "observed_main_head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "main_porcelain_empty": true,
+  "changes": [
+    {
+      "destination_relative_path": "src/extensions/native_node_process_uncaught_handler.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_process_uncaught_handler.zig",
+        "bytes": 17799,
+        "sha256": "3A538E596AE0DF3D374B55F908DE87D233D7D99EB72009157E36F82BCACF14C5"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_node_process_uncaught_handler_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\projected\\src\\native_node_process_uncaught_handler_test.zig",
+        "bytes": 35715,
+        "sha256": "E78CA786F75264A5F1A132EBC2618A355D4ED8758B36389E30EE597BEC99E5FA"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\original\\build.zig",
+        "bytes": 550798,
+        "sha256": "4FC880853D3B268E38DA1D9B05B60590384696B0005820F66A9FA70D2747440C"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 552184,
+        "sha256": "108A35B46E0DB988A2375CFF3A0C617520250256D8314A119368C38571020D24"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\uncaught-handler-successor.patch",
+    "bytes": 56874,
+    "sha256": "29BFBA0EB712DA2D2A10A2EE0FBC82AEEDAF34E8381CB62D951BFE3A34B57AD3"
+  },
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1386,
+    "sha256": "AFE905BF54F36BC7E8FA7E7A663C437FA4A29D9305F7A13234BD4BAC3610480D"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1469,
+    "sha256": "2F7D6F6ADA58925935E24196D7290B0B9BB1C140A9D083153D1530FDF0EEDF2C"
+  },
+  "source_inverses": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\abort-toggle-original-type-refinement.json",
+      "bytes": 1095,
+      "sha256": "899D6C562FFEC6CD23E711E0ABE7B1177586541F675869D2D150D410CEC9218E"
+    }
+  ],
+  "unselected_preserved_draft": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\projected\\src\\extensions\\native_node_process_uncaught_handler.zig",
+    "bytes": 17798,
+    "sha256": "5A38F348742624C9FE03B892EFCF320427C61EEB9194026CC1907305B3EFD69E"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\README.md",
+    "bytes": 2434,
+    "sha256": "3358430981F4C9F1AEBAED5FF51B682A277ACF5815ABBE3C91688FCFA051042E"
+  },
+  "dependency_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\dependency-handoff.json",
+    "bytes": 10594,
+    "sha256": "5517D8BD8756255ACA1A5D9769905C80F83FA888096E5273F7D093BDC3404635"
+  },
+  "static_checks": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\static-source-checks.json",
+    "bytes": 2469,
+    "sha256": "FF26DB3443CFB55F79E316A2432B908E4E350FB65EC36590F378C3C8500E8709"
+  },
+  "retained_authority": [
+    {
+      "role": "Complete original file and selected full handler declarations",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\authority\\lib__internal__process__execution.js.txt",
+        "bytes": 17264,
+        "sha256": "0E1CA1425E44469425AD6658907A81C4A96322ACB779F5E4B402CD0015292C41"
+      },
+      "selected_lines": [
+        [
+          107,
+          194
+        ]
+      ]
+    },
+    {
+      "role": "Original GenericUserError numeric identity",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\authority\\src__node_exit_code.h.txt",
+        "bytes": 3028,
+        "sha256": "19EA19CCDE8E0A558410ECA7589E6EACC7C031753AC91687CF6EF855D5490379"
+      }
+    },
+    {
+      "role": "Original aliased Uint32 declaration and binding evidence",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\authority\\abort-toggle-native-binding-source-evidence.json",
+        "bytes": 20433,
+        "sha256": "03E39CFE238875B29EE1E4DBAB59BA00B20E9CC2D931FE1DB4F59DC99A96689B"
+      }
+    },
+    {
+      "role": "Original source acquisition metadata",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\authority\\public-source-fetch-evidence.json",
+        "bytes": 15485,
+        "sha256": "6D4A533C01079B1FBF6AB0079C4E13030818E638603F5DEC2CAC84CD1C606162"
+      }
+    },
+    {
+      "role": "Original errors/async-hooks and toggle initialization evidence",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\authority\\supplemental-original-source-evidence.json",
+        "bytes": 40880,
+        "sha256": "5F61597EC4D5915AF8CC73FE461EFB51BEF5A22F266ED92BC70EB644C9D5768B"
+      }
+    },
+    {
+      "role": "Complete retained native Environment authority",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\src__env.cc.txt",
+        "bytes": 84987,
+        "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+      }
+    },
+    {
+      "role": "Complete retained native util binding authority",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\src__node_util.cc.txt",
+        "bytes": 20372,
+        "sha256": "FBF7DC840F9A730D77E3A565B8A1B241009A8B817CBF0FC9BC2BD39DFF06EB2A"
+      }
+    },
+    {
+      "role": "Complete retained native uncaught trigger authority; unimplemented here",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\src__node_errors.cc.txt",
+        "bytes": 43095,
+        "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9"
+      }
+    },
+    {
+      "role": "Retained original license",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\LICENSE.txt",
+        "bytes": 156926,
+        "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+      }
+    }
+  ],
+  "direct_import_resolutions": [
+    {
+      "importer": "src/extensions/native_node_process_uncaught_handler.zig",
+      "line": 7,
+      "literal": "native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_process_uncaught_handler.zig",
+      "line": 8,
+      "literal": "native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_process_uncaught_handler.zig",
+      "line": 9,
+      "literal": "native_node_fs_private_publication.zig",
+      "target": "src/extensions/native_node_fs_private_publication.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_private_publication.zig",
+        "bytes": 1033,
+        "sha256": "F118D857DB722708344B87083608FEFEB769183BC0DB0F09C05D1CDCF87AB307"
+      }
+    },
+    {
+      "importer": "src/extensions/native_node_process_uncaught_handler.zig",
+      "line": 10,
+      "literal": "native_agent_af_values.zig",
+      "target": "src/extensions/native_agent_af_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_agent_af_values.zig",
+        "bytes": 8615,
+        "sha256": "3836B2F939A7443861BDCF2250C343E8F343EEE381DED4DC62BF2154E2A54656"
+      }
+    },
+    {
+      "importer": "src/native_node_process_uncaught_handler_test.zig",
+      "line": 5,
+      "literal": "extensions/native_node_argument_values.zig",
+      "target": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "importer": "src/native_node_process_uncaught_handler_test.zig",
+      "line": 6,
+      "literal": "extensions/native_node_argument_bootstrap.zig",
+      "target": "src/extensions/native_node_argument_bootstrap.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_bootstrap.zig",
+        "bytes": 4905,
+        "sha256": "435957EED6F561AD47B2AAA68EA07BC5FBDCCE28D2F077B8824098B309A98484"
+      }
+    },
+    {
+      "importer": "src/native_node_process_uncaught_handler_test.zig",
+      "line": 7,
+      "literal": "extensions/native_node_string_error_registration.zig",
+      "target": "src/extensions/native_node_string_error_registration.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_string_error_registration.zig",
+        "bytes": 7051,
+        "sha256": "99E127D89C273C6F51E8016C2BE58BD72E74E2719B14AA724B9D27585FED4829"
+      }
+    },
+    {
+      "importer": "src/native_node_process_uncaught_handler_test.zig",
+      "line": 8,
+      "literal": "extensions/native_node_argument_errors.zig",
+      "target": "src/extensions/native_node_argument_errors.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_errors.zig",
+        "bytes": 10884,
+        "sha256": "6C8D3213D323E17E2316A727D39FA66AEC52AC32DB23E5F992B1120DD5E14F2D"
+      }
+    },
+    {
+      "importer": "src/native_node_process_uncaught_handler_test.zig",
+      "line": 9,
+      "literal": "extensions/native_node_process_uncaught_handler.zig",
+      "target": "src/extensions/native_node_process_uncaught_handler.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_process_uncaught_handler.zig",
+        "bytes": 17799,
+        "sha256": "3A538E596AE0DF3D374B55F908DE87D233D7D99EB72009157E36F82BCACF14C5"
+      }
+    },
+    {
+      "importer": "src/native_node_process_uncaught_handler_test.zig",
+      "line": 10,
+      "literal": "extensions/native_node_module_callable.zig",
+      "target": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "importer": "src/native_node_process_uncaught_handler_test.zig",
+      "line": 37,
+      "literal": "extensions/timers.zig",
+      "target": "src/extensions/timers.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\timers.zig",
+        "bytes": 52715,
+        "sha256": "4AB5926421C7601B752F92E4306DC31A455C16437F8C904F80875EEE4B70CCCC"
+      }
+    },
+    {
+      "importer": "src/native_node_process_uncaught_handler_test.zig",
+      "line": 38,
+      "literal": "extensions/native_process.zig",
+      "target": "src/extensions/native_process.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+        "bytes": 6626,
+        "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+      }
+    },
+    {
+      "importer": "src/native_node_process_uncaught_handler_test.zig",
+      "line": 40,
+      "literal": "extensions/native_node_os.zig",
+      "target": "src/extensions/native_node_os.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_os.zig",
+        "bytes": 18014,
+        "sha256": "9EEC70BDD87210460DE4CCFC70D66BAB4333FDB56ED41C127171B6FE6BBABBD2"
+      }
+    },
+    {
+      "importer": "src/native_node_process_uncaught_handler_test.zig",
+      "line": 115,
+      "literal": "extensions/native_node_stream.zig",
+      "target": "src/extensions/native_node_stream.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_stream.zig",
+        "bytes": 88298,
+        "sha256": "1F52B9BDE90EB24DB51674E8D03A8C65093BBF36D5D2C1B22BC13F21A177F769"
+      }
+    },
+    {
+      "importer": "src/native_node_process_uncaught_handler_test.zig",
+      "line": 116,
+      "literal": "extensions/native_node_system_errors.zig",
+      "target": "src/extensions/native_node_system_errors.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_system_errors.zig",
+        "bytes": 9362,
+        "sha256": "25473EB44A8A45E5F38F08FB6C7B9836DEEE8FAA95FD635B2A5CBF3581EDFCB6"
+      }
+    }
+  ],
+  "standard_package_imports": [
+    {
+      "importer": "src/extensions/native_node_process_uncaught_handler.zig",
+      "line": 6,
+      "literal": "std"
+    },
+    {
+      "importer": "src/native_node_process_uncaught_handler_test.zig",
+      "line": 4,
+      "literal": "std"
+    }
+  ],
+  "native_dependency_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2409692,
+      "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 117849,
+      "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+    }
+  ],
+  "current_owner_dependencies": {
+    "actual_callback_environment": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+    },
+    "actual_process": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+      "bytes": 6626,
+      "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+    },
+    "actual_process_events": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_process_events.zig",
+      "bytes": 12278,
+      "sha256": "D33BBA08FC2807A01D1EDA7695A84D85BF595548B6E4C97970CD2DD67D413C20"
+    },
+    "actual_timers_install": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\timers.zig",
+      "bytes": 52715,
+      "sha256": "4AB5926421C7601B752F92E4306DC31A455C16437F8C904F80875EEE4B70CCCC"
+    },
+    "actual_internal_builtin_require": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_internal_builtin_require.zig",
+      "bytes": 8889,
+      "sha256": "E5C93743C8285705C646875C42F3EAD46C1750244BE3F8A7989F1607EA30B1EA"
+    },
+    "actual_options": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_options_config.zig",
+      "bytes": 20006,
+      "sha256": "1E00540ADCE1D3CE012578C64F582776E06FE6027F79D71BE8ED0EF5F91E076E"
+    },
+    "actual_engine": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    "actual_operation_scope": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+    },
+    "actual_vm_C": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2409692,
+      "sha256": "9536D5AD61EE63724DDAF37B9C79C4E93906065B8A9AECA0CD45585B38A3950C"
+    },
+    "actual_vm_header": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 117849,
+      "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+    },
+    "original_environment": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\src__env.cc.txt",
+      "bytes": 84987,
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+    },
+    "original_util_binding": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\src__node_util.cc.txt",
+      "bytes": 20372,
+      "sha256": "FBF7DC840F9A730D77E3A565B8A1B241009A8B817CBF0FC9BC2BD39DFF06EB2A"
+    },
+    "original_trigger_uncaught": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\src__node_errors.cc.txt",
+      "bytes": 43095,
+      "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9"
+    },
+    "original_license": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-module-constructor-sourceonly-20261016\\authority\\LICENSE.txt",
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    }
+  },
+  "private_api": {
+    "factory": "native_node_process_uncaught_handler.create",
+    "required_inputs": [
+      "process",
+      "require",
+      "should_abort_on_uncaught_toggle",
+      "invalid_arg_type",
+      "capture_already_set",
+      "execution_async_id",
+      "clear_default_trigger_async_id",
+      "clear_async_id_stack",
+      "has_async_id_stack",
+      "after_hooks_exist",
+      "emit_after",
+      "pop_async_context"
+    ],
+    "result": "owned private ordinary exports containing exactly the three original declarations",
+    "cache_policy": "actual Engine private owner with exact repeated-input identity, traced roots and construction-retirement handling",
+    "inputs_authenticated": false,
+    "namespace_publication": false
+  },
+  "controls": {
+    "target": "build-native-node-process-uncaught-handler",
+    "test_root": "src/native_node_process_uncaught_handler_test.zig",
+    "filter": "native uncaught handler",
+    "artifact_stem": "native-node-process-uncaught-handler",
+    "pdb_stem": "test",
+    "source_declaration_count": 36,
+    "names": [
+      "native uncaught handler original declarations preserve callable metadata and fresh anonymous arrows",
+      "native uncaught handler initial null capture reset writes the stored false report flag",
+      "native uncaught handler capture receives the original ordinary state and saved report flag is strict true",
+      "native uncaught handler invalid callback uses the actual argument error graph before any state read",
+      "native uncaught handler duplicate registration uses the required canonical capture error constructor",
+      "native uncaught handler class callback passes typeof function then fails at its actual call",
+      "native uncaught handler registration resolves the report receiver twice in original order",
+      "native uncaught handler null reset resolves its left report receiver before the mutable reportFlag getter",
+      "native uncaught handler report lookup failure retains the already assigned capture and toggle",
+      "native uncaught handler invalid type precedes duplicate and hostile capture getters",
+      "native uncaught handler monitor uses the live process receiver and fromPromise truthiness without coercion",
+      "native uncaught handler monitor can register the capture used by the subsequent live branch",
+      "native uncaught handler capture branch performs two live gets and calls the second with state receiver",
+      "native uncaught handler null capture getter selects the uncaught emitter without a second get",
+      "native uncaught handler capture return values remain ignored without thenable assimilation",
+      "native uncaught handler monitor throw propagates before capture or unhandled processing",
+      "native uncaught handler capture throw propagates before timers and after hooks",
+      "native uncaught handler unhandled false marks exiting sets code one and emits exit once",
+      "native uncaught handler truthy exiting skips all further exit writes without coercion",
+      "native uncaught handler only the original exit try block swallows its ordinary abrupt completions",
+      "native uncaught handler timers require and live setImmediate retain their original receiver and noop identity",
+      "native uncaught handler after hooks use do while order strict zero and exact supplied async identities",
+      "native uncaught handler false after hook predicate skips the loop but always clears the stack",
+      "native uncaught handler null reset preserves earlier writes when the report setter is read only",
+      "native uncaught handler clear trigger abrupt completion precedes every process event",
+      "native uncaught handler required timers failure propagates before after hooks",
+      "native uncaught handler after hook abrupt stages preserve the original short circuit",
+      "native uncaught handler exact cached acquisition retains declarations and capture state",
+      "native uncaught handler conflicting actual inputs cannot reset or replace a cached owner",
+      "native uncaught handler ordinary state is independent in distinct actual Engines",
+      "native uncaught handler retained arrow owns dependencies through cache retirement and GC",
+      "native uncaught handler pending cold entry wins before allocator failure or publication",
+      "native uncaught handler actual cold allocation failure remains fatal and unpublished",
+      "native uncaught handler original exit catch cannot swallow an actual native fatal producer",
+      "native uncaught handler flagged returned DATA does not become a pending fatal event",
+      "native uncaught handler fatal clear trigger prevents monitor and all later work"
+    ],
+    "actual_metadata_count": null,
+    "runtime_result": null,
+    "async_hook_require_timer_fixture_inputs": "explicit VM observation probes; no authenticated native scheduling claim"
+  },
+  "claims": {
+    "Main_mutated": false,
+    "prior_packets_mutated": false,
+    "Engine_fields_changed": false,
+    "new_C_ABI": false,
+    "complete_execution_module": false,
+    "authenticated_abort_alias": false,
+    "authenticated_async_hooks": false,
+    "native_trigger_uncaught_implemented": false,
+    "native_Message_report_exit_implemented": false,
+    "process_fatalException_published": false,
+    "canonical_diagnostics_channel_published": false,
+    "production_startup": false,
+    "native_qualification": false
+  },
+  "candidate_executed": false,
+  "native_execution": false,
+  "not_executed": [
+    "Zig parser",
+    "Zig formatter",
+    "native build/query/runtime",
+    "Node reference capture",
+    "candidate source generator"
+  ]
+}

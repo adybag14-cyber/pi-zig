@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "original_realm": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-commonjs-internal-builtin-require-sourceonly-20261018\\authority\\realm.js",
+    "bytes": 15448,
+    "sha256": "6B19B7E820C099E28748019277B1CFDCDF2F1167C4F937F2645072764D2AC421"
+  },
+  "excerpts": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-commonjs-internal-builtin-require-sourceonly-20261018\\authority\\realm.js",
+        "bytes": 15448,
+        "sha256": "6B19B7E820C099E28748019277B1CFDCDF2F1167C4F937F2645072764D2AC421"
+      },
+      "line_start": 210,
+      "line_end": 220,
+      "offset": 6773,
+      "bytes": 548,
+      "sha256": "0C7307037D30E5077DE3472C9DAB4CA22538BEEAB53F981733BDA7C003140FC5",
+      "text": "    !StringPrototypeStartsWith(id, 'internal/') &&\n      !experimentalModuleList.has(id),\n  );\n// Do not expose the loaders to user land even with --expose-internals.\nconst internalBuiltinIds = builtinIds\n  .filter((id) => StringPrototypeStartsWith(id, 'internal/') && id !== selfId);\n\n// When --expose-internals is on we'll add the internal builtin ids to these.\nlet canBeRequiredByUsersList = new SafeSet(publicBuiltinIds);\nlet canBeRequiredByUsersWithoutSchemeList =\n  new SafeSet(publicBuiltinIds.filter((id) => !schemelessBlockList.has(id)));\n",
+      "role": "Internal builtin identities are separate from the ordinary public require set."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-commonjs-internal-builtin-require-sourceonly-20261018\\authority\\realm.js",
+        "bytes": 15448,
+        "sha256": "6B19B7E820C099E28748019277B1CFDCDF2F1167C4F937F2645072764D2AC421"
+      },
+      "line_start": 383,
+      "line_end": 429,
+      "offset": 12651,
+      "bytes": 1383,
+      "sha256": "3E1B07A187B5B338721CDE8525AC37E032A8256613F24A26E79FE520E22D12A6",
+      "text": "  compileForInternalLoader() {\n    if (this.loaded || this.loading) {\n      return this.exports;\n    }\n\n    const id = this.id;\n    this.loading = true;\n\n    try {\n      const requireFn = StringPrototypeStartsWith(this.id, 'internal/deps/') ?\n        requireWithFallbackInDeps : requireBuiltin;\n\n      const fn = compileFunction(id);\n      // Arguments must match the parameters specified in\n      // BuiltinLoader::LookupAndCompile().\n      fn(this.exports, requireFn, this, process, internalBinding, primordials);\n\n      this.loaded = true;\n    } finally {\n      this.loading = false;\n    }\n\n    // \"NativeModule\" is a legacy name of \"BuiltinModule\". We keep it\n    // here to avoid breaking users who parse process.moduleLoadList.\n    ArrayPrototypePush(moduleLoadList, `NativeModule ${id}`);\n    return this.exports;\n  }\n}\n\n// Think of this as module.exports in this file even though it is not\n// written in CommonJS style.\nconst loaderExports = {\n  internalBinding,\n  BuiltinModule,\n  require: requireBuiltin,\n};\n\nfunction requireBuiltin(id) {\n  if (id === selfId) {\n    return loaderExports;\n  }\n\n  const mod = BuiltinModule.map.get(id);\n  // Can't load the internal errors module from here, have to use a raw error.\n  // eslint-disable-next-line no-restricted-syntax\n  if (!mod) throw new TypeError(`Missing internal module '${id}'`);\n  return mod.compileForInternalLoader();\n",
+      "role": "The original internal wrapper retains process and private require, returns its module.exports and has a private loader entry."
+    }
+  ],
+  "actual_native_record_producer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+    "bytes": 99337,
+    "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+  },
+  "actual_private_require_baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\original\\src\\extensions\\native_node_internal_builtin_require.zig",
+    "bytes": 8889,
+    "sha256": "E5C93743C8285705C646875C42F3EAD46C1750244BE3F8A7989F1607EA30B1EA"
+  },
+  "actual_shared_error_registration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_error_registration.zig",
+    "bytes": 15160,
+    "sha256": "088CCD9556A8F3CE467011FEB8B391C457E1CDE11E79CCFDD2794FE309CBEFAD"
+  },
+  "assembly_contract": "This completes internal/tty body and its already genuine private backend admission. It does not claim the entire original BuiltinModule lifecycle, expose-internals option, public ESM namespace or moduleLoadList integration. The host's complete selected private admission set must already exist before consumer acquisition."
+}

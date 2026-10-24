@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "reviewer": "catalog_review",
+  "status": "independently_accepted_source_only_no_concrete_blocker",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\source-intake.json",
+    "bytes": 9754,
+    "sha256": "025D0BBF4E51011B9E9384A7C1F78BE6CEACE749F50AF99F83E72170216A989E"
+  },
+  "observed_clean_head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "selected_owner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\projected\\src\\extensions\\native_node_callback_scope.zig",
+    "bytes": 41033,
+    "sha256": "01B48BFFDD03C6A80FA2F8925D8708182FD8E3BAE097F7BDE909691F2B348155"
+  },
+  "checks": {
+    "unique_referenced_pin_versions_rehashed": 21,
+    "entry_pin_rehashed": true,
+    "production_hunks_forward_and_complete_inverse": 6,
+    "unchanged_production_bytes_exact": true,
+    "baseline_equals_current_Main": true,
+    "build_insertion_bytes": 1260,
+    "build_insertion_and_raw_inverse_exact": true,
+    "whole_three_target_patch_recreated": true,
+    "read_only_git_apply_check": true,
+    "direct_import_mappings_reproduced": 7,
+    "standard_package_imports": 2,
+    "control_declarations_read": 5,
+    "clean_Main_before_handoff": true
+  },
+  "authority_and_semantics": [
+    "Read retained env.cc 803-809: one-element should_abort_on_uncaught_toggle_ allocation precedes stream_base_state_. Read 964-980: original InitializeMainContext writes cell 0 to 1 after the main realm exists. The selected constructor supplies a fresh initialized Environment and performs this write before output publication; no separate uninitialized phase is exposed or claimed.",
+    "Retained f657bb8 env.h evidence declares AliasedUint32Array. The projection uses existing Alias(u32, JS_TYPED_ARRAY_UINT32) with its actual intrinsic ArrayBuffer storage, not Uint8, a copied cell, or a synthetic callback. Existing Alias.create/release bodies are unchanged.",
+    "Read node_util.cc 587-593: original util binding publishes the same GetJSArray. The new abortOnUncaughtToggle getter returns the same borrowed Environment-owned value, checks owning thread/live engine through existing requireEngine, and never resets or allocates. The caller must retain the borrowed view through its checked owner boundary.",
+    "Read complete createBody, Alias.release, retireRoots/disarm, existing fixture initialization/expose/deinit and all five tests. Both failed-construction cleanup and normal disarm include the new alias. Alias.release clears data and view slots before JS release; a separately retained VM typed-array view keeps its backing valid after disarm. Retire order places the new alias after stream state, consistent with their constructor order.",
+    "Controls assert exact Uint32 brand, count, 4-byte element/backing/offset and actual pointer identity; guest/native full-width writes; unchanged identity/value across GC; separate real Environments; and retained view validity after disarm with closed getter rejection. The secondary Environment uses existing actual operations but invokes no fabricated provider or native-exit behavior.",
+    "Build uses actual existing link helper arities and explicit artifact stem native-node-abort-uncaught-toggle, preserving the default test PDB stem. All existing build/source bytes outside the finite additions remain exact."
+  ],
+  "limitations": [
+    "Source-only acceptance: no parser, compiler, metadata, VM test, Node capture, or source generator executed.",
+    "No Main or sealed packet mutation. No util namespace, uncaught bootstrap, native abort option/scope consumer, or product qualification is claimed."
+  ],
+  "native_execution_authorized": false,
+  "native_qualification": false,
+  "product_qualification": false,
+  "created_utc": "2026-10-24T21:45:28.195966+00:00"
+}

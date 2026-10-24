@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "existing_source_changes": [
+    {
+      "target": "src/extensions/native_node_argument_messages.zig",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\original\\src\\extensions\\native_node_argument_messages.zig",
+        "bytes": 21602,
+        "sha256": "C703B46B6390900E87A629BDEDE9789D50EB774FFF15FC9D5E2D68A530F61CF7"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected\\src\\extensions\\native_node_argument_messages.zig",
+        "bytes": 22126,
+        "sha256": "CC7E03C7B47C3D26628B89AD24C94FE29EC17C246C12535C8E645A61568B9975"
+      },
+      "hunks": [
+        {
+          "offset": 2777,
+          "old": "    const strings = try s.get(try s.get(global, \"String\"), \"prototype\");\n",
+          "new": "    const number_primordials = try s.get(global, \"Number\");\n    try s.put(roots, \"NumberIsInteger\", try s.get(number_primordials, \"isInteger\"));\n    try s.put(roots, \"NumberMIN_SAFE_INTEGER\", try s.get(number_primordials, \"MIN_SAFE_INTEGER\"));\n    try s.put(roots, \"NumberMAX_SAFE_INTEGER\", try s.get(number_primordials, \"MAX_SAFE_INTEGER\"));\n    try s.put(roots, \"MathAbs\", try s.get(try s.get(global, \"Math\"), \"abs\"));\n    const string_constructor = try s.get(global, \"String\");\n    try s.put(roots, \"String\", string_constructor);\n    const strings = try s.get(string_constructor, \"prototype\");\n",
+          "before_sha256": "C703B46B6390900E87A629BDEDE9789D50EB774FFF15FC9D5E2D68A530F61CF7",
+          "after_sha256": "CC7E03C7B47C3D26628B89AD24C94FE29EC17C246C12535C8E645A61568B9975"
+        }
+      ],
+      "raw_forward_inverse": true
+    },
+    {
+      "target": "src/extensions/native_node_argument_errors.zig",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\original\\src\\extensions\\native_node_argument_errors.zig",
+        "bytes": 10884,
+        "sha256": "6C8D3213D323E17E2316A727D39FA66AEC52AC32DB23E5F992B1120DD5E14F2D"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected\\src\\extensions\\native_node_argument_errors.zig",
+        "bytes": 12154,
+        "sha256": "0394138090036A340F6B726CBB14F9E6424FF81664160B9DB115D9318E84E923"
+      },
+      "hunks": [
+        {
+          "offset": 291,
+          "old": "const registration = @import(\"native_node_argument_error_registration.zig\");\n",
+          "new": "const registration = @import(\"native_node_argument_error_registration.zig\");\nconst argument_range = @import(\"native_node_argument_range.zig\");\n",
+          "before_sha256": "6C8D3213D323E17E2316A727D39FA66AEC52AC32DB23E5F992B1120DD5E14F2D",
+          "after_sha256": "23DCC0AEDF8D6A9BB33F58B5600F0EFF96738869F45A9337FA6B8B8B2607C119"
+        },
+        {
+          "offset": 8602,
+          "old": "    try s.put(record, \"validateObject\", validate_object);\n",
+          "new": "    try s.put(record, \"validateObject\", validate_object);\n    const range_message = try s.own(try argument_range.makeMessage(s, message_roots[0]));\n    const out_of_range_class = try registration.register(s, inputs.range_error, \"ERR_OUT_OF_RANGE\",\n        range_message, inputs.marker, inputs.assert_function, inputs.reflect_apply);\n    const hidden_out_of_range = try registration.hide(s, out_of_range_class, inputs.range_error, inputs.error_constructor);\n    const validate_integer = try argument_range.makeValidateInteger(s, hidden, hidden_out_of_range,\n        inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply, message_roots[0]);\n    try s.put(record, \"outOfRange\", out_of_range_class);\n    try s.put(record, \"hiddenOutOfRange\", hidden_out_of_range);\n    try s.put(record, \"validateInteger\", validate_integer);\n",
+          "before_sha256": "23DCC0AEDF8D6A9BB33F58B5600F0EFF96738869F45A9337FA6B8B8B2607C119",
+          "after_sha256": "32B711CE041860C3C463126B824695A3E55DF9D7E74FF2E534014C446E912432"
+        },
+        {
+          "offset": 10449,
+          "old": "pub fn validateObject(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, \"validateObject\")}); }\n",
+          "new": "pub fn validateObject(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, \"validateObject\")}); }\npub fn outOfRange(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, \"outOfRange\")}); }\npub fn hiddenOutOfRange(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, \"hiddenOutOfRange\")}); }\npub fn validateInteger(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, \"validateInteger\")}); }\n",
+          "before_sha256": "32B711CE041860C3C463126B824695A3E55DF9D7E74FF2E534014C446E912432",
+          "after_sha256": "0394138090036A340F6B726CBB14F9E6424FF81664160B9DB115D9318E84E923"
+        }
+      ],
+      "raw_forward_inverse": true
+    },
+    {
+      "target": "src/extensions/native_node_internal_builtin_require.zig",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\original\\src\\extensions\\native_node_internal_builtin_require.zig",
+        "bytes": 8889,
+        "sha256": "E5C93743C8285705C646875C42F3EAD46C1750244BE3F8A7989F1607EA30B1EA"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected\\src\\extensions\\native_node_internal_builtin_require.zig",
+        "bytes": 8984,
+        "sha256": "02A9B4AD917C19E365024EDA8911FB8A3E3AE5A38DB03E48BC9C74FF99535D70"
+      },
+      "hunks": [
+        {
+          "offset": 791,
+          "old": "    /// Canonical Engine.registerDefaultModule record, e.g. node:util.\n",
+          "new": "    /// Completed native default record, e.g. node:util or private internal/tty.\n    /// Public Engine.native_module_names admission is a separate operation.\n",
+          "before_sha256": "E5C93743C8285705C646875C42F3EAD46C1750244BE3F8A7989F1607EA30B1EA",
+          "after_sha256": "28F7E3A585888B72DA844D829997B967623C7FFA3841F0F6C10E6AE951B3A67D"
+        },
+        {
+          "offset": 4457,
+          "old": "    // registerDefaultModule publishes an OWN DATA binding. An inherited or\n",
+          "new": "    // Native default-record producers publish an OWN DATA binding. An inherited or\n",
+          "before_sha256": "28F7E3A585888B72DA844D829997B967623C7FFA3841F0F6C10E6AE951B3A67D",
+          "after_sha256": "02A9B4AD917C19E365024EDA8911FB8A3E3AE5A38DB03E48BC9C74FF99535D70"
+        }
+      ],
+      "raw_forward_inverse": true
+    }
+  ],
+  "selected_draft_corrections": [
+    {
+      "target": "src/extensions/native_node_internal_tty.zig",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected\\src\\extensions\\native_node_internal_tty.zig",
+        "bytes": 10400,
+        "sha256": "571D0B9C30F7EDEF845A70A93C072B6B878D9A6918CCEA462767DA3190AE169F"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_internal_tty.zig",
+        "bytes": 10475,
+        "sha256": "A30E0292243D92202072F67C699C2073CA4638128E477A1AFC71DB9D8F6A10E5"
+      },
+      "hunks": [
+        {
+          "offset": 3455,
+          "old": "    if (s.engine.native_module_values.get(module_name)) |known| {\n        if (s.equal(known, attempt.default_record))\n            discarded[0] = s.engine.native_module_values.fetchRemove(module_name).?.value;\n    }\n",
+          "new": "    if (!c.JS_IsUndefined(attempt.default_record)) {\n        if (s.engine.native_module_values.get(module_name)) |known| {\n            if (s.equal(known, attempt.default_record))\n                discarded[0] = s.engine.native_module_values.fetchRemove(module_name).?.value;\n        }\n    }\n"
+        }
+      ],
+      "raw_forward_inverse": true
+    },
+    {
+      "target": "src/native_node_internal_tty_test.zig",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected\\src\\native_node_internal_tty_test.zig",
+        "bytes": 41237,
+        "sha256": "1E3D199144E8A6B7441DDB4F1CFEFD9F7740C27C1E9C57A7A6C296791C4216DA"
+      },
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected-v2\\src\\native_node_internal_tty_test.zig",
+        "bytes": 41241,
+        "sha256": "5E6F32CD7ABE7616D544AD38DBA5A2AE14BDCDEAF506BA75A14C77A57E14492B"
+      },
+      "hunks": [
+        {
+          "offset": 27890,
+          "old": "try std.testing.expect(!c.JS_ToBool(f.engine.context, caught));",
+          "new": "try std.testing.expect(c.JS_ToBool(f.engine.context, caught) == 0);"
+        }
+      ],
+      "raw_forward_inverse": true
+    }
+  ],
+  "build_inverse": {
+    "schema": 1,
+    "source_only": true,
+    "baseline": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\original\\build.zig",
+      "bytes": 546337,
+      "sha256": "75B7D90F9118A4ED1B719F7615EA4DA8EB9C0344FBE233219F42FAA30EC68343"
+    },
+    "candidate": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected\\build.zig",
+      "bytes": 547672,
+      "sha256": "222D00B582CC1E3715DFC2AFB5213D6CAF6F2C1A07B5E76ECE6FDD16B0E4AD03"
+    },
+    "insertion": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\build-insertion.txt",
+      "bytes": 1335,
+      "sha256": "F8010B5662163D8DF203718F18BA9571C633186CA69F9D566A509A0026A63472"
+    },
+    "offset": 489622,
+    "anchor": "    // Genuine shared Node argument errors and actual rest/super controls.\n",
+    "raw_forward_inverse": true,
+    "composition": "Apply this insertion only after the accepted TTY color-depth prerequisite; retain every other current build addition. The standalone projection is against de0d35e7 and must not overwrite a later composed build."
+  },
+  "existing_production_hunks": 6,
+  "loader_executable_bytes_unchanged": true,
+  "original_argument_bootstrap_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_bootstrap.zig",
+    "bytes": 4905,
+    "sha256": "435957EED6F561AD47B2AAA68EA07BC5FBDCCE28D2F077B8824098B309A98484"
+  }
+}

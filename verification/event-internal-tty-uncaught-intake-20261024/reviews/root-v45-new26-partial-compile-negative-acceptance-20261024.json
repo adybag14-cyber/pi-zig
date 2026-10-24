@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "status": "root_accepted_original_v45_new26_partial_compile_negative",
+  "candidate_head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "original_job": "job-1792876725070-f88a0268-f5a",
+  "independent_negative_auditor_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v45-new26-negative-auditor-source-acceptance-20261024.json",
+    "bytes": 3477,
+    "sha256": "C1CABA650AA78A3A71DDAA435EFB96D620A34C8748A5F6B3901B99276439C9DB"
+  },
+  "independent_audit_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v45-new26-negative-audit-config-20261024.json",
+    "bytes": 2747,
+    "sha256": "B09F391ECEA49E87F6EA09432F177DCB967E6957AB715DC49A0C14810F95D062"
+  },
+  "independent_audit_terminal_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v45-new26-control-20261024-211838\\independent-negative-audit-job-status.json",
+    "bytes": 1438,
+    "sha256": "A067693E11432BDBB7E4C0CBF71033B0AA975E40B64BFB403477E27C3B41E8C2"
+  },
+  "independent_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v45-new26-control-20261024-211838\\independent-partial-compile-negative-closure.json",
+    "bytes": 176846,
+    "sha256": "FF8E796A32B0C2C58F780945F0CD27B755C6773E7B69D58D360E30B043086FE2"
+  },
+  "Root_review": {
+    "exact_source_audit_job_succeeded": true,
+    "complete_whole_batch_bookends_identical": true,
+    "current_complete_inventories_and_39167_distinct_files_rehashed": true,
+    "all_410_certificate_reference_versions_rehashed_again": true,
+    "all_15_native_and_three_controller_instances_independently_absent": true,
+    "current_global_native_process_inventory_empty": true,
+    "original_receipts_and_negative_decisions_preserved": true
+  },
+  "outcome": {
+    "granted_groups": 26,
+    "attempted_groups": 8,
+    "unstarted_groups": 18,
+    "partial_metadata_counts": [
+      14,
+      7,
+      21,
+      9,
+      10,
+      12,
+      9
+    ],
+    "actual_partial_metadata": 82,
+    "full_metadata_acceptance": false,
+    "actual_full_metadata_count": null,
+    "actual_tests_started": 0,
+    "all_26_groups_unqualified": true
+  },
+  "diagnosis": "First seven selected groups built and queried; group eight has the exact local request-shadow and missing File.init self argument fixture errors. No group in this partial batch may enter RuntimeOnly. The earlier shared native symbol-link failure is absent in the now-completed package-input group.",
+  "accepted_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-write-string-fixture-correction-source-acceptance-20261024.json",
+    "bytes": 1832,
+    "sha256": "2E1FAA252E02E6F3ADAA9969C28D2BC29A9CD3BCE3373B07140FBAC77721FFF2"
+  },
+  "source_mutation_hold_released": true,
+  "source_mutation_scope": "Root may perform the separately reviewed exact next source-intake composition. No old grant is reusable and no new native launch is authorized by this negative acceptance.",
+  "metadata_acceptance": false,
+  "runtime_authority": false,
+  "native_execution_authorized": false,
+  "qualification": false,
+  "created_utc": "2026-10-24T21:41:37.277105+00:00"
+}

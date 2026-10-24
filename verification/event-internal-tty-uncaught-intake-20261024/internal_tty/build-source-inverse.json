@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\original\\build.zig",
+    "bytes": 546337,
+    "sha256": "75B7D90F9118A4ED1B719F7615EA4DA8EB9C0344FBE233219F42FAA30EC68343"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 547672,
+    "sha256": "222D00B582CC1E3715DFC2AFB5213D6CAF6F2C1A07B5E76ECE6FDD16B0E4AD03"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-internal-tty-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1335,
+    "sha256": "F8010B5662163D8DF203718F18BA9571C633186CA69F9D566A509A0026A63472"
+  },
+  "offset": 489622,
+  "anchor": "    // Genuine shared Node argument errors and actual rest/super controls.\n",
+  "raw_forward_inverse": true,
+  "composition": "Apply this insertion only after the accepted TTY color-depth prerequisite; retain every other current build addition. The standalone projection is against de0d35e7 and must not overwrite a later composed build."
+}

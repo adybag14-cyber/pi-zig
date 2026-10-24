@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\original\\build.zig",
+    "bytes": 550798,
+    "sha256": "4FC880853D3B268E38DA1D9B05B60590384696B0005820F66A9FA70D2747440C"
+  },
+  "output": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 552058,
+    "sha256": "5E65606F9CA94985C52B5305D8177D699F6F15E1F1862E13AB15D274C41C7D40"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-abort-toggle-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1260,
+    "sha256": "428500797BF147DEA0A8D6216BB742F99D3B598428931358326832755D35C8AA"
+  },
+  "byte_offset": 188843,
+  "anchor_text": "    const module_execution_state_tests = b.addTest(.{\n",
+  "anchor_count": 1,
+  "complete_raw_inverse": true,
+  "all_other_bytes_unchanged": true
+}

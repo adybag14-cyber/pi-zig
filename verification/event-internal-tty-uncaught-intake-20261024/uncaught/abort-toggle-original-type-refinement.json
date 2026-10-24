@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "status": "unselected_draft_refined_to_original_Uint32_toggle_type",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\projected\\src\\extensions\\native_node_process_uncaught_handler.zig",
+    "bytes": 17798,
+    "sha256": "5A38F348742624C9FE03B892EFCF320427C61EEB9194026CC1907305B3EFD69E"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\projected-v2\\src\\extensions\\native_node_process_uncaught_handler.zig",
+    "bytes": 17799,
+    "sha256": "3A538E596AE0DF3D374B55F908DE87D233D7D99EB72009157E36F82BCACF14C5"
+  },
+  "offset": 5115,
+  "before": "c.JS_TYPED_ARRAY_UINT8",
+  "after": "c.JS_TYPED_ARRAY_UINT32",
+  "complete_raw_inverse": true,
+  "source_reason": "Original env.h declares AliasedUint32Array should_abort_on_uncaught_toggle_; node_util exposes that exact JSArray.",
+  "candidate_executed": false,
+  "native_execution": false
+}

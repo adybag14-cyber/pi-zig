@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "operations": [
+    {
+      "destination_relative_path": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "accepted_predecessor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+        "bytes": 18450,
+        "sha256": "2F128521E87FEA6AABF37CCF7CE42380775FB6288C715404AFDD5AAD6673C05A"
+      },
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\original\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+        "bytes": 18450,
+        "sha256": "2F128521E87FEA6AABF37CCF7CE42380775FB6288C715404AFDD5AAD6673C05A"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_auth_runtime_owner.zig",
+        "bytes": 20488,
+        "sha256": "646F16946C40322716877B2A3A4C81F7A5AE8063F83DE312D99598FF751F8417"
+      },
+      "hunks": [
+        {
+          "before": "    /// Actual Source AuthStorage.inMemory(), without a File backend substitute",
+          "after": "    /// Complete original project-trust.ts resolver over this same actual\n    /// configuration and authenticated shared trust-manager evaluation.\n    pub fn createProjectTrustResolver(self: *Owner) !c.JSValue {\n        return projectTrustResolutionEntry(self);\n    }\n    /// Actual Source AuthStorage.inMemory(), without a File backend substitute",
+          "occurrences": 1
+        },
+        {
+          "before": "fn valueEntry(self: *Owner, in_memory: bool) !c.JSValue {",
+          "after": "fn projectTrustResolutionEntry(self: *Owner) !c.JSValue {\n    const engine = self.engine;\n    engine.native_exception_diagnostics_suppressed += 1;\n    defer engine.native_exception_diagnostics_suppressed -= 1;\n    try self.check();\n    var invocation: em.Engine.NativeInvocation = .{};\n    engine.enterNativeInvocation(&invocation);\n    var scope: Scope = .{ .engine = engine };\n    const value = completion.finishValue(&scope, projectTrustResolutionBody(self, &scope)) catch |err|\n        return engine.checked(engine.leaveNativeInvocation(&invocation, @import(\"native_sdk.zig\").fail(engine, err)));\n    return engine.checked(engine.leaveNativeInvocation(&invocation, value));\n}\nfn projectTrustResolutionBody(self: *Owner, scope: *Scope) !c.JSValue {\n    const engine = scope.engine;\n    const o: Ops = .{ .scope = scope };\n    // Root the actual configuration before manager authentication can invoke\n    // any carrier getter or retire this host handle. The manager path roots\n    // and authenticates all its other genuine inputs before those Gets too.\n    const configuration = try o.own(c.JS_DupValue(engine.context,\n        try installed(engine, \"pi-native:sdk-configuration-native-zig\")));\n    const manager = try o.own(try projectTrustPathsBody(self, scope));\n    // No self access after the authenticated manager's first guest operation.\n    const event = try o.own(try @import(\"native_sdk_project_trust_event.zig\").create(engine));\n    const defaults = try o.own(try @import(\"native_sdk_settings_defaults.zig\").create(engine));\n    return @import(\"native_sdk_project_trust_resolution.zig\").create(engine, .{\n        .configuration = configuration, .emit_project_trust_event = event,\n        .settings_defaults = defaults, .trust_manager = manager,\n    });\n}\n\nfn valueEntry(self: *Owner, in_memory: bool) !c.JSValue {",
+          "occurrences": 1
+        }
+      ],
+      "full_raw_inverse": true
+    },
+    {
+      "destination_relative_path": "src/extensions/native_sdk_application_owner.zig",
+      "accepted_predecessor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_application_owner.zig",
+        "bytes": 15448,
+        "sha256": "49577CBE87DF7F92A52827F576CBD5D3BFBAE3151BF4706CC6BE4BB8524BA650"
+      },
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\original\\src\\extensions\\native_sdk_application_owner.zig",
+        "bytes": 15448,
+        "sha256": "49577CBE87DF7F92A52827F576CBD5D3BFBAE3151BF4706CC6BE4BB8524BA650"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_application_owner.zig",
+        "bytes": 15739,
+        "sha256": "57ED8EACC4B8FB186C71FFD30F4280F4B6F7B5C120688F23F35F8F8FA684AB61"
+      },
+      "hunks": [
+        {
+          "before": "    pub fn createProjectTrustManager(self: *Owner) !c.JSValue {\n        try self.check();\n        return if (self.auth) |*value| value.createProjectTrustManager() else error.ActualSdkApplicationAuthRetired;\n    }\n",
+          "after": "    pub fn createProjectTrustManager(self: *Owner) !c.JSValue {\n        try self.check();\n        return if (self.auth) |*value| value.createProjectTrustManager() else error.ActualSdkApplicationAuthRetired;\n    }\n    /// Original trust resolution using actual manager, event and defaults.\n    pub fn createProjectTrustResolver(self: *Owner) !c.JSValue {\n        try self.check();\n        return if (self.auth) |*value| value.createProjectTrustResolver() else error.ActualSdkApplicationAuthRetired;\n    }\n",
+          "occurrences": 1
+        }
+      ],
+      "full_raw_inverse": true
+    }
+  ],
+  "guest_provider_roots_before_carrier_gets": true,
+  "self_access_after_manager_guest_boundary": false,
+  "Main_mutated": false,
+  "native_execution_authorized": false
+}

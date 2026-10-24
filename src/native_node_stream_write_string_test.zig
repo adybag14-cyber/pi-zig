@@ -122,9 +122,9 @@ const Fixture = struct {
         }.body, .{self, receiver, method, args});
     }
     fn complete(self: *Fixture, status: c_int) !void {
-        const request = self.pending_request orelse return error.StringWriteRequestRequired;
+        const pending = self.pending_request orelse return error.StringWriteRequestRequired;
         self.pending_request = null;
-        return request.request.done(status, null);
+        return pending.request.done(status, null);
     }
     fn retired(self: *Fixture, wrapper: c.JSValue) !void {
         try std.testing.expect(self.base.registry().unwrap(wrapper) == null);
@@ -253,7 +253,7 @@ test "native Stream string write borrowed view preserves actual primitive code u
 }
 
 test "native Stream string write all four dispatch methods keep physical FileHandle ENOSYS and provider52" {
-    var file = try support.File.init(); defer file.deinit();
+    var file: support.File = undefined; try file.init(); defer file.deinit();
     var f: Fixture = undefined; try f.init(); defer f.deinit();
     const handle = try f.create(file.take());
     const fd = handle.getFD();

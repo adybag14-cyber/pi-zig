@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_project_trust_manager_test.zig",
+    "bytes": 34054,
+    "sha256": "518416077F1911E4B9FB29392C1CE5E13EAA1CCB4A2076EED09DDA6EAB6DE822"
+  },
+  "original_byte_start": 2584,
+  "original_byte_end": 15064,
+  "exact_copied_fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-resolution-sourceonly-20261024\\actual-auth-physical-fixture.txt",
+    "bytes": 12480,
+    "sha256": "6C7BFD3EE493CA19507D2185C141668826690B35DA7E3F79911409DFCF5196D8"
+  },
+  "fixture_body_unchanged": true
+}

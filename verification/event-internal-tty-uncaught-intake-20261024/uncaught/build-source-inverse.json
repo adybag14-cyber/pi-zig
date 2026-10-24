@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "kind": "single_exact_additive_build_insertion",
+  "baseline_head": "d3a9eba163e53f9560309b78f9b654a736d6282a",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\original\\build.zig",
+    "bytes": 550798,
+    "sha256": "4FC880853D3B268E38DA1D9B05B60590384696B0005820F66A9FA70D2747440C"
+  },
+  "current_main_matches_baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+    "bytes": 550798,
+    "sha256": "4FC880853D3B268E38DA1D9B05B60590384696B0005820F66A9FA70D2747440C"
+  },
+  "output": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\projected\\build.zig",
+    "bytes": 552184,
+    "sha256": "108A35B46E0DB988A2375CFF3A0C617520250256D8314A119368C38571020D24"
+  },
+  "insertion": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-uncaught-exception-handler-sourceonly-20261024\\build-insertion.txt",
+    "bytes": 1386,
+    "sha256": "AFE905BF54F36BC7E8FA7E7A663C437FA4A29D9305F7A13234BD4BAC3610480D"
+  },
+  "byte_offset": 188843,
+  "anchor_text": "    const module_execution_state_tests = b.addTest(.{\n",
+  "anchor_count": 1,
+  "inverse_removes_exact_insertion": true,
+  "all_other_bytes_unchanged": true,
+  "native_execution": false,
+  "candidate_executed": false
+}

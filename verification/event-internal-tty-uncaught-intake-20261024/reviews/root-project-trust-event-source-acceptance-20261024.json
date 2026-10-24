@@ -1,0 +1,141 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-24T21:20:33.083187+00:00",
+  "status": "root_accepted_complete_original_project_trust_event_source",
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\source-intake.json",
+    "bytes": 20776,
+    "sha256": "6E8328AE8C0ECFAF57EA2C9F34047D37CFE63A9DF7057911AD3BA67300843543"
+  },
+  "original_authority": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\extensions\\runner.ts",
+        "bytes": 52023,
+        "sha256": "3CD6D1AD18E8E4C7ADF722AED9291BC64F06E3A7D461755C21E3CBA4819F4E5E"
+      },
+      "retained_copy": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\authority\\runner.ts",
+        "bytes": 52023,
+        "sha256": "3CD6D1AD18E8E4C7ADF722AED9291BC64F06E3A7D461755C21E3CBA4819F4E5E"
+      },
+      "read_scope": "runner.ts lines 276-278 and 302-329",
+      "role": "Complete original snapshot helper and emitProjectTrustEvent"
+    }
+  ],
+  "source_changes": [
+    {
+      "destination_relative_path": "src/extensions/native_sdk_project_trust_event.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_project_trust_event.zig",
+        "bytes": 23002,
+        "sha256": "FCF4D08C844CC3F5EDD86E441CF2349DC63AF300B6309AE21AEBBC17FDC519C4"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_sdk_project_trust_event_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\projected\\src\\native_sdk_project_trust_event_test.zig",
+        "bytes": 13151,
+        "sha256": "9C9464BE4B10A13A831ED0303257A410E839FA6CB2D6C2D6CE21852F3D1BF18A"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/sdk-project-trust-event-original.mjs",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-project-trust-event-original.mjs",
+        "bytes": 1043,
+        "sha256": "14F1F1EDDF9790E1D750E5E5C0A42F2CCDF806CC00AC2A04D185E2BD3CE9D017"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/sdk-project-trust-event-observer.mjs",
+      "operation": "add",
+      "baseline": null,
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\projected\\src\\extensions\\fixtures\\sdk-project-trust-event-observer.mjs",
+        "bytes": 25859,
+        "sha256": "8244FFDB8F0F5BE2A26493BF4BB0B7240DB043AC6A8CE19F3DCE8C4260595A10"
+      }
+    },
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\original\\build.zig",
+        "bytes": 548462,
+        "sha256": "0DDAF5D48CF0366FBFB798E4FC5AC75CF6DAE48D1E563C1A3316F6E8AC81190F"
+      },
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 549512,
+        "sha256": "6A5F862C61B3ACA5DA5723F419CC40519879D986C7595140837C5A59D2D145E0"
+      },
+      "accepted_supplier_baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-manager-sourceonly-20261024\\projected\\build.zig",
+        "bytes": 548462,
+        "sha256": "0DDAF5D48CF0366FBFB798E4FC5AC75CF6DAE48D1E563C1A3316F6E8AC81190F"
+      }
+    }
+  ],
+  "source_structural_checks": {
+    "status": "Root_trust_event_source_structural_verification_passed",
+    "entry": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\source-intake.json",
+      "bytes": 20776,
+      "sha256": "6E8328AE8C0ECFAF57EA2C9F34047D37CFE63A9DF7057911AD3BA67300843543"
+    },
+    "distinct_pin_versions": 32,
+    "exact_patch_files": 5,
+    "type_erasure_forward_and_reverse": true,
+    "build_raw_forward_and_inverse": true,
+    "direct_imports": 8,
+    "declarations": 42,
+    "Main_unchanged": true,
+    "native_execution": false
+  },
+  "source_inverses": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\original-function-erasure-proof.json",
+      "bytes": 3481,
+      "sha256": "6E92ACF191E3A6CEF3BB5DD57F641BB69B83F1BABAFC8E61874CE87880591EAE"
+    }
+  ],
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-project-trust-event-sourceonly-20261024\\build-source-inverse.json",
+    "bytes": 1610,
+    "sha256": "D60E14821B77EE9D5BC2E92C4F6DDFA95C0BF00FCDB42988BD8B268DC078123D"
+  },
+  "review": [
+    "Read complete original runner.ts snapshotEventHandlers and emitProjectTrustEvent, full native owner, all42 declared controls and entire shared observer. Reconstructed exact original fixture with all four type erasures and reversed them to retained source.",
+    "Preserves errors allocation before live extensions/map/get/slice snapshot. Escaped actual arrow captures original project_trust argument; nullish fallback allocates a fresh array. No result truthiness or yes/no validation is invented.",
+    "Uses genuine native AsyncFunction and intrinsic Await with rooted actual arguments, receiver and independent activation. Ordinary synchronous throw or rejected DATA follows original catch; actual pending native fatal/cancellation bypasses catch and IteratorClose.",
+    "Checked actual QuickJS iterator start/next/close, exception unwinding, emit_return and lexical scope initialization, plus native AsyncFunction, rejected continuation, completion retirement and fieldEqual owners. Cached next and receiver lifetime, one ToObject for row binding, own-step failure skip-close, return inner-before-outer, throw-close preservation and native-fatal precedence follow these owners.",
+    "Live errors.push precedes row-field evaluation. Error is looked up twice with independent instanceof, String stays live, and each comparison/constructor temporary retires before the next guest operation. Retained local order and return-operand position are explicit.",
+    "Rehashed32 distinct path/size/hash versions; independently reconstructed all5 patch targets, all8 local import/embed mappings and all42 test declarations. One1050-byte build insertion has exact complete forward/raw inverse to accepted manager projection.",
+    "Private complete event function only; no public runner namespace, fabricated extension/context, Engine change or native ABI change."
+  ],
+  "controls": {
+    "groups": 1,
+    "source_declarations": 42,
+    "actual_metadata_count": null,
+    "runtime_result": null
+  },
+  "integration_policy": "Apply four new source/fixture files plus only the1050-byte build insertion to current Main after active New26 native lease is independently closed. Do not replace current build with the older projection.",
+  "native_execution_authorized": false,
+  "Main_integrated": false,
+  "qualification": false,
+  "product_complete": false,
+  "remaining": [
+    "Original full resolveProjectTrust and genuine defaults/config/manager/event assembly",
+    "Original cwd/trust-aware createRuntime",
+    "Fresh native compile, metadata and runtime qualification"
+  ]
+}

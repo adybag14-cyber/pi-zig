@@ -79,6 +79,11 @@ pub const Owner = struct {
     pub fn createProjectTrustManager(self: *Owner) !c.JSValue {
         return projectTrustPathsEntry(self);
     }
+    /// Complete original project-trust.ts resolver over this same actual
+    /// configuration and authenticated shared trust-manager evaluation.
+    pub fn createProjectTrustResolver(self: *Owner) !c.JSValue {
+        return projectTrustResolutionEntry(self);
+    }
     /// Actual Source AuthStorage.inMemory(), without a File backend substitute
     /// or fabricated resolver. Its genuine module dependencies already exist.
     pub fn inMemory(self: *Owner) !c.JSValue {
@@ -192,6 +197,36 @@ fn projectTrustPathsBody(self: *Owner, scope: *Scope) !c.JSValue {
         .filesystem = filesystem, .paths = paths, .os = os,
         .configuration = configuration, .path_utilities = path_utilities,
         .text_utilities = text_utilities, .lockfile = lockfile,
+    });
+}
+
+fn projectTrustResolutionEntry(self: *Owner) !c.JSValue {
+    const engine = self.engine;
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    try self.check();
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    var scope: Scope = .{ .engine = engine };
+    const value = completion.finishValue(&scope, projectTrustResolutionBody(self, &scope)) catch |err|
+        return engine.checked(engine.leaveNativeInvocation(&invocation, @import("native_sdk.zig").fail(engine, err)));
+    return engine.checked(engine.leaveNativeInvocation(&invocation, value));
+}
+fn projectTrustResolutionBody(self: *Owner, scope: *Scope) !c.JSValue {
+    const engine = scope.engine;
+    const o: Ops = .{ .scope = scope };
+    // Root the actual configuration before manager authentication can invoke
+    // any carrier getter or retire this host handle. The manager path roots
+    // and authenticates all its other genuine inputs before those Gets too.
+    const configuration = try o.own(c.JS_DupValue(engine.context,
+        try installed(engine, "pi-native:sdk-configuration-native-zig")));
+    const manager = try o.own(try projectTrustPathsBody(self, scope));
+    // No self access after the authenticated manager's first guest operation.
+    const event = try o.own(try @import("native_sdk_project_trust_event.zig").create(engine));
+    const defaults = try o.own(try @import("native_sdk_settings_defaults.zig").create(engine));
+    return @import("native_sdk_project_trust_resolution.zig").create(engine, .{
+        .configuration = configuration, .emit_project_trust_event = event,
+        .settings_defaults = defaults, .trust_manager = manager,
     });
 }
 
