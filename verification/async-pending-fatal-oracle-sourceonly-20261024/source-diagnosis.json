@@ -1,0 +1,254 @@
+{
+  "kind": "independent source-only runtime-failure diagnosis",
+  "date": "2026-10-24",
+  "reviewer": "catalog_review",
+  "main_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "verdict": "The index16 test expects immediate finalization where the current pending-job admission actually abandons its reaction under the retained DECREF queue. Correct the test oracle with its causal explanation; no production release-order change is justified by this failure.",
+  "pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_async_arguments_test.zig",
+      "bytes": 42082,
+      "sha256": "94EED011C1FC44428ABAB5129DD295DFA9029201E250AAD75B7151B953285EEF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_async_frame_retirement_test.zig",
+      "bytes": 74800,
+      "sha256": "E41A9319AC97B7CCBC0E529104085CB053843914E5BC56FB50D0F22DCBB6EEF6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2404878,
+      "sha256": "091E5BE0C22F35CE2029852DEA8D8B017B3784013ED93EDB9F1545A49D8D275F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\list.h",
+      "bytes": 3177,
+      "sha256": "CB6E24E8EE54BCCDD66234FE54CD702D1160B9841DB2B9B9ADEB5003AFE301D5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\NATIVE_ASYNC_RETIREMENT.md",
+      "bytes": 11111,
+      "sha256": "31FE4FD3E9C0E6BB937AD46027329463006A506CB4B12DA8EAE7E87523FF1577"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-mutable-async-arguments-sourceonly-20261019\\source-status.json",
+      "bytes": 5799,
+      "sha256": "765ACA34EB04C176D95630407EBEC42F776F00194997B6EC42C31497B6B90F42"
+    }
+  ],
+  "historical_authority": {
+    "commit": "7233b0a30da5866326163bbbf7f39cb745c24a9b",
+    "path": "vendor/quickjs/quickjs.c",
+    "bytes": 2290281,
+    "sha256": "62C055EEE7D3175A91CD847E3D52279529B85CB1663D52970D7283694A4ACA10",
+    "source": "Retained original suspended-frame retirement parent explicitly pinned by NATIVE_ASYNC_RETIREMENT.md; fetched read-only through git show."
+  },
+  "unchanged_authority_helpers": [
+    {
+      "function": "free_zero_refcount",
+      "historical": {
+        "bytes": 431,
+        "sha256": "564D7C85E7D14BF2771B5C0BB20300A0662EAC7F83DF60676E470FD1934AEDB5",
+        "lines": [
+          7432,
+          7447
+        ]
+      },
+      "current": {
+        "bytes": 431,
+        "sha256": "564D7C85E7D14BF2771B5C0BB20300A0662EAC7F83DF60676E470FD1934AEDB5",
+        "lines": [
+          8354,
+          8369
+        ]
+      },
+      "byte_identical": true
+    },
+    {
+      "function": "js_free_value_rt",
+      "historical": {
+        "bytes": 1868,
+        "sha256": "EE0ADDA7562BB9238F5C997890442E6DB278542B2CF3F3DB4EE4DD6AA37FE051",
+        "lines": [
+          7450,
+          7514
+        ]
+      },
+      "current": {
+        "bytes": 1868,
+        "sha256": "EE0ADDA7562BB9238F5C997890442E6DB278542B2CF3F3DB4EE4DD6AA37FE051",
+        "lines": [
+          8372,
+          8436
+        ]
+      },
+      "byte_identical": true
+    },
+    {
+      "function": "async_func_free",
+      "historical": {
+        "bytes": 622,
+        "sha256": "EFBC63118ADF7DCFA13821F6CDA87F4189A11D004E9DEF7268A7D966915D291F",
+        "lines": [
+          22311,
+          22333
+        ]
+      },
+      "current": {
+        "bytes": 622,
+        "sha256": "EFBC63118ADF7DCFA13821F6CDA87F4189A11D004E9DEF7268A7D966915D291F",
+        "lines": [
+          23647,
+          23669
+        ]
+      },
+      "byte_identical": true
+    },
+    {
+      "function": "js_async_function_resolve_finalizer",
+      "historical": {
+        "bytes": 287,
+        "sha256": "DFA0E8B6EFF040703B4A14A3DE6B100809FE886678011E8865ED6B0D184B4EEF",
+        "lines": [
+          22574,
+          22582
+        ]
+      },
+      "current": {
+        "bytes": 287,
+        "sha256": "DFA0E8B6EFF040703B4A14A3DE6B100809FE886678011E8865ED6B0D184B4EEF",
+        "lines": [
+          23923,
+          23931
+        ]
+      },
+      "byte_identical": true
+    }
+  ],
+  "root_reported_observation": {
+    "group": "native-vm-async-arguments",
+    "index": 16,
+    "source_line": 671,
+    "expected": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      6,
+      7
+    ],
+    "actual": [
+      7,
+      6,
+      4,
+      3,
+      2,
+      1,
+      0
+    ],
+    "stderr_bytes": 1035,
+    "stderr_sha256": "FA51B10EC5A737E556B4795F3C40AA5B35E55F6AEB8B0755C2DD1D1457F73E88",
+    "independently_reexecuted": false
+  },
+  "causal_trace": [
+    {
+      "source": "src/native_async_arguments_test.zig",
+      "lines": [
+        657,
+        672
+      ],
+      "finding": "The first job completes assignments to missing slots2/3/4; the fixture then installs p.prior as an actual current uncatchable error before the second ExecutePendingJob. It asserts unchanged resume count, no observation/body work, one close hook, original reason identity and outer Promise still pending."
+    },
+    {
+      "source": "vendor/quickjs/quickjs.c",
+      "lines": [
+        3273,
+        3301
+      ],
+      "finding": "The dequeued job is active, but an already-current exception sets e->result=JS_EXCEPTION without calling e->job_func. The reaction/async resume body does not execute."
+    },
+    {
+      "source": "vendor/quickjs/quickjs.c",
+      "lines": [
+        3128,
+        3147,
+        3329,
+        3355
+      ],
+      "finding": "Job payload retirement detaches and frees each argv owner. The actual async resolving handler is one of these owners; its finalizer releases the suspended coroutine."
+    },
+    {
+      "source": "vendor/quickjs/quickjs.c",
+      "lines": [
+        23869,
+        23931
+      ],
+      "finding": "resolve_finalizer calls async_function_free; zero coroutine refs call free0 then terminate. Its real native_close selects terminate_with_close."
+    },
+    {
+      "source": "vendor/quickjs/quickjs.c",
+      "lines": [
+        24356,
+        24408
+      ],
+      "finding": "retire still detaches all state first and releases current argument slots0..4 ascending, invokes close (which releases local6), then state/function/effective this and supplied receiver7. This owner release order is correct and unchanged."
+    },
+    {
+      "source": "vendor/quickjs/quickjs.c",
+      "lines": [
+        8354,
+        8369,
+        8404,
+        8414
+      ],
+      "finding": "free_zero_refcount marks DECREF and consumes list head. Nested finalizable owners are added at head without recursion while phase is DECREF. Thus ascending releases inside the resolving-handler finalizer produce reverse finalizer callbacks:7,6,4,3,2,1,0."
+    },
+    {
+      "source": "vendor/quickjs/list.h",
+      "lines": [
+        51,
+        65
+      ],
+      "finding": "list_add means insertion immediately after the list head, not tail insertion."
+    },
+    {
+      "source": "src/native_async_arguments_test.zig",
+      "lines": [
+        526,
+        549
+      ],
+      "finding": "The already-authored literal Source/native gate-abandonment control explicitly explains this same DECREF reversal and expects7,6,4,1,0. Its normal-completion controls correctly retain forward order."
+    }
+  ],
+  "smallest_recommendation": {
+    "production_edits": [],
+    "test_edit": "Replace only this terminal expected sequence with7,6,4,3,2,1,0 and a causal comment distinguishing pending-job-handler finalization from ordinary resumed termination. Keep reason identity, resume/observation count, close once, exact allRetired counts and pending Promise assertions.",
+    "meaningful_strengthening": "Native close-hook snapshot should still show zero finalizer counts for all seven slots because their zero-ref owners are queued under DECREF. A paired literal Source/native version can independently exercise the same current-event admission; this is a test-only extension requiring fresh Root qualification.",
+    "avoid": "Do not sort finalizer observations, weaken exact counts, change head insertion, reverse production argument release, or label the historical failed artifact as passing."
+  },
+  "related_concrete_exposure": {
+    "source": "src/native_async_frame_retirement_test.zig",
+    "checks": [
+      {
+        "test_lines": [
+          263,
+          271
+        ],
+        "expectation_helper": "fatalJob -> sequence with mode returned uses forward expectation"
+      },
+      {
+        "test_lines": [
+          625,
+          633
+        ],
+        "expectation_helper": "closeJobFailure expects hook_counts1,0,0,0 and forward0,1,2,3"
+      }
+    ],
+    "status": "Source-only observation of analogous preexisting-current-error fixtures. No additional runtime failure claimed; Root can account for them before the next exact qualification."
+  },
+  "limits": [
+    "No native execution, source generator, Node capture, candidate execution, or Main mutation.",
+    "This receipt diagnoses the reported finalizer-order mismatch only; it does not certify the whole regression batch or future corrected controls."
+  ]
+}

@@ -1,0 +1,90 @@
+--- donor/src/extensions/native_node_modules_binding_data.zig
++++ projected/src/extensions/native_node_modules_binding_data.zig
+@@ -9,6 +9,8 @@
+ const templates = @import("native_node_async_wrap.zig");
+ const callable = @import("native_node_module_callable.zig");
+ const package_cache = @import("native_node_package_json_cache.zig");
++const package_error = @import("native_node_package_json_error.zig");
++const package_values = @import("native_node_package_json_values.zig");
+ const c = a.c;
+ pub const Engine = native.Engine;
+ const Scope = a.Scope;
+@@ -162,6 +164,53 @@
+     pub fn packageCache(self: *BindingData) *package_cache.Cache {
+         std.debug.assert(!self.retiring and self.cache != null);
+         return &self.cache.?;
++    }
++    /// The null ErrorContext GetPackageJSON path consumed by CommonJS and
++    /// TraverseParent. The caller supplies its native normalized path after
++    /// the original permission check; this operation does not repeat either.
++    /// ESM base-URL parsing remains in its separate native caller dependency.
++    ///
++    /// A found entry borrows this actual binding's cache. Retaining the target
++    /// in the caller's Scope keeps the native owner alive through fresh result
++    /// allocation and an inherited Error.prototype.code setter's reentry.
++    pub fn getPackageJSON(self: *BindingData, s: *Scope,
++        path: [:0]const u8) !?*const package_cache.Entry
++    {
++        try s.pending();
++        const engine = try self.environment.requireEngine();
++        if (engine != s.engine) return error.ActualModulesBindingEngineMismatch;
++        const target = self.wrapper orelse return error.ActualModulesBindingRetired;
++        _ = try s.own(a.duplicate(engine, target));
++        const cache = self.packageCache();
++        switch (try cache.get(s, path)) {
++            .missing => return null,
++            .found => |entry| return entry,
++            .invalid => |entry| {
++                // Original GetPackageJSON throws while its local Config still
++                // owns raw JSON and partial fields. The invalid entry never
++                // enters package_configs_; a nested read may publish a valid
++                // entry before this independent failed Config is discarded.
++                defer cache.discardInvalid(entry);
++                _ = try s.own(try package_error.raise(s, cache.allocator(), entry.path, null));
++                return error.ActualInvalidPackageConfigThrowRequired;
++            },
++        }
++    }
++    /// Owned intrinsic return value of the selected native callback tail.
++    /// Missing/read-failed entries return undefined; every success serializes
++    /// the cached native Config into a fresh dense six-element Array.
++    pub fn serializePackageJSON(self: *BindingData, engine: *Engine,
++        path: [:0]const u8) !c.JSValue
++    {
++        return a.expression(engine, serializePackageBody, .{self, path});
++    }
++    fn serializePackageBody(s: *Scope, self: *BindingData,
++        path: [:0]const u8) !c.JSValue
++    {
++        const entry = (try self.getPackageJSON(s, path)) orelse
++            return c.pi_js_undefined();
++        return a.duplicate(s.engine,
++            try package_values.serialize(s, entry.config.?, entry.path));
+     }
+     fn deleteBaseEntry(raw: *anyopaque) !void {
+         const self: *BindingData = @ptrCast(@alignCast(raw));
+--- main/build.zig
++++ projected/build.zig
+@@ -5223,6 +5223,22 @@
+         });
+         linkQuickJs(b, native_package_json_tests.root_module, quickjs, sqlite_lib_dir);
+         b.step("build-native-node-package-json-parser", "Install actual package JSON parser and native allocation controls without execution").dependOn(&b.addInstallArtifact(native_package_json_tests, .{}).step);
++        // Private modules::BindingData package cache/error/serialization path.
++        // Install only; metadata and runtime remain separately owned by Root.
++        const native_module_package_inputs = b.addTest(.{
++            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_package_inputs_test.zig"), .target = target, .optimize = optimize }),
++            .filters = &.{"native module package input"}, .use_llvm = use_llvm,
++        });
++        linkQuickJs(b, native_module_package_inputs.root_module, quickjs, sqlite_lib_dir);
++        linkTypeScriptParser(b, native_module_package_inputs.root_module, typescript_parser);
++        linkSqlite(native_module_package_inputs.root_module, sqlite_lib_dir, sqlite_library);
++        native_module_package_inputs.root_module.addImport("catalog_tool", catalog_tool);
++        native_module_package_inputs.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
++        if (target.result.os.tag == .windows) {
++            native_module_package_inputs.root_module.linkSystemLibrary("advapi32", .{});
++            native_module_package_inputs.root_module.linkSystemLibrary("userenv", .{});
++        }
++        b.step("build-native-node-module-package-inputs", "Install six declared private Module package-input controls without execution").dependOn(&b.addInstallArtifact(native_module_package_inputs, .{ .dest_sub_path = b.fmt("native-node-module-package-inputs{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+         const native_environment_map_tests = b.addTest(.{
+             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_environment_map_test.zig"), .target = target, .optimize = optimize }),
+             .filters = &.{"native environment map"}, .use_llvm = use_llvm,

@@ -1,0 +1,207 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-23T18:06:21.959045+00:00",
+  "status": "source_review_accepted_pending_integration_and_native_validation",
+  "main_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "main_clean": true,
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-js-dispatch-sourceonly-20261023\\stream-base-js-dispatch.patch",
+    "bytes": 31413,
+    "sha256": "F21CA6A8BDD41412A4A90E8D112339F5620D213449215362DA1EA39A74D3AFD9"
+  },
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-js-dispatch-sourceonly-20261023\\inputs-and-outputs.json",
+    "bytes": 4985,
+    "sha256": "1CA70C8583BEBC244872817FACA442740D25F4C73443643AE41A17076F047202"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-js-dispatch-sourceonly-20261023\\README.md",
+    "bytes": 4590,
+    "sha256": "978F435DDA3616FDE04BFE91DFE47DAC4CC80F3211A8F5CFB3DEE5E512884623"
+  },
+  "source_pins_checked": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_stream_base.zig",
+      "bytes": 12321,
+      "sha256": "F85721695F41998E3676C196B4791D295EA62C8DE89FD83159F05BACDEF7716E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+      "bytes": 17650,
+      "sha256": "F2672292FBEBEEF74B35C32C38203E3D1E1D259052E7AB5AFB34DA29840B544D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_async_wrap_state.zig",
+      "bytes": 34046,
+      "sha256": "1530C4043859CFF37D7F157F5557E4597E68972C1F1A1B82D208978F47E3D67A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_custom_buffer_listener.zig",
+      "bytes": 7760,
+      "sha256": "4CB29FE5A6475123A840A3638EC6D08128249822DC38F775A7B81E661B3085AE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_stream_shutdown.zig",
+      "bytes": 11021,
+      "sha256": "2BEE67EE76015C0549729F3F3B12CD4BBBF32C5DBF5A28D8CEE3F111E0C86D7E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33411,
+      "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_stream_shutdown_test_support.zig",
+      "bytes": 10325,
+      "sha256": "65388977262D9E61B99A95028D24C592A8D1E79E4328E827ECBEB047ABC72D80"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.cc.v24.13.txt",
+      "bytes": 28310,
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.h.v24.13.txt",
+      "bytes": 18488,
+      "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base-inl.h.v24.13.txt",
+      "bytes": 5052,
+      "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+      "bytes": 515962,
+      "sha256": "7AB122A962019B935EB08EE6042BFFDDCB6F7AF6BE6405F47E06A6CF591B7D4F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_stream_base.zig",
+      "bytes": 10864,
+      "sha256": "0A3F4EB5133BC9543D5AD77DC33F4753ABEC866EB721BCE0A8F08C16BECD5ABF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_owner.zig",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 39890,
+      "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_async_wrap_state.zig",
+      "bytes": 26761,
+      "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_custom_buffer_listener.zig",
+      "bytes": 7760,
+      "sha256": "4CB29FE5A6475123A840A3638EC6D08128249822DC38F775A7B81E661B3085AE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 32558,
+      "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.cc.v24.13.txt",
+      "bytes": 28310,
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.h.v24.13.txt",
+      "bytes": 18488,
+      "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base-inl.h.v24.13.txt",
+      "bytes": 5052,
+      "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\build.zig",
+      "bytes": 400204,
+      "sha256": "22296D730EC3706F95F0AF93765B69E4EC00CFE13967E02EBC76FEA3404EE4DF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_stream_js_dispatch.zig",
+      "bytes": 5620,
+      "sha256": "8F45E9DB6F89D984A46C224E460AD918C3BC4393AADCBEBC860608A9D0DF7ADC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-js-dispatch-sourceonly-20261023\\projected\\src\\extensions\\native_node_stream_base.zig",
+      "bytes": 12891,
+      "sha256": "9A0F046F5522A97A485557A31D1A21B2E0DF15215D656E7F4370646C67293C31"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-js-dispatch-sourceonly-20261023\\projected\\src\\extensions\\native_node_file_handle_owner.zig",
+      "bytes": 18430,
+      "sha256": "660A34E8EEFF16A6855ACC2F9A5DCF5D3A1317EB842D8E38B1F424EFBA55F2D5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_stream_js_dispatch_test.zig",
+      "bytes": 19124,
+      "sha256": "3A69D010344A0F17940D3709D5920C76C8FBDF16C6C3E035B0A5E321BD9D7A45"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-js-dispatch-sourceonly-20261023\\projected\\build.zig",
+      "bytes": 517766,
+      "sha256": "42188679A8EBC14070146AEF565AF6C5EF6EA2D7CF1F3014438D172AE65E7185"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-js-dispatch-sourceonly-20261023\\stream-base-js-dispatch.patch",
+      "bytes": 31413,
+      "sha256": "F21CA6A8BDD41412A4A90E8D112339F5620D213449215362DA1EA39A74D3AFD9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-js-dispatch-sourceonly-20261023\\README.md",
+      "bytes": 4590,
+      "sha256": "978F435DDA3616FDE04BFE91DFE47DAC4CC80F3211A8F5CFB3DEE5E512884623"
+    }
+  ],
+  "git_apply_check": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "changed_paths": 5,
+  "authored_control_count": 13,
+  "named_controls": [
+    "native StreamBase JS dispatch absent and wrong-brand receivers preserve undefined versus fd EINVAL",
+    "native StreamBase JS dispatch genuine template instance without native attachment is absent",
+    "native StreamBase JS dispatch dead stream guards precede argument checks and native virtual lookup",
+    "native StreamBase JS dispatch fd getter reads the actual descriptor without entering a trigger scope",
+    "native StreamBase JS dispatch counters use Number rounding and remain visible after actual close",
+    "native StreamBase JS dispatch genuine readStart and readStop retain accepted native completion and byte counts",
+    "native StreamBase JS dispatch missing pure virtuals remain explicit dependencies and restore trigger state",
+    "native StreamBase JS dispatch selected native error restores the prior trigger",
+    "native StreamBase JS dispatch actual JavaScript thrown value survives trigger restoration",
+    "native StreamBase JS dispatch nested scopes restore both immediate and outer trigger values",
+    "native StreamBase JS dispatch restores after the selected method destroys its native receiver",
+    "native StreamBase JS dispatch user buffer selects the current native CustomBuffer listener owner",
+    "native StreamBase JS dispatch shutdown uses actual request owner and distinguishes closing from dead"
+  ],
+  "review": {
+    "authority": "Original Node v24.13 stream_base.cc lines151-173,626-650,660-669",
+    "guard_order": "absent receiver; actual IsAlive; trigger; concrete method",
+    "native_lifetime": "Environment retained and async_id copied before native invocation; no stream or AsyncWrap access after callback",
+    "production_owners": "FileHandle actual ReadStart/ReadStop/GetFD; current Shutdown and CustomBuffer reused",
+    "numbers": "uint64 counters converted to double without IsAlive guard",
+    "new_virtuals": "pure virtual dependencies explicit; no pretend default success",
+    "build": "link closure matches current Main CustomBuffer root including native allocation.cpp",
+    "public_constructor_guard": "ActualFileHandleCallbackTemplateRequired unchanged; incomplete constructor not published"
+  },
+  "source_intake_performed": false,
+  "native_compile_performed": false,
+  "runtime_controls_executed": 0,
+  "application_qualified": false,
+  "production_bridge_removed": false
+}

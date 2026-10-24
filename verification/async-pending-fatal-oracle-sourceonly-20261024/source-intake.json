@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "status": "source_only_pending_independent_review",
+  "author": "Root",
+  "base_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "kind": "Three pending-fatal async fixture oracle corrections with paired literal-source and native cases",
+  "production_edits": [],
+  "targets": [
+    {
+      "target": "src/native_async_arguments_test.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_async_arguments_test.zig",
+        "bytes": 42082,
+        "sha256": "94EED011C1FC44428ABAB5129DD295DFA9029201E250AAD75B7151B953285EEF"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-async-pending-fatal-oracle-correction-sourceonly-20261024\\candidate\\src\\native_async_arguments_test.zig",
+        "bytes": 42748,
+        "sha256": "E353EE7C2F94D3969AE11951EFCBA659F637D0EFB8DC0DD73B669B7C5F221273"
+      }
+    },
+    {
+      "target": "src/native_async_frame_retirement_test.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_async_frame_retirement_test.zig",
+        "bytes": 74800,
+        "sha256": "E41A9319AC97B7CCBC0E529104085CB053843914E5BC56FB50D0F22DCBB6EEF6"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-async-pending-fatal-oracle-correction-sourceonly-20261024\\candidate\\src\\native_async_frame_retirement_test.zig",
+        "bytes": 76874,
+        "sha256": "E274F45908258733EB2A12B6AC8DEEA0020D483FA8A22F2172E279DEF8E3354A"
+      }
+    }
+  ],
+  "test_blocks": [
+    {
+      "path": "src/native_async_arguments_test.zig",
+      "test": "VM async arguments current fatal before the second resume retires all assigned missing slots without body entry",
+      "original_block_sha256": "8666DB673CD535603CC15E8C797A4BAC3709E078DEF338DEC1B1773C644F2BD1",
+      "candidate_block_sha256": "940E7965F7E795CE2BFCA019CBFBC33EBBAEA50798219E788EB24827EFCE3B85",
+      "source_native_pair": true
+    },
+    {
+      "path": "src/native_async_frame_retirement_test.zig",
+      "test": "VM async retirement preexisting current fatal prevents resumed body and precedes all cleanup events",
+      "original_block_sha256": "857A799BFE1CF9ECEECCB24422B0C86F5735207DF89C7F470A06358ED1497148",
+      "candidate_block_sha256": "B7AD57A0A6BD663C6B43DCFC1C812F0C78A98CF08A9900A59AE90D056A96F4C6",
+      "source_native_pair": true
+    },
+    {
+      "path": "src/native_async_frame_retirement_test.zig",
+      "test": "VM async retirement terminal close runs under preexisting fatal without resuming a body",
+      "original_block_sha256": "7339DDAF2765C673AA532511F1080891AAE53267210B2EE8C9458F24B0EF736C",
+      "candidate_block_sha256": "E56563531AA69575A505B2D8A070198C767B6FCC9E76B161D24989B316A30F37",
+      "source_native_pair": true
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-async-pending-fatal-oracle-correction-sourceonly-20261024\\oracle-correction.patch",
+    "bytes": 8168,
+    "sha256": "8B6CAAF7BE3FAAC8A940095A04F261138B22A20B9876B04DE20BD19AB9681372"
+  },
+  "diagnosis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\async-arguments-pending-fatal-independent-source-diagnosis-20261024.json",
+    "bytes": 9053,
+    "sha256": "1DE31582AE60C2D8EB4A0C8B94DEA15ACE27E5994D53B33450B7E9EE02D837FD"
+  },
+  "preserved_assertions": [
+    "Original current uncatchable error identity",
+    "No second/native resumed body or literal body observation",
+    "Exact per-holder once-only finalization and exact reverse order",
+    "One native terminal close",
+    "Outer Promise remains pending",
+    "All other test blocks and helper expectations unchanged"
+  ],
+  "strengthening": [
+    "Three literal-source/native paired cases within unchanged test declarations",
+    "Native close-hook snapshots are zero before queued holder finalizers",
+    "Pending Promise observed both at native terminal close and after job retirement"
+  ],
+  "native_execution_authorized": false,
+  "main_mutation_authorized": false,
+  "runtime_qualification": false
+}

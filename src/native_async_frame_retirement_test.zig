@@ -261,14 +261,29 @@ test "VM async retirement first actual argument cleanup fatal wins later local e
     }
 }
 test "VM async retirement preexisting current fatal prevents resumed body and precedes all cleanup events" {
-    var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .returned);
-    defer p.deinit(); try setup(&p, true, .returned);
-    const pending = try start(&p); defer p.engine.freeValue(pending);
-    try fatalValues(&p);
-    _ = c.JS_Throw(p.engine.context, c.JS_DupValue(p.engine.context, p.prior));
-    try fatalJob(&p, p.prior);
-    try std.testing.expectEqual(@as(usize, 0), p.resumed);
-    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+    inline for (.{ false, true }) |native| {
+        var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .returned);
+        defer p.deinit(); try setup(&p, native, .returned);
+        const pending = try start(&p); defer p.engine.freeValue(pending);
+        try fatalValues(&p);
+        _ = c.JS_Throw(p.engine.context, c.JS_DupValue(p.engine.context, p.prior));
+        var context: ?*c.JSContext = null;
+        try std.testing.expect(c.JS_ExecutePendingJob(p.engine.runtime, &context) < 0);
+        try std.testing.expect(c.JS_HasException(p.engine.context));
+        const reason = c.JS_GetException(p.engine.context); defer p.engine.freeValue(reason);
+        try std.testing.expect(c.JS_IsUncatchableError(reason));
+        try std.testing.expect(c.JS_IsStrictEqual(p.engine.context, reason, p.prior));
+        // Admission abandons the resolving handler without resuming the body.
+        // Its DECREF finalizer queues root releases at the head; the function's
+        // capture is then queued between the receiver and local finalizers.
+        try std.testing.expectEqual(@as(usize, 5), p.length);
+        try std.testing.expectEqualSlices(u8, &.{ 4, 3, 2, 1, 0 }, p.order[0..p.length]);
+        for (p.counts, 0..) |count, i|
+            try std.testing.expectEqual(@as(u32, if (p.made[i]) 1 else 0), count);
+        try std.testing.expectEqual(@as(usize, 0), p.resumed);
+        try std.testing.expectEqual(@as(usize, 0), p.observed);
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+    }
 }
 test "VM async retirement actual native body allocation fatal survives argument and local cleanup" {
     var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .body_fatal);
@@ -623,14 +638,29 @@ test "VM async retirement terminal close preserves first argument fatal and stil
     try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, p.hook_promise_state);
 }
 test "VM async retirement terminal close runs under preexisting fatal without resuming a body" {
-    var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
-    defer p.deinit(); try closeSetup(&p, true);
-    const pending = try closeStart(&p); defer p.engine.freeValue(pending);
-    try closeFatalValues(&p);
-    _ = c.JS_Throw(p.engine.context, c.JS_DupValue(p.engine.context, p.prior));
-    try closeJobFailure(&p, p.prior, true);
-    try std.testing.expectEqual(@as(usize, 0), p.resumed);
-    try std.testing.expectEqual(c.JS_PROMISE_PENDING, p.hook_promise_state);
+    inline for (.{ false, true }) |native| {
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
+        defer p.deinit(); try closeSetup(&p, native);
+        const pending = try closeStart(&p); defer p.engine.freeValue(pending);
+        try closeFatalValues(&p);
+        _ = c.JS_Throw(p.engine.context, c.JS_DupValue(p.engine.context, p.prior));
+        var context: ?*c.JSContext = null;
+        try std.testing.expect(c.JS_ExecutePendingJob(p.engine.runtime, &context) < 0);
+        try std.testing.expect(c.JS_HasException(p.engine.context));
+        const reason = c.JS_GetException(p.engine.context); defer p.engine.freeValue(reason);
+        try std.testing.expect(c.JS_IsUncatchableError(reason));
+        try std.testing.expect(c.JS_IsStrictEqual(p.engine.context, reason, p.prior));
+        try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
+        if (native) {
+            // The argument release is queued by the resolving handler's DECREF
+            // finalizer; no holder finalizer has run when terminal close starts.
+            try std.testing.expectEqualSlices(u32, &.{ 0, 0, 0, 0 }, &p.hook_counts);
+            try std.testing.expectEqual(c.JS_PROMISE_PENDING, p.hook_promise_state);
+        }
+        try closeOrder(&p, &.{ 3, 2, 1, 0 });
+        try std.testing.expectEqual(@as(usize, 0), p.resumed);
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+    }
 }
 fn closeReasonRelease(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const p: *CloseProbe = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));

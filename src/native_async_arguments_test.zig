@@ -655,19 +655,29 @@ test "VM async arguments actual body fatal wins later parameter and local cleanu
     try allRetired(&p); try expectOrder(&p, &.{0, 6, 7});
 }
 test "VM async arguments current fatal before the second resume retires all assigned missing slots without body entry" {
-    var p = Probe.init(try Engine.init(std.testing.allocator, .{}), true, .five); defer p.deinit();
-    try setup(&p, .{ .mode = .five, .formals = 5, .length = 5 });
-    const pending = try start(&p, "globalThis.amPending=Reflect.apply(subject,amMake(7),[amMake(0),amMake(1)]);void 0;"); defer p.engine.freeValue(pending);
-    try job(&p);
-    try std.testing.expectEqual(@as(usize, 1), p.resumes);
-    p.prior = try p.engine.checked(c.JS_NewError(p.engine.context));
-    c.JS_SetUncatchableError(p.engine.context, p.prior);
-    _ = c.JS_Throw(p.engine.context, c.JS_DupValue(p.engine.context, p.prior));
-    const reason = try fatalJob(&p); defer p.engine.freeValue(reason);
-    try std.testing.expect(c.JS_IsStrictEqual(p.engine.context, p.prior, reason));
-    try std.testing.expectEqual(@as(usize, 1), p.resumes);
-    try std.testing.expectEqual(@as(usize, 0), p.observed);
-    try std.testing.expectEqual(@as(usize, 1), p.hook_calls);
-    try expectOrder(&p, &.{0, 1, 2, 3, 4, 6, 7}); try allRetired(&p);
-    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+    inline for (.{ false, true }) |native| {
+        var p = Probe.init(try Engine.init(std.testing.allocator, .{}), native, .five); defer p.deinit();
+        try setup(&p, .{ .mode = .five, .formals = 5, .length = 5 });
+        const pending = try start(&p, "globalThis.amPending=Reflect.apply(subject,amMake(7),[amMake(0),amMake(1)]);void 0;"); defer p.engine.freeValue(pending);
+        try job(&p);
+        try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.resumes);
+        p.prior = try p.engine.checked(c.JS_NewError(p.engine.context));
+        c.JS_SetUncatchableError(p.engine.context, p.prior);
+        _ = c.JS_Throw(p.engine.context, c.JS_DupValue(p.engine.context, p.prior));
+        const reason = try fatalJob(&p); defer p.engine.freeValue(reason);
+        try std.testing.expect(c.JS_IsStrictEqual(p.engine.context, p.prior, reason));
+        try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.resumes);
+        try std.testing.expectEqual(@as(usize, 0), p.observed);
+        try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
+        // Pending-job admission skips the body and frees its resolving handler.
+        // Retirement is already inside DECREF: ascending root releases enter the
+        // queue at its head, so their finalizers run in reverse release order.
+        if (native) {
+            for ([_]usize{ 0, 1, 2, 3, 4, 6, 7 }) |slot|
+                try std.testing.expectEqual(@as(u32, 0), p.hook_counts[slot]);
+            try std.testing.expectEqual(c.JS_PROMISE_PENDING, p.hook_promise_state);
+        }
+        try expectOrder(&p, &.{7, 6, 4, 3, 2, 1, 0}); try allRetired(&p);
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+    }
 }

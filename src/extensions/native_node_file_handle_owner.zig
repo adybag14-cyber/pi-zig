@@ -65,6 +65,22 @@ pub const Handle = struct {
         const self: *Handle = @alignCast(@fieldParentPtr("stream", base));
         return &self.wrap;
     }
+    fn streamIsAlive(base: *stream_base.Base) bool {
+        const self: *Handle = @fieldParentPtr("stream", base);
+        return self.isAlive();
+    }
+    fn streamGetFD(base: *stream_base.Base) c_int {
+        const self: *Handle = @fieldParentPtr("stream", base);
+        return self.getFD();
+    }
+    fn streamReadStart(base: *stream_base.Base, s: *Scope) anyerror!c_int {
+        const self: *Handle = @fieldParentPtr("stream", base);
+        return self.readStart(s);
+    }
+    fn streamReadStop(base: *stream_base.Base) c_int {
+        const self: *Handle = @fieldParentPtr("stream", base);
+        return self.readStop();
+    }
     fn createShutdown(base: *stream_base.Base, s: *Scope,
         wrapper: c.JSValue) anyerror!?*stream_requests.Shutdown
     {
@@ -181,6 +197,8 @@ pub const Handle = struct {
         self.attached = true;
         try self.stream.init(data.environment,
             .{ .get_async_wrap = streamWrap,
+                .is_alive = streamIsAlive, .get_fd = streamGetFD,
+                .read_start = streamReadStart, .read_stop = streamReadStop,
                 .create_shutdown = createShutdown, .do_shutdown = doShutdown },
             self.stream_operations);
         self.stream_initialized = true;

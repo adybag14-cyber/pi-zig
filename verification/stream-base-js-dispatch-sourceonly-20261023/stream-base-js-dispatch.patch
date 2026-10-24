@@ -1,0 +1,560 @@
+diff --git a/build.zig b/build.zig
+--- a/build.zig
++++ b/build.zig
+@@ -2323,6 +2323,27 @@
+             node_custom_buffer_listener.root_module.linkSystemLibrary("userenv", .{});
+         }
+         b.step("build-native-node-custom-buffer-listener", "Install 15 actual CustomBuffer controls without execution").dependOn(&b.addInstallArtifact(node_custom_buffer_listener, .{ .dest_sub_path = b.fmt("native-node-custom-buffer-listener{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
++        const node_stream_js_dispatch = b.addTest(.{
++            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_stream_js_dispatch_test.zig"), .target = target, .optimize = optimize }),
++            .filters = &.{"native StreamBase JS dispatch"}, .use_llvm = use_llvm,
++        });
++        linkQuickJs(b, node_stream_js_dispatch.root_module, quickjs, sqlite_lib_dir);
++        linkTypeScriptParser(b, node_stream_js_dispatch.root_module, typescript_parser);
++        linkSqlite(node_stream_js_dispatch.root_module, sqlite_lib_dir, sqlite_library);
++        node_stream_js_dispatch.root_module.addImport("catalog_tool", catalog_tool);
++        node_stream_js_dispatch.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
++        node_stream_js_dispatch.root_module.addIncludePath(b.path("src/extensions"));
++        node_stream_js_dispatch.root_module.linkLibrary(network);
++        node_stream_js_dispatch.root_module.linkLibrary(node_one_byte_diagnostics);
++        node_stream_js_dispatch.root_module.addCSourceFile(.{
++            .file = b.path("src/extensions/native_node_custom_buffer_listener_allocation.cpp"),
++            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
++        });
++        if (target.result.os.tag == .windows) {
++            node_stream_js_dispatch.root_module.linkSystemLibrary("advapi32", .{});
++            node_stream_js_dispatch.root_module.linkSystemLibrary("userenv", .{});
++        }
++        b.step("build-native-node-stream-js-dispatch", "Install 13 actual StreamBase JS dispatch controls without execution").dependOn(&b.addInstallArtifact(node_stream_js_dispatch, .{ .dest_sub_path = b.fmt("native-node-stream-js-dispatch{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+         const node_one_byte_string = b.addTest(.{
+             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_one_byte_string_test.zig"), .target = target, .optimize = optimize }),
+             .filters = &.{"native OneByteString"}, .use_llvm = use_llvm,
+diff --git a/src/extensions/native_node_stream_base.zig b/src/extensions/native_node_stream_base.zig
+--- a/src/extensions/native_node_stream_base.zig
++++ b/src/extensions/native_node_stream_base.zig
+@@ -49,6 +49,13 @@
+ pub const Virtuals = struct {
+     get_async_wrap: *const fn (*Base) ?*wraps.State,
+     get_object: *const fn (*Base) ?c.JSValue = defaultGetObject,
++    // Source pure virtuals stay explicit dependencies until an actual derived
++    // stream supplies them. Lifecycle/read-listener-only owners do not invent
++    // an alive state or a successful ReadStart/ReadStop implementation.
++    is_alive: ?*const fn (*Base) bool = null,
++    read_start: ?*const fn (*Base, *a.Scope) anyerror!c_int = null,
++    read_stop: ?*const fn (*Base) c_int = null,
++    get_fd: *const fn (*Base) c_int = defaultGetFD,
+     error_string: *const fn (*Base) ?[*:0]const u8 = defaultError,
+     clear_error: *const fn (*Base) void = defaultClearError,
+     create_shutdown: *const fn (*Base, *a.Scope, c.JSValue) anyerror!?*requests.Shutdown = shutdown.createDefault,
+@@ -61,6 +68,8 @@
+ // These are the original StreamResource virtual default bodies.
+ fn defaultError(_: *Base) ?[*:0]const u8 { return null; }
+ fn defaultClearError(_: *Base) void {}
++// Original StreamBase::GetFD default, distinct from a failed receiver guard.
++fn defaultGetFD(_: *Base) c_int { return -1; }
+ pub const ReadChecks = enum { check_nread, skip_nread_checks };
+ 
+ /// This is embedded in the actual derived stream at a stable address. Like the
+diff --git a/src/extensions/native_node_file_handle_owner.zig b/src/extensions/native_node_file_handle_owner.zig
+--- a/src/extensions/native_node_file_handle_owner.zig
++++ b/src/extensions/native_node_file_handle_owner.zig
+@@ -64,6 +64,22 @@
+     fn streamWrap(base: *stream_base.Base) ?*native.State {
+         const self: *Handle = @alignCast(@fieldParentPtr("stream", base));
+         return &self.wrap;
++    }
++    fn streamIsAlive(base: *stream_base.Base) bool {
++        const self: *Handle = @fieldParentPtr("stream", base);
++        return self.isAlive();
++    }
++    fn streamGetFD(base: *stream_base.Base) c_int {
++        const self: *Handle = @fieldParentPtr("stream", base);
++        return self.getFD();
++    }
++    fn streamReadStart(base: *stream_base.Base, s: *Scope) anyerror!c_int {
++        const self: *Handle = @fieldParentPtr("stream", base);
++        return self.readStart(s);
++    }
++    fn streamReadStop(base: *stream_base.Base) c_int {
++        const self: *Handle = @fieldParentPtr("stream", base);
++        return self.readStop();
+     }
+     fn createShutdown(base: *stream_base.Base, s: *Scope,
+         wrapper: c.JSValue) anyerror!?*stream_requests.Shutdown
+@@ -181,6 +197,8 @@
+         self.attached = true;
+         try self.stream.init(data.environment,
+             .{ .get_async_wrap = streamWrap,
++                .is_alive = streamIsAlive, .get_fd = streamGetFD,
++                .read_start = streamReadStart, .read_stop = streamReadStop,
+                 .create_shutdown = createShutdown, .do_shutdown = doShutdown },
+             self.stream_operations);
+         self.stream_initialized = true;
+diff --git a/src/extensions/native_node_stream_js_dispatch.zig b/src/extensions/native_node_stream_js_dispatch.zig
+new file mode 100644
+--- /dev/null
++++ b/src/extensions/native_node_stream_js_dispatch.zig
+@@ -0,0 +1,113 @@
++// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
++//! StreamBase::JSMethod, ReadStartJS/ReadStopJS, Shutdown/UseUserBuffer dispatch,
++//! and the fd/bytesRead/bytesWritten accessors from Node v24.13 stream_base.cc.
++//!
++//! These are callback bodies over the actual wrapper slots and native stream.
++//! Public AddMethods/template publication remains a separate owner: the write
++//! methods and external_stream must exist before publishing that whole surface.
++//! The caller supplies its existing Scope; no extra HandleScope is introduced.
++const a = @import("native_node_argument_values.zig");
++const wraps = @import("native_node_async_wrap_state.zig");
++const streams = @import("native_node_stream_base.zig");
++const resources = @import("native_node_stream_resource.zig");
++const custom = @import("native_node_custom_buffer_listener.zig");
++const shutdown = @import("native_node_stream_shutdown.zig");
++const check = @import("native_node_check_failure.zig");
++const c = a.c;
++
++pub const Method = enum { read_start, read_stop, shutdown, use_user_buffer };
++
++/// Source JSMethod returns without setting ReturnValue when FromObject is null.
++/// In particular, do not apply argument CHECKs, inspect virtuals, or enter the
++/// trigger scope for a missing or retired native receiver.
++pub fn jsMethod(s: *a.Scope, registry: *wraps.Registry, receiver: c.JSValue,
++    method: Method, args: []const c.JSValue) anyerror!c.JSValue
++{
++    const stream = streams.Base.fromObject(registry, receiver) orelse
++        return c.pi_js_undefined();
++    const is_alive = stream.virtuals.is_alive orelse
++        return error.ActualStreamIsAliveVirtualRequired;
++    if (!is_alive(stream))
++        return c.JS_NewInt32(s.engine.context, resources.uv.UV_EINVAL);
++
++    // Snapshot the Environment and async id before invoking the native method.
++    // The method can delete its own stream: the scope destructor must not read
++    // stream, its AsyncWrap, or its virtual table after the invocation.
++    const environment = stream.environment.retain();
++    defer environment.release();
++    if ((try environment.requireEngine()) != s.engine)
++        return error.ActualStreamJSMethodEnvironmentMismatch;
++    const wrap = stream.virtuals.get_async_wrap(stream) orelse
++        return error.ActualStreamJSMethodAsyncWrapRequired;
++    const async_id = wrap.async_id;
++    if (environment.field(.check).* > 0 and !(async_id >= 0))
++        check.assertion(s.engine, .{
++            .file_line = "src/env.cc:268",
++            .message = "(default_trigger_async_id) >= (0)",
++            .function = "node::AsyncHooks::DefaultTriggerAsyncIdScope",
++        });
++    const saved_trigger = environment.uidField(.default_trigger).*;
++    environment.uidField(.default_trigger).* = async_id;
++    defer environment.uidField(.default_trigger).* = saved_trigger;
++
++    // Setting a small integer ReturnValue cannot call JavaScript. Restoration
++    // runs before the caller retires its local handles, including on failure.
++    return c.JS_NewInt32(s.engine.context, try invoke(s, stream, method, args));
++}
++
++fn invoke(s: *a.Scope, stream: *streams.Base, method: Method,
++    args: []const c.JSValue) anyerror!c_int
++{
++    return switch (method) {
++        .read_start => (stream.virtuals.read_start orelse
++            return error.ActualStreamReadStartVirtualRequired)(stream, s),
++        .read_stop => (stream.virtuals.read_stop orelse
++            return error.ActualStreamReadStopVirtualRequired)(stream),
++        .shutdown => blk: {
++            const request = a.arg(args, 0);
++            if (!c.JS_IsObject(request)) check.assertion(s.engine, .{
++                .file_line = "src/stream_base.cc:169",
++                .message = "args[0]->IsObject()",
++                .function = "node::StreamBase::Shutdown",
++            });
++            // The JS entry always passes the supplied object. Do not turn an
++            // absent argument into Shutdown's distinct native default request.
++            break :blk try shutdown.run(s, stream, request);
++        },
++        .use_user_buffer => custom.useUserBuffer(stream, a.arg(args, 0)),
++    };
++}
++
++/// GetFD uses the same FromObject and IsAlive guards, but has no trigger scope.
++/// The virtual default is the original -1; concrete streams provide their fd.
++pub fn getFD(s: *a.Scope, registry: *wraps.Registry,
++    receiver: c.JSValue) anyerror!c.JSValue
++{
++    const stream = streams.Base.fromObject(registry, receiver) orelse
++        return c.JS_NewInt32(s.engine.context, resources.uv.UV_EINVAL);
++    const is_alive = stream.virtuals.is_alive orelse
++        return error.ActualStreamIsAliveVirtualRequired;
++    if (!is_alive(stream))
++        return c.JS_NewInt32(s.engine.context, resources.uv.UV_EINVAL);
++    return c.JS_NewInt32(s.engine.context, stream.virtuals.get_fd(stream));
++}
++
++/// Source reads uint64_t counters even after IsAlive becomes false, then casts
++/// to double. JavaScript observes Number rounding, never a BigInt or truncation.
++pub fn getBytesRead(s: *a.Scope, registry: *wraps.Registry,
++    receiver: c.JSValue) c.JSValue
++{
++    const stream = streams.Base.fromObject(registry, receiver) orelse
++        return c.JS_NewInt32(s.engine.context, 0);
++    return c.JS_NewFloat64(s.engine.context,
++        @as(f64, @floatFromInt(stream.resource.bytes_read)));
++}
++
++pub fn getBytesWritten(s: *a.Scope, registry: *wraps.Registry,
++    receiver: c.JSValue) c.JSValue
++{
++    const stream = streams.Base.fromObject(registry, receiver) orelse
++        return c.JS_NewInt32(s.engine.context, 0);
++    return c.JS_NewFloat64(s.engine.context,
++        @as(f64, @floatFromInt(stream.resource.bytes_written)));
++}
+diff --git a/src/native_node_stream_js_dispatch_test.zig b/src/native_node_stream_js_dispatch_test.zig
+new file mode 100644
+--- /dev/null
++++ b/src/native_node_stream_js_dispatch_test.zig
+@@ -0,0 +1,345 @@
++//! Source-only controls for actual StreamBase JS dispatch. Native compiler,
++//! metadata and runtime execution require separate Root admission.
++//! Physical I/O uses the existing concrete FileHandle fixture. The explicitly
++//! selected virtual probes below observe trigger/error/destruction boundaries;
++//! they are not production virtuals or replacement native owners.
++const std = @import("std");
++const support = @import("native_node_file_handle_owner_test_support.zig");
++const shutdown_support = @import("native_node_stream_shutdown_test_support.zig");
++const dispatch = @import("extensions/native_node_stream_js_dispatch.zig");
++const streams = @import("extensions/native_node_stream_base.zig");
++const a = support.a;
++const c = a.c;
++const Fixture = support.Fixture;
++const File = support.File;
++const methods = [_]dispatch.Method{ .read_start, .read_stop, .shutdown, .use_user_buffer };
++
++fn callReceiver(f: *Fixture, receiver: c.JSValue, method: dispatch.Method,
++    args: []const c.JSValue) !c.JSValue
++{
++    return a.expression(f.engine, dispatch.jsMethod,
++        .{ f.registry(), receiver, method, args });
++}
++fn call(f: *Fixture, method: dispatch.Method, args: []const c.JSValue) !c.JSValue {
++    return callReceiver(f, f.primary_wrapper.?, method, args);
++}
++fn fd(f: *Fixture, receiver: c.JSValue) !c.JSValue {
++    return a.expression(f.engine, dispatch.getFD, .{ f.registry(), receiver });
++}
++fn bytesRead(f: *Fixture, receiver: c.JSValue) !c.JSValue {
++    return a.expression(f.engine, dispatch.getBytesRead, .{ f.registry(), receiver });
++}
++fn bytesWritten(f: *Fixture, receiver: c.JSValue) !c.JSValue {
++    return a.expression(f.engine, dispatch.getBytesWritten, .{ f.registry(), receiver });
++}
++fn expectInt(f: *Fixture, value: c.JSValue, expected: c_int) !void {
++    defer f.engine.freeValue(value);
++    try std.testing.expect(c.JS_IsNumber(value));
++    var actual: c_int = undefined;
++    try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt32(f.engine.context, &actual, value));
++    try std.testing.expectEqual(expected, actual);
++}
++fn expectNumber(f: *Fixture, value: c.JSValue, expected: f64) !void {
++    defer f.engine.freeValue(value);
++    try std.testing.expect(c.JS_IsNumber(value));
++    var actual: f64 = undefined;
++    try std.testing.expectEqual(@as(c_int, 0), c.JS_ToFloat64(f.engine.context, &actual, value));
++    try std.testing.expectEqual(expected, actual);
++}
++fn expectUndefined(f: *Fixture, value: c.JSValue) !void {
++    defer f.engine.freeValue(value);
++    try std.testing.expect(c.JS_IsUndefined(value));
++}
++fn expectMissing(f: *Fixture, receiver: c.JSValue) !void {
++    // Missing shutdown/useUserBuffer arguments would take their native CHECKs
++    // if JSMethod incorrectly invoked a body for an absent native receiver.
++    for (methods) |method| try expectUndefined(f, try callReceiver(f, receiver, method, &.{}));
++    try expectInt(f, try fd(f, receiver), support.physical.UV_EINVAL);
++    try expectNumber(f, try bytesRead(f, receiver), 0);
++    try expectNumber(f, try bytesWritten(f, receiver), 0);
++}
++fn sentinel(f: *Fixture) !*support.Handle {
++    // The original present-object constructor accepts the integer -1. Closing
++    // below uses its real ReleaseFD/AfterClose owner before destruction.
++    return f.create(-1, null, null);
++}
++fn releaseSentinel(f: *Fixture) void {
++    const wrapper = f.primary_wrapper orelse return;
++    const wrap = f.registry().unwrap(wrapper) orelse return;
++    const handle: *support.Handle = @fieldParentPtr("wrap", wrap);
++    if (!handle.read_state.closed) {
++        std.debug.assert(handle.read_state.fd == -1);
++        const released = f.releaseDescriptor() catch @panic("dispatch sentinel release failed");
++        std.debug.assert(released == -1);
++    }
++}
++fn expectCurrentTrigger(stream: *streams.Base) !void {
++    const wrap = stream.virtuals.get_async_wrap(stream) orelse
++        return error.DispatchProbeAsyncWrapRequired;
++    try std.testing.expectEqual(wrap.async_id, stream.environment.uidField(.default_trigger).*);
++}
++fn returnSelectedError(stream: *streams.Base, _: *a.Scope) anyerror!c_int {
++    try expectCurrentTrigger(stream);
++    return error.DispatchSelectedReadFailure;
++}
++fn throwSelectedReason(stream: *streams.Base, s: *a.Scope) anyerror!c_int {
++    try expectCurrentTrigger(stream);
++    const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));
++    return a.raise(s, try s.get(global, "dispatchReason"));
++}
++fn stopWhileObserving(stream: *streams.Base) c_int {
++    const wrap = stream.virtuals.get_async_wrap(stream) orelse return -451;
++    if (stream.environment.uidField(.default_trigger).* != wrap.async_id) return -452;
++    const handle: *support.Handle = @fieldParentPtr("stream", stream);
++    return handle.readStop();
++}
++fn nestedRead(stream: *streams.Base, s: *a.Scope) anyerror!c_int {
++    try expectCurrentTrigger(stream);
++    const environment = stream.environment;
++    const wrap = stream.virtuals.get_async_wrap(stream).?;
++    // A nested scope restores the immediately preceding value, even when that
++    // value differs from this stream's id. The outer scope restores its caller.
++    environment.uidField(.default_trigger).* = 703;
++    const inner = try dispatch.jsMethod(s, wrap.registry, wrap.object().?, .read_stop, &.{});
++    defer s.engine.freeValue(inner);
++    var status: c_int = undefined;
++    try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt32(s.engine.context, &status, inner));
++    try std.testing.expectEqual(@as(c_int, 0), status);
++    try std.testing.expectEqual(@as(f64, 703), environment.uidField(.default_trigger).*);
++    return 29;
++}
++fn destroyDuringRead(stream: *streams.Base, s: *a.Scope) anyerror!c_int {
++    try expectCurrentTrigger(stream);
++    const handle: *support.Handle = @fieldParentPtr("stream", stream);
++    try std.testing.expectEqual(@as(c_int, -1), try handle.releaseDescriptor(s));
++    try handle.wrap.retire(false);
++    // stream and its virtual table have been freed. Neither the callback nor
++    // JSMethod may read them again, including from a deferred cleanup.
++    return 37;
++}
++fn noAsyncWrap(_: *streams.Base) ?*support.native.State { return null; }
++
++test "native StreamBase JS dispatch absent and wrong-brand receivers preserve undefined versus fd EINVAL" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    const object = try f.value("Object.create(null)");
++    defer f.engine.freeValue(object);
++    f.env().uidField(.default_trigger).* = 719;
++    for ([_]c.JSValue{ c.pi_js_undefined(), c.pi_js_null(),
++        c.JS_NewInt32(f.engine.context, 42), object }) |receiver|
++        try expectMissing(&f, receiver);
++    try std.testing.expectEqual(@as(f64, 719), f.env().uidField(.default_trigger).*);
++    try std.testing.expect(!c.JS_HasException(f.engine.context));
++}
++
++test "native StreamBase JS dispatch genuine template instance without native attachment is absent" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    const receiver = try a.expression(f.engine, struct {
++        fn body(s: *a.Scope, fixture: *Fixture) !c.JSValue {
++            return a.duplicate(s.engine, try fixture.registry().newInstance(
++                s, .filehandle, fixture.prototype.?));
++        }
++    }.body, .{&f});
++    defer f.engine.freeValue(receiver);
++    try std.testing.expectEqual(f.registry().classId(.filehandle), c.JS_GetClassID(receiver));
++    try expectMissing(&f, receiver);
++}
++
++test "native StreamBase JS dispatch dead stream guards precede argument checks and native virtual lookup" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    const handle = try sentinel(&f); defer releaseSentinel(&f);
++    try std.testing.expectEqual(@as(c_int, -1), try f.releaseDescriptor());
++    const original = handle.stream.virtuals; defer handle.stream.virtuals = original;
++    handle.stream.virtuals.get_async_wrap = noAsyncWrap;
++    handle.stream.virtuals.read_start = null;
++    handle.stream.virtuals.read_stop = null;
++    f.env().uidField(.default_trigger).* = 727;
++    for (methods) |method| try expectInt(&f, try call(&f, method, &.{}),
++        support.physical.UV_EINVAL);
++    try expectInt(&f, try fd(&f, f.primary_wrapper.?), support.physical.UV_EINVAL);
++    try std.testing.expectEqual(@as(f64, 727), f.env().uidField(.default_trigger).*);
++    try std.testing.expect(!c.JS_HasException(f.engine.context));
++}
++
++test "native StreamBase JS dispatch fd getter reads the actual descriptor without entering a trigger scope" {
++    var file: File = undefined; try file.init(); defer file.deinit();
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    const descriptor = file.take();
++    const handle = try f.create(descriptor, null, null);
++    f.env().uidField(.default_trigger).* = 733;
++    // GetFD has no GetAsyncWrap dependency. A JSMethod would reject this probe.
++    const original = handle.stream.virtuals.get_async_wrap;
++    handle.stream.virtuals.get_async_wrap = noAsyncWrap;
++    const value = fd(&f, f.primary_wrapper.?);
++    handle.stream.virtuals.get_async_wrap = original;
++    try expectInt(&f, try value, descriptor);
++    try std.testing.expectEqual(@as(f64, 733), f.env().uidField(.default_trigger).*);
++    try std.testing.expect(!handle.read_state.reading);
++    try std.testing.expectEqual(@as(c_int, 0), File.status(descriptor));
++    file.descriptor = try f.releaseDescriptor();
++    try expectInt(&f, try fd(&f, f.primary_wrapper.?), support.physical.UV_EINVAL);
++}
++
++test "native StreamBase JS dispatch counters use Number rounding and remain visible after actual close" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    const handle = try sentinel(&f); defer releaseSentinel(&f);
++    const cases = [_]struct { integer: u64, number: f64 }{
++        .{ .integer = 0, .number = 0 },
++        .{ .integer = 9007199254740991, .number = 9007199254740991 },
++        .{ .integer = 9007199254740993, .number = 9007199254740992 },
++        .{ .integer = std.math.maxInt(u64), .number = 18446744073709551616 },
++    };
++    const alive = handle.stream.virtuals.is_alive;
++    handle.stream.virtuals.is_alive = null;
++    for (cases) |case| {
++        handle.stream.resource.bytes_read = case.integer;
++        handle.stream.resource.bytes_written = case.integer;
++        try expectNumber(&f, try bytesRead(&f, f.primary_wrapper.?), case.number);
++        try expectNumber(&f, try bytesWritten(&f, f.primary_wrapper.?), case.number);
++    }
++    handle.stream.virtuals.is_alive = alive;
++    try std.testing.expectEqual(@as(c_int, -1), try f.releaseDescriptor());
++    try expectNumber(&f, try bytesRead(&f, f.primary_wrapper.?), 18446744073709551616);
++    try expectNumber(&f, try bytesWritten(&f, f.primary_wrapper.?), 18446744073709551616);
++    try expectInt(&f, try fd(&f, f.primary_wrapper.?), support.physical.UV_EINVAL);
++    try handle.wrap.retire(false);
++    try std.testing.expect(f.registry().unwrap(f.primary_wrapper.?) == null);
++    try expectMissing(&f, f.primary_wrapper.?);
++}
++
++test "native StreamBase JS dispatch genuine readStart and readStop retain accepted native completion and byte counts" {
++    var file: File = undefined; try file.init(); defer file.deinit();
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    try f.installInitRecorder();
++    const handle = try f.create(file.take(), null, null);
++    f.env().uidField(.default_trigger).* = 739;
++    try expectInt(&f, try call(&f, .read_start, &.{}), 0);
++    const request = handle.read_state.current_read orelse return error.DispatchActualReadRequired;
++    try std.testing.expect(handle.read_state.reading);
++    try std.testing.expectEqual(handle.wrap.async_id, request.wrap.trigger_async_id);
++    try std.testing.expectEqual(@as(f64, 739), f.env().uidField(.default_trigger).*);
++    try expectInt(&f, try call(&f, .read_stop, &.{}), 0);
++    try std.testing.expect(!handle.read_state.reading);
++    try std.testing.expect(handle.read_state.current_read == request);
++    try f.pumpIo();
++    try std.testing.expectEqual(@as(usize, 1), f.read_begins);
++    try std.testing.expectEqual(@as(usize, 1), f.read_ends);
++    try std.testing.expectEqual(@as(usize, 1), f.read_callbacks);
++    try std.testing.expectEqualSlices(u8, "ABCDEFGH", f.read_bytes[0..f.last_read_length]);
++    try expectNumber(&f, try bytesRead(&f, f.primary_wrapper.?), 8);
++    try expectNumber(&f, try bytesWritten(&f, f.primary_wrapper.?), 0);
++    try std.testing.expectEqual(@as(f64, 739), f.env().uidField(.default_trigger).*);
++    file.descriptor = try f.releaseDescriptor();
++}
++
++test "native StreamBase JS dispatch missing pure virtuals remain explicit dependencies and restore trigger state" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    const handle = try sentinel(&f); defer releaseSentinel(&f);
++    const original = handle.stream.virtuals; defer handle.stream.virtuals = original;
++    f.env().uidField(.default_trigger).* = 743;
++    handle.stream.virtuals.is_alive = null;
++    try std.testing.expectError(error.ActualStreamIsAliveVirtualRequired,
++        call(&f, .read_start, &.{}));
++    try std.testing.expectError(error.ActualStreamIsAliveVirtualRequired,
++        fd(&f, f.primary_wrapper.?));
++    handle.stream.virtuals = original;
++    handle.stream.virtuals.read_start = null;
++    try std.testing.expectError(error.ActualStreamReadStartVirtualRequired,
++        call(&f, .read_start, &.{}));
++    handle.stream.virtuals.read_stop = null;
++    try std.testing.expectError(error.ActualStreamReadStopVirtualRequired,
++        call(&f, .read_stop, &.{}));
++    handle.stream.virtuals.get_async_wrap = noAsyncWrap;
++    try std.testing.expectError(error.ActualStreamJSMethodAsyncWrapRequired,
++        call(&f, .read_start, &.{}));
++    try std.testing.expectEqual(@as(f64, 743), f.env().uidField(.default_trigger).*);
++    try std.testing.expect(!c.JS_HasException(f.engine.context));
++}
++
++test "native StreamBase JS dispatch selected native error restores the prior trigger" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    const handle = try sentinel(&f); defer releaseSentinel(&f);
++    handle.stream.virtuals.read_start = returnSelectedError;
++    f.env().uidField(.default_trigger).* = 751;
++    try std.testing.expectError(error.DispatchSelectedReadFailure,
++        call(&f, .read_start, &.{}));
++    try std.testing.expectEqual(@as(f64, 751), f.env().uidField(.default_trigger).*);
++    try std.testing.expect(!c.JS_HasException(f.engine.context));
++}
++
++test "native StreamBase JS dispatch actual JavaScript thrown value survives trigger restoration" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    const handle = try sentinel(&f); defer releaseSentinel(&f);
++    try f.evaluate("globalThis.dispatchReason={selected:'read-dispatch'};");
++    handle.stream.virtuals.read_start = throwSelectedReason;
++    f.env().uidField(.default_trigger).* = -1;
++    try std.testing.expectError(error.JavaScriptException,
++        call(&f, .read_start, &.{}));
++    try std.testing.expectEqual(@as(f64, -1), f.env().uidField(.default_trigger).*);
++    const actual = try f.takeCaught(); defer f.engine.freeValue(actual);
++    const expected = try f.global("dispatchReason"); defer f.engine.freeValue(expected);
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, actual, expected));
++    try std.testing.expect(!c.JS_IsUncatchableError(actual));
++}
++
++test "native StreamBase JS dispatch nested scopes restore both immediate and outer trigger values" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    const handle = try sentinel(&f); defer releaseSentinel(&f);
++    handle.stream.virtuals.read_start = nestedRead;
++    handle.stream.virtuals.read_stop = stopWhileObserving;
++    f.env().uidField(.default_trigger).* = 757;
++    try expectInt(&f, try call(&f, .read_start, &.{}), 29);
++    try std.testing.expectEqual(@as(f64, 757), f.env().uidField(.default_trigger).*);
++}
++
++test "native StreamBase JS dispatch restores after the selected method destroys its native receiver" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    const handle = try sentinel(&f); defer releaseSentinel(&f);
++    handle.stream.virtuals.read_start = destroyDuringRead;
++    f.env().uidField(.default_trigger).* = 761;
++    try expectInt(&f, try call(&f, .read_start, &.{}), 37);
++    try std.testing.expectEqual(@as(f64, 761), f.env().uidField(.default_trigger).*);
++    try std.testing.expect(f.registry().unwrap(f.primary_wrapper.?) == null);
++    try std.testing.expect(f.registry().streamPointer(f.primary_wrapper.?) == null);
++    try expectMissing(&f, f.primary_wrapper.?);
++}
++
++test "native StreamBase JS dispatch user buffer selects the current native CustomBuffer listener owner" {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    const handle = try sentinel(&f); defer releaseSentinel(&f);
++    const view = try f.value("new Uint8Array(7)"); defer f.engine.freeValue(view);
++    const before = handle.stream.resource.listener;
++    f.env().uidField(.default_trigger).* = 769;
++    try expectInt(&f, try call(&f, .use_user_buffer, &.{view}), 0);
++    const after = handle.stream.resource.listener orelse return error.DispatchCustomListenerRequired;
++    try std.testing.expect(after != before);
++    try std.testing.expect(after.previous_listener == before);
++    try std.testing.expect(after.stream == &handle.stream.resource);
++    try std.testing.expectEqual(@as(f64, 769), f.env().uidField(.default_trigger).*);
++}
++
++test "native StreamBase JS dispatch shutdown uses actual request owner and distinguishes closing from dead" {
++    var file: File = undefined; try file.init(); defer file.deinit();
++    var f: shutdown_support.Fixture = undefined; try f.init(); defer f.deinit();
++    try std.testing.expect(file.descriptor > 2);
++    const handle = try f.create(file.take());
++    const descriptor = handle.getFD();
++    const request = try f.request(); defer f.base.engine.freeValue(request);
++    try f.publishRequest(request);
++    f.base.env().uidField(.default_trigger).* = 773;
++    try expectInt(&f.base, try call(&f.base, .shutdown, &.{request}), 0);
++    try std.testing.expect(handle.isAlive() and handle.isClosing());
++    try std.testing.expectEqual(@as(f64, 773), f.base.env().uidField(.default_trigger).*);
++    try expectInt(&f.base, try fd(&f.base, f.base.primary_wrapper.?), descriptor);
++    // A closing FileHandle remains alive: ReadStart's original UV_EOF must pass
++    // through. Only a completed AfterClose selects JSMethod's UV_EINVAL guard.
++    try expectInt(&f.base, try call(&f.base, .read_start, &.{}), support.physical.UV_EOF);
++    try f.base.pumpIo();
++    try std.testing.expect(handle.read_state.closed and !handle.read_state.closing);
++    try std.testing.expect(File.status(descriptor) < 0);
++    try f.base.expect("shutdownCalls.length===1 && shutdownCalls[0][0]===shutdownRequest && " ++
++        "shutdownCalls[0][1]===0 && shutdownCalls[0][2]===shutdownHandle && " ++
++        "shutdownCalls[0][3]===undefined && shutdownCalls[0][4]===1");
++    try f.expectRetired(request);
++    try expectInt(&f.base, try call(&f.base, .shutdown, &.{}), support.physical.UV_EINVAL);
++    try std.testing.expectEqual(@as(f64, 773), f.base.env().uidField(.default_trigger).*);
++}

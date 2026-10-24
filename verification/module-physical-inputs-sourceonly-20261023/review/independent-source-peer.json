@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "status": "independently_accepted_module_package_input_source_only",
+  "reviewer": "controls_review",
+  "reviewed_utc": "2026-10-23T18:16:06.021277+00:00",
+  "candidate_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-physical-inputs-sourceonly-20261023\\source-intake.json",
+    "bytes": 27486,
+    "sha256": "32F3DA1B8979D02FE342A9DF5120F02F48B53D0BDEC465535A0061AC1EA48FDE"
+  },
+  "Root_independent_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-module-package-input-source-review-20261023.json",
+    "bytes": 2729,
+    "sha256": "7B614442BE47D3B1E2B5E6F887E3B257B0EE83F27CFB3C1BEF2F871AE08B2437"
+  },
+  "source_successor": {
+    "base": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_modules_binding_data.zig",
+      "bytes": 9778,
+      "sha256": "E5FA24C354EB890026675EBD841432EC552F4E73ECCC8EDEB06B30DDFFCAF538"
+    },
+    "candidate": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-physical-inputs-sourceonly-20261023\\projected\\src\\extensions\\native_node_modules_binding_data.zig",
+      "bytes": 12397,
+      "sha256": "3CF4292A826730575E79A091FDC5558308DCD78DFC131CB9EEEFBF2C6CF1505E"
+    },
+    "changes": "Two added imports and one 47-line method block; all donor bytes retained by exact inverse."
+  },
+  "new_control_root": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-physical-inputs-sourceonly-20261023\\projected\\src\\native_node_module_package_inputs_test.zig",
+    "bytes": 17595,
+    "sha256": "4D777A401B7D7F4BD941E84B83D72D0E8E715D2F86D4FDC8B931BFCD9B6219BE"
+  },
+  "build_successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-physical-inputs-sourceonly-20261023\\projected\\build.zig",
+    "bytes": 517481,
+    "sha256": "258F00510D7FD50FF9D16F068E2F5A7FB068F7A619D734C471E091F78D556378"
+  },
+  "source_diff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-physical-inputs-sourceonly-20261023\\source-diff.patch",
+    "bytes": 5595,
+    "sha256": "170B12D64739B90DEAAEC6E8C2E408B44690A76845E08504F9AC8C832FBD053B"
+  },
+  "unique_packet_file_versions_rehashed": 33,
+  "source_inverse": {
+    "import_lines": 2,
+    "method_lines": 47,
+    "original_donor_bytes_restored": true
+  },
+  "build_inverse": {
+    "added_lines": 16,
+    "original_Main_build_bytes_restored": true,
+    "install_only": true
+  },
+  "reviewed_authority": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\cjs-fs-inputs-sourceonly-20261018\\authority\\node_modules.cc.txt",
+        "bytes": 26843,
+        "sha256": "26C1741820F992983DE87A5EDBE8274B9FFDFF348F988E4D44586B8809EAA414"
+      },
+      "ranges": [
+        "77-153",
+        "249-292"
+      ]
+    }
+  ],
+  "donors_read": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_package_json_cache.zig",
+      "bytes": 7658,
+      "sha256": "5DF03B411D7BF2945999966B003A8E8B693625150CB962A1DA17EBC3B9ABBFC8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_package_json_io.zig",
+      "bytes": 3515,
+      "sha256": "102A224F6EAA9BF57533BAEECB549ADB8815ABE63A49D68725349FE1568B6259"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_package_json_error.zig",
+      "bytes": 3069,
+      "sha256": "E647A52B7C940BA83285592DA67ADC3273995BDAE10E1C336787942537383CA1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_package_json_values.zig",
+      "bytes": 3175,
+      "sha256": "603FC5166E320E58833BAFCCE1312A92372C89BF4E7E58D4D810CC037B130C2A"
+    }
+  ],
+  "findings": [
+    "Actual typed Realm modules slot and borrowed native owner remain the existing BindingData implementation; no substitute cache or second registry is introduced.",
+    "The caller Scope duplicates and retains the actual wrapper before cache access; failed Config ownership lasts through inherited Error code setter reentry and is discarded after the original throw.",
+    "Physical open/read failures reuse the native null cache entry; valid entries keep stable native addresses across map growth and each success creates a fresh intrinsic six-element Array.",
+    "Native Error construction and nonthrowing false code Set semantics remain in the retained error donor; public Error/Array/JSON hooks are not selected.",
+    "Engine identity is checked before retaining the wrapper; Realm retirement and cached native ownership cleanup remain unchanged.",
+    "All six declared controls were read, covering fresh arrays, physical negative cache, setter reentry/repair, false Set, cache growth and typed Realm retirement."
+  ],
+  "scope_limits": [
+    "Null ErrorContext and already-normalized native path only.",
+    "Original callback registration, permission/ToNamespacedPath ordering, nearest traversal, ESM URL conversion and public loader remain unclaimed.",
+    "No compile, metadata or runtime result is inferred."
+  ],
+  "source_accepted": true,
+  "Main_mutated": false,
+  "donors_modified": false,
+  "candidate_executed": false,
+  "compiler_or_native_executed": false,
+  "native_execution_authorized": false,
+  "qualification": false,
+  "public_loader_qualified": false,
+  "application_complete": false
+}

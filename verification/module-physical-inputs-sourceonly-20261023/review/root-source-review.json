@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-23T18:12:56.670216+00:00",
+  "status": "root_source_review_accepted_pending_independent_peer_integration_and_native_execution",
+  "candidate_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-physical-inputs-sourceonly-20261023\\source-intake.json",
+    "bytes": 27486,
+    "sha256": "32F3DA1B8979D02FE342A9DF5120F02F48B53D0BDEC465535A0061AC1EA48FDE"
+  },
+  "README": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-physical-inputs-sourceonly-20261023\\README.md",
+    "bytes": 3110,
+    "sha256": "0A5F963CCCD8CA35A2E12FD9366443DD79C62BE3CF714DDBF44ED0FCF824A282"
+  },
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-physical-inputs-sourceonly-20261023\\projected\\src\\extensions\\native_node_modules_binding_data.zig",
+    "bytes": 12397,
+    "sha256": "3CF4292A826730575E79A091FDC5558308DCD78DFC131CB9EEEFBF2C6CF1505E"
+  },
+  "tests": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-physical-inputs-sourceonly-20261023\\projected\\src\\native_node_module_package_inputs_test.zig",
+    "bytes": 17595,
+    "sha256": "4D777A401B7D7F4BD941E84B83D72D0E8E715D2F86D4FDC8B931BFCD9B6219BE"
+  },
+  "all_input_output_pins_verified": 33,
+  "authored_controls": 6,
+  "source_review": {
+    "authority": "Original node_modules.cc77-254: cache hits/negative caching/invalid Config lifetime/null ErrorContext/serialization",
+    "cache": "Real retained native parser and libuv read; invalid entries stay uncached until after intrinsic error throw",
+    "lifetime": "Scope retains target before result allocation/error setter reentry; stable native Config allocations preserved across map growth",
+    "array": "Intrinsic six-element Array created from native retained views; no public constructor or parser calls",
+    "test_reentry": "Inherited Error.code setter repairs physical file and reenters same actual native cache; thrown original Error identity retained",
+    "build": "Native libuv and package parser carried by shared quickjs static owner at Main build.zig109-111; uv header added to new root",
+    "build_addition_inverse": true,
+    "guarded_scope": "Null ErrorContext path only; outer permission/namespace, ESM URL context, complete Module registration still separate"
+  },
+  "main_clean": true,
+  "main_mutation_performed": false,
+  "native_execution_performed": false,
+  "actual_metadata_count": null,
+  "runtime_controls_executed": 0,
+  "application_qualified": false
+}

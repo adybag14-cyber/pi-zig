@@ -1,0 +1,18 @@
+{
+  "scope": "Finite source-byte preservation and direct prerequisite pin check; no compiler/parser/test runtime executed.",
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-physical-inputs-sourceonly-20261023\\source-intake.json",
+    "bytes": 27486,
+    "sha256": "32F3DA1B8979D02FE342A9DF5120F02F48B53D0BDEC465535A0061AC1EA48FDE"
+  },
+  "main_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "main_status_porcelain": "",
+  "donor_exact_inverse": true,
+  "production_addition_lines": 49,
+  "build_exact_inverse": true,
+  "retained_original_authority_pins_rehashed": 5,
+  "direct_imports_rehashed": 27,
+  "tests_declared": 6,
+  "metadata_or_runtime_results": null,
+  "independent_peer": "pending controls_review availability"
+}

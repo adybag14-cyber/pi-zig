@@ -1,0 +1,56 @@
+{
+  "status": "source-only; no compiler, metadata, runtime, or reference capture executed",
+  "base_main_commit": "65fac997",
+  "main_input_sha256": {
+    "src/extensions/native_node_stream_base.zig": "f85721695f41998e3676c196b4791d295ea62c8de89fd83159f05bacdef7716e",
+    "src/extensions/native_node_file_handle_owner.zig": "f2672292fbebeef74b35c32c38203e3d1e1d259052e7ab5afb34da29840b544d",
+    "src/extensions/native_node_callback_scope.zig": "e7f27b5e240664b1b24664b2b4ab406979d0467b27917ee9f50b3f675c711d6e",
+    "src/extensions/native_node_async_wrap_state.zig": "1530c4043859cff37d7f157f5557e4597e68972c1f1a1b82d208978f47e3d67a",
+    "src/extensions/native_node_custom_buffer_listener.zig": "4cb29fe5a6475123a840a3638ec6d08128249822dc38f775a7b81e661b3085ae",
+    "src/extensions/native_node_stream_shutdown.zig": "2bee67ee76015c0549729f3f3b12cd4bbbf32c5dbf5a28d8cee3f111e0c86d7e",
+    "src/native_node_file_handle_owner_test_support.zig": "daafd9a8b6fffc0fd3971749f8a9515ea066be81aea90b44ada397a70e76488b",
+    "src/native_node_stream_shutdown_test_support.zig": "65388977262d9e61b99a95028d24c592a8d1e79e4328e827ecbeb047abc72d80",
+    "verification/native-node-stream-base-sourceonly-20261020/authority/stream_base.cc.v24.13.txt": "b5420659cb816f074f9a8c3a5d96c2fe52c90253a08392e5306b657512c2a9b4",
+    "verification/native-node-stream-base-sourceonly-20261020/authority/stream_base.h.v24.13.txt": "e89c31a78f138dee6fba5ebf9795bf3a59569d041b9955ae8183b09633103334",
+    "verification/native-node-stream-base-sourceonly-20261020/authority/stream_base-inl.h.v24.13.txt": "ce08e90a41bbfca00996eb2cf14e228472246f0b8a91d91c17ec7d2f0d4bf2c6",
+    "build.zig": "7ab122a962019b935eb08ee6042bffddcb6f7af6be6405f47e06a6cf591b7d4f"
+  },
+  "untouched_sdk_input_sha256": {
+    "src/extensions/native_node_stream_base.zig": "0a3f4eb5133bc9543d5ad77dc33f4753abec866eb721bce0a8f08c16becd5abf",
+    "src/extensions/native_node_file_handle_owner.zig": "2d90f772d2177c7db4ef4f945f78529c0061c809e171c22cecc324125c9a461d",
+    "src/extensions/native_node_callback_scope.zig": "c7dcc3ee151e4f85a345bca74c0b6d806d2350f0bee88632a7481786bd0c674c",
+    "src/extensions/native_node_async_wrap_state.zig": "16c3b02f8dc9398131a2e691986b82a792daf29a5132b50e66fe7738744d5994",
+    "src/extensions/native_node_custom_buffer_listener.zig": "4cb29fe5a6475123a840a3638ec6d08128249822dc38f775a7b81e661b3085ae",
+    "src/native_node_file_handle_owner_test_support.zig": "8e1205eafd05cb18c6fd984258a1d153ae3e6262103ee0e13934fbb54fcc2e60",
+    "verification/native-node-stream-base-sourceonly-20261020/authority/stream_base.cc.v24.13.txt": "b5420659cb816f074f9a8c3a5d96c2fe52c90253a08392e5306b657512c2a9b4",
+    "verification/native-node-stream-base-sourceonly-20261020/authority/stream_base.h.v24.13.txt": "e89c31a78f138dee6fba5ebf9795bf3a59569d041b9955ae8183b09633103334",
+    "verification/native-node-stream-base-sourceonly-20261020/authority/stream_base-inl.h.v24.13.txt": "ce08e90a41bbfca00996eb2cf14e228472246f0b8a91d91c17ec7d2f0d4bf2c6",
+    "build.zig": "22296d730ec3706f95f0af93765b69e4ec00cfe13967e02ebc76fea3404ee4df"
+  },
+  "outputs": {
+    "src/extensions/native_node_stream_js_dispatch.zig": "8f45e9db6f89d984a46c224e460ad918c3bc4393aadcbebc860608a9d0df7adc",
+    "verification/stream-base-js-dispatch-sourceonly-20261023/projected/src/extensions/native_node_stream_base.zig": "9a0f046f5522a97a485557a31d1a21b2e0df15215d656e7f4370646c67293c31",
+    "verification/stream-base-js-dispatch-sourceonly-20261023/projected/src/extensions/native_node_file_handle_owner.zig": "660a34e8eeff16a6855acc2f9a5dcf5d3a1317eb842d8e38b1f424efba55f2d5",
+    "src/native_node_stream_js_dispatch_test.zig": "3a69d010344a0f17940d3709d5920c76c8fbdf16c6c3e035b0a5e321bd9d7a45",
+    "verification/stream-base-js-dispatch-sourceonly-20261023/projected/build.zig": "42188679a8ebc14070146aef565af6c5ef6ea2d7cf1f3014438d172ae65e7185",
+    "verification/stream-base-js-dispatch-sourceonly-20261023/stream-base-js-dispatch.patch": "f21ca6a8bdd41412a4a90e8d112339f5620d213449215362da1ea39a74d3afd9",
+    "verification/stream-base-js-dispatch-sourceonly-20261023/README.md": "978f435dda3616fde04bfe91dfe47dac4cc80f3211a8f5cfb3dee5e512884623"
+  },
+  "test_control_count": 13,
+  "test_build_step": "build-native-node-stream-js-dispatch",
+  "validation_performed": [
+    "Main and SDK input byte hashes checked before and after bounded authoring",
+    "exact source anchor matches and unified patch generated",
+    "13 named controls statically counted",
+    "new source and projected files checked for trailing whitespace",
+    "relative Zig imports resolved against intended Main overlay without compiler"
+  ],
+  "validation_not_performed": [
+    "Zig parse/semantic analysis",
+    "native compile/link",
+    "native test metadata collection",
+    "native runtime or child terminal controls",
+    "Node reference captures",
+    "catalog registration or production startup"
+  ]
+}

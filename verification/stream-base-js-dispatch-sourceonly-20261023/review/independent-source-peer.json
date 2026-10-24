@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "reviewer": "catalog_review independent source peer",
+  "created_at_utc": "2026-10-23T18:14:28.222692+00:00",
+  "status": "accepted_source_only_pending_integration_and_native_validation",
+  "main_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "root_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-stream-base-js-dispatch-source-review-20261023.json",
+    "bytes": 10912,
+    "sha256": "96ADA40B69CE907EB7AA206D1EBCD7255219E12A6DED0052D565DEE5EDFEE6DF"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-js-dispatch-sourceonly-20261023\\stream-base-js-dispatch.patch",
+    "bytes": 31413,
+    "sha256": "F21CA6A8BDD41412A4A90E8D112339F5620D213449215362DA1EA39A74D3AFD9"
+  },
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-js-dispatch-sourceonly-20261023\\inputs-and-outputs.json",
+    "bytes": 4985,
+    "sha256": "1CA70C8583BEBC244872817FACA442740D25F4C73443643AE41A17076F047202"
+  },
+  "new_sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_stream_js_dispatch.zig",
+      "bytes": 5620,
+      "sha256": "8F45E9DB6F89D984A46C224E460AD918C3BC4393AADCBEBC860608A9D0DF7ADC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_stream_js_dispatch_test.zig",
+      "bytes": 19124,
+      "sha256": "3A69D010344A0F17940D3709D5920C76C8FBDF16C6C3E035B0A5E321BD9D7A45"
+    }
+  ],
+  "finite_changes": [
+    {
+      "relative_path": "src/extensions/native_node_stream_base.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_stream_base.zig",
+        "bytes": 12321,
+        "sha256": "F85721695F41998E3676C196B4791D295EA62C8DE89FD83159F05BACDEF7716E"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-js-dispatch-sourceonly-20261023\\projected\\src\\extensions\\native_node_stream_base.zig",
+        "bytes": 12891,
+        "sha256": "9A0F046F5522A97A485557A31D1A21B2E0DF15215D656E7F4370646C67293C31"
+      },
+      "insertions": [
+        {
+          "baseline_line_index": 51,
+          "added_lines": 7,
+          "added_bytes": 445,
+          "addition_sha256": "09FDEA22E5E5A72254E0D3EC89970F03F7DD51AFA8792E0289F51B7554DACA06"
+        },
+        {
+          "baseline_line_index": 63,
+          "added_lines": 2,
+          "added_bytes": 125,
+          "addition_sha256": "3E37568CCA391A80A81DE2BF869CC6477B1EA48FB0D3A81C62122DAF05262D8C"
+        }
+      ],
+      "all_original_bytes_preserved_in_order": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_owner.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 17650,
+        "sha256": "F2672292FBEBEEF74B35C32C38203E3D1E1D259052E7AB5AFB34DA29840B544D"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-js-dispatch-sourceonly-20261023\\projected\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 18430,
+        "sha256": "660A34E8EEFF16A6855ACC2F9A5DCF5D3A1317EB842D8E38B1F424EFBA55F2D5"
+      },
+      "insertions": [
+        {
+          "baseline_line_index": 66,
+          "added_lines": 16,
+          "added_bytes": 638,
+          "addition_sha256": "557F8B306B207EE651C7761FE391E7944AD00E3A079F3528AAE0384757630166"
+        },
+        {
+          "baseline_line_index": 183,
+          "added_lines": 2,
+          "added_bytes": 142,
+          "addition_sha256": "2AC9D73E67B02918C6A71EDFF6BCB31632268D9473BB34E0D0064D3CFD53CFB4"
+        }
+      ],
+      "all_original_bytes_preserved_in_order": true
+    },
+    {
+      "relative_path": "build.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 515962,
+        "sha256": "7AB122A962019B935EB08EE6042BFFDDCB6F7AF6BE6405F47E06A6CF591B7D4F"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\stream-base-js-dispatch-sourceonly-20261023\\projected\\build.zig",
+        "bytes": 517766,
+        "sha256": "42188679A8EBC14070146AEF565AF6C5EF6EA2D7CF1F3014438D172AE65E7185"
+      },
+      "insertions": [
+        {
+          "baseline_line_index": 2325,
+          "added_lines": 21,
+          "added_bytes": 1804,
+          "addition_sha256": "9A717EB96C4A57023D02CB5DB4FC909CCFDB0C45FFE2C9140D49BB35D95DEFF7"
+        }
+      ],
+      "all_original_bytes_preserved_in_order": true
+    }
+  ],
+  "rehashed_root_record_source_pins": 29,
+  "additional_original_trigger_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-callback-scope-sourceonly-20261019\\authority\\src_env.cc.txt",
+      "bytes": 84987,
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-callback-scope-sourceonly-20261019\\authority\\src_env.h.txt",
+      "bytes": 45315,
+      "sha256": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0"
+    }
+  ],
+  "review_findings": [
+    "Original stream_base.cc151-173 and660-669 preserved: absent/retired native receiver returns undefined, IsAlive precedes argument CHECKs and trigger handling, then concrete method dispatch.",
+    "Original src_env.cc264-285 preserved: kCheck>0 asserts async_id>=0; actual previous default trigger is restored. Environment is retained and async id copied before invocation; no stream/AsyncWrap/virtual access follows it.",
+    "GetFD missing/dead returns UV_EINVAL without trigger scope; original virtual default remains -1. Counter getters bypass IsAlive and perform uint64-to-double Number conversion, returning zero for absent native state.",
+    "Four FileHandle adapters delegate directly to existing IsAlive/GetFD/Reader.start/Reader.stop; closing stays alive, so actual ReadStart UV_EOF remains distinguishable from dead JSMethod UV_EINVAL.",
+    "Shutdown keeps the object CHECK and existing native request owner. UseUserBuffer keeps existing CustomBuffer native owner; neither receives a substitute success implementation.",
+    "All13 controls read. Concrete file I/O, request completion, CustomBuffer listener publication and shutdown use current Main fixtures; explicit test virtual probes isolate selected failure, nested scope and receiver-destruction semantics.",
+    "Pure virtual defaults remain absent dependencies; no partial public constructor/AddMethods surface is installed. Existing ActualFileHandleCallbackTemplateRequired guard remains untouched.",
+    "Build adds only an install target and reuses current CustomBuffer link/include/allocation.cpp closure. Native parser/semantic analysis has not occurred."
+  ],
+  "source_blockers": [],
+  "git_apply_check": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "declared_control_names": [
+    "native StreamBase JS dispatch absent and wrong-brand receivers preserve undefined versus fd EINVAL",
+    "native StreamBase JS dispatch genuine template instance without native attachment is absent",
+    "native StreamBase JS dispatch dead stream guards precede argument checks and native virtual lookup",
+    "native StreamBase JS dispatch fd getter reads the actual descriptor without entering a trigger scope",
+    "native StreamBase JS dispatch counters use Number rounding and remain visible after actual close",
+    "native StreamBase JS dispatch genuine readStart and readStop retain accepted native completion and byte counts",
+    "native StreamBase JS dispatch missing pure virtuals remain explicit dependencies and restore trigger state",
+    "native StreamBase JS dispatch selected native error restores the prior trigger",
+    "native StreamBase JS dispatch actual JavaScript thrown value survives trigger restoration",
+    "native StreamBase JS dispatch nested scopes restore both immediate and outer trigger values",
+    "native StreamBase JS dispatch restores after the selected method destroys its native receiver",
+    "native StreamBase JS dispatch user buffer selects the current native CustomBuffer listener owner",
+    "native StreamBase JS dispatch shutdown uses actual request owner and distinguishes closing from dead"
+  ],
+  "metadata_count": null,
+  "runtime_count": 0,
+  "main_status_porcelain": "",
+  "mutations": "Only this new independent review record; no Main/donor/candidate changes."
+}

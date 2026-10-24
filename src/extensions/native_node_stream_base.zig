@@ -49,6 +49,13 @@ pub const Operations = struct {
 pub const Virtuals = struct {
     get_async_wrap: *const fn (*Base) ?*wraps.State,
     get_object: *const fn (*Base) ?c.JSValue = defaultGetObject,
+    // Source pure virtuals stay explicit dependencies until an actual derived
+    // stream supplies them. Lifecycle/read-listener-only owners do not invent
+    // an alive state or a successful ReadStart/ReadStop implementation.
+    is_alive: ?*const fn (*Base) bool = null,
+    read_start: ?*const fn (*Base, *a.Scope) anyerror!c_int = null,
+    read_stop: ?*const fn (*Base) c_int = null,
+    get_fd: *const fn (*Base) c_int = defaultGetFD,
     error_string: *const fn (*Base) ?[*:0]const u8 = defaultError,
     clear_error: *const fn (*Base) void = defaultClearError,
     create_shutdown: *const fn (*Base, *a.Scope, c.JSValue) anyerror!?*requests.Shutdown = shutdown.createDefault,
@@ -61,6 +68,8 @@ fn defaultGetObject(stream: *Base) ?c.JSValue {
 // These are the original StreamResource virtual default bodies.
 fn defaultError(_: *Base) ?[*:0]const u8 { return null; }
 fn defaultClearError(_: *Base) void {}
+// Original StreamBase::GetFD default, distinct from a failed receiver guard.
+fn defaultGetFD(_: *Base) c_int { return -1; }
 pub const ReadChecks = enum { check_nread, skip_nread_checks };
 
 /// This is embedded in the actual derived stream at a stable address. Like the

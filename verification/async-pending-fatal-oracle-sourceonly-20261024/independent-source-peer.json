@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "status": "independent_source_peer_accepted",
+  "reviewer": "catalog_review",
+  "date": "2026-10-24",
+  "entry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-async-pending-fatal-oracle-correction-sourceonly-20261024\\source-intake.json",
+    "bytes": 4068,
+    "sha256": "5F4233990492037AF238B68CB03422F7068DED638EE8DB9F22B8E1686D4AD5FD"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-async-pending-fatal-oracle-correction-sourceonly-20261024\\oracle-correction.patch",
+    "bytes": 8168,
+    "sha256": "8B6CAAF7BE3FAAC8A940095A04F261138B22A20B9876B04DE20BD19AB9681372"
+  },
+  "targets": [
+    {
+      "target": "src/native_async_arguments_test.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_async_arguments_test.zig",
+        "bytes": 42082,
+        "sha256": "94EED011C1FC44428ABAB5129DD295DFA9029201E250AAD75B7151B953285EEF"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-async-pending-fatal-oracle-correction-sourceonly-20261024\\candidate\\src\\native_async_arguments_test.zig",
+        "bytes": 42748,
+        "sha256": "E353EE7C2F94D3969AE11951EFCBA659F637D0EFB8DC0DD73B669B7C5F221273"
+      }
+    },
+    {
+      "target": "src/native_async_frame_retirement_test.zig",
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_async_frame_retirement_test.zig",
+        "bytes": 74800,
+        "sha256": "E41A9319AC97B7CCBC0E529104085CB053843914E5BC56FB50D0F22DCBB6EEF6"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-async-pending-fatal-oracle-correction-sourceonly-20261024\\candidate\\src\\native_async_frame_retirement_test.zig",
+        "bytes": 76874,
+        "sha256": "E274F45908258733EB2A12B6AC8DEEA0020D483FA8A22F2172E279DEF8E3354A"
+      }
+    }
+  ],
+  "source_diagnosis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-catalog-review\\async-arguments-pending-fatal-independent-source-diagnosis-20261024.json",
+    "bytes": 9053,
+    "sha256": "1DE31582AE60C2D8EB4A0C8B94DEA15ACE27E5994D53B33450B7E9EE02D837FD"
+  },
+  "verdict": "No concrete source blocker or Zig source error found in the exact three-test-block oracle correction. The new literal Source/native pairs exercise the same pending-job abandonment boundary and derive their expectations from the actual original VM queue/owner operations. The patch changes no production code, shared helper or declaration.",
+  "independent_static_checks": {
+    "all_entry_patch_diagnosis_base_candidate_pins_verified": true,
+    "three_original_and_candidate_block_hashes_verified": true,
+    "exact_forward_and_inverse_of_only_three_test_blocks": true,
+    "complete_two_file_unified_patch_independently_reproduced": true,
+    "all_other_source_bytes_unchanged": true,
+    "all_shared_helpers_unchanged": true,
+    "all_other_test_blocks_unchanged": true,
+    "all_declared_names_order_unchanged": {
+      "native_async_arguments_test.zig": 17,
+      "native_async_frame_retirement_test.zig": 30
+    },
+    "literal_import_occurrences_unchanged": {
+      "native_async_arguments_test.zig": 6,
+      "native_async_frame_retirement_test.zig": 5
+    },
+    "new_source_imports_or_ABI": false,
+    "no_native_parser_formatter_or_runtime_executed": true
+  },
+  "manual_source_checks": [
+    {
+      "test": "VM async arguments current fatal before the second resume retires all assigned missing slots without body entry",
+      "actual_literal_authority": "Unchanged source(.five) assigns missing c,d,e to holders2,3,4 after its first Await, then suspends at its second Await; native advance(.five) does the matching real argument assignments. The retained unchanged missing-formals through Await/GC control uses this same pair.",
+      "expected_finalizers": [
+        7,
+        6,
+        4,
+        3,
+        2,
+        1,
+        0
+      ],
+      "retained_checks": [
+        "Original p.prior current uncatchable reason identity through fatalJob.",
+        "Native resume count1 before and after blocked second job; literal host-only resume counter0.",
+        "No amObserve call in either half.",
+        "Native close exactly once; literal close hook0.",
+        "All created holders finalize exactly once; no unused holder is finalized.",
+        "Actual outer Promise remains pending."
+      ],
+      "new_causal_check": "Native close snapshot for holders0,1,2,3,4,6,7 is zero and hook sees Promise pending; the already-zero-ref argument owners are queued under DECREF."
+    },
+    {
+      "test": "VM async retirement preexisting current fatal prevents resumed body and precedes all cleanup events",
+      "actual_literal_authority": "Unchanged setup(.returned) creates sourceFactory=captured=>async function(a,b){local holder2; await undefined; vmObserve(captured,this,local); return vmReturn}. Source and native factory both retain capture3, arguments0/1 and receiver4.",
+      "expected_finalizers": [
+        4,
+        3,
+        2,
+        1,
+        0
+      ],
+      "retained_checks": [
+        "Actual JS_ExecutePendingJob failure, pending slot, uncatchable flag and exact p.prior identity are inlined unchanged from fatalJob at this call site.",
+        "Length5 and all made/nonmade counts remain exact.",
+        "Observed0 and native resume0; actual outer Promise remains pending.",
+        "Fixture mode remains returned, preserving the intended already-queued job."
+      ],
+      "causal_detail": "Receiver4 queues last. Function destruction then queues its capture3 ahead of local2 and arguments1/0; all are under the unchanged DECREF head queue."
+    },
+    {
+      "test": "VM async retirement terminal close runs under preexisting fatal without resuming a body",
+      "actual_literal_authority": "Unchanged closeSetup creates Source and native functions retaining argument0, local1, captured-local2 and receiver3 through Await. No escaped callback is installed in this case.",
+      "expected_finalizers": [
+        3,
+        2,
+        1,
+        0
+      ],
+      "expected_native_hook_counts": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "retained_checks": [
+        "Actual failure/pending/uncatchable/exact prior identity are inlined unchanged from closeJobFailure at this call site.",
+        "closeOrder still requires all four holder counts exactly1.",
+        "Native close once with pending Promise; literal hook0.",
+        "Native resume0 and actual outer Promise pending."
+      ],
+      "causal_detail": "closeState snapshots counts before CloseFrame.close. Argument0 has been released but its finalizer is queued. Frame.close releases local1 then captured-local2 in the original declaration order; receiver3 queues last, producing reverse finalizers."
+    }
+  ],
+  "unchanged_authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2404878,
+      "sha256": "091E5BE0C22F35CE2029852DEA8D8B017B3784013ED93EDB9F1545A49D8D275F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\list.h",
+      "bytes": 3177,
+      "sha256": "CB6E24E8EE54BCCDD66234FE54CD702D1160B9841DB2B9B9ADEB5003AFE301D5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_public_lexical_frame.zig",
+      "bytes": 17136,
+      "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E"
+    }
+  ],
+  "limits": [
+    "Review is source-only; no fresh compiler, actual metadata or runtime result exists for these candidate bytes.",
+    "Original failed run and its strict negative status remain preserved.",
+    "No sorting, relaxed holder counts, mode substitution, production queue change or release-order change is introduced.",
+    "Main mutation and any subsequent validation remain Root-owned and require the already-planned negative closure first."
+  ],
+  "main_mutated": false,
+  "native_execution": false,
+  "runtime_qualification": false,
+  "product_qualification": false
+}
