@@ -1,0 +1,24 @@
+{
+  "before": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+    "bytes": 566024,
+    "sha256": "37815BF647A0F94D4ECEB30AA6FB95FCA63ED26C1E5CB95EEDD519C32B5358D1"
+  },
+  "after": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-model-scope-warning-sourceonly-20261025\\projected\\build.zig",
+    "bytes": 567154,
+    "sha256": "873838EE5CF93F86400884155B133348A75D6A74150C573778F6DE57CA083D4C"
+  },
+  "addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-model-scope-warning-sourceonly-20261025\\build-addition.txt",
+    "bytes": 1130,
+    "sha256": "969C912033C44984F2D22D4481AA3D1165864F8D481BF2CF7D1E61390D3D1F4F"
+  },
+  "insertion_before": "    const main_runtime_helpers_tests = b.addTest(.{",
+  "exact_inverse": true,
+  "install_only": true,
+  "run_step_added": false,
+  "step": "build-native-sdk-model-scope-warning",
+  "artifact_windows": "native-sdk-model-scope-warning.exe",
+  "filter": "native model scope warning"
+}

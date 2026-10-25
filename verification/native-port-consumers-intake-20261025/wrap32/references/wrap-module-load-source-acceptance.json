@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-25T10:29:59.308951+00:00",
+  "status": "Root_and_independent_source_accepted_pending_post_lease_integration",
+  "packet": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\source-intake.json",
+    "bytes": 17299,
+    "sha256": "45934437FD09405311AF73F76BE490D01DFA25A9C8B46239BBB945D7898BFE0B"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261025-controls\\wrap-module-load-independent-source-review.json",
+    "bytes": 4319,
+    "sha256": "C041BCF737FAC286BAEBD97BE56A7BECF674F1C0E3A5AB86C998C721FFA2CA88"
+  },
+  "source_basis_head": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "live_pin_versions": 26,
+  "declared_tests": 32,
+  "findings": [
+    "Complete original timer initialization, lazy module.require channel and wrapModuleLoad function preserved in raw-byte authority fixture including loader closing brace259.",
+    "Genuine canonical Module constructor is authenticated; tracing and timer declarations must come from actual producers in the canonical assembler.",
+    "Independent expression lifetimes, mutable timer cells/TDZ, lazy retry/reentry, exact call/context order, and ordinary finally precedence were reviewed.",
+    "Timer callable is owned across callback-driven replacement; actual fatal unwinds do not invoke further guest finally work.",
+    "32 original-source comparison controls include two-call subscriber path transition; single exact copied watch build linkage insertion with full inverse."
+  ],
+  "native_execution": false,
+  "actual_metadata_count": null,
+  "runtime_qualification": false,
+  "Main_modified": false
+}

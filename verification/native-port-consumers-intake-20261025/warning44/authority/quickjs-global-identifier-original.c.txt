@@ -1,0 +1,28 @@
+static JSValue JS_GetGlobalVar(JSContext *ctx, JSAtom prop,
+                               bool throw_ref_error)
+{
+    JSObject *p;
+    JSShapeProperty *prs;
+    JSProperty *pr;
+
+    /* no exotic behavior is possible in global_var_obj */
+    p = JS_VALUE_GET_OBJ(ctx->global_var_obj);
+    prs = find_own_property(&pr, p, prop);
+    if (prs) {
+        /* XXX: should handle JS_PROP_TMASK properties */
+        if (unlikely(JS_IsUninitialized(pr->u.value)))
+            return JS_ThrowReferenceErrorUninitialized(ctx, prs->atom);
+        return js_dup(pr->u.value);
+    }
+
+    /* fast path */
+    p = JS_VALUE_GET_OBJ(ctx->global_obj);
+    prs = find_own_property(&pr, p, prop);
+    if (prs) {
+        if (likely((prs->flags & JS_PROP_TMASK) == 0))
+            return js_dup(pr->u.value);
+    }
+    return JS_GetPropertyInternal(ctx, ctx->global_obj, prop,
+                                 ctx->global_obj, throw_ref_error);
+}
+

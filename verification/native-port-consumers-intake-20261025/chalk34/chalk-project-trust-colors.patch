@@ -1,0 +1,1289 @@
+--- a/build.zig
++++ b/build.zig
+@@ -4887,6 +4887,30 @@
+     }
+     b.step("build-native-node-operation-boundary", "Install Node pending/data/allocator ownership controls without running").dependOn(&b.addInstallArtifact(node_operation_boundary, .{ .dest_sub_path = b.fmt("native-node-operation-boundary{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+ 
++    // Actual project-trust foreground supplier controls; install without execution.
++    const chalk_project_trust_colors_tests = b.addTest(.{
++        .root_module = b.createModule(.{
++            .root_source_file = b.path("src/native_sdk_chalk_project_trust_colors_test.zig"),
++            .target = target, .optimize = optimize,
++        }),
++        .filters = &.{"native project trust Chalk colors"},
++        .use_llvm = use_llvm,
++    });
++    linkQuickJs(b, chalk_project_trust_colors_tests.root_module, quickjs, sqlite_lib_dir);
++    linkTypeScriptParser(b, chalk_project_trust_colors_tests.root_module, typescript_parser);
++    linkSqlite(chalk_project_trust_colors_tests.root_module, sqlite_lib_dir, sqlite_library);
++    chalk_project_trust_colors_tests.root_module.addImport("catalog_tool", catalog_tool);
++    if (target.result.os.tag == .windows) {
++        chalk_project_trust_colors_tests.root_module.linkSystemLibrary("advapi32", .{});
++        chalk_project_trust_colors_tests.root_module.linkSystemLibrary("userenv", .{});
++    }
++    b.step("build-native-sdk-chalk-project-trust-colors",
++        "Install actual Chalk foreground and original project trust notify controls without execution")
++        .dependOn(&b.addInstallArtifact(chalk_project_trust_colors_tests, .{
++            .dest_sub_path = b.fmt("native-sdk-chalk-project-trust-colors{s}",
++                .{if (target.result.os.tag == .windows) ".exe" else ""}),
++        }).step);
++
+     const chalk_ignore_guest = b.addTest(.{
+         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_chalk_ignore_guest_guard_test.zig"), .target = target, .optimize = optimize }),
+         .filters = &.{ "native private Chalk Ignore", "native genuine private Chalk Ignore" },
+--- /dev/null
++++ b/src/extensions/fixtures/sdk-chalk-project-trust-colors-observer.mjs
+@@ -0,0 +1,354 @@
++// Authored caller inputs and causal assertions. Expected observation bytes are
++// produced by the complete pinned original Chalk source in a separate fresh VM.
++// Only red/yellow/cyan are consumed; named model/modifier APIs are outside scope.
++"use strict";
++function ccCheck(value, message) { if (!value) throw new Error(message); }
++function ccSymbols(root) {
++    const builder=root.yellow;
++    const find=(value,name)=>Reflect.ownKeys(value).find(k=>typeof k==="symbol"&&k.description===name);
++    return {GENERATOR:find(builder,"GENERATOR"),STYLER:find(builder,"STYLER"),
++        IS_EMPTY:find(builder,"IS_EMPTY"),LEVEL:find(root,"LEVEL")};
++}
++function ccCase(name, shared) {
++    const make=options=>shared.constructor(options);
++    const events=[];
++    const plainSamples=["","text","a\nb","a\r\nb","a\rb","\nx\n","\r\nx\r\n",
++        "\x1b[39mx\x1b[39m","a\x1b[39mb\r\nc","\x1b[31mred\x1b[0m",
++        "\ufeff雪\ud800\udc00\udfff\u0000"];
++    switch(name) {
++    case "yellow-regression": {
++        const observations=runChalkConsumedCases(shared);
++        ccCheck(observations.length===86&&new Set(observations.map(x=>x.id)).size===86,
++            "complete preserved yellow corpus");
++        return observations;
++    }
++    case "red-matrix":
++    case "cyan-matrix": {
++        const style=name==="red-matrix"?"red":"cyan",observations=[];
++        for(const level of [0,1,2,3]) {
++            const root=make({level});
++            for(const sample of plainSamples) observations.push({level,sample,out:root[style](sample)});
++            ccCheck(root[style]("x")===(level===0?"x":"\x1b["+(style==="red"?"31":"36")+"mx\x1b[39m"),
++                "actual primary foreground code");
++        }
++        return observations;
++    }
++    case "mixed-chains": {
++        const observations=[];
++        for(const level of [0,1,2,3]) {
++            const root=make({level});
++            for(const chain of [["red","cyan"],["cyan","red"],["red","yellow","cyan"],
++                ["cyan","yellow","red"],["red","red"],["cyan","cyan"]]) {
++                let builder=root;
++                for(const style of chain) builder=builder[style];
++                observations.push({level,chain,out:builder("a\x1b[39mb\r\nc\n")});
++            }
++        }
++        return observations;
++    }
++    case "descriptors": {
++        const root=make({level:1}),proto=Object.getPrototypeOf(root),rows=[];
++        for(const style of ["red","yellow","cyan"]) {
++            ccCheck(!Object.hasOwn(root,style),"style remains lazy");
++            const getter=Object.getOwnPropertyDescriptor(proto,style);
++            const builder=root[style],cached=Object.getOwnPropertyDescriptor(root,style);
++            const childGetter=Object.getOwnPropertyDescriptor(Object.getPrototypeOf(builder),style);
++            rows.push({style,getName:getter.get.name,getLength:getter.get.length,
++                getEnumerable:getter.enumerable,getConfigurable:getter.configurable,
++                sharedGetter:getter.get===childGetter.get,
++                name:builder.name,length:builder.length,callable:typeof builder,
++                cached:builder===root[style],writable:cached.writable,
++                enumerable:cached.enumerable,configurable:cached.configurable,
++                constructorPrototype:Object.hasOwn(builder,"prototype")});
++        }
++        return {name:root.name,length:root.length,constructor:root.constructor.name,
++            keys:Object.keys(root),rows};
++    }
++    case "cache-isolation": {
++        const first=make({level:1}),second=make({level:1}),rows=[];
++        for(const style of ["red","yellow","cyan"]) {
++            const a=first[style],b=second[style];let rejected=false;
++            try{first[style]=b}catch(error){rejected=error instanceof TypeError}
++            ccCheck(a!==b&&first[style]===a&&rejected,"immutable per-instance lazy cache");
++            rows.push({style,own:Object.hasOwn(first,style),output:a("x"),rejected});
++        }
++        ccCheck(first.red!==first.cyan&&first.red!==first.yellow,"style identities are distinct");
++        return rows;
++    }
++    case "live-levels": {
++        const root=make({level:1}),red=root.red,cyan=root.cyan,nested=red.cyan;
++        const before=[red("x"),cyan("x"),nested("x")];
++        nested.level=0;
++        const disabled=[red("x"),cyan("x"),nested("x")];
++        cyan.level=3;
++        return {before,disabled,enabled:[red("x"),cyan("x"),nested("x")],
++            levels:[root.level,red.level,cyan.level,nested.level]};
++    }
++    case "public-level": {
++        const root=make({level:1}),red=root.red,cyan=root.cyan;
++        Object.defineProperty(root,"level",{configurable:true,get(){events.push("public");return 0}});
++        return {paint:[red("x"),cyan("x")],read:[red.level,cyan.level],events};
++    }
++    case "builder-call-forms": {
++        const rows=[];
++        for(const style of ["red","cyan"]) for(const level of [0,1,2,3]) {
++            const root=make({level}),builder=root[style];
++            rows.push({style,level,zero:builder(),one:builder(undefined),two:builder(null,2),
++                many:builder("a",null,undefined,3),root:root("a",null,undefined,3)});
++        }
++        return rows;
++    }
++    case "coercion-hints": {
++        const rows=[];
++        for(const style of ["red","cyan"]) for(const level of [0,1]) {
++            for(const count of [1,2,3]) {
++                const trace=[],root=make({level}),value=label=>({
++                    [Symbol.toPrimitive](hint){trace.push(label+":"+hint);return label;}
++                }),args=[value("a"),value("b"),value("c")].slice(0,count);
++                rows.push({style,level,count,output:root[style](...args),trace});
++            }
++        }
++        return rows;
++    }
++    case "coercion-throw": {
++        const rows=[],reason={tag:"conversion"};
++        for(const style of ["red","cyan"]) for(const level of [0,1]) {
++            for(const count of [1,2,3]) {
++                const trace=[],root=make({level}),bad={
++                    [Symbol.toPrimitive](hint){trace.push(hint);throw reason;}
++                },args=count===1?[bad]:count===2?["first",bad]:["first","second",bad];
++                let same=false;
++                try{root[style](...args)}catch(error){same=error===reason}
++                ccCheck(same,"raw conversion reason survives");
++                rows.push({style,level,count,trace,same});
++            }
++        }
++        return rows;
++    }
++    case "symbol-input": {
++        const rows=[];
++        for(const style of ["red","cyan"]) for(const level of [0,1]) for(const count of [1,2,3]) {
++            const root=make({level}),args=count===1?[Symbol("x")]:
++                count===2?["first",Symbol("x")]:["first","second",Symbol("x")];
++            let typeError=false;
++            try{root[style](...args)}catch(error){typeError=error instanceof TypeError}
++            ccCheck(typeError,"disabled and enabled builders still reject Symbol conversion");
++            rows.push({style,level,count,typeError});
++        }
++        return rows;
++    }
++    case "coercion-reentry": {
++        const root=make({level:1}),value={
++            [Symbol.toPrimitive](hint){events.push("outer:"+hint);return root.cyan("inside");}
++        };
++        const output=root.red(value);
++        return {output,events};
++    }
++    case "getter-order": {
++        const seed=make({level:1}),keys=ccSymbols(seed),reason={tag:"no"},
++            parent={get openAll(){events.push("openAll");return "P";},
++                    get closeAll(){events.push("closeAll");return "C";}},
++            receiver=new Proxy({},{
++                get(target,key){
++                    if(key===keys.STYLER){events.push("STYLER");return parent;}
++                    if(key===keys.IS_EMPTY){events.push("IS_EMPTY");return false;}
++                    if(key===keys.GENERATOR){events.push("GENERATOR");return seed;}
++                    throw reason;
++                },
++                defineProperty(target,key,descriptor){
++                    events.push("cache:"+key);return Reflect.defineProperty(target,key,descriptor);
++                }
++            });
++        const get=Object.getOwnPropertyDescriptor(Object.getPrototypeOf(seed),"cyan").get;
++        const builder=get.call(receiver);
++        ccCheck(typeof builder==="function","borrowed getter returns actual callable");
++        return {events,own:Object.hasOwn(receiver,"cyan"),output:builder("x")};
++    }
++    case "getter-throw": {
++        const seed=make({level:1}),keys=ccSymbols(seed),rows=[];
++        for(const style of ["red","cyan"]) {
++            const root=make({level:1}),trace=[],reason={};
++            Object.defineProperty(root,keys.STYLER,{get(){trace.push("STYLER");throw reason}});
++            Object.defineProperty(root,keys.IS_EMPTY,{get(){trace.push("unexpected");return false}});
++            let same=false;try{root[style]}catch(error){same=error===reason}
++            ccCheck(same&&!Object.hasOwn(root,style),"failed getter publishes no cache");
++            rows.push({style,same,trace});
++        }
++        return rows;
++    }
++    case "getter-same-reentry": {
++        const rows=[];
++        for(const style of ["red","cyan"]) {
++            const root=make({level:1}),keys=ccSymbols(root),trace=[];
++            let inside=false,nested,threw=false;
++            Object.defineProperty(root,keys.STYLER,{get(){
++                trace.push("STYLER");
++                if(!inside){inside=true;nested=root[style];inside=false;}
++                return undefined;
++            }});
++            try{root[style]}catch(error){threw=error instanceof TypeError}
++            ccCheck(threw&&root[style]===nested,"inner cache survives failing outer redefinition");
++            rows.push({style,trace,threw,output:nested("x")});
++        }
++        return rows;
++    }
++    case "getter-cross-reentry": {
++        const root=make({level:1}),keys=ccSymbols(root);let inside=false,nested;
++        Object.defineProperty(root,keys.STYLER,{get(){
++            events.push("STYLER");
++            if(!inside){inside=true;nested=root.cyan;inside=false;}
++            return undefined;
++        }});
++        const outer=root.red;
++        ccCheck(outer!==nested&&root.red===outer&&root.cyan===nested,"independent nested caches");
++        return {events,outputs:[outer("x"),nested("x")]};
++    }
++    case "cache-throw": {
++        const root=make({level:1}),get=Object.getOwnPropertyDescriptor(Object.getPrototypeOf(root),"red").get;
++        const reason={},receiver=new Proxy({},{
++            get(){return undefined;},
++            defineProperty(){events.push("define");throw reason}
++        });
++        let same=false;try{get.call(receiver)}catch(error){same=error===reason}
++        ccCheck(same&&!Object.hasOwn(receiver,"red"),"cache definition throw remains original");
++        return {same,events};
++    }
++    case "borrowed-getter": {
++        const root=make({level:1}),keys=ccSymbols(root),rows=[];
++        for(const style of ["red","cyan"]) {
++            const get=Object.getOwnPropertyDescriptor(Object.getPrototypeOf(root),style).get;
++            const receiver={[keys.GENERATOR]:root};
++            const builder=get.call(receiver);
++            let constructorError=false;try{Reflect.construct(builder,[])}catch(error){constructorError=error instanceof TypeError}
++            ccCheck(receiver[style]===builder&&constructorError,"borrowed cache and nonconstructor");
++            rows.push({style,output:builder.call({level:0},"x"),constructorError,
++                receiverIgnored:builder.call(null,"x")===builder("x")});
++        }
++        return rows;
++    }
++    case "primitive-receiver": {
++        const root=make({level:1}),rows=[];
++        for(const style of ["red","cyan"]) {
++            const get=Object.getOwnPropertyDescriptor(Object.getPrototypeOf(root),style).get;
++            for(const receiver of [null,undefined,7,"x",true,Symbol("s")]) {
++                let typeError=false;try{get.call(receiver)}catch(error){typeError=error instanceof TypeError}
++                ccCheck(typeError,"style accessor requires cacheable receiver");
++                rows.push({style,kind:receiver===null?"null":typeof receiver,typeError});
++            }
++        }
++        return rows;
++    }
++    case "generator-capture": {
++        const root=make({level:1}),other=make({level:2}),keys=ccSymbols(root);
++        Object.defineProperty(root,keys.GENERATOR,{get(){events.push("GENERATOR");return other;}});
++        const red=root.red,cyan=root.cyan;
++        other.level=0;
++        return {events,disabled:[red("x"),cyan("x")],levels:[root.level,red.level,cyan.level]};
++    }
++    case "symbol-level": {
++        const root=make({level:1}),keys=ccSymbols(root),red=root.red,cyan=root.cyan;
++        Object.defineProperty(root,keys.LEVEL,{configurable:true,get(){
++            events.push("LEVEL");return {[Symbol.toPrimitive](hint){events.push(hint);return 1;}};
++        }});
++        return {outputs:[red("x"),cyan("x")],events};
++    }
++    case "symbol-level-throw": {
++        const root=make({level:1}),keys=ccSymbols(root),red=root.red,cyan=root.cyan,reason={};
++        Object.defineProperty(root,keys.LEVEL,{configurable:true,get(){events.push("LEVEL");throw reason;}});
++        const rows=[];
++        for(const builder of [red,cyan]) {
++            let same=false;
++            try{builder({[Symbol.toPrimitive](hint){events.push("coerce:"+hint);return "x";}})}
++            catch(error){same=error===reason}
++            ccCheck(same,"level lookup raw throw survives after input coercion");rows.push(same);
++        }
++        return {rows,events};
++    }
++    case "string-method-order": {
++        const root=make({level:1}),builder=root.red.cyan;
++        const originals={includes:String.prototype.includes,indexOf:String.prototype.indexOf,slice:String.prototype.slice};
++        let output;
++        try{
++            for(const method of Object.keys(originals)) String.prototype[method]=function(...args){
++                events.push([method,...args]);return Reflect.apply(originals[method],this,args);
++            };
++            output=builder("a\x1b[39mb\r\nc");
++        }finally{for(const method of Object.keys(originals))String.prototype[method]=originals[method]}
++        return {output,events};
++    }
++    case "string-method-throw": {
++        const rows=[],reason={};
++        for(const style of ["red","cyan"]) for(const method of ["includes","indexOf","slice"]) {
++            const root=make({level:1}),saved=String.prototype[method];let same=false;
++            try{String.prototype[method]=function(){throw reason};root[style]("a\x1b[39mb\nc")}
++            catch(error){same=error===reason}
++            finally{String.prototype[method]=saved}
++            ccCheck(same,"live String method throw remains original");rows.push({style,method,same});
++        }
++        return rows;
++    }
++    case "string-method-reentry": {
++        const root=make({level:1}),saved=String.prototype.includes;let inside=false,output,inner;
++        try{
++            String.prototype.includes=function(...args){
++                events.push(inside?"inner includes":"outer includes");
++                if(!inside){inside=true;inner=root.cyan("nested");inside=false;}
++                return Reflect.apply(saved,this,args);
++            };
++            output=root.red("outer");
++        }finally{String.prototype.includes=saved}
++        return {output,inner,events};
++    }
++    case "native-data": {
++        const rows=[];
++        for(const style of ["red","cyan"]) {
++            const root=make({level:1}),reason=__ccHooks.freshPrivateData();let same=false,ordinary=false;
++            try{root[style]({[Symbol.toPrimitive](){throw reason;}})}
++            catch(error){same=error===reason;ordinary=__ccHooks.isUnmarkedPrivateData(error)}
++            ccCheck(same&&ordinary,"actual private DATA stays ordinary");
++            rows.push({style,same,ordinary});
++        }
++        return rows;
++    }
++    case "notify-colors": {
++        const root=make({level:1}),warnings=[],saved=Object.getOwnPropertyDescriptor(globalThis,"console");
++        const output={error(value){ccCheck(this===output,"original console error receiver");warnings.push(value)}};
++        try{
++            globalThis.console=output;
++            for(const mode of ["print","rpc","interactive"]) {
++                const notify=__ccNotifyFactory({mode},root);
++                for(const type of [undefined,"error","warning","info","other",null]) notify(mode+":"+type,type);
++            }
++        }finally{Object.defineProperty(globalThis,"console",saved)}
++        ccCheck(warnings.length===12,"interactive suppresses notifications");
++        return warnings;
++    }
++    case "notify-order": {
++        const root=make({level:1}),paint=make({level:1}).red;
++        Object.defineProperty(root,"red",{get(){events.push("red get");return paint}});
++        const options={get mode(){events.push("mode");return "print";}};
++        const output={get error(){events.push("error get");return function(value){
++            ccCheck(this===output,"captured console error receiver");events.push("error:"+value);
++        }}};
++        const saved=Object.getOwnPropertyDescriptor(globalThis,"console");
++        try{
++            globalThis.console=output;
++            __ccNotifyFactory(options,root)({[Symbol.toPrimitive](hint){
++                events.push("coerce:"+hint);globalThis.console={error(){throw Error("late console")}};return "detail";
++            }},"error");
++        }finally{Object.defineProperty(globalThis,"console",saved)}
++        return events;
++    }
++    default: throw new Error("Unknown foreground control: "+name);
++    }
++}
++function ccFreshFatal(style, phase) {
++    const root=__ccRoot.constructor({level:1});
++    const keys=ccSymbols(root);
++    if(phase==="getter")Object.defineProperty(root,keys.STYLER,{get(){return __ccHooks.raiseNativeFatal()}});
++    try{
++        if(phase==="getter")root[style];
++        else root[style]({[Symbol.toPrimitive](){return __ccHooks.raiseNativeFatal()}});
++    }catch(error){__ccHooks.visit(1);throw error}
++    __ccHooks.visit(2);
++}
+--- /dev/null
++++ b/src/extensions/fixtures/sdk-chalk-project-trust-colors-original.mjs
+@@ -0,0 +1,540 @@
++// Exact pinned Chalk 6.0.0 source bodies; only module syntax is adapted.
++// supportsColor is the genuine installed native detector output, shared input
++// for this style-only comparison. No detector or unconsumed style parity claim.
++(function originalChalkSource(supportsColor) {
++"use strict";
++const ansiStyles = (() => {
++const ANSI_BACKGROUND_OFFSET = 10;
++const ANSI_UNDERLINE_OFFSET = 20;
++
++const wrapAnsi16 = (offset = 0) => code => `\u{1B}[${code + offset}m`;
++
++const wrapAnsi256 = (offset = 0) => code => `\u{1B}[${38 + offset};5;${code}m`;
++
++const wrapAnsi16m = (offset = 0) => (red, green, blue) => `\u{1B}[${38 + offset};2;${red};${green};${blue}m`;
++
++// `SGR 58` has no basic 16-color form, so the basic color code is mapped to its palette index instead.
++const wrapUnderlineAnsi = code => `\u{1B}[58;5;${code < 90 ? code - 30 : code - 90 + 8}m`;
++
++const styles = {
++	modifier: {
++		reset: [0, 0],
++		// 21 isn't widely supported and 22 does the same thing
++		bold: [1, 22],
++		dim: [2, 22],
++		italic: [3, 23],
++		underline: [4, 24],
++		// Extended underline styles (`SGR 4:x` sub-parameters). Not in upstream `ansi-styles`.
++		underlineDouble: ['4:2', 24],
++		underlineCurly: ['4:3', 24],
++		underlineDotted: ['4:4', 24],
++		underlineDashed: ['4:5', 24],
++		overline: [53, 55],
++		inverse: [7, 27],
++		hidden: [8, 28],
++		strikethrough: [9, 29],
++	},
++	color: {
++		black: [30, 39],
++		red: [31, 39],
++		green: [32, 39],
++		yellow: [33, 39],
++		blue: [34, 39],
++		magenta: [35, 39],
++		cyan: [36, 39],
++		white: [37, 39],
++
++		// Bright color
++		blackBright: [90, 39],
++		gray: [90, 39], // Alias of `blackBright`
++		grey: [90, 39], // Alias of `blackBright`
++		redBright: [91, 39],
++		greenBright: [92, 39],
++		yellowBright: [93, 39],
++		blueBright: [94, 39],
++		magentaBright: [95, 39],
++		cyanBright: [96, 39],
++		whiteBright: [97, 39],
++	},
++	bgColor: {
++		bgBlack: [40, 49],
++		bgRed: [41, 49],
++		bgGreen: [42, 49],
++		bgYellow: [43, 49],
++		bgBlue: [44, 49],
++		bgMagenta: [45, 49],
++		bgCyan: [46, 49],
++		bgWhite: [47, 49],
++
++		// Bright color
++		bgBlackBright: [100, 49],
++		bgGray: [100, 49], // Alias of `bgBlackBright`
++		bgGrey: [100, 49], // Alias of `bgBlackBright`
++		bgRedBright: [101, 49],
++		bgGreenBright: [102, 49],
++		bgYellowBright: [103, 49],
++		bgBlueBright: [104, 49],
++		bgMagentaBright: [105, 49],
++		bgCyanBright: [106, 49],
++		bgWhiteBright: [107, 49],
++	},
++	// Underline color (`SGR 58`/`59`). Not in upstream `ansi-styles`.
++	underlineColor: {
++		underlineBlack: ['58;5;0', 59],
++		underlineRed: ['58;5;1', 59],
++		underlineGreen: ['58;5;2', 59],
++		underlineYellow: ['58;5;3', 59],
++		underlineBlue: ['58;5;4', 59],
++		underlineMagenta: ['58;5;5', 59],
++		underlineCyan: ['58;5;6', 59],
++		underlineWhite: ['58;5;7', 59],
++
++		// Bright color
++		underlineBlackBright: ['58;5;8', 59],
++		underlineGray: ['58;5;8', 59], // Alias of `underlineBlackBright`
++		underlineGrey: ['58;5;8', 59], // Alias of `underlineBlackBright`
++		underlineRedBright: ['58;5;9', 59],
++		underlineGreenBright: ['58;5;10', 59],
++		underlineYellowBright: ['58;5;11', 59],
++		underlineBlueBright: ['58;5;12', 59],
++		underlineMagentaBright: ['58;5;13', 59],
++		underlineCyanBright: ['58;5;14', 59],
++		underlineWhiteBright: ['58;5;15', 59],
++	},
++};
++
++const modifierNames = Object.keys(styles.modifier);
++const foregroundColorNames = Object.keys(styles.color);
++const backgroundColorNames = Object.keys(styles.bgColor);
++const underlineColorNames = Object.keys(styles.underlineColor);
++const colorNames = [...foregroundColorNames, ...backgroundColorNames];
++
++function assembleStyles() {
++	const codes = new Map();
++
++	for (const [groupName, group] of Object.entries(styles)) {
++		for (const [styleName, style] of Object.entries(group)) {
++			styles[styleName] = {
++				open: `\u{1B}[${style[0]}m`,
++				close: `\u{1B}[${style[1]}m`,
++			};
++
++			group[styleName] = styles[styleName];
++
++			// Only the leading SGR parameter identifies a style, so `4:3` and `58;5;1` are keyed as `4` and `58`.
++			codes.set(Number.parseInt(style[0], 10), style[1]);
++		}
++
++		Object.defineProperty(styles, groupName, {
++			value: group,
++			enumerable: false,
++		});
++	}
++
++	Object.defineProperty(styles, 'codes', {
++		value: codes,
++		enumerable: false,
++	});
++
++	styles.color.close = '\u{1B}[39m';
++	styles.bgColor.close = '\u{1B}[49m';
++	styles.underlineColor.close = '\u{1B}[59m';
++
++	styles.color.ansi = wrapAnsi16();
++	styles.color.ansi256 = wrapAnsi256();
++	styles.color.ansi16m = wrapAnsi16m();
++	styles.bgColor.ansi = wrapAnsi16(ANSI_BACKGROUND_OFFSET);
++	styles.bgColor.ansi256 = wrapAnsi256(ANSI_BACKGROUND_OFFSET);
++	styles.bgColor.ansi16m = wrapAnsi16m(ANSI_BACKGROUND_OFFSET);
++	styles.underlineColor.ansi = wrapUnderlineAnsi;
++	styles.underlineColor.ansi256 = wrapAnsi256(ANSI_UNDERLINE_OFFSET);
++	styles.underlineColor.ansi16m = wrapAnsi16m(ANSI_UNDERLINE_OFFSET);
++
++	// From https://github.com/Qix-/color-convert/blob/3f0e0d4e92e235796ccb17f6e85c72094a651f49/conversions.js
++	Object.defineProperties(styles, {
++		rgbToAnsi256: {
++			value(red, green, blue) {
++				// We use the extended greyscale palette here, with the exception of
++				// black and white. normal palette only has 4 greyscale shades.
++				if (red === green && green === blue) {
++					if (red < 8) {
++						return 16;
++					}
++
++					if (red > 248) {
++						return 231;
++					}
++
++					return Math.round(((red - 8) / 247) * 24) + 232;
++				}
++
++				return 16
++					+ (36 * Math.round(red / 255 * 5))
++					+ (6 * Math.round(green / 255 * 5))
++					+ Math.round(blue / 255 * 5);
++			},
++			enumerable: false,
++		},
++		hexToRgb: {
++			value(hex) {
++				const matches = /[\da-f]{6}|[\da-f]{3}/i.exec(hex.toString(16));
++				if (!matches) {
++					return [0, 0, 0];
++				}
++
++				let [colorString] = matches;
++
++				if (colorString.length === 3) {
++					colorString = [...colorString].map(character => character + character).join('');
++				}
++
++				const integer = Number.parseInt(colorString, 16);
++
++				return [
++					/* eslint-disable no-bitwise -- We need the speed */
++					(integer >> 16) & 0xFF,
++					(integer >> 8) & 0xFF,
++					integer & 0xFF,
++					/* eslint-enable no-bitwise */
++				];
++			},
++			enumerable: false,
++		},
++		hexToAnsi256: {
++			value: hex => styles.rgbToAnsi256(...styles.hexToRgb(hex)),
++			enumerable: false,
++		},
++		ansi256ToAnsi: {
++			value(code) {
++				if (code < 8) {
++					return 30 + code;
++				}
++
++				if (code < 16) {
++					return 90 + (code - 8);
++				}
++
++				let red;
++				let green;
++				let blue;
++
++				if (code >= 232) {
++					red = (((code - 232) * 10) + 8) / 255;
++					green = red;
++					blue = red;
++				} else {
++					code -= 16;
++
++					const remainder = code % 36;
++
++					red = Math.floor(code / 36) / 5;
++					green = Math.floor(remainder / 6) / 5;
++					blue = (remainder % 6) / 5;
++				}
++
++				const value = Math.max(red, green, blue) * 2;
++
++				if (value === 0) {
++					return 30;
++				}
++
++				// eslint-disable-next-line no-bitwise
++				let result = 30 + ((Math.round(blue) << 2) | (Math.round(green) << 1) | Math.round(red));
++
++				if (value === 2) {
++					result += 60;
++				}
++
++				return result;
++			},
++			enumerable: false,
++		},
++		rgbToAnsi: {
++			value: (red, green, blue) => styles.ansi256ToAnsi(styles.rgbToAnsi256(red, green, blue)),
++			enumerable: false,
++		},
++		hexToAnsi: {
++			value: hex => styles.ansi256ToAnsi(styles.hexToAnsi256(hex)),
++			enumerable: false,
++		},
++	});
++
++	return styles;
++}
++
++const ansiStyles = assembleStyles();
++
++return ansiStyles;
++
++})();
++// Note: Each match is kept and `postfix` is inserted after it. `String#replaceAll(substring, substring + postfix)` does the same, but it has to scan the replacement for `$` patterns and it is several times slower on the no-match path that most calls take.
++function stringReplaceAll(string, substring, postfix) {
++	let index = string.indexOf(substring);
++	if (index === -1) {
++		return string;
++	}
++
++	const substringLength = substring.length;
++	let endIndex = 0;
++	let returnValue = '';
++	do {
++		returnValue += string.slice(endIndex, index) + substring + postfix;
++		endIndex = index + substringLength;
++		index = string.indexOf(substring, endIndex);
++	} while (index !== -1);
++
++	returnValue += string.slice(endIndex);
++	return returnValue;
++}
++
++function stringEncaseCRLFWithFirstIndex(string, prefix, postfix, index) {
++	let endIndex = 0;
++	let returnValue = '';
++	do {
++		const isGotCR = string[index - 1] === '\r';
++		returnValue += string.slice(endIndex, (isGotCR ? index - 1 : index)) + prefix + (isGotCR ? '\r\n' : '\n') + postfix;
++		endIndex = index + 1;
++		index = string.indexOf('\n', endIndex);
++	} while (index !== -1);
++
++	returnValue += string.slice(endIndex);
++	return returnValue;
++}
++
++const {stdout: stdoutColor, stderr: stderrColor} = supportsColor;
++
++const GENERATOR = Symbol('GENERATOR');
++const STYLER = Symbol('STYLER');
++const IS_EMPTY = Symbol('IS_EMPTY');
++const LEVEL = Symbol('LEVEL');
++
++const styles = Object.create(null);
++
++const assertValidLevel = level => {
++	if (!Number.isSafeInteger(level) || level < 0 || level > 3) {
++		throw new Error('The `level` should be an integer from 0 to 3');
++	}
++};
++
++// The level is stored under a symbol so the hot path can read it as a plain property, while `level` itself is an accessor that rejects values the rest of the code could not handle.
++const levelDescriptor = {
++	enumerable: true,
++	get() {
++		return this[LEVEL];
++	},
++	set(level) {
++		assertValidLevel(level);
++		this[LEVEL] = level;
++	},
++};
++
++const applyOptions = (object, options = {}) => {
++	if (options.level !== undefined) {
++		assertValidLevel(options.level);
++	}
++
++	// Detect level if not set manually. Written under the symbol rather than through `level`, as the prototype carrying that accessor is not installed until after this runs.
++	const colorLevel = stdoutColor ? stdoutColor.level : 0;
++	object[LEVEL] = options.level === undefined ? colorLevel : options.level;
++};
++
++class Chalk {
++	constructor(options) {
++		// eslint-disable-next-line no-constructor-return
++		return chalkFactory(options);
++	}
++}
++
++const chalkFactory = options => {
++	const chalk = (...strings) => strings.join(' ');
++	applyOptions(chalk, options);
++
++	Object.setPrototypeOf(chalk, createChalk.prototype);
++
++	return chalk;
++};
++
++function createChalk(options) {
++	return chalkFactory(options);
++}
++
++// eslint-disable-next-line unicorn/no-top-level-side-effects -- The prototype chain must be set up at module load.
++Object.setPrototypeOf(createChalk.prototype, Function.prototype);
++
++for (const [styleName, style] of Object.entries(ansiStyles)) {
++	styles[styleName] = {
++		get() {
++			const builder = createBuilder(this, createStyler(style.open, style.close, this[STYLER]), this[IS_EMPTY]);
++			Object.defineProperty(this, styleName, {value: builder});
++			return builder;
++		},
++	};
++}
++
++styles.visible = {
++	get() {
++		const builder = createBuilder(this, this[STYLER], true);
++		Object.defineProperty(this, 'visible', {value: builder});
++		return builder;
++	},
++};
++
++// Resolve a color model to one converter per `level`, so that a call only has to look up the converter for the current level instead of re-deciding the model and level every time.
++const createModelConverters = (model, type) => {
++	const style = ansiStyles[type];
++
++	if (model === 'rgb') {
++		const ansi = (red, green, blue) => style.ansi(ansiStyles.rgbToAnsi(red, green, blue));
++		const ansi256 = (red, green, blue) => style.ansi256(ansiStyles.rgbToAnsi256(red, green, blue));
++		return [ansi, ansi, ansi256, style.ansi16m];
++	}
++
++	if (model === 'hex') {
++		const ansi = hex => style.ansi(ansiStyles.hexToAnsi(hex));
++		const ansi256 = hex => style.ansi256(ansiStyles.hexToAnsi256(hex));
++		return [ansi, ansi, ansi256, hex => style.ansi16m(...ansiStyles.hexToRgb(hex))];
++	}
++
++	// `ansi256` is already the native form, so only the 16-color levels need converting.
++	const ansi = code => style.ansi(ansiStyles.ansi256ToAnsi(code));
++	return [ansi, ansi, style.ansi256, style.ansi256];
++};
++
++const usedModels = ['rgb', 'hex', 'ansi256'];
++
++for (const model of usedModels) {
++	const capitalizedModel = model[0].toUpperCase() + model.slice(1);
++
++	for (const [styleName, type] of [
++		[model, 'color'],
++		['bg' + capitalizedModel, 'bgColor'],
++		['underline' + capitalizedModel, 'underlineColor'],
++	]) {
++		const {close} = ansiStyles[type];
++		const converters = createModelConverters(model, type);
++
++		styles[styleName] = {
++			get() {
++				// The level is read on call rather than captured here so the function can be cached on the instance instead of being reallocated on every property access.
++				// `rgb` is the widest model, so naming the three parameters avoids a rest array.
++				const styleFunction = function (first, second, third) {
++					const open = converters[this.level](first, second, third);
++					return createBuilder(this, createStyler(open, close, this[STYLER]), this[IS_EMPTY]);
++				};
++
++				Object.defineProperty(this, styleName, {value: styleFunction});
++				return styleFunction;
++			},
++		};
++	}
++}
++
++const proto = Object.defineProperties(
++	() => {},
++	{
++		...styles,
++		level: {
++			enumerable: true,
++			get() {
++				return this[GENERATOR].level;
++			},
++			set(level) {
++				this[GENERATOR].level = level;
++			},
++		},
++	},
++);
++
++const createStyler = (open, close, parent) => {
++	let openAll;
++	let closeAll;
++	if (parent === undefined) {
++		openAll = open;
++		closeAll = close;
++	} else {
++		openAll = parent.openAll + open;
++		closeAll = close + parent.closeAll;
++	}
++
++	return {
++		open,
++		close,
++		openAll,
++		closeAll,
++		parent,
++	};
++};
++
++const createBuilder = (self, _styler, _isEmpty) => {
++	// Single argument is hot path, implicit coercion is faster than anything
++	const builder = (...arguments_) => {
++		if (arguments_.length === 1) {
++			// eslint-disable-next-line no-implicit-coercion
++			return applyStyle(builder, '' + arguments_[0]);
++		}
++
++		if (arguments_.length === 2) {
++			return applyStyle(builder, arguments_[0] + ' ' + arguments_[1]);
++		}
++
++		return applyStyle(builder, arguments_.join(' '));
++	};
++
++	// We alter the prototype because we must return a function, but there is
++	// no way to create a function with a different prototype
++	Object.setPrototypeOf(builder, proto);
++
++	// Point every builder at the root generator instead of its immediate parent, so reading the level costs one property load rather than walking a `level` getter per link of the chain.
++	builder[GENERATOR] = self[GENERATOR] ?? self;
++	builder[STYLER] = _styler;
++	builder[IS_EMPTY] = _isEmpty;
++
++	return builder;
++};
++
++const applyStyle = (self, string) => {
++	// Read the level directly off the generator to skip the `level` getter dispatch on this hot path
++	if (self[GENERATOR][LEVEL] <= 0 || !string) {
++		// eslint-disable-next-line unicorn/no-computed-property-existence-check -- Reads the boolean value, not a property existence check.
++		return self[IS_EMPTY] ? '' : string;
++	}
++
++	let styler = self[STYLER];
++
++	if (styler === undefined) {
++		return string;
++	}
++
++	const {openAll, closeAll} = styler;
++	if (string.includes('\u{1B}')) {
++		while (styler !== undefined) {
++			// Replace any instances already present with a re-opening code
++			// otherwise only the part of the string until said closing code
++			// will be colored, and the rest will simply be 'plain'.
++			string = stringReplaceAll(string, styler.close, styler.open);
++
++			styler = styler.parent;
++		}
++	}
++
++	// We can move both next actions out of loop, because remaining actions in loop won't have
++	// any/visible effect on parts we add here. Close the styling before a linebreak and reopen
++	// after next line to fix a bleed issue on macOS: https://github.com/chalk/chalk/pull/92
++	const lfIndex = string.indexOf('\n');
++	if (lfIndex !== -1) {
++		string = stringEncaseCRLFWithFirstIndex(string, closeAll, openAll, lfIndex);
++	}
++
++	return openAll + string + closeAll;
++};
++
++// `level` lives on the prototype rather than on each instance, so it costs nothing to construct an instance and matches how builders already expose it. It is inherited rather than own, so it does not show up in `Object.keys()`, same as for a builder.
++// eslint-disable-next-line unicorn/no-top-level-side-effects -- The style getters must be installed at module load.
++Object.defineProperties(createChalk.prototype, {...styles, level: levelDescriptor});
++
++const chalk = createChalk();
++const chalkStderr = createChalk({level: stderrColor ? stderrColor.level : 0});
++
++
++return chalk;
++})
+--- /dev/null
++++ b/src/extensions/fixtures/sdk-chalk-project-trust-notify-original.mjs
+@@ -0,0 +1,11 @@
++// Exact original createProjectTrustContext.notify arrow; options and chalk
++// are its genuine lexical inputs. Startup UI methods are outside this fixture.
++(function originalProjectTrustNotify(options, chalk) {
++"use strict";
++return (message, type = "info") => {
++				if (options.mode !== "interactive") {
++					const color = type === "error" ? chalk.red : type === "warning" ? chalk.yellow : chalk.cyan;
++					console.error(color(message));
++				}
++			};
++})
+--- /dev/null
++++ b/src/extensions/fixtures/sdk-chalk-project-trust-yellow-regression.mjs
+@@ -0,0 +1,65 @@
++// Authored caller inputs only. Run with the actual Chalk6 default or the private
++// native supplier; outputs must be captured from Source, never hand-authored.
++function runChalkConsumedCases(chalk) {
++ const observations=[];
++ const record=(id,value)=>observations.push({id,value});
++ const make=options=>chalk.constructor(options);
++ const samples=[['empty',''],['plain','warning'],['lf','a\nb'],['crlf','a\r\nb'],['bare-cr','a\rb'],['existing-close','a\x1b[39mb'],['double-close','\x1b[39mx\x1b[39m'],['other-sgr','\x1b[22mx\x1b[0m'],['unicode','\ufeff雪\ud800\udc00\udfff\u0000'],['line-edge','\nx\n'],['crlf-edge','\r\nx\r\n']];
++ for(const level of [0,1,2,3])for(const [label,text] of samples){const root=make({level});record(`style/${level}/${label}`,root.yellow(text));}
++ for(const level of [0,1,2,3]){
++  const root=make({level});
++  record(`root-call/${level}`,{zero:root(),one:root(undefined),two:root(null,2),many:root('a',null,undefined,3)});
++  record(`builder-call/${level}`,{zero:root.yellow(),one:root.yellow(undefined),two:root.yellow(null,2),many:root.yellow('a',null,undefined,3)});
++  record(`nested/${level}`,root.yellow.yellow('a\x1b[39mb\r\nc'));
++ }
++ {
++  const root=make({level:1}),before=Object.getOwnPropertyDescriptor(root,'yellow'),first=root.yellow,after=Object.getOwnPropertyDescriptor(root,'yellow');
++  const proto=Object.getPrototypeOf(root),builderProto=Object.getPrototypeOf(first),rootLevel=Object.getOwnPropertyDescriptor(proto,'level'),builderLevel=Object.getOwnPropertyDescriptor(builderProto,'level');
++  record('descriptors',{type:typeof root,name:root.name,length:root.length,constructor:root.constructor.name,constructorLength:root.constructor.length,rootKeys:Object.keys(root),beforeAbsent:before===undefined,cached:first===root.yellow,styleFlags:{writable:after.writable,enumerable:after.enumerable,configurable:after.configurable},rootLevel:{enumerable:rootLevel.enumerable,configurable:rootLevel.configurable,getName:rootLevel.get.name,setName:rootLevel.set.name},builderLevel:{enumerable:builderLevel.enumerable,configurable:builderLevel.configurable},builderName:first.name,builderLength:first.length,builderPrototypeCallable:typeof builderProto,prototypeName:builderProto.name,prototypeLength:builderProto.length});
++ }
++ {
++  const root=make({level:1}),builder=root.yellow;root.level=0;const disabled=builder('x');builder.level=3;record('live-level',{disabled,enabled:builder('x'),root:root.level,builder:builder.level});
++ }
++ {
++  const trace=[],options={get level(){trace.push('level');return 2;}};const root=make(options);record('factory-option-read-order',{trace,level:root.level});
++ }
++ {
++  const marker={},trace=[];let n=0,raw=false;try{make({get level(){trace.push(++n);if(n===2)throw marker;return 1;}})}catch(error){raw=error===marker}record('factory-option-raw-throw',{trace,raw});
++ }
++ {
++  let n=0;const root=make({get level(){return ++n===4?'unvalidated-final-value':1;}});record('factory-live-final-value',{reads:n,level:root.level});
++ }
++ for(const [label,value] of [['negative',-1],['too-high',4],['fraction',1.5],['NaN',NaN],['infinity',Infinity],['string','1'],['undefined',undefined],['null',null],['bigint',1n]]){
++  const root=make({level:1});let got;try{root.level=value;got={threw:false}}catch(error){got={name:error.name,message:error.message,retained:root.level}}record(`invalid-level/${label}`,got);
++ }
++ for(const kind of ['root','single','two','many']){
++  const root=make({level:0}),trace=[],first={[Symbol.toPrimitive](hint){trace.push('first:'+hint);return 'A'}},second={[Symbol.toPrimitive](hint){trace.push('second:'+hint);return 'B'}};
++  const output=kind==='root'?root(first,second):kind==='single'?root.yellow(first):kind==='two'?root.yellow(first,second):root.yellow(first,second,first);record(`coercion/${kind}`,{trace,output});
++ }
++ for(const kind of ['root','single','two','many']){
++  const root=make({level:1}),marker={},trace=[],value={[Symbol.toPrimitive](hint){trace.push(hint);throw marker}};let raw=false;try{if(kind==='root')root(value);else if(kind==='single')root.yellow(value);else if(kind==='two')root.yellow('x',value);else root.yellow('x','y',value)}catch(error){raw=error===marker}record(`coercion-raw-throw/${kind}`,{trace,raw});
++ }
++ {
++  const root=make({level:1}),builder=root.yellow,trace=[];Object.defineProperty(root,'level',{get(){trace.push('public-level');return 0},configurable:true});const paint=builder('x');const visible=builder.level;record('symbol-level-versus-public-getter',{paint,visible,trace});
++ }
++ {
++  const root=make({level:1}),builder=root.yellow,levelSymbol=Reflect.ownKeys(root).find(key=>typeof key==='symbol'&&key.description==='LEVEL'),marker={};let raw=false,coerced=false;
++  Object.defineProperty(root,levelSymbol,{get(){throw marker},configurable:true});try{builder({[Symbol.toPrimitive](){coerced=true;return 'x'}})}catch(error){raw=error===marker}record('raw-symbol-level-getter',{raw,coerced});
++ }
++ {
++  const root=make({level:1}),trace=[],restore={includes:String.prototype.includes,indexOf:String.prototype.indexOf,slice:String.prototype.slice};let output;
++  try{for(const name of Object.keys(restore))String.prototype[name]=function(...args){trace.push([name,...args]);return Reflect.apply(restore[name],this,args)};output=root.yellow('a\x1b[39mb\r\nc')}
++  finally{for(const name of Object.keys(restore))String.prototype[name]=restore[name]}
++  record('live-string-method-order',{output,trace});
++ }
++ for(const method of ['includes','indexOf','slice']){
++  const root=make({level:1}),marker={},original=String.prototype[method];let raw=false;try{String.prototype[method]=function(){throw marker};root.yellow('a\x1b[39mb\nc')}catch(error){raw=error===marker}finally{String.prototype[method]=original}record(`live-string-raw/${method}`,raw);
++ }
++ {
++  const root=make({level:0}),trace=[],marker={},bad={[Symbol.toPrimitive](){trace.push('coerce');throw marker}};let raw=false;try{root.yellow(bad)}catch(error){raw=error===marker}record('disabled-still-coerces',{trace,raw});
++ }
++ {
++  const root=make({level:1}),builder=root.yellow;let constructible=true;try{Reflect.construct(builder,[])}catch(error){constructible=error.name!=='TypeError'}record('arrow-receiver-and-constructor',{receiverIgnored:builder.call({level:0},'x')===builder('x'),constructible});
++ }
++ return observations;
++}
+\ No newline at end of file
+--- a/src/extensions/native_sdk_chalk.zig
++++ b/src/extensions/native_sdk_chalk.zig
+@@ -1,4 +1,4 @@
+-//! Private actual consumed Chalk6 default: callable factory, yellow builders and
++//! Private actual consumed Chalk6 default: callable factory, red/yellow/cyan builders and
+ //! root/builder level accessors. MIT Sindre Sorhus; see verification/sdk-chalk6.
+ //! No global/module 'chalk' shadow; no plain-text renderer substitution.
+ const std = @import("std");
+@@ -20,6 +20,7 @@
+     }.invoke;
+ }
+ const Symbol = enum { GENERATOR, STYLER, IS_EMPTY, LEVEL };
++const Foreground = enum { red, yellow, cyan };
+ fn symbol(s: *Scope, state: c.JSValue, which: Symbol) !c.JSValue { return s.get(state, @tagName(which)); }
+ fn slot(s: *Scope, state: c.JSValue, object: c.JSValue, which: Symbol) !c.JSValue { return s.getKey(object, try symbol(s, state, which)); }
+ fn setSlot(s: *Scope, state: c.JSValue, object: c.JSValue, which: Symbol, value: c.JSValue) !void { try s.setKey(object, try symbol(s, state, which), value); }
+@@ -33,9 +34,9 @@
+     for (args, 0..) |value, i| try s.index(array, @intCast(i), value);
+     return array;
+ }
+-fn cacheStyle(s: *Scope, receiver: c.JSValue, builder: c.JSValue) !void {
++fn cacheStyle(comptime color: Foreground, s: *Scope, receiver: c.JSValue, builder: c.JSValue) !void {
+     const descriptor = try s.object(); try s.put(descriptor, "value", builder);
+-    _ = try objectCall(s, "defineProperty", &.{ receiver, try s.text("yellow"), descriptor });
++    _ = try objectCall(s, "defineProperty", &.{ receiver, try s.text(@tagName(color)), descriptor });
+ }
+ fn accessor(s: *Scope, target: c.JSValue, name: [*:0]const u8, get: c.JSValue, set: c.JSValue, enumerable: bool) !void {
+     const descriptor = try s.object();
+@@ -83,15 +84,25 @@
+ fn createChalk(s: *Scope, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+     return dup(s.engine, try factory(s, roots[0], arg(args, 0)));
+ }
+-fn styler(s: *Scope, parent: c.JSValue) !c.JSValue {
+-    const open = try s.text("\x1b[33m"); const close = try s.text("\x1b[39m");
++fn styler(comptime color: Foreground, s: *Scope, parent: c.JSValue) !c.JSValue {
++    const open = try s.text(switch (color) {
++        .red => "\x1b[31m", .yellow => "\x1b[33m", .cyan => "\x1b[36m",
++    });
++    const close = try s.text("\x1b[39m");
+     const all_open = if (c.JS_IsUndefined(parent)) open else try s.concat(try s.get(parent, "openAll"), open);
+     const all_close = if (c.JS_IsUndefined(parent)) close else try s.concat(close, try s.get(parent, "closeAll"));
+     const out = try s.object(); try s.put(out, "open", open); try s.put(out, "close", close); try s.put(out, "openAll", all_open); try s.put(out, "closeAll", all_close); try s.put(out, "parent", parent); return out;
+ }
+-fn yellowGet(s: *Scope, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++fn styleGetter(comptime color: Foreground) Body {
++    return struct {
++        fn get(s: *Scope, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++            return styleGet(color, s, receiver, roots);
++        }
++    }.get;
++}
++fn styleGet(comptime color: Foreground, s: *Scope, receiver: c.JSValue, roots: []const c.JSValue) !c.JSValue {
+     const engine = s.engine; const state = roots[0];
+-    const paint = try styler(s, try slot(s, state, receiver, .STYLER));
++    const paint = try styler(color, s, try slot(s, state, receiver, .STYLER));
+     const is_empty = try slot(s, state, receiver, .IS_EMPTY);
+     const cell = try s.object();
+     const builder = try s.own(try functions.createArrow(engine, "builder", 0, adapt(builderCall), &.{ state, cell }));
+@@ -100,7 +111,7 @@
+     const inherited = try slot(s, state, receiver, .GENERATOR);
+     try setSlot(s, state, builder, .GENERATOR, if (c.JS_IsUndefined(inherited) or c.JS_IsNull(inherited)) receiver else inherited);
+     try setSlot(s, state, builder, .STYLER, paint); try setSlot(s, state, builder, .IS_EMPTY, is_empty);
+-    try cacheStyle(s, receiver, builder); return dup(engine, builder);
++    try cacheStyle(color, s, receiver, builder); return dup(engine, builder);
+ }
+ fn replaceAll(s: *Scope, string: c.JSValue, substring: c.JSValue, postfix: c.JSValue) !c.JSValue {
+     var at = try s.invoke(string, "indexOf", &.{substring}); const minus = c.JS_NewInt32(s.engine.context, -1);
+@@ -191,8 +202,13 @@
+     const root_proto = try s.get(constructor, "prototype"); try s.put(state, "rootPrototype", root_proto);
+     _ = try objectCall(s, "setPrototypeOf", &.{ root_proto, try s.get(try s.global("Function"), "prototype") });
+     const builder_proto = try s.own(try functions.createArrow(engine, "", 0, adapt(emptyProtoCall), &.{})); try s.put(state, "builderPrototype", builder_proto);
+-    const yellow = try makeMethod(s, "get", 0, yellowGet, &.{state});
+-    try accessor(s, root_proto, "yellow", yellow, c.pi_js_undefined(), false); try accessor(s, builder_proto, "yellow", yellow, c.pi_js_undefined(), false);
++    // The consumed foreground styles retain the primary enumeration order.
++    // Each getter creates and caches the same genuine builder algorithm.
++    inline for (.{ Foreground.red, Foreground.yellow, Foreground.cyan }) |color| {
++        const getter = try makeMethod(s, "get", 0, styleGetter(color), &.{state});
++        try accessor(s, root_proto, @tagName(color), getter, c.pi_js_undefined(), false);
++        try accessor(s, builder_proto, @tagName(color), getter, c.pi_js_undefined(), false);
++    }
+     try accessor(s, root_proto, "level", try makeMethod(s, "get", 0, rootLevelGet, &.{state}), try makeMethod(s, "set", 1, rootLevelSet, &.{state}), true);
+     try accessor(s, builder_proto, "level", try makeMethod(s, "get", 0, builderLevelGet, &.{state}), try makeMethod(s, "set", 1, builderLevelSet, &.{state}), true);
+     return dup(engine, try factory(s, state, c.pi_js_undefined()));
+--- /dev/null
++++ b/src/native_sdk_chalk_project_trust_colors_test.zig
+@@ -0,0 +1,187 @@
++//! Source-only foreground successor controls over actual native platform/Chalk.
++//! The source fixture contains the complete pinned Chalk source bodies. Both
++//! sides receive genuine detector inputs; explicit levels isolate style parity.
++const std = @import("std");
++const h = @import("extensions/native_sdk_session_locals.zig");
++const v = h.v;
++const c = h.c;
++const em = @import("extensions/engine.zig");
++const chalk = @import("extensions/native_sdk_chalk.zig");
++const retirement = @import("native_sdk_initial_model_retirement_controls.zig");
++const source_fixture = @embedFile("extensions/fixtures/sdk-chalk-project-trust-colors-original.mjs");
++const observer = @embedFile("extensions/fixtures/sdk-chalk-project-trust-colors-observer.mjs");
++const yellow_regression = @embedFile("extensions/fixtures/sdk-chalk-project-trust-yellow-regression.mjs");
++const notify_fixture = @embedFile("extensions/fixtures/sdk-chalk-project-trust-notify-original.mjs");
++const gpa = std.testing.allocator;
++const Fixture = struct {
++    environment: std.process.Environ.Map,
++    engine: *em.Engine,
++    fn init(self: *Fixture) !void {
++        self.environment = .init(gpa);
++        errdefer self.environment.deinit();
++        self.engine = try em.Engine.init(gpa, .{
++            .host_await_timeout_ms = 10000, .interrupt_budget = 8_000_000,
++        });
++        errdefer self.engine.deinit();
++        try @import("extensions/native_sdk_application_bootstrap.zig").installPlatform(
++            self.engine, std.testing.io, &self.environment, &.{"actual-chalk-project-trust-color-control"});
++    }
++    fn deinit(self: *Fixture) void {
++        self.engine.deinit();
++        self.environment.deinit();
++    }
++};
++fn expose(s: *v.Scope, name: [*:0]const u8, value: c.JSValue) !void {
++    try v.put(s, try v.own(s, c.JS_GetGlobalObject(s.engine.context)), name, value);
++}
++fn evaluate(s: *v.Scope, source: []const u8) !c.JSValue {
++    return v.own(s, try s.engine.eval(source, "chalk-foreground-control.js", c.JS_EVAL_TYPE_GLOBAL));
++}
++fn originalDefault(s: *v.Scope) !c.JSValue {
++    const process_module = s.engine.native_module_values.get("node:process") orelse
++        return error.RequiredActualChalkProcess;
++    const os_module = s.engine.native_module_values.get("node:os") orelse
++        return error.RequiredActualChalkOs;
++    const process = try v.get(s, process_module, "default");
++    const os = try v.get(s, os_module, "default");
++    const colors = try v.own(s, try @import("extensions/native_sdk_chalk_supports_color.zig").create(
++        s.engine, process, os));
++    const factory = try evaluate(s, source_fixture);
++    return v.duplicate(s, try v.call(s, factory, c.pi_js_undefined(), &.{colors}));
++}
++fn prepare(s: *v.Scope, source: bool) !void {
++    const owner = try v.own(s, if (source) try h.expression(s.engine, originalDefault, .{}) else
++        try chalk.createDefault(s.engine));
++    try expose(s, "__ccRoot", owner);
++    try expose(s, "__ccHooks", try v.own(s, try retirement.createNativeRetirementHooks(s.engine)));
++    try expose(s, "__ccNotifyFactory", try evaluate(s, notify_fixture));
++    _ = try evaluate(s, yellow_regression);
++    _ = try evaluate(s, observer);
++}
++fn clean(engine: *em.Engine) !void {
++    try std.testing.expect(!c.JS_HasException(engine.context));
++    try std.testing.expect(!c.JS_IsJobPending(engine.runtime));
++    try std.testing.expect(engine.native_fatal_invocation == null);
++    try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
++}
++fn capture(comptime name: []const u8, source: bool) ![]u8 {
++    var fixture: Fixture = undefined;
++    try fixture.init();
++    defer fixture.deinit();
++    var s: v.Scope = .{ .engine = fixture.engine };
++    defer s.deinit();
++    try prepare(&s, source);
++    const observed = try evaluate(&s, "JSON.stringify(ccCase('" ++ name ++ "',__ccRoot))");
++    try std.testing.expect(c.JS_IsString(observed));
++    try clean(fixture.engine);
++    return fixture.engine.toString(observed);
++}
++fn both(comptime name: []const u8) !void {
++    const expected = try capture(name, true);
++    defer gpa.free(expected);
++    const actual = try capture(name, false);
++    defer gpa.free(actual);
++    try std.testing.expectEqualStrings(expected, actual);
++}
++
++test "native project trust Chalk colors preserved 86 observation yellow corpus matches complete original" { try both("yellow-regression"); }
++
++test "native project trust Chalk colors red ANSI and no color bytes cover all levels and line endings" { try both("red-matrix"); }
++
++test "native project trust Chalk colors cyan ANSI and no color bytes cover all levels and line endings" { try both("cyan-matrix"); }
++
++test "native project trust Chalk colors mixed foreground chains preserve reopen order and shared closers" { try both("mixed-chains"); }
++
++test "native project trust Chalk colors lazy foreground getter builder and cache descriptors match source" { try both("descriptors"); }
++
++test "native project trust Chalk colors style caches are distinct immutable and per instance" { try both("cache-isolation"); }
++
++test "native project trust Chalk colors mixed builders share live root level writes" { try both("live-levels"); }
++
++test "native project trust Chalk colors painting reads symbol level while public level getter stays live" { try both("public-level"); }
++
++test "native project trust Chalk colors red and cyan preserve zero single two and rest argument forms" { try both("builder-call-forms"); }
++
++test "native project trust Chalk colors implicit and joined conversion hints match all enabled levels" { try both("coercion-hints"); }
++
++test "native project trust Chalk colors input conversion preserves original thrown identity when disabled" { try both("coercion-throw"); }
++
++test "native project trust Chalk colors enabled and disabled builders reject Symbol conversion" { try both("symbol-input"); }
++
++test "native project trust Chalk colors input conversion can reenter another genuine foreground builder" { try both("coercion-reentry"); }
++
++test "native project trust Chalk colors borrowed lazy getter preserves parent and generator read order" { try both("getter-order"); }
++
++test "native project trust Chalk colors failed parent getter publishes no style cache" { try both("getter-throw"); }
++
++test "native project trust Chalk colors same style getter reentry preserves inner cache and outer error" { try both("getter-same-reentry"); }
++
++test "native project trust Chalk colors cross style getter reentry keeps independent cached builders" { try both("getter-cross-reentry"); }
++
++test "native project trust Chalk colors proxy cache definition preserves original thrown identity" { try both("cache-throw"); }
++
++test "native project trust Chalk colors borrowed getter keeps real generator and nonconstructor shape" { try both("borrowed-getter"); }
++
++test "native project trust Chalk colors null and primitive style receivers reject without cache" { try both("primitive-receiver"); }
++
++test "native project trust Chalk colors new builders capture the live generator exactly once" { try both("generator-capture"); }
++
++test "native project trust Chalk colors symbol level getter and numeric conversion stay live" { try both("symbol-level"); }
++
++test "native project trust Chalk colors symbol level error follows input conversion and remains original" { try both("symbol-level-throw"); }
++
++test "native project trust Chalk colors embedded ANSI and CRLF use original live String method order" { try both("string-method-order"); }
++
++test "native project trust Chalk colors live String method throws remain original for both styles" { try both("string-method-throw"); }
++
++test "native project trust Chalk colors live String method can reenter another actual color" { try both("string-method-reentry"); }
++
++test "native project trust Chalk colors real private native DATA thrown during color conversion remains ordinary" { try both("native-data"); }
++
++test "native project trust Chalk colors exact original project trust notify selects red yellow and cyan" { try both("notify-colors"); }
++
++test "native project trust Chalk colors exact original notify preserves mode style and console reference order" { try both("notify-order"); }
++
++test "native project trust Chalk colors default owner remains the same genuine cached callable" {
++    var fixture: Fixture = undefined;
++    try fixture.init();
++    defer fixture.deinit();
++    var s: v.Scope = .{ .engine = fixture.engine };
++    defer s.deinit();
++    const first = try v.own(&s, try chalk.createDefault(fixture.engine));
++    try expose(&s, "__ccFirst", first);
++    _ = try evaluate(&s,
++        \\__ccFirst.level=1;
++        \\globalThis.__ccRed=__ccFirst.red;globalThis.__ccYellow=__ccFirst.yellow;
++        \\globalThis.__ccCyan=__ccFirst.cyan;__ccCyan.level=0;
++    );
++    const second = try v.own(&s, try chalk.createDefault(fixture.engine));
++    try std.testing.expect(c.JS_IsStrictEqual(fixture.engine.context, first, second));
++    try expose(&s, "__ccSecond", second);
++    const observed = try evaluate(&s,
++        \\__ccSecond.red===__ccRed&&__ccSecond.yellow===__ccYellow&&
++        \\__ccSecond.cyan===__ccCyan&&__ccSecond.red("x")==="x"&&
++        \\__ccSecond.cyan("x")==="x"&&__ccSecond.level===0
++    );
++    try std.testing.expect(c.JS_IsStrictEqual(fixture.engine.context, observed,
++        c.JS_NewBool(fixture.engine.context, true)));
++    try clean(fixture.engine);
++}
++fn fatal(comptime style: []const u8, comptime phase: []const u8) !void {
++    var fixture: Fixture = undefined;
++    try fixture.init();
++    defer fixture.deinit();
++    var s: v.Scope = .{ .engine = fixture.engine };
++    defer s.deinit();
++    try prepare(&s, false);
++    const record = try v.get(&s, try v.global(&s, "__ccHooks"), "record");
++    try std.testing.expectError(error.JavaScriptException,
++        evaluate(&s, "ccFreshFatal('" ++ style ++ "','" ++ phase ++ "');"));
++    try retirement.verifyRecordedActualNativeFatal(fixture.engine, record);
++    try retirement.verifyNoVisits(record, .{ 1, 2 });
++    try std.testing.expect(fixture.engine.native_fatal_invocation == null);
++}
++test "native project trust Chalk colors red getter fresh fatal bypasses guest catch" { try fatal("red", "getter"); }
++test "native project trust Chalk colors cyan getter fresh fatal bypasses guest catch" { try fatal("cyan", "getter"); }
++test "native project trust Chalk colors red conversion fresh fatal bypasses guest catch" { try fatal("red", "conversion"); }
++test "native project trust Chalk colors cyan conversion fresh fatal bypasses guest catch" { try fatal("cyan", "conversion"); }

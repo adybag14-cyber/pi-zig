@@ -1,0 +1,16 @@
+    if (native_node_network != null) {
+        const commonjs_wrap_load = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_commonjs_wrap_load_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native actual CommonJS wrap load"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, commonjs_wrap_load.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, commonjs_wrap_load.root_module, typescript_parser);
+        linkSqlite(commonjs_wrap_load.root_module, sqlite_lib_dir, sqlite_library);
+        commonjs_wrap_load.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            commonjs_wrap_load.root_module.linkSystemLibrary("advapi32", .{});
+            commonjs_wrap_load.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-commonjs-wrap-load", "Install thirty-two actual CommonJS wrap load controls without execution").dependOn(&b.addInstallArtifact(commonjs_wrap_load, .{ .dest_sub_path = b.fmt("native-node-commonjs-wrap-load{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    }
+

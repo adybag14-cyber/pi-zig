@@ -1,0 +1,25 @@
+{
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\original\\build.zig",
+    "bytes": 566024,
+    "sha256": "37815BF647A0F94D4ECEB30AA6FB95FCA63ED26C1E5CB95EEDD519C32B5358D1"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\projected\\build.zig",
+    "bytes": 567233,
+    "sha256": "D8C4B443BCFAFF50ABF318294D0134B2D6E92395AB9F68BE62C481D9538CA615"
+  },
+  "addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\build-addition.txt",
+    "bytes": 1209,
+    "sha256": "4DC95533F6D9CAE682F618946697840BDAAC736CFFD16E23E691F699D3BA5831"
+  },
+  "offset": 546205,
+  "exact_raw_inverse": true,
+  "existing_target_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_commonjs_watch_test.zig",
+    "bytes": 13643,
+    "sha256": "9139620DE7F473BDA146EEFD4BD30D703D13145AE41E6B1BBE154F64C6216DE4"
+  },
+  "changes": "One added install-only native test target; copied existing canonical CommonJS watch linkage."
+}

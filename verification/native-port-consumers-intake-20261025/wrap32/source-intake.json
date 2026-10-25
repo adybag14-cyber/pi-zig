@@ -1,0 +1,356 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-25T10:26:07.710796+00:00",
+  "status": "source_candidate_complete_original_wrapModuleLoad_unexecuted",
+  "scope": "Original timer cells, lazy channel, wrapModuleLoad consumer against genuine Module; actual declarations required from canonical assembler.",
+  "source_basis_head": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "changes": [
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 566024,
+        "sha256": "37815BF647A0F94D4ECEB30AA6FB95FCA63ED26C1E5CB95EEDD519C32B5358D1"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\projected\\build.zig",
+        "bytes": 567233,
+        "sha256": "D8C4B443BCFAFF50ABF318294D0134B2D6E92395AB9F68BE62C481D9538CA615"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_node_commonjs_wrap_load.zig",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\projected\\src\\extensions\\native_node_commonjs_wrap_load.zig",
+        "bytes": 9991,
+        "sha256": "3F229D139F71FBF9BED47EE5844BC5B4382DC7CCD7ACDAFEA30587AE9ECCD02E"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_node_commonjs_wrap_load_test.zig",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\projected\\src\\native_node_commonjs_wrap_load_test.zig",
+        "bytes": 7006,
+        "sha256": "ABF90E82FD57BE325001E8E88653BCE0DB5BB211C341886D464871A6554B4F8C"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/node-commonjs-wrap-load-original.js",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\node-commonjs-wrap-load-original.js",
+        "bytes": 1248,
+        "sha256": "3E997D71AF2154DF3EB8323A2B8CAC8C3B55646CBE63444E1D6DDEA74BDD93B8"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/node-commonjs-wrap-load-controls.js",
+      "operation": "add",
+      "baseline": null,
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\node-commonjs-wrap-load-controls.js",
+        "bytes": 6478,
+        "sha256": "5E4BC8B467152B944E77F433F0487982D371F2C333BFAC469478267373A7DC98"
+      }
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\wrap-module-load.patch",
+    "bytes": 27073,
+    "sha256": "FF210CA3BCE5EC4D33402E43CB88632076656CBCE3052A90E63D2DB8BCF5A357"
+  },
+  "readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\README.md",
+    "bytes": 1887,
+    "sha256": "7D1EA9B3F019C40493D26A31C995B7B50E3BB49C6A252416203CDC81FAD3C248"
+  },
+  "original_fixture_inverses": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\authority\\extraction.json",
+    "bytes": 3862,
+    "sha256": "1E57C826BBF38F8A558EB6F9D204050E65ED475AB15ADB98D81EC0835C817F67"
+  },
+  "static_checks": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\static-checks.json",
+    "bytes": 729,
+    "sha256": "8D4DE6A841C33119463DC2AFE31E5C01EC2F4DB3A10FB9A8E28829612CA40081"
+  },
+  "retained_authorities": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+      "bytes": 72050,
+      "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__util.js.txt",
+      "bytes": 28980,
+      "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429"
+    }
+  ],
+  "build_addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\build-addition.txt",
+    "bytes": 1209,
+    "sha256": "4DC95533F6D9CAE682F618946697840BDAAC736CFFD16E23E691F699D3BA5831"
+  },
+  "build_inverse": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\build-inverse.json",
+    "bytes": 1209,
+    "sha256": "57D6DAC4423E5589B15DE042D13ED0F1DF5A379F0BBA0F89B250EB38883DFE09"
+  },
+  "direct_import_resolutions": [
+    {
+      "source": "src/extensions/native_node_commonjs_wrap_load.zig",
+      "kind": "import",
+      "literal": "native_node_argument_values.zig",
+      "resolved_relative_path": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "source": "src/extensions/native_node_commonjs_wrap_load.zig",
+      "kind": "import",
+      "literal": "native_node_module_callable.zig",
+      "resolved_relative_path": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "source": "src/extensions/native_node_commonjs_wrap_load.zig",
+      "kind": "import",
+      "literal": "native_node_module_constructor.zig",
+      "resolved_relative_path": "src/extensions/native_node_module_constructor.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_constructor.zig",
+        "bytes": 30628,
+        "sha256": "85330C0B93D291A915AB958507BFE0A436C2C29A245D4A0A50C9B23ECEE15333"
+      }
+    },
+    {
+      "source": "src/extensions/native_node_commonjs_wrap_load.zig",
+      "kind": "import",
+      "literal": "native_sync_arguments.zig",
+      "resolved_relative_path": "src/extensions/native_sync_arguments.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sync_arguments.zig",
+        "bytes": 9162,
+        "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+      }
+    },
+    {
+      "source": "src/extensions/native_node_commonjs_wrap_load.zig",
+      "kind": "import",
+      "literal": "native_sdk_guest_operation.zig",
+      "resolved_relative_path": "src/extensions/native_sdk_guest_operation.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_guest_operation.zig",
+        "bytes": 7009,
+        "sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C"
+      }
+    },
+    {
+      "source": "src/native_node_commonjs_wrap_load_test.zig",
+      "kind": "import",
+      "literal": "extensions/native_node_argument_values.zig",
+      "resolved_relative_path": "src/extensions/native_node_argument_values.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      }
+    },
+    {
+      "source": "src/native_node_commonjs_wrap_load_test.zig",
+      "kind": "import",
+      "literal": "extensions/native_node_commonjs_module_core.zig",
+      "resolved_relative_path": "src/extensions/native_node_commonjs_module_core.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_module_core.zig",
+        "bytes": 4518,
+        "sha256": "3430093711662E683544D718DB8D44DD636F556A6156B9C761D47D56A4B4E258"
+      }
+    },
+    {
+      "source": "src/native_node_commonjs_wrap_load_test.zig",
+      "kind": "import",
+      "literal": "extensions/native_node_module_callable.zig",
+      "resolved_relative_path": "src/extensions/native_node_module_callable.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_module_callable.zig",
+        "bytes": 12781,
+        "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+      }
+    },
+    {
+      "source": "src/native_node_commonjs_wrap_load_test.zig",
+      "kind": "import",
+      "literal": "extensions/native_node_commonjs_wrap_load.zig",
+      "resolved_relative_path": "src/extensions/native_node_commonjs_wrap_load.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\projected\\src\\extensions\\native_node_commonjs_wrap_load.zig",
+        "bytes": 9991,
+        "sha256": "3F229D139F71FBF9BED47EE5844BC5B4382DC7CCD7ACDAFEA30587AE9ECCD02E"
+      }
+    },
+    {
+      "source": "src/native_node_commonjs_wrap_load_test.zig",
+      "kind": "import",
+      "literal": "extensions/timers.zig",
+      "resolved_relative_path": "src/extensions/timers.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\timers.zig",
+        "bytes": 52715,
+        "sha256": "4AB5926421C7601B752F92E4306DC31A455C16437F8C904F80875EEE4B70CCCC"
+      }
+    },
+    {
+      "source": "src/native_node_commonjs_wrap_load_test.zig",
+      "kind": "import",
+      "literal": "extensions/native_process.zig",
+      "resolved_relative_path": "src/extensions/native_process.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+        "bytes": 6626,
+        "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+      }
+    },
+    {
+      "source": "src/native_node_commonjs_wrap_load_test.zig",
+      "kind": "import",
+      "literal": "extensions/node_path.zig",
+      "resolved_relative_path": "src/extensions/node_path.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_path.zig",
+        "bytes": 31004,
+        "sha256": "377B41F044812F61066B61D0A70723A90019E1F41FD2617DF4DC252BBCBC02B5"
+      }
+    },
+    {
+      "source": "src/native_node_commonjs_wrap_load_test.zig",
+      "kind": "import",
+      "literal": "extensions/node_url.zig",
+      "resolved_relative_path": "src/extensions/node_url.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_url.zig",
+        "bytes": 12179,
+        "sha256": "61B4200BCE8AB01D4051492FCAAE130B049139770E3727E4B110A193C401EDC8"
+      }
+    },
+    {
+      "source": "src/native_node_commonjs_wrap_load_test.zig",
+      "kind": "import",
+      "literal": "extensions/node_fs.zig",
+      "resolved_relative_path": "src/extensions/node_fs.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\node_fs.zig",
+        "bytes": 40147,
+        "sha256": "1EAC38BF57D96BDCEB096A091FFFD6C7D5EBA78101D7DBDFD1E060A5FE9DD7A9"
+      }
+    },
+    {
+      "source": "src/native_node_commonjs_wrap_load_test.zig",
+      "kind": "embedFile",
+      "literal": "extensions/fixtures/node-commonjs-wrap-load-original.js",
+      "resolved_relative_path": "src/extensions/fixtures/node-commonjs-wrap-load-original.js",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\node-commonjs-wrap-load-original.js",
+        "bytes": 1248,
+        "sha256": "3E997D71AF2154DF3EB8323A2B8CAC8C3B55646CBE63444E1D6DDEA74BDD93B8"
+      }
+    },
+    {
+      "source": "src/native_node_commonjs_wrap_load_test.zig",
+      "kind": "embedFile",
+      "literal": "extensions/fixtures/node-commonjs-wrap-load-controls.js",
+      "resolved_relative_path": "src/extensions/fixtures/node-commonjs-wrap-load-controls.js",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\node-commonjs-wrap-load-controls.js",
+        "bytes": 6478,
+        "sha256": "5E4BC8B467152B944E77F433F0487982D371F2C333BFAC469478267373A7DC98"
+      }
+    }
+  ],
+  "standard_package_imports": [
+    {
+      "source": "src/native_node_commonjs_wrap_load_test.zig",
+      "kind": "import",
+      "literal": "std"
+    }
+  ],
+  "controls": {
+    "declared_count": 32,
+    "original_comparison_count": 32,
+    "names": [
+      "native actual CommonJS wrap load preserves ordinary declaration metadata",
+      "native actual CommonJS wrap load dispatches unsubscribed calls with exact receiver arguments and return identity",
+      "native actual CommonJS wrap load dispatches subscribed calls with context descriptors and early callee lookup",
+      "native actual CommonJS wrap load preserves independent string-hint label conversions in order",
+      "native actual CommonJS wrap load accepts null optional parent",
+      "native actual CommonJS wrap load keeps startTimer outside try finally",
+      "native actual CommonJS wrap load runs finally after subscribers getter throws",
+      "native actual CommonJS wrap load runs finally after Module load getter throws",
+      "native actual CommonJS wrap load preserves loader throw identity through successful finally",
+      "native actual CommonJS wrap load finally throw replaces successful return",
+      "native actual CommonJS wrap load finally throw replaces earlier ordinary throw",
+      "native actual CommonJS wrap load runs finally after traceSync getter throws",
+      "native actual CommonJS wrap load runs finally after traceSync call throws",
+      "native actual CommonJS wrap load uses timer callbacks updated during start and on subsequent calls",
+      "native actual CommonJS wrap load uses timer callback updated during loader execution",
+      "native actual CommonJS wrap load retries failed lazy channel initialization",
+      "native actual CommonJS wrap load preserves successful outer lazy assignment after reentry",
+      "native actual CommonJS wrap load caches undefined lazy channel value",
+      "native actual CommonJS wrap load defines traced context own writable enumerable configurable fields",
+      "native actual CommonJS wrap load preserves ordinary construction for primitive loader result",
+      "native actual CommonJS wrap load observes timer initialization temporal dead zone",
+      "native actual CommonJS wrap load observes partial timer destructuring temporal dead zone",
+      "native actual CommonJS wrap load reads live subscriber state for each invocation",
+      "native actual CommonJS wrap load throws for noncallable start without running finally",
+      "native actual CommonJS wrap load runs finally after parent filename getter throws",
+      "native actual CommonJS wrap load unsubscribed path skips trace and filename getters",
+      "native actual CommonJS wrap load uses authenticated Module lexical identity despite mutable Module property",
+      "native actual CommonJS wrap load rejects Symbol template interpolation before channel and timer calls",
+      "native actual CommonJS wrap load keeps independent frames through recursive loader execution",
+      "native actual CommonJS wrap load accepts truthy nonboolean subscriber state",
+      "native actual CommonJS wrap load accepts undefined optional parent",
+      "native actual CommonJS wrap load preserves coercion failure before lazy channel acquisition"
+    ],
+    "actual_metadata_count": null,
+    "runtime_result": null
+  },
+  "git_apply_check": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\git-apply-check.json",
+    "bytes": 128,
+    "sha256": "036249061664645210B96E7A15013376D57182625E3CA68CC7984199F326B2D4"
+  },
+  "remaining_integration": [
+    "Root and independent exact source acceptance",
+    "compiled metadata and strict runtime on final integrated head",
+    "genuine debugWithTimer and complete canonical tracingChannel suppliers",
+    "canonical Module assembler and production worker entry"
+  ],
+  "not_executed": [
+    "native compiler",
+    "native runtime",
+    "Node capture",
+    "original function fixture",
+    "whole application"
+  ],
+  "claims": {
+    "native_execution": false,
+    "candidate_executed": false,
+    "runtime_qualification": false,
+    "product_qualification": false,
+    "Main_modified": false,
+    "public_Module_published": false
+  }
+}

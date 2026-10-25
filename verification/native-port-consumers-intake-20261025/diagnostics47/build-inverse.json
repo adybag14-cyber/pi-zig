@@ -1,0 +1,20 @@
+{
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-diagnostics-channel-core-sourceonly-20261025\\original\\build.zig",
+    "bytes": 566024,
+    "sha256": "37815BF647A0F94D4ECEB30AA6FB95FCA63ED26C1E5CB95EEDD519C32B5358D1"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-diagnostics-channel-core-sourceonly-20261025\\projected\\build.zig",
+    "bytes": 567207,
+    "sha256": "3AE961811936FBD3D09709265A324B2717562FB7B1FF041B6C490732DBD481A3"
+  },
+  "addition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-diagnostics-channel-core-sourceonly-20261025\\build-addition.txt",
+    "bytes": 1183,
+    "sha256": "316C842B4825586849D269CE5B4248E566CC8A81FF80B848EC0D46C8AE6AD527"
+  },
+  "anchor": "\n    const main_runtime_helpers_tests = b.addTest(.{",
+  "complete_raw_inverse": true,
+  "native_execution": false
+}

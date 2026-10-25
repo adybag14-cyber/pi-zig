@@ -130,6 +130,14 @@ fn stringBody(s: *Scope, args: []const c.JSValue, error_class: c.JSValue) !c.JSV
         return a.raise(s, try s.construct(error_class, &.{a.arg(args, 1), try s.text("string"), a.arg(args, 0)}));
     return c.pi_js_undefined();
 }
+fn functionRaw(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return a.expression(engine, functionBody, .{args, roots[0]});
+}
+fn functionBody(s: *Scope, args: []const c.JSValue, error_class: c.JSValue) !c.JSValue {
+    if (!c.JS_IsFunction(s.engine.context, a.arg(args, 0)))
+        return a.raise(s, try s.construct(error_class, &.{a.arg(args, 1), try s.text("Function"), a.arg(args, 0)}));
+    return c.pi_js_undefined();
+}
 fn abortRaw(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     return a.expression(engine, abortBody, .{args, roots[0]});
 }
@@ -174,6 +182,11 @@ pub fn wrap(s: *Scope, raw: c.JSValue, error_class: c.JSValue, capture: c.JSValu
 }
 pub fn makeValidateString(s: *Scope, hidden: c.JSValue, error_class: c.JSValue, capture: c.JSValue, apply: c.JSValue) !c.JSValue {
     const raw = try s.own(try functions.create(s.engine, "", 2, false, stringRaw, &.{hidden}));
+    return wrap(s, raw, error_class, capture, apply);
+}
+/// Original internal/validators validateFunction with the shared hidden error.
+pub fn makeValidateFunction(s: *Scope, hidden: c.JSValue, error_class: c.JSValue, capture: c.JSValue, apply: c.JSValue) !c.JSValue {
+    const raw = try s.own(try functions.create(s.engine, "", 2, false, functionRaw, &.{hidden}));
     return wrap(s, raw, error_class, capture, apply);
 }
 pub fn makeValidateAbortSignal(s: *Scope, hidden: c.JSValue, error_class: c.JSValue, capture: c.JSValue, apply: c.JSValue) !c.JSValue {

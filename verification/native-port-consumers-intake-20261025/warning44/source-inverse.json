@@ -1,0 +1,20 @@
+{
+  "old_draft": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-model-scope-warning-sourceonly-20261024\\projected\\src\\extensions\\native_sdk_model_scope_warning.zig",
+    "bytes": 5962,
+    "sha256": "A73E63820E2FAC3E85B80EC6A4F141FCDD0278D55ABBACB95B234ACFB246BE14"
+  },
+  "selected_owner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-model-scope-warning-sourceonly-20261025\\projected\\src\\extensions\\native_sdk_model_scope_warning.zig",
+    "bytes": 7309,
+    "sha256": "66B0B95CB71FD3503482D9B5FBC5E30D597894EDC56033ECB71AD1F7926DFEEF"
+  },
+  "changed_region_before": "fn warning(s: *Scope, chalk: c.JSValue, diagnostic: c.JSValue) !void {\n    // Outer callee/reference first, then the live chalk method, then the\n    // template's message Get and ToString. Neither result is normalized.\n    const console = try v.global(s, \"console\");\n    const warn = try v.get(s, console, \"warn\");\n    const yellow = try v.get(s, chalk, \"yellow\");\n    const message = try v.stringify(s, try v.get(s, diagnostic, \"message\"));\n    const text = try h.binary(s, .add, try v.text(s, \"Warning: \"), message);\n    const colored = try v.call(s, yellow, chalk, &.{text});\n    _ = try v.call(s, warn, console, &.{colored});\n}\n",
+  "changed_region_after": "fn messageString(s: *Scope, diagnostic: c.JSValue) !c.JSValue {\n    // A message object is a temporary operand of the template's ToString.\n    // It must retire before the later color and console calls can observe it.\n    return v.duplicate(s, try v.stringify(s, try v.get(s, diagnostic, \"message\")));\n}\nfn warningText(s: *Scope, diagnostic: c.JSValue) !c.JSValue {\n    const prefix = try v.text(s, \"Warning: \");\n    const message = try v.own(s, try h.expression(s.engine, messageString, .{diagnostic}));\n    return v.duplicate(s, try h.binary(s, .add, prefix, message));\n}\nfn coloredWarning(s: *Scope, chalk: c.JSValue, diagnostic: c.JSValue) !c.JSValue {\n    const yellow = try v.get(s, chalk, \"yellow\");\n    const text = try v.own(s, try h.expression(s.engine, warningText, .{diagnostic}));\n    return v.duplicate(s, try v.call(s, yellow, chalk, &.{text}));\n}\nfn consoleBinding(s: *Scope) !c.JSValue {\n    var boundary: v.guest.Boundary = .{ .engine = s.engine };\n    try boundary.begin();\n    // Interning this fixed native name is allocation-only, before any guest\n    // getter. The VM helper performs the same lexical/global lookup as get_var.\n    const atom = c.JS_NewAtom(s.engine.context, \"console\");\n    if (atom == c.JS_ATOM_NULL) return boundary.finishValue(s, error.OutOfMemory);\n    defer c.JS_FreeAtom(s.engine.context, atom);\n    return boundary.finishValue(s, c.JS_PiGetGlobalBinding(s.engine.context, atom));\n}\nfn warning(s: *Scope, chalk: c.JSValue, diagnostic: c.JSValue) !void {\n    // Capture the outer callee/reference before evaluating its argument.\n    // The nested yellow call retires its own callee and argument temporaries\n    // before invoking the captured console.warn, matching the source expression.\n    const console = try consoleBinding(s);\n    const warn = try v.get(s, console, \"warn\");\n    const colored = try v.own(s, try h.expression(s.engine, coloredWarning, .{chalk, diagnostic}));\n    _ = try v.call(s, warn, console, &.{colored});\n}\n",
+  "complete_single_region_inverse": true,
+  "changes": [
+    "nested coercion/color expression retirement",
+    "exact VM global identifier lookup"
+  ],
+  "original_async_body_and_cache_code_unchanged": true
+}

@@ -1,0 +1,61 @@
+{
+  "schema": "pi-zig-source-finite-additions-v1",
+  "head": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "authorization": "Root source-only grant communicated to validation_controls for two canonical validateFunction dependency projections",
+  "scope": "No Main edits, native execution, Node capture, or source-generator execution",
+  "authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-fs-promises-mkdir-20261017\\authority\\node24-validators.js",
+    "range": [
+      461,
+      464
+    ]
+  },
+  "files": [
+    {
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_error_registration.zig",
+        "bytes": 15160,
+        "sha256": "088CCD9556A8F3CE467011FEB8B391C457E1CDE11E79CCFDD2794FE309CBEFAD"
+      },
+      "output_path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261025-controls\\validate-function-projected\\src\\extensions\\native_node_argument_error_registration.zig",
+      "insertions": [
+        {
+          "base_byte_offset": 8819,
+          "before": "fn abortRaw(",
+          "text": "fn functionRaw(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {\n    return a.expression(engine, functionBody, .{args, roots[0]});\n}\nfn functionBody(s: *Scope, args: []const c.JSValue, error_class: c.JSValue) !c.JSValue {\n    if (!c.JS_IsFunction(s.engine.context, a.arg(args, 0)))\n        return a.raise(s, try s.construct(error_class, &.{a.arg(args, 1), try s.text(\"Function\"), a.arg(args, 0)}));\n    return c.pi_js_undefined();\n}\n"
+        },
+        {
+          "base_byte_offset": 11839,
+          "before": "pub fn makeValidateAbortSignal(",
+          "text": "/// Original internal/validators validateFunction with the shared hidden error.\npub fn makeValidateFunction(s: *Scope, hidden: c.JSValue, error_class: c.JSValue, capture: c.JSValue, apply: c.JSValue) !c.JSValue {\n    const raw = try s.own(try functions.create(s.engine, \"\", 2, false, functionRaw, &.{hidden}));\n    return wrap(s, raw, error_class, capture, apply);\n}\n"
+        }
+      ]
+    },
+    {
+      "base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_errors.zig",
+        "bytes": 12154,
+        "sha256": "0394138090036A340F6B726CBB14F9E6424FF81664160B9DB115D9318E84E923"
+      },
+      "output_path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261025-controls\\validate-function-projected\\src\\extensions\\native_node_argument_errors.zig",
+      "insertions": [
+        {
+          "base_byte_offset": 7426,
+          "before": "    const validate_abort =",
+          "text": "    const validate_function = try registration.makeValidateFunction(s, hidden, inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply);\n"
+        },
+        {
+          "base_byte_offset": 8602,
+          "before": "    try s.put(record, \"validateObject\", validate_object);",
+          "text": "    try s.put(record, \"validateFunction\", validate_function);\n"
+        },
+        {
+          "base_byte_offset": 10298,
+          "before": "pub fn validateAbortSignal(",
+          "text": "pub fn validateFunction(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, \"validateFunction\")}); }\n"
+        }
+      ]
+    }
+  ],
+  "runtime_proof": null
+}

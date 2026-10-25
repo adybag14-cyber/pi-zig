@@ -57,6 +57,9 @@ pub fn create(context: *c.JSContext) !c.JSValue {
             try put(context, result, name ++ "." ++ method, try checked(c.JS_GetPropertyStr(context, prototype, method)));
             if (comptime @import("std").mem.eql(u8, name, "Array")) {
                 try put(context, result, "Array.some", try checked(c.JS_GetPropertyStr(context, prototype, "some")));
+                try put(context, result, "Array.slice", try checked(c.JS_GetPropertyStr(context, prototype, "slice")));
+                try put(context, result, "Array.indexOf", try checked(c.JS_GetPropertyStr(context, prototype, "indexOf")));
+                try put(context, result, "Array.push", try checked(c.JS_GetPropertyStr(context, prototype, "push")));
                 // Exact primordial uncurryThis: Function.prototype.call.bind(fn).
                 // Bind while the realm is pristine, before guest code can change
                 // Function metadata, Array iteration or the iterator prototype.
@@ -98,6 +101,8 @@ pub fn create(context: *c.JSContext) !c.JSValue {
             try put(context, result, "Object.defineProperty", try checked(c.JS_GetPropertyStr(context, constructor, "defineProperty")));
             try put(context, result, "Object.freeze", try checked(c.JS_GetPropertyStr(context, constructor, "freeze")));
             try put(context, result, "Object.entries", try checked(c.JS_GetPropertyStr(context, constructor, "entries")));
+            try put(context, result, "Object.getPrototypeOf", try checked(c.JS_GetPropertyStr(context, constructor, "getPrototypeOf")));
+            try put(context, result, "Object.setPrototypeOf", try checked(c.JS_GetPropertyStr(context, constructor, "setPrototypeOf")));
             const prototype = try checked(c.JS_GetPropertyStr(context, constructor, "prototype"));
             defer c.JS_FreeValue(context, prototype);
             try put(context, result, "Object.hasOwnProperty", try checked(c.JS_GetPropertyStr(context, prototype, "hasOwnProperty")));
@@ -116,6 +121,7 @@ pub fn create(context: *c.JSContext) !c.JSValue {
         }
         if (comptime @import("std").mem.eql(u8, name, "Symbol")) {
             try put(context, result, "Symbol.iterator", try checked(c.JS_GetPropertyStr(context, constructor, "iterator")));
+            try put(context, result, "Symbol.hasInstance", try checked(c.JS_GetPropertyStr(context, constructor, "hasInstance")));
         }
         if (comptime @import("std").mem.eql(u8, name, "DataView")) {
             const prototype = try checked(c.JS_GetPropertyStr(context, constructor, "prototype"));

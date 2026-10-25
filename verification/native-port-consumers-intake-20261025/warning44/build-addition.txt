@@ -1,0 +1,14 @@
+    const model_scope_warning_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_model_scope_warning_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native model scope warning"},
+    });
+    linkQuickJs(b, model_scope_warning_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, model_scope_warning_tests.root_module, typescript_parser);
+    linkSqlite(model_scope_warning_tests.root_module, sqlite_lib_dir, sqlite_library);
+    model_scope_warning_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        model_scope_warning_tests.root_module.linkSystemLibrary("advapi32", .{});
+        model_scope_warning_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-model-scope-warning", "Install actual model-scope warning controls without execution").dependOn(&b.addInstallArtifact(model_scope_warning_tests, .{ .dest_sub_path = b.fmt("native-sdk-model-scope-warning{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+

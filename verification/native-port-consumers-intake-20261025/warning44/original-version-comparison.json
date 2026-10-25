@@ -1,0 +1,30 @@
+{
+  "c268": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\sdk-owners-resume-20261018\\model-resolver.c268.ts.txt",
+    "bytes": 25183,
+    "sha256": "D624526FA0B8D66A5208C868097B8E724308130C9B5137D8ED7156DAE5548A91"
+  },
+  "selected4954": {
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\model-resolver.ts",
+    "bytes": 25178,
+    "sha256": "882BCEA5D6CE5AE37D8D8C8A4B171E3F54B0FDDE981EE1CF14B7E83ED692BE38"
+  },
+  "whole_original_diff": "--- c268\n+++ 4954\n@@ -25,7 +25,7 @@\n \tazure: \"gpt-5.4\",\n \t\"openai-codex\": \"gpt-6.1-sol\",\n \tradius: \"balanced\",\n-\tnvidia: \"nvidia/nemotron-3.5-super-vl-120b-a12b\",\n+\tnvidia: \"nvidia/nemotron-3-ultra-550b-a55b\",\n \tdeepseek: \"deepseek-v4-pro\",\n \tgoogle: \"gemini-3.1-pro-preview\",\n \t\"google-vertex\": \"gemini-3.1-pro-preview\",\n@@ -55,10 +55,10 @@\n \t\"qwen-token-plan\": \"qwen3.7-max\",\n \t\"qwen-token-plan-cn\": \"qwen3.7-max\",\n \t\"qwen-token-plan-individual\": \"qwen3.8-max\",\n-\txiaomi: \"mimo-v2.6-pro\",\n-\t\"xiaomi-token-plan-cn\": \"mimo-v2.6-pro\",\n-\t\"xiaomi-token-plan-ams\": \"mimo-v2.6-pro\",\n-\t\"xiaomi-token-plan-sgp\": \"mimo-v2.6-pro\",\n+\txiaomi: \"mimo-v2.5-pro\",\n+\t\"xiaomi-token-plan-cn\": \"mimo-v2.5-pro\",\n+\t\"xiaomi-token-plan-ams\": \"mimo-v2.5-pro\",\n+\t\"xiaomi-token-plan-sgp\": \"mimo-v2.5-pro\",\n };\n \n export interface ScopedModel {\n@@ -222,7 +222,7 @@\n \n /**\n  * `provider/rest` is only a hint: the whole text may also be a model id on another provider, such as\n- * gateway id `zai/glm-5` or commandcode id `xiaomi/mimo-v2.6-pro`. The named provider wins when usable,\n+ * gateway id `zai/glm-5` or commandcode id `xiaomi/mimo-v2.5-pro`. The named provider wins when usable,\n  * since that is what the syntax usually means; otherwise a sole usable raw match wins, since the named\n  * provider could not serve the request. An unusable named match is still preferred over unusable raw\n  * matches, so `--api-key` can set up the named provider.\n",
+  "diagnostics_wrapper_and_warning_wrapper_exact_between_versions": true,
+  "model_default_successor_already_integrated_at_base": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_factory_model.zig",
+    "bytes": 6807,
+    "sha256": "CE13D704B9C2DE36989EBD681361232E68784B4FB72F79767D28BD0048F37B02"
+  },
+  "native_lower_resolver": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_public_model_resolver.zig",
+    "bytes": 3686,
+    "sha256": "CAB9BEF1FA3FAF51E125C606D9DCDDA6954FF5CC7B6BB6B852BDAC03E1AA94FD"
+  },
+  "native_lower_scope": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_public_model_scope.zig",
+    "bytes": 14514,
+    "sha256": "699B2D643A0DC2A81F15740BF944CED083D67BCED55EDE3C0C5ECA67DF171402"
+  },
+  "runtime_requalification_required": true
+}

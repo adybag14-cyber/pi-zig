@@ -1,0 +1,1702 @@
+diff --git a/build.zig b/build.zig
+--- a/build.zig
++++ b/build.zig
+@@ -1982,6 +1982,20 @@
+         node_abort_uncaught_toggle.root_module.linkSystemLibrary("userenv", .{});
+     }
+     b.step("build-native-node-abort-uncaught-toggle", "Install five actual Environment abort-toggle controls without running").dependOn(&b.addInstallArtifact(node_abort_uncaught_toggle, .{ .dest_sub_path = b.fmt("native-node-abort-uncaught-toggle{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
++
++    const diagnostics_channel_core_tests = b.addTest(.{
++        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_diagnostics_channel_core_test.zig"), .target = target, .optimize = optimize }),
++        .filters = &.{"native diagnostics core"},
++    });
++    linkQuickJs(b, diagnostics_channel_core_tests.root_module, quickjs, sqlite_lib_dir);
++    linkTypeScriptParser(b, diagnostics_channel_core_tests.root_module, typescript_parser);
++    linkSqlite(diagnostics_channel_core_tests.root_module, sqlite_lib_dir, sqlite_library);
++    diagnostics_channel_core_tests.root_module.addImport("catalog_tool", catalog_tool);
++    if (target.result.os.tag == .windows) {
++        diagnostics_channel_core_tests.root_module.linkSystemLibrary("advapi32", .{});
++        diagnostics_channel_core_tests.root_module.linkSystemLibrary("userenv", .{});
++    }
++    b.step("build-native-node-diagnostics-channel-core", "Install 47 complete Channel core controls without execution").dependOn(&b.addInstallArtifact(diagnostics_channel_core_tests, .{ .dest_sub_path = b.fmt("native-node-diagnostics-channel-core{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+ 
+     const main_runtime_helpers_tests = b.addTest(.{
+         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_main_runtime_helpers_test.zig"), .target = target, .optimize = optimize }),
+diff --git a/src/extensions/native_clone_intrinsics.zig b/src/extensions/native_clone_intrinsics.zig
+--- a/src/extensions/native_clone_intrinsics.zig
++++ b/src/extensions/native_clone_intrinsics.zig
+@@ -57,6 +57,9 @@
+             try put(context, result, name ++ "." ++ method, try checked(c.JS_GetPropertyStr(context, prototype, method)));
+             if (comptime @import("std").mem.eql(u8, name, "Array")) {
+                 try put(context, result, "Array.some", try checked(c.JS_GetPropertyStr(context, prototype, "some")));
++                try put(context, result, "Array.slice", try checked(c.JS_GetPropertyStr(context, prototype, "slice")));
++                try put(context, result, "Array.indexOf", try checked(c.JS_GetPropertyStr(context, prototype, "indexOf")));
++                try put(context, result, "Array.push", try checked(c.JS_GetPropertyStr(context, prototype, "push")));
+                 // Exact primordial uncurryThis: Function.prototype.call.bind(fn).
+                 // Bind while the realm is pristine, before guest code can change
+                 // Function metadata, Array iteration or the iterator prototype.
+@@ -98,6 +101,8 @@
+             try put(context, result, "Object.defineProperty", try checked(c.JS_GetPropertyStr(context, constructor, "defineProperty")));
+             try put(context, result, "Object.freeze", try checked(c.JS_GetPropertyStr(context, constructor, "freeze")));
+             try put(context, result, "Object.entries", try checked(c.JS_GetPropertyStr(context, constructor, "entries")));
++            try put(context, result, "Object.getPrototypeOf", try checked(c.JS_GetPropertyStr(context, constructor, "getPrototypeOf")));
++            try put(context, result, "Object.setPrototypeOf", try checked(c.JS_GetPropertyStr(context, constructor, "setPrototypeOf")));
+             const prototype = try checked(c.JS_GetPropertyStr(context, constructor, "prototype"));
+             defer c.JS_FreeValue(context, prototype);
+             try put(context, result, "Object.hasOwnProperty", try checked(c.JS_GetPropertyStr(context, prototype, "hasOwnProperty")));
+@@ -116,6 +121,7 @@
+         }
+         if (comptime @import("std").mem.eql(u8, name, "Symbol")) {
+             try put(context, result, "Symbol.iterator", try checked(c.JS_GetPropertyStr(context, constructor, "iterator")));
++            try put(context, result, "Symbol.hasInstance", try checked(c.JS_GetPropertyStr(context, constructor, "hasInstance")));
+         }
+         if (comptime @import("std").mem.eql(u8, name, "DataView")) {
+             const prototype = try checked(c.JS_GetPropertyStr(context, constructor, "prototype"));
+diff --git a/src/extensions/native_node_argument_error_registration.zig b/src/extensions/native_node_argument_error_registration.zig
+--- a/src/extensions/native_node_argument_error_registration.zig
++++ b/src/extensions/native_node_argument_error_registration.zig
+@@ -130,6 +130,14 @@
+         return a.raise(s, try s.construct(error_class, &.{a.arg(args, 1), try s.text("string"), a.arg(args, 0)}));
+     return c.pi_js_undefined();
+ }
++fn functionRaw(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
++    return a.expression(engine, functionBody, .{args, roots[0]});
++}
++fn functionBody(s: *Scope, args: []const c.JSValue, error_class: c.JSValue) !c.JSValue {
++    if (!c.JS_IsFunction(s.engine.context, a.arg(args, 0)))
++        return a.raise(s, try s.construct(error_class, &.{a.arg(args, 1), try s.text("Function"), a.arg(args, 0)}));
++    return c.pi_js_undefined();
++}
+ fn abortRaw(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+     return a.expression(engine, abortBody, .{args, roots[0]});
+ }
+@@ -176,6 +184,11 @@
+     const raw = try s.own(try functions.create(s.engine, "", 2, false, stringRaw, &.{hidden}));
+     return wrap(s, raw, error_class, capture, apply);
+ }
++/// Original internal/validators validateFunction with the shared hidden error.
++pub fn makeValidateFunction(s: *Scope, hidden: c.JSValue, error_class: c.JSValue, capture: c.JSValue, apply: c.JSValue) !c.JSValue {
++    const raw = try s.own(try functions.create(s.engine, "", 2, false, functionRaw, &.{hidden}));
++    return wrap(s, raw, error_class, capture, apply);
++}
+ pub fn makeValidateAbortSignal(s: *Scope, hidden: c.JSValue, error_class: c.JSValue, capture: c.JSValue, apply: c.JSValue) !c.JSValue {
+     const raw = try s.own(try functions.create(s.engine, "", 2, false, abortRaw, &.{hidden}));
+     return wrap(s, raw, error_class, capture, apply);
+diff --git a/src/extensions/native_node_argument_errors.zig b/src/extensions/native_node_argument_errors.zig
+--- a/src/extensions/native_node_argument_errors.zig
++++ b/src/extensions/native_node_argument_errors.zig
+@@ -136,6 +136,7 @@
+     const hidden_value = try registration.hide(s, value, inputs.type_error, inputs.error_constructor);
+     const assertion_class = try registration.register(s, inputs.error_constructor, "ERR_INTERNAL_ASSERTION", inputs.internal_assertion_message, inputs.marker, inputs.assert_function, inputs.reflect_apply);
+     const validate_string = try registration.makeValidateString(s, hidden, inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply);
++    const validate_function = try registration.makeValidateFunction(s, hidden, inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply);
+     const validate_abort = try registration.makeValidateAbortSignal(s, hidden, inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply);
+     // Reuse the real primordial already captured by this actual message owner.
+     // No late global Array read or alternate argument-error graph is introduced.
+@@ -146,6 +147,7 @@
+     try s.put(record, "type", argument); try s.put(record, "hidden", hidden); try s.put(record, "value", value);
+     try s.put(record, "hiddenValue", hidden_value); try s.put(record, "rangeValue", range); try s.put(record, "hiddenRangeValue", hidden_range);
+     try s.put(record, "assertion", assertion_class); try s.put(record, "validateString", validate_string); try s.put(record, "validateAbortSignal", validate_abort);
++    try s.put(record, "validateFunction", validate_function);
+     try s.put(record, "validateObject", validate_object);
+     const range_message = try s.own(try argument_range.makeMessage(s, message_roots[0]));
+     const out_of_range_class = try registration.register(s, inputs.range_error, "ERR_OUT_OF_RANGE",
+@@ -168,6 +170,7 @@
+ pub fn hiddenValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "hiddenValue")}); }
+ pub fn rangeValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "rangeValue")}); }
+ pub fn hiddenRangeValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "hiddenRangeValue")}); }
++pub fn validateFunction(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "validateFunction")}); }
+ pub fn validateAbortSignal(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "validateAbortSignal")}); }
+ pub fn validateObject(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "validateObject")}); }
+ pub fn outOfRange(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "outOfRange")}); }
+diff --git a/src/extensions/native_node_diagnostics_channel_core.zig b/src/extensions/native_node_diagnostics_channel_core.zig
+new file mode 100644
+--- /dev/null
++++ b/src/extensions/native_node_diagnostics_channel_core.zig
+@@ -0,0 +1,636 @@
++// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
++//! Complete diagnostics_channel Channel/ActiveChannel and public registry core.
++//! One canonical weak registry per Engine. TracingChannel and public module
++//! admission remain separate work; this owner publishes no partial namespace.
++//! Actual process/uncaught-error/util bindings are mandatory explicit inputs.
++const std = @import("std");
++const a = @import("native_node_argument_values.zig");
++const c = a.c;
++const functions = @import("native_node_module_callable.zig");
++const classes = @import("native_node_error_class.zig");
++const collections = @import("native_node_fs_collections.zig");
++const weak_maps = @import("native_node_weak_ref_map.zig");
++const errors = @import("native_node_argument_errors.zig");
++const publication = @import("native_node_fs_private_publication.zig");
++const Iterator = @import("native_public_values.zig").Iterator;
++const caught = @import("native_agent_af_values.zig").caught;
++const key = "pi-native:private/diagnostics-channel-core";
++const Assembly = struct { engine: *a.v.em.Engine, previous: ?*const Assembly };
++threadlocal var assembling: ?*const Assembly = null;
++
++pub const Inputs = struct {
++    process: c.JSValue,
++    trigger_uncaught_exception: c.JSValue,
++    weak_reference: c.JSValue,
++};
++
++fn callField(s: *a.Scope, receiver: c.JSValue, name: [*:0]const u8,
++    args: []const c.JSValue) !c.JSValue
++{
++    const method = try s.get(receiver, name);
++    return a.duplicate(s.engine, try s.call(method, receiver, args));
++}
++fn discardField(s: *a.Scope, receiver: c.JSValue, name: [*:0]const u8,
++    args: []const c.JSValue) !c.JSValue
++{
++    _ = try s.call(try s.get(receiver, name), receiver, args);
++    return c.pi_js_undefined();
++}
++fn assign(s: *a.Scope, receiver: c.JSValue, name: [*:0]const u8,
++    value: c.JSValue) !c.JSValue
++{
++    try s.put(receiver, name, value);
++    return c.pi_js_undefined();
++}
++fn prototypeChange(s: *a.Scope, state: c.JSValue, receiver: c.JSValue,
++    name: [*:0]const u8) !c.JSValue
++{
++    _ = try s.call(try s.get(state, "setPrototypeOf"), c.pi_js_undefined(),
++        &.{receiver, try s.get(try s.get(state, name), "prototype")});
++    return c.pi_js_undefined();
++}
++fn emptySubscribers(s: *a.Scope, receiver: c.JSValue) !c.JSValue {
++    try s.put(receiver, "_subscribers", try a.array(s));
++    return c.pi_js_undefined();
++}
++fn emptyStores(s: *a.Scope, state: c.JSValue, receiver: c.JSValue) !c.JSValue {
++    try s.put(receiver, "_stores", try s.construct(try s.get(state, "SafeMap"), &.{}));
++    return c.pi_js_undefined();
++}
++fn markActive(engine: *a.v.em.Engine, state: c.JSValue, receiver: c.JSValue) !void {
++    _ = try a.expression(engine, prototypeChange, .{state, receiver, @as([*:0]const u8, "ActiveChannel")});
++    _ = try a.expression(engine, emptySubscribers, .{receiver});
++    _ = try a.expression(engine, emptyStores, .{state, receiver});
++}
++fn nonemptyField(s: *a.Scope, receiver: c.JSValue, field: [*:0]const u8,
++    property: [*:0]const u8) !c.JSValue
++{
++    return a.boolean(s, s.truthy(try s.get(try s.get(receiver, field), property)));
++}
++fn maybeMarkInactive(engine: *a.v.em.Engine, state: c.JSValue, receiver: c.JSValue) !void {
++    if (try a.condition(engine, nonemptyField,
++        .{receiver, @as([*:0]const u8, "_subscribers"), @as([*:0]const u8, "length")})) return;
++    if (try a.condition(engine, nonemptyField,
++        .{receiver, @as([*:0]const u8, "_stores"), @as([*:0]const u8, "size")})) return;
++    _ = try a.expression(engine, prototypeChange, .{state, receiver, @as([*:0]const u8, "Channel")});
++    _ = try a.expression(engine, assign, .{receiver, @as([*:0]const u8, "_subscribers"), c.pi_js_undefined()});
++    _ = try a.expression(engine, assign, .{receiver, @as([*:0]const u8, "_stores"), c.pi_js_undefined()});
++}
++fn registryRef(s: *a.Scope, state: c.JSValue, receiver: c.JSValue,
++    name: [*:0]const u8) !c.JSValue
++{
++    const registry = try s.get(state, "channels");
++    const method = try s.get(registry, name);
++    _ = try s.call(method, registry, &.{try s.get(receiver, "name")});
++    return c.pi_js_undefined();
++}
++
++fn defaultTransform(engine: *a.v.em.Engine, _: c.JSValue,
++    args: []const c.JSValue, _: []const c.JSValue) !c.JSValue
++{
++    try engine.checkNativeEntry();
++    return a.duplicate(engine, a.arg(args, 0));
++}
++fn lateError(engine: *a.v.em.Engine, _: c.JSValue,
++    _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    return a.expression(engine, lateErrorBody, .{roots[0], roots[1]});
++}
++fn lateErrorBody(s: *a.Scope, trigger: c.JSValue, reason: c.JSValue) !c.JSValue {
++    // The actual native binding is called, with original false origin flag.
++    // No JS_Throw, replacement Error or private pending-error island is used.
++    _ = try s.call(trigger, c.pi_js_undefined(), &.{reason, a.boolean(s, false)});
++    return c.pi_js_undefined();
++}
++fn scheduleError(s: *a.Scope, state: c.JSValue, reason: c.JSValue) !c.JSValue {
++    const process = try s.get(state, "process");
++    const next_tick = try s.get(process, "nextTick");
++    const trigger = try s.get(state, "trigger_uncaught_exception");
++    const callback = try s.own(try functions.create(s.engine, "", 0, false,
++        lateError, &.{trigger, reason}));
++    _ = try s.call(next_tick, process, &.{callback});
++    return c.pi_js_undefined();
++}
++
++fn validateSubscription(s: *a.Scope, state: c.JSValue, subscription: c.JSValue) !c.JSValue {
++    _ = try s.call(try s.get(state, "validateFunction"), c.pi_js_undefined(),
++        &.{subscription, try s.text("subscription")});
++    return c.pi_js_undefined();
++}
++fn subscriberCopy(s: *a.Scope, state: c.JSValue, receiver: c.JSValue) !c.JSValue {
++    return a.duplicate(s.engine, try s.call(try s.get(state, "slice"),
++        try s.get(receiver, "_subscribers"), &.{}));
++}
++fn copySubscribers(s: *a.Scope, state: c.JSValue, receiver: c.JSValue) !c.JSValue {
++    // The nested call's callee/argument temporaries retire before the outer
++    // assignment can invoke a receiver setter.
++    const value = try s.own(try a.expression(s.engine, subscriberCopy, .{state, receiver}));
++    try s.put(receiver, "_subscribers", value);
++    return c.pi_js_undefined();
++}
++fn pushSubscriber(s: *a.Scope, state: c.JSValue, receiver: c.JSValue,
++    subscription: c.JSValue) !c.JSValue
++{
++    _ = try s.call(try s.get(state, "push"),
++        try s.get(receiver, "_subscribers"), &.{subscription});
++    return c.pi_js_undefined();
++}
++fn activeSubscribe(engine: *a.v.em.Engine, receiver: c.JSValue,
++    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    _ = try a.expression(engine, validateSubscription, .{roots[0], a.arg(args, 0)});
++    _ = try a.expression(engine, copySubscribers, .{roots[0], receiver});
++    _ = try a.expression(engine, pushSubscriber, .{roots[0], receiver, a.arg(args, 0)});
++    _ = try a.expression(engine, registryRef, .{roots[0], receiver, @as([*:0]const u8, "incRef")});
++    return c.pi_js_undefined();
++}
++fn subscriberIndex(s: *a.Scope, state: c.JSValue, receiver: c.JSValue,
++    subscription: c.JSValue) !c.JSValue
++{
++    return a.duplicate(s.engine, try s.call(try s.get(state, "indexOf"),
++        try s.get(receiver, "_subscribers"), &.{subscription}));
++}
++fn subscriberSlice(s: *a.Scope, state: c.JSValue, receiver: c.JSValue,
++    index: c.JSValue, comptime after: bool) !c.JSValue
++{
++    const slice = try s.get(state, "slice");
++    const subscribers = try s.get(receiver, "_subscribers");
++    return a.duplicate(s.engine, if (after)
++        try s.call(slice, subscribers, &.{try a.add(s, index, c.JS_NewInt32(s.engine.context, 1))})
++    else
++        try s.call(slice, subscribers, &.{c.JS_NewInt32(s.engine.context, 0), index}));
++}
++fn pushAfter(s: *a.Scope, state: c.JSValue, receiver: c.JSValue,
++    after: c.JSValue) !c.JSValue
++{
++    // Primordial ArrayPrototypePushApply is the captured ReflectApply over the
++    // captured push and the actual array-like after value, never JS spread.
++    const target = try s.get(receiver, "_subscribers");
++    _ = try s.call(try s.get(state, "apply"), c.pi_js_undefined(),
++        &.{try s.get(state, "push"), target, after});
++    return c.pi_js_undefined();
++}
++fn activeUnsubscribe(engine: *a.v.em.Engine, receiver: c.JSValue,
++    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    return a.expression(engine, activeUnsubscribeBody, .{roots[0], receiver, a.arg(args, 0)});
++}
++fn activeUnsubscribeBody(s: *a.Scope, state: c.JSValue, receiver: c.JSValue,
++    subscription: c.JSValue) !c.JSValue
++{
++    const index = try s.own(try a.expression(s.engine, subscriberIndex, .{state, receiver, subscription}));
++    if (s.equal(index, c.JS_NewInt32(s.engine.context, -1))) return a.boolean(s, false);
++    const before = try s.own(try a.expression(s.engine, subscriberSlice, .{state, receiver, index, false}));
++    const after = try s.own(try a.expression(s.engine, subscriberSlice, .{state, receiver, index, true}));
++    _ = try a.expression(s.engine, assign, .{receiver, @as([*:0]const u8, "_subscribers"), before});
++    _ = try a.expression(s.engine, pushAfter, .{state, receiver, after});
++    _ = try a.expression(s.engine, registryRef, .{state, receiver, @as([*:0]const u8, "decRef")});
++    try maybeMarkInactive(s.engine, state, receiver);
++    return a.boolean(s, true);
++}
++fn storeOperation(s: *a.Scope, receiver: c.JSValue, method: [*:0]const u8,
++    args: []const c.JSValue) !c.JSValue
++{
++    return callField(s, try s.get(receiver, "_stores"), method, args);
++}
++fn discardStoreOperation(s: *a.Scope, receiver: c.JSValue, method: [*:0]const u8,
++    args: []const c.JSValue) !c.JSValue
++{
++    return discardField(s, try s.get(receiver, "_stores"), method, args);
++}
++fn activeBind(engine: *a.v.em.Engine, receiver: c.JSValue,
++    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    return a.expression(engine, activeBindBody, .{roots[0], receiver, a.arg(args, 0), a.arg(args, 1)});
++}
++fn activeBindBody(s: *a.Scope, state: c.JSValue, receiver: c.JSValue,
++    store: c.JSValue, transform: c.JSValue) !c.JSValue
++{
++    // Keep the original replacing binding, including a possible object from
++    // a live custom has method, until this method's lexical scope ends.
++    const replacing = try s.own(try a.expression(s.engine, storeOperation,
++        .{receiver, @as([*:0]const u8, "has"), @as([]const c.JSValue, &.{store})}));
++    if (!s.truthy(replacing))
++        _ = try a.expression(s.engine, registryRef, .{state, receiver, @as([*:0]const u8, "incRef")});
++    _ = try a.expression(s.engine, discardStoreOperation,
++        .{receiver, @as([*:0]const u8, "set"), @as([]const c.JSValue, &.{store, transform})});
++    return c.pi_js_undefined();
++}
++fn storeHas(s: *a.Scope, receiver: c.JSValue, store: c.JSValue) !c.JSValue {
++    const stores = try s.get(receiver, "_stores");
++    return a.boolean(s, s.truthy(try s.call(try s.get(stores, "has"), stores, &.{store})));
++}
++fn activeUnbind(engine: *a.v.em.Engine, receiver: c.JSValue,
++    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    if (!try a.condition(engine, storeHas, .{receiver, a.arg(args, 0)}))
++        return c.JS_NewBool(engine.context, false);
++    _ = try a.expression(engine, discardStoreOperation,
++        .{receiver, @as([*:0]const u8, "delete"), @as([]const c.JSValue, &.{a.arg(args, 0)})});
++    _ = try a.expression(engine, registryRef, .{roots[0], receiver, @as([*:0]const u8, "decRef")});
++    try maybeMarkInactive(engine, roots[0], receiver);
++    return c.JS_NewBool(engine.context, true);
++}
++fn activeHas(engine: *a.v.em.Engine, _: c.JSValue,
++    _: []const c.JSValue, _: []const c.JSValue) !c.JSValue
++{
++    try engine.checkNativeEntry();
++    return c.JS_NewBool(engine.context, true);
++}
++fn publishCondition(s: *a.Scope, subscribers: c.JSValue, index: f64) !c.JSValue {
++    const length = if (c.JS_IsNull(subscribers) or c.JS_IsUndefined(subscribers))
++        c.pi_js_undefined() else try s.get(subscribers, "length");
++    const right = if (s.truthy(length)) length else c.JS_NewInt32(s.engine.context, 0);
++    return a.boolean(s, s.truthy(try s.binary(4, c.JS_NewFloat64(s.engine.context, index), right)));
++}
++const PublishFrame = a.frames.Frame(enum { subscribers, on_message, reason });
++fn messageAt(s: *a.Scope, subscribers: c.JSValue, index: f64) !c.JSValue {
++    return a.duplicate(s.engine, try s.getKey(subscribers, c.JS_NewFloat64(s.engine.context, index)));
++}
++fn callMessage(s: *a.Scope, receiver: c.JSValue, on_message: c.JSValue,
++    data: c.JSValue) !c.JSValue
++{
++    _ = try s.call(on_message, c.pi_js_undefined(), &.{data, try s.get(receiver, "name")});
++    return c.pi_js_undefined();
++}
++fn publishOne(engine: *a.v.em.Engine, frame: *PublishFrame, receiver: c.JSValue,
++    data: c.JSValue, index: f64) !void
++{
++    // The old local survives the preceding loop condition. Entering the next
++    // try block resets it before the indexed Get, exactly OP_enter_scope.
++    try frame.clear(.on_message);
++    try frame.take(.on_message, a.expression(engine, messageAt, .{frame.get(.subscribers), index}));
++    _ = try a.expression(engine, callMessage, .{receiver, frame.get(.on_message), data});
++}
++fn activePublish(engine: *a.v.em.Engine, receiver: c.JSValue,
++    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    var s = a.Scope.init(engine);
++    const frame = PublishFrame.create(&s.values) catch |err| return s.finish(err);
++    return a.finishFrame(&s, frame, activePublishBody(&s, frame, roots[0], receiver, a.arg(args, 0)));
++}
++fn activePublishBody(s: *a.Scope, frame: *PublishFrame, state: c.JSValue,
++    receiver: c.JSValue, data: c.JSValue) !c.JSValue
++{
++    try frame.take(.subscribers, a.field(s.engine, receiver, "_subscribers"));
++    var index: f64 = 0;
++    var steps: usize = 0;
++    while (try a.condition(s.engine, publishCondition, .{frame.get(.subscribers), index})) : (index += 1) {
++        try @import("native_public_values.zig").poll(s.engine, &steps);
++        publishOne(s.engine, frame, receiver, data, index) catch |err| {
++            // The source catch local survives close_scope after its callback
++            // captures it, including a nextTick override that drops the callback.
++            try frame.take(.reason, caught(s.engine, err));
++            _ = try a.expression(s.engine, scheduleError, .{state, frame.get(.reason)});
++            continue;
++        };
++    }
++    return c.pi_js_undefined();
++}
++
++fn rest(s: *a.Scope, args: []const c.JSValue) !c.JSValue {
++    const values = if (args.len > 3) args[3..] else &.{};
++    const generation = try s.beforeAllocation();
++    return a.duplicate(s.engine, try s.checkedAllocation(
++        c.JS_PiCreateRestArray(s.engine.context, @intCast(values.len), @constCast(values.ptr)), generation));
++}
++fn runBase(engine: *a.v.em.Engine, _: c.JSValue,
++    _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    _ = try a.expression(engine, discardField,
++        .{roots[1], @as([*:0]const u8, "publish"), @as([]const c.JSValue, &.{roots[2]})});
++    return a.expression(engine, applyRest, .{roots[0], roots[3], roots[4], roots[5]});
++}
++fn applyRest(s: *a.Scope, state: c.JSValue, function: c.JSValue,
++    receiver: c.JSValue, args: c.JSValue) !c.JSValue
++{
++    return a.duplicate(s.engine, try s.call(try s.get(state, "apply"),
++        c.pi_js_undefined(), &.{function, receiver, args}));
++}
++fn wrappedStore(engine: *a.v.em.Engine, _: c.JSValue,
++    _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    return a.expression(engine, wrappedStoreBody, .{roots});
++}
++fn wrappedStoreBody(s: *a.Scope, roots: []const c.JSValue) !c.JSValue {
++    const context = try s.own(a.call(s.engine, roots[4], c.pi_js_undefined(), &.{roots[2]}) catch |err| {
++        const reason = try s.own(try caught(s.engine, err));
++        _ = try a.expression(s.engine, scheduleError, .{roots[0], reason});
++        return a.call(s.engine, roots[3], c.pi_js_undefined(), &.{});
++    });
++    return a.expression(s.engine, callField,
++        .{roots[1], @as([*:0]const u8, "run"), @as([]const c.JSValue, &.{context, roots[3]})});
++}
++const RunFrame = a.frames.Frame(enum { args, run, entry, store, transform });
++fn wrapStore(s: *a.Scope, state: c.JSValue, store: c.JSValue,
++    data: c.JSValue, next: c.JSValue, supplied: c.JSValue) !c.JSValue
++{
++    const transform = if (c.JS_IsUndefined(supplied)) try s.get(state, "defaultTransform") else supplied;
++    return functions.create(s.engine, "", 0, false, wrappedStore,
++        &.{state, store, data, next, transform});
++}
++fn storeEntries(s: *a.Scope, receiver: c.JSValue) !c.JSValue {
++    return callField(s, try s.get(receiver, "_stores"), "entries", &.{});
++}
++fn wrapEntries(engine: *a.v.em.Engine, state: c.JSValue, frame: *RunFrame,
++    data: c.JSValue, iterator: *Iterator) !void
++{
++    while (try iterator.next()) |entry| {
++        try frame.take(.entry, entry);
++        // Block-local slots reset on the next body entry, not after a prior
++        // body or before iterator.next. Retain successful store Get through
++        // a failing transform Get and the resulting IteratorClose.
++        try frame.clear(.store);
++        try frame.clear(.transform);
++        try frame.take(.store, a.field(engine, frame.get(.entry), "0"));
++        try frame.take(.transform, a.field(engine, frame.get(.entry), "1"));
++        try frame.take(.run, a.expression(engine, wrapStore,
++            .{state, frame.get(.store), data, frame.get(.run), frame.get(.transform)}));
++    }
++}
++fn activeRun(engine: *a.v.em.Engine, receiver: c.JSValue,
++    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    var s = a.Scope.init(engine);
++    const frame = RunFrame.create(&s.values) catch |err| return s.finish(err);
++    return a.finishFrame(&s, frame, activeRunBody(&s, frame, roots[0], receiver, args));
++}
++fn activeRunBody(s: *a.Scope, frame: *RunFrame, state: c.JSValue,
++    receiver: c.JSValue, args: []const c.JSValue) !c.JSValue
++{
++    try frame.take(.args, a.expression(s.engine, rest, .{args}));
++    try frame.take(.run, functions.create(s.engine, "run", 0, false, runBase,
++        &.{state, receiver, a.arg(args, 0), a.arg(args, 1), a.arg(args, 2), frame.get(.args)}));
++    var iterator = try Iterator.initOwned(s.engine, try a.expression(s.engine, storeEntries, .{receiver}));
++    try iterator.finish(wrapEntries(s.engine, state, frame, a.arg(args, 0), &iterator));
++    return a.call(s.engine, frame.get(.run), c.pi_js_undefined(), &.{});
++}
++
++fn inactiveSubscribe(engine: *a.v.em.Engine, receiver: c.JSValue,
++    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    try markActive(engine, roots[0], receiver);
++    _ = try a.expression(engine, discardField,
++        .{receiver, @as([*:0]const u8, "subscribe"), @as([]const c.JSValue, &.{a.arg(args, 0)})});
++    return c.pi_js_undefined();
++}
++fn inactiveBind(engine: *a.v.em.Engine, receiver: c.JSValue,
++    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    try markActive(engine, roots[0], receiver);
++    _ = try a.expression(engine, discardField,
++        .{receiver, @as([*:0]const u8, "bindStore"), @as([]const c.JSValue, &.{a.arg(args, 0), a.arg(args, 1)})});
++    return c.pi_js_undefined();
++}
++fn inactiveFalse(engine: *a.v.em.Engine, _: c.JSValue,
++    _: []const c.JSValue, _: []const c.JSValue) !c.JSValue
++{
++    try engine.checkNativeEntry();
++    return c.JS_NewBool(engine.context, false);
++}
++fn inactivePublish(engine: *a.v.em.Engine, _: c.JSValue,
++    _: []const c.JSValue, _: []const c.JSValue) !c.JSValue
++{
++    // This no-op is the actual original inactive Channel.publish declaration.
++    try engine.checkNativeEntry();
++    return c.pi_js_undefined();
++}
++fn inactiveRun(engine: *a.v.em.Engine, _: c.JSValue,
++    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    return a.expression(engine, inactiveRunBody, .{roots[0], args});
++}
++fn inactiveRunBody(s: *a.Scope, state: c.JSValue, args: []const c.JSValue) !c.JSValue {
++    const rest_args = try s.own(try a.expression(s.engine, rest, .{args}));
++    return a.expression(s.engine, applyRest, .{state, a.arg(args, 1), a.arg(args, 2), rest_args});
++}
++fn baseObject(s: *a.Scope, target: c.JSValue) !c.JSValue {
++    try s.pending();
++    const prototype = try s.checked(c.JS_PiGetObjectPrototypeFromConstructor(s.engine.context, target));
++    return a.duplicate(s.engine, try s.objectProto(prototype));
++}
++fn activeConstruct(engine: *a.v.em.Engine, _: c.JSValue, target: c.JSValue,
++    _: []const c.JSValue, _: []const c.JSValue) !c.JSValue
++{
++    return a.expression(engine, baseObject, .{target});
++}
++fn channelConstruct(engine: *a.v.em.Engine, _: c.JSValue, target: c.JSValue,
++    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    return a.expression(engine, channelConstructBody, .{target, a.arg(args, 0), roots[0]});
++}
++fn channelConstructBody(s: *a.Scope, target: c.JSValue, name: c.JSValue,
++    state: c.JSValue) !c.JSValue
++{
++    const receiver = try s.own(try a.expression(s.engine, baseObject, .{target}));
++    _ = try a.expression(s.engine, assign, .{receiver, @as([*:0]const u8, "_subscribers"), c.pi_js_undefined()});
++    _ = try a.expression(s.engine, assign, .{receiver, @as([*:0]const u8, "_stores"), c.pi_js_undefined()});
++    _ = try a.expression(s.engine, assign, .{receiver, @as([*:0]const u8, "name"), name});
++    _ = try a.expression(s.engine, registerChannel, .{state, name, receiver});
++    return a.duplicate(s.engine, receiver);
++}
++fn registerChannel(s: *a.Scope, state: c.JSValue, name: c.JSValue,
++    receiver: c.JSValue) !c.JSValue
++{
++    return discardField(s, try s.get(state, "channels"), "set", &.{name, receiver});
++}
++fn hasInstance(engine: *a.v.em.Engine, _: c.JSValue,
++    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    return a.expression(engine, hasInstanceBody, .{roots[0], a.arg(args, 0)});
++}
++fn hasInstanceBody(s: *a.Scope, state: c.JSValue, instance: c.JSValue) !c.JSValue {
++    const prototype = try s.own(try a.call(s.engine, try s.get(state, "getPrototypeOf"),
++        c.pi_js_undefined(), &.{instance}));
++    if (s.equal(prototype, try s.get(try s.get(state, "Channel"), "prototype"))) return a.boolean(s, true);
++    return a.boolean(s, s.equal(prototype, try s.get(try s.get(state, "ActiveChannel"), "prototype")));
++}
++fn registryGet(s: *a.Scope, state: c.JSValue, name: c.JSValue) !c.JSValue {
++    return callField(s, try s.get(state, "channels"), "get", &.{name});
++}
++fn publicChannel(engine: *a.v.em.Engine, _: c.JSValue,
++    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    return a.expression(engine, channelBody, .{roots[0], a.arg(args, 0)});
++}
++fn channelBody(s: *a.Scope, state: c.JSValue, name: c.JSValue) !c.JSValue {
++    const channel = try s.own(try a.expression(s.engine, registryGet, .{state, name}));
++    if (s.truthy(channel)) return a.duplicate(s.engine, channel);
++    if (!c.JS_IsString(name) and !c.JS_IsSymbol(name)) {
++        const expected = try a.array(s);
++        try a.index(s, expected, 0, try s.text("string"));
++        try a.index(s, expected, 1, try s.text("symbol"));
++        return a.raise(s, try s.construct(try s.get(state, "ERR_INVALID_ARG_TYPE"),
++            &.{try s.text("channel"), expected, name}));
++    }
++    return a.duplicate(s.engine, try s.construct(try s.get(state, "Channel"), &.{name}));
++}
++fn publicSubscribe(engine: *a.v.em.Engine, _: c.JSValue,
++    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    return a.expression(engine, forwardPublic, .{roots[0], args, @as([*:0]const u8, "subscribe")});
++}
++fn publicUnsubscribe(engine: *a.v.em.Engine, _: c.JSValue,
++    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    return a.expression(engine, forwardPublic, .{roots[0], args, @as([*:0]const u8, "unsubscribe")});
++}
++fn forwardPublic(s: *a.Scope, state: c.JSValue, args: []const c.JSValue,
++    method: [*:0]const u8) !c.JSValue
++{
++    const channel = try s.own(try a.expression(s.engine, channelBody, .{state, a.arg(args, 0)}));
++    return callField(s, channel, method, &.{a.arg(args, 1)});
++}
++fn publicHas(engine: *a.v.em.Engine, _: c.JSValue,
++    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
++{
++    return a.expression(engine, publicHasBody, .{roots[0], a.arg(args, 0)});
++}
++fn publicHasBody(s: *a.Scope, state: c.JSValue, name: c.JSValue) !c.JSValue {
++    const channel = try s.own(try a.expression(s.engine, registryGet, .{state, name}));
++    if (!s.truthy(channel)) return a.boolean(s, false);
++    return a.duplicate(s.engine, try s.get(channel, "hasSubscribers"));
++}
++
++fn getter(s: *a.Scope, target: c.JSValue, callback: functions.Callback) !void {
++    const function = try s.own(try functions.create(s.engine, "get hasSubscribers", 0, false, callback, &.{}));
++    const generation = try s.beforeAllocation();
++    const atom = c.JS_NewAtom(s.engine.context, "hasSubscribers");
++    defer if (atom != c.JS_ATOM_NULL) c.JS_FreeAtom(s.engine.context, atom);
++    try s.boundary.checkPendingSince(generation);
++    if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
++    try s.pending();
++    const status = c.JS_DefinePropertyGetSet(s.engine.context, target, atom,
++        a.duplicate(s.engine, function), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_THROW);
++    try s.pending();
++    if (status < 0) return error.MissingActualChannelGetterReason;
++}
++fn symbolMethod(s: *a.Scope, target: c.JSValue, symbol: c.JSValue,
++    method: c.JSValue) !void
++{
++    try s.pending();
++    const atom = c.JS_ValueToAtom(s.engine.context, symbol);
++    defer if (atom != c.JS_ATOM_NULL) c.JS_FreeAtom(s.engine.context, atom);
++    try s.pending();
++    if (atom == c.JS_ATOM_NULL) return error.MissingActualChannelSymbolReason;
++    const status = c.JS_DefinePropertyValue(s.engine.context, target, atom,
++        a.duplicate(s.engine, method), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE | c.JS_PROP_THROW);
++    try s.pending();
++    if (status < 0) return error.MissingActualChannelSymbolDefinitionReason;
++}
++fn defineMethods(s: *a.Scope, state: c.JSValue, prototype: c.JSValue,
++    comptime active: bool) !void
++{
++    inline for (.{
++        .{"subscribe", 1, if (active) activeSubscribe else inactiveSubscribe},
++        .{"unsubscribe", if (active) 1 else 0, if (active) activeUnsubscribe else inactiveFalse},
++        .{"bindStore", 2, if (active) activeBind else inactiveBind},
++        .{"unbindStore", if (active) 1 else 0, if (active) activeUnbind else inactiveFalse},
++    }) |definition| {
++        const method = try s.own(try functions.create(s.engine, definition[0], definition[1],
++            false, definition[2], &.{state}));
++        try s.define(prototype, definition[0], method, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE);
++    }
++    try getter(s, prototype, if (active) activeHas else inactiveFalse);
++    inline for (.{
++        .{"publish", if (active) 1 else 0, if (active) activePublish else inactivePublish},
++        .{"runStores", 3, if (active) activeRun else inactiveRun},
++    }) |definition| {
++        const method = try s.own(try functions.create(s.engine, definition[0], definition[1],
++            false, definition[2], &.{state}));
++        try s.define(prototype, definition[0], method, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE);
++    }
++}
++
++pub fn acquire(engine: *a.v.em.Engine, inputs: Inputs) !c.JSValue {
++    try engine.checkNativeEntry();
++    var cursor = assembling;
++    while (cursor) |entry| : (cursor = entry.previous)
++        if (entry.engine == engine) return error.DiagnosticsChannelCoreReentry;
++    const attempt: Assembly = .{ .engine = engine, .previous = assembling };
++    assembling = &attempt;
++    defer assembling = attempt.previous;
++    const was_cached = engine.native_module_values.contains(key);
++    const record = try a.expression(engine, createBody, .{inputs});
++    if (!was_cached and engine.native_module_values.contains(key)) {
++        var completion = a.owned.Completion.initValue(engine,
++            @as(anyerror!c.JSValue, error.DiagnosticsChannelCorePublicationConflict));
++        completion.release(record);
++        return completion.finishValue();
++    }
++    const selected = if (was_cached) record else try publication.publish(engine, key, record);
++    return a.expression(engine, exportsOwned, .{selected});
++}
++fn exportsOwned(s: *a.Scope, incoming: c.JSValue) !c.JSValue {
++    const record = try s.own(incoming);
++    return a.duplicate(s.engine, try s.get(record, "exports"));
++}
++fn createBody(s: *a.Scope, inputs: Inputs) !c.JSValue {
++    if (s.engine.native_module_values.get(key)) |known| {
++        inline for (std.meta.fields(Inputs)) |field| {
++            if (!s.equal(try s.get(known, field.name), @field(inputs, field.name)))
++                return error.DiagnosticsChannelCoreInputConflict;
++        }
++        return a.duplicate(s.engine, known);
++    }
++    if (!c.JS_IsObject(inputs.process) or
++        !c.JS_IsFunction(s.engine.context, inputs.trigger_uncaught_exception) or
++        !c.JS_IsFunction(s.engine.context, inputs.weak_reference))
++        return error.ActualDiagnosticsChannelInputsRequired;
++    const process_record = s.engine.native_module_values.get("node:process") orelse
++        return error.ActualDiagnosticsChannelProcessRequired;
++    if (!s.equal(try s.get(process_record, "default"), inputs.process))
++        return error.ActualDiagnosticsChannelProcessIdentityRequired;
++    if (!s.engine.native_module_values.contains("\x00native.fs.SafeMap") or
++        !s.engine.native_module_values.contains("\x00native.internal.SafeFinalizationRegistry"))
++        return error.BootstrappedDiagnosticsChannelSafeCollectionsRequired;
++    const state = try s.objectProto(c.pi_js_null());
++    inline for (std.meta.fields(Inputs)) |field|
++        try s.put(state, field.name, @field(inputs, field.name));
++    inline for (.{
++        .{"slice", "Array.slice"}, .{"indexOf", "Array.indexOf"}, .{"push", "Array.push"},
++        .{"getPrototypeOf", "Object.getPrototypeOf"}, .{"setPrototypeOf", "Object.setPrototypeOf"},
++    }) |pair| {
++        const primordial = try s.get(s.engine.intrinsic_clone_operations, pair[1]);
++        if (!c.JS_IsFunction(s.engine.context, primordial)) return error.ActualDiagnosticsChannelPrimordialRequired;
++        try s.put(state, pair[0], primordial);
++    }
++    const error_exports = (try errors.acquire(s.engine)) orelse return error.ActualInternalErrorsNotInitialized;
++    defer error_exports.deinit(s.engine);
++    try s.put(state, "ERR_INVALID_ARG_TYPE", error_exports.invalid_arg_type);
++    try s.put(state, "validateFunction", try s.own(try errors.validateFunction(s.engine)));
++    try s.put(state, "apply", try s.own(try errors.reflectApply(s.engine)));
++    try s.put(state, "SafeMap", try s.own(try collections.acquireSafeMap(s.engine)));
++    const weak_map = try s.own(try weak_maps.create(s.engine, .{ .weak_reference = inputs.weak_reference }));
++    // Original class declarations precede the one channels = new WeakRefMap.
++    const function_prototype = try s.checked(c.JS_GetFunctionProto(s.engine.context));
++    const active_prototype = try s.object();
++    const active_class = try s.own(try classes.create(s.engine, "ActiveChannel", 0,
++        active_prototype, function_prototype, activeConstruct, &.{}));
++    try s.put(state, "ActiveChannel", active_class);
++    const prototype = try s.object();
++    const channel_class = try s.own(try classes.create(s.engine, "Channel", 1,
++        prototype, function_prototype, channelConstruct, &.{state}));
++    try s.put(state, "Channel", channel_class);
++    try defineMethods(s, state, active_prototype, true);
++    try defineMethods(s, state, prototype, false);
++    const has_instance = try s.get(s.engine.intrinsic_clone_operations, "Symbol.hasInstance");
++    if (!c.JS_IsSymbol(has_instance)) return error.ActualDiagnosticsChannelHasInstanceRequired;
++    try symbolMethod(s, channel_class, has_instance, try s.own(try functions.create(
++        s.engine, "[Symbol.hasInstance]", 1, false, hasInstance, &.{state})));
++    try s.put(state, "defaultTransform", try s.own(try functions.create(
++        s.engine, "defaultTransform", 1, true, defaultTransform, &.{})));
++    try s.put(state, "channels", try s.construct(weak_map, &.{}));
++    const result = try s.object();
++    try s.define(result, "Channel", channel_class, c.JS_PROP_C_W_E);
++    inline for (.{
++        .{"channel", 1, publicChannel}, .{"hasSubscribers", 1, publicHas},
++        .{"subscribe", 2, publicSubscribe}, .{"unsubscribe", 2, publicUnsubscribe},
++    }) |definition| {
++        const function = try s.own(try functions.create(s.engine, definition[0],
++            definition[1], true, definition[2], &.{state}));
++        try s.define(result, definition[0], function, c.JS_PROP_C_W_E);
++    }
++    try s.put(state, "exports", result);
++    return a.duplicate(s.engine, state);
++}
+diff --git a/src/native_node_diagnostics_channel_core_test.zig b/src/native_node_diagnostics_channel_core_test.zig
+new file mode 100644
+--- /dev/null
++++ b/src/native_node_diagnostics_channel_core_test.zig
+@@ -0,0 +1,434 @@
++//! Actual-VM and literal-source controls for the complete Channel registry core.
++//! Compilation, metadata and runtime remain Root-owned. The explicit native
++//! error-binding probe records exact calls; production report/exit admission
++//! is deliberately not fabricated or claimed by these controls.
++const std = @import("std");
++const a = @import("extensions/native_node_argument_values.zig");
++const c = a.c;
++const em = a.v.em;
++const owner = @import("extensions/native_node_diagnostics_channel_core.zig");
++const errors = @import("extensions/native_node_argument_errors.zig");
++const bootstrap = @import("extensions/native_node_argument_bootstrap.zig");
++const collections = @import("extensions/native_node_fs_collections.zig");
++const weak_owner = @import("extensions/native_node_weak_reference.zig");
++const weak_maps = @import("extensions/native_node_weak_ref_map.zig");
++const functions = @import("extensions/native_node_module_callable.zig");
++const events = @import("extensions/node_events.zig");
++const async_scope = @import("extensions/native_async_scope.zig");
++const original = @embedFile("extensions/fixtures/node-diagnostics-channel-core-original.js");
++const observer = @embedFile("extensions/fixtures/node-diagnostics-channel-core-observer.js");
++const cache_key = "pi-native:private/diagnostics-channel-core";
++
++const Fixture = struct {
++    engine: *em.Engine = undefined,
++    environment: std.process.Environ.Map = undefined,
++    engine_alive: bool = false,
++    environment_alive: bool = false,
++    prepared: ?bootstrap.Prepared = null,
++    process: c.JSValue = undefined,
++    trigger: c.JSValue = undefined,
++    weak: c.JSValue = undefined,
++    subject: c.JSValue = undefined,
++    report_count: usize = 0,
++    reasons: [32]c.JSValue = undefined,
++    origins: [32]c.JSValue = undefined,
++    scopes: [32]c.JSValue = undefined,
++    arities: [32]usize = undefined,
++    receiver_undefined: [32]bool = undefined,
++    probe_class: c.JSClassID = 0,
++    retired: usize = 0,
++    message_calls: usize = 0,
++    emit_fatal: bool = false,
++    first_fatal: c.JSValue = undefined,
++    scope_active: bool = false,
++    partner: ?*Fixture = null,
++    cross_error: ?anyerror = null,
++
++    fn init(self: *Fixture, source: bool, create_subject: bool) !void {
++        self.* = .{};
++        self.environment = .init(std.testing.allocator);
++        self.environment_alive = true;
++        errdefer self.deinit();
++        self.engine = try em.Engine.init(std.testing.allocator, .{});
++        self.engine_alive = true;
++        self.process = c.pi_js_undefined(); self.trigger = c.pi_js_undefined();
++        self.weak = c.pi_js_undefined(); self.subject = c.pi_js_undefined();
++        self.first_fatal = c.pi_js_undefined();
++        self.engine.host_control_context = self;
++        try @import("extensions/timers.zig").install(self.engine, std.testing.io);
++        try @import("extensions/native_process.zig").install(self.engine,
++            std.testing.io, &self.environment, &.{"native-channel-core-control"});
++        try @import("extensions/native_node_os.zig").install(self.engine);
++        self.prepared = try bootstrap.prepare(self.engine);
++        const safe_map = try collections.acquireSafeMap(self.engine);
++        defer self.engine.freeValue(safe_map);
++        const safe_finalizers = try collections.acquireSafeFinalizationRegistry(self.engine);
++        defer self.engine.freeValue(safe_finalizers);
++        self.weak = try weak_owner.create(self.engine);
++        const process_record = self.engine.native_module_values.get("node:process").?;
++        self.process = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, process_record, "default"));
++        try self.engine.bindFunction("dcTrigger", rawTrigger, 2);
++        try self.engine.bindFunction("dcCrossAcquire", rawCrossAcquire, 0);
++        try self.engine.bindFunction("dcReports", rawReports, 0);
++        try self.engine.bindFunction("dcDropReports", rawDropReports, 0);
++        try self.engine.bindFunction("dcPending", rawPending, 0);
++        try self.engine.bindFunction("dcFatal", rawFatal, 0);
++        try self.engine.bindFunction("dcRetired", rawRetired, 0);
++        try self.engine.bindFunction("dcEntryProbe", rawEntryProbe, 2);
++        try self.engine.bindFunction("dcMessageProbe", rawMessageProbe, 0);
++        self.trigger = try self.global("dcTrigger");
++        try self.publish("P", self.process);
++        try self.publish("WeakReferenceOwner", self.weak);
++        if (create_subject) try self.createSubject(source);
++        try self.run(observer);
++    }
++    fn inputs(self: *Fixture) owner.Inputs {
++        return .{ .process = self.process, .trigger_uncaught_exception = self.trigger, .weak_reference = self.weak };
++    }
++    fn createSubject(self: *Fixture, source: bool) !void {
++        const next = if (source) try a.expression(self.engine, sourceBody, .{self})
++            else try owner.acquire(self.engine, self.inputs());
++        self.engine.freeValue(self.subject);
++        self.subject = next;
++        try self.publish("D", next);
++    }
++    fn eval(self: *Fixture, source: []const u8) !c.JSValue {
++        return self.engine.eval(source, "native-channel-core-control.js", c.JS_EVAL_TYPE_GLOBAL);
++    }
++    fn run(self: *Fixture, source: []const u8) !void { self.engine.freeValue(try self.eval(source)); }
++    fn check(self: *Fixture, source: []const u8) !void {
++        const value = try self.eval(source); defer self.engine.freeValue(value);
++        try std.testing.expect(c.JS_IsStrictEqual(self.engine.context, value, c.JS_NewBool(self.engine.context, true)));
++    }
++    fn global(self: *Fixture, name: [*:0]const u8) !c.JSValue {
++        const object = try self.engine.checked(c.JS_GetGlobalObject(self.engine.context));
++        defer self.engine.freeValue(object);
++        return self.engine.checked(c.JS_GetPropertyStr(self.engine.context, object, name));
++    }
++    fn publish(self: *Fixture, name: [*:0]const u8, value: c.JSValue) !void {
++        const object = try self.engine.checked(c.JS_GetGlobalObject(self.engine.context));
++        defer self.engine.freeValue(object);
++        if (c.JS_DefinePropertyValueStr(self.engine.context, object, name,
++            a.duplicate(self.engine, value), c.JS_PROP_C_W_E) < 0)
++            return @import("extensions/native_js_values.zig").capture(self.engine);
++    }
++    fn drain(self: *Fixture) !void {
++        try events.drainHostTicks(self.engine);
++        _ = try self.engine.runReadyJobs(256);
++        self.engine.finishJob();
++        try std.testing.expect(!c.JS_IsJobPending(self.engine.runtime));
++    }
++    fn balanced(self: *Fixture) !void {
++        try std.testing.expect(!c.JS_HasException(self.engine.context));
++        try std.testing.expect(self.engine.native_fatal_invocation == null);
++        try std.testing.expectEqual(@as(usize, 0), self.engine.native_exception_diagnostics_suppressed);
++    }
++    fn takeReason(self: *Fixture) !c.JSValue {
++        if (c.JS_HasException(self.engine.context)) return c.JS_GetException(self.engine.context);
++        if (self.engine.captured_exception) |value| {
++            self.engine.captured_exception = null;
++            return value;
++        }
++        return error.ActualChannelControlReasonRequired;
++    }
++    fn dropReports(self: *Fixture) void {
++        for (0..self.report_count) |i| {
++            self.engine.freeValue(self.reasons[i]); self.engine.freeValue(self.origins[i]);
++            self.engine.freeValue(self.scopes[i]);
++        }
++        self.report_count = 0;
++    }
++    fn deinit(self: *Fixture) void {
++        self.emit_fatal = false;
++        if (self.engine_alive) {
++            self.dropReports();
++            self.engine.freeValue(self.subject); self.engine.freeValue(self.trigger);
++            self.engine.freeValue(self.weak); self.engine.freeValue(self.process);
++            self.engine.freeValue(self.first_fatal);
++            if (self.prepared) |prepared| prepared.deinit(self.engine);
++            self.engine.deinit(); self.engine_alive = false;
++        }
++        if (self.environment_alive) { self.environment.deinit(); self.environment_alive = false; }
++    }
++};
++fn sourceBody(s: *a.Scope, fixture: *Fixture) !c.JSValue {
++    const factory = try s.own(try fixture.eval(original));
++    const map = try s.own(try weak_maps.create(s.engine, .{ .weak_reference = fixture.weak }));
++    const safe_map = try s.own(try collections.acquireSafeMap(s.engine));
++    const validate = try s.own(try errors.validateFunction(s.engine));
++    const apply = try s.own(try errors.reflectApply(s.engine));
++    return a.duplicate(s.engine, try s.call(factory, c.pi_js_undefined(), &.{
++        fixture.process, fixture.trigger, map, safe_map, fixture.prepared.?.arguments.invalid_arg_type,
++        validate, s.engine.intrinsic_clone_operations, apply,
++    }));
++}
++fn current(context: ?*c.JSContext) *Fixture {
++    const engine = em.Engine.fromContext(context.?);
++    return @ptrCast(@alignCast(engine.host_control_context.?));
++}
++fn rawCrossAcquire(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const f = current(context);
++    const other = f.partner orelse return c.JS_ThrowTypeError(context, "Missing control partner");
++    const value = owner.acquire(other.engine, other.inputs()) catch |err| {
++        f.cross_error = err;
++        return c.pi_js_undefined();
++    };
++    other.engine.freeValue(value);
++    return c.pi_js_undefined();
++}
++fn rawTrigger(context: ?*c.JSContext, receiver: c.JSValue,
++    argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue
++{
++    const f = current(context);
++    if (f.report_count == f.reasons.len) return c.JS_ThrowTypeError(context, "Control report capacity exceeded");
++    const i = f.report_count;
++    const args: []const c.JSValue = if (argc > 0) argv[0..@intCast(argc)] else &.{};
++    f.reasons[i] = a.duplicate(f.engine, a.arg(args, 0));
++    f.origins[i] = a.duplicate(f.engine, a.arg(args, 1));
++    f.scopes[i] = async_scope.capture(f.engine);
++    f.arities[i] = args.len;
++    f.receiver_undefined[i] = c.JS_IsUndefined(receiver);
++    f.report_count += 1;
++    return c.pi_js_undefined();
++}
++fn reportsBody(s: *a.Scope, f: *Fixture) !c.JSValue {
++    const result = try a.array(s);
++    for (0..f.report_count) |i| {
++        const entry = try a.array(s);
++        try a.index(s, entry, 0, f.reasons[i]);
++        try a.index(s, entry, 1, f.origins[i]);
++        try a.index(s, entry, 2, c.JS_NewInt64(s.engine.context, @intCast(f.arities[i])));
++        try a.index(s, entry, 3, a.boolean(s, f.receiver_undefined[i]));
++        try a.index(s, entry, 4, a.boolean(s, !c.JS_IsUndefined(f.scopes[i])));
++        try a.index(s, result, @intCast(i), entry);
++    }
++    return a.duplicate(s.engine, result);
++}
++fn rawReports(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const f = current(context);
++    return a.expression(f.engine, reportsBody, .{f}) catch |err| functions.failure(f.engine, err, 0);
++}
++fn rawDropReports(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    current(context).dropReports();
++    return c.pi_js_undefined();
++}
++fn rawPending(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const f = current(context);
++    const reason = f.global("dcError") catch |err| return functions.failure(f.engine, err, 0);
++    _ = c.JS_Throw(f.engine.context, reason);
++    return c.JS_NewInt32(f.engine.context, 17);
++}
++fn publishFatal(f: *Fixture) void {
++    _ = f.engine.throwNativeOutOfMemoryFatal();
++    if (c.JS_HasException(f.engine.context)) {
++        const reason = c.JS_GetException(f.engine.context);
++        if (c.JS_IsUndefined(f.first_fatal)) f.first_fatal = a.duplicate(f.engine, reason);
++        f.engine.freeValue(reason);
++    }
++}
++fn rawFatal(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    publishFatal(current(context));
++    return c.pi_js_undefined();
++}
++fn retireProbe(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
++    const f: *Fixture = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
++    f.retired += 1;
++    if (f.emit_fatal) publishFatal(f);
++}
++fn probeBody(s: *a.Scope, f: *Fixture, args: []const c.JSValue) !c.JSValue {
++    if (f.probe_class == 0) {
++        if (c.JS_NewClassID(s.engine.runtime, &f.probe_class) == 0) return error.OutOfMemory;
++        const definition: c.JSClassDef = .{ .class_name = "Actual channel lexical retirement probe", .finalizer = retireProbe };
++        if (c.JS_NewClass(s.engine.runtime, f.probe_class, &definition) < 0) return error.OutOfMemory;
++    }
++    const generation = try s.beforeAllocation();
++    const value = try s.checkedAllocation(c.JS_NewObjectClass(s.engine.context, f.probe_class), generation);
++    _ = c.JS_SetOpaque(value, f);
++    if (args.len != 0) {
++        try s.define(value, "0", a.arg(args, 0), c.JS_PROP_C_W_E);
++        try s.define(value, "1", a.arg(args, 1), c.JS_PROP_C_W_E);
++    }
++    return a.duplicate(s.engine, value);
++}
++fn rawEntryProbe(context: ?*c.JSContext, _: c.JSValue,
++    argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue
++{
++    const f = current(context);
++    const args: []const c.JSValue = if (argc > 0) argv[0..@intCast(argc)] else &.{};
++    return a.expression(f.engine, probeBody, .{f, args}) catch |err| functions.failure(f.engine, err, 0);
++}
++fn messageProbeCall(engine: *em.Engine, _: c.JSValue,
++    _: []const c.JSValue, _: []const c.JSValue) !c.JSValue
++{
++    const f: *Fixture = @ptrCast(@alignCast(engine.host_control_context.?));
++    f.message_calls += 1;
++    return c.pi_js_undefined();
++}
++fn messageProbeBody(s: *a.Scope, f: *Fixture) !c.JSValue {
++    const probe = try s.own(try a.expression(s.engine, probeBody, .{f, @as([]const c.JSValue, &.{})}));
++    return functions.create(s.engine, "", 2, false, messageProbeCall, &.{probe});
++}
++fn rawMessageProbe(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const f = current(context);
++    return a.expression(f.engine, messageProbeBody, .{f}) catch |err| functions.failure(f.engine, err, 0);
++}
++fn rawRetired(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const f = current(context);
++    return c.JS_NewInt64(f.engine.context, @intCast(f.retired));
++}
++fn capture(comptime name: []const u8, source: bool) ![]u8 {
++    var f: Fixture = undefined; try f.init(source, true); defer f.deinit();
++    try f.run("dcObserve('" ++ name ++ "');");
++    try f.drain();
++    const result = try f.eval("JSON.stringify(dcFinish())");
++    defer f.engine.freeValue(result);
++    try f.balanced();
++    return f.engine.toString(result);
++}
++fn both(comptime name: []const u8) !void {
++    const expected = try capture(name, true); defer std.testing.allocator.free(expected);
++    const actual = try capture(name, false); defer std.testing.allocator.free(actual);
++    try std.testing.expectEqualStrings(expected, actual);
++}
++
++test "native diagnostics core original inactive shape and callable descriptors" { try both("shape"); }
++test "native diagnostics core inactive methods and actual rest application" { try both("inactive"); }
++test "native diagnostics core canonical string symbol and raw constructor registry identity" { try both("registry"); }
++test "native diagnostics core actual typed invalid channel name errors" { try both("name-errors"); }
++test "native diagnostics core original shallow hasInstance and subclass semantics" { try both("instanceof"); }
++test "native diagnostics core prototype transitions retain shared classes" { try both("transitions"); }
++test "native diagnostics core duplicate subscribers balance actual weak reference counts" { try both("duplicates"); }
++test "native diagnostics core failed subscription retains source active transition and typed errors" { try both("invalid-subscription"); }
++test "native diagnostics core public functions resolve live channel methods and getters" { try both("public-forward"); }
++test "native diagnostics core subscriber receiver argument identity and ignored results" { try both("subscriber-call"); }
++test "native diagnostics core publish snapshot survives unsubscribe mutation" { try both("snapshot-remove"); }
++test "native diagnostics core publish snapshot excludes newly subscribed callback" { try both("snapshot-add"); }
++test "native diagnostics core publish uses live optional length and Number coercion" { try both("live-length"); }
++test "native diagnostics core active borrowed publish accepts nullish subscriber snapshot" { try both("null-snapshot"); }
++test "native diagnostics core subscriber errors defer exact reason and continue" { try both("subscriber-error"); }
++test "native diagnostics core name getter errors follow original deferred catch" { try both("name-getter-error"); }
++test "native diagnostics core nextTick getter failure escapes the source catch" { try both("next-tick-callee"); }
++test "native diagnostics core nextTick live callee preserves receiver callback and reentry" { try both("next-tick-reentry"); }
++test "native diagnostics core store-only activation default transform and inactive transition" { try both("stores-only"); }
++test "native diagnostics core replacing a store transform does not increment its strong count" { try both("store-replacement"); }
++test "native diagnostics core store nesting reverses insertion order and publishes inside context" { try both("store-order"); }
++test "native diagnostics core runStores rest array does not consult public iterator" { try both("rest-call"); }
++test "native diagnostics core transform errors skip that store and continue through deferred binding" { try both("transform-error"); }
++test "native diagnostics core noncallable transform produces actual VM TypeError and continuation" { try both("noncallable-transform"); }
++test "native diagnostics core store run errors escape without entering transform catch" { try both("store-error"); }
++test "native diagnostics core store run getter resolves after completed transform" { try both("store-method-live"); }
++test "native diagnostics core store entries for-of caches actual next" { try both("entries-next-cache"); }
++test "native diagnostics core store entries use indexed values without destructuring iterator" { try both("entries-indexed"); }
++test "native diagnostics core store iterator next failure does not close" { try both("iterator-next-error"); }
++test "native diagnostics core store entry failure closes once and preserves original throw" { try both("iterator-body-error"); }
++test "native diagnostics core iterator close error cannot replace original entry failure" { try both("iterator-close-error"); }
++test "native diagnostics core borrowed store methods preserve live operations and reference order" { try both("generic-store-ops"); }
++test "native diagnostics core captured primordials survive public prototype poisoning" { try both("primordial-poison"); }
++test "native diagnostics core activation prototype and assignment traps retain source order" { try both("prototype-set-order"); }
++test "native diagnostics core publish local retirement matches original try-block scopes" { try both("message-lifetime"); }
++test "native diagnostics core final entry stays alive through transforms publish and target call" { try both("entry-lifetime"); }
++test "native diagnostics core catch reason outlives immediate nextTick callback disposal" { try both("catch-lifetime"); }
++test "native diagnostics core actual pending reason outranks native successful return" { try both("pending-reason"); }
++test "native diagnostics core successful store Get survives a later transform getter and IteratorClose" { try both("store-get-lifetime"); }
++test "native diagnostics core nested subscriber slice arguments retire before assignment setter" { try both("slice-argument-lifetime"); }
++
++test "native diagnostics core cached acquisition preserves identity and rejects changed actual inputs" {
++    var f: Fixture = undefined; try f.init(false, true); defer f.deinit();
++    const again = try owner.acquire(f.engine, f.inputs()); defer f.engine.freeValue(again);
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, again, f.subject));
++    var changed = f.inputs(); changed.weak_reference = f.trigger;
++    try std.testing.expectError(error.DiagnosticsChannelCoreInputConflict, owner.acquire(f.engine, changed));
++    try std.testing.expect(!f.engine.native_module_values.contains("node:diagnostics_channel"));
++    try std.testing.expect(!f.engine.native_module_values.contains("diagnostics_channel"));
++    try f.balanced();
++}
++test "native diagnostics core missing real inputs and collection bootstrap publish no registry" {
++    var f: Fixture = undefined; try f.init(false, false); defer f.deinit();
++    var missing = f.inputs(); missing.trigger_uncaught_exception = c.pi_js_undefined();
++    try std.testing.expectError(error.ActualDiagnosticsChannelInputsRequired, owner.acquire(f.engine, missing));
++    try std.testing.expect(!f.engine.native_module_values.contains(cache_key));
++    const removed = f.engine.native_module_values.fetchRemove("\x00native.internal.SafeFinalizationRegistry").?;
++    defer f.engine.native_module_values.putAssumeCapacity("\x00native.internal.SafeFinalizationRegistry", removed.value);
++    try std.testing.expectError(error.BootstrappedDiagnosticsChannelSafeCollectionsRequired, owner.acquire(f.engine, f.inputs()));
++    try std.testing.expect(!f.engine.native_module_values.contains(cache_key));
++    try f.balanced();
++}
++test "native diagnostics core channel retention follows actual weak registry subscription counts" {
++    var f: Fixture = undefined; try f.init(false, true); defer f.deinit();
++    try f.run(
++        \\globalThis.keep=()=>{};{const channel=D.channel("retained");channel.marker=53;
++        \\channel.subscribe(keep);globalThis.weakChannel=new WeakRef(channel);}
++    );
++    f.engine.finishJob(); c.JS_RunGC(f.engine.runtime); try f.drain();
++    try f.check("weakChannel.deref().marker===53&&D.channel('retained')===weakChannel.deref()");
++    try f.run("D.channel('retained').unsubscribe(keep)");
++    f.engine.finishJob(); c.JS_RunGC(f.engine.runtime); try f.drain();
++    try f.check("weakChannel.deref()===undefined&&D.hasSubscribers('retained')===false");
++    try f.balanced();
++}
++fn scopeOn(raw: ?*anyopaque) void {
++    const f: *Fixture = @ptrCast(@alignCast(raw.?)); f.scope_active = true;
++}
++fn scopeOff(raw: ?*anyopaque) void {
++    const f: *Fixture = @ptrCast(@alignCast(raw.?)); f.scope_active = false;
++}
++test "native diagnostics core real nextTick preserves the actual captured native async scope" {
++    var f: Fixture = undefined; try f.init(false, true); defer f.deinit();
++    const token = try async_scope.create(f.engine, &f, scopeOn, scopeOff);
++    defer f.engine.freeValue(token);
++    {
++        const guard = async_scope.enter(f.engine, token); defer guard.restore();
++        try f.run("globalThis.dcError={tag:'scope'};D.channel('scope').subscribe(()=>{throw dcError});D.channel('scope').publish(1)");
++    }
++    try std.testing.expect(!f.scope_active);
++    try f.drain();
++    try std.testing.expectEqual(@as(usize, 1), f.report_count);
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, f.scopes[0], token));
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, f.origins[0], c.JS_NewBool(f.engine.context, false)));
++    try std.testing.expect(!f.scope_active);
++    try f.balanced();
++}
++fn expectFatal(f: *Fixture, source: []const u8) !void {
++    try std.testing.expectError(error.JavaScriptException, f.eval(source));
++    f.emit_fatal = false;
++    const reason = try f.takeReason(); defer f.engine.freeValue(reason);
++    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, reason, f.first_fatal));
++    try std.testing.expect(c.JS_IsUncatchableError(reason));
++    try std.testing.expectEqual(@as(usize, 0), f.report_count);
++    try std.testing.expect(f.engine.native_fatal_invocation == null);
++    try std.testing.expectEqual(@as(usize, 0), f.engine.native_exception_diagnostics_suppressed);
++}
++test "native diagnostics core current native fatal cannot become a deferred subscriber error" {
++    var f: Fixture = undefined; try f.init(false, true); defer f.deinit();
++    try f.run("globalThis.after=0;const fatalChannel=D.channel('fatal');fatalChannel.subscribe(()=>dcFatal());fatalChannel.subscribe(()=>after++);");
++    try expectFatal(&f, "try{fatalChannel.publish(1)}catch(e){after=99}");
++    try f.check("after===0");
++}
++test "native diagnostics core subscriber retirement fatal stops before the next indexed Get" {
++    var f: Fixture = undefined; try f.init(false, true); defer f.deinit();
++    try f.run(
++        \\globalThis.after=0;const retirementChannel=D.channel('retire');retirementChannel.subscribe(()=>{});
++        \\retirementChannel._subscribers={length:2,get 0(){return dcMessageProbe()},get 1(){after++;return ()=>{}}};
++    );
++    f.emit_fatal = true;
++    try expectFatal(&f, "try{retirementChannel.publish(1)}catch(e){after=99}");
++    try std.testing.expectEqual(@as(usize, 1), f.message_calls);
++    try std.testing.expectEqual(@as(usize, 1), f.retired);
++    try f.check("after===0");
++}
++
++test "native diagnostics core cross-engine nested acquisition cannot publish two same-engine registries" {
++    var first: Fixture = undefined; try first.init(false, false); defer first.deinit();
++    var second: Fixture = undefined; try second.init(false, false); defer second.deinit();
++    first.partner = &second; second.partner = &first;
++    try first.publish("ProcessRecord", first.engine.native_module_values.get("node:process").?);
++    try second.publish("ProcessRecord", second.engine.native_module_values.get("node:process").?);
++    try first.run("Object.defineProperty(ProcessRecord,'default',{configurable:true,get(){dcCrossAcquire();return P}})");
++    try second.run("Object.defineProperty(ProcessRecord,'default',{configurable:true,get(){dcCrossAcquire();return P}})");
++    try first.createSubject(false);
++    try std.testing.expect(first.cross_error == null);
++    try std.testing.expect(second.cross_error.? == error.DiagnosticsChannelCoreReentry);
++    const again = try owner.acquire(first.engine, first.inputs()); defer first.engine.freeValue(again);
++    try std.testing.expect(c.JS_IsStrictEqual(first.engine.context, first.subject, again));
++    try first.balanced(); try second.balanced();
++}
+diff --git a/src/extensions/fixtures/node-diagnostics-channel-core-original.js b/src/extensions/fixtures/node-diagnostics-channel-core-original.js
+new file mode 100644
+--- /dev/null
++++ b/src/extensions/fixtures/node-diagnostics-channel-core-original.js
+@@ -0,0 +1,198 @@
++(function(process, triggerUncaughtException, WeakRefMap, SafeMap,
++  ERR_INVALID_ARG_TYPE, validateFunction, IP, ReflectApply) {
++"use strict";
++const ArrayPrototypeIndexOf = Function.prototype.call.bind(IP["Array.indexOf"]);
++const ArrayPrototypePush = Function.prototype.call.bind(IP["Array.push"]);
++const ArrayPrototypeSlice = Function.prototype.call.bind(IP["Array.slice"]);
++const ArrayPrototypePushApply = Function.prototype.apply.bind(IP["Array.push"]);
++const ObjectGetPrototypeOf = IP["Object.getPrototypeOf"];
++const ObjectSetPrototypeOf = IP["Object.setPrototypeOf"];
++const SymbolHasInstance = IP["Symbol.hasInstance"];
++function markActive(channel) {
++  // eslint-disable-next-line no-use-before-define
++  ObjectSetPrototypeOf(channel, ActiveChannel.prototype);
++  channel._subscribers = [];
++  channel._stores = new SafeMap();
++}
++
++function maybeMarkInactive(channel) {
++  // When there are no more active subscribers or bound, restore to fast prototype.
++  if (!channel._subscribers.length && !channel._stores.size) {
++    // eslint-disable-next-line no-use-before-define
++    ObjectSetPrototypeOf(channel, Channel.prototype);
++    channel._subscribers = undefined;
++    channel._stores = undefined;
++  }
++}
++
++function defaultTransform(data) {
++  return data;
++}
++
++function wrapStoreRun(store, data, next, transform = defaultTransform) {
++  return () => {
++    let context;
++    try {
++      context = transform(data);
++    } catch (err) {
++      process.nextTick(() => {
++        triggerUncaughtException(err, false);
++      });
++      return next();
++    }
++
++    return store.run(context, next);
++  };
++}
++
++// TODO(qard): should there be a C++ channel interface?
++class ActiveChannel {
++  subscribe(subscription) {
++    validateFunction(subscription, 'subscription');
++    this._subscribers = ArrayPrototypeSlice(this._subscribers);
++    ArrayPrototypePush(this._subscribers, subscription);
++    channels.incRef(this.name);
++  }
++
++  unsubscribe(subscription) {
++    const index = ArrayPrototypeIndexOf(this._subscribers, subscription);
++    if (index === -1) return false;
++
++    const before = ArrayPrototypeSlice(this._subscribers, 0, index);
++    const after = ArrayPrototypeSlice(this._subscribers, index + 1);
++    this._subscribers = before;
++    ArrayPrototypePushApply(this._subscribers, after);
++
++    channels.decRef(this.name);
++    maybeMarkInactive(this);
++
++    return true;
++  }
++
++  bindStore(store, transform) {
++    const replacing = this._stores.has(store);
++    if (!replacing) channels.incRef(this.name);
++    this._stores.set(store, transform);
++  }
++
++  unbindStore(store) {
++    if (!this._stores.has(store)) {
++      return false;
++    }
++
++    this._stores.delete(store);
++
++    channels.decRef(this.name);
++    maybeMarkInactive(this);
++
++    return true;
++  }
++
++  get hasSubscribers() {
++    return true;
++  }
++
++  publish(data) {
++    const subscribers = this._subscribers;
++    for (let i = 0; i < (subscribers?.length || 0); i++) {
++      try {
++        const onMessage = subscribers[i];
++        onMessage(data, this.name);
++      } catch (err) {
++        process.nextTick(() => {
++          triggerUncaughtException(err, false);
++        });
++      }
++    }
++  }
++
++  runStores(data, fn, thisArg, ...args) {
++    let run = () => {
++      this.publish(data);
++      return ReflectApply(fn, thisArg, args);
++    };
++
++    for (const entry of this._stores.entries()) {
++      const store = entry[0];
++      const transform = entry[1];
++      run = wrapStoreRun(store, data, run, transform);
++    }
++
++    return run();
++  }
++}
++
++class Channel {
++  constructor(name) {
++    this._subscribers = undefined;
++    this._stores = undefined;
++    this.name = name;
++
++    channels.set(name, this);
++  }
++
++  static [SymbolHasInstance](instance) {
++    const prototype = ObjectGetPrototypeOf(instance);
++    return prototype === Channel.prototype ||
++           prototype === ActiveChannel.prototype;
++  }
++
++  subscribe(subscription) {
++    markActive(this);
++    this.subscribe(subscription);
++  }
++
++  unsubscribe() {
++    return false;
++  }
++
++  bindStore(store, transform) {
++    markActive(this);
++    this.bindStore(store, transform);
++  }
++
++  unbindStore() {
++    return false;
++  }
++
++  get hasSubscribers() {
++    return false;
++  }
++
++  publish() {}
++
++  runStores(data, fn, thisArg, ...args) {
++    return ReflectApply(fn, thisArg, args);
++  }
++}
++
++const channels = new WeakRefMap();
++
++function channel(name) {
++  const channel = channels.get(name);
++  if (channel) return channel;
++
++  if (typeof name !== 'string' && typeof name !== 'symbol') {
++    throw new ERR_INVALID_ARG_TYPE('channel', ['string', 'symbol'], name);
++  }
++
++  return new Channel(name);
++}
++
++function subscribe(name, subscription) {
++  return channel(name).subscribe(subscription);
++}
++
++function unsubscribe(name, subscription) {
++  return channel(name).unsubscribe(subscription);
++}
++
++function hasSubscribers(name) {
++  const channel = channels.get(name);
++  if (!channel) return false;
++
++  return channel.hasSubscribers;
++}
++
++return {Channel, channel, hasSubscribers, subscribe, unsubscribe};
++})
+diff --git a/src/extensions/fixtures/node-diagnostics-channel-core-observer.js b/src/extensions/fixtures/node-diagnostics-channel-core-observer.js
+new file mode 100644
+--- /dev/null
++++ b/src/extensions/fixtures/node-diagnostics-channel-core-observer.js
+@@ -0,0 +1,303 @@
++// Actual-VM differential observer for the literal retained Channel core.
++// The same real process, SafeMap, WeakReference and argument-error owners are
++// supplied to both subjects. The native uncaught-binding probe observes calls;
++// this does not claim the unfinished production fatal-report/exit adapter.
++"use strict";
++globalThis.dcObserve = function(kind) {
++  const out = [], refs = [];
++  const push = Function.prototype.call.bind(Array.prototype.push);
++  const apply = Reflect.apply;
++  const inc = WeakReferenceOwner.prototype.incRef;
++  const dec = WeakReferenceOwner.prototype.decRef;
++  WeakReferenceOwner.prototype.incRef = function() {
++    const n = apply(inc, this, []); push(refs, ["inc", n]); return n;
++  };
++  WeakReferenceOwner.prototype.decRef = function() {
++    const n = apply(dec, this, []); push(refs, ["dec", n]); return n;
++  };
++  const assert = (value, name) => { if (!value) throw Error("channel observer: " + name); };
++  const reason = fn => { try { fn(); } catch (e) { return e; } throw Error("expected throw"); };
++  const errorView = e => e && e.tag ? {tag:e.tag} :
++    {name:e && e.name,code:e && e.code,type:e instanceof TypeError};
++  const functionView = fn => [fn.name,fn.length,Object.hasOwn(fn,"prototype")];
++  globalThis.dcError = {tag:"original"};
++  globalThis.dcFinish = () => {
++    const reports = dcReports();
++    return {out,refs,reports:reports.map(r=>[errorView(r[0]),r[1],r[2],r[3],r[4]])};
++  };
++  const channel = D.channel;
++  if (kind === "shape") {
++    const c=channel("shape"),p=D.Channel.prototype;
++    out.push(functionView(D.Channel),functionView(channel),functionView(D.subscribe),
++      functionView(D.unsubscribe),functionView(D.hasSubscribers));
++    out.push(Reflect.ownKeys(p).map(String));
++    out.push(Object.keys(c),c.name,c.hasSubscribers,c instanceof D.Channel);
++    for (const name of ["subscribe","unsubscribe","bindStore","unbindStore","publish","runStores"]) {
++      const d=Object.getOwnPropertyDescriptor(p,name);
++      out.push(name,functionView(d.value),d.writable,d.enumerable,d.configurable);
++    }
++    const d=Object.getOwnPropertyDescriptor(p,"hasSubscribers");
++    out.push(functionView(d.get),d.set===undefined,d.enumerable,d.configurable);
++    assert(c._subscribers===undefined&&c._stores===undefined,"inactive fields");
++  } else if (kind === "inactive") {
++    const c=channel("idle"),marker={},receiver={};
++    out.push(c.publish(1),c.unsubscribe(()=>{}),c.unbindStore({}),c.hasSubscribers);
++    out.push(c.runStores(5,function(a,b){return [this===receiver,a,b]},receiver,7,11));
++    out.push(c.runStores(5,()=>marker)===marker);
++    assert(!c.hasSubscribers,"inactive run");
++  } else if (kind === "registry") {
++    const s=Symbol("name"),t=Symbol("name"),a=channel("x"),b=channel(s);
++    out.push(a===channel("x"),b===channel(s),b!==channel(t),a!==b,
++      D.hasSubscribers("absent"),D.hasSubscribers(3),D.hasSubscribers({}));
++    const replaced=new D.Channel("x");
++    out.push(replaced!==a,channel("x")===replaced);
++    const object={},raw=new D.Channel(object),number=new D.Channel(17),none=new D.Channel();
++    out.push(channel(object)===raw,channel(17)===number,channel()===none);
++  } else if (kind === "name-errors") {
++    for (const value of [undefined,null,0,true,{},[],()=>{},1n]) {
++      const e=reason(()=>channel(value));
++      assert(e.code==="ERR_INVALID_ARG_TYPE","actual name code");
++      out.push(e.code,e.message,e instanceof TypeError);
++    }
++    out.push(channel("")===channel(""),channel(Symbol.for("k"))===channel(Symbol.for("k")));
++  } else if (kind === "instanceof") {
++    const c=channel("instance"),p=D.Channel.prototype;
++    out.push(c instanceof D.Channel,Object.create(p) instanceof D.Channel);
++    class Child extends D.Channel {}
++    const child=new Child("child");
++    out.push(child instanceof Child,child instanceof D.Channel);
++    c.subscribe(()=>{});
++    const active=Object.getPrototypeOf(c),Active=active.constructor;
++    out.push(c instanceof D.Channel,c instanceof Active,Object.create(active) instanceof D.Channel);
++    out.push(Object.create(c) instanceof D.Channel);
++    for(const v of [1,"x",true,Symbol("s"),1n,undefined,null]) {
++      try { out.push(D.Channel[Symbol.hasInstance](v)); }
++      catch(e) { out.push(e instanceof TypeError); }
++    }
++    out.push(functionView(Active),Object.keys(new Active()));
++  } else if (kind === "transitions") {
++    const c=channel("changes"),p=D.Channel.prototype,fn=()=>{};
++    c.subscribe(fn);
++    const active=Object.getPrototypeOf(c);
++    out.push(active!==p,c.hasSubscribers,c instanceof D.Channel,c._stores.size,c._subscribers.length);
++    out.push(c.unsubscribe(fn),Object.getPrototypeOf(c)===p,c.hasSubscribers,
++      c._subscribers===undefined,c._stores===undefined);
++    c.bindStore({run(_,next){return next()}});
++    out.push(Object.getPrototypeOf(c)===active,c.hasSubscribers,c._subscribers.length,c._stores.size);
++  } else if (kind === "duplicates") {
++    const c=channel("duplicates"),events=[],fn=(d,n)=>events.push([d,n]);
++    c.subscribe(fn);c.subscribe(fn);c.publish(2);
++    out.push(c._subscribers.length,c.unsubscribe(fn),c._subscribers.length);
++    c.publish(3);out.push(c.unsubscribe(fn),c.hasSubscribers,c.unsubscribe(fn),events);
++  } else if (kind === "invalid-subscription") {
++    const c=channel("bad"),p=D.Channel.prototype;
++    for (const value of [null,undefined,17,{},Symbol("x")]) {
++      const e=reason(()=>c.subscribe(value));
++      assert(e.code==="ERR_INVALID_ARG_TYPE","subscription code");
++      out.push(e.code,e.message,e instanceof TypeError);
++    }
++    out.push(Object.getPrototypeOf(c)!==p,c.hasSubscribers,c._subscribers.length,c._stores.size);
++    out.push(c.unsubscribe(()=>{}),c.hasSubscribers);
++  } else if (kind === "public-forward") {
++    const c=channel("forward"),marker={},fn=()=>{};
++    c.subscribe=function(v){out.push(this===c,v===fn);return marker};
++    c.unsubscribe=function(v){out.push(this===c,v===fn);return 37};
++    out.push(D.subscribe("forward",fn)===marker,D.unsubscribe("forward",fn));
++    Object.defineProperty(c,"hasSubscribers",{get(){out.push("get");return marker}});
++    out.push(D.hasSubscribers("forward")===marker);
++  } else if (kind === "subscriber-call") {
++    const c=channel("messages"),data={},events=[];
++    c.subscribe(function(d,n){events.push(this===undefined,arguments.length,d===data,n)});
++    c.subscribe(function(d,n){events.push(this===undefined,d===data,n)});
++    out.push(c.publish(data),events);
++  } else if (kind === "snapshot-remove") {
++    const c=channel("remove"),events=[];
++    const b=()=>events.push("b"),a=()=>{events.push("a");c.unsubscribe(b)};
++    c.subscribe(a);c.subscribe(b);c.publish(1);c.publish(2);
++    out.push(events,c._subscribers.length,c.hasSubscribers);
++  } else if (kind === "snapshot-add") {
++    const c=channel("add"),events=[];
++    let once=false;
++    c.subscribe(()=>{events.push("a");if(!once){once=true;c.subscribe(()=>events.push("b"))}});
++    c.publish(1);c.publish(2);out.push(events,c._subscribers.length);
++  } else if (kind === "live-length") {
++    const c=channel("length");c.subscribe(()=>{});const active=Object.getPrototypeOf(c);
++    const events=[];let reads=0;
++    const list={0(){events.push("0")},1(){events.push("1")},get length(){
++      events.push("length");return {valueOf(){events.push("coerce");return ++reads===1?2:0}}}};
++    active.publish.call({_subscribers:list,name:"custom"},23);
++    out.push(events);
++  } else if (kind === "null-snapshot") {
++    const c=channel("null");c.subscribe(()=>{});const publish=c.publish;
++    for(const value of [undefined,null]) out.push(publish.call({_subscribers:value},1));
++    out.push(dcReports().length);
++  } else if (kind === "subscriber-error") {
++    const c=channel("error"),events=[];
++    c.subscribe(()=>{events.push("throw");throw dcError});
++    c.subscribe(()=>events.push("continue"));c.publish(1);
++    out.push(events,dcReports().length);
++    const previous=dcFinish;dcFinish=()=>{const r=dcReports();assert(r.length===1&&r[0][0]===dcError,"original deferred reason");return previous()};
++  } else if (kind === "name-getter-error") {
++    const c=channel("name");c.subscribe(()=>out.push("unreachable"));
++    Object.defineProperty(c,"name",{get(){throw dcError}});
++    c.publish(1);out.push(dcReports().length);
++    const previous=dcFinish;dcFinish=()=>{assert(dcReports()[0][0]===dcError,"name getter reason");return previous()};
++  } else if (kind === "next-tick-callee") {
++    const c=channel("tick"),events=[];c.subscribe(()=>{throw dcError});c.subscribe(()=>events.push("after"));
++    Object.defineProperty(P,"nextTick",{configurable:true,get(){events.push("get");throw dcError}});
++    out.push(reason(()=>c.publish(1))===dcError,events,dcReports().length);
++  } else if (kind === "next-tick-reentry") {
++    const c=channel("tick-reentry"),events=[],original=P.nextTick;
++    let nested=false;c.subscribe(()=>{events.push(nested?"inner":"outer");if(!nested)throw dcError});
++    P.nextTick=function(callback){events.push(this===P,arguments.length,callback.name,callback.length);
++      nested=true;c.publish(2);nested=false;return Reflect.apply(original,this,[callback])};
++    c.publish(1);out.push(events);
++  } else if (kind === "stores-only") {
++    const c=channel("stores"),s={run(v,next){out.push(v);return next()}};
++    c.bindStore(s);out.push(c.hasSubscribers,c._subscribers.length,c._stores.size);
++    out.push(c.runStores(7,()=>11));
++    out.push(c.unbindStore(s),c.hasSubscribers,c._stores===undefined,c.unbindStore(s));
++  } else if (kind === "store-replacement") {
++    const c=channel("replace"),events=[],s={run(v,next){events.push(v);return next()}};
++    c.bindStore(s,d=>d+1);c.bindStore(s,d=>d+2);out.push(c._stores.size,c.hasSubscribers);
++    out.push(c.runStores(5,()=>13),events,c.unbindStore(s),c.hasSubscribers);
++  } else if (kind === "store-order") {
++    const c=channel("order"),events=[];let context="";
++    const make=n=>({run(v,next){const old=context;context+=n+v;events.push("enter:"+n+":"+v);
++      try{return next()}finally{events.push("leave:"+n);context=old}}});
++    c.subscribe((d,n)=>events.push("publish:"+context+":"+d+":"+n));
++    c.bindStore(make("a"),d=>{events.push("transform:a");return d+1});
++    c.bindStore(make("b"),d=>{events.push("transform:b");return d+2});
++    out.push(c.runStores(3,()=>{events.push("fn:"+context);return 17}),events,context);
++  } else if (kind === "rest-call") {
++    const c=channel("rest"),receiver={},data={};
++    c.subscribe(()=>{});
++    const iterable=Array.prototype[Symbol.iterator];
++    Array.prototype[Symbol.iterator]=function(){throw Error("rest must not iterate")};
++    try { out.push(c.runStores(data,function(a,b){return [this===receiver,arguments.length,a,b]},receiver,19,23)); }
++    finally {Array.prototype[Symbol.iterator]=iterable}
++  } else if (kind === "transform-error") {
++    const c=channel("transform"),events=[];
++    c.subscribe(()=>events.push("publish"));
++    c.bindStore({run(v,next){events.push("inner:"+v);return next()}},d=>d+1);
++    c.bindStore({run(){events.push("unreachable")}},()=>{events.push("throw");throw dcError});
++    out.push(c.runStores(5,()=>{events.push("fn");return 29}),events,dcReports().length);
++  } else if (kind === "noncallable-transform") {
++    const c=channel("invalid-transform");c.bindStore({run(){out.push("unreachable")}},null);
++    out.push(c.runStores(1,()=>31));const previous=dcFinish;
++    dcFinish=()=>{const r=dcReports();assert(r.length===1&&r[0][0] instanceof TypeError,"transform TypeError");return previous()};
++  } else if (kind === "store-error") {
++    const c=channel("store-error");c.bindStore({run(){throw dcError}});
++    out.push(reason(()=>c.runStores(1,()=>out.push("unreachable")))===dcError,dcReports().length);
++  } else if (kind === "store-method-live") {
++    const c=channel("live-store"),events=[],store={get run(){events.push("run:get");return function(v,next){
++      events.push(this===store,v);return next()}}};
++    c.bindStore(store,d=>{events.push("transform");return d*2});
++    out.push(c.runStores(4,()=>37),events);
++  } else if (kind === "entries-next-cache") {
++    const c=channel("iterator"),events=[];c.subscribe(()=>{});
++    let next=0;const store={run(v,fn){events.push(v);return fn()}};
++    const iterator={next(){next++;events.push("next:"+next);
++      this.next=()=>{throw Error("recached next")};
++      return next===1?{done:false,value:[store,d=>d+3]}:{done:true}}};
++    c._stores={entries(){events.push("entries");return {[Symbol.iterator](){events.push("iterator");return iterator}}}};
++    out.push(c.runStores(5,()=>41),events);
++  } else if (kind === "entries-indexed") {
++    const c=channel("indexed"),events=[];c.subscribe(()=>{});
++    const entry={get 0(){events.push("0");return {run(v,n){events.push(v);return n()}}},
++      get 1(){events.push("1");return d=>d+4},[Symbol.iterator](){throw Error("entry must use indexed reads")}};
++    c._stores={entries(){return [entry]}};
++    out.push(c.runStores(6,()=>43),events);
++  } else if (kind === "iterator-next-error") {
++    const c=channel("next-error"),events=[];c.subscribe(()=>{});
++    const iterator={
++      next(){events.push("next");throw dcError},
++      return(){events.push("return");return {}}
++    };
++    c._stores={entries(){return {[Symbol.iterator](){return iterator}}}};
++    out.push(reason(()=>c.runStores(1,()=>0))===dcError,events);
++  } else if (kind === "iterator-body-error") {
++    const c=channel("body-error"),events=[];c.subscribe(()=>{});
++    const iterator={
++      next(){return {done:false,value:{get 0(){events.push("0");throw dcError}}}},
++      return(){events.push("return");return 17}
++    };
++    c._stores={entries(){return {[Symbol.iterator](){return iterator}}}};
++    out.push(reason(()=>c.runStores(1,()=>0))===dcError,events);
++  } else if (kind === "iterator-close-error") {
++    const c=channel("close-error"),events=[];c.subscribe(()=>{});
++    const iterator={
++      next(){return {done:false,value:{get 1(){throw dcError},0:{}}}},
++      return(){events.push("return");throw {tag:"secondary"}}
++    };
++    c._stores={entries(){return {[Symbol.iterator](){return iterator}}}};
++    out.push(reason(()=>c.runStores(1,()=>0))===dcError,events);
++  } else if (kind === "generic-store-ops") {
++    const c=channel("generic"),events=[];c.subscribe(()=>{});const ap=Object.getPrototypeOf(c);
++    const stores={has(k){events.push("has",k);return false},set(k,t){events.push("set",k,t);return this},
++      delete(k){events.push("delete",k);return false},get size(){events.push("size");return 0}};
++    const receiver={_stores:stores,_subscribers:[],name:"generic"};
++    ap.bindStore.call(receiver,"s","t");
++    stores.has=function(k){events.push("has2",k);return true};
++    out.push(ap.unbindStore.call(receiver,"s"),events,Object.getPrototypeOf(receiver)===D.Channel.prototype);
++  } else if (kind === "primordial-poison") {
++    const c=channel("poison"),events=[],fn=()=>events.push("called");
++    const arraySaved=[Array.prototype.slice,Array.prototype.indexOf,Array.prototype.push];
++    const objectSaved=[Object.getPrototypeOf,Object.setPrototypeOf];const poison=()=>{throw Error("late primordial")};
++    Array.prototype.slice=Array.prototype.indexOf=Array.prototype.push=poison;
++    Object.getPrototypeOf=Object.setPrototypeOf=poison;
++    try { c.subscribe(fn);c.publish(1);out[0]=c.unsubscribe(fn);out[1]=c.hasSubscribers; }
++    finally { [Array.prototype.slice,Array.prototype.indexOf,Array.prototype.push]=arraySaved;
++      [Object.getPrototypeOf,Object.setPrototypeOf]=objectSaved; }
++    // The subscriber deliberately invokes the poisoned public push and defers
++    // that actual error; registry/prototype operations still use primordials.
++    out.push(events.length);
++  } else if (kind === "prototype-set-order") {
++    const events=[],target={};
++    const p=new Proxy(target,{setPrototypeOf(t,v){events.push("prototype");return Reflect.setPrototypeOf(t,v)},
++      set(t,k,v,r){events.push(k);return Reflect.set(t,k,v,r)}});
++    D.Channel.prototype.subscribe.call(p,()=>{});
++    out.push(events,Object.getPrototypeOf(target)!==D.Channel.prototype,target.hasSubscribers,target._subscribers.length);
++  } else if (kind === "message-lifetime") {
++    const c=channel("message-life"),events=[];c.subscribe(()=>{});
++    let n=0;c._subscribers={get length(){events.push("length:"+dcRetired());return n++<2?2:0},
++      get 0(){events.push("get0:"+dcRetired());return dcMessageProbe()},
++      get 1(){events.push("get1:"+dcRetired());return ()=>events.push("second")}};
++    c.publish(1);out.push(events,dcRetired());
++  } else if (kind === "entry-lifetime") {
++    const c=channel("entry-life"),events=[];c.subscribe(()=>{});
++    const store={run(v,n){events.push("run:"+dcRetired());return n()}};
++    let n=0;c._stores={entries(){return {[Symbol.iterator](){return {
++      next(){return n++===0?{done:false,value:dcEntryProbe(store,d=>{events.push("transform:"+dcRetired());return d})}:{done:true}}
++    }}}}};
++    out.push(c.runStores(1,()=>{events.push("fn:"+dcRetired());return 47}),events,dcRetired());
++  } else if (kind === "catch-lifetime") {
++    const c=channel("catch-life"),events=[];c.subscribe(()=>{throw dcEntryProbe({},undefined)});
++    c.subscribe(()=>events.push("second:"+dcRetired()));
++    // The observer binding retains the reason, then dcDropReports releases it.
++    P.nextTick=function(callback){events.push("schedule:"+dcRetired());callback();dcDropReports()};
++    c.publish(1);out.push(events,dcRetired());
++  } else if (kind === "store-get-lifetime") {
++    const c=channel("store-get-life"),events=[];c.subscribe(()=>{});
++    c._stores={entries(){return {[Symbol.iterator](){return {
++      next(){return {done:false,value:{get 0(){return dcEntryProbe()},get 1(){throw dcError}}}},
++      return(){events.push("close:"+dcRetired());return {done:true}}
++    }}}}};
++    out.push(reason(()=>c.runStores(1,()=>0))===dcError,events,dcRetired());
++  } else if (kind === "slice-argument-lifetime") {
++    const c=channel("slice-life"),events=[];c.subscribe(()=>{});const ap=Object.getPrototypeOf(c);
++    let current,assigned=false;
++    const receiver={name:"slice-life",get _subscribers(){
++      if(assigned)return current;
++      const value=dcEntryProbe();Object.defineProperty(value,"length",{value:0});return value;
++    },set _subscribers(value){events.push("set:"+dcRetired());current=value;assigned=true}};
++    ap.subscribe.call(receiver,()=>{});
++    out.push(events,dcRetired(),current.length);
++  } else if (kind === "pending-reason") {
++    const c=channel("pending");c.subscribe(()=>dcPending());c.subscribe(()=>out.push("continued"));
++    c.publish(1);const previous=dcFinish;
++    dcFinish=()=>{assert(dcReports()[0][0]===dcError,"actual pending reason");return previous()};
++  } else {
++    throw Error("unknown diagnostics control " + kind);
++  }
++};

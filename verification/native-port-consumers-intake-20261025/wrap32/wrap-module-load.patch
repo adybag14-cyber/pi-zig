@@ -1,0 +1,449 @@
+--- a/build.zig
++++ b/build.zig
+@@ -5713,6 +5713,22 @@
+     }
+ 
+     if (native_node_network != null) {
++        const commonjs_wrap_load = b.addTest(.{
++            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_commonjs_wrap_load_test.zig"), .target = target, .optimize = optimize }),
++            .filters = &.{"native actual CommonJS wrap load"}, .use_llvm = use_llvm,
++        });
++        linkQuickJs(b, commonjs_wrap_load.root_module, quickjs, sqlite_lib_dir);
++        linkTypeScriptParser(b, commonjs_wrap_load.root_module, typescript_parser);
++        linkSqlite(commonjs_wrap_load.root_module, sqlite_lib_dir, sqlite_library);
++        commonjs_wrap_load.root_module.addImport("catalog_tool", catalog_tool);
++        if (target.result.os.tag == .windows) {
++            commonjs_wrap_load.root_module.linkSystemLibrary("advapi32", .{});
++            commonjs_wrap_load.root_module.linkSystemLibrary("userenv", .{});
++        }
++        b.step("build-native-node-commonjs-wrap-load", "Install thirty-two actual CommonJS wrap load controls without execution").dependOn(&b.addInstallArtifact(commonjs_wrap_load, .{ .dest_sub_path = b.fmt("native-node-commonjs-wrap-load{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
++    }
++
++    if (native_node_network != null) {
+         const native_corruption_probe = b.addExecutable(.{
+             .name = "test",
+             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_corruption_probe.zig"), .target = target, .optimize = optimize }),
+--- /dev/null
++++ b/src/extensions/native_node_commonjs_wrap_load.zig
+@@ -0,0 +1,175 @@
++// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
++//! Original loader.js timer cells, lazy module.require channel and wrapModuleLoad.
++//! The canonical assembler supplies the actual debugWithTimer and tracingChannel
++//! declarations. This owner neither publishes a partial node:module nor invents
++//! tracing channels, clocks, enabled flags, errors or process bindings.
++const a = @import("native_node_argument_values.zig");
++const c = a.c;
++const Scope = a.Scope;
++const functions = @import("native_node_module_callable.zig");
++const modules = @import("native_node_module_constructor.zig");
++const sync = @import("native_sync_arguments.zig");
++const guest = @import("native_sdk_guest_operation.zig");
++const ModuleFrame = a.frames.Frame(enum { start_timer, end_timer, channel_value, channel_initialized });
++const CallFrame = a.frames.Frame(enum { log_label, trace_label, channel });
++pub const Inputs = struct {
++    module_constructor: c.JSValue,
++    debug_with_timer: c.JSValue,
++    tracing_channel: c.JSValue,
++};
++/// Returns the ordinary original wrapModuleLoad declaration. Inputs are
++/// retained through its complete lifetime; its timer callback shares mutable
++/// lexical cells, including updates made during startTimer itself.
++pub fn create(engine: *a.v.em.Engine, inputs: Inputs) !c.JSValue {
++    return a.expression(engine, createBody, .{inputs});
++}
++fn createBody(s: *Scope, inputs: Inputs) anyerror!c.JSValue {
++    const actual = try s.own(try modules.actualConstructor(s.engine));
++    if (!s.equal(actual, inputs.module_constructor)) return error.ActualCanonicalModuleRequired;
++    if (!c.JS_IsFunction(s.engine.context, inputs.debug_with_timer) or
++        !c.JS_IsFunction(s.engine.context, inputs.tracing_channel))
++        return error.ActualModuleLoadTracingDeclarationsRequired;
++    const frame = try ModuleFrame.create(&s.values);
++    const callback = try s.own(try functions.createWithArguments(s.engine, "", 2, false,
++        .{ .formal_count = 2, .callback = updateTimers }, &.{frame.owner}));
++    // The actual initializer precedes both destructuring reads. A synchronous
++    // updater call observes the original TDZ rather than fabricating timers.
++    _ = try a.expression(s.engine, installTimers, .{inputs.debug_with_timer, callback, frame});
++    try frame.clear(.channel_value);
++    try frame.copy(.channel_initialized, a.boolean(s, false));
++    return functions.createWithArguments(s.engine, "wrapModuleLoad", 4, true,
++        .{ .formal_count = 4, .callback = invoke, .hooks = sync.frameHooks(CallFrame) },
++        &.{actual, inputs.tracing_channel, frame.owner});
++}
++fn initializeTimers(s: *Scope, factory: c.JSValue, callback: c.JSValue) !c.JSValue {
++    return a.duplicate(s.engine, try s.call(factory, c.pi_js_undefined(),
++        &.{try s.text("module_timer"), callback}));
++}
++fn installTimers(s: *Scope, factory: c.JSValue, callback: c.JSValue, frame: *ModuleFrame) !c.JSValue {
++    const result = try s.own(try a.expression(s.engine, initializeTimers, .{factory, callback}));
++    const receiver = try guest.toObject(&s.values, result);
++    try frame.take(.start_timer, a.field(s.engine, receiver, "startTimer"));
++    try frame.take(.end_timer, a.field(s.engine, receiver, "endTimer"));
++    return c.pi_js_undefined();
++}
++fn updateTimers(engine: *a.v.em.Engine, _: c.JSValue, args: *sync.Arguments,
++    roots: []const c.JSValue) anyerror!c.JSValue
++{
++    const frame = ModuleFrame.from(roots[0]);
++    // Assignment checks initialization without retaining the displaced value.
++    // Its retirement occurs at the exact assignment boundary in frame.copy.
++    return a.expression(engine, updateBody, .{frame, args});
++}
++fn updateBody(s: *Scope, frame: *ModuleFrame, args: *sync.Arguments) !c.JSValue {
++    if (!frame.ready[0]) {
++        const generation = try s.beforeAllocation();
++        _ = try s.checkedAllocation(c.JS_ThrowReferenceError(s.engine.context, "Cannot access 'startTimer' before initialization"), generation);
++        unreachable;
++    }
++    try frame.copy(.start_timer, args.get(0));
++    if (!frame.ready[1]) {
++        const generation = try s.beforeAllocation();
++        _ = try s.checkedAllocation(c.JS_ThrowReferenceError(s.engine.context, "Cannot access 'endTimer' before initialization"), generation);
++        unreachable;
++    }
++    try frame.copy(.end_timer, args.get(1));
++    return c.pi_js_undefined();
++}
++fn optional(s: *Scope, input: c.JSValue, name: [*:0]const u8) !c.JSValue {
++    return if (a.v.nullish(input)) c.pi_js_undefined() else s.get(input, name);
++}
++fn parentText(s: *Scope, parent: c.JSValue) !c.JSValue {
++    const id = try optional(s, parent, "id");
++    return a.duplicate(s.engine, if (s.truthy(id)) try s.toString(id) else try s.text(""));
++}
++fn requestText(s: *Scope, request: c.JSValue) !c.JSValue {
++    return a.duplicate(s.engine, try s.toString(request));
++}
++fn logLabel(s: *Scope, args: *sync.Arguments) !c.JSValue {
++    // Independent template substitutions retire their original object before
++    // the next substitution; only the resulting strings remain here.
++    const parent = try s.own(try a.expression(s.engine, parentText, .{args.get(1)}));
++    const prefix = try a.add(s, try a.add(s, try s.text("["), parent), try s.text("] ["));
++    const request = try s.own(try a.expression(s.engine, requestText, .{args.get(0)}));
++    return a.duplicate(s.engine, try a.add(s, try a.add(s, prefix, request), try s.text("]")));
++}
++fn traceLabel(s: *Scope, args: *sync.Arguments) !c.JSValue {
++    const request = try s.own(try a.expression(s.engine, requestText, .{args.get(0)}));
++    return a.duplicate(s.engine, try a.add(s,
++        try a.add(s, try s.text("require('"), request), try s.text("')")));
++}
++fn channel(s: *Scope, roots: []const c.JSValue) !c.JSValue {
++    const frame = ModuleFrame.from(roots[2]);
++    if (!s.truthy(frame.get(.channel_initialized))) {
++        const produced = try a.call(s.engine, roots[1], c.pi_js_undefined(), &.{try s.text("module.require")});
++        try frame.take(.channel_value, produced);
++        try frame.copy(.channel_initialized, a.boolean(s, true));
++    }
++    return a.duplicate(s.engine, frame.get(.channel_value));
++}
++fn timer(s: *Scope, roots: []const c.JSValue, frame: *CallFrame, comptime ending: bool) !c.JSValue {
++    const owner = ModuleFrame.from(roots[2]);
++    const callable = try s.own(a.duplicate(s.engine, if (ending) owner.get(.end_timer) else owner.get(.start_timer)));
++    // Resolve the live lexical callable before arguments. A first startTimer
++    // may update endTimer through the original lazy callback.
++    _ = try s.call(callable, c.pi_js_undefined(), &.{frame.get(.log_label), frame.get(.trace_label)});
++    return c.pi_js_undefined();
++}
++fn subscribers(s: *Scope, frame: *CallFrame) !c.JSValue {
++    return a.boolean(s, s.truthy(try s.get(frame.get(.channel), "hasSubscribers")));
++}
++fn load(s: *Scope, args: *sync.Arguments, roots: []const c.JSValue, traced: bool) !c.JSValue {
++    if (traced) {
++        const current_channel = try s.own(try a.expression(s.engine, channel, .{roots}));
++        const trace = try s.get(current_channel, "traceSync");
++        const loader = try s.get(roots[0], "_load");
++        const context = try s.objectProto(c.pi_js_null());
++        try s.define(context, "parentFilename", try optional(s, args.get(1), "filename"), c.JS_PROP_C_W_E);
++        try s.define(context, "id", args.get(0), c.JS_PROP_C_W_E);
++        return a.duplicate(s.engine, try s.call(trace, current_channel,
++            &.{loader, context, roots[0], args.get(0), args.get(1), args.get(2), args.get(3)}));
++    }
++    const loader = try s.get(roots[0], "_load");
++    return a.duplicate(s.engine, try s.call(loader, roots[0],
++        &.{args.get(0), args.get(1), args.get(2), args.get(3)}));
++}
++fn tryBody(engine: *a.v.em.Engine, args: *sync.Arguments, roots: []const c.JSValue,
++    frame: *CallFrame) !c.JSValue
++{
++    const traced = try a.condition(engine, subscribers, .{frame});
++    return a.expression(engine, load, .{args, roots, traced});
++}
++fn finishFinally(engine: *a.v.em.Engine, pending: anytype, roots: []const c.JSValue,
++    frame: *CallFrame) !c.JSValue
++{
++    // A completed ordinary throw is data while Source finally executes.
++    // Actual fatal events still unwind without executing additional guest code.
++    var cleanup = a.owned.Completion.initValue(engine, a.expression(engine, timer, .{roots, frame, true}));
++    const result = cleanup.finishAction() catch |err| {
++        var fatal = a.owned.Completion.initValue(engine, @as(anyerror!c.JSValue, err));
++        switch (pending) { .returned, .thrown => |value| fatal.release(value), .awaited => unreachable }
++        return fatal.finishValue();
++    };
++    var selected = a.owned.Completion.initAction(engine, if (result == .thrown) result else pending);
++    if (result == .thrown) {
++        switch (pending) { .returned, .thrown => |value| selected.release(value), .awaited => unreachable }
++    } else selected.release(result.returned);
++    return selected.finishValue();
++}
++fn invoke(engine: *a.v.em.Engine, _: c.JSValue, args: *sync.Arguments,
++    roots: []const c.JSValue) anyerror!c.JSValue
++{
++    return a.expression(engine, body, .{args, roots});
++}
++fn body(s: *Scope, args: *sync.Arguments, roots: []const c.JSValue) anyerror!c.JSValue {
++    const frame = try args.createFrame(&s.values, CallFrame);
++    try frame.take(.log_label, a.expression(s.engine, logLabel, .{args}));
++    try frame.take(.trace_label, a.expression(s.engine, traceLabel, .{args}));
++    try frame.take(.channel, a.expression(s.engine, channel, .{roots}));
++    _ = try a.expression(s.engine, timer, .{roots, frame, false});
++    // startTimer is outside Source try/finally. Get hasSubscribers, traceSync,
++    // _load and all calls inside it are covered by the single endTimer call.
++    var operation = a.owned.Completion.initValue(s.engine, tryBody(s.engine, args, roots, frame));
++    const pending = try operation.finishAction();
++    return finishFinally(s.engine, pending, roots, frame);
++}
+--- /dev/null
++++ b/src/native_node_commonjs_wrap_load_test.zig
+@@ -0,0 +1,92 @@
++//! Differential controls use the original retained Node source in the same
++//! linked VM. Input functions are observable test seams, never public builtin
++//! substitutes; the Module constructor itself is the genuine native owner.
++const std = @import("std");
++const a = @import("extensions/native_node_argument_values.zig");
++const c = a.c;
++const core = @import("extensions/native_node_commonjs_module_core.zig");
++const functions = @import("extensions/native_node_module_callable.zig");
++const wrapping = @import("extensions/native_node_commonjs_wrap_load.zig");
++const Fixture = struct {
++    engine: *a.v.em.Engine,
++    environment: std.process.Environ.Map,
++    module: ?c.JSValue = null,
++    fn init(self: *Fixture) !void {
++        self.* = .{ .engine = undefined, .environment = .init(std.testing.allocator) };
++        errdefer self.environment.deinit();
++        self.engine = try a.v.em.Engine.init(std.testing.allocator, .{});
++        errdefer self.engine.deinit();
++        try @import("extensions/timers.zig").install(self.engine, std.testing.io);
++        try @import("extensions/native_process.zig").install(self.engine, std.testing.io,
++            &self.environment, &.{"actual-wrap-load-controls"});
++        try @import("extensions/node_path.zig").install(self.engine, std.testing.io);
++        try @import("extensions/node_url.zig").install(self.engine);
++        const process = (try self.engine.requireBuiltin("node:process")) orelse return error.ActualWrapProcessRequired;
++        defer self.engine.freeValue(process);
++        try @import("extensions/node_fs.zig").installWithStreams(self.engine, std.testing.io, process);
++        self.module = try core.create(self.engine);
++        errdefer { self.engine.freeValue(self.module.?); self.module = null; }
++        _ = try a.expression(self.engine, expose, .{self.module.?});
++        try self.run(@embedFile("extensions/fixtures/node-commonjs-wrap-load-original.js"));
++        try self.run(@embedFile("extensions/fixtures/node-commonjs-wrap-load-controls.js"));
++    }
++    fn expose(s: *a.Scope, module: c.JSValue) !c.JSValue {
++        const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));
++        const factory = try s.own(try functions.create(s.engine, "makeNativeModuleLoad", 2, false, nativeFactory, &.{module}));
++        try s.define(global, "makeNativeModuleLoad", factory, c.JS_PROP_C_W_E);
++        try s.define(global, "actualWrapModule", module, c.JS_PROP_C_W_E);
++        return c.pi_js_undefined();
++    }
++    fn nativeFactory(engine: *a.v.em.Engine, _: c.JSValue, args: []const c.JSValue,
++        roots: []const c.JSValue) !c.JSValue
++    {
++        return wrapping.create(engine, .{ .module_constructor = roots[0],
++            .debug_with_timer = a.arg(args, 0), .tracing_channel = a.arg(args, 1) });
++    }
++    fn run(self: *Fixture, source: []const u8) !void {
++        const result = try self.engine.eval(source, "native-wrap-load-controls.js", c.JS_EVAL_TYPE_GLOBAL);
++        self.engine.freeValue(result);
++    }
++    fn deinit(self: *Fixture) void {
++        if (self.module) |value| self.engine.freeValue(value);
++        self.engine.deinit();
++        self.environment.deinit();
++    }
++};
++fn compare(comptime index: usize) !void {
++    var f: Fixture = undefined; try f.init(); defer f.deinit();
++    try f.run(std.fmt.comptimePrint("if(runWrapLoadCase({d})!==true)throw Error('missing comparison');", .{index}));
++}
++
++test "native actual CommonJS wrap load preserves ordinary declaration metadata" { try compare(0); }
++test "native actual CommonJS wrap load dispatches unsubscribed calls with exact receiver arguments and return identity" { try compare(1); }
++test "native actual CommonJS wrap load dispatches subscribed calls with context descriptors and early callee lookup" { try compare(2); }
++test "native actual CommonJS wrap load preserves independent string-hint label conversions in order" { try compare(3); }
++test "native actual CommonJS wrap load accepts null optional parent" { try compare(4); }
++test "native actual CommonJS wrap load keeps startTimer outside try finally" { try compare(5); }
++test "native actual CommonJS wrap load runs finally after subscribers getter throws" { try compare(6); }
++test "native actual CommonJS wrap load runs finally after Module load getter throws" { try compare(7); }
++test "native actual CommonJS wrap load preserves loader throw identity through successful finally" { try compare(8); }
++test "native actual CommonJS wrap load finally throw replaces successful return" { try compare(9); }
++test "native actual CommonJS wrap load finally throw replaces earlier ordinary throw" { try compare(10); }
++test "native actual CommonJS wrap load runs finally after traceSync getter throws" { try compare(11); }
++test "native actual CommonJS wrap load runs finally after traceSync call throws" { try compare(12); }
++test "native actual CommonJS wrap load uses timer callbacks updated during start and on subsequent calls" { try compare(13); }
++test "native actual CommonJS wrap load uses timer callback updated during loader execution" { try compare(14); }
++test "native actual CommonJS wrap load retries failed lazy channel initialization" { try compare(15); }
++test "native actual CommonJS wrap load preserves successful outer lazy assignment after reentry" { try compare(16); }
++test "native actual CommonJS wrap load caches undefined lazy channel value" { try compare(17); }
++test "native actual CommonJS wrap load defines traced context own writable enumerable configurable fields" { try compare(18); }
++test "native actual CommonJS wrap load preserves ordinary construction for primitive loader result" { try compare(19); }
++test "native actual CommonJS wrap load observes timer initialization temporal dead zone" { try compare(20); }
++test "native actual CommonJS wrap load observes partial timer destructuring temporal dead zone" { try compare(21); }
++test "native actual CommonJS wrap load reads live subscriber state for each invocation" { try compare(22); }
++test "native actual CommonJS wrap load throws for noncallable start without running finally" { try compare(23); }
++test "native actual CommonJS wrap load runs finally after parent filename getter throws" { try compare(24); }
++test "native actual CommonJS wrap load unsubscribed path skips trace and filename getters" { try compare(25); }
++test "native actual CommonJS wrap load uses authenticated Module lexical identity despite mutable Module property" { try compare(26); }
++test "native actual CommonJS wrap load rejects Symbol template interpolation before channel and timer calls" { try compare(27); }
++test "native actual CommonJS wrap load keeps independent frames through recursive loader execution" { try compare(28); }
++test "native actual CommonJS wrap load accepts truthy nonboolean subscriber state" { try compare(29); }
++test "native actual CommonJS wrap load accepts undefined optional parent" { try compare(30); }
++test "native actual CommonJS wrap load preserves coercion failure before lazy channel acquisition" { try compare(31); }
+--- /dev/null
++++ b/src/extensions/fixtures/node-commonjs-wrap-load-original.js
+@@ -0,0 +1,47 @@
++"use strict";
++globalThis.makeOriginalModuleLoad = function(debugWithTimer, tracingChannel) {
++const Module = actualWrapModule;
++function getLazy(initializer) {
++  let value;
++  let initialized = false;
++  return function() {
++    if (initialized === false) {
++      value = initializer();
++      initialized = true;
++    }
++    return value;
++  };
++}
++
++let { startTimer, endTimer } = debugWithTimer('module_timer', (start, end) => {
++  startTimer = start;
++  endTimer = end;
++});
++
++const onRequire = getLazy(() => tracingChannel('module.require'));
++
++function wrapModuleLoad(request, parent, isMain, options) {
++  const logLabel = `[${parent?.id || ''}] [${request}]`;
++  const traceLabel = `require('${request}')`;
++  const channel = onRequire();
++
++  startTimer(logLabel, traceLabel);
++
++  try {
++    if (channel.hasSubscribers) {
++      return onRequire().traceSync(Module._load, {
++        __proto__: null,
++        parentFilename: parent?.filename,
++        id: request,
++      }, Module, request, parent, isMain, options);
++    }
++    // No subscribers, skip the wrapping to avoid clobbering stack traces
++    // and debugging steps.
++    return Module._load(request, parent, isMain, options);
++  } finally {
++    endTimer(logLabel, traceLabel);
++  }
++}
++
++return wrapModuleLoad;
++};
+--- /dev/null
++++ b/src/extensions/fixtures/node-commonjs-wrap-load-controls.js
+@@ -0,0 +1,98 @@
++"use strict";
++function wrapLoadMeasure(factory, scenario) {
++  const events = [], outcomes = [];
++  const reasons = { load:{kind:"load"}, end:{kind:"end"}, start:{kind:"start"}, getter:{kind:"getter"}, channel:{kind:"channel"} };
++  const returned = {returned:true};
++  let fn, update, initializations=0, channelCalls=0, coercions=0, loads=0;
++  const text = x => x === undefined ? "$undefined" : x === null ? "$null" : typeof x === "object" ? x === parent ? "$parent" : x === request ? "$request" : "$object" : x;
++  function caught(e) { for (const [name, value] of Object.entries(reasons)) if (e===value) return name; return e && e.name || typeof e; }
++  let request = "alpha", parent = {id:"parent",filename:"parent.cjs"};
++  const options = {token:true};
++  function start(label, trace) {
++    events.push(["start",label,trace]);
++    if (scenario===5) throw reasons.start;
++    if (scenario===13) update(start, function(l,t){events.push(["updated-end",l,t])});
++  }
++  function end(label, trace) {
++    events.push(["end",label,trace]);
++    if (scenario===9 || scenario===10) throw reasons.end;
++  }
++  function timerFactory(label, callback) {
++    events.push(["timerFactory",label]); update=callback;
++    if (scenario===20) callback(start,end);
++    if (scenario===23) return {startTimer:17,endTimer:end};
++    if (scenario===21) return {get startTimer(){events.push(["get-start"]);return start},get endTimer(){events.push(["get-end"]);callback(start,end);return end}};
++    return {get startTimer(){events.push(["get-start"]);return start},get endTimer(){events.push(["get-end"]);return end}};
++  }
++  function loader(req, par, main, opts) {
++    loads++;events.push(["load",this===actualWrapModule,arguments.length,text(req),text(par),text(main),opts===options]);
++    if (scenario===8||scenario===10) throw reasons.load;
++    if (scenario===14) update(start,function(l,t){events.push(["load-updated-end",l,t])});
++    if (scenario===28 && req==="outer") fn("inner",par,false,opts);
++    return scenario===19 ? 7 : returned;
++  }
++  Object.defineProperty(actualWrapModule,"_load",{configurable:true,get(){
++    events.push(["get-load"]);if(scenario===7)throw reasons.getter;return loader;
++  }});
++  const traceSync = function(f, context, self, ...args) {
++    events.push(["trace",this===traceChannel,context.parentFilename,text(context.id),Object.getPrototypeOf(context)===null,Object.keys(context).join(","),Object.values(Object.getOwnPropertyDescriptors(context)).every(d=>d.writable&&d.enumerable&&d.configurable)]);
++    if (scenario===12) throw reasons.load;
++    return Reflect.apply(f,self,args);
++  };
++  const traceChannel = {
++    get hasSubscribers(){events.push(["subscribers"]);if(scenario===6)throw reasons.getter;return scenario===22 ? loads===0 : [2,11,12,18,24].includes(scenario) ? true : scenario===29 ? {truthy:true} : false},
++    get traceSync(){events.push(["get-trace"]);if(scenario===11)throw reasons.getter;return traceSync},
++  };
++  function tracingChannel(name) {
++    channelCalls++;events.push(["channel",name,channelCalls]);
++    if(scenario===15&&channelCalls===1)throw reasons.channel;
++    if(scenario===16&&channelCalls===1){fn("inner",parent,false,options);return {get hasSubscribers(){events.push(["outer-subscribers"]);return false}}}
++    if(scenario===17)return undefined;
++    return traceChannel;
++  }
++  if(scenario===3) {
++    parent={get id(){events.push(["parent-id"]);return {[Symbol.toPrimitive](hint){events.push(["parent-coerce",hint]);return "P"}}},filename:"parent.cjs"};
++    request={[Symbol.toPrimitive](hint){events.push(["request-coerce",hint,++coercions]);return "R"+coercions}};
++  }
++  if(scenario===4)parent=null;
++  if(scenario===25) {
++    parent={id:0,get filename(){throw Error("untraced filename was read")}};
++    Object.defineProperty(traceChannel,"traceSync",{get(){throw Error("untraced trace was read")}});
++  }
++  if(scenario===2||scenario===24) {
++    Object.defineProperty(parent,"filename",{get(){events.push(["filename"]);if(scenario===24)throw reasons.getter;Object.defineProperty(actualWrapModule,"_load",{value(){throw Error("late loader used")},configurable:true,writable:true});return "observed.cjs"}});
++  }
++  if(scenario===27)request=Symbol("request");
++  if(scenario===28)request="outer";
++  if(scenario===30)parent=undefined;
++  if(scenario===31)request={toString(){events.push(["coercion-throw"]);throw reasons.getter}};
++  try {
++    fn=factory(timerFactory,tracingChannel);initializations++;
++    if(scenario===0)events.push(["metadata",fn.name,fn.length,Object.hasOwn(fn,"prototype")]);
++    if(scenario===26)actualWrapModule.Module={_load(){throw Error("mutable Module.Module used")}};
++    const count=[13,15,16,17,22].includes(scenario)?2:1;
++    for(let i=0;i<count;i++){
++      try {
++        const result=scenario===19?new fn(request,parent,true,options):fn(request,parent,true,options);
++        outcomes.push(scenario===19?["instance",result instanceof fn]:["return",result===returned]);
++      } catch(e){outcomes.push(["throw",caught(e)])}
++    }
++  } catch(e){outcomes.push(["factory-throw",caught(e)])}
++  delete actualWrapModule.Module;
++  return {events,outcomes,initializations,channelCalls,loads};
++}
++globalThis.runWrapLoadCase = function(scenario) {
++  const baseline = wrapLoadMeasure(makeOriginalModuleLoad,scenario);
++  const actual = wrapLoadMeasure(makeNativeModuleLoad,scenario);
++  if (JSON.stringify(baseline)!==JSON.stringify(actual)) throw Error(JSON.stringify({scenario,baseline,actual}));
++  if(scenario===1 && (actual.loads!==1 || actual.outcomes[0][0]!=="return"))throw Error("direct path vacuous");
++  if(scenario===2 && !actual.events.some(e=>e[0]==="trace"))throw Error("traced path vacuous");
++  if(scenario===5 && actual.events.some(e=>e[0]==="end"))throw Error("start lies outside finally");
++  if(scenario===10 && actual.outcomes[0][1]!=="end")throw Error("finally did not replace throw");
++  if(scenario===13 && !actual.events.some(e=>e[0]==="updated-end"))throw Error("live timer not observed");
++  if(scenario===15 && (actual.channelCalls!==2 || actual.loads!==1))throw Error("lazy retry did not execute");
++  if(scenario===17 && actual.channelCalls!==1)throw Error("undefined cache not retained");
++  if(scenario===20 && actual.outcomes[0][1]!=="ReferenceError")throw Error("initializer TDZ absent");
++  if(scenario===22 && (actual.loads!==2 || actual.events.filter(e=>e[0]==="trace").length!==1 || actual.events.filter(e=>e[0]==="subscribers").length!==2))throw Error("subscriber path transition absent");
++  return true;
++};

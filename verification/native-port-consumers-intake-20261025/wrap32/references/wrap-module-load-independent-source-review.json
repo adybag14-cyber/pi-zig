@@ -1,0 +1,92 @@
+{
+  "status": "independent_source_review_passed_no_native_execution",
+  "utc": "2026-10-25T10:29:24.045443+00:00",
+  "head": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "main_clean": true,
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\source-intake.json",
+    "bytes": 17299,
+    "sha256": "45934437FD09405311AF73F76BE490D01DFA25A9C8B46239BBB945D7898BFE0B"
+  },
+  "checked_pin_versions": 32,
+  "changes": [
+    {
+      "destination_relative_path": "build.zig",
+      "operation": "replace",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\projected\\build.zig",
+        "bytes": 567233,
+        "sha256": "D8C4B443BCFAFF50ABF318294D0134B2D6E92395AB9F68BE62C481D9538CA615"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/native_node_commonjs_wrap_load.zig",
+      "operation": "add",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\projected\\src\\extensions\\native_node_commonjs_wrap_load.zig",
+        "bytes": 9991,
+        "sha256": "3F229D139F71FBF9BED47EE5844BC5B4382DC7CCD7ACDAFEA30587AE9ECCD02E"
+      }
+    },
+    {
+      "destination_relative_path": "src/native_node_commonjs_wrap_load_test.zig",
+      "operation": "add",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\projected\\src\\native_node_commonjs_wrap_load_test.zig",
+        "bytes": 7006,
+        "sha256": "ABF90E82FD57BE325001E8E88653BCE0DB5BB211C341886D464871A6554B4F8C"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/node-commonjs-wrap-load-original.js",
+      "operation": "add",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\node-commonjs-wrap-load-original.js",
+        "bytes": 1248,
+        "sha256": "3E997D71AF2154DF3EB8323A2B8CAC8C3B55646CBE63444E1D6DDEA74BDD93B8"
+      }
+    },
+    {
+      "destination_relative_path": "src/extensions/fixtures/node-commonjs-wrap-load-controls.js",
+      "operation": "add",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\node-commonjs-wrap-load-controls.js",
+        "bytes": 6478,
+        "sha256": "5E4BC8B467152B944E77F433F0487982D371F2C333BFAC469478267373A7DC98"
+      }
+    }
+  ],
+  "raw_original_slices": 4,
+  "original_wrapper_includes_closing_line_259": true,
+  "original_fixture_complete_reconstruction": true,
+  "build_entire_baseline_inverse": true,
+  "build_linkage_exact_watch_adaptation": true,
+  "declared_tests": 32,
+  "test_indices_exact_0_through_31": true,
+  "git_apply_check": {
+    "exit_code": 0,
+    "stderr": ""
+  },
+  "resolved_findings": [
+    "live mutable timer callee is duplicated and Scope-owned before call",
+    "original loader closing brace at line 259 is retained",
+    "subscriber-state control transitions traced to direct and verifies both live Gets"
+  ],
+  "behavior_review": [
+    "genuine Module strict identity and explicit real supplier inputs",
+    "timer destructuring order and partial-initialization TDZ",
+    "independent template string-hint conversions and optional parent short circuit",
+    "successful-only lazy cache including undefined, retry and outer reentry assignment",
+    "traceSync then Module._load then context-property Get order",
+    "startTimer outside Source try/finally and live endTimer inside finally",
+    "ordinary returned/thrown completion precedence with actual fatal completion provenance",
+    "CallFrame synchronous hooks preserve separate recursive invocations"
+  ],
+  "remaining": [
+    "unexecuted native compilation and strict runtime",
+    "real debugWithTimer and canonical tracingChannel suppliers plus assembler wiring"
+  ],
+  "native_or_node_execution": false,
+  "runtime_qualification": false,
+  "product_qualification": false
+}

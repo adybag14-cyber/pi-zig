@@ -1983,6 +1983,34 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-node-abort-uncaught-toggle", "Install five actual Environment abort-toggle controls without running").dependOn(&b.addInstallArtifact(node_abort_uncaught_toggle, .{ .dest_sub_path = b.fmt("native-node-abort-uncaught-toggle{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    const diagnostics_channel_core_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_diagnostics_channel_core_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native diagnostics core"},
+    });
+    linkQuickJs(b, diagnostics_channel_core_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, diagnostics_channel_core_tests.root_module, typescript_parser);
+    linkSqlite(diagnostics_channel_core_tests.root_module, sqlite_lib_dir, sqlite_library);
+    diagnostics_channel_core_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        diagnostics_channel_core_tests.root_module.linkSystemLibrary("advapi32", .{});
+        diagnostics_channel_core_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-diagnostics-channel-core", "Install 47 complete Channel core controls without execution").dependOn(&b.addInstallArtifact(diagnostics_channel_core_tests, .{ .dest_sub_path = b.fmt("native-node-diagnostics-channel-core{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
+    const model_scope_warning_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_model_scope_warning_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native model scope warning"},
+    });
+    linkQuickJs(b, model_scope_warning_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, model_scope_warning_tests.root_module, typescript_parser);
+    linkSqlite(model_scope_warning_tests.root_module, sqlite_lib_dir, sqlite_library);
+    model_scope_warning_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        model_scope_warning_tests.root_module.linkSystemLibrary("advapi32", .{});
+        model_scope_warning_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-model-scope-warning", "Install actual model-scope warning controls without execution").dependOn(&b.addInstallArtifact(model_scope_warning_tests, .{ .dest_sub_path = b.fmt("native-sdk-model-scope-warning{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
     const main_runtime_helpers_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_main_runtime_helpers_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native Main runtime helpers"},
@@ -4887,6 +4915,30 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-node-operation-boundary", "Install Node pending/data/allocator ownership controls without running").dependOn(&b.addInstallArtifact(node_operation_boundary, .{ .dest_sub_path = b.fmt("native-node-operation-boundary{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Actual project-trust foreground supplier controls; install without execution.
+    const chalk_project_trust_colors_tests = b.addTest(.{
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/native_sdk_chalk_project_trust_colors_test.zig"),
+            .target = target, .optimize = optimize,
+        }),
+        .filters = &.{"native project trust Chalk colors"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, chalk_project_trust_colors_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, chalk_project_trust_colors_tests.root_module, typescript_parser);
+    linkSqlite(chalk_project_trust_colors_tests.root_module, sqlite_lib_dir, sqlite_library);
+    chalk_project_trust_colors_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        chalk_project_trust_colors_tests.root_module.linkSystemLibrary("advapi32", .{});
+        chalk_project_trust_colors_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-chalk-project-trust-colors",
+        "Install actual Chalk foreground and original project trust notify controls without execution")
+        .dependOn(&b.addInstallArtifact(chalk_project_trust_colors_tests, .{
+            .dest_sub_path = b.fmt("native-sdk-chalk-project-trust-colors{s}",
+                .{if (target.result.os.tag == .windows) ".exe" else ""}),
+        }).step);
+
     const chalk_ignore_guest = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_chalk_ignore_guest_guard_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{ "native private Chalk Ignore", "native genuine private Chalk Ignore" },
@@ -5710,6 +5762,22 @@ pub fn build(b: *std.Build) void {
             commonjs_watch.root_module.linkSystemLibrary("userenv", .{});
         }
         b.step("build-native-node-commonjs-watch", "Install eleven actual CommonJS watch controls without execution").dependOn(&b.addInstallArtifact(commonjs_watch, .{ .dest_sub_path = b.fmt("native-node-commonjs-watch{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    }
+
+    if (native_node_network != null) {
+        const commonjs_wrap_load = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_commonjs_wrap_load_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native actual CommonJS wrap load"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, commonjs_wrap_load.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, commonjs_wrap_load.root_module, typescript_parser);
+        linkSqlite(commonjs_wrap_load.root_module, sqlite_lib_dir, sqlite_library);
+        commonjs_wrap_load.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            commonjs_wrap_load.root_module.linkSystemLibrary("advapi32", .{});
+            commonjs_wrap_load.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-commonjs-wrap-load", "Install thirty-two actual CommonJS wrap load controls without execution").dependOn(&b.addInstallArtifact(commonjs_wrap_load, .{ .dest_sub_path = b.fmt("native-node-commonjs-wrap-load{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
     }
 
     if (native_node_network != null) {

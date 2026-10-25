@@ -1,0 +1,52 @@
+{
+  "base": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "source_only": true,
+  "original_main": {
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\main.ts",
+    "bytes": 35444,
+    "sha256": "BC76D755332764FC80EDDC9C1BFB84F70E70C2B55D958E44F98000B05F08930C"
+  },
+  "original_lines": [
+    733,
+    864
+  ],
+  "selected_region": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\authority\\main-create-runtime-original.ts",
+    "bytes": 4739,
+    "sha256": "633B098087C3C88E7543C692FE7AB61A80D08DEC8D4F1A0E7C7239D651A116CE"
+  },
+  "actual_next_graph": [
+    {
+      "symbol": "Main createRuntime closure",
+      "state": "No actual native application closure found; current generic SDK factory consumes a caller-provided createRuntime."
+    },
+    {
+      "symbol": "createProjectTrustContext",
+      "state": "Absent from native src search; invoked when no projectTrustContext override is supplied."
+    },
+    {
+      "symbol": "createProjectTrustContext.notify",
+      "state": "Complete original arrow uses real red/yellow/cyan; this packet adds the two absent styles to the existing actual Chalk owner."
+    },
+    {
+      "symbol": "showStartupSelector / showStartupInput",
+      "state": "No native implementations found in src; required by interactive select/confirm/input branches."
+    },
+    {
+      "symbol": "collectSettingsDiagnostics / buildSessionOptions / resolveCliPaths / resolveProjectTrusted",
+      "state": "Actual native implementations already present; not missing suppliers."
+    },
+    {
+      "symbol": "resolveModelScope warning wrapper",
+      "state": "Separate completed source-only packet sdk-model-scope-warning-sourceonly-20261025; no shared files modified here."
+    }
+  ],
+  "startup_UI_prerequisites": [
+    "createStartupTui",
+    "startup themes and package resolution",
+    "ExtensionSelectorComponent",
+    "ExtensionInputComponent",
+    "actual terminal and TUI lifecycle"
+  ],
+  "whole_application_or_context_qualification": false
+}

@@ -13807,6 +13807,13 @@ static JSValue JS_GetGlobalVar(JSContext *ctx, JSAtom prop,
                                  ctx->global_obj, throw_ref_error);
 }
 
+/* Native source bodies use the same lexical/TDZ/global identifier lookup
+   as the interpreter's OP_get_var, without compiling an eval shim. */
+JSValue JS_PiGetGlobalBinding(JSContext *ctx, JSAtom prop)
+{
+    return JS_GetGlobalVar(ctx, prop, true);
+}
+
 /* construct a reference to a global variable */
 static int JS_GetGlobalVarRef(JSContext *ctx, JSAtom prop, JSValue *sp)
 {

@@ -1,0 +1,82 @@
+{
+  "original_loader": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+    "bytes": 72050,
+    "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+  },
+  "original_util": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__util.js.txt",
+    "bytes": 28980,
+    "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429"
+  },
+  "extracts": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+        "bytes": 72050,
+        "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+      },
+      "first_line": 218,
+      "last_line": 221,
+      "extracted": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\authority\\timer-declarations.js",
+        "bytes": 124,
+        "sha256": "280CB092A3C60E2B6F491103FA8876544CD4BCC499E8167E17647EC61D904215"
+      },
+      "exact_raw_slice": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+        "bytes": 72050,
+        "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+      },
+      "first_line": 224,
+      "last_line": 224,
+      "extracted": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\authority\\lazy-declaration.js",
+        "bytes": 67,
+        "sha256": "81A59437D0CC1DDA2A9153A4305BB9688DEA83D069F9EBE0DAC5C31140750564"
+      },
+      "exact_raw_slice": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+        "bytes": 72050,
+        "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+      },
+      "first_line": 238,
+      "last_line": 259,
+      "extracted": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\authority\\wrap-module-load.js",
+        "bytes": 688,
+        "sha256": "7C6991FD50AD14FC0AFB112FF98C0068B553696169C2E3EA944F8C82E1AAC321"
+      },
+      "exact_raw_slice": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__util.js.txt",
+        "bytes": 28980,
+        "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429"
+      },
+      "first_line": 813,
+      "last_line": 823,
+      "extracted": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\authority\\get-lazy.js",
+        "bytes": 213,
+        "sha256": "E370A760C8D025FBA0538CB154377B3615D92D2FFA0C4C2ADC51AF0505C0DBD9"
+      },
+      "exact_raw_slice": true
+    }
+  ],
+  "fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\node-commonjs-wrap-load-original.js",
+    "bytes": 1248,
+    "sha256": "3E997D71AF2154DF3EB8323A2B8CAC8C3B55646CBE63444E1D6DDEA74BDD93B8"
+  },
+  "body_bytes_preserved": true,
+  "only_test_factory_wrapper_added": true,
+  "syntax_boundary": "Complete wrapModuleLoad closes on loader line 259; complete getLazy closes on util line 823."
+}

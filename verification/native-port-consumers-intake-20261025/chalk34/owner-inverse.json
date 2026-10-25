@@ -1,0 +1,42 @@
+{
+  "base": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "complete_inverse_exact": true,
+  "changes": [
+    {
+      "before": "//! Private actual consumed Chalk6 default: callable factory, yellow builders and\n",
+      "after": "//! Private actual consumed Chalk6 default: callable factory, red/yellow/cyan builders and\n"
+    },
+    {
+      "before": "const Symbol = enum { GENERATOR, STYLER, IS_EMPTY, LEVEL };\n",
+      "after": "const Symbol = enum { GENERATOR, STYLER, IS_EMPTY, LEVEL };\nconst Foreground = enum { red, yellow, cyan };\n"
+    },
+    {
+      "before": "fn cacheStyle(s: *Scope, receiver: c.JSValue, builder: c.JSValue) !void {",
+      "after": "fn cacheStyle(comptime color: Foreground, s: *Scope, receiver: c.JSValue, builder: c.JSValue) !void {"
+    },
+    {
+      "before": "try s.text(\"yellow\"), descriptor",
+      "after": "try s.text(@tagName(color)), descriptor"
+    },
+    {
+      "before": "fn styler(s: *Scope, parent: c.JSValue) !c.JSValue {\n    const open = try s.text(\"\\x1b[33m\"); const close = try s.text(\"\\x1b[39m\");",
+      "after": "fn styler(comptime color: Foreground, s: *Scope, parent: c.JSValue) !c.JSValue {\n    const open = try s.text(switch (color) {\n        .red => \"\\x1b[31m\", .yellow => \"\\x1b[33m\", .cyan => \"\\x1b[36m\",\n    });\n    const close = try s.text(\"\\x1b[39m\");"
+    },
+    {
+      "before": "fn yellowGet(s: *Scope, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {",
+      "after": "fn styleGetter(comptime color: Foreground) Body {\n    return struct {\n        fn get(s: *Scope, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {\n            return styleGet(color, s, receiver, roots);\n        }\n    }.get;\n}\nfn styleGet(comptime color: Foreground, s: *Scope, receiver: c.JSValue, roots: []const c.JSValue) !c.JSValue {"
+    },
+    {
+      "before": "const paint = try styler(s, try slot(s, state, receiver, .STYLER));",
+      "after": "const paint = try styler(color, s, try slot(s, state, receiver, .STYLER));"
+    },
+    {
+      "before": "try cacheStyle(s, receiver, builder);",
+      "after": "try cacheStyle(color, s, receiver, builder);"
+    },
+    {
+      "before": "    const yellow = try makeMethod(s, \"get\", 0, yellowGet, &.{state});\n    try accessor(s, root_proto, \"yellow\", yellow, c.pi_js_undefined(), false); try accessor(s, builder_proto, \"yellow\", yellow, c.pi_js_undefined(), false);",
+      "after": "    // The consumed foreground styles retain the primary enumeration order.\n    // Each getter creates and caches the same genuine builder algorithm.\n    inline for (.{ Foreground.red, Foreground.yellow, Foreground.cyan }) |color| {\n        const getter = try makeMethod(s, \"get\", 0, styleGetter(color), &.{state});\n        try accessor(s, root_proto, @tagName(color), getter, c.pi_js_undefined(), false);\n        try accessor(s, builder_proto, @tagName(color), getter, c.pi_js_undefined(), false);\n    }"
+    }
+  ]
+}

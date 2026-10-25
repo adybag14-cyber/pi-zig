@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "root_accepted_settings_runtime_debuglog_final_source_intake",
+  "source_basis_head": "65fac9975b25e9a5e4c00d7d7bca499aae1275c0",
+  "prior_head": "35790e97f09d84c7799dbaaad2aa31609aa420ca",
+  "candidate_head": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "prior_intake_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-six-packet-five-root-source-intake-acceptance-20261024.json",
+    "bytes": 2959,
+    "sha256": "728033A08C592CF7239A7F176CDF9DD091A79083AA542DD3B1B382FECAD2C542"
+  },
+  "original_negative_closure_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v46-new31-partial-compile-negative-acceptance-20261024.json",
+    "bytes": 3197,
+    "sha256": "DCE0523B817B564AB19D285C12A418EAA4B621785ECA975051A0A1933A2E1AE0"
+  },
+  "plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261023-gap-assessment\\settings-runtime-debuglog-final-intake-sourceonly-20261024\\source-intake-plan.json",
+    "bytes": 766671,
+    "sha256": "324EBF283C7409812245784E61CA55ECAC864D0714A944370C6D38E0385B87A1"
+  },
+  "counts": {
+    "pending_paths": 184,
+    "source_build_paths": 38,
+    "evidence_paths": 146,
+    "cumulative_selected_paths": 632,
+    "cumulative_source_build_paths_from_origin": 138,
+    "new_test_roots": 8,
+    "new_declared_controls": 293,
+    "fresh_selected_roots": 39,
+    "fresh_source_declared_controls": 943
+  },
+  "working_tree_clean": true,
+  "only_expected_changed_paths": true,
+  "all184_committed_blob_bytes_exact": true,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "actual_metadata_count": null,
+  "created_utc": "2026-10-24T22:58:47.418713+00:00",
+  "composition_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-settings-runtime-debuglog-final-composition-acceptance-20261024.json",
+    "bytes": 21246,
+    "sha256": "1B70EFECBEB7CAEE7F845DEDA0C6CA9D32B6847EA04D9BB8504C847827729E20"
+  },
+  "materialization": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-nine-packet-source-materialization-20261024\\materialized.json",
+    "bytes": 51686,
+    "sha256": "9852141D32CD203A23800E2885BE6C108575E0058F303799C7832AF17190A86E"
+  },
+  "branch": "work/pi-zig-consolidated-20261016",
+  "source_only": true,
+  "quickjs_selected_C_sha256": "4ED63B340928E1469098889C48B4802328D83174471A3DDF2B328D53A60915C7",
+  "quickjs_unchanged_header_sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E",
+  "fresh_QuickJS_build_required": true,
+  "full_catalog_groups": 160,
+  "full_catalog_source_declarations": 3009
+}

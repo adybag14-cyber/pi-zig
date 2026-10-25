@@ -1,0 +1,31 @@
+{
+  "c_before": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+    "bytes": 2409752,
+    "sha256": "4ED63B340928E1469098889C48B4802328D83174471A3DDF2B328D53A60915C7"
+  },
+  "c_after": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-model-scope-warning-sourceonly-20261025\\projected\\vendor\\quickjs\\quickjs.c",
+    "bytes": 2410006,
+    "sha256": "7FEEB27360380EE7ADC36BEB5D13FB420EC81DC01D6944C20218019F56848E44"
+  },
+  "h_before": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+    "bytes": 117849,
+    "sha256": "446BC215FA51DB98E8D5B1C780BDFF39D13FAC1686215AC3885F784B4E69D13E"
+  },
+  "h_after": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-model-scope-warning-sourceonly-20261025\\projected\\vendor\\quickjs\\quickjs.h",
+    "bytes": 117998,
+    "sha256": "97D32EDABDF8C7150F3E7F5EE39647E5B0FBCDB6E1EF450C444D6237E194973E"
+  },
+  "c_exact_addition": "/* Native source bodies use the same lexical/TDZ/global identifier lookup\n   as the interpreter's OP_get_var, without compiling an eval shim. */\nJSValue JS_PiGetGlobalBinding(JSContext *ctx, JSAtom prop)\n{\n    return JS_GetGlobalVar(ctx, prop, true);\n}\n\n",
+  "header_exact_addition": "\n/* Exact OP_get_var lookup for native source bodies; prop remains borrowed. */\nJS_EXTERN JSValue JS_PiGetGlobalBinding(JSContext *ctx, JSAtom prop);",
+  "both_complete_inverse_checks": true,
+  "new_C_ABI": "JS_PiGetGlobalBinding(ctx, borrowed atom)",
+  "lookup_semantics": "forward actual JS_GetGlobalVar(ctx, atom, true)",
+  "existing_function_bodies_changed": false,
+  "bytecode_version_changed": false,
+  "existing_equivalent_export_found": false,
+  "native_execution": false
+}

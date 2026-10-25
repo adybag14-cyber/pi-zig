@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-25T10:26:32.010972+00:00",
+  "status": "Root_source_accepted_only_pending_post_lease_integration",
+  "packet": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-model-scope-warning-sourceonly-20261025\\source-intake.json",
+    "bytes": 23988,
+    "sha256": "53C8E4AF73F7946FBFB50700DC69F084FFB44C8FCD1AD5F24FE2042C585D5322"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261025-catalog\\model-scope-warning-independent-source-review.json",
+    "bytes": 2211,
+    "sha256": "0B75F94D7C5C932BE4921A392276E05FC5A7CD3D337EE7DF74A4ABF64D00DD8E"
+  },
+  "source_basis_head": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "live_pin_versions": 38,
+  "source_review": [
+    "Complete original resolveModelScope wrapper uses genuine resolver, CLI thinking binding and shared Chalk owner.",
+    "Destructuring boxes once; binding order, iterator stepping/closing, pending throw identity, and async frame terminal closure match the retained source model.",
+    "Captured console.warn callee precedes nested Chalk argument evaluation; message and color callable lifetimes end at the source expression boundaries.",
+    "The additive JS_PiGetGlobalBinding delegates to existing JS_GetGlobalVar with throw_ref_error=true; it preserves lexical globals, missing identifiers and TDZ without evaluating a shim.",
+    "QuickJS C/header and build changes are finite additions with complete byte inverses, independently checked.",
+    "44 source controls include original-source differentials, real fatal/cancel retirement, reentry and private-cache publication. None has been compiled or run."
+  ],
+  "native_execution": false,
+  "actual_metadata_count": null,
+  "runtime_qualification": false,
+  "Main_modified": false,
+  "integration_constraints": [
+    "Main is frozen for fresh39 c248 buildquery and closure.",
+    "Integrate only after active native lease is independently closed.",
+    "Final composition with any shared Chalk successor must recheck exact dependencies and build additions.",
+    "New C ABI requires fresh C-library compilation on final integrated source."
+  ]
+}

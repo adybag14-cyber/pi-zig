@@ -1,0 +1,23 @@
+{
+  "source_basis_head": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "Main_clean": true,
+  "projected_paths": [
+    "build.zig",
+    "src/extensions/fixtures/sdk-model-scope-warning-4954-source.mjs",
+    "src/extensions/fixtures/sdk-model-scope-warning-observer.mjs",
+    "src/extensions/native_sdk_model_scope_warning.zig",
+    "src/native_sdk_model_scope_warning_test.zig",
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h"
+  ],
+  "all_direct_imports_and_embeds_resolved": true,
+  "named_declarations": 44,
+  "unique_named_declarations": 44,
+  "source_native_comparisons": 37,
+  "single_actual_await": true,
+  "production_eval_absent": true,
+  "native_execution": false,
+  "source_generator_executed": false,
+  "own_static_authoring_script_executed": true,
+  "compiler_or_runtime_metadata": null
+}

@@ -1,0 +1,28 @@
+{
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-diagnostics-channel-core-sourceonly-20261025\\original\\src\\extensions\\native_clone_intrinsics.zig",
+    "bytes": 10419,
+    "sha256": "D5A1B80E1358B3976C6947D71023DDA19378FDBA99B491548AF08F81D97D3A3A"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-diagnostics-channel-core-sourceonly-20261025\\projected\\src\\extensions\\native_clone_intrinsics.zig",
+    "bytes": 11186,
+    "sha256": "0496522B127F4084819154DAE6D0A7F2DF840BA705744FD04F31D3FE14E7F92E"
+  },
+  "edits": [
+    {
+      "anchor": "                try put(context, result, \"Array.some\", try checked(c.JS_GetPropertyStr(context, prototype, \"some\")));\n",
+      "addition": "                try put(context, result, \"Array.slice\", try checked(c.JS_GetPropertyStr(context, prototype, \"slice\")));\n                try put(context, result, \"Array.indexOf\", try checked(c.JS_GetPropertyStr(context, prototype, \"indexOf\")));\n                try put(context, result, \"Array.push\", try checked(c.JS_GetPropertyStr(context, prototype, \"push\")));\n"
+    },
+    {
+      "anchor": "            try put(context, result, \"Object.entries\", try checked(c.JS_GetPropertyStr(context, constructor, \"entries\")));\n",
+      "addition": "            try put(context, result, \"Object.getPrototypeOf\", try checked(c.JS_GetPropertyStr(context, constructor, \"getPrototypeOf\")));\n            try put(context, result, \"Object.setPrototypeOf\", try checked(c.JS_GetPropertyStr(context, constructor, \"setPrototypeOf\")));\n"
+    },
+    {
+      "anchor": "            try put(context, result, \"Symbol.iterator\", try checked(c.JS_GetPropertyStr(context, constructor, \"iterator\")));\n",
+      "addition": "            try put(context, result, \"Symbol.hasInstance\", try checked(c.JS_GetPropertyStr(context, constructor, \"hasInstance\")));\n"
+    }
+  ],
+  "complete_inverse_verified": true,
+  "native_execution": false
+}

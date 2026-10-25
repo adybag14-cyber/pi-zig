@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-25T10:19:33.456667+00:00",
+  "reviewer": "validation_catalog",
+  "status": "independent_source_review_accepted",
+  "basis_head": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-model-scope-warning-sourceonly-20261025\\source-intake.json",
+    "bytes": 23988,
+    "sha256": "53C8E4AF73F7946FBFB50700DC69F084FFB44C8FCD1AD5F24FE2042C585D5322"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-model-scope-warning-sourceonly-20261025\\model-scope-warning.patch",
+    "bytes": 43348,
+    "sha256": "AD9923E9EBEADE973F1856C2E9EB64697D9ADD75690C4F3E836DE50C2AA7C590"
+  },
+  "checked_pins": 51,
+  "named_controls": 44,
+  "review": [
+    "Full production owner, complete 44-control driver, and full observer reviewed against exact retained original function.",
+    "Actual resolver and chalk providers captured in both fresh source/native realms; controlled resolver seam is explicit and does not claim physical ModelRuntime/application integration.",
+    "Await/destructuring order, one ToObject, for-of next caching and abrupt completion, return thenable adoption, genuine error identity, pending reason, native fatal/cancel paths reviewed.",
+    "Nested message/color temporary retirement and retained loop-head lifetime match original expression boundaries.",
+    "Global console lookup is the exact existing interpreter JS_GetGlobalVar(ctx, atom, true) via additive borrowed-atom C forwarding wrapper; deleted, lexical, and TDZ controls cover behavioral difference from global property read.",
+    "Owner old-draft single-region inverse, exact source fixture erasure inverse, complete C/header additive inverse, and build-addition inverse verified independently; replace baselines match current Main.",
+    "No concrete source blocker found; new C/header requires fresh C build and exact compiled metadata/runtime on integrated head."
+  ],
+  "native_execution": false,
+  "candidate_executed": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "Main_modified": false
+}

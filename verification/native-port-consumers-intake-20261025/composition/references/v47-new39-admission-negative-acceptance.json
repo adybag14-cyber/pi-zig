@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "Root_accepted_original_v47_new39_admission_negative_closure",
+  "created_utc": "2026-10-25T10:42:14.894219+00:00",
+  "candidate_head": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "original_job_id": "job-1792923870520-42d507d6-ee0",
+  "audit_job_id": "job-1792924648717-4cadcd90-059",
+  "audit_terminal": "succeeded_exit_0_no_stderr_or_truncation",
+  "independent_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v47-new39-control-20261025-102421\\independent-prelaunch-admission-negative-closure.json",
+    "bytes": 9875,
+    "sha256": "72E19FF4F2AD2E0F49E3A6866B317C2B50F79201EE576FE123EF487AC3B17729"
+  },
+  "Root_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261025-root\\v47-admission-negative-auditor-source-review.json",
+    "bytes": 1770,
+    "sha256": "833727AE76A9D1F77046DC06B68FFA11935EBA6CC4C9260422A7A3BB8256BB98"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261025-handoff-review\\v47-admission-negative-auditor-peer-review.json",
+    "bytes": 3844,
+    "sha256": "DF2D6409C3327084EDF5B4C9387C838EFF7224FD969E495690C5EDFAABC23183"
+  },
+  "audit_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261025-root\\v47-admission-negative-audit-config.json",
+    "bytes": 8390,
+    "sha256": "FAB3881D3AA85C3C45555FCA60BF41E609209B7F84A81A68C322D7B87297F3A4"
+  },
+  "original_reason": "Fresh admission54-second deadline expired before acceptance",
+  "declared_groups": 39,
+  "declared_controls": 943,
+  "native_owners_started": 0,
+  "actual_metadata_count": 0,
+  "actual_tests_started": 0,
+  "unstarted_groups": 38,
+  "all_39416_current_sealed_files_match": true,
+  "whole_source_compiler_vendor_control_bookends_unchanged": true,
+  "original_three_controller_instances_independently_absent": true,
+  "source_mutation_hold_released": true,
+  "release_scope": "Separately reviewed source-only composition/integration of warning44, wrap32, Chalk34 and diagnostics47 plus exact source evidence; future native execution needs a fresh exact-head Root grant.",
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "complete_buildquery_accepted": false,
+  "qualification": false
+}

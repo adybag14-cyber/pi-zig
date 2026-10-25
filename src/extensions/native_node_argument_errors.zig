@@ -136,6 +136,7 @@ fn body(s: *Scope, inputs: Inputs, attempt: *?c.JSValue) ![5]c.JSValue {
     const hidden_value = try registration.hide(s, value, inputs.type_error, inputs.error_constructor);
     const assertion_class = try registration.register(s, inputs.error_constructor, "ERR_INTERNAL_ASSERTION", inputs.internal_assertion_message, inputs.marker, inputs.assert_function, inputs.reflect_apply);
     const validate_string = try registration.makeValidateString(s, hidden, inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply);
+    const validate_function = try registration.makeValidateFunction(s, hidden, inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply);
     const validate_abort = try registration.makeValidateAbortSignal(s, hidden, inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply);
     // Reuse the real primordial already captured by this actual message owner.
     // No late global Array read or alternate argument-error graph is introduced.
@@ -146,6 +147,7 @@ fn body(s: *Scope, inputs: Inputs, attempt: *?c.JSValue) ![5]c.JSValue {
     try s.put(record, "type", argument); try s.put(record, "hidden", hidden); try s.put(record, "value", value);
     try s.put(record, "hiddenValue", hidden_value); try s.put(record, "rangeValue", range); try s.put(record, "hiddenRangeValue", hidden_range);
     try s.put(record, "assertion", assertion_class); try s.put(record, "validateString", validate_string); try s.put(record, "validateAbortSignal", validate_abort);
+    try s.put(record, "validateFunction", validate_function);
     try s.put(record, "validateObject", validate_object);
     const range_message = try s.own(try argument_range.makeMessage(s, message_roots[0]));
     const out_of_range_class = try registration.register(s, inputs.range_error, "ERR_OUT_OF_RANGE",
@@ -168,6 +170,7 @@ pub fn assertion(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, 
 pub fn hiddenValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "hiddenValue")}); }
 pub fn rangeValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "rangeValue")}); }
 pub fn hiddenRangeValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "hiddenRangeValue")}); }
+pub fn validateFunction(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "validateFunction")}); }
 pub fn validateAbortSignal(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "validateAbortSignal")}); }
 pub fn validateObject(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "validateObject")}); }
 pub fn outOfRange(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "outOfRange")}); }

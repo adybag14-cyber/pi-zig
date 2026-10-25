@@ -1,4 +1,4 @@
-//! Private actual consumed Chalk6 default: callable factory, yellow builders and
+//! Private actual consumed Chalk6 default: callable factory, red/yellow/cyan builders and
 //! root/builder level accessors. MIT Sindre Sorhus; see verification/sdk-chalk6.
 //! No global/module 'chalk' shadow; no plain-text renderer substitution.
 const std = @import("std");
@@ -20,6 +20,7 @@ fn adapt(comptime body: Body) functions.Callback {
     }.invoke;
 }
 const Symbol = enum { GENERATOR, STYLER, IS_EMPTY, LEVEL };
+const Foreground = enum { red, yellow, cyan };
 fn symbol(s: *Scope, state: c.JSValue, which: Symbol) !c.JSValue { return s.get(state, @tagName(which)); }
 fn slot(s: *Scope, state: c.JSValue, object: c.JSValue, which: Symbol) !c.JSValue { return s.getKey(object, try symbol(s, state, which)); }
 fn setSlot(s: *Scope, state: c.JSValue, object: c.JSValue, which: Symbol, value: c.JSValue) !void { try s.setKey(object, try symbol(s, state, which), value); }
@@ -33,9 +34,9 @@ fn rest(s: *Scope, args: []const c.JSValue) !c.JSValue {
     for (args, 0..) |value, i| try s.index(array, @intCast(i), value);
     return array;
 }
-fn cacheStyle(s: *Scope, receiver: c.JSValue, builder: c.JSValue) !void {
+fn cacheStyle(comptime color: Foreground, s: *Scope, receiver: c.JSValue, builder: c.JSValue) !void {
     const descriptor = try s.object(); try s.put(descriptor, "value", builder);
-    _ = try objectCall(s, "defineProperty", &.{ receiver, try s.text("yellow"), descriptor });
+    _ = try objectCall(s, "defineProperty", &.{ receiver, try s.text(@tagName(color)), descriptor });
 }
 fn accessor(s: *Scope, target: c.JSValue, name: [*:0]const u8, get: c.JSValue, set: c.JSValue, enumerable: bool) !void {
     const descriptor = try s.object();
@@ -83,15 +84,25 @@ fn factory(s: *Scope, state: c.JSValue, supplied: c.JSValue) !c.JSValue {
 fn createChalk(s: *Scope, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     return dup(s.engine, try factory(s, roots[0], arg(args, 0)));
 }
-fn styler(s: *Scope, parent: c.JSValue) !c.JSValue {
-    const open = try s.text("\x1b[33m"); const close = try s.text("\x1b[39m");
+fn styler(comptime color: Foreground, s: *Scope, parent: c.JSValue) !c.JSValue {
+    const open = try s.text(switch (color) {
+        .red => "\x1b[31m", .yellow => "\x1b[33m", .cyan => "\x1b[36m",
+    });
+    const close = try s.text("\x1b[39m");
     const all_open = if (c.JS_IsUndefined(parent)) open else try s.concat(try s.get(parent, "openAll"), open);
     const all_close = if (c.JS_IsUndefined(parent)) close else try s.concat(close, try s.get(parent, "closeAll"));
     const out = try s.object(); try s.put(out, "open", open); try s.put(out, "close", close); try s.put(out, "openAll", all_open); try s.put(out, "closeAll", all_close); try s.put(out, "parent", parent); return out;
 }
-fn yellowGet(s: *Scope, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+fn styleGetter(comptime color: Foreground) Body {
+    return struct {
+        fn get(s: *Scope, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            return styleGet(color, s, receiver, roots);
+        }
+    }.get;
+}
+fn styleGet(comptime color: Foreground, s: *Scope, receiver: c.JSValue, roots: []const c.JSValue) !c.JSValue {
     const engine = s.engine; const state = roots[0];
-    const paint = try styler(s, try slot(s, state, receiver, .STYLER));
+    const paint = try styler(color, s, try slot(s, state, receiver, .STYLER));
     const is_empty = try slot(s, state, receiver, .IS_EMPTY);
     const cell = try s.object();
     const builder = try s.own(try functions.createArrow(engine, "builder", 0, adapt(builderCall), &.{ state, cell }));
@@ -100,7 +111,7 @@ fn yellowGet(s: *Scope, receiver: c.JSValue, _: []const c.JSValue, roots: []cons
     const inherited = try slot(s, state, receiver, .GENERATOR);
     try setSlot(s, state, builder, .GENERATOR, if (c.JS_IsUndefined(inherited) or c.JS_IsNull(inherited)) receiver else inherited);
     try setSlot(s, state, builder, .STYLER, paint); try setSlot(s, state, builder, .IS_EMPTY, is_empty);
-    try cacheStyle(s, receiver, builder); return dup(engine, builder);
+    try cacheStyle(color, s, receiver, builder); return dup(engine, builder);
 }
 fn replaceAll(s: *Scope, string: c.JSValue, substring: c.JSValue, postfix: c.JSValue) !c.JSValue {
     var at = try s.invoke(string, "indexOf", &.{substring}); const minus = c.JS_NewInt32(s.engine.context, -1);
@@ -191,8 +202,13 @@ fn initialize(s: *Scope, process_module: c.JSValue, os_module: c.JSValue) !c.JSV
     const root_proto = try s.get(constructor, "prototype"); try s.put(state, "rootPrototype", root_proto);
     _ = try objectCall(s, "setPrototypeOf", &.{ root_proto, try s.get(try s.global("Function"), "prototype") });
     const builder_proto = try s.own(try functions.createArrow(engine, "", 0, adapt(emptyProtoCall), &.{})); try s.put(state, "builderPrototype", builder_proto);
-    const yellow = try makeMethod(s, "get", 0, yellowGet, &.{state});
-    try accessor(s, root_proto, "yellow", yellow, c.pi_js_undefined(), false); try accessor(s, builder_proto, "yellow", yellow, c.pi_js_undefined(), false);
+    // The consumed foreground styles retain the primary enumeration order.
+    // Each getter creates and caches the same genuine builder algorithm.
+    inline for (.{ Foreground.red, Foreground.yellow, Foreground.cyan }) |color| {
+        const getter = try makeMethod(s, "get", 0, styleGetter(color), &.{state});
+        try accessor(s, root_proto, @tagName(color), getter, c.pi_js_undefined(), false);
+        try accessor(s, builder_proto, @tagName(color), getter, c.pi_js_undefined(), false);
+    }
     try accessor(s, root_proto, "level", try makeMethod(s, "get", 0, rootLevelGet, &.{state}), try makeMethod(s, "set", 1, rootLevelSet, &.{state}), true);
     try accessor(s, builder_proto, "level", try makeMethod(s, "get", 0, builderLevelGet, &.{state}), try makeMethod(s, "set", 1, builderLevelSet, &.{state}), true);
     return dup(engine, try factory(s, state, c.pi_js_undefined()));

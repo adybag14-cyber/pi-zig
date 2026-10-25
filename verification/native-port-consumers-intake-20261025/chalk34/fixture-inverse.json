@@ -1,0 +1,13 @@
+{
+  "all_original_bodies_retained": true,
+  "full_source_inverses_exact": true,
+  "imports_removed": "import {\n\tstringReplaceAll,\n\tstringEncaseCRLFWithFirstIndex,\n} from './utilities.js';\nimport ansiStyles from '#ansi-styles';\nimport supportsColor from '#supports-color';\n\n",
+  "exports_removed": "export {\n\tmodifierNames,\n\tforegroundColorNames,\n\tbackgroundColorNames,\n\tunderlineColorNames,\n\tcolorNames,\n\n\t// TODO: Remove these aliases in the next major version\n\tmodifierNames as modifiers,\n\tforegroundColorNames as foregroundColors,\n\tbackgroundColorNames as backgroundColors,\n\tcolorNames as colors,\n} from './vendor/ansi-styles/index.js';\n\nexport {\n\tstdoutColor as supportsColor,\n\tstderrColor as supportsColorStderr,\n};\n\nexport default chalk;\n",
+  "index_export_erasure": [
+    "export class Chalk",
+    "export const chalkStderr"
+  ],
+  "ansi_const_export_erasure_count": 5,
+  "utilities_export_erasure_count": 2,
+  "style_test_input": "actual native supportsColor provider output; explicit levels in all comparisons"
+}

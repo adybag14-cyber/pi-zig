@@ -1,0 +1,17 @@
+{
+  "complete_owner_inverse": true,
+  "full_original_Chalk_source_body_inverses": true,
+  "existing_yellow_caller_inverse": true,
+  "original_notify_arrow_exact": true,
+  "build_inverse": true,
+  "projected_file_count": 7,
+  "unique_control_declarations": 34,
+  "differential_cases": 29,
+  "native_fatal_controls": 4,
+  "native_identity_controls": 1,
+  "prior_yellow_observations": 86,
+  "all_direct_import_embed_resolutions_exist": true,
+  "direct_import_embed_resolutions": 17,
+  "git_apply_check_passed": true,
+  "native_Node_capture_compiler_formatter_run": false
+}

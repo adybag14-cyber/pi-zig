@@ -1,0 +1,83 @@
+{
+  "status": "independent_composition_preparer_source_review_accepted",
+  "reviewer": "handoff_review independent peer",
+  "created_utc": "2026-10-25T10:44:37.195786+00:00",
+  "preparer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261025-root\\Prepare-Reviewed-Port-Composition.py",
+    "bytes": 12366,
+    "sha256": "B4494E6C72492814136E238D0D50A7348EDE98429DB9EDF24935FC7A6B540199"
+  },
+  "basis_head": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "packet_inputs_static_checked": [
+    {
+      "name": "warning44",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-model-scope-warning-sourceonly-20261025\\source-intake.json",
+        "bytes": 23988,
+        "sha256": "53C8E4AF73F7946FBFB50700DC69F084FFB44C8FCD1AD5F24FE2042C585D5322"
+      },
+      "declarations": 44,
+      "non_build_paths": 6
+    },
+    {
+      "name": "wrap32",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\source-intake.json",
+        "bytes": 17299,
+        "sha256": "45934437FD09405311AF73F76BE490D01DFA25A9C8B46239BBB945D7898BFE0B"
+      },
+      "declarations": 32,
+      "non_build_paths": 4
+    },
+    {
+      "name": "chalk34",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\source-intake.json",
+        "bytes": 24001,
+        "sha256": "EC34538D04E92943FF573CE90AAD81DD957D2735B7717778AF32FCA8BB6C51D3"
+      },
+      "declarations": 34,
+      "non_build_paths": 6
+    },
+    {
+      "name": "diagnostics47",
+      "entry": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-diagnostics-channel-core-sourceonly-20261025\\source-intake.json",
+        "bytes": 33774,
+        "sha256": "9292B2F0B4DA7ABC4A47F62F28C44E144E76B5FCEFF6FD987AA4FFD176DAB15D"
+      },
+      "declarations": 47,
+      "non_build_paths": 7
+    }
+  ],
+  "expected_source_build_paths": 24,
+  "expected_new_roots": 4,
+  "expected_new_declared_controls": 157,
+  "current_native_lease_Root_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261025-root\\v47-new39-admission-negative-acceptance.json",
+    "bytes": 2299,
+    "sha256": "7305F1A71D2FF2AF66A9E55092A5129F9C95892856A3709AD210CBD2AAF64C73"
+  },
+  "reviewed": [
+    "SHA-bound specific Root configuration and preparer self-pin; source-generation only, Main/native authority false.",
+    "Current c248/V47 Root acceptance and independent closure must establish zero native starts, unchanged complete seals, actual controller absence, and released source hold.",
+    "Exact four packet names, linked Root packet/peer acceptance, current baseline and projected candidate pins, and test-root declaration equality.",
+    "Non-build source overlap rejected; each build candidate independently removes to one baseline; stable equal-offset additions compose and inverse completely.",
+    "Final literal imports/embeds resolve against selected successor bytes before Main baselines; all six existing shared source successors are recorded as advances requiring fresh qualification.",
+    "Unified patch now preserves absent final newline markers; git apply --check is mandatory and read-only.",
+    "Evidence paths are bounded, absent, unique case-insensitively and disjoint from source paths; packet original/projected copies are excluded from evidence duplication.",
+    "All file writes are create-only under a new validated evidence output directory. Subprocess commands are Git status/HEAD/apply-check and rg listing, with no compiler, Node, native job, staging or Main write."
+  ],
+  "findings_corrected": [
+    "Missing-final-newline diff lines now emit the standard no-newline marker; exact yellow corpus keeps its original bytes.",
+    "Previously unused closure JSON now has exact current acceptance/absence/seal/zero-native assertions.",
+    "Root additionally bound four packet identities, exact acceptance-peer linkage, and source declaration lists."
+  ],
+  "concrete_blockers": [],
+  "preparer_executed_by_peer": false,
+  "configuration_reviewed": false,
+  "generated_plan_reviewed": false,
+  "Main_or_native_mutation": false,
+  "runtime_qualification": false,
+  "next_boundary": "Root may issue the exact reviewed configuration. Inspect generated plan and composed bytes independently before materialization."
+}

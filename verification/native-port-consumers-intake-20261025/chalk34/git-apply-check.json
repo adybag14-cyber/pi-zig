@@ -1,0 +1,15 @@
+{
+  "command": [
+    "git",
+    "apply",
+    "--check",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\chalk-project-trust-colors.patch"
+  ],
+  "working_dir": "C:\\Users\\adyba\\pi-zig\\main",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "read_head": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "read_status": "",
+  "mutation": false
+}

@@ -1,0 +1,17 @@
+E(OP_get_var_undef):
+        CASE(OP_get_var):
+            {
+                JSValue val;
+                JSAtom atom;
+                atom = get_u32(pc);
+                pc += 4;
+                sf->cur_pc = pc;
+
+                val = JS_GetGlobalVar(ctx, atom, opcode - OP_get_var_undef);
+                if (unlikely(JS_IsException(val)))
+                    goto exception;
+                *sp++ = val;
+            }
+            BREAK;
+
+        CASE(OP_put

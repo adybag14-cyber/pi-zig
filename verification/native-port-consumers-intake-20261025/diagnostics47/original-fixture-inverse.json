@@ -1,0 +1,19 @@
+{
+  "authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-diagnostics-channel-core-sourceonly-20261025\\authority\\diagnostics_channel.js",
+    "bytes": 10481,
+    "sha256": "B32AB2ECB196B53047979C42A546DEC9B1560635E1327C0FBE0F27DD184C73EB"
+  },
+  "first_line": 67,
+  "last_line": 252,
+  "fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-diagnostics-channel-core-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\node-diagnostics-channel-core-original.js",
+    "bytes": 4942,
+    "sha256": "4930CF8F1DC16B3198642250481BCA87D5D902D1DF71B2963FB744985448376C"
+  },
+  "prefix": "(function(process, triggerUncaughtException, WeakRefMap, SafeMap,\n  ERR_INVALID_ARG_TYPE, validateFunction, IP, ReflectApply) {\n\"use strict\";\nconst ArrayPrototypeIndexOf = Function.prototype.call.bind(IP[\"Array.indexOf\"]);\nconst ArrayPrototypePush = Function.prototype.call.bind(IP[\"Array.push\"]);\nconst ArrayPrototypeSlice = Function.prototype.call.bind(IP[\"Array.slice\"]);\nconst ArrayPrototypePushApply = Function.prototype.apply.bind(IP[\"Array.push\"]);\nconst ObjectGetPrototypeOf = IP[\"Object.getPrototypeOf\"];\nconst ObjectSetPrototypeOf = IP[\"Object.setPrototypeOf\"];\nconst SymbolHasInstance = IP[\"Symbol.hasInstance\"];\n",
+  "suffix": "return {Channel, channel, hasSubscribers, subscribe, unsubscribe};\n})\n",
+  "core_body_exact": true,
+  "only_dependency_capture_wrapper_added": true,
+  "original_fixture_executed": false
+}

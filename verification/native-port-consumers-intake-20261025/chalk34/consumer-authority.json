@@ -1,0 +1,8 @@
+{
+  "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\cli\\project-trust.ts",
+  "bytes": 1761,
+  "sha256": "F53DACE044983EF779B0C99EA3F1A75155116ACE6E4569C623B95D6C24972C3B",
+  "selected_arrow": "(message, type = \"info\") => {\n\t\t\t\tif (options.mode !== \"interactive\") {\n\t\t\t\t\tconst color = type === \"error\" ? chalk.red : type === \"warning\" ? chalk.yellow : chalk.cyan;\n\t\t\t\t\tconsole.error(color(message));\n\t\t\t\t}\n\t\t\t}",
+  "exact_notify_body": true,
+  "full_context_or_startup_UI_qualification": false
+}

@@ -1,0 +1,23 @@
+{
+  "source_basis_head": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "original_raw_slices": 4,
+  "complete_wrapper_end_line": 259,
+  "declared_tests": 32,
+  "unique_names": true,
+  "direct_imports_resolved": 16,
+  "package_imports": [
+    {
+      "source": "src/native_node_commonjs_wrap_load_test.zig",
+      "kind": "import",
+      "literal": "std"
+    }
+  ],
+  "raw_build_inverse": true,
+  "git_apply_check": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\module-wrap-load-sourceonly-20261025\\git-apply-check.json",
+    "bytes": 128,
+    "sha256": "036249061664645210B96E7A15013376D57182625E3CA68CC7984199F326B2D4"
+  },
+  "native_execution": false,
+  "Main_modified": false
+}

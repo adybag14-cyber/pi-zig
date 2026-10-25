@@ -1,0 +1,9 @@
+{
+  "base": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "exact_inverse": true,
+  "anchor": "    const chalk_ignore_guest = b.addTest(.{\n",
+  "insertion": "    // Actual project-trust foreground supplier controls; install without execution.\n    const chalk_project_trust_colors_tests = b.addTest(.{\n        .root_module = b.createModule(.{\n            .root_source_file = b.path(\"src/native_sdk_chalk_project_trust_colors_test.zig\"),\n            .target = target, .optimize = optimize,\n        }),\n        .filters = &.{\"native project trust Chalk colors\"},\n        .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, chalk_project_trust_colors_tests.root_module, quickjs, sqlite_lib_dir);\n    linkTypeScriptParser(b, chalk_project_trust_colors_tests.root_module, typescript_parser);\n    linkSqlite(chalk_project_trust_colors_tests.root_module, sqlite_lib_dir, sqlite_library);\n    chalk_project_trust_colors_tests.root_module.addImport(\"catalog_tool\", catalog_tool);\n    if (target.result.os.tag == .windows) {\n        chalk_project_trust_colors_tests.root_module.linkSystemLibrary(\"advapi32\", .{});\n        chalk_project_trust_colors_tests.root_module.linkSystemLibrary(\"userenv\", .{});\n    }\n    b.step(\"build-native-sdk-chalk-project-trust-colors\",\n        \"Install actual Chalk foreground and original project trust notify controls without execution\")\n        .dependOn(&b.addInstallArtifact(chalk_project_trust_colors_tests, .{\n            .dest_sub_path = b.fmt(\"native-sdk-chalk-project-trust-colors{s}\",\n                .{if (target.result.os.tag == .windows) \".exe\" else \"\"}),\n        }).step);\n\n",
+  "install_only_target": "build-native-sdk-chalk-project-trust-colors",
+  "windows_artifact": "native-sdk-chalk-project-trust-colors.exe",
+  "run_step": false
+}

@@ -1,0 +1,15 @@
+{
+  "command": "git apply --check diagnostics-channel-core.patch",
+  "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+  "basis_head": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-diagnostics-channel-core-sourceonly-20261025\\diagnostics-channel-core.patch",
+    "bytes": 94618,
+    "sha256": "FABAE2ECA8B6DE1F2AA03F3CD4FDB5A81C7A3DD9A458067AB81D89B5E678C447"
+  },
+  "applied": false,
+  "native_execution": false
+}

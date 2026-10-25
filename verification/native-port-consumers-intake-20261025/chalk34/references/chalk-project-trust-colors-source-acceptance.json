@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-25T10:42:14.937321+00:00",
+  "status": "Root_and_independent_source_accepted_for_reviewed_composition",
+  "packet": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\source-intake.json",
+    "bytes": 24001,
+    "sha256": "EC34538D04E92943FF573CE90AAD81DD957D2735B7717778AF32FCA8BB6C51D3"
+  },
+  "Root_full_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261025-root\\chalk-project-trust-colors-source-review.json",
+    "bytes": 1505,
+    "sha256": "B68A3E39A710A4FC79939283D559435211553F3CBBF35E1D584739C9E991E4A7"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261025-controls\\chalk-project-trust-colors-independent-source-review.json",
+    "bytes": 4858,
+    "sha256": "E75CCDF70C2452DBF67C051DDC462EEB5D19D6A8C7AEFE6BE219EDC514633641"
+  },
+  "source_basis_head": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "declared_controls": 34,
+  "native_execution": false,
+  "actual_metadata_count": null,
+  "runtime_qualification": false,
+  "Main_modified": false,
+  "scope": "Finite original foreground getter/style/cache additions to shared Chalk owner; complete original fixture and yellow regression retained; full startup context not yet integrated."
+}

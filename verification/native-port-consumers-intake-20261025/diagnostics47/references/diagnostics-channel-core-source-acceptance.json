@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "created_utc": "2026-10-25T10:42:14.935404+00:00",
+  "status": "Root_and_independent_source_accepted_for_reviewed_composition",
+  "packet": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-diagnostics-channel-core-sourceonly-20261025\\source-intake.json",
+    "bytes": 33774,
+    "sha256": "9292B2F0B4DA7ABC4A47F62F28C44E144E76B5FCEFF6FD987AA4FFD176DAB15D"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\resume-20261025-handoff-review\\diagnostics-channel-core-independent-source-review.json",
+    "bytes": 3731,
+    "sha256": "225713FDAACF5044669F5C137F8FDD6F8F800FE6069F874AA41184B60242AE8A"
+  },
+  "source_basis_head": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "live_pin_versions": 42,
+  "declared_tests": 47,
+  "full_owner_test_observer_and_original_source_read": true,
+  "shared_original_and_build_inverses_verified": true,
+  "findings": [
+    "Complete retained Channel/ActiveChannel and registry functions preserve prototype transitions, duplicate subscriptions/refcounts, snapshot publication, exact receivers and live operations.",
+    "Store/entry/transform and onMessage/catch lifetimes, IteratorClose, ignored return retirement and ordinary-vs-fatal dispatch preserve reviewed source boundaries; causal controls cover the peer findings.",
+    "Linked per-Engine acquisition stack rejects A-to-B-to-A duplicate publication while preserving one actual registry.",
+    "Six pristine capture additions and canonical validateFunction reuse existing error/stack wrapper owner; all preexisting shared bytes remain intact.",
+    "Private acquire requires actual process identity and explicit weak/uncaught input producers. Production binding admission, TracingChannel and public namespace remain open."
+  ],
+  "native_execution": false,
+  "actual_metadata_count": null,
+  "runtime_qualification": false,
+  "Main_modified": false
+}

@@ -1,0 +1,457 @@
+{
+  "scope": "actual native Chalk consumed foreground red/yellow/cyan successor for original project trust notify",
+  "base": "c248553d15282e1e8ad896382c78132b6a501dd9",
+  "packet": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025",
+  "source_only": true,
+  "created_utc": "2026-10-25T10:28:19.805368+00:00",
+  "authorization": "Root packet-only source ownership; no native/Node/reference capture/production generator execution",
+  "main_mutated": false,
+  "upstream_mutated": false,
+  "accepted_warning_packet_mutated": false,
+  "static_checks": {
+    "complete_owner_inverse": true,
+    "full_original_Chalk_source_body_inverses": true,
+    "existing_yellow_caller_inverse": true,
+    "original_notify_arrow_exact": true,
+    "build_inverse": true,
+    "projected_file_count": 7,
+    "unique_control_declarations": 34,
+    "differential_cases": 29,
+    "native_fatal_controls": 4,
+    "native_identity_controls": 1,
+    "prior_yellow_observations": 86,
+    "all_direct_import_embed_resolutions_exist": true,
+    "direct_import_embed_resolutions": 17,
+    "git_apply_check_passed": true,
+    "native_Node_capture_compiler_formatter_run": false
+  },
+  "projected_changes": [
+    {
+      "relative": "build.zig",
+      "base_bytes": 566024,
+      "base_sha256": "37815BF647A0F94D4ECEB30AA6FB95FCA63ED26C1E5CB95EEDD519C32B5358D1",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\projected\\build.zig",
+        "bytes": 567471,
+        "sha256": "E9E4E433173895C2F690E40ED1B9350954C315EBF9A094B0B3D277FFAC5BB716"
+      }
+    },
+    {
+      "relative": "src/extensions/fixtures/sdk-chalk-project-trust-colors-observer.mjs",
+      "base_bytes": 0,
+      "base_sha256": null,
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\sdk-chalk-project-trust-colors-observer.mjs",
+        "bytes": 17900,
+        "sha256": "680DB85BEB7CEEE7AC689FD0071F0BB194D7ED19FF6AA7C64D06FB9B5CBC7FDA"
+      }
+    },
+    {
+      "relative": "src/extensions/fixtures/sdk-chalk-project-trust-colors-original.mjs",
+      "base_bytes": 0,
+      "base_sha256": null,
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\sdk-chalk-project-trust-colors-original.mjs",
+        "bytes": 16027,
+        "sha256": "6E3C13DE4C4C35A2EC3EC59D94C212FFF44F5332B54D176AEDC77AFC94E1AC8B"
+      }
+    },
+    {
+      "relative": "src/extensions/fixtures/sdk-chalk-project-trust-notify-original.mjs",
+      "base_bytes": 0,
+      "base_sha256": null,
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\sdk-chalk-project-trust-notify-original.mjs",
+        "bytes": 453,
+        "sha256": "C3CA90439A5D67E225B2A0AFCBAFF78AA0D6B1266FF318452D75C65BEDB7242F"
+      }
+    },
+    {
+      "relative": "src/extensions/fixtures/sdk-chalk-project-trust-yellow-regression.mjs",
+      "base_bytes": 0,
+      "base_sha256": null,
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\sdk-chalk-project-trust-yellow-regression.mjs",
+        "bytes": 6292,
+        "sha256": "E279C78D83241926FC7164B4E974854A6838C0DAD421C571305C5F04DE25267F"
+      }
+    },
+    {
+      "relative": "src/extensions/native_sdk_chalk.zig",
+      "base_bytes": 15131,
+      "base_sha256": "3789CF7E66DB2F8D554403792E297166EA5EC6B3B5B389D7F68492D4CBFFF135",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\projected\\src\\extensions\\native_sdk_chalk.zig",
+        "bytes": 15892,
+        "sha256": "E442A811F12DF697D1858C3055193112A748C235D0229FDA8646276D8745E391"
+      }
+    },
+    {
+      "relative": "src/native_sdk_chalk_project_trust_colors_test.zig",
+      "base_bytes": 0,
+      "base_sha256": null,
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\projected\\src\\native_sdk_chalk_project_trust_colors_test.zig",
+        "bytes": 10505,
+        "sha256": "CAC7AC629E84E528FAA017A2D5E3F95A0284336520DBDBFDAA1020D20305D39C"
+      }
+    }
+  ],
+  "authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\authority\\chalk\\license",
+      "bytes": 1117,
+      "sha256": "5C932D88256B4AB958F64A856FA48E8BD1F55BC1D96B8149C65689E0C61789D3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\authority\\chalk\\package.json",
+      "bytes": 1743,
+      "sha256": "5A853FC6DC0C529BC126F97645989E9D60D06A2E9B20F66A6B48B0E8EF9DA3EF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\authority\\chalk\\source\\index.js",
+      "bytes": 8183,
+      "sha256": "08E92F2330A34D232F8AA987DA4D953893094BE5B2AA8CC39DDB4313743F206E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\authority\\chalk\\source\\utilities.js",
+      "bytes": 1187,
+      "sha256": "A58D81494366211509EA2C373328CF68A6365A94BE8645F33C1ED49F1288650A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\authority\\chalk\\source\\vendor\\ansi-styles\\index.js",
+      "bytes": 6996,
+      "sha256": "F28F1EDE59BE327626E4AE5F9F05387AB8072F298BA1AB7F9C9262D39923A25D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\authority\\chalk-consumed-callers.mjs",
+      "bytes": 6299,
+      "sha256": "69A5B993CAF382D21B79226BC17DAC783EEF2F0E5828922394E78F11D9A93809"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\authority\\main-create-runtime-original.ts",
+      "bytes": 4739,
+      "sha256": "633B098087C3C88E7543C692FE7AB61A80D08DEC8D4F1A0E7C7239D651A116CE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\authority\\project-trust-notify-original.js",
+      "bytes": 217,
+      "sha256": "8408377D7E59D45F1510C72A46C2C4C91BD7C22DF8625BCD5CDCCD201A1F2E44"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\authority\\project-trust.ts",
+      "bytes": 1761,
+      "sha256": "F53DACE044983EF779B0C99EA3F1A75155116ACE6E4569C623B95D6C24972C3B"
+    }
+  ],
+  "originals": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\original\\build.zig",
+      "bytes": 566024,
+      "sha256": "37815BF647A0F94D4ECEB30AA6FB95FCA63ED26C1E5CB95EEDD519C32B5358D1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\original\\src\\extensions\\native_sdk_chalk.zig",
+      "bytes": 15131,
+      "sha256": "3789CF7E66DB2F8D554403792E297166EA5EC6B3B5B389D7F68492D4CBFFF135"
+    }
+  ],
+  "direct_import_embed_resolutions": [
+    {
+      "source": "src/extensions/native_sdk_chalk.zig",
+      "kind": "import",
+      "spelling": "engine.zig",
+      "origin": "unchanged Main import",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    {
+      "source": "src/extensions/native_sdk_chalk.zig",
+      "kind": "import",
+      "spelling": "native_sdk_chalk_scope.zig",
+      "origin": "unchanged Main import",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_chalk_scope.zig",
+      "bytes": 15399,
+      "sha256": "0CB1B44BE9F8B2C5CA88331504C9AAC47FF371AB710433916C8B2DBCCADCA21E"
+    },
+    {
+      "source": "src/extensions/native_sdk_chalk.zig",
+      "kind": "import",
+      "spelling": "native_sdk_owned_completion.zig",
+      "origin": "unchanged Main import",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+      "bytes": 15176,
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+    },
+    {
+      "source": "src/extensions/native_sdk_chalk.zig",
+      "kind": "import",
+      "spelling": "native_node_function.zig",
+      "origin": "unchanged Main import",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_function.zig",
+      "bytes": 14120,
+      "sha256": "232E0F858F21DD002C2FEB6B65C62486EB6DA113F7463B2DD60CC799B3369007"
+    },
+    {
+      "source": "src/extensions/native_sdk_chalk.zig",
+      "kind": "import",
+      "spelling": "native_image_arithmetic.zig",
+      "origin": "unchanged Main import",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_image_arithmetic.zig",
+      "bytes": 6819,
+      "sha256": "1CF3B862D1665FBFFFE3AC93C281A5C1040B44132C4289EB5F02644706AE2016"
+    },
+    {
+      "source": "src/extensions/native_sdk_chalk.zig",
+      "kind": "import",
+      "spelling": "native_sdk.zig",
+      "origin": "unchanged Main import",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk.zig",
+      "bytes": 164658,
+      "sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3"
+    },
+    {
+      "source": "src/extensions/native_sdk_chalk.zig",
+      "kind": "import",
+      "spelling": "native_sdk_chalk_supports_color.zig",
+      "origin": "unchanged Main import",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_chalk_supports_color.zig",
+      "bytes": 10359,
+      "sha256": "1CC196657D34FE274CBDBA175868507484ABB4FD3665FFF14956608C70482A81"
+    },
+    {
+      "source": "src/native_sdk_chalk_project_trust_colors_test.zig",
+      "kind": "import",
+      "spelling": "extensions/native_sdk_session_locals.zig",
+      "origin": "unchanged Main import",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_session_locals.zig",
+      "bytes": 9136,
+      "sha256": "2E530FC843E99654A3F72F05207E04A5F77E3713D7D9D19B26117A46D7EC9064"
+    },
+    {
+      "source": "src/native_sdk_chalk_project_trust_colors_test.zig",
+      "kind": "import",
+      "spelling": "extensions/engine.zig",
+      "origin": "unchanged Main import",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    {
+      "source": "src/native_sdk_chalk_project_trust_colors_test.zig",
+      "kind": "import",
+      "spelling": "extensions/native_sdk_chalk.zig",
+      "origin": "packet projected",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\projected\\src\\extensions\\native_sdk_chalk.zig",
+      "bytes": 15892,
+      "sha256": "E442A811F12DF697D1858C3055193112A748C235D0229FDA8646276D8745E391"
+    },
+    {
+      "source": "src/native_sdk_chalk_project_trust_colors_test.zig",
+      "kind": "import",
+      "spelling": "native_sdk_initial_model_retirement_controls.zig",
+      "origin": "unchanged Main import",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_initial_model_retirement_controls.zig",
+      "bytes": 16159,
+      "sha256": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+    },
+    {
+      "source": "src/native_sdk_chalk_project_trust_colors_test.zig",
+      "kind": "embedFile",
+      "spelling": "extensions/fixtures/sdk-chalk-project-trust-colors-original.mjs",
+      "origin": "packet projected",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\sdk-chalk-project-trust-colors-original.mjs",
+      "bytes": 16027,
+      "sha256": "6E3C13DE4C4C35A2EC3EC59D94C212FFF44F5332B54D176AEDC77AFC94E1AC8B"
+    },
+    {
+      "source": "src/native_sdk_chalk_project_trust_colors_test.zig",
+      "kind": "embedFile",
+      "spelling": "extensions/fixtures/sdk-chalk-project-trust-colors-observer.mjs",
+      "origin": "packet projected",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\sdk-chalk-project-trust-colors-observer.mjs",
+      "bytes": 17900,
+      "sha256": "680DB85BEB7CEEE7AC689FD0071F0BB194D7ED19FF6AA7C64D06FB9B5CBC7FDA"
+    },
+    {
+      "source": "src/native_sdk_chalk_project_trust_colors_test.zig",
+      "kind": "embedFile",
+      "spelling": "extensions/fixtures/sdk-chalk-project-trust-yellow-regression.mjs",
+      "origin": "packet projected",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\sdk-chalk-project-trust-yellow-regression.mjs",
+      "bytes": 6292,
+      "sha256": "E279C78D83241926FC7164B4E974854A6838C0DAD421C571305C5F04DE25267F"
+    },
+    {
+      "source": "src/native_sdk_chalk_project_trust_colors_test.zig",
+      "kind": "embedFile",
+      "spelling": "extensions/fixtures/sdk-chalk-project-trust-notify-original.mjs",
+      "origin": "packet projected",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\sdk-chalk-project-trust-notify-original.mjs",
+      "bytes": 453,
+      "sha256": "C3CA90439A5D67E225B2A0AFCBAFF78AA0D6B1266FF318452D75C65BEDB7242F"
+    },
+    {
+      "source": "src/native_sdk_chalk_project_trust_colors_test.zig",
+      "kind": "import",
+      "spelling": "extensions/native_sdk_application_bootstrap.zig",
+      "origin": "unchanged Main import",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_application_bootstrap.zig",
+      "bytes": 8333,
+      "sha256": "7697315CAB586223A2393D2598C34F278B8CF7549BDEA68C49774BF546C3A6F8"
+    },
+    {
+      "source": "src/native_sdk_chalk_project_trust_colors_test.zig",
+      "kind": "import",
+      "spelling": "extensions/native_sdk_chalk_supports_color.zig",
+      "origin": "unchanged Main import",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_chalk_supports_color.zig",
+      "bytes": 10359,
+      "sha256": "1CC196657D34FE274CBDBA175868507484ABB4FD3665FFF14956608C70482A81"
+    }
+  ],
+  "controls": [
+    "native project trust Chalk colors preserved 86 observation yellow corpus matches complete original",
+    "native project trust Chalk colors red ANSI and no color bytes cover all levels and line endings",
+    "native project trust Chalk colors cyan ANSI and no color bytes cover all levels and line endings",
+    "native project trust Chalk colors mixed foreground chains preserve reopen order and shared closers",
+    "native project trust Chalk colors lazy foreground getter builder and cache descriptors match source",
+    "native project trust Chalk colors style caches are distinct immutable and per instance",
+    "native project trust Chalk colors mixed builders share live root level writes",
+    "native project trust Chalk colors painting reads symbol level while public level getter stays live",
+    "native project trust Chalk colors red and cyan preserve zero single two and rest argument forms",
+    "native project trust Chalk colors implicit and joined conversion hints match all enabled levels",
+    "native project trust Chalk colors input conversion preserves original thrown identity when disabled",
+    "native project trust Chalk colors enabled and disabled builders reject Symbol conversion",
+    "native project trust Chalk colors input conversion can reenter another genuine foreground builder",
+    "native project trust Chalk colors borrowed lazy getter preserves parent and generator read order",
+    "native project trust Chalk colors failed parent getter publishes no style cache",
+    "native project trust Chalk colors same style getter reentry preserves inner cache and outer error",
+    "native project trust Chalk colors cross style getter reentry keeps independent cached builders",
+    "native project trust Chalk colors proxy cache definition preserves original thrown identity",
+    "native project trust Chalk colors borrowed getter keeps real generator and nonconstructor shape",
+    "native project trust Chalk colors null and primitive style receivers reject without cache",
+    "native project trust Chalk colors new builders capture the live generator exactly once",
+    "native project trust Chalk colors symbol level getter and numeric conversion stay live",
+    "native project trust Chalk colors symbol level error follows input conversion and remains original",
+    "native project trust Chalk colors embedded ANSI and CRLF use original live String method order",
+    "native project trust Chalk colors live String method throws remain original for both styles",
+    "native project trust Chalk colors live String method can reenter another actual color",
+    "native project trust Chalk colors real private native DATA thrown during color conversion remains ordinary",
+    "native project trust Chalk colors exact original project trust notify selects red yellow and cyan",
+    "native project trust Chalk colors exact original notify preserves mode style and console reference order",
+    "native project trust Chalk colors default owner remains the same genuine cached callable",
+    "native project trust Chalk colors red getter fresh fatal bypasses guest catch",
+    "native project trust Chalk colors cyan getter fresh fatal bypasses guest catch",
+    "native project trust Chalk colors red conversion fresh fatal bypasses guest catch",
+    "native project trust Chalk colors cyan conversion fresh fatal bypasses guest catch"
+  ],
+  "differential_cases": [
+    "yellow-regression",
+    "red-matrix",
+    "cyan-matrix",
+    "mixed-chains",
+    "descriptors",
+    "cache-isolation",
+    "live-levels",
+    "public-level",
+    "builder-call-forms",
+    "coercion-hints",
+    "coercion-throw",
+    "symbol-input",
+    "coercion-reentry",
+    "getter-order",
+    "getter-throw",
+    "getter-same-reentry",
+    "getter-cross-reentry",
+    "cache-throw",
+    "borrowed-getter",
+    "primitive-receiver",
+    "generator-capture",
+    "symbol-level",
+    "symbol-level-throw",
+    "string-method-order",
+    "string-method-throw",
+    "string-method-reentry",
+    "native-data",
+    "notify-colors",
+    "notify-order"
+  ],
+  "build_target": "build-native-sdk-chalk-project-trust-colors",
+  "planned_windows_executable": "native-sdk-chalk-project-trust-colors.exe",
+  "documents": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\README.md",
+      "bytes": 5194,
+      "sha256": "9EDAF1B8667949E90F3618172EE492A90B6C7F614940D547A938AF244700EC25"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\prepare-static.py",
+      "bytes": 9253,
+      "sha256": "0DD0B3213DEE9008B1E137A2377B3E321A088BDC5F56D2C609A535774B731F6A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\seal-static.py",
+      "bytes": 11757,
+      "sha256": "F1128E39CA6D15586F3CF71C8BEA8F43A557430A72FF2FF1D729E5E81D244186"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\owner-inverse.json",
+      "bytes": 3008,
+      "sha256": "F3CA352AB7E908CF6F365BCF63C05E662F7647E1F98EA5F230DBD55B1D906923"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\fixture-inverse.json",
+      "bytes": 1063,
+      "sha256": "808B32BED9FB775095F5DA8A2C21294FAB745B5BD590AB227929BBD6A5C26F7B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\build-inverse.json",
+      "bytes": 1813,
+      "sha256": "22DDBDCB0BD53A87AB35EACD12639CD6546C4A9ECC4C6B360E3F5C1E4A1E10C5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\primary-provenance.json",
+      "bytes": 1715,
+      "sha256": "1F6BB1BFFEDDF522CCF27836CB6D75208A20B249BE47668602939E3DD70A4712"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\consumer-authority.json",
+      "bytes": 585,
+      "sha256": "5E0875B17FC2A68D24689DB6342EAD456B154FD585227BF0678C6E3E98CCF1E8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\create-runtime-next-gap-assessment.json",
+      "bytes": 2132,
+      "sha256": "34F4EA9EFD33A61EA9F3EFBAA433586DBA878CB34AAC5CC3AFBBD66D8F482BAE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\static-checks.json",
+      "bytes": 570,
+      "sha256": "BDEF6FD4FB83CA5C5571F884BFA8BF109425F743DD8C3ACF4BAA55771682AA65"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\git-apply-check.json",
+      "bytes": 434,
+      "sha256": "693E49B12EB6553217ECB0ACD9D6B80864CB48DBFBE8A8E2C954A12EEB411755"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\build-insertion.zig.txt",
+      "bytes": 1447,
+      "sha256": "2EDDB2C98B4551308840BA5078C2E58A4A79D38FC6F9FB11805898BA3FE05BB5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-chalk-project-trust-colors-sourceonly-20261025\\chalk-project-trust-colors.patch",
+      "bytes": 60947,
+      "sha256": "68ABBAC4A385BEB86FE8C714F392E4592822CDC4AE305C012D48CDC3604251B3"
+    }
+  ],
+  "unexecuted_gates": [
+    "Root source acceptance and combined-head integration",
+    "native compilation and actual metadata",
+    "native semantic controls and original-source observation equality",
+    "independent original detector reference",
+    "complete project-trust context and Main application startup integration"
+  ]
+}

@@ -1,0 +1,14 @@
+
+    const diagnostics_channel_core_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_diagnostics_channel_core_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native diagnostics core"},
+    });
+    linkQuickJs(b, diagnostics_channel_core_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, diagnostics_channel_core_tests.root_module, typescript_parser);
+    linkSqlite(diagnostics_channel_core_tests.root_module, sqlite_lib_dir, sqlite_library);
+    diagnostics_channel_core_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        diagnostics_channel_core_tests.root_module.linkSystemLibrary("advapi32", .{});
+        diagnostics_channel_core_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-diagnostics-channel-core", "Install 47 complete Channel core controls without execution").dependOn(&b.addInstallArtifact(diagnostics_channel_core_tests, .{ .dest_sub_path = b.fmt("native-node-diagnostics-channel-core{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);

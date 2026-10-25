@@ -1,0 +1,24 @@
+{
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\model-resolver.ts",
+    "bytes": 25178,
+    "sha256": "882BCEA5D6CE5AE37D8D8C8A4B171E3F54B0FDDE981EE1CF14B7E83ED692BE38"
+  },
+  "retained": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-model-scope-warning-sourceonly-20261025\\authority\\resolve-model-scope-original.ts",
+    "bytes": 396,
+    "sha256": "41153C4E0A7747596AAC74C88212644075840C0BFA42720FE7294F2D2761989C"
+  },
+  "fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\sdk-model-scope-warning-sourceonly-20261025\\projected\\src\\extensions\\fixtures\\sdk-model-scope-warning-4954-source.mjs",
+    "bytes": 408,
+    "sha256": "FCF704C313557EA8A94CFC6C2285A680A132657B26AB502DFC5A6D814E3132D9"
+  },
+  "erasure": {
+    "before": "export async function resolveModelScope(\n\tpatterns: string[],\n\tmodelRuntime: ModelRuntime,\n\toptions?: AuthOperationOptions,\n): Promise<ScopedModel[]> {",
+    "after": "async function resolveModelScope(patterns, modelRuntime, options) {"
+  },
+  "function_body_exact": true,
+  "wrapper_added_only_for_control_capture": true,
+  "original_executed": false
+}
