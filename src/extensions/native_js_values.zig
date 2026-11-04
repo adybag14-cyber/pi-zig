@@ -28,7 +28,7 @@ pub fn get(engine: *Engine, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue
 }
 pub fn define(engine: *Engine, receiver: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
         var frame = @import("native_pending_owner.zig").Frame.init(engine);
-        frame.enter() catch |err| { engine.releaseNativeValue(value); return frame.finishVoid(err); }
+        frame.enter() catch |err| { engine.releaseNativeValue(value); return frame.finishVoid(err); };
         return frame.finishVoid(definePendingBody(engine, receiver, name, value));
     }
     fn definePendingBody(engine: *Engine, receiver: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {

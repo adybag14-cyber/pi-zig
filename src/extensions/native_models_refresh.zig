@@ -312,8 +312,8 @@ fn continuationPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, ar
         @import("native_pending_owner.zig").checkFatal(engine) catch return c.pi_js_exception();
         const failure = c.JS_GetException(context);
         defer engine.releaseNativeValue(failure);
-        advance(engine, job, .rejected, failure) catch |err| {
-            @import("native_pending_owner.zig").catchFailure(engine, err) catch |fatal| return sdk.fail(engine, fatal);
+        advance(engine, job, .rejected, failure) catch |reject_err| {
+            @import("native_pending_owner.zig").catchFailure(engine, reject_err) catch |fatal| return sdk.fail(engine, fatal);
             return c.JS_PiThrowExceptionData(context, c.JS_DupValue(context, failure));
         };
     };

@@ -1836,7 +1836,7 @@ pub const Manager = struct {
             var generation: u32 = 0;
             if (c.JS_ToUint32(context, &generation, data[1]) < 0) return engine.throwCaptured();
             for (manager.services.items) |service| if (service.saved.generation == generation) {
-                service.cancel(id) catch |err| return fail(engine, err);
+                service.cancel(id) catch |cancel_err| return fail(engine, cancel_err);
                 break;
             };
             return c.pi_js_undefined();

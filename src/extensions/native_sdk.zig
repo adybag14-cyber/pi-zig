@@ -2073,7 +2073,7 @@ fn typedOperationJobNativeBody(context: ?*c.JSContext, _: c_int, args: [*c]c.JSV
         const reason = @import("native_agent_async.zig").reason(engine, err) catch |fatal| return fail(engine, fatal);
         defer engine.releaseNativeValue(reason);
         var rejected = [_]c.JSValue{reason};
-        @import("native_pending_owner.zig").checkFatal(engine) catch |err| return fail(engine, err);
+        @import("native_pending_owner.zig").checkFatal(engine) catch |fatal_err| return fail(engine, fatal_err);
         return c.JS_Call(context, args[6], c.pi_js_undefined(), 1, &rejected);
     };
     defer engine.releaseNativeValue(value);

@@ -164,8 +164,8 @@ pub const Boundary = struct {
         if(host_error!=null or self.reason!=null or self.terminated)self.failureRoots(values);
         // Pop at the caller-stable address before returning any completion.
         self.finished=true;
-        const result=self.engine.leaveNativeInvocation(&self.invocation,c.pi_js_undefined());
-        self.engine.freeValue(result); // Undefined/exception sentinel only.
+        const leave_result=self.engine.leaveNativeInvocation(&self.invocation,c.pi_js_undefined());
+        self.engine.freeValue(leave_result); // Undefined/exception sentinel only.
         self.observe(null); // finished prevents relinking the dead frame.
         if(host_error!=null or self.reason!=null or self.terminated)self.failureRoots(values);
         if(self.reason)|value|{
