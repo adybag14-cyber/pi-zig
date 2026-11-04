@@ -548,7 +548,8 @@ fn pumpOwnedBody(engine: *Engine, state: *State) !bool {
         // completed job twice or attach a later abort to its settled promise.
         _ = state.jobs.orderedRemove(index);
         defer job.destroy(engine);
-        if (job.native_error == error.OutOfMemory) {
+        const native_out_of_memory = if (job.native_error) |err| err == error.OutOfMemory else false;
+        if (native_out_of_memory) {
             // This is the worker's typed Zig failure, never Source DATA.
             // Publish before retiring the finished job's owned VM roots.
             _ = engine.throwNativeOutOfMemoryFatal();

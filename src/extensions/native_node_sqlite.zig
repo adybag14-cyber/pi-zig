@@ -132,20 +132,20 @@ fn constructDatabase(engine: *em.Engine, target: c.JSValue, args: []const c.JSVa
     const object = try s.own(try v.checked(engine, c.JS_NewObjectProtoClass(engine.context, if (c.JS_IsObject(prototype)) prototype else try v.objectPrototype(&s), m.database)));
     const path = try string(&s, v.at(args, 0), "path");
     var path_owned = true; errdefer if (path_owned) engine.gpa.free(path);
-    if (std.mem.indexOfScalar(u8, path, 0) != null) return throwError(&s, .type_error, "ERR_INVALID_ARG_VALUE", "The argument 'path' must be a string without null bytes.");
+    if (std.mem.indexOfScalar(u8, path, 0) != null) return @as(anyerror!c.JSValue, throwError(&s, .type_error, "ERR_INVALID_ARG_VALUE", "The argument 'path' must be a string without null bytes."));
     const db = try engine.gpa.create(Database);
     db.* = .{ .engine = engine, .path = path, .statement_prototype = c.JS_DupValue(engine.context, roots[1]) };
     _ = c.JS_SetOpaque(object, db); path_owned = false;
     const options = v.at(args, 1); var open = true;
     if (!c.JS_IsUndefined(options)) {
-        if (!c.JS_IsObject(options)) return throwError(&s, .type_error, "ERR_INVALID_ARG_TYPE", "The \"options\" argument must be an object.");
+        if (!c.JS_IsObject(options)) return @as(anyerror!c.JSValue, throwError(&s, .type_error, "ERR_INVALID_ARG_TYPE", "The \"options\" argument must be an object."));
         open = try boolOption(&s, options, "open", true);
         db.read_only = try boolOption(&s, options, "readOnly", false);
         db.foreign_keys = try boolOption(&s, options, "enableForeignKeyConstraints", true);
         db.dqs = try boolOption(&s, options, "enableDoubleQuotedStringLiterals", false);
         db.extensions = try boolOption(&s, options, "allowExtension", false);
         const timeout = try v.get(&s, options, "timeout");
-        if (!c.JS_IsUndefined(timeout)) { var number: f64 = 0; if (!c.JS_IsNumber(timeout)) return throwError(&s, .type_error, "ERR_INVALID_ARG_TYPE", "The \"options.timeout\" argument must be an integer."); if (c.JS_ToFloat64(engine.context, &number, timeout) < 0) return js.capture(engine); if (!std.math.isFinite(number) or @trunc(number) != number or number < std.math.minInt(i32) or number > std.math.maxInt(i32)) return throwError(&s, .type_error, "ERR_INVALID_ARG_TYPE", "The \"options.timeout\" argument must be an integer."); db.timeout = @intFromFloat(number); }
+        if (!c.JS_IsUndefined(timeout)) { var number: f64 = 0; if (!c.JS_IsNumber(timeout)) return @as(anyerror!c.JSValue, throwError(&s, .type_error, "ERR_INVALID_ARG_TYPE", "The \"options.timeout\" argument must be an integer.")); if (c.JS_ToFloat64(engine.context, &number, timeout) < 0) return @as(anyerror!c.JSValue, js.capture(engine)); if (!std.math.isFinite(number) or @trunc(number) != number or number < std.math.minInt(i32) or number > std.math.maxInt(i32)) return @as(anyerror!c.JSValue, throwError(&s, .type_error, "ERR_INVALID_ARG_TYPE", "The \"options.timeout\" argument must be an integer.")); db.timeout = @intFromFloat(number); }
         db.bigints = try boolOption(&s, options, "readBigInts", false);
         db.arrays = try boolOption(&s, options, "returnArrays", false);
         db.bare_names = try boolOption(&s, options, "allowBareNamedParameters", true);
@@ -160,7 +160,7 @@ fn statement(s: *v.Scope, receiver: c.JSValue, owner: c.JSValue) !*Statement { c
 fn dbMethod(engine: *em.Engine, comptime name: []const u8, receiver: c.JSValue, args: []const c.JSValue, owner: c.JSValue) !c.JSValue {
     var s: v.Scope = .{ .engine = engine }; defer s.deinit(); errdefer |err| s.captureUnwind(err); const db = try database(&s, receiver, owner);
     if (comptime std.mem.eql(u8, name, "open")) { try openDatabase(&s, db); return c.pi_js_undefined(); }
-    if (db.handle == null) return throwError(&s, .error_value, "ERR_INVALID_STATE", "database is not open");
+    if (db.handle == null) return @as(anyerror!c.JSValue, throwError(&s, .error_value, "ERR_INVALID_STATE", "database is not open"));
     if (comptime std.mem.eql(u8, name, "close")) {
         for (db.statements.items) |stmt| { _ = sqlite3_finalize(stmt.handle); stmt.handle = null; }
         db.statements.clearRetainingCapacity(); try check(&s, db.handle, sqlite3_close_v2(db.handle)); db.handle = null; return c.pi_js_undefined();
@@ -248,7 +248,7 @@ fn row(s: *v.Scope, stmt: *Statement) !c.JSValue {
 }
 fn stmtMethod(engine: *em.Engine, comptime name: []const u8, receiver: c.JSValue, args: []const c.JSValue, owner: c.JSValue) !c.JSValue {
     var s: v.Scope = .{ .engine = engine }; defer s.deinit(); errdefer |err| s.captureUnwind(err); const stmt = try statement(&s, receiver, owner);
-    if (comptime std.mem.eql(u8, name, "setReadBigInts") or std.mem.eql(u8, name, "setReturnArrays") or std.mem.eql(u8, name, "setAllowBareNamedParameters") or std.mem.eql(u8, name, "setAllowUnknownNamedParameters")) { const flag = v.at(args, 0); if (!c.JS_IsBool(flag)) return throwError(&s, .type_error, "ERR_INVALID_ARG_TYPE", "SQLite statement option must be a boolean"); if (comptime std.mem.eql(u8, name, "setReadBigInts")) stmt.bigints = s.truthy(flag) else if (comptime std.mem.eql(u8, name, "setReturnArrays")) stmt.arrays = s.truthy(flag) else if (comptime std.mem.eql(u8, name, "setAllowBareNamedParameters")) stmt.allow_bare = s.truthy(flag) else stmt.allow_unknown = s.truthy(flag); return c.pi_js_undefined(); }
+    if (comptime std.mem.eql(u8, name, "setReadBigInts") or std.mem.eql(u8, name, "setReturnArrays") or std.mem.eql(u8, name, "setAllowBareNamedParameters") or std.mem.eql(u8, name, "setAllowUnknownNamedParameters")) { const flag = v.at(args, 0); if (!c.JS_IsBool(flag)) return @as(anyerror!c.JSValue, throwError(&s, .type_error, "ERR_INVALID_ARG_TYPE", "SQLite statement option must be a boolean")); if (comptime std.mem.eql(u8, name, "setReadBigInts")) stmt.bigints = s.truthy(flag) else if (comptime std.mem.eql(u8, name, "setReturnArrays")) stmt.arrays = s.truthy(flag) else if (comptime std.mem.eql(u8, name, "setAllowBareNamedParameters")) stmt.allow_bare = s.truthy(flag) else stmt.allow_unknown = s.truthy(flag); return c.pi_js_undefined(); }
     try check(&s, stmt.database.handle, sqlite3_reset(stmt.handle)); try bindParams(&s, stmt, args);
     if (comptime std.mem.eql(u8, name, "run")) {
         _ = sqlite3_step(stmt.handle); try check(&s, stmt.database.handle, sqlite3_reset(stmt.handle));
@@ -258,24 +258,24 @@ fn stmtMethod(engine: *em.Engine, comptime name: []const u8, receiver: c.JSValue
         return c.JS_DupValue(engine.context, output);
     } else if (comptime std.mem.eql(u8, name, "get")) {
         defer _ = sqlite3_reset(stmt.handle);
-        const rc = sqlite3_step(stmt.handle); if (rc == 101) return c.pi_js_undefined(); if (rc != 100) return sqlError(&s, stmt.database.handle);
+        const rc = sqlite3_step(stmt.handle); if (rc == 101) return c.pi_js_undefined(); if (rc != 100) return @as(anyerror!c.JSValue, sqlError(&s, stmt.database.handle));
         return c.JS_DupValue(engine.context, try row(&s, stmt));
     } else {
         // Node StatementSync::All resets on every post-bind exit, including
         // row conversion/range/OOM/SQL failures. Bind failures precede this.
         defer _ = sqlite3_reset(stmt.handle);
         const output = try s.array(); var index: u32 = 0;
-        while (true) { const rc = sqlite3_step(stmt.handle); if (rc == 101) break; if (rc != 100) return sqlError(&s, stmt.database.handle); try s.index(output, index, try row(&s, stmt)); index = std.math.add(u32, index, 1) catch return error.OutOfMemory; }
+        while (true) { const rc = sqlite3_step(stmt.handle); if (rc == 101) break; if (rc != 100) return @as(anyerror!c.JSValue, sqlError(&s, stmt.database.handle)); try s.index(output, index, try row(&s, stmt)); index = std.math.add(u32, index, 1) catch return error.OutOfMemory; }
         return c.JS_DupValue(engine.context, output);
     }
 }
-fn illegal(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue { var s: v.Scope = .{ .engine = engine }; defer s.deinit(); errdefer |err| s.captureUnwind(err); return throwError(&s, .type_error, "ERR_ILLEGAL_CONSTRUCTOR", "Illegal constructor"); }
+fn illegal(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue { var s: v.Scope = .{ .engine = engine }; defer s.deinit(); errdefer |err| s.captureUnwind(err); return @as(anyerror!c.JSValue, throwError(&s, .type_error, "ERR_ILLEGAL_CONSTRUCTOR", "Illegal constructor")); }
 fn property(engine: *em.Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s: v.Scope = .{ .engine = engine }; defer s.deinit(); errdefer |err| s.captureUnwind(err);
-    var kind: i32 = 0; if (c.JS_ToInt32(engine.context, &kind, roots[1]) < 0) return js.capture(engine);
+    var kind: i32 = 0; if (c.JS_ToInt32(engine.context, &kind, roots[1]) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     const db = try database(&s, receiver, roots[0]);
     if (kind == 0) return c.pi_js_bool(engine.context, @intFromBool(db.handle != null));
-    if (db.handle == null) return throwError(&s, .error_value, "ERR_INVALID_STATE", "database is not open");
+    if (db.handle == null) return @as(anyerror!c.JSValue, throwError(&s, .error_value, "ERR_INVALID_STATE", "database is not open"));
     return c.pi_js_bool(engine.context, @intFromBool(sqlite3_get_autocommit(db.handle) == 0));
 }
 pub fn create(engine: *em.Engine) !c.JSValue {
@@ -293,14 +293,14 @@ pub fn create(engine: *em.Engine) !c.JSValue {
     const db_proto = try s.object(); const stmt_proto = try s.object();
     inline for (.{ "isOpen", "isTransaction" }, 0..) |name, index| {
         const getter = try s.own(try functions.createMethod(engine, "get " ++ name, 0, v.callback(property), &.{ owner, c.JS_NewInt32(engine.context, @intCast(index)) }));
-        const atom = c.JS_NewAtom(engine.context, name); if (atom == c.JS_ATOM_NULL) return js.capture(engine); defer c.JS_FreeAtom(engine.context, atom);
-        if (c.JS_DefinePropertyGetSet(engine.context, db_proto, atom, c.JS_DupValue(engine.context, getter), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return js.capture(engine);
+        const atom = c.JS_NewAtom(engine.context, name); if (atom == c.JS_ATOM_NULL) return @as(anyerror!c.JSValue, js.capture(engine)); defer c.JS_FreeAtom(engine.context, atom);
+        if (c.JS_DefinePropertyGetSet(engine.context, db_proto, atom, c.JS_DupValue(engine.context, getter), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     }
-    inline for (.{ "open", "exec", "prepare", "close" }) |name| { const Adapter = struct { fn call(host: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue { return dbMethod(host, name, receiver, args, roots[0]); } }; const fnc = try s.own(try functions.createMethod(engine, name, 0, v.callback(Adapter.call), &.{owner})); if (c.JS_DefinePropertyValueStr(engine.context, db_proto, name, c.JS_DupValue(engine.context, fnc), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine); }
-    inline for (.{ "run", "get", "all", "setReadBigInts", "setReturnArrays", "setAllowBareNamedParameters", "setAllowUnknownNamedParameters" }) |name| { const Adapter = struct { fn call(host: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue { return stmtMethod(host, name, receiver, args, roots[0]); } }; const fnc = try s.own(try functions.createMethod(engine, name, 0, v.callback(Adapter.call), &.{owner})); if (c.JS_DefinePropertyValueStr(engine.context, stmt_proto, name, c.JS_DupValue(engine.context, fnc), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine); }
+    inline for (.{ "open", "exec", "prepare", "close" }) |name| { const Adapter = struct { fn call(host: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue { return dbMethod(host, name, receiver, args, roots[0]); } }; const fnc = try s.own(try functions.createMethod(engine, name, 0, v.callback(Adapter.call), &.{owner})); if (c.JS_DefinePropertyValueStr(engine.context, db_proto, name, c.JS_DupValue(engine.context, fnc), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return @as(anyerror!c.JSValue, js.capture(engine)); }
+    inline for (.{ "run", "get", "all", "setReadBigInts", "setReturnArrays", "setAllowBareNamedParameters", "setAllowUnknownNamedParameters" }) |name| { const Adapter = struct { fn call(host: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue { return stmtMethod(host, name, receiver, args, roots[0]); } }; const fnc = try s.own(try functions.createMethod(engine, name, 0, v.callback(Adapter.call), &.{owner})); if (c.JS_DefinePropertyValueStr(engine.context, stmt_proto, name, c.JS_DupValue(engine.context, fnc), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return @as(anyerror!c.JSValue, js.capture(engine)); }
     const carrier = try s.object();
     try s.put(carrier, "DatabaseSync", try s.own(try classes.constructor(engine, "DatabaseSync", 0, db_proto, v.callback(constructDatabase), &.{ owner, stmt_proto })));
     try s.put(carrier, "StatementSync", try s.own(try classes.constructor(engine, "StatementSync", 0, stmt_proto, v.callback(illegal), &.{})));
-    const retained = c.JS_DupValue(engine.context, carrier); engine.native_module_values.put(engine.gpa, cache_key, retained) catch |err| { engine.freeValue(retained); return err; };
+    const retained = c.JS_DupValue(engine.context, carrier); engine.native_module_values.put(engine.gpa, cache_key, retained) catch |err| { engine.freeValue(retained); return @as(anyerror!c.JSValue, err); };
     return c.JS_DupValue(engine.context, carrier);
 }

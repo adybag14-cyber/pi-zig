@@ -32,12 +32,12 @@ pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
     try method(&s, executor_proto, "statement", try s.own(try functions.createMethod(engine, "statement", 1, v.callback(cachedStatement), &.{})));
     const transaction_proto = try s.own(try v.checked(engine, c.JS_NewObjectProto(engine.context, executor_proto)));
     const transaction_ctor = try s.own(try classes.constructor(engine, "NodeSqliteTransaction", 3, transaction_proto, v.callback(transactionConstructor), &.{graph}));
-    if (c.JS_SetPrototype(engine.context, transaction_ctor, executor) < 0) return js.capture(engine);
+    if (c.JS_SetPrototype(engine.context, transaction_ctor, executor) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     try s.put(graph, "Transaction", transaction_ctor);
     try method(&s, transaction_proto, "runOperation", try s.own(try af.createResumable(engine, "runOperation", 1, transactionOperation, &.{})));
     const db_proto = try s.own(try v.checked(engine, c.JS_NewObjectProto(engine.context, executor_proto)));
     const db_ctor = try s.own(try classes.constructor(engine, "NodeSqliteDatabase", 1, db_proto, v.callback(databaseConstructor), &.{graph}));
-    if (c.JS_SetPrototype(engine.context, db_ctor, executor) < 0) return js.capture(engine);
+    if (c.JS_SetPrototype(engine.context, db_ctor, executor) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     try s.put(graph, "NodeSqliteDatabase", db_ctor);
     try method(&s, db_proto, "runOperation", try s.own(try functions.createMethod(engine, "runOperation", 1, v.callback(databaseOperation), &.{})));
     try method(&s, db_proto, "transaction", try s.own(try functions.createMethod(engine, "transaction", 1, v.callback(transaction), &.{graph})));
@@ -45,7 +45,7 @@ pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
     const exports = try s.object(); try s.put(exports, "NodeSqliteDatabase", db_ctor);
     try s.put(exports, "openNodeSqliteDatabase", try s.own(try af.createResumable(engine, "openNodeSqliteDatabase", 1, open, &.{graph})));
     try s.put(graph, "exports", exports);
-    const retained = c.JS_DupValue(engine.context, graph); engine.native_module_values.put(engine.gpa, cache_key, retained) catch |err| { if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); engine.releaseNativeValue(retained); return err; };
+    const retained = c.JS_DupValue(engine.context, graph); engine.native_module_values.put(engine.gpa, cache_key, retained) catch |err| { if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); engine.releaseNativeValue(retained); return @as(anyerror!c.JSValue, err); };
     return c.JS_DupValue(engine.context, exports);
 }
 fn queueConstructor(engine: *em.Engine, target: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue { var s: v.Scope = .{ .engine = engine }; defer s.deinit(); errdefer |err| s.captureUnwind(err); return c.JS_DupValue(engine.context, try queue.create(&s, try v.objectFor(&s, target))); }
@@ -128,7 +128,7 @@ fn transactionBody(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots
     try v.pending(engine);
     return transactionRun(engine, roots, state, completion, input) catch |err| {
         const reason = try v.caught(engine, err); defer engine.freeValue(reason);
-        var s: v.Scope = .{ .engine = engine }; defer s.deinit(); errdefer |err| s.captureUnwind(err);
+        var s: v.Scope = .{ .engine = engine }; defer s.deinit(); errdefer |allocation_error| s.captureUnwind(allocation_error);
         if (!c.JS_IsObject(state.*) or !s.truthy(try s.get(state.*, "catchActive"))) return .{ .thrown = c.JS_DupValue(engine.context, reason) };
         try s.put(state.*, "catchActive", c.pi_js_bool(engine.context, 0)); return rollback(&s, roots[0], state.*, reason);
     };
@@ -174,7 +174,7 @@ fn closeOperation(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots:
 fn open(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) anyerror!af.Action {
     try v.pending(engine);
     return openRun(engine, args, roots[0], state, completion, input) catch |err| {
-        const reason = try v.caught(engine, err); defer engine.freeValue(reason); var s: v.Scope = .{ .engine = engine }; defer s.deinit(); errdefer |err| s.captureUnwind(err);
+        const reason = try v.caught(engine, err); defer engine.freeValue(reason); var s: v.Scope = .{ .engine = engine }; defer s.deinit(); errdefer |allocation_error| s.captureUnwind(allocation_error);
         if (c.JS_IsObject(state.*) and s.truthy(try s.get(state.*, "configurationActive"))) return configurationFailed(&s, state.*, reason);
         return .{ .thrown = c.JS_DupValue(engine.context, reason) };
     };

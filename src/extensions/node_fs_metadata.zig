@@ -92,14 +92,14 @@ fn dateOperation(engine: *em.Engine, receiver: c.JSValue, supplied: c.JSValue, i
         const number = try scope.call(try scope.global("Number"), c.pi_js_undefined(), &.{milliseconds});
         const rounded = try scope.invoke(try scope.global("Math"), "round", &.{number});
         var numeric: f64 = undefined;
-        if (c.JS_ToFloat64(engine.context, &numeric, rounded) < 0) return js.capture(engine);
+        if (c.JS_ToFloat64(engine.context, &numeric, rounded) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
         value = try scope.own(try engine.checked(c.JS_NewDate(engine.context, numeric)));
     }
     const atom = try js.atom(engine, try scope.text(dates[index % 4]));
     defer c.JS_FreeAtom(engine.context, atom);
     // Source's setter supplies only {value,writable:true}; these new own
     // Date fields are nonenumerable and nonconfigurable.
-    if (c.JS_DefinePropertyValue(engine.context, receiver, atom, c.JS_DupValue(engine.context, value), c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+    if (c.JS_DefinePropertyValue(engine.context, receiver, atom, c.JS_DupValue(engine.context, value), c.JS_PROP_WRITABLE) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     return if (index < 4) c.JS_DupValue(engine.context, value) else c.pi_js_undefined();
 }
 fn addDates(engine: *em.Engine, prototype: c.JSValue) !void {
@@ -137,7 +137,7 @@ pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
     }
     const deprecated = try scope.own(try functions.create(engine, "deprecated", 14, deprecatedStats, &.{numeric_constructor}));
     try setPrototype(engine, deprecated, numeric_constructor);
-    if (c.JS_DefinePropertyValueStr(engine.context, deprecated, "prototype", c.JS_DupValue(engine.context, prototypes[0]), c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+    if (c.JS_DefinePropertyValueStr(engine.context, deprecated, "prototype", c.JS_DupValue(engine.context, prototypes[0]), c.JS_PROP_WRITABLE) < 0) return @as(anyerror!void, js.capture(engine));
     try scope.put(exports, "Stats", deprecated);
     try scope.put(exports, "statSync", try scope.own(try functions.create(engine, "statSync", 1, statSync, &prototypes)));
     try scope.put(exports, "lstatSync", try scope.own(try functions.create(engine, "lstatSync", 1, lstatSync, &prototypes)));
@@ -153,7 +153,7 @@ pub fn throwTyped(engine: *em.Engine, code: []const u8, message: []const u8) !c.
     errdefer |err| retainTypedAllocationFailure(engine, err);
     const error_value = try scope.own(try js.builtin(engine, "TypeError", &.{}));
     try scope.put(error_value, "code", try scope.text(code));
-    if (c.JS_DefinePropertyValueStr(engine.context, error_value, "message", c.JS_DupValue(engine.context, try scope.text(message)), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+    if (c.JS_DefinePropertyValueStr(engine.context, error_value, "message", c.JS_DupValue(engine.context, try scope.text(message)), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     return engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, error_value)));
 }
 pub fn pathText(engine: *em.Engine, value: c.JSValue, coerce: bool) ![]u8 {
@@ -212,12 +212,12 @@ fn throwFilesystem(engine: *em.Engine, err: anyerror, path: []const u8, syscall:
     if (err == error.OutOfMemory) return err;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    errdefer |err| retainTypedAllocationFailure(engine, err);
+    errdefer |allocation_error| retainTypedAllocationFailure(engine, allocation_error);
     const code: []const u8 = switch (err) {
         error.FileNotFound => "ENOENT",
         error.AccessDenied => "EACCES",
         error.NotDir => "ENOTDIR",
-        else => return err,
+        else => return @as(anyerror!c.JSValue, err),
     };
     const reason: []const u8 = switch (err) {
         error.FileNotFound => "no such file or directory",

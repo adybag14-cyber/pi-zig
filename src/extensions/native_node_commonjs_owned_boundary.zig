@@ -198,11 +198,12 @@ pub const Boundary = struct {
     /// Historical private unwind forbids subsequent source settlement even
     /// when cancellation lets an ordinary cleanup event win selection.
     pub fn finishRetiredPending(self:*Boundary,host_error:?anyerror,values:[]c.JSValue)!void{
+        const host_terminated=if(host_error)|err|err==error.ExecutionTerminated else false;
         const result=self.finishRetiredOwned(host_error,values,true) catch |err| {
-            if(self.terminated or host_error==error.ExecutionTerminated)return error.ExecutionTerminated;
+            if(self.terminated or host_terminated)return error.ExecutionTerminated;
             return err;
         };
-        if(self.terminated or host_error==error.ExecutionTerminated)return error.ExecutionTerminated;
+        if(self.terminated or host_terminated)return error.ExecutionTerminated;
         if(result!=null)return error.JavaScriptException;
     }
     pub fn finishManyPending(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{
