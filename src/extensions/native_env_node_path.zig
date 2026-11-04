@@ -15,18 +15,24 @@ fn environmentValue(scope: *Scope, comptime name: []const u8) !?c.JSValue {
         const value = std.process.Environ.getWindows(.{ .block = .global }, std.unicode.utf8ToUtf16LeStringLiteral(name)) orelse return null;
         return try scope.own(try scope.engine.checked(c.JS_NewStringUTF16(scope.engine.context, value.ptr, value.len)));
     }
-    var inherited = try environment(scope.engine.gpa);
+    var inherited = (environment(scope.engine.gpa) catch |native_error| { if (native_error == error.OutOfMemory) _ = scope.engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer inherited.deinit();
     return if (inherited.get(name)) |value| try scope.text(value) else null;
 }
 fn systemAlias(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, kind: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(systemAliasPendingBody(context, receiver, argc, argv, kind));
+}
+fn systemAliasPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, kind: c_int) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
-    const info = c.JS_GetPropertyStr(engine.context, receiver, "info");
+    const info = native_guest_1: { engine.checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) engine.throwExecutionTerminated() else engine.throwCaptured(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, receiver, "info"); };
     if (c.JS_IsException(info)) return info;
-    defer engine.freeValue(info);
+    defer engine.releaseNativeValue(info);
     const key: [*:0]const u8 = if (kind < 2) "errno" else "syscall";
-    if (@mod(kind, 2) == 0) return c.JS_GetPropertyStr(engine.context, info, key);
-    if (c.JS_SetPropertyStr(engine.context, info, key, c.JS_DupValue(engine.context, if (argc > 0) argv[0] else c.pi_js_undefined())) < 0) return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+    if (@mod(kind, 2) == 0) return native_guest_0: { engine.checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) engine.throwExecutionTerminated() else engine.throwCaptured(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, info, key); };
+    if (c.JS_SetPropertyStr(engine.context, info, key, c.JS_DupValue(engine.context, if (argc > 0) argv[0] else c.pi_js_undefined())) < 0) return c.pi_js_exception();
     return c.pi_js_undefined();
 }
 fn missingHome(scope: *Scope) anyerror {
@@ -43,12 +49,13 @@ fn missingHome(scope: *Scope) anyerror {
         defer c.JS_FreeAtom(engine.context, atom);
         const getter = engine.checked(c.JS_NewCFunctionMagic(engine.context, systemAlias, "get", 0, c.JS_CFUNC_generic_magic, @intCast(index * 2))) catch |err| return err;
         const setter = engine.checked(c.JS_NewCFunctionMagic(engine.context, systemAlias, "set", 1, c.JS_CFUNC_generic_magic, @intCast(index * 2 + 1))) catch |err| {
-            engine.freeValue(getter);
+        if (err == error.OutOfMemory) _ = scope.engine.throwNativeOutOfMemoryFatal();
+            engine.releaseNativeValue(getter);
             return err;
         };
         if (c.JS_DefinePropertyGetSet(engine.context, value, atom, getter, setter, c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return js.capture(engine);
     }
-    _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value));
+    _ = c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, value));
     return js.capture(engine);
 }
 pub fn home(scope: *Scope) !c.JSValue {
@@ -90,11 +97,11 @@ pub fn temporary(scope: *Scope) !c.JSValue {
         break :fallback try scope.concat(system, try scope.text("\\temp"));
     } else try scope.text("/tmp");
     const length = try scope.get(chosen, "length");
-    const beyond = try scope.own(try scope.engine.checked(c.JS_PiBinaryOperator(scope.engine.context, 6, length, c.JS_NewInt32(scope.engine.context, 1))));
+    const beyond = try scope.own(try scope.engine.checked(native_guest_1: { try scope.engine.checkNativeEntry(); break :native_guest_1 c.JS_PiBinaryOperator(scope.engine.context, 6, length, c.JS_NewInt32(scope.engine.context, 1)); }));
     const ending = try scope.invoke(chosen, "endsWith", &.{try scope.text(if (builtin.os.tag == .windows) "\\" else "/")});
     if (scope.truthy(beyond) and scope.truthy(ending)) {
         if (builtin.os.tag == .windows) {
-            const before = try scope.own(try scope.engine.checked(c.JS_PiBinaryOperator(scope.engine.context, 1, length, c.JS_NewInt32(scope.engine.context, 2))));
+            const before = try scope.own(try scope.engine.checked(native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_PiBinaryOperator(scope.engine.context, 1, length, c.JS_NewInt32(scope.engine.context, 2)); }));
             if (scope.equal(try scope.own(try js.getKey(scope.engine, chosen, before)), try scope.text(":"))) return chosen;
         }
         return scope.invoke(chosen, "slice", &.{ c.JS_NewInt32(scope.engine.context, 0), c.JS_NewInt32(scope.engine.context, -1) });
@@ -108,8 +115,9 @@ pub fn resolve(scope: *Scope, bindings: c.JSValue, cwd: c.JSValue, input: c.JSVa
         normalized = try scope.invoke(paths, "join", &.{ try home(scope), try scope.invoke(normalized, "slice", &.{c.JS_NewInt32(scope.engine.context, 2)}) });
     } else if (scope.truthy(try scope.invoke(normalized, "startsWith", &.{try scope.text("file://")}))) {
         normalized = scope.call(try scope.get(bindings, "fileURLToPath"), c.pi_js_undefined(), &.{normalized}) catch |err| ignored: {
+        if (err == error.OutOfMemory) _ = scope.engine.throwNativeOutOfMemoryFatal();
             if (err != error.JavaScriptException) return err;
-            if (scope.engine.captured_exception) |reason| scope.engine.freeValue(reason);
+            if (scope.engine.captured_exception) |reason| scope.engine.releaseNativeValue(reason);
             scope.engine.captured_exception = null;
             break :ignored input;
         };

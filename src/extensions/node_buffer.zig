@@ -70,7 +70,7 @@ fn view(engine: *engine_mod.Engine, value: c.JSValue) !View {
     var length: usize = 0;
     var element_size: usize = 0;
     const backing = try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, value, &offset, &length, &element_size));
-    errdefer engine.freeValue(backing);
+    errdefer engine.releaseNativeValue(backing);
     var total: usize = 0;
     const bytes = c.JS_GetArrayBuffer(engine.context, &total, backing);
     if (c.JS_HasException(engine.context) or offset > total or length > total - offset or (bytes == null and length > 0)) return error.InvalidBufferArgument;
@@ -84,7 +84,7 @@ fn property(engine: *engine_mod.Engine, object: c.JSValue, name: [*:0]const u8, 
 fn checkedLength(engine: *engine_mod.Engine, value: c.JSValue) !usize {
     if (!c.JS_IsNumber(value)) return error.InvalidBufferArgument;
     var size: f64 = 0;
-    if (c.JS_ToFloat64(engine.context, &size, value) < 0) return error.JavaScriptException;
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(engine.context, &size, value); } < 0) return error.JavaScriptException;
     if (!std.math.isFinite(size) or size < 0 or size > @as(f64, @floatFromInt(engine.options.memory_limit))) return error.BufferRange;
     return @intFromFloat(@trunc(size));
 }
@@ -100,35 +100,35 @@ fn encoding(engine: *engine_mod.Engine, value: c.JSValue, permissive: bool) !enc
 pub fn fromBytes(engine: *engine_mod.Engine, bytes: []const u8) !c.JSValue {
     if (bytes.len > engine.options.memory_limit) return error.BufferRange;
     const backing = try engine.checked(c.JS_NewArrayBufferCopy(engine.context, bytes.ptr, bytes.len));
-    defer engine.freeValue(backing);
+    defer engine.releaseNativeValue(backing);
     return fromBacking(engine, backing, 0, bytes.len);
 }
 
 pub fn fromBacking(engine: *engine_mod.Engine, backing: c.JSValue, offset: usize, size: usize) !c.JSValue {
     const prototype = engine.buffer_prototype orelse return error.NativeBufferUnavailable;
     var args = [_]c.JSValue{ backing, c.JS_NewInt64(engine.context, @intCast(offset)), c.JS_NewInt64(engine.context, @intCast(size)) };
-    defer engine.freeValue(args[1]);
-    defer engine.freeValue(args[2]);
+    defer engine.releaseNativeValue(args[1]);
+    defer engine.releaseNativeValue(args[2]);
     const value = try engine.checked(c.JS_NewTypedArray(engine.context, args.len, &args, c.JS_TYPED_ARRAY_UINT8));
-    errdefer engine.freeValue(value);
+    errdefer engine.releaseNativeValue(value);
     if (c.JS_SetPrototype(engine.context, value, prototype) < 0) return error.JavaScriptException;
     return value;
 }
 
 fn arrayFrom(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
-    const count_value = try engine.checked(c.JS_GetPropertyStr(engine.context, value, "length"));
-    defer engine.freeValue(count_value);
+    const count_value = try engine.checked(native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_GetPropertyStr(engine.context, value, "length"); });
+    defer engine.releaseNativeValue(count_value);
     if (!c.JS_IsNumber(count_value)) return fromBytes(engine, &.{});
     var count_number: f64 = 0;
-    if (c.JS_ToFloat64(engine.context, &count_number, count_value) < 0) return error.JavaScriptException;
+    if (native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_ToFloat64(engine.context, &count_number, count_value); } < 0) return error.JavaScriptException;
     const count = if (std.math.isNan(count_number) or count_number < 0) 0 else try checkedLength(engine, count_value);
-    const bytes = try engine.gpa.alloc(u8, count);
+    const bytes = (engine.gpa.alloc(u8, count) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(bytes);
     for (bytes, 0..) |*byte, index| {
-        const item = try engine.checked(c.JS_GetPropertyUint32(engine.context, value, @intCast(index)));
-        defer engine.freeValue(item);
+        const item = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyUint32(engine.context, value, @intCast(index)); });
+        defer engine.releaseNativeValue(item);
         var number: i32 = 0;
-        if (c.JS_ToInt32(engine.context, &number, item) < 0) return error.JavaScriptException;
+        if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToInt32(engine.context, &number, item); } < 0) return error.JavaScriptException;
         byte.* = @truncate(@as(u32, @bitCast(number)));
     }
     return fromBytes(engine, bytes);
@@ -137,10 +137,10 @@ fn arrayFrom(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
 fn from(engine: *engine_mod.Engine, args: []c.JSValue, depth: usize) anyerror!c.JSValue {
     if (args.len == 0 or depth > 16) return error.InvalidBufferArgument;
     if (c.JS_IsString(args[0])) {
-        const text = try engine.toString(args[0]);
+        const text = (engine.toString(args[0]) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(text);
         const codec = try encoding(engine, if (args.len > 1) args[1] else c.pi_js_undefined(), true);
-        const bytes = try encodings.encode(engine.gpa, text, codec);
+        const bytes = (encodings.encode(engine.gpa, text, codec) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(bytes);
         return fromBytes(engine, bytes);
     }
@@ -157,78 +157,99 @@ fn from(engine: *engine_mod.Engine, args: []c.JSValue, depth: usize) anyerror!c.
     if (!c.JS_IsObject(args[0])) return error.InvalidBufferArgument;
     if (c.JS_GetTypedArrayType(args[0]) == c.JS_TYPED_ARRAY_UINT8) {
         const source = try view(engine, args[0]);
-        defer engine.freeValue(source.backing);
+        defer engine.releaseNativeValue(source.backing);
         return fromBytes(engine, source.bytes);
     }
     if (c.JS_IsArray(args[0]) or c.JS_GetTypedArrayType(args[0]) >= 0 or c.JS_IsDataView(args[0])) return arrayFrom(engine, args[0]);
-    const value_of = try engine.checked(c.JS_GetPropertyStr(engine.context, args[0], "valueOf"));
-    defer engine.freeValue(value_of);
+    const value_of = try engine.checked(native_guest_4: { try engine.checkNativeEntry(); break :native_guest_4 c.JS_GetPropertyStr(engine.context, args[0], "valueOf"); });
+    defer engine.releaseNativeValue(value_of);
     if (c.JS_IsFunction(engine.context, value_of)) {
-        const value = try engine.checked(c.JS_Call(engine.context, value_of, args[0], 0, null));
-        defer engine.freeValue(value);
+        const value = try engine.checked(native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_Call(engine.context, value_of, args[0], 0, null); });
+        defer engine.releaseNativeValue(value);
         if (!c.JS_IsStrictEqual(engine.context, value, args[0])) {
             var arguments = [_]c.JSValue{ value, if (args.len > 1) args[1] else c.pi_js_undefined(), if (args.len > 2) args[2] else c.pi_js_undefined() };
             return from(engine, &arguments, depth + 1);
         }
     }
-    const type_value = try engine.checked(c.JS_GetPropertyStr(engine.context, args[0], "type"));
-    defer engine.freeValue(type_value);
+    const type_value = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetPropertyStr(engine.context, args[0], "type"); });
+    defer engine.releaseNativeValue(type_value);
     if (c.JS_IsString(type_value)) {
-        const type_name = try engine.toString(type_value);
+        const type_name = (engine.toString(type_value) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(type_name);
         if (std.mem.eql(u8, type_name, "Buffer")) {
-            const data = try engine.checked(c.JS_GetPropertyStr(engine.context, args[0], "data"));
-            defer engine.freeValue(data);
+            const data = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, args[0], "data"); });
+            defer engine.releaseNativeValue(data);
             if (c.JS_IsArray(data)) return arrayFrom(engine, data);
         }
     }
-    const count = try engine.checked(c.JS_GetPropertyStr(engine.context, args[0], "length"));
-    defer engine.freeValue(count);
+    const count = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, args[0], "length"); });
+    defer engine.releaseNativeValue(count);
     if (!c.JS_IsUndefined(count)) return arrayFrom(engine, args[0]);
     return error.InvalidBufferArgument;
 }
 
 fn failure(context: ?*c.JSContext, err: anyerror) c.JSValue {
+    if (err == error.ExecutionTerminated) return @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated();
     if (err == error.JavaScriptException) return engine_mod.Engine.fromContext(context.?).throwCaptured();
-    if (err == error.OutOfMemory) return engine_mod.Engine.fromContext(context.?).throwNativeOutOfMemory();
+    if (err == error.ExecutionTerminated) return engine_mod.Engine.fromContext(context.?).throwExecutionTerminated();
+    if (err == error.OutOfMemory) return engine_mod.Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
     if (err == error.MixingBigIntTypes) return c.JS_ThrowTypeError(context, "Cannot mix BigInt and other types");
     const range = err == error.BufferRange or err == error.BufferBounds or err == error.InvalidBufferSize;
     const code: [*:0]const u8 = if (err == error.BufferRange) "ERR_OUT_OF_RANGE" else if (err == error.BufferBounds) "ERR_BUFFER_OUT_OF_BOUNDS" else if (err == error.InvalidBufferSize) "ERR_INVALID_BUFFER_SIZE" else if (err == error.UnknownBufferEncoding) "ERR_UNKNOWN_ENCODING" else "ERR_INVALID_ARG_TYPE";
     _ = if (range) c.JS_ThrowRangeError(context, "Native Buffer: %s", @as([*:0]const u8, @errorName(err))) else c.JS_ThrowTypeError(context, "Native Buffer: %s", @as([*:0]const u8, @errorName(err)));
+    @import("native_pending_owner.zig").checkFatal(engine_mod.Engine.fromContext(context.?)) catch return c.pi_js_exception();
     const exception = c.JS_GetException(context);
     if (c.JS_DefinePropertyValueStr(context, exception, "code", c.JS_NewString(context, code), c.JS_PROP_C_W_E) < 0) {
-        c.JS_FreeValue(context, exception);
-        return c.JS_Throw(context, c.JS_GetException(context));
+        @import("engine.zig").Engine.fromContext(context.?).releaseNativeValue(exception);
+        return c.pi_js_exception();
     }
-    return c.JS_Throw(context, exception);
+    return c.JS_PiThrowExceptionData(context, exception);
 }
 
 fn construct(context: ?*c.JSContext, new_target: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(constructPendingBody(context, new_target, argc, argv));
+}
+fn constructPendingBody(context: ?*c.JSContext, new_target: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const args = argv[0..@intCast(argc)];
     if (args.len > 1 and c.JS_IsNumber(args[0]) and c.JS_IsString(args[1])) return failure(context, error.InvalidBufferArgument);
     const result = (if (args.len > 0 and c.JS_IsNumber(args[0])) staticCall(engine, .allocUnsafe, args) else from(engine, args, 0)) catch |err| return failure(context, err);
     if (!c.JS_IsUndefined(new_target)) {
-        const prototype = c.JS_GetPropertyStr(context, new_target, "prototype");
+        const prototype = native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_GetPropertyStr(context, new_target, "prototype"); };
         if (c.JS_IsException(prototype)) {
-            engine.freeValue(result);
+            engine.releaseNativeValue(result);
             return prototype;
         }
-        defer engine.freeValue(prototype);
+        defer engine.releaseNativeValue(prototype);
         if (c.JS_IsObject(prototype) and c.JS_SetPrototype(context, result, prototype) < 0) {
-            engine.freeValue(result);
-            return c.JS_Throw(context, c.JS_GetException(context));
+            engine.releaseNativeValue(result);
+            return c.pi_js_exception();
         }
     }
     return result;
 }
 
-fn invokeStatic(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn invokeStatic(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(invokeStaticPendingBody(context, pending_arg1, argc, argv, magic));
+}
+fn invokeStaticPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return staticCall(engine, @enumFromInt(magic), argv[0..@intCast(argc)]) catch |err| failure(context, err);
 }
 
 fn invokeMethod(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(invokeMethodPendingBody(context, this, argc, argv, magic));
+}
+fn invokeMethodPendingBody(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return methodCall(engine, @enumFromInt(magic), this, argv[0..@intCast(argc)]) catch |err| failure(context, err);
 }
@@ -237,10 +258,10 @@ pub fn isBuffer(engine: *engine_mod.Engine, value: c.JSValue) !bool {
     if (!c.JS_IsObject(value)) return false;
     const prototype = engine.buffer_prototype orelse return false;
     var current = c.JS_DupValue(engine.context, value);
-    defer engine.freeValue(current);
+    defer engine.releaseNativeValue(current);
     for (0..128) |_| {
-        const next = try engine.checked(c.JS_GetPrototype(engine.context, current));
-        engine.freeValue(current);
+        const next = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPrototype(engine.context, current); });
+        engine.releaseNativeValue(current);
         current = next;
         if (c.JS_IsStrictEqual(engine.context, current, prototype)) return true;
         if (c.JS_IsNull(current)) return false;
@@ -252,7 +273,7 @@ fn staticCall(engine: *engine_mod.Engine, method: Static, args: []c.JSValue) any
     if (method == .isBuffer) return c.pi_js_bool(engine.context, @intFromBool(args.len > 0 and try isBuffer(engine, args[0])));
     if (method == .isEncoding) {
         if (args.len == 0 or !c.JS_IsString(args[0])) return c.pi_js_bool(engine.context, 0);
-        const name = try engine.toString(args[0]);
+        const name = (engine.toString(args[0]) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(name);
         return c.pi_js_bool(engine.context, @intFromBool(encodings.parse(name) != null));
     }
@@ -261,24 +282,24 @@ fn staticCall(engine: *engine_mod.Engine, method: Static, args: []c.JSValue) any
         .from => return from(engine, args, 0),
         .alloc, .allocUnsafe, .allocUnsafeSlow => {
             const size = try checkedLength(engine, args[0]);
-            const bytes = try engine.gpa.alloc(u8, size);
+            const bytes = (engine.gpa.alloc(u8, size) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(bytes);
             @memset(bytes, 0);
             const buffer = try fromBytes(engine, bytes);
-            errdefer engine.freeValue(buffer);
+            errdefer engine.releaseNativeValue(buffer);
             if (method == .alloc and args.len > 1 and size > 0 and !c.JS_IsUndefined(args[1])) {
                 var fill_args = [_]c.JSValue{ args[1], c.JS_NewInt32(engine.context, 0), c.JS_NewInt64(engine.context, @intCast(size)), if (args.len > 2) args[2] else c.pi_js_undefined() };
-                defer engine.freeValue(fill_args[1]);
-                defer engine.freeValue(fill_args[2]);
+                defer engine.releaseNativeValue(fill_args[1]);
+                defer engine.releaseNativeValue(fill_args[2]);
                 const result = try methodCall(engine, .fill, buffer, &fill_args);
-                engine.freeValue(result);
+                engine.releaseNativeValue(result);
             }
             return buffer;
         },
         .byteLength => {
             var size: usize = 0;
             if (c.JS_IsString(args[0])) {
-                const text = try engine.toString(args[0]);
+                const text = (engine.toString(args[0]) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                 defer engine.gpa.free(text);
                 const codec = encoding(engine, if (args.len > 1) args[1] else c.pi_js_undefined(), true) catch |err| switch (err) {
                     error.UnknownBufferEncoding => encodings.Encoding.utf8,
@@ -300,7 +321,7 @@ fn staticCall(engine: *engine_mod.Engine, method: Static, args: []c.JSValue) any
                         size = (try std.math.mul(usize, units, 3)) / 4;
                     }
                 } else {
-                    const bytes = try encodings.encode(engine.gpa, text, codec);
+                    const bytes = (encodings.encode(engine.gpa, text, codec) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                     defer engine.gpa.free(bytes);
                     size = bytes.len;
                 }
@@ -308,23 +329,23 @@ fn staticCall(engine: *engine_mod.Engine, method: Static, args: []c.JSValue) any
                 _ = c.JS_GetArrayBuffer(engine.context, &size, args[0]);
                 if (c.JS_HasException(engine.context)) return error.InvalidBufferArgument;
             } else if (c.JS_IsDataView(args[0])) {
-                const byte_length = try engine.checked(c.JS_GetPropertyStr(engine.context, args[0], "byteLength"));
-                defer engine.freeValue(byte_length);
+                const byte_length = try engine.checked(native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_GetPropertyStr(engine.context, args[0], "byteLength"); });
+                defer engine.releaseNativeValue(byte_length);
                 size = try checkedLength(engine, byte_length);
             } else {
                 var offset: usize = 0;
                 var element: usize = 0;
                 const backing = try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, args[0], &offset, &size, &element));
-                engine.freeValue(backing);
+                engine.releaseNativeValue(backing);
             }
             return engine.checked(c.JS_NewInt64(engine.context, @intCast(size)));
         },
         .compare => {
             if (args.len < 2) return error.InvalidBufferArgument;
             const left = try view(engine, args[0]);
-            defer engine.freeValue(left.backing);
+            defer engine.releaseNativeValue(left.backing);
             const right = try view(engine, args[1]);
-            defer engine.freeValue(right.backing);
+            defer engine.releaseNativeValue(right.backing);
             return c.pi_js_int32(engine.context, switch (std.mem.order(u8, left.bytes, right.bytes)) {
                 .lt => -1,
                 .eq => 0,
@@ -333,25 +354,25 @@ fn staticCall(engine: *engine_mod.Engine, method: Static, args: []c.JSValue) any
         },
         .concat => {
             if (!c.JS_IsArray(args[0])) return error.InvalidBufferArgument;
-            const count_value = try engine.checked(c.JS_GetPropertyStr(engine.context, args[0], "length"));
-            defer engine.freeValue(count_value);
+            const count_value = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetPropertyStr(engine.context, args[0], "length"); });
+            defer engine.releaseNativeValue(count_value);
             var count: u32 = 0;
-            if (c.JS_ToUint32(engine.context, &count, count_value) < 0) return error.JavaScriptException;
+            if (native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_ToUint32(engine.context, &count, count_value); } < 0) return error.JavaScriptException;
             var bytes: std.ArrayList(u8) = .empty;
             defer bytes.deinit(engine.gpa);
             const total = if (args.len > 1 and !c.JS_IsUndefined(args[1])) try checkedLength(engine, args[1]) else null;
             for (0..count) |index| {
-                const item = try engine.checked(c.JS_GetPropertyUint32(engine.context, args[0], @intCast(index)));
-                defer engine.freeValue(item);
+                const item = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, args[0], @intCast(index)); });
+                defer engine.releaseNativeValue(item);
                 const span = try view(engine, item);
-                defer engine.freeValue(span.backing);
+                defer engine.releaseNativeValue(span.backing);
                 const wanted = if (total) |limit| @min(span.bytes.len, limit - @min(limit, bytes.items.len)) else span.bytes.len;
                 if (wanted > engine.options.memory_limit - bytes.items.len) return error.BufferRange;
-                try bytes.appendSlice(engine.gpa, span.bytes[0..wanted]);
+                (bytes.appendSlice(engine.gpa, span.bytes[0..wanted]) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             }
             if (total) |limit| {
                 const previous = bytes.items.len;
-                try bytes.resize(engine.gpa, limit);
+                (bytes.resize(engine.gpa, limit) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                 @memset(bytes.items[previous..], 0);
             }
             return fromBytes(engine, bytes.items);
@@ -363,7 +384,7 @@ fn staticCall(engine: *engine_mod.Engine, method: Static, args: []c.JSValue) any
 fn argumentIndex(engine: *engine_mod.Engine, args: []c.JSValue, position: usize, size: usize, default: usize, relative: bool) !usize {
     if (position >= args.len or c.JS_IsUndefined(args[position])) return default;
     var value: f64 = 0;
-    if (c.JS_ToFloat64(engine.context, &value, args[position]) < 0) return error.JavaScriptException;
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(engine.context, &value, args[position]); } < 0) return error.JavaScriptException;
     if (std.math.isNan(value)) return 0;
     if (value < 0) return if (relative) @intFromFloat(@max(0, @as(f64, @floatFromInt(size)) + @trunc(value))) else 0;
     return @intFromFloat(@min(@as(f64, @floatFromInt(size)), @trunc(value)));
@@ -373,21 +394,21 @@ fn numericArgument(engine: *engine_mod.Engine, args: []c.JSValue, index: usize, 
     if (index >= args.len or c.JS_IsUndefined(args[index])) return default orelse error.InvalidBufferArgument;
     if (!c.JS_IsNumber(args[index])) return error.InvalidBufferArgument;
     var number: f64 = 0;
-    if (c.JS_ToFloat64(engine.context, &number, args[index]) < 0) return error.JavaScriptException;
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(engine.context, &number, args[index]); } < 0) return error.JavaScriptException;
     return number;
 }
 
 fn numericView(engine: *engine_mod.Engine, value: c.JSValue) !View {
     return view(engine, value) catch |err| {
+        try @import("native_pending_owner.zig").catchFailure(engine, err);
         // QuickJS rejects detached/OOB views through its intrinsic accessor;
         // Node's numeric methods report buffer bounds. No user accessor runs here.
         if (err == error.JavaScriptException and c.JS_GetTypedArrayType(value) == c.JS_TYPED_ARRAY_UINT8) {
             if (engine.captured_exception) |exception| {
-                if (!c.JS_IsUncatchableError(exception)) {
-                    engine.freeValue(exception);
-                    engine.captured_exception = null;
-                    return error.BufferBounds;
-                }
+                engine.captured_exception = null;
+                engine.releaseNativeValue(exception);
+                try @import("native_pending_owner.zig").checkFatal(engine);
+                return error.BufferBounds;
             }
         }
         return err;
@@ -401,27 +422,27 @@ fn numericView(engine: *engine_mod.Engine, value: c.JSValue) !View {
 // the mutable global Symbol constructor during each conversion.
 fn numberPrimitive(engine: *engine_mod.Engine, value: c.JSValue, symbol: c.JSValue) !c.JSValue {
     if (!c.JS_IsObject(value)) return c.JS_DupValue(engine.context, value);
-    const atom = c.JS_ValueToAtom(engine.context, symbol);
+    const atom = native_guest_4: { try engine.checkNativeEntry(); break :native_guest_4 c.JS_ValueToAtom(engine.context, symbol); };
     if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
     defer c.JS_FreeAtom(engine.context, atom);
-    const exotic = try engine.checked(c.JS_GetProperty(engine.context, value, atom));
-    defer engine.freeValue(exotic);
+    const exotic = try engine.checked(native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_GetProperty(engine.context, value, atom); });
+    defer engine.releaseNativeValue(exotic);
     if (!c.JS_IsUndefined(exotic) and !c.JS_IsNull(exotic)) {
         var arguments = [_]c.JSValue{try engine.checked(c.JS_NewString(engine.context, "number"))};
-        defer engine.freeValue(arguments[0]);
-        const primitive = try engine.checked(c.JS_Call(engine.context, exotic, value, 1, &arguments));
+        defer engine.releaseNativeValue(arguments[0]);
+        const primitive = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_Call(engine.context, exotic, value, 1, &arguments); });
         if (!c.JS_IsObject(primitive)) return primitive;
-        engine.freeValue(primitive);
+        engine.releaseNativeValue(primitive);
         _ = try engine.checked(c.JS_ThrowTypeError(engine.context, "Cannot convert object to primitive value"));
         unreachable;
     }
     for ([_][*:0]const u8{ "valueOf", "toString" }) |name| {
-        const converter = try engine.checked(c.JS_GetPropertyStr(engine.context, value, name));
-        defer engine.freeValue(converter);
+        const converter = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, value, name); });
+        defer engine.releaseNativeValue(converter);
         if (!c.JS_IsFunction(engine.context, converter)) continue;
-        const primitive = try engine.checked(c.JS_Call(engine.context, converter, value, 0, null));
+        const primitive = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_Call(engine.context, converter, value, 0, null); });
         if (!c.JS_IsObject(primitive)) return primitive;
-        engine.freeValue(primitive);
+        engine.releaseNativeValue(primitive);
     }
     _ = try engine.checked(c.JS_ThrowTypeError(engine.context, "Cannot convert object to primitive value"));
     unreachable;
@@ -494,27 +515,27 @@ fn comparedInteger(text: []const u8) ?ComparedInteger {
 
 fn bigintOutside(engine: *engine_mod.Engine, value: c.JSValue, symbol: c.JSValue, signed: bool, upper: bool) !bool {
     const primitive = try numberPrimitive(engine, value, symbol);
-    defer engine.freeValue(primitive);
+    defer engine.releaseNativeValue(primitive);
     if (c.JS_IsBigInt(primitive) or c.JS_IsString(primitive)) {
-        const text = try engine.toString(primitive);
+        const text = (engine.toString(primitive) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(text);
         const integer = comparedInteger(text) orelse return false;
         if (upper) return !integer.negative and (integer.overflow or integer.magnitude > (if (signed) @as(u64, std.math.maxInt(i64)) else std.math.maxInt(u64)));
         return integer.negative and (!signed or integer.overflow or integer.magnitude > @as(u64, 1) << 63);
     }
     var number: f64 = 0;
-    if (c.JS_ToFloat64(engine.context, &number, primitive) < 0) return error.JavaScriptException;
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(engine.context, &number, primitive); } < 0) return error.JavaScriptException;
     return if (upper) number >= (if (signed) @as(f64, 9_223_372_036_854_775_808) else @as(f64, 18_446_744_073_709_551_616)) else number < (if (signed) @as(f64, -9_223_372_036_854_775_808) else @as(f64, 0));
 }
 
 fn bigintWord(engine: *engine_mod.Engine, value: c.JSValue, symbol: c.JSValue, high: bool) !u32 {
     const primitive = try numberPrimitive(engine, value, symbol);
-    defer engine.freeValue(primitive);
+    defer engine.releaseNativeValue(primitive);
     if (!c.JS_IsBigInt(primitive)) {
         // ToNumeric(Symbol) throws before the mixed BigInt/Number check.
         if (c.JS_IsSymbol(primitive)) {
             var number: f64 = 0;
-            if (c.JS_ToFloat64(engine.context, &number, primitive) < 0) return error.JavaScriptException;
+            if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(engine.context, &number, primitive); } < 0) return error.JavaScriptException;
         }
         return error.MixingBigIntTypes;
     }
@@ -543,7 +564,7 @@ fn bigintWrite(engine: *engine_mod.Engine, method: Method, this: c.JSValue, args
     if (std.math.isNan(raw_offset) or raw_offset != @trunc(raw_offset)) return error.BufferRange;
     const size = blk: {
         const target = try numericView(engine, this);
-        defer engine.freeValue(target.backing);
+        defer engine.releaseNativeValue(target.backing);
         break :blk target.bytes.len;
     };
     if (size < 8) return error.BufferBounds;
@@ -557,6 +578,12 @@ fn bigintWrite(engine: *engine_mod.Engine, method: Method, this: c.JSValue, args
 }
 
 fn invokeBigintWrite(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(invokeBigintWritePendingBody(context, this, argc, argv, magic, data));
+}
+fn invokeBigintWritePendingBody(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return bigintWrite(engine, @enumFromInt(magic), this, argv[0..@intCast(argc)], data[0]) catch |err| failure(context, err);
 }
@@ -566,7 +593,7 @@ fn numericCall(engine: *engine_mod.Engine, method: Method, this: c.JSValue, args
     if (std.mem.startsWith(u8, name, "swap")) {
         const width: usize = if (method == .swap16) 2 else if (method == .swap32) 4 else 8;
         const target = try view(engine, this);
-        defer engine.freeValue(target.backing);
+        defer engine.releaseNativeValue(target.backing);
         if (target.bytes.len % width != 0) return error.InvalidBufferSize;
         var start: usize = 0;
         while (start < target.bytes.len) : (start += width) std.mem.reverse(u8, target.bytes[start .. start + width]);
@@ -593,7 +620,7 @@ fn numericCall(engine: *engine_mod.Engine, method: Method, this: c.JSValue, args
         std.debug.assert(!big);
         const value = if (args.len > 0) args[0] else c.pi_js_undefined();
         var number: f64 = 0;
-        if (c.JS_ToFloat64(engine.context, &number, value) < 0) return error.JavaScriptException;
+        if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(engine.context, &number, value); } < 0) return error.JavaScriptException;
         // Node's one-byte writer validates offset type before value range.
         if (!floating and width == 1) _ = try numericArgument(engine, args, 1, if (variable) null else 0);
         if (floating) {
@@ -610,7 +637,7 @@ fn numericCall(engine: *engine_mod.Engine, method: Method, this: c.JSValue, args
     const raw_offset = try numericArgument(engine, args, if (write) 1 else 0, if (variable) null else 0);
     if (std.math.isNan(raw_offset) or raw_offset != @trunc(raw_offset)) return error.BufferRange;
     const target = try numericView(engine, this);
-    defer engine.freeValue(target.backing);
+    defer engine.releaseNativeValue(target.backing);
     if (target.bytes.len < width) return error.BufferBounds;
     if (raw_offset < 0 or raw_offset > @as(f64, @floatFromInt(target.bytes.len - width))) return error.BufferRange;
     const offset: usize = @intFromFloat(raw_offset);
@@ -637,26 +664,26 @@ fn methodCall(engine: *engine_mod.Engine, method: Method, this: c.JSValue, args:
     // callbacks could detach. Once borrowed, no user callback is invoked.
     const observed = try view(engine, this);
     const size = observed.bytes.len;
-    engine.freeValue(observed.backing);
+    engine.releaseNativeValue(observed.backing);
     const start = if (method == .toString) try argumentIndex(engine, args, 1, size, 0, false) else if (method == .slice or method == .subarray) try argumentIndex(engine, args, 0, size, 0, true) else 0;
     const end = if (method == .toString) try argumentIndex(engine, args, 2, size, size, false) else if (method == .slice or method == .subarray) try argumentIndex(engine, args, 1, size, size, true) else size;
     const codec = if (method == .toString) try encoding(engine, if (args.len > 0) args[0] else c.pi_js_undefined(), false) else encodings.Encoding.utf8;
     const source = try view(engine, this);
-    defer engine.freeValue(source.backing);
+    defer engine.releaseNativeValue(source.backing);
     if (start > source.bytes.len or end > source.bytes.len) return error.BufferRange;
     switch (method) {
         .toString => {
-            const text = try encodings.decode(engine.gpa, source.bytes[start..@max(start, end)], codec);
+            const text = (encodings.decode(engine.gpa, source.bytes[start..@max(start, end)], codec) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(text);
             return engine.checked(c.JS_NewStringLen(engine.context, text.ptr, text.len));
         },
         .slice, .subarray => return fromBacking(engine, source.backing, source.offset + start, @max(start, end) - start),
         .toJSON => {
             const object = try engine.checked(c.JS_NewObject(engine.context));
-            errdefer engine.freeValue(object);
+            errdefer engine.releaseNativeValue(object);
             const data = try engine.checked(c.JS_NewArray(engine.context));
             var consumed = false;
-            errdefer if (!consumed) engine.freeValue(data);
+            errdefer if (!consumed) engine.releaseNativeValue(data);
             for (source.bytes, 0..) |byte, position| if (c.JS_SetPropertyUint32(engine.context, data, @intCast(position), c.pi_js_int32(engine.context, byte)) < 0) return error.JavaScriptException;
             try property(engine, object, "type", try engine.checked(c.JS_NewString(engine.context, "Buffer")));
             consumed = true;
@@ -666,7 +693,7 @@ fn methodCall(engine: *engine_mod.Engine, method: Method, this: c.JSValue, args:
         .equals => {
             if (args.len == 0) return error.InvalidBufferArgument;
             const other = try view(engine, args[0]);
-            defer engine.freeValue(other.backing);
+            defer engine.releaseNativeValue(other.backing);
             const order = std.mem.order(u8, source.bytes, other.bytes);
             return c.pi_js_bool(engine.context, @intFromBool(order == .eq));
         },
@@ -676,7 +703,7 @@ fn methodCall(engine: *engine_mod.Engine, method: Method, this: c.JSValue, args:
 
 fn sizeOf(engine: *engine_mod.Engine, value: c.JSValue) !usize {
     const observed = try view(engine, value);
-    defer engine.freeValue(observed.backing);
+    defer engine.releaseNativeValue(observed.backing);
     return observed.bytes.len;
 }
 
@@ -689,9 +716,9 @@ fn copyBuffer(engine: *engine_mod.Engine, this: c.JSValue, args: []c.JSValue) !c
     const source_end = @min(try copyIndex(engine, args, 3, source_size), source_size);
     if (source_start > source_size) return error.BufferRange;
     const source = try view(engine, this);
-    defer engine.freeValue(source.backing);
+    defer engine.releaseNativeValue(source.backing);
     const target = try view(engine, args[0]);
-    defer engine.freeValue(target.backing);
+    defer engine.releaseNativeValue(target.backing);
     if (source_start > source.bytes.len or source_end > source.bytes.len or target_start > target.bytes.len) return error.BufferRange;
     const count = @min(@max(source_start, source_end) - source_start, target.bytes.len - target_start);
     const from_bytes = source.bytes[source_start .. source_start + count];
@@ -703,7 +730,7 @@ fn copyBuffer(engine: *engine_mod.Engine, this: c.JSValue, args: []c.JSValue) !c
 fn copyIndex(engine: *engine_mod.Engine, args: []c.JSValue, position: usize, default: usize) !usize {
     if (position >= args.len or c.JS_IsUndefined(args[position])) return default;
     var value: f64 = 0;
-    if (c.JS_ToFloat64(engine.context, &value, args[position]) < 0) return error.JavaScriptException;
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(engine.context, &value, args[position]); } < 0) return error.JavaScriptException;
     if (!std.math.isFinite(value)) return 0;
     const integer = @floor(value);
     if (integer < 0) return error.BufferRange;
@@ -714,7 +741,7 @@ fn strictIndex(engine: *engine_mod.Engine, args: []c.JSValue, position: usize, d
     if (position >= args.len or c.JS_IsUndefined(args[position])) return default;
     if (!c.JS_IsNumber(args[position])) return error.InvalidBufferArgument;
     var value: f64 = 0;
-    if (c.JS_ToFloat64(engine.context, &value, args[position]) < 0) return error.JavaScriptException;
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(engine.context, &value, args[position]); } < 0) return error.JavaScriptException;
     if (!std.math.isFinite(value) or value != @trunc(value) or value < 0 or value > @as(f64, @floatFromInt(maximum))) return error.BufferRange;
     return @intFromFloat(value);
 }
@@ -730,9 +757,9 @@ fn compareBuffer(engine: *engine_mod.Engine, this: c.JSValue, args: []c.JSValue)
     if (source_start >= source_end) return c.pi_js_int32(engine.context, if (target_start >= target_end) 0 else -1);
     if (target_start >= target_end) return c.pi_js_int32(engine.context, 1);
     const source = try view(engine, this);
-    defer engine.freeValue(source.backing);
+    defer engine.releaseNativeValue(source.backing);
     const target = try view(engine, args[0]);
-    defer engine.freeValue(target.backing);
+    defer engine.releaseNativeValue(target.backing);
     return c.pi_js_int32(engine.context, switch (std.mem.order(u8, source.bytes[source_start..source_end], target.bytes[target_start..target_end])) {
         .lt => -1,
         .eq => 0,
@@ -754,18 +781,18 @@ fn fillBuffer(engine: *engine_mod.Engine, this: c.JSValue, args: []c.JSValue) !c
     defer if (pattern) |bytes| engine.gpa.free(bytes);
     var numeric: i32 = 0;
     if (c.JS_IsString(args[0])) {
-        const text = try engine.toString(args[0]);
+        const text = (engine.toString(args[0]) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(text);
-        pattern = try encodings.encode(engine.gpa, text, codec);
+        pattern = (encodings.encode(engine.gpa, text, codec) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         if (pattern.?.len == 0 and text.len > 0) return error.InvalidBufferArgument;
     } else if (c.JS_GetTypedArrayType(args[0]) == c.JS_TYPED_ARRAY_UINT8) {
         const source = try view(engine, args[0]);
-        defer engine.freeValue(source.backing);
+        defer engine.releaseNativeValue(source.backing);
         if (source.bytes.len == 0) return error.InvalidBufferArgument;
-        pattern = try engine.gpa.dupe(u8, source.bytes);
-    } else if (c.JS_ToInt32(engine.context, &numeric, args[0]) < 0) return error.JavaScriptException;
+        pattern = (engine.gpa.dupe(u8, source.bytes) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
+    } else if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToInt32(engine.context, &numeric, args[0]); } < 0) return error.JavaScriptException;
     const target = try view(engine, this);
-    defer engine.freeValue(target.backing);
+    defer engine.releaseNativeValue(target.backing);
     if (begin > target.bytes.len or finish > target.bytes.len) return error.BufferRange;
     if (pattern) |bytes| {
         if (bytes.len == 0) {
@@ -781,19 +808,19 @@ pub fn install(engine: *engine_mod.Engine) !void {
     if (engine.buffer_ready) return;
     if (engine.buffer_prototype != null) return error.NativeBufferPartiallyInstalled;
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
-    const typed_constructor = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "Uint8Array"));
-    defer engine.freeValue(typed_constructor);
-    const typed_prototype = try engine.checked(c.JS_GetPropertyStr(engine.context, typed_constructor, "prototype"));
-    defer engine.freeValue(typed_prototype);
+    defer engine.releaseNativeValue(global);
+    const typed_constructor = try engine.checked(native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_GetPropertyStr(engine.context, global, "Uint8Array"); });
+    defer engine.releaseNativeValue(typed_constructor);
+    const typed_prototype = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetPropertyStr(engine.context, typed_constructor, "prototype"); });
+    defer engine.releaseNativeValue(typed_prototype);
     const prototype = try engine.checked(c.JS_NewObjectProto(engine.context, typed_prototype));
-    defer engine.freeValue(prototype);
+    defer engine.releaseNativeValue(prototype);
     const constructor = try engine.checked(c.JS_NewCFunction2(engine.context, construct, "Buffer", 3, c.JS_CFUNC_constructor_or_func, 0));
-    defer engine.freeValue(constructor);
-    const symbol_constructor = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "Symbol"));
-    defer engine.freeValue(symbol_constructor);
-    var bigint_data = [_]c.JSValue{try engine.checked(c.JS_GetPropertyStr(engine.context, symbol_constructor, "toPrimitive"))};
-    defer engine.freeValue(bigint_data[0]);
+    defer engine.releaseNativeValue(constructor);
+    const symbol_constructor = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, global, "Symbol"); });
+    defer engine.releaseNativeValue(symbol_constructor);
+    var bigint_data = [_]c.JSValue{try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, symbol_constructor, "toPrimitive"); })};
+    defer engine.releaseNativeValue(bigint_data[0]);
     if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0 or c.JS_SetPrototype(engine.context, constructor, typed_constructor) < 0) return error.JavaScriptException;
     inline for (std.meta.fields(Static)) |operation| {
         const name: [:0]const u8 = operation.name;
@@ -804,7 +831,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
         const bigint_write = comptime std.mem.startsWith(u8, name, "writeBig");
         const function = try engine.checked(if (bigint_write) c.JS_NewCFunctionData(engine.context, invokeBigintWrite, 2, @intCast(operation.value), bigint_data.len, &bigint_data) else c.pi_js_function_magic(engine.context, invokeMethod, name.ptr, if (std.mem.startsWith(u8, name, "write")) 2 else 1, @intCast(operation.value)));
         if (bigint_write and c.JS_DefinePropertyValueStr(engine.context, function, "name", c.JS_NewString(engine.context, name.ptr), c.JS_PROP_CONFIGURABLE) < 0) {
-            engine.freeValue(function);
+            engine.releaseNativeValue(function);
             return error.JavaScriptException;
         }
         try property(engine, prototype, name, function);
@@ -816,7 +843,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     engine.buffer_prototype = c.JS_DupValue(engine.context, prototype);
     try property(engine, global, "Buffer", c.JS_DupValue(engine.context, constructor));
     const module = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(module);
+    defer engine.releaseNativeValue(module);
     try property(engine, module, "Buffer", c.JS_DupValue(engine.context, constructor));
     try @import("node_base64.zig").install(engine, module);
     try engine.registerDefaultModule("node:buffer", module);

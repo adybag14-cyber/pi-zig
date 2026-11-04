@@ -6,11 +6,11 @@ const c = engine_mod.c;
 const State = struct { engine: *engine_mod.Engine, prototype: c.JSValue };
 const Method = enum(c_int) { render, handleMouse, invalidate };
 fn get(engine: *engine_mod.Engine, value: c.JSValue, name: [*:0]const u8) !c.JSValue {
-    return engine.checked(c.JS_GetPropertyStr(engine.context, value, name));
+    return engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, value, name); });
 }
 fn put(engine: *engine_mod.Engine, value: c.JSValue, name: [*:0]const u8, property: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, value, name, property, c.JS_PROP_C_W_E) < 0) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+        _ = try engine.checked(c.pi_js_exception());
         return error.JavaScriptException;
     }
 }
@@ -18,48 +18,50 @@ fn object(engine: *engine_mod.Engine) !c.JSValue {
     return engine.checked(c.JS_NewObject(engine.context));
 }
 fn call(engine: *engine_mod.Engine, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
-    return engine.checked(c.JS_Call(engine.context, function, receiver, @intCast(args.len), @constCast(args.ptr)));
+    return engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_Call(engine.context, function, receiver, @intCast(args.len), @constCast(args.ptr)); });
 }
 fn invoke(engine: *engine_mod.Engine, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
     const function = try get(engine, receiver, name);
-    defer engine.freeValue(function);
+    defer engine.releaseNativeValue(function);
     return call(engine, function, receiver, args);
 }
 fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+    if (err == error.OutOfMemory) return @import("engine.zig").Engine.fromContext(engine.context).throwNativeOutOfMemoryFatal();
     return c.JS_ThrowTypeError(engine.context, "Native mouse: %s", @as([*:0]const u8, @errorName(err)));
 }
 fn copy(engine: *engine_mod.Engine, source: c.JSValue) !c.JSValue {
     const result = try object(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     var names: [*c]c.JSPropertyEnum = null;
     var count: u32 = 0;
-    if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, source, c.JS_GPN_STRING_MASK | c.JS_GPN_SYMBOL_MASK) < 0) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+    if (native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetOwnPropertyNames(engine.context, &names, &count, source, c.JS_GPN_STRING_MASK | c.JS_GPN_SYMBOL_MASK); } < 0) {
+        _ = try engine.checked(c.pi_js_exception());
         return error.JavaScriptException;
     }
     defer c.JS_FreePropertyEnum(engine.context, names, count);
     for (names[0..count]) |entry| {
         var descriptor: c.JSPropertyDescriptor = undefined;
-        const present = c.JS_GetOwnProperty(engine.context, &descriptor, source, entry.atom);
+        const present = native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetOwnProperty(engine.context, &descriptor, source, entry.atom); };
         if (present < 0) {
-            _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+            _ = try engine.checked(c.pi_js_exception());
             return error.JavaScriptException;
         }
         if (present == 0) continue;
-        defer engine.freeValue(descriptor.value);
-        defer engine.freeValue(descriptor.getter);
-        defer engine.freeValue(descriptor.setter);
+        defer engine.releaseNativeValue(descriptor.value);
+        defer engine.releaseNativeValue(descriptor.getter);
+        defer engine.releaseNativeValue(descriptor.setter);
         if (descriptor.flags & c.JS_PROP_ENUMERABLE == 0) continue;
-        const value = try engine.checked(c.JS_GetProperty(engine.context, source, entry.atom));
+        const value = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetProperty(engine.context, source, entry.atom); });
         if (c.JS_DefinePropertyValue(engine.context, result, entry.atom, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }
     return result;
 }
 fn truthy(engine: *engine_mod.Engine, value: c.JSValue, name: [*:0]const u8) !bool {
     const property = try get(engine, value, name);
-    defer engine.freeValue(property);
+    defer engine.releaseNativeValue(property);
     return c.JS_ToBool(engine.context, property) != 0;
 }
 fn difference(engine: *engine_mod.Engine, value: c.JSValue, left_name: [*:0]const u8, right_name: [*:0]const u8) !f64 {
@@ -68,16 +70,16 @@ fn difference(engine: *engine_mod.Engine, value: c.JSValue, left_name: [*:0]cons
 fn subtract(engine: *engine_mod.Engine, lhs_object: c.JSValue, left_name: [*:0]const u8, rhs_object: c.JSValue, right_name: [*:0]const u8) !f64 {
     // Both operands are read before either observable numeric conversion.
     const left = try get(engine, lhs_object, left_name);
-    defer engine.freeValue(left);
+    defer engine.releaseNativeValue(left);
     const right = try get(engine, rhs_object, right_name);
-    defer engine.freeValue(right);
+    defer engine.releaseNativeValue(right);
     const lhs = try @import("native_color.zig").number(engine, left);
     const rhs = try @import("native_color.zig").number(engine, right);
     return lhs - rhs;
 }
 pub fn retarget(engine: *engine_mod.Engine, event: c.JSValue, target: c.JSValue) !c.JSValue {
     const result = try copy(engine, event);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     try put(engine, result, "x", c.JS_NewFloat64(engine.context, try subtract(engine, event, "screenX", target, "originX")));
     try put(engine, result, "y", c.JS_NewFloat64(engine.context, try subtract(engine, event, "screenY", target, "originY")));
     try put(engine, result, "width", try get(engine, target, "width"));
@@ -88,52 +90,58 @@ pub fn eventValue(engine: *engine_mod.Engine, event: @import("component_protocol
     var buffer: std.Io.Writer.Allocating = .init(engine.gpa);
     defer buffer.deinit();
     @import("component_protocol.zig").writeMouse(&buffer.writer, event) catch return error.OutOfMemory;
-    const text = try engine.gpa.dupeZ(u8, buffer.written());
+    const text = (engine.gpa.dupeZ(u8, buffer.written()) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(text);
     return engine.checked(c.JS_ParseJSON(engine.context, text.ptr, text.len, "native-mouse-event.json"));
 }
-fn layoutEntry(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn layoutEntry(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(layoutEntryPendingBody(context, pending_arg1, argc, argv, pending_arg4, data));
+}
+fn layoutEntryPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return makeLayoutEntry(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), data[0]) catch |err| fail(engine, err);
 }
 fn makeLayoutEntry(engine: *engine_mod.Engine, component: c.JSValue, width: c.JSValue) !c.JSValue {
     var args = [_]c.JSValue{width};
     const lines = try invoke(engine, component, "render", &args);
-    defer engine.freeValue(lines);
+    defer engine.releaseNativeValue(lines);
     const entry = try object(engine);
-    errdefer engine.freeValue(entry);
+    errdefer engine.releaseNativeValue(entry);
     try put(engine, entry, "component", c.JS_DupValue(engine.context, component));
     try put(engine, entry, "height", try get(engine, lines, "length"));
     return entry;
 }
 pub fn childLayout(engine: *engine_mod.Engine, receiver: c.JSValue, width: c.JSValue) !c.JSValue {
     const layout = try get(engine, receiver, "mouseLayout");
-    defer engine.freeValue(layout);
+    defer engine.releaseNativeValue(layout);
     if (!c.JS_IsNull(layout) and !c.JS_IsUndefined(layout)) {
         const cached_width = try get(engine, layout, "width");
-        defer engine.freeValue(cached_width);
+        defer engine.releaseNativeValue(cached_width);
         if (c.JS_IsStrictEqual(engine.context, cached_width, width)) return get(engine, layout, "children");
     }
     const children = try get(engine, receiver, "children");
-    defer engine.freeValue(children);
+    defer engine.releaseNativeValue(children);
     var data = [_]c.JSValue{width};
     const mapper = try engine.checked(c.JS_NewCFunctionData2(engine.context, layoutEntry, "mouseLayoutEntry", 1, 0, data.len, &data));
-    defer engine.freeValue(mapper);
+    defer engine.releaseNativeValue(mapper);
     var args = [_]c.JSValue{mapper};
     return invoke(engine, children, "map", &args);
 }
 pub fn containerDispatch(engine: *engine_mod.Engine, receiver: c.JSValue, event: c.JSValue, padding_x: f64, padding_y: f64, box: bool) !c.JSValue {
     const y_value = try get(engine, event, "y");
-    defer engine.freeValue(y_value);
+    defer engine.releaseNativeValue(y_value);
     const y = try @import("native_color.zig").number(engine, y_value);
     const event_height = try get(engine, event, "height");
-    defer engine.freeValue(event_height);
+    defer engine.releaseNativeValue(event_height);
     const height = try @import("native_color.zig").number(engine, event_height);
     const width_value = try get(engine, event, "width");
-    defer engine.freeValue(width_value);
+    defer engine.releaseNativeValue(width_value);
     const width = try @import("native_color.zig").number(engine, width_value);
     const x_value = try get(engine, event, "x");
-    defer engine.freeValue(x_value);
+    defer engine.releaseNativeValue(x_value);
     const x = try @import("native_color.zig").number(engine, x_value);
     const content_x = x - padding_x;
     const content_y = y - padding_y;
@@ -142,23 +150,23 @@ pub fn containerDispatch(engine: *engine_mod.Engine, receiver: c.JSValue, event:
         if (content_y < 0 or content_x < 0 or content_x >= content_width) return c.pi_js_undefined();
     } else if (y < 0 or y >= height) return c.pi_js_undefined();
     const children = try childLayout(engine, receiver, c.JS_NewFloat64(engine.context, content_width));
-    defer engine.freeValue(children);
+    defer engine.releaseNativeValue(children);
     const length_value = try get(engine, children, "length");
-    defer engine.freeValue(length_value);
+    defer engine.releaseNativeValue(length_value);
     var length: u32 = 0;
-    if (c.JS_ToUint32(engine.context, &length, length_value) < 0) return error.JavaScriptException;
+    if (native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_ToUint32(engine.context, &length, length_value); } < 0) return error.JavaScriptException;
     var child_y: f64 = 0;
     for (0..length) |index| {
-        const entry = try engine.checked(c.JS_GetPropertyUint32(engine.context, children, @intCast(index)));
-        defer engine.freeValue(entry);
+        const entry = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, children, @intCast(index)); });
+        defer engine.releaseNativeValue(entry);
         const child = try get(engine, entry, "component");
-        defer engine.freeValue(child);
+        defer engine.releaseNativeValue(child);
         const child_height_value = try get(engine, entry, "height");
-        defer engine.freeValue(child_height_value);
+        defer engine.releaseNativeValue(child_height_value);
         const child_height = try @import("native_color.zig").number(engine, child_height_value);
         if (content_y >= child_y and content_y < child_y + child_height) {
             const local = try copy(engine, event);
-            defer engine.freeValue(local);
+            defer engine.releaseNativeValue(local);
             if (box) {
                 try put(engine, local, "x", c.JS_NewFloat64(engine.context, content_x));
                 try put(engine, local, "width", c.JS_NewFloat64(engine.context, content_width));
@@ -167,9 +175,9 @@ pub fn containerDispatch(engine: *engine_mod.Engine, receiver: c.JSValue, event:
             try put(engine, local, "height", c.JS_DupValue(engine.context, child_height_value));
             const result = try dispatch(engine, child, local);
             if (!box and !c.JS_IsUndefined(result) and try truthy(engine, result, "focus") and try truthy(engine, receiver, "handleInput")) {
-                defer engine.freeValue(result);
+                defer engine.releaseNativeValue(result);
                 const forwarded = try copy(engine, result);
-                errdefer engine.freeValue(forwarded);
+                errdefer engine.releaseNativeValue(forwarded);
                 try put(engine, forwarded, "focusTarget", c.JS_DupValue(engine.context, receiver));
                 return forwarded;
             }
@@ -181,33 +189,33 @@ pub fn containerDispatch(engine: *engine_mod.Engine, receiver: c.JSValue, event:
 }
 pub fn dispatch(engine: *engine_mod.Engine, component: c.JSValue, event: c.JSValue) !c.JSValue {
     const handler = try get(engine, component, "handleMouse");
-    defer engine.freeValue(handler);
+    defer engine.releaseNativeValue(handler);
     if (c.JS_IsUndefined(handler) or c.JS_IsNull(handler)) return c.pi_js_undefined();
     var args = [_]c.JSValue{event};
     const result = try call(engine, handler, component, &args);
-    defer engine.freeValue(result);
+    defer engine.releaseNativeValue(result);
     if (c.JS_ToBool(engine.context, result) == 0) return c.pi_js_undefined();
     if (!c.JS_IsObject(result)) {
-        const text = try engine.toString(result);
+        const text = (engine.toString(result) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(text);
-        const message = try std.fmt.allocPrint(engine.gpa, "Cannot use 'in' operator to search for 'target' in {s}", .{text});
+        const message = (std.fmt.allocPrint(engine.gpa, "Cannot use 'in' operator to search for 'target' in {s}", .{text}) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(message);
-        const terminated = try engine.gpa.dupeZ(u8, message);
+        const terminated = (engine.gpa.dupeZ(u8, message) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(terminated);
         _ = try engine.checked(c.JS_ThrowTypeError(engine.context, "%s", terminated.ptr));
         return error.JavaScriptException;
     }
     const atom = c.JS_NewAtom(engine.context, "target");
     defer c.JS_FreeAtom(engine.context, atom);
-    const has_target = c.JS_HasProperty(engine.context, result, atom);
+    const has_target = native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_HasProperty(engine.context, result, atom); };
     if (has_target < 0) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+        _ = try engine.checked(c.pi_js_exception());
         return error.JavaScriptException;
     }
     if (has_target != 0) {
         if (try truthy(engine, result, "focus") and try truthy(engine, component, "handleInput")) {
             const forwarded = try copy(engine, result);
-            errdefer engine.freeValue(forwarded);
+            errdefer engine.releaseNativeValue(forwarded);
             try put(engine, forwarded, "focusTarget", c.JS_DupValue(engine.context, component));
             return forwarded;
         }
@@ -215,12 +223,12 @@ pub fn dispatch(engine: *engine_mod.Engine, component: c.JSValue, event: c.JSVal
     }
     if (!try truthy(engine, result, "handled") and !try truthy(engine, result, "capture") and !try truthy(engine, result, "focus")) return c.pi_js_undefined();
     const normalized = try copy(engine, result);
-    errdefer engine.freeValue(normalized);
+    errdefer engine.releaseNativeValue(normalized);
     try put(engine, normalized, "handled", c.JS_NewBool(engine.context, true));
     if (try truthy(engine, result, "focus")) try put(engine, normalized, "focusTarget", c.JS_DupValue(engine.context, component));
     const target = try object(engine);
     var transferred = false;
-    defer if (!transferred) engine.freeValue(target);
+    defer if (!transferred) engine.releaseNativeValue(target);
     try put(engine, target, "component", c.JS_DupValue(engine.context, component));
     try put(engine, target, "originX", c.JS_NewFloat64(engine.context, try difference(engine, event, "screenX", "x")));
     try put(engine, target, "originY", c.JS_NewFloat64(engine.context, try difference(engine, event, "screenY", "y")));
@@ -231,24 +239,30 @@ pub fn dispatch(engine: *engine_mod.Engine, component: c.JSValue, event: c.JSVal
     return normalized;
 }
 fn methodCall(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(methodCallPendingBody(context, receiver, argc, argv, magic));
+}
+fn methodCallPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return operate(engine, receiver, @enumFromInt(magic), if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| fail(engine, err);
 }
 fn operate(engine: *engine_mod.Engine, receiver: c.JSValue, method: Method, argument: c.JSValue) !c.JSValue {
     const child = try get(engine, receiver, "child");
-    defer engine.freeValue(child);
+    defer engine.releaseNativeValue(child);
     var args = [_]c.JSValue{argument};
     return switch (method) {
         .render => invoke(engine, child, "render", &args),
         .invalidate => blk: {
             const result = try invoke(engine, child, "invalidate", &.{});
-            engine.freeValue(result);
+            engine.releaseNativeValue(result);
             break :blk c.pi_js_undefined();
         },
         .handleMouse => blk: {
             const result = try dispatch(engine, child, argument);
             if (!c.JS_IsUndefined(result) and !c.JS_IsNull(result)) break :blk result;
-            engine.freeValue(result);
+            engine.releaseNativeValue(result);
             break :blk try invoke(engine, receiver, "onMouse", &args);
         },
     };
@@ -263,6 +277,12 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, callback: ?*const c.JS_MarkFun
     c.JS_MarkValue(runtime, state.prototype, callback);
 }
 fn construct(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(constructPendingBody(context, function, target, argc, argv, flags));
+}
+fn constructPendingBody(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     if (flags & c.JS_CALL_FLAG_CONSTRUCTOR == 0) return c.JS_ThrowTypeError(context, "Class constructor MouseRegion cannot be invoked without 'new'");
     const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)) orelse return c.JS_ThrowTypeError(context, "Invalid MouseRegion constructor")));
@@ -271,9 +291,9 @@ fn construct(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, arg
 fn create(engine: *engine_mod.Engine, state: *State, target: c.JSValue, args: []const c.JSValue) !c.JSValue {
     _ = state;
     const inherited = try get(engine, target, "prototype");
-    defer engine.freeValue(inherited);
+    defer engine.releaseNativeValue(inherited);
     const result = try engine.checked(if (c.JS_IsObject(inherited)) c.JS_NewObjectProto(engine.context, inherited) else c.JS_NewObject(engine.context));
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     try put(engine, result, "child", c.JS_DupValue(engine.context, if (args.len > 0) args[0] else c.pi_js_undefined()));
     try put(engine, result, "onMouse", c.JS_DupValue(engine.context, if (args.len > 1) args[1] else c.pi_js_undefined()));
     return result;
@@ -288,21 +308,21 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     definition.call = construct;
     if (c.JS_NewClass(engine.runtime, class_id, &definition) < 0) return error.OutOfMemory;
     const prototype = try object(engine);
-    defer engine.freeValue(prototype);
+    defer engine.releaseNativeValue(prototype);
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     inline for (std.meta.fields(Method)) |method| {
         const function_value = try engine.checked(c.pi_js_function_magic(engine.context, methodCall, method.name, if (method.value == @intFromEnum(Method.invalidate)) 0 else 1, @intCast(method.value)));
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, method.name, function_value, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     }
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
+    defer engine.releaseNativeValue(global);
     const function = try get(engine, global, "Function");
-    defer engine.freeValue(function);
+    defer engine.releaseNativeValue(function);
     const function_prototype = try get(engine, function, "prototype");
-    defer engine.freeValue(function_prototype);
+    defer engine.releaseNativeValue(function_prototype);
     const constructor = try engine.checked(c.JS_NewObjectProtoClass(engine.context, function_prototype, class_id));
-    defer engine.freeValue(constructor);
-    const state = try engine.gpa.create(State);
+    defer engine.releaseNativeValue(constructor);
+    const state = (engine.gpa.create(State) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     state.* = .{ .engine = engine, .prototype = c.JS_DupValue(engine.context, prototype) };
     _ = c.JS_SetOpaque(constructor, state);
     _ = c.JS_SetConstructorBit(engine.context, constructor, true);

@@ -10,7 +10,7 @@ fn header(s: *Scope, message: c.JSValue, name: [*:0]const u8) !c.JSValue {
     return s.get(try s.get(try s.get(message, "headers"), name), "value");
 }
 fn reject(engine: *v.em.Engine, owner: c.JSValue, err: anyerror) !void {
-    const reason = flow.reason(engine, err);
+    const reason = try flow.reason(engine, err);
     defer engine.freeValue(reason);
     if (engine.captured_exception) |value| {
         engine.captured_exception = null;
@@ -178,7 +178,7 @@ fn bodyParsed(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected
     var guard = @import("native_ai_json_scope.zig").Guard.enter(engine);
     defer guard.deinit();
     const parsed = s.invoke(try s.global("JSON"), "parse", &.{value}) catch |err| {
-        const reason = try s.own(flow.reason(engine, err));
+        const reason = try s.own(try flow.reason(engine, err));
         if (engine.captured_exception) |captured| {
             engine.captured_exception = null;
             engine.freeValue(captured);

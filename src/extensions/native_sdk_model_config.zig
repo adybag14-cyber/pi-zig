@@ -243,7 +243,8 @@ pub fn load(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
         else => {
             // Preserve the engine's native JSON diagnostic while making parse
             // failure cached configuration state, as the public SDK requires.
-            const malformed = sdk.jsonObject(engine, stripped) catch {
+            const malformed = sdk.jsonObject(engine, stripped) catch |parse_error| {
+                try @import("native_pending_owner.zig").catchFailure(engine, parse_error);
                 const exception = if (engine.captured_exception) |value| c.JS_DupValue(engine.context, value) else c.JS_GetException(engine.context);
                 defer engine.freeValue(exception);
                 const diagnostic = try sdk.get(engine, exception, "message");

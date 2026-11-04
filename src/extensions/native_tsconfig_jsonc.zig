@@ -14,7 +14,7 @@ const Parser = struct {
         if (self.engine.cancelled.load(.acquire) or (self.steps % 256 == 0 and blk: { self.engine.interrupts +|= 1; break :blk self.engine.interrupts > self.engine.options.interrupt_budget; })) {
             _ = c.JS_ThrowInternalError(self.engine.context, "interrupted");
             const reason = c.JS_GetException(self.engine.context); c.JS_SetUncatchableError(self.engine.context, reason);
-            _ = try self.engine.checked(c.JS_Throw(self.engine.context, reason)); unreachable;
+            _ = try self.engine.checked(c.JS_PiThrowNativePending(self.engine.context, reason, true)); unreachable;
         }
     }
     fn string(self: *Parser) !c.JSValue {
@@ -121,7 +121,7 @@ const Parser = struct {
         if (depth > 256) {
             _ = c.JS_ThrowRangeError(self.engine.context, "Native tsconfig JSONC nesting quota exceeded");
             const reason = c.JS_GetException(self.engine.context); c.JS_SetUncatchableError(self.engine.context, reason);
-            _ = try self.engine.checked(c.JS_Throw(self.engine.context, reason)); unreachable;
+            _ = try self.engine.checked(c.JS_PiThrowNativePending(self.engine.context, reason, true)); unreachable;
         }
         switch (self.token) {
             .object, .array => {

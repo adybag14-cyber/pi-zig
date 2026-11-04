@@ -11,10 +11,16 @@ const stat = @import("native_file_stat.zig");
 const url = @import("native_url.zig");
 const buffer = @import("node_buffer.zig");
 const arithmetic = @import("native_image_arithmetic.zig");
+const pending_owner = @import("native_pending_owner.zig");
 const fields = [_][:0]const u8{ "dev", "mode", "nlink", "uid", "gid", "rdev", "blksize", "ino", "size", "blocks", "atimeMs", "mtimeMs", "ctimeMs", "birthtimeMs" };
 const dates = [_][:0]const u8{ "atime", "mtime", "ctime", "birthtime" };
 const nanos = [_][:0]const u8{ "atimeNs", "mtimeNs", "ctimeNs", "birthtimeNs" };
 
+// Runs before this function's owned JS-root cleanup. A typed native allocator
+// failure is a producer; ordinary error unions and guest DATA gain no authority.
+fn retainTypedAllocationFailure(engine: *em.Engine, err: anyerror) void {
+    if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+}
 fn argument(args: []const c.JSValue, index: usize) c.JSValue {
     return if (index < args.len) args[index] else c.pi_js_undefined();
 }
@@ -28,6 +34,7 @@ fn baseConstructor(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSVa
 fn statsConstructor(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    errdefer |err| retainTypedAllocationFailure(engine, err);
     const ignored = try baseConstructor(engine, receiver, args, &.{});
     engine.freeValue(ignored);
     const big = c.JS_ToBool(engine.context, roots[0]) == 1;
@@ -48,6 +55,7 @@ fn typeMethod(engine: *em.Engine, receiver: c.JSValue, _: []const c.JSValue, roo
 fn checkMode(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    errdefer |err| retainTypedAllocationFailure(engine, err);
     const property = argument(args, 0);
     if (builtin.os.tag == .windows) for ([_]i32{ 0o010000, 0o060000, 0o140000 }) |kind| {
         if (c.JS_IsStrictEqual(engine.context, property, c.JS_NewInt32(engine.context, kind))) return c.pi_js_bool(engine.context, 0);
@@ -60,14 +68,19 @@ fn checkMode(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, r
 }
 fn dateInvoke(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
-    return dateOperation(engine, receiver, if (argc > 0) argv[0] else c.pi_js_undefined(), @intCast(magic)) catch |err| {
-        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
-        return engine.throwCaptured();
+    var owner = pending_owner.Frame.init(engine);
+    owner.enter() catch return owner.finishCallback(c.pi_js_exception());
+    const completed = dateOperation(engine, receiver, if (argc > 0) argv[0] else c.pi_js_undefined(), @intCast(magic)) catch |err| failure: {
+        if (err == error.ExecutionTerminated or owner.terminated()) break :failure c.JS_PiNativeTerminationResult();
+        if (err == error.OutOfMemory) break :failure engine.throwNativeOutOfMemoryFatal();
+        break :failure engine.throwCaptured();
     };
+    return owner.finishCallback(completed);
 }
 fn dateOperation(engine: *em.Engine, receiver: c.JSValue, supplied: c.JSValue, index: usize) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    errdefer |err| retainTypedAllocationFailure(engine, err);
     var value = supplied;
     if (index < 4) {
         const milliseconds = switch (index) {
@@ -104,6 +117,7 @@ fn addDates(engine: *em.Engine, prototype: c.JSValue) !void {
 pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    errdefer |err| retainTypedAllocationFailure(engine, err);
     const base = try scope.own(try functions.create(engine, "StatsBase", 10, baseConstructor, &.{}));
     const base_prototype = try scope.get(base, "prototype");
     inline for (.{ .{ "isDirectory", 0o040000 }, .{ "isFile", 0o100000 }, .{ "isBlockDevice", 0o060000 }, .{ "isCharacterDevice", 0o020000 }, .{ "isSymbolicLink", 0o120000 }, .{ "isFIFO", 0o010000 }, .{ "isSocket", 0o140000 } }) |method| {
@@ -136,10 +150,11 @@ pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
 pub fn throwTyped(engine: *em.Engine, code: []const u8, message: []const u8) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    errdefer |err| retainTypedAllocationFailure(engine, err);
     const error_value = try scope.own(try js.builtin(engine, "TypeError", &.{}));
     try scope.put(error_value, "code", try scope.text(code));
     if (c.JS_DefinePropertyValueStr(engine.context, error_value, "message", c.JS_DupValue(engine.context, try scope.text(message)), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
-    return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, error_value)));
+    return engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, error_value)));
 }
 pub fn pathText(engine: *em.Engine, value: c.JSValue, coerce: bool) ![]u8 {
     return pathTextNamed(engine, value, coerce, "path");
@@ -155,7 +170,8 @@ pub fn pathTextNamed(engine: *em.Engine, value: c.JSValue, coerce: bool, label: 
         var length: usize = 0;
         var element: usize = 0;
         const backing = try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, value, &offset, &length, &element));
-        defer engine.freeValue(backing);
+        defer engine.releaseNativeValue(backing);
+        errdefer |err| retainTypedAllocationFailure(engine, err);
         var total: usize = 0;
         const bytes = c.JS_GetArrayBuffer(engine.context, &total, backing);
         if (offset > total or length > total - offset or (bytes == null and length != 0)) return error.InvalidFileStatPath;
@@ -163,6 +179,7 @@ pub fn pathTextNamed(engine: *em.Engine, value: c.JSValue, coerce: bool, label: 
     } else {
         var scope: Scope = .{ .engine = engine };
         defer scope.deinit();
+        errdefer |err| retainTypedAllocationFailure(engine, err);
         const received = if (c.JS_IsObject(value)) try engine.toString(try scope.get(try scope.get(value, "constructor"), "name")) else try engine.toString(value);
         defer engine.gpa.free(received);
         const message = try std.fmt.allocPrint(engine.gpa, "The \"{s}\" argument must be of type string or an instance of Buffer or URL. Received {s}{s}", .{ label, if (c.JS_IsObject(value)) "an instance of " else "", received });
@@ -174,6 +191,7 @@ pub fn pathTextNamed(engine: *em.Engine, value: c.JSValue, coerce: bool, label: 
     if (std.mem.indexOfScalar(u8, path, 0) != null) {
         var scope: Scope = .{ .engine = engine };
         defer scope.deinit();
+        errdefer |err| retainTypedAllocationFailure(engine, err);
         const original = try scope.text(path);
         const inspected = try @import("node_event_inspect.zig").inspect(engine, original, 2);
         defer engine.gpa.free(inspected);
@@ -194,6 +212,7 @@ fn throwFilesystem(engine: *em.Engine, err: anyerror, path: []const u8, syscall:
     if (err == error.OutOfMemory) return err;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    errdefer |err| retainTypedAllocationFailure(engine, err);
     const code: []const u8 = switch (err) {
         error.FileNotFound => "ENOENT",
         error.AccessDenied => "EACCES",
@@ -219,7 +238,7 @@ fn throwFilesystem(engine: *em.Engine, err: anyerror, path: []const u8, syscall:
     try scope.put(value, "code", try scope.text(code));
     try scope.put(value, "syscall", try scope.text(syscall));
     try scope.put(value, "path", try scope.text(path));
-    return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value)));
+    return engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, value)));
 }
 fn integer(engine: *em.Engine, value: i128, big: bool) !c.JSValue {
     if (!big) return c.JS_NewFloat64(engine.context, @floatFromInt(value));
@@ -238,32 +257,24 @@ fn lstatSync(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: [
     const generation = engine.native_allocation_generation;
     return readStats(engine, args, roots, false) catch |err| return lstatFailure(engine, err, generation);
 }
-fn lstatFailure(engine: *em.Engine, err: anyerror, generation: u64) anyerror {
-    if (err == error.OutOfMemory) {
-        _ = engine.throwNativeOutOfMemory();
-        const reason = c.JS_GetException(engine.context);
-        c.JS_SetUncatchableError(engine.context, reason);
-        _ = c.JS_Throw(engine.context, reason);
-        return error.JavaScriptException;
-    }
-    if (err != error.JavaScriptException) return err;
-    if (engine.captured_exception) |reason| {
-        @import("native_async_body.zig").rethrowRecognizedAllocation(engine, reason, generation) catch |fatal| {
-            if (fatal != error.JavaScriptException) return fatal;
-        };
-        // Transfer the one owned ordinary/fatal captured reason back to the
-        // pending VM completion before the generic callback exit runs. No
-        // stale ordinary captured copy remains after a guest catch returns.
-        if (engine.captured_exception) |owned| {
-            engine.captured_exception = null;
-            _ = c.JS_Throw(engine.context, owned);
-        }
-    }
-    return error.JavaScriptException;
+fn lstatFailure(engine: *em.Engine, err: anyerror, _: u64) anyerror {
+    // A typed host allocation failure is a producer. Diagnostic values and
+    // an enclosing generation interval never supply fatal authority.
+    if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+    engine.releaseNativeValue(c.pi_js_undefined());
+    if (err == error.ExecutionTerminated or engine.nativeTerminationObserved())
+        return error.ExecutionTerminated;
+    if (c.JS_HasException(engine.context)) return error.JavaScriptException;
+    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
+        engine.captured_exception = null;
+        _ = c.JS_PiThrowExceptionData(engine.context, reason);
+    };
+    return if (err == error.OutOfMemory) error.JavaScriptException else err;
 }
 fn readStats(engine: *em.Engine, args: []const c.JSValue, roots: []const c.JSValue, follow: bool) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    errdefer |err| retainTypedAllocationFailure(engine, err);
     const path = try pathText(engine, argument(args, 0), false);
     defer engine.gpa.free(path);
     const options = argument(args, 1);
@@ -302,10 +313,14 @@ fn lstatMetadata(engine: *em.Engine, path: []const u8, throw_missing: bool) !sta
 }
 fn realpathNative(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
-    return realpath(engine, if (argc > 0) argv[0..@intCast(argc)] else &.{}, true) catch |err| {
-        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
-        return engine.throwCaptured();
+    var owner = pending_owner.Frame.init(engine);
+    owner.enter() catch return owner.finishCallback(c.pi_js_exception());
+    const completed = realpath(engine, if (argc > 0) argv[0..@intCast(argc)] else &.{}, true) catch |err| failure: {
+        if (err == error.ExecutionTerminated or owner.terminated()) break :failure c.JS_PiNativeTerminationResult();
+        if (err == error.OutOfMemory) break :failure engine.throwNativeOutOfMemoryFatal();
+        break :failure engine.throwCaptured();
     };
+    return owner.finishCallback(completed);
 }
 fn realpathSync(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     return realpath(engine, args, false);
@@ -313,6 +328,7 @@ fn realpathSync(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []
 fn realpath(engine: *em.Engine, args: []const c.JSValue, native: bool) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    errdefer |err| retainTypedAllocationFailure(engine, err);
     const options = argument(args, 1);
     // Source getOptions observes the encoding getter before validating paths.
     const encoding = if (c.JS_IsString(options)) options else if (c.JS_IsNull(options) or c.JS_IsUndefined(options)) c.pi_js_undefined() else try scope.get(options, "encoding");

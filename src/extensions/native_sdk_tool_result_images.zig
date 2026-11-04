@@ -22,7 +22,13 @@ pub fn create(engine: *em.Engine) !c.JSValue {
 fn arg(args: []const c.JSValue, index: usize) c.JSValue {
     return if (index < args.len) args[index] else c.pi_js_undefined();
 }
-fn call(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn call(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, args: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callPendingBody(context, pending_arg1, argc, args, pending_arg4, roots));
+}
+fn callPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return begin(engine, if (argc > 0) args[0..@intCast(argc)] else &.{}, roots[0]) catch |err| sdk.fail(engine, err);
 }
@@ -59,7 +65,13 @@ fn initial(engine: *em.Engine, owner: c.JSValue, args: []const c.JSValue, proces
     try scope.put(owner, "next", try scope.get(iterator, "next"));
     try advance(engine, owner);
 }
-fn isImage(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn isImage(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(isImagePendingBody(context, pending_arg1, argc, args));
+}
+fn isImagePendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -134,7 +146,7 @@ fn consume(engine: *em.Engine, owner: c.JSValue, processed_value: c.JSValue) !vo
     try scope.set(owner, "changed", c.pi_js_bool(engine.context, 1));
 }
 fn rejectAndClose(engine: *em.Engine, owner: c.JSValue, err: anyerror) !void {
-    const reason = flow.reason(engine, err);
+    const reason = try flow.reason(engine, err);
     defer engine.freeValue(reason);
     try closeWithReason(engine, owner, reason);
 }
@@ -142,15 +154,16 @@ fn closeWithReason(engine: *em.Engine, owner: c.JSValue, reason: c.JSValue) !voi
     // IteratorClose preserves an existing thrown completion, even when return
     // itself throws. Native allocator failures retain their fatal provenance.
     close(engine, owner) catch |err| {
-        if (err == error.OutOfMemory) return err;
-        if (err == error.JavaScriptException) {
-            _ = engine.throwCaptured();
+        try @import("native_pending_owner.zig").catchFailure(engine, err);
+        if (err != error.JavaScriptException) return err;
+        // Ordinary IteratorClose failure does not replace the prior source
+        // throw. Retire only the actual ordinary slot; captured DATA is never
+        // rethrown or compared to a historical native allocation identity.
+        if (c.JS_HasException(engine.context)) {
             const ignored = c.JS_GetException(engine.context);
-            defer engine.freeValue(ignored);
-            if (engine.native_allocation_exception) |fatal| {
-                if (c.JS_IsStrictEqual(engine.context, ignored, fatal)) _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, fatal)));
-            }
-        } else return err;
+            engine.freeValue(ignored);
+            try @import("native_pending_owner.zig").checkFatal(engine);
+        }
     };
     try flow.settle(engine, owner, true, reason);
 }

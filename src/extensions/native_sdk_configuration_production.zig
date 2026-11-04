@@ -52,7 +52,7 @@ pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
     const generation = engine.native_allocation_generation;
     const pkg = readPackage(&scope, bindings, path) catch |err| value: {
         if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-        const reason = try scope.own(@import("native_agent_async.zig").reason(engine, err));
+        const reason = try scope.own(try @import("native_agent_async.zig").reason(engine, err));
         if (!scope.equal(try scope.get(reason, "code"), try scope.text("ENOENT"))) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
         break :value try scope.object();
     };

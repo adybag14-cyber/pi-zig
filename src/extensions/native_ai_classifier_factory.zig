@@ -85,7 +85,7 @@ fn setup(scope: *Scope, owner: c.JSValue, kind: Kind) !void {
 }
 fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
     if (err == error.OutOfMemory) return flow.rejectError(scope.engine, owner, err);
-    const reason = flow.reason(scope.engine, err);
+    const reason = try flow.reason(scope.engine, err);
     defer scope.engine.freeValue(reason);
     if (scope.engine.captured_exception) |captured| {
         scope.engine.captured_exception = null;

@@ -147,12 +147,25 @@ const Job = struct {
         self.environment.deinit();
         self.options.deinit(a);
         if (self.structured_json) |bytes| a.free(bytes);
-        for ([_]c.JSValue{ self.signal, self.on_update, self.resolve, self.reject }) |value| engine.freeValue(value);
-        if (self.failure) |value| engine.freeValue(value);
+        for ([_]c.JSValue{ self.signal, self.on_update, self.resolve, self.reject }) |value| engine.releaseNativeValue(value);
+        if (self.failure) |value| engine.releaseNativeValue(value);
         a.destroy(self);
     }
 };
 const State = struct { jobs: std.ArrayList(*Job) = .empty, pumping: bool = false, edit_prepare: ?c.JSValue = null };
+// A direct native allocator outcome is a producer before deferred JS roots
+// can publish a later cleanup event. Other typed failures retain their class.
+fn nativeAllocation(engine: anytype, result: anytype) @TypeOf(result) {
+    return result catch |err| {
+        if (@as(anyerror, err) == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+        return err;
+    };
+}
+fn nativeText(engine: anytype, value: c.JSValue) anyerror![]u8 {
+    try engine.checkNativeEntry();
+    return nativeAllocation(engine, engine.toString(value));
+}
+
 fn stateFor(engine: *Engine) !*State {
     if (engine.native_sdk_builtin_execution_state) |raw| return @ptrCast(@alignCast(raw));
     const state = try engine.gpa.create(State);
@@ -179,7 +192,7 @@ pub fn deinit(engine: *Engine) void {
     for (state.jobs.items) |job| @atomicStore(bool, &job.abort_flag, true, .release);
     for (state.jobs.items) |job| job.destroy(engine);
     state.jobs.deinit(engine.gpa);
-    if (state.edit_prepare) |value| engine.freeValue(value);
+    if (state.edit_prepare) |value| engine.releaseNativeValue(value);
     engine.gpa.destroy(state);
 }
 fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
@@ -223,27 +236,27 @@ pub fn createDefinitionWithOperations(engine: *Engine, name: []const u8, cwd: []
     var owned_options = try OwnedOptions.copy(engine.gpa, options);
     errdefer if (!transferred) owned_options.deinit(engine.gpa);
     const owned_operations: ?c.JSValue = if (c.JS_IsUndefined(operations) or c.JS_IsNull(operations)) null else c.JS_DupValue(engine.context, operations);
-    errdefer if (!transferred) if (owned_operations) |value| engine.freeValue(value);
+    errdefer if (!transferred) if (owned_operations) |value| engine.releaseNativeValue(value);
     factory.* = .{ .engine = engine, .cwd = owned_cwd, .io = engine.native_io, .index = chosen, .auto_resize = options.auto_resize, .options = owned_options, .operations = owned_operations };
     const owner = try engine.checked(c.JS_NewObjectClass(engine.context, engine.native_sdk_builtin_execution_class));
-    defer engine.freeValue(owner);
+    defer engine.releaseNativeValue(owner);
     _ = c.JS_SetOpaque(owner, factory);
     transferred = true;
     const result = try templates.getTemplate(engine, name);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     if (std.mem.eql(u8, name, "edit")) {
         // Preserve the ordinary Source object literal's data and insertion
         // order: renderShell, prepareArguments, execute, then render callbacks.
         try vm.put(engine, result, "renderShell", try engine.checked(c.JS_NewString(engine.context, "self")));
-        const state = try stateFor(engine);
+        const state = try nativeAllocation(engine, stateFor(engine));
         if (state.edit_prepare == null) state.edit_prepare = try @import("native_sdk_edit_arguments.zig").create(engine);
         try vm.put(engine, result, "prepareArguments", c.JS_DupValue(engine.context, state.edit_prepare.?));
     }
     var data = [_]c.JSValue{owner};
     const execute = try engine.checked(c.JS_NewCFunctionData2(engine.context, executeCallback, "execute", 5, 0, data.len, &data));
-    defer engine.freeValue(execute);
+    defer engine.releaseNativeValue(execute);
     const async_prototype = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
-    defer engine.freeValue(async_prototype);
+    defer engine.releaseNativeValue(async_prototype);
     if (c.JS_SetPrototype(engine.context, execute, async_prototype) < 0) return js.capture(engine);
     try vm.put(engine, result, "execute", c.JS_DupValue(engine.context, execute));
     try @import("native_sdk_builtin_presentation.zig").attach(engine, result, name);
@@ -254,18 +267,24 @@ pub fn createDefinitions(engine: *Engine, cwd: []const u8, auto_resize: bool) !c
 }
 pub fn createDefinitionsWithOptions(engine: *Engine, cwd: []const u8, options: Options) !c.JSValue {
     const result = try vm.array(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     for (templates.names, 0..) |name, index| if (c.JS_SetPropertyUint32(engine.context, result, @intCast(index), try createDefinitionWithOptions(engine, name, cwd, if (std.mem.eql(u8, name, "bash")) options else .{ .auto_resize = options.auto_resize })) < 0) return error.JavaScriptException;
     return result;
 }
-fn executeCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn executeCallback(context: ?*c.JSContext, ignored0: c.JSValue, argc: c_int, args: [*c]c.JSValue, ignored1: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+    return frame.finishCallback(executeCallbackOwnedBody(context, ignored0, argc, args, ignored1, data));
+}
+fn executeCallbackOwnedBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
     const factory: *Factory = @ptrCast(@alignCast(c.JS_GetOpaque(data[0], engine.native_sdk_builtin_execution_class) orelse return c.JS_ThrowTypeError(context, "Invalid builtin factory")));
     if (factory.operations) |operations| {
         const glob = vm.get(engine, operations, "glob") catch |err| return rejectedPromise(engine, err);
-        defer engine.freeValue(glob);
+        defer engine.releaseNativeValue(glob);
         if (c.JS_ToBool(engine.context, glob) == 1 and std.mem.eql(u8, templates.names[factory.index], "find")) return @import("native_sdk_builtin_find_vm.zig").start(engine, data[0], operations, factory.cwd, if (argc > 1) args[1] else c.pi_js_undefined(), if (argc > 2) args[2] else c.pi_js_undefined(), if (argc > 4) args[4] else c.pi_js_undefined()) catch |err| rejectedPromise(engine, err);
     }
     return start(factory, if (argc > 1) args[1] else c.pi_js_undefined(), if (argc > 2) args[2] else c.pi_js_undefined(), if (argc > 3) args[3] else c.pi_js_undefined(), if (argc > 4) args[4] else c.pi_js_undefined()) catch |err| rejectedPromise(engine, err);
@@ -273,91 +292,112 @@ fn executeCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]
 pub fn installFindFactories(engine: *Engine, exports: c.JSValue) !void {
     inline for (.{ "createFindToolDefinition", "createFindTool" }, 0..) |name, index| try vm.put(engine, exports, name, try engine.checked(c.pi_js_function_magic(engine.context, findFactory, name, 2, @intCast(index))));
 }
-fn findFactory(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, wrapped: c_int) callconv(.c) c.JSValue {
+fn findFactory(context: ?*c.JSContext, ignored0: c.JSValue, argc: c_int, argv: [*c]c.JSValue, wrapped: c_int) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+    return frame.finishCallback(findFactoryOwnedBody(context, ignored0, argc, argv, wrapped));
+}
+fn findFactoryOwnedBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, wrapped: c_int) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return findFactoryOwned(engine, argv[0..@intCast(argc)], wrapped != 0) catch |err| sdk.fail(engine, err);
 }
 fn findFactoryOwned(engine: *Engine, args: []const c.JSValue, wrapped: bool) !c.JSValue {
-    const cwd = try engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined());
+    const cwd = try nativeText(engine, if (args.len > 0) args[0] else c.pi_js_undefined());
     defer engine.gpa.free(cwd);
     const operations = if (args.len > 1 and !c.JS_IsUndefined(args[1]) and !c.JS_IsNull(args[1])) try vm.get(engine, args[1], "operations") else c.pi_js_undefined();
-    defer engine.freeValue(operations);
-    const definition = try createDefinitionWithOperations(engine, "find", cwd, .{}, operations);
+    defer engine.releaseNativeValue(operations);
+    const definition = try nativeAllocation(engine, createDefinitionWithOperations(engine, "find", cwd, .{}, operations));
     if (!wrapped) return definition;
-    defer engine.freeValue(definition);
+    defer engine.releaseNativeValue(definition);
     const result = try vm.object(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     inline for (.{ "name", "label", "description", "parameters", "outputSchema", "constrainedSampling", "prepareArguments", "executionMode" }) |name| try vm.put(engine, result, name, try vm.get(engine, definition, name));
     var data = [_]c.JSValue{definition};
     try vm.put(engine, result, "execute", try engine.checked(c.JS_NewCFunctionData2(engine.context, forwardDefinition, "execute", 5, 0, 1, &data)));
     return result;
 }
-fn forwardDefinition(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn forwardDefinition(context: ?*c.JSContext, ignored0: c.JSValue, argc: c_int, argv: [*c]c.JSValue, ignored1: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+    return frame.finishCallback(forwardDefinitionOwnedBody(context, ignored0, argc, argv, ignored1, data));
+}
+fn forwardDefinitionOwnedBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return vm.invoke(engine, data[0], "execute", argv[0..@intCast(argc)]) catch |err| sdk.fail(engine, err);
 }
 fn rejectedPromise(engine: *Engine, err: anyerror) c.JSValue {
-    _ = sdk.fail(engine, err);
-    const reason = c.JS_GetException(engine.context);
-    defer engine.freeValue(reason);
+    const reason = @import("native_agent_async.zig").reason(engine, err) catch |fatal| return sdk.fail(engine, fatal);
+    defer engine.releaseNativeValue(reason);
     var functions: [2]c.JSValue = undefined;
     const promise = c.JS_NewPromiseCapability(engine.context, &functions);
     if (c.JS_IsException(promise)) return promise;
-    defer for (functions) |function| engine.freeValue(function);
+    defer for (functions) |function| engine.releaseNativeValue(function);
     var args = [_]c.JSValue{reason};
+    engine.checkNativeEntry() catch |failure| {
+        engine.releaseNativeValue(promise);
+        return sdk.fail(engine, failure);
+    };
     const ignored = c.JS_Call(engine.context, functions[1], c.pi_js_undefined(), 1, &args);
     if (c.JS_IsException(ignored)) {
-        engine.freeValue(promise);
+        engine.releaseNativeValue(promise);
         return ignored;
     }
-    engine.freeValue(ignored);
+    engine.releaseNativeValue(ignored);
     return promise;
 }
 fn start(factory: *Factory, input: c.JSValue, signal: c.JSValue, update: c.JSValue, context: c.JSValue) !c.JSValue {
     const engine = factory.engine;
     const io = factory.io orelse return error.NativeSDKRequiresIO;
-    const state = try stateFor(engine);
-    try state.jobs.ensureUnusedCapacity(engine.gpa, 1);
-    const encoded = try engine.stringify(input);
+    const state = try nativeAllocation(engine, stateFor(engine));
+    try nativeAllocation(engine, state.jobs.ensureUnusedCapacity(engine.gpa, 1));
+    try engine.checkNativeEntry();
+    const encoded = try nativeAllocation(engine, engine.stringify(input));
     defer engine.gpa.free(encoded);
     const context_cwd = if (!c.JS_IsUndefined(context) and !c.JS_IsNull(context)) try vm.get(engine, context, "cwd") else c.pi_js_undefined();
-    defer engine.freeValue(context_cwd);
+    defer engine.releaseNativeValue(context_cwd);
     const override = if (c.JS_ToBool(engine.context, context_cwd) == 1) blk: {
         if (!c.JS_IsString(context_cwd)) return error.InvalidBuiltinContextCwd;
-        break :blk try engine.toString(context_cwd);
+        break :blk try nativeText(engine, context_cwd);
     } else null;
     defer if (override) |path| engine.gpa.free(path);
-    const cwd = try a.dupe(u8, override orelse factory.cwd);
+    const cwd = try nativeAllocation(engine, a.dupe(u8, override orelse factory.cwd));
     errdefer a.free(cwd);
-    const bytes = try a.dupe(u8, encoded);
+    const bytes = try nativeAllocation(engine, a.dupe(u8, encoded));
     errdefer a.free(bytes);
-    const job = try a.create(Job);
+    const job = try nativeAllocation(engine, a.create(Job));
     errdefer a.destroy(job);
-    var environment = try environmentSnapshot(engine);
+    var environment = try nativeAllocation(engine, environmentSnapshot(engine));
     errdefer environment.deinit();
-    var options = try OwnedOptions.copy(a, .{ .shell_path = factory.options.shell_path, .command_prefix = factory.options.command_prefix });
+    // Environment snapshot retires guest roots before returning its native map.
+    try engine.checkNativeEntry();
+    var options = try nativeAllocation(engine, OwnedOptions.copy(a, .{ .shell_path = factory.options.shell_path, .command_prefix = factory.options.command_prefix }));
     errdefer options.deinit(a);
     var functions: [2]c.JSValue = undefined;
     const promise = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
-    errdefer engine.freeValue(promise);
-    errdefer for (functions) |function| engine.freeValue(function);
+    errdefer engine.releaseNativeValue(promise);
+    errdefer for (functions) |function| engine.releaseNativeValue(function);
     job.* = .{ .io = io, .cwd = cwd, .input = bytes, .index = factory.index, .auto_resize = factory.auto_resize, .environment = environment, .options = options, .emit_updates = c.JS_ToBool(engine.context, update) == 1, .signal = c.JS_DupValue(engine.context, signal), .on_update = c.JS_DupValue(engine.context, update), .resolve = functions[0], .reject = functions[1], .notify_context = engine.host_owner_notify_context, .notify = engine.host_owner_notify };
     errdefer {
-        engine.freeValue(job.signal);
-        engine.freeValue(job.on_update);
+        engine.releaseNativeValue(job.signal);
+        engine.releaseNativeValue(job.on_update);
     }
     try observeAbort(engine, job);
     if (job.emit_updates and (std.mem.eql(u8, templates.names[job.index], "bash") or std.mem.eql(u8, templates.names[job.index], "powershell"))) {
         const initial = try vm.object(engine);
-        defer engine.freeValue(initial);
+        defer engine.releaseNativeValue(initial);
         try vm.put(engine, initial, "content", try vm.array(engine));
         try vm.put(engine, initial, "details", c.pi_js_undefined());
         var initial_args = [_]c.JSValue{initial};
+        try engine.checkNativeEntry();
         const ignored = try engine.checked(c.JS_Call(engine.context, update, c.pi_js_undefined(), 1, &initial_args));
-        engine.freeValue(ignored);
+        engine.releaseNativeValue(ignored);
     }
-    try state.jobs.ensureUnusedCapacity(engine.gpa, 1);
-    job.thread = try std.Thread.spawn(.{}, Job.run, .{job});
+    // The ignored on_update result can produce a real event while retiring.
+    try engine.checkNativeEntry();
+    try nativeAllocation(engine, state.jobs.ensureUnusedCapacity(engine.gpa, 1));
+    job.thread = try nativeAllocation(engine, std.Thread.spawn(.{}, Job.run, .{job}));
     state.jobs.appendAssumeCapacity(job);
     return promise;
 }
@@ -365,53 +405,55 @@ fn environmentSnapshot(engine: *Engine) !std.process.Environ.Map {
     var result: std.process.Environ.Map = .init(a);
     errdefer result.deinit();
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
+    defer engine.releaseNativeValue(global);
     const process = try vm.get(engine, global, "process");
-    defer engine.freeValue(process);
+    defer engine.releaseNativeValue(process);
     if (!c.JS_IsObject(process)) return result;
     const environment = try vm.get(engine, process, "env");
-    defer engine.freeValue(environment);
+    defer engine.releaseNativeValue(environment);
     if (!c.JS_IsObject(environment)) return result;
     var properties: [*c]c.JSPropertyEnum = null;
     var count: u32 = 0;
+    try engine.checkNativeEntry();
     if (c.JS_GetOwnPropertyNames(engine.context, &properties, &count, environment, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
     defer c.JS_FreePropertyEnum(engine.context, properties, count);
     for (properties[0..count]) |entry| {
         const key = try engine.checked(c.JS_AtomToValue(engine.context, entry.atom));
-        defer engine.freeValue(key);
+        defer engine.releaseNativeValue(key);
+        try engine.checkNativeEntry();
         const value = try engine.checked(c.JS_GetProperty(engine.context, environment, entry.atom));
-        defer engine.freeValue(value);
+        defer engine.releaseNativeValue(value);
         if (c.JS_IsUndefined(value)) continue;
-        const name = try engine.toString(key);
+        const name = try nativeText(engine, key);
         defer engine.gpa.free(name);
-        const text = try engine.toString(value);
+        const text = try nativeText(engine, value);
         defer engine.gpa.free(text);
-        try result.put(name, text);
+        try nativeAllocation(engine, result.put(name, text));
     }
     return result;
 }
 fn observeAbort(engine: *Engine, job: *Job) !void {
     if (!c.JS_IsObject(job.signal) or @atomicLoad(bool, &job.abort_flag, .acquire)) return;
     const aborted = try vm.get(engine, job.signal, "aborted");
-    defer engine.freeValue(aborted);
+    defer engine.releaseNativeValue(aborted);
     if (c.JS_ToBool(engine.context, aborted) == 1) @atomicStore(bool, &job.abort_flag, true, .release);
 }
 fn textBlock(engine: *Engine, bytes: []const u8) !c.JSValue {
     const result = try vm.object(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     try vm.put(engine, result, "type", try sdk.text(engine, "text"));
     try vm.put(engine, result, "text", try @import("native_durable.zig").jsValue(engine, .{ .string = bytes }));
     return result;
 }
 fn project(engine: *Engine, result: *const tools.ToolResult, index: usize) !c.JSValue {
     const row = try vm.object(engine);
-    errdefer engine.freeValue(row);
+    errdefer engine.releaseNativeValue(row);
     const content = try vm.array(engine);
-    defer engine.freeValue(content);
+    defer engine.releaseNativeValue(content);
     if (c.JS_SetPropertyUint32(engine.context, content, 0, try textBlock(engine, result.content)) < 0) return error.JavaScriptException;
     if (result.image_b64) |bytes| {
         const image = try vm.object(engine);
-        defer engine.freeValue(image);
+        defer engine.releaseNativeValue(image);
         try vm.put(engine, image, "type", try sdk.text(engine, "image"));
         try vm.put(engine, image, "data", try sdk.text(engine, bytes));
         try vm.put(engine, image, "mimeType", try sdk.text(engine, result.image_mime orelse "image/png"));
@@ -423,7 +465,7 @@ fn project(engine: *Engine, result: *const tools.ToolResult, index: usize) !c.JS
     if (std.mem.eql(u8, templates.names[index], "read")) {
         const structured = if (result.image_b64) |bytes| blk: {
             const image = try vm.object(engine);
-            errdefer engine.freeValue(image);
+            errdefer engine.releaseNativeValue(image);
             try vm.put(engine, image, "type", try sdk.text(engine, "image"));
             try vm.put(engine, image, "data", try sdk.text(engine, bytes));
             try vm.put(engine, image, "mimeType", try sdk.text(engine, result.image_mime orelse "image/png"));
@@ -457,33 +499,40 @@ fn deliverUpdates(engine: *Engine, job: *Job, force: bool) !bool {
     if (!c.JS_IsFunction(engine.context, job.on_update) or job.failure != null) return updates.items.len != 0;
     for (updates.items) |bytes| {
         const update_row = try vm.object(engine);
-        defer engine.freeValue(update_row);
+        defer engine.releaseNativeValue(update_row);
         const blocks = try vm.array(engine);
-        defer engine.freeValue(blocks);
+        defer engine.releaseNativeValue(blocks);
         if (c.JS_SetPropertyUint32(engine.context, blocks, 0, try textBlock(engine, bytes)) < 0) return error.JavaScriptException;
         try vm.put(engine, update_row, "content", c.JS_DupValue(engine.context, blocks));
         const details = try vm.object(engine);
-        defer engine.freeValue(details);
+        defer engine.releaseNativeValue(details);
         try vm.put(engine, details, "truncation", c.pi_js_undefined());
         try vm.put(engine, details, "fullOutputPath", c.pi_js_undefined());
         try vm.put(engine, update_row, "details", c.JS_DupValue(engine.context, details));
         var update_args = [_]c.JSValue{update_row};
+        try engine.checkNativeEntry();
         const ignored = c.JS_Call(engine.context, job.on_update, c.pi_js_undefined(), 1, &update_args);
         if (c.JS_IsException(ignored)) {
-            job.failure = c.JS_GetException(engine.context);
             @atomicStore(bool, &job.abort_flag, true, .release);
+            try @import("native_pending_owner.zig").checkFatal(engine);
+            job.failure = c.JS_GetException(engine.context);
             break;
         }
-        engine.freeValue(ignored);
+        engine.releaseNativeValue(ignored);
     }
     return updates.items.len != 0;
 }
 pub fn pump(engine: *Engine) !bool {
     const raw = engine.native_sdk_builtin_execution_state orelse return false;
     const state: *State = @ptrCast(@alignCast(raw));
-    if (state.pumping) return false;
+    if (state.pumping or state.jobs.items.len == 0) return false;
     state.pumping = true;
     defer state.pumping = false;
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    frame.enter() catch |err| return frame.finishBool(@as(anyerror!bool, err));
+    return frame.finishBool(pumpOwnedBody(engine, state));
+}
+fn pumpOwnedBody(engine: *Engine, state: *State) !bool {
     var worked = false;
     var index: usize = 0;
     while (index < state.jobs.items.len) {
@@ -499,17 +548,24 @@ pub fn pump(engine: *Engine) !bool {
         // completed job twice or attach a later abort to its settled promise.
         _ = state.jobs.orderedRemove(index);
         defer job.destroy(engine);
+        if (job.native_error == error.OutOfMemory) {
+            // This is the worker's typed Zig failure, never Source DATA.
+            // Publish before retiring the finished job's owned VM roots.
+            _ = engine.throwNativeOutOfMemoryFatal();
+            return error.OutOfMemory;
+        }
         const reject = job.failure != null or job.native_error != null or (if (job.result) |result| result.is_error and job.reject_result else true);
         const value = if (job.result) |*result| if (result.is_error and job.reject_result) try engine.checked(c.JS_NewError(engine.context)) else try project(engine, result, job.index) else try engine.checked(c.JS_NewError(engine.context));
-        defer engine.freeValue(value);
+        defer engine.releaseNativeValue(value);
         if (reject) try vm.put(engine, value, "message", try sdk.text(engine, if (job.result) |result| result.content else @errorName(job.native_error.?)));
         if (!reject) {
             if (job.structured_json) |bytes| try vm.put(engine, value, "structuredContent", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "builtin-structured-result")));
             if (job.result.?.is_error) try vm.put(engine, value, "isError", c.pi_js_bool(engine.context, 1));
         }
         var args = [_]c.JSValue{job.failure orelse value};
+        try engine.checkNativeEntry();
         const ignored = try engine.checked(c.JS_Call(engine.context, if (reject) job.reject else job.resolve, c.pi_js_undefined(), 1, &args));
-        engine.freeValue(ignored);
+        engine.releaseNativeValue(ignored);
         worked = true;
     }
     return worked;

@@ -9,36 +9,36 @@ const Engine = engine_mod.Engine;
 
 fn builtin(engine: *Engine, name: [:0]const u8) !c.JSValue {
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
+    defer engine.releaseNativeValue(global);
     return vm.get(engine, global, name);
 }
 fn invokeBuiltin(engine: *Engine, owner: [:0]const u8, name: [:0]const u8, args: []const c.JSValue) !c.JSValue {
     const object = try builtin(engine, owner);
-    defer engine.freeValue(object);
+    defer engine.releaseNativeValue(object);
     return vm.invoke(engine, object, name, args);
 }
 fn prototype(engine: *Engine, name: [:0]const u8) !c.JSValue {
     const constructor = try builtin(engine, name);
-    defer engine.freeValue(constructor);
+    defer engine.releaseNativeValue(constructor);
     return vm.get(engine, constructor, "prototype");
 }
 fn throwType(engine: *Engine, message: [:0]const u8) !c.JSValue {
     const constructor = try builtin(engine, "TypeError");
-    defer engine.freeValue(constructor);
+    defer engine.releaseNativeValue(constructor);
     const text = try engine.checked(c.JS_NewString(engine.context, message.ptr));
-    defer engine.freeValue(text);
+    defer engine.releaseNativeValue(text);
     var arguments = [_]c.JSValue{text};
-    const value = try engine.checked(c.JS_CallConstructor(engine.context, constructor, arguments.len, &arguments));
-    return engine.checked(c.JS_Throw(engine.context, value));
+    const value = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(engine.context, constructor, arguments.len, &arguments); });
+    return engine.checked(c.JS_PiThrowExceptionData(engine.context, value));
 }
 fn newSet(engine: *Engine) !c.JSValue {
     const constructor = try builtin(engine, "Set");
-    defer engine.freeValue(constructor);
-    return engine.checked(c.JS_CallConstructor(engine.context, constructor, 0, null));
+    defer engine.releaseNativeValue(constructor);
+    return engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(engine.context, constructor, 0, null); });
 }
 fn isArray(engine: *Engine, value: c.JSValue) !bool {
     const result = try invokeBuiltin(engine, "Array", "isArray", &.{value});
-    defer engine.freeValue(result);
+    defer engine.releaseNativeValue(result);
     return c.JS_ToBool(engine.context, result) != 0;
 }
 fn ownKeys(engine: *Engine, value: c.JSValue) !c.JSValue {
@@ -50,33 +50,33 @@ fn descriptor(engine: *Engine, value: c.JSValue, key: c.JSValue) !c.JSValue {
 fn validDescriptor(engine: *Engine, desc: c.JSValue) !bool {
     if (c.JS_IsUndefined(desc)) return false;
     const enumerable = try vm.get(engine, desc, "enumerable");
-    defer engine.freeValue(enumerable);
+    defer engine.releaseNativeValue(enumerable);
     if (c.JS_ToBool(engine.context, enumerable) == 0) return false;
     const atom = c.JS_NewAtom(engine.context, "value");
     defer c.JS_FreeAtom(engine.context, atom);
-    const exists = c.JS_HasProperty(engine.context, desc, atom);
+    const exists = native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_HasProperty(engine.context, desc, atom); };
     if (exists < 0) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+        _ = try engine.checked(c.pi_js_exception());
         unreachable;
     }
     return exists != 0;
 }
 fn contains(engine: *Engine, active: c.JSValue, value: c.JSValue) !bool {
     const found = try vm.invoke(engine, active, "has", &.{value});
-    defer engine.freeValue(found);
+    defer engine.releaseNativeValue(found);
     return c.JS_ToBool(engine.context, found) != 0;
 }
 fn mark(engine: *Engine, active: c.JSValue, value: c.JSValue) !void {
     const result = try vm.invoke(engine, active, "add", &.{value});
-    engine.freeValue(result);
+    engine.releaseNativeValue(result);
 }
 fn unmark(engine: *Engine, active: c.JSValue, value: c.JSValue) !void {
     const result = try vm.invoke(engine, active, "delete", &.{value});
-    engine.freeValue(result);
+    engine.releaseNativeValue(result);
 }
 fn finite(engine: *Engine, value: c.JSValue) !bool {
     const result = try invokeBuiltin(engine, "Number", "isFinite", &.{value});
-    defer engine.freeValue(result);
+    defer engine.releaseNativeValue(result);
     return c.JS_ToBool(engine.context, result) != 0;
 }
 fn primitive(value: c.JSValue) bool {
@@ -87,88 +87,88 @@ fn isObject(engine: *Engine, value: c.JSValue) bool {
 }
 fn restoreFailure(engine: *Engine, original: ?c.JSValue) void {
     if (original) |value| {
-        if (engine.captured_exception) |previous| engine.freeValue(previous);
+        if (engine.captured_exception) |previous| engine.releaseNativeValue(previous);
         engine.captured_exception = c.JS_DupValue(engine.context, value);
     }
 }
 fn defineData(engine: *Engine, shared_descriptor: c.JSValue, target: c.JSValue, key: c.JSValue, value: c.JSValue) !void {
     try vm.put(engine, shared_descriptor, "value", value);
     const result = try invokeBuiltin(engine, "Object", "defineProperty", &.{ target, key, shared_descriptor });
-    engine.freeValue(result);
+    engine.releaseNativeValue(result);
     try vm.put(engine, shared_descriptor, "value", c.pi_js_undefined());
 }
 pub fn copy(engine: *Engine, shared_descriptor: c.JSValue, value: c.JSValue, options: c.JSValue) !c.JSValue {
-    const generation = engine.native_allocation_generation;
     const omit_value = if (c.JS_IsUndefined(options) or c.JS_IsNull(options)) c.pi_js_undefined() else try vm.get(engine, options, "omitUndefinedProperties");
-    defer engine.freeValue(omit_value);
-    return copyValue(engine, shared_descriptor, value, null, c.JS_IsBool(omit_value) and c.JS_ToBool(engine.context, omit_value) != 0) catch |err| return engine.nativeAllocationError(err, generation);
+    defer engine.releaseNativeValue(omit_value);
+    return copyValue(engine, shared_descriptor, value, null, c.JS_IsBool(omit_value) and c.JS_ToBool(engine.context, omit_value) != 0);
 }
 fn copyValue(engine: *Engine, shared_descriptor: c.JSValue, value: c.JSValue, ancestors: ?c.JSValue, omit: bool) anyerror!c.JSValue {
     if (primitive(value)) return c.JS_DupValue(engine.context, value);
     if (c.JS_IsNumber(value)) return if (try finite(engine, value)) c.JS_DupValue(engine.context, value) else throwType(engine, "Value contains a non-finite number and is not strict JSON");
     if (!isObject(engine, value)) return throwType(engine, if (c.JS_IsUndefined(value)) "Value contains a non-JSON undefined; expected strict JSON" else if (c.JS_IsBigInt(value)) "Value contains a non-JSON bigint; expected strict JSON" else if (c.JS_IsSymbol(value)) "Value contains a non-JSON symbol; expected strict JSON" else "Value contains a non-JSON function; expected strict JSON");
     const active = if (ancestors) |set| c.JS_DupValue(engine.context, set) else try newSet(engine);
-    defer engine.freeValue(active);
+    defer engine.releaseNativeValue(active);
     if (try contains(engine, active, value)) return throwType(engine, "Value contains cycles and is not strict JSON");
     try mark(engine, active, value);
     const result = copyBody(engine, shared_descriptor, value, active, omit) catch |err| {
+        if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
         const original = if (engine.captured_exception) |exception| c.JS_DupValue(engine.context, exception) else null;
-        defer if (original) |exception| engine.freeValue(exception);
+        defer if (original) |exception| engine.releaseNativeValue(exception);
         try unmark(engine, active, value);
         restoreFailure(engine, original);
         return err;
     };
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     try unmark(engine, active, value);
     return result;
 }
 fn copyBody(engine: *Engine, shared_descriptor: c.JSValue, value: c.JSValue, active: c.JSValue, omit: bool) !c.JSValue {
     const array = try isArray(engine, value);
     const actual_prototype = try invokeBuiltin(engine, "Object", "getPrototypeOf", &.{value});
-    defer engine.freeValue(actual_prototype);
+    defer engine.releaseNativeValue(actual_prototype);
     const expected_prototype = try prototype(engine, if (array) "Array" else "Object");
-    defer engine.freeValue(expected_prototype);
+    defer engine.releaseNativeValue(expected_prototype);
     if (!c.JS_IsStrictEqual(engine.context, actual_prototype, expected_prototype) and (array or !c.JS_IsNull(actual_prototype))) return throwType(engine, if (array) "Value must contain strict JSON dense plain arrays" else "Value must contain strict JSON plain objects or arrays");
     const keys = try ownKeys(engine, value);
-    defer engine.freeValue(keys);
+    defer engine.releaseNativeValue(keys);
     if (array) {
         const length_value = try vm.get(engine, value, "length");
-        defer engine.freeValue(length_value);
+        defer engine.releaseNativeValue(length_value);
         const length = try vm.length(engine, value);
         if (!c.JS_IsNumber(length_value) or try vm.length(engine, keys) != length + 1) return throwType(engine, "Value must contain strict JSON dense plain arrays");
         const constructor = try builtin(engine, "Array");
-        defer engine.freeValue(constructor);
+        defer engine.releaseNativeValue(constructor);
         var arguments = [_]c.JSValue{length_value};
-        const result = try engine.checked(c.JS_CallConstructor(engine.context, constructor, arguments.len, &arguments));
-        errdefer engine.freeValue(result);
+        const result = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_CallConstructor(engine.context, constructor, arguments.len, &arguments); });
+        errdefer engine.releaseNativeValue(result);
         var index: u32 = 0;
         while (index < try vm.length(engine, value)) : (index += 1) {
             const key = c.pi_js_int32(engine.context, @bitCast(index));
             const desc = try descriptor(engine, value, key);
-            defer engine.freeValue(desc);
+            defer engine.releaseNativeValue(desc);
             if (!try validDescriptor(engine, desc)) return throwType(engine, "Value must contain strict JSON enumerable indexed data properties");
             const child = try vm.get(engine, desc, "value");
-            defer engine.freeValue(child);
+            defer engine.releaseNativeValue(child);
             const string = try builtin(engine, "String");
-            defer engine.freeValue(string);
+            defer engine.releaseNativeValue(string);
             var key_arguments = [_]c.JSValue{key};
-            const name = try engine.checked(c.JS_Call(engine.context, string, c.pi_js_undefined(), key_arguments.len, &key_arguments));
-            defer engine.freeValue(name);
+            const name = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_Call(engine.context, string, c.pi_js_undefined(), key_arguments.len, &key_arguments); });
+            defer engine.releaseNativeValue(name);
             try defineData(engine, shared_descriptor, result, name, try copyValue(engine, shared_descriptor, child, active, omit));
         }
         return result;
     }
     const result = try invokeBuiltin(engine, "Object", "create", &.{actual_prototype});
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     for (0..try vm.length(engine, keys)) |index| {
-        const key = try engine.checked(c.JS_GetPropertyUint32(engine.context, keys, @intCast(index)));
-        defer engine.freeValue(key);
+        const key = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, keys, @intCast(index)); });
+        defer engine.releaseNativeValue(key);
         if (c.JS_IsSymbol(key)) return throwType(engine, "Value contains a symbol key and is not strict JSON");
         const desc = try descriptor(engine, value, key);
-        defer engine.freeValue(desc);
+        defer engine.releaseNativeValue(desc);
         if (!try validDescriptor(engine, desc)) return throwType(engine, "Value must contain strict JSON enumerable data properties");
         const child = try vm.get(engine, desc, "value");
-        defer engine.freeValue(child);
+        defer engine.releaseNativeValue(child);
         if (omit and c.JS_IsUndefined(child)) continue;
         try defineData(engine, shared_descriptor, result, key, try copyValue(engine, shared_descriptor, child, active, omit));
     }
@@ -176,7 +176,7 @@ fn copyBody(engine: *Engine, shared_descriptor: c.JSValue, value: c.JSValue, act
 }
 pub fn check(engine: *Engine, value: c.JSValue) !bool {
     const active = try newSet(engine);
-    defer engine.freeValue(active);
+    defer engine.releaseNativeValue(active);
     return checkValue(engine, value, active);
 }
 fn checkValue(engine: *Engine, value: c.JSValue, active: c.JSValue) anyerror!bool {
@@ -185,23 +185,24 @@ fn checkValue(engine: *Engine, value: c.JSValue, active: c.JSValue) anyerror!boo
     if (!isObject(engine, value)) return false;
     const array = try isArray(engine, value);
     const actual_prototype = try invokeBuiltin(engine, "Object", "getPrototypeOf", &.{value});
-    defer engine.freeValue(actual_prototype);
+    defer engine.releaseNativeValue(actual_prototype);
     const expected_prototype = try prototype(engine, if (array) "Array" else "Object");
-    defer engine.freeValue(expected_prototype);
+    defer engine.releaseNativeValue(expected_prototype);
     if (!c.JS_IsStrictEqual(engine.context, actual_prototype, expected_prototype) and (array or !c.JS_IsNull(actual_prototype))) return false;
     const keys = try ownKeys(engine, value);
-    defer engine.freeValue(keys);
+    defer engine.releaseNativeValue(keys);
     if (array and try vm.length(engine, keys) != try vm.length(engine, value) + 1) return false;
     for (0..try vm.length(engine, keys)) |index| {
-        const key = try engine.checked(c.JS_GetPropertyUint32(engine.context, keys, @intCast(index)));
-        defer engine.freeValue(key);
+        const key = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, keys, @intCast(index)); });
+        defer engine.releaseNativeValue(key);
         if (c.JS_IsSymbol(key)) return false;
     }
     if (try contains(engine, active, value)) return false;
     try mark(engine, active, value);
     const result = checkBody(engine, value, active, array) catch |err| {
+        if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
         const original = if (engine.captured_exception) |exception| c.JS_DupValue(engine.context, exception) else null;
-        defer if (original) |exception| engine.freeValue(exception);
+        defer if (original) |exception| engine.releaseNativeValue(exception);
         try unmark(engine, active, value);
         restoreFailure(engine, original);
         return err;
@@ -214,35 +215,41 @@ fn checkBody(engine: *Engine, value: c.JSValue, active: c.JSValue, array: bool) 
         var index: u32 = 0;
         while (index < try vm.length(engine, value)) : (index += 1) {
             const desc = try descriptor(engine, value, c.pi_js_int32(engine.context, @bitCast(index)));
-            defer engine.freeValue(desc);
+            defer engine.releaseNativeValue(desc);
             if (!try validDescriptor(engine, desc)) return false;
             const child = try vm.get(engine, desc, "value");
-            defer engine.freeValue(child);
+            defer engine.releaseNativeValue(child);
             if (!try checkValue(engine, child, active)) return false;
         }
         return true;
     }
     const descriptors = try invokeBuiltin(engine, "Object", "getOwnPropertyDescriptors", &.{value});
-    defer engine.freeValue(descriptors);
+    defer engine.releaseNativeValue(descriptors);
     const values = try invokeBuiltin(engine, "Object", "values", &.{descriptors});
-    defer engine.freeValue(values);
+    defer engine.releaseNativeValue(values);
     for (0..try vm.length(engine, values)) |index| {
-        const desc = try engine.checked(c.JS_GetPropertyUint32(engine.context, values, @intCast(index)));
-        defer engine.freeValue(desc);
+        const desc = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, values, @intCast(index)); });
+        defer engine.releaseNativeValue(desc);
         if (!try validDescriptor(engine, desc)) return false;
         const child = try vm.get(engine, desc, "value");
-        defer engine.freeValue(child);
+        defer engine.releaseNativeValue(child);
         if (!try checkValue(engine, child, active)) return false;
     }
     return true;
 }
-fn call(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn call(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callPendingBody(context, pending_arg1, argc, argv, operation, data));
+}
+fn callPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
     const value = if (argc > 0) argv[0] else c.pi_js_undefined();
     return (if (operation == 0) copy(engine, data[0], value, if (argc > 1) argv[1] else c.pi_js_undefined()) else checkJs(engine, value)) catch |err| {
-        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
         return engine.throwCaptured();
     };
 }
@@ -253,11 +260,11 @@ fn checkJs(engine: *Engine, value: c.JSValue) !c.JSValue {
 pub fn functions(engine: *Engine) !c.JSValue {
     if (engine.native_chord_json_functions) |value| return c.JS_DupValue(engine.context, value);
     const shared_descriptor = try vm.object(engine);
-    defer engine.freeValue(shared_descriptor);
+    defer engine.releaseNativeValue(shared_descriptor);
     try putData(engine, shared_descriptor, "value", c.pi_js_undefined());
     inline for (.{ "writable", "enumerable", "configurable" }) |key| try putData(engine, shared_descriptor, key, c.pi_js_bool(engine.context, 1));
     const result = try vm.object(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     var data = [_]c.JSValue{shared_descriptor};
     inline for (.{ "copyJson", "isJsonValue" }, 0..) |name, operation| try putData(engine, result, name, try engine.checked(c.JS_NewCFunctionData2(engine.context, call, name, if (operation == 0) 2 else 1, @intCast(operation), data.len, &data)));
     engine.native_chord_json_functions = c.JS_DupValue(engine.context, result);
@@ -267,7 +274,7 @@ pub fn functions(engine: *Engine) !c.JSValue {
 /// The real strict JSON helpers for native durable workflows; owned result.
 pub fn copyJson(engine: *Engine, value: c.JSValue, options: c.JSValue) !c.JSValue {
     const exports = try functions(engine);
-    defer engine.freeValue(exports);
+    defer engine.releaseNativeValue(exports);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
     return vm.invoke(engine, exports, "copyJson", &.{ value, options });
@@ -279,7 +286,7 @@ pub fn isJsonValue(engine: *Engine, value: c.JSValue) !bool {
 }
 pub fn install(engine: *Engine, exports: c.JSValue) !void {
     const json = try functions(engine);
-    defer engine.freeValue(json);
+    defer engine.releaseNativeValue(json);
     inline for (.{ "copyJson", "isJsonValue" }) |name| try putData(engine, exports, name, try vm.get(engine, json, name));
 }
 

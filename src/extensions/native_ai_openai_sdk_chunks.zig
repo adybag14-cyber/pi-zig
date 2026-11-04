@@ -88,7 +88,7 @@ fn advance(engine: *v.em.Engine, owner: c.JSValue, completion: gen.Completion, i
     if (completion == .rejected) return if (try phase(&scope, owner) == 1) .{ .thrown = c.JS_DupValue(engine.context, input) } else record.close(&scope, owner, input, true);
     return step(engine, owner, completion, input) catch |err| {
         if (err != error.JavaScriptException) return err;
-        const reason = flow.reason(engine, err);
+        const reason = try flow.reason(engine, err);
         defer engine.freeValue(reason);
         if (engine.captured_exception) |captured| {
             engine.captured_exception = null;

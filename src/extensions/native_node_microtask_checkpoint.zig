@@ -128,18 +128,19 @@ pub const Queue = struct {
             self.callbacks_cow = null;
         }
     }
-    fn acknowledgeCancelledUnwind(engine: *em.Engine) void {
+    fn acknowledgeCancelledUnwind(engine: *em.Engine, entry_observed: bool) void {
         // Only the genuine stopped TryRunMicrotasks boundary acknowledges a
         // cancelled native unwind. An active published event must stay visible.
         if (c.JS_PiIsExecutionTerminating(engine.runtime) or
             !c.JS_HasException(engine.context)) return;
-        const reason = c.JS_GetException(engine.context);
+        var generic_fatal: bool = false;
+        const reason = c.JS_PiGetExceptionWithFatal(engine.context, &generic_fatal);
         if (c.JS_PiIsExecutionTermination(reason)) {
-            c.JS_FreeValueRT(engine.runtime, reason);
+            engine.acknowledgeCancelledMicrotaskUnwind(reason, entry_observed);
         } else {
             // A later ordinary/generic event is an actual surviving owner.
             // Republish immediately, with no allocation or callback in between.
-            _ = c.JS_Throw(engine.context, reason);
+            _ = c.JS_PiThrowNativePending(engine.context, reason, generic_fatal);
         }
     }
     fn runMicrotasks(self: *Queue, engine: *em.Engine) !isize {
@@ -154,6 +155,9 @@ pub const Queue = struct {
             self.onCompleted(engine);
             return 0;
         }
+        // Only a real canceled job may restore this entry history. Older
+        // outer unwind remains; later cleanup/completion events record anew.
+        const entry_observed = engine.nativeTerminationObserved();
         const outer = c.JS_PiGetContinuationPreservedEmbedderData(engine.runtime);
         c.JS_PiSetContinuationPreservedEmbedderData(engine.runtime, c.pi_js_undefined());
         var processed: isize = 0;
@@ -176,10 +180,10 @@ pub const Queue = struct {
                 // Inspect the PROVEN actual pending event, then immediately
                 // republish the same owner into the empty runtime slot. There
                 // is no allocation, free, guest entry or callback between.
-                const reason = c.JS_GetException(active_context);
+                var fatal: bool = false;
+                const reason = c.JS_PiGetExceptionWithFatal(active_context, &fatal);
                 const private = c.JS_PiIsExecutionTermination(reason);
-                const fatal = c.JS_IsUncatchableError(reason);
-                _ = c.JS_Throw(active_context, reason);
+                _ = c.JS_PiThrowNativePending(active_context, reason, fatal);
                 if (private) {
                     native_unwind = true;
                     break;
@@ -192,6 +196,7 @@ pub const Queue = struct {
                 }
                 processed += 1;
                 self.operations.report_message_from_microtask(engine, active_context) catch |err| {
+                    if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
                     failed = err;
                     break;
                 };
@@ -208,7 +213,7 @@ pub const Queue = struct {
             std.debug.assert(status == 1);
             processed += 1;
         }
-        if (native_unwind) acknowledgeCancelledUnwind(engine);
+        if (native_unwind) acknowledgeCancelledUnwind(engine, entry_observed);
         // Source restores the caller's continuation BEFORE queue termination
         // cleanup, deferred native Promise AFTER, or completion callbacks.
         c.JS_PiSetContinuationPreservedEmbedderData(engine.runtime, outer);
@@ -219,7 +224,7 @@ pub const Queue = struct {
             // Finish0 after a real Cancel retires only held aborted-job owners.
             // It neither clears the live queue nor invents a deferred AFTER.
         }
-        if (native_unwind or terminated) acknowledgeCancelledUnwind(engine);
+        if (native_unwind or terminated) acknowledgeCancelledUnwind(engine, entry_observed);
         self.onCompleted(engine);
         if (failed) |err| return err;
         return if (terminated) -1 else processed;
@@ -246,9 +251,15 @@ pub const Queue = struct {
         // actual owners here: an empty successful checkpoint must not poll a
         // request-only termination through a fresh generic entry boundary.
         const result = engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());
+        if (invocation.terminated) return error.ExecutionTerminated;
         if (c.JS_IsException(result)) {
-            _ = try engine.checked(result);
-            unreachable;
+            // The last stable owner is gone. Leave the actual value/class pair
+            // published; checked() would convert a primitive fatal into DATA.
+            if (outcome) |_| {} else |err| {
+                if (err == error.ExecutionTerminated or err == error.OutOfMemory)
+                    return err;
+            }
+            return error.JavaScriptException;
         }
         engine.freeValue(result);
         try outcome;
@@ -276,3 +287,116 @@ pub const Queue = struct {
         c.pi_js_release_memory_owner(memory_owner);
     }
 };
+
+
+test "native microtask checkpoint final pop preserves actual primitive fatal policy" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const Observer = struct {
+        calls: usize = 0,
+        observed_pending: bool = false,
+        observed_uncatchable: bool = false,
+        fn report(_: *em.Engine, _: ?*c.JSContext) anyerror!void {
+            return error.UnexpectedEmptyCheckpointReport;
+        }
+        fn completed(host: *em.Engine, raw: ?*anyopaque) void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.calls += 1;
+            self.observed_pending = c.JS_HasException(host.context);
+            self.observed_uncatchable = c.JS_PiIsPendingUncatchable(host.context);
+        }
+    };
+    const queue = try Queue.create(engine, .{ .report_message_from_microtask = Observer.report });
+    defer queue.destroy();
+    defer queue.close() catch unreachable;
+    var observer: Observer = .{};
+    try queue.addCompletedCallback(.{ .run = Observer.completed, .data = &observer });
+    try std.testing.expect(!c.JS_IsJobPending(engine.runtime));
+
+    c.JS_SetMemoryLimit(engine.runtime, 1);
+    const allocation_result = c.JS_NewObject(engine.context);
+    c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
+    defer engine.freeValue(allocation_result);
+    try std.testing.expect(c.JS_IsException(allocation_result));
+    try std.testing.expectError(error.JavaScriptException, queue.performCheckpoint());
+    try std.testing.expect(engine.native_fatal_invocation == null);
+    try std.testing.expectEqual(@as(usize, 1), observer.calls);
+    try std.testing.expect(observer.observed_pending and observer.observed_uncatchable);
+    try std.testing.expect(c.JS_HasException(engine.context));
+    var generic_fatal: bool = false;
+    const fatal = c.JS_PiGetExceptionWithFatal(engine.context, &generic_fatal);
+    defer engine.freeValue(fatal);
+    try std.testing.expect(generic_fatal and c.JS_IsNull(fatal));
+    try std.testing.expect(!c.JS_IsUncatchableError(fatal));
+
+    // Identical primitive DATA with ordinary source provenance stays ordinary.
+    // Empty checkpoints still invoke their native completed callback vector.
+    observer = .{};
+    _ = c.JS_PiThrowExceptionData(engine.context, c.pi_js_null());
+    try std.testing.expectError(error.JavaScriptException, queue.performCheckpoint());
+    try std.testing.expect(engine.native_fatal_invocation == null);
+    try std.testing.expectEqual(@as(usize, 1), observer.calls);
+    try std.testing.expect(observer.observed_pending and !observer.observed_uncatchable);
+    try std.testing.expect(c.JS_HasException(engine.context));
+    generic_fatal = true;
+    const ordinary = c.JS_PiGetExceptionWithFatal(engine.context, &generic_fatal);
+    defer engine.freeValue(ordinary);
+    try std.testing.expect(!generic_fatal and c.JS_IsNull(ordinary));
+}
+
+test "native microtask canceled job acknowledgement preserves earlier owner history" {
+    const Owner = @import("native_pending_owner.zig");
+    const Helpers = struct {
+        fn report(_: *em.Engine, _: ?*c.JSContext) anyerror!void {
+            return error.UnexpectedCancelledJobReport;
+        }
+        fn cancelledJob(context: ?*c.JSContext, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const host = em.Engine.fromContext(context.?);
+            c.JS_PiRequestExecutionTermination(host.runtime);
+            if (c.JS_PiCheckExecutionTermination(host.context) >= 0)
+                return c.JS_ThrowInternalError(host.context, "Missing actual private job event");
+            _ = host.nativeCallbackResult(c.pi_js_exception());
+            var generic_fatal: bool = false;
+            const reason = c.JS_PiGetExceptionWithFatal(host.context, &generic_fatal);
+            if (!c.JS_PiIsExecutionTermination(reason) or generic_fatal) {
+                host.releaseNativeValue(reason);
+                return c.JS_ThrowInternalError(host.context, "Invalid actual private job event");
+            }
+            // Cancel the same published event while retaining its genuine
+            // owned token for the stopped-job acknowledgement boundary.
+            _ = c.JS_PiThrowNativePending(host.context, c.JS_DupValue(host.context, reason), false);
+            c.JS_PiCancelExecutionTermination(host.runtime);
+            return c.JS_PiThrowNativePending(host.context, reason, false);
+        }
+    };
+    for ([_]bool{ false, true }) |prior_history| {
+        const engine = try em.Engine.init(std.testing.allocator, .{});
+        defer engine.deinit();
+        const queue = try Queue.create(engine, .{ .report_message_from_microtask = Helpers.report });
+        defer {
+            queue.close() catch unreachable;
+            queue.destroy();
+        }
+        var outer = Owner.Frame.init(engine);
+        try outer.enter();
+        defer if (outer.invocation.active) { _ = outer.finishCallback(c.pi_js_undefined()); };
+        if (prior_history) {
+            c.JS_PiRequestExecutionTermination(engine.runtime);
+            try std.testing.expect(c.JS_PiCheckExecutionTermination(engine.context) < 0);
+            _ = engine.nativeCallbackResult(c.pi_js_exception());
+            c.JS_PiCancelExecutionTermination(engine.runtime);
+            try std.testing.expect(engine.nativeTerminationObserved());
+            try std.testing.expect(!c.JS_HasException(engine.context));
+        }
+        try std.testing.expectEqual(@as(c_int, 0), c.JS_EnqueueJob(engine.context, Helpers.cancelledJob, 0, null));
+        const outcome = queue.performCheckpoint();
+        try std.testing.expectEqual(prior_history, engine.nativeTerminationObserved());
+        try std.testing.expect(!c.JS_HasException(engine.context));
+        try std.testing.expect(!c.JS_PiIsExecutionTerminating(engine.runtime));
+        const completed = outer.finishVoid(outcome);
+        if (prior_history) try std.testing.expectError(error.ExecutionTerminated, completed)
+        else try completed;
+        try std.testing.expect(engine.native_fatal_invocation == null);
+        try std.testing.expect(!engine.nativeTerminationObserved());
+    }
+}

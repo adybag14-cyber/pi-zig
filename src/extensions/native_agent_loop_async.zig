@@ -153,7 +153,7 @@ fn nextMessage(s: *p.Scope, owner: c.JSValue) !Step {
     })) {
         _ = c.JS_ThrowInternalError(s.engine.context, "interrupted");
         const reason = c.JS_GetException(s.engine.context); c.JS_SetUncatchableError(s.engine.context, reason);
-        _ = try s.engine.checked(c.JS_Throw(s.engine.context, reason)); unreachable;
+        _ = try s.engine.checked(c.JS_PiThrowNativePending(s.engine.context, reason, true)); unreachable;
     }
     try s.put(owner, "steps", try s.own(try s.engine.checked(c.JS_NewBigUint64(s.engine.context, steps))));
     const iterator = try s.get(owner, "iterator");

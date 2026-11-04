@@ -12,9 +12,10 @@ fn initializationValue(engine: *v.em.Engine, owned: c.JSValue) !c.JSValue {
     if (c.JS_HasException(engine.context)) {
         // Capture the actual pending event BEFORE releasing guest success.
         // No input flag/name or historical diagnostic slot is classified.
-        const pending_reason = c.JS_GetException(engine.context);
+        var generic_fatal: bool = false;
+        const pending_reason = c.JS_PiGetExceptionWithFatal(engine.context, &generic_fatal);
         engine.freeValue(owned);
-        return engine.checked(c.JS_Throw(engine.context, pending_reason));
+        return engine.checked(c.JS_PiThrowNativePending(engine.context, pending_reason, generic_fatal));
     }
     return owned;
 }

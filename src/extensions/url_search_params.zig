@@ -3,6 +3,7 @@ const std = @import("std");
 const engine_mod = @import("engine.zig");
 const binary = @import("binary_encoding.zig");
 const c = engine_mod.c;
+const pending_owner = @import("native_pending_owner.zig");
 pub const Pair = struct { name: []u8, value: []u8 };
 pub const Association = struct {
     owner: c.JSValue,
@@ -119,7 +120,8 @@ pub fn stateFor(engine: *engine_mod.Engine, value: c.JSValue) !*State {
 }
 fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     if (err == error.SearchParamsLimit) return c.JS_ThrowRangeError(engine.context, "URLSearchParams entry limit");
     return c.JS_ThrowTypeError(engine.context, "Native URLSearchParams: %s", @as([*:0]const u8, @errorName(err)));
 }
@@ -153,19 +155,49 @@ fn symbolProperty(engine: *engine_mod.Engine, object: c.JSValue, symbol: c.JSVal
     defer c.JS_FreeAtom(engine.context, atom);
     return engine.checked(c.JS_GetProperty(engine.context, object, atom));
 }
+fn discardOrdinaryCloseException(engine: *engine_mod.Engine) void {
+    _ = engine.nativeCallbackResult(c.pi_js_undefined());
+    if (!engine.nativeTerminationObserved() and c.JS_HasException(engine.context) and
+        !c.JS_PiIsPendingUncatchable(engine.context))
+        engine.releaseNativeValue(c.JS_GetException(engine.context));
+}
 fn iteratorClose(engine: *engine_mod.Engine, iterator: c.JSValue, err: anyerror) void {
-    const primary: ?c.JSValue = if (err == error.JavaScriptException) if (c.JS_HasException(engine.context)) c.JS_GetException(engine.context) else if (engine.captured_exception) |value| c.JS_DupValue(engine.context, value) else null else null;
-    const method = c.JS_GetPropertyStr(engine.context, iterator, "return");
-    if (c.JS_IsException(method)) {
-        engine.freeValue(c.JS_GetException(engine.context));
-    } else {
-        defer engine.freeValue(method);
-        if (c.JS_IsFunction(engine.context, method)) {
-            const result = c.JS_Call(engine.context, method, iterator, 0, null);
-            if (c.JS_IsException(result)) engine.freeValue(c.JS_GetException(engine.context)) else engine.freeValue(result);
+    var frame = pending_owner.Frame.init(engine);
+    // This is already unwinding. Enter ownership without skipping mandatory
+    // native retirement; the actual guard below skips only guest return().
+    engine.enterNativeInvocation(&frame.invocation);
+    defer _ = frame.finishCallback(c.pi_js_undefined());
+    pending_owner.catchFailure(engine, err) catch return;
+    var generic_fatal: bool = false;
+    const actual_pending = c.JS_HasException(engine.context);
+    const primary: ?c.JSValue = if (actual_pending)
+        c.JS_PiGetExceptionWithFatal(engine.context, &generic_fatal)
+        else if (err == error.JavaScriptException and engine.captured_exception != null)
+            c.JS_DupValue(engine.context, engine.captured_exception.?)
+        else null;
+    defer if (primary) |value| {
+        // Actual private history invalidates this saved ordinary precedence;
+        // its surviving cleanup reason remains the actual owned completion.
+        if (frame.terminated() and (!actual_pending or
+            (!generic_fatal and !c.JS_PiIsExecutionTermination(value)))) {
+            engine.releaseNativeValue(value);
+        } else {
+            _ = if (actual_pending) c.JS_PiThrowNativePending(engine.context, value, generic_fatal)
+                else c.JS_PiThrowExceptionData(engine.context, value);
         }
+    };
+    const method = c.JS_GetPropertyStr(engine.context, iterator, "return");
+    defer engine.releaseNativeValue(method);
+    if (c.JS_IsException(method)) {
+        discardOrdinaryCloseException(engine);
+        return;
     }
-    if (primary) |value| _ = c.JS_Throw(engine.context, value);
+    pending_owner.checkFatal(engine) catch return;
+    if (c.JS_IsFunction(engine.context, method)) {
+        const result = c.JS_Call(engine.context, method, iterator, 0, null);
+        engine.releaseNativeValue(result);
+        discardOrdinaryCloseException(engine);
+    }
 }
 const Accept = *const fn (*engine_mod.Engine, *anyopaque, c.JSValue) anyerror!void;
 fn iterate(engine: *engine_mod.Engine, source: c.JSValue, method: c.JSValue, accept: Accept, context: *anyopaque) !void {
@@ -306,6 +338,12 @@ pub fn replacePairs(state: *State, pairs: *std.ArrayList(Pair)) void {
 }
 fn construct(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
+    var frame = pending_owner.Frame.init(engine);
+    frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+    return frame.finishCallback(constructOwned(context, function, target, argc, argv, flags));
+}
+fn constructOwned(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
     if (flags & c.JS_CALL_FLAG_CONSTRUCTOR == 0) return c.JS_ThrowTypeError(context, "URLSearchParams requires new");
     const constructor: *Constructor = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)).?));
     return constructValue(engine, constructor, target, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| fail(engine, err);
@@ -404,7 +442,11 @@ fn mutate(state: *State, method: Method, name: ?[]const u8, value: ?[]const u8) 
 }
 fn methodCall(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    return methodValue(engine, this, @enumFromInt(magic), if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
+    var frame = pending_owner.Frame.init(engine);
+    frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+    const result = methodValue(engine, this, @enumFromInt(magic), if (argc == 0) &.{} else argv[0..@intCast(argc)])
+        catch |err| fail(engine, err);
+    return frame.finishCallback(result);
 }
 fn methodValue(engine: *engine_mod.Engine, this: c.JSValue, method: Method, args: []c.JSValue) !c.JSValue {
     const state = try stateFor(engine, this);
@@ -491,7 +533,10 @@ fn createIterator(engine: *engine_mod.Engine, params: c.JSValue, kind: c_int) !c
 }
 fn iteratorNext(context: ?*c.JSContext, this: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    return iteratorNextValue(engine, this) catch |err| fail(engine, err);
+    var frame = pending_owner.Frame.init(engine);
+    frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+    const result = iteratorNextValue(engine, this) catch |err| fail(engine, err);
+    return frame.finishCallback(result);
 }
 fn iteratorNextValue(engine: *engine_mod.Engine, this: c.JSValue) !c.JSValue {
     const iterator: *Iterator = @ptrCast(@alignCast(c.JS_GetOpaque(this, engine.url_search_params_iterator_class) orelse return error.IllegalSearchParamsIterator));

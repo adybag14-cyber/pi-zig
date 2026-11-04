@@ -82,7 +82,7 @@ fn internal(scope: *Scope, owner: c.JSValue, value: c.JSValue) !*State {
 }
 fn replace(engine: *em.Engine, old: *c.JSValue, next: c.JSValue) void {
     const owned = c.JS_DupValue(engine.context, next);
-    engine.freeValue(old.*);
+    engine.releaseNativeValue(old.*);
     old.* = owned;
 }
 fn ownBody(engine: *em.Engine, input: body.Body) body.Body {
@@ -147,17 +147,17 @@ fn buildAbort(scope: *Scope, owner: c.JSValue, weak: c.JSValue) !c.JSValue {
 }
 fn signalFor(scope: *Scope, owner: c.JSValue, request: c.JSValue, parent: c.JSValue, cloned: bool) !c.JSValue {
     const root = rootOf(owner);
-    const ac = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, root.controller_constructor, 0, null)));
+    const ac = try scope.own(try scope.engine.checked(native_guest_2: { try scope.engine.checkNativeEntry(); break :native_guest_2 c.JS_CallConstructor(scope.engine.context, root.controller_constructor, 0, null); }));
     const signal = try scope.get(ac, "signal");
     if (!c.JS_IsNull(parent) and !c.JS_IsUndefined(parent)) {
         if (scope.truthy(try scope.get(parent, "aborted"))) _ = try scope.invoke(ac, "abort", &.{try scope.get(parent, "reason")}) else {
             var args = [_]c.JSValue{ac};
-            const weak = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.global("WeakRef"), 1, &args)));
+            const weak = try scope.own(try scope.engine.checked(native_guest_1: { try scope.engine.checkNativeEntry(); break :native_guest_1 c.JS_CallConstructor(scope.engine.context, try scope.global("WeakRef"), 1, &args); }));
             const callback = try buildAbort(scope, owner, weak);
             if (cloned) {
                 var list = try scope.invoke(root.dependent_controllers, "get", &.{parent});
                 if (c.JS_IsUndefined(list)) {
-                    list = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.global("Set"), 0, null)));
+                    list = try scope.own(try scope.engine.checked(native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(scope.engine.context, try scope.global("Set"), 0, null); }));
                     _ = try scope.invoke(root.dependent_controllers, "set", &.{ parent, list });
                 }
                 _ = try scope.invoke(list, "add", &.{weak});
@@ -178,7 +178,7 @@ fn signalFor(scope: *Scope, owner: c.JSValue, request: c.JSValue, parent: c.JSVa
 }
 fn cloneSignal(scope: *Scope, owner: c.JSValue, receiver: c.JSValue) !c.JSValue {
     const root = rootOf(owner);
-    const ac = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, root.controller_constructor, 0, null)));
+    const ac = try scope.own(try scope.engine.checked(native_guest_2: { try scope.engine.checkNativeEntry(); break :native_guest_2 c.JS_CallConstructor(scope.engine.context, root.controller_constructor, 0, null); }));
     // Source reads this.signal afresh after allocating the controller, including
     // repeated reads for reason and WeakMap key when a guest shadows the getter.
     if (scope.truthy(try scope.get(try scope.get(receiver, "signal"), "aborted"))) {
@@ -186,11 +186,11 @@ fn cloneSignal(scope: *Scope, owner: c.JSValue, receiver: c.JSValue) !c.JSValue 
     } else {
         var list = try scope.invoke(root.dependent_controllers, "get", &.{try scope.get(receiver, "signal")});
         if (c.JS_IsUndefined(list)) {
-            list = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.global("Set"), 0, null)));
+            list = try scope.own(try scope.engine.checked(native_guest_1: { try scope.engine.checkNativeEntry(); break :native_guest_1 c.JS_CallConstructor(scope.engine.context, try scope.global("Set"), 0, null); }));
             _ = try scope.invoke(root.dependent_controllers, "set", &.{ try scope.get(receiver, "signal"), list });
         }
         var args = [_]c.JSValue{ac};
-        const weak = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.global("WeakRef"), 1, &args)));
+        const weak = try scope.own(try scope.engine.checked(native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(scope.engine.context, try scope.global("WeakRef"), 1, &args); }));
         _ = try scope.invoke(list, "add", &.{weak});
         _ = try scope.invoke(try scope.get(ac, "signal"), "addEventListener", &.{ try scope.text("abort"), try buildAbort(scope, owner, weak) });
     }
@@ -198,14 +198,14 @@ fn cloneSignal(scope: *Scope, owner: c.JSValue, receiver: c.JSValue) !c.JSValue 
 }
 fn parseUrl(scope: *Scope, owner: c.JSValue, value: c.JSValue, referrer: bool) !c.JSValue {
     var args = [_]c.JSValue{value};
-    return scope.own(scope.engine.checked(c.JS_CallConstructor(scope.engine.context, rootOf(owner).url_constructor, 1, &args)) catch |err| {
+    return scope.own(scope.engine.checked(native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(scope.engine.context, rootOf(owner).url_constructor, 1, &args); }) catch |err| {
         if (err != error.JavaScriptException) return err;
         const cause = try scope.own(c.JS_DupValue(scope.engine.context, scope.engine.captured_exception orelse return err));
         const options = try scope.object();
         try scope.set(options, "cause", cause);
         const message = if (referrer) try scope.concat(try scope.concat(try scope.text("Referrer \""), value), try scope.text("\" is not a valid URL.")) else try scope.concat(try scope.text("Failed to parse URL from "), value);
         const failure = try scope.own(try js.builtin(scope.engine, "TypeError", &.{ message, options }));
-        _ = try scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, failure)));
+        _ = try scope.engine.checked(c.JS_PiThrowExceptionData(scope.engine.context, c.JS_DupValue(scope.engine.context, failure)));
         unreachable;
     });
 }
@@ -347,10 +347,11 @@ fn consumer(kind: Kind) bool {
 fn rejected(scope: *Scope, failure: anyerror) !c.JSValue {
     if (failure != error.JavaScriptException) return failure;
     _ = scope.engine.throwCaptured();
+    try @import("native_pending_owner.zig").checkFatal(scope.engine);
     const reason = try scope.own(c.JS_GetException(scope.engine.context));
     var caps: [2]c.JSValue = undefined;
     const promise = try scope.own(try scope.engine.checked(c.JS_NewPromiseCapability(scope.engine.context, &caps)));
-    defer for (caps) |cap| scope.engine.freeValue(cap);
+    defer for (caps) |cap| scope.engine.releaseNativeValue(cap);
     _ = try scope.call(caps[1], c.pi_js_undefined(), &.{reason});
     return promise;
 }
@@ -385,12 +386,18 @@ fn inspect(scope: *Scope, receiver: c.JSValue, args: []const c.JSValue) !c.JSVal
     inline for (.{ "method", "url", "headers", "destination", "referrer", "referrerPolicy", "mode", "credentials", "cache", "redirect", "integrity", "keepalive", "isReloadNavigation", "isHistoryNavigation", "signal" }) |field| try scope.set(properties, field, try scope.get(receiver, field));
     var depth: i32 = 2;
     const configured_depth = try scope.get(options, "depth");
-    if (!c.JS_IsUndefined(configured_depth) and c.JS_ToInt32(scope.engine.context, &depth, configured_depth) < 0) return js.capture(scope.engine);
+    if (!c.JS_IsUndefined(configured_depth) and native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_ToInt32(scope.engine.context, &depth, configured_depth); } < 0) return js.capture(scope.engine);
     const output = try @import("node_event_inspect.zig").inspect(scope.engine, properties, depth);
     defer scope.engine.gpa.free(output);
     return scope.concat(try scope.text("Request "), try scope.text(output));
 }
 fn dispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, raw: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, receiver, argc, argv, raw, captures));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, raw: c_int, captures: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -409,7 +416,7 @@ fn getter(scope: *Scope, owner: c.JSValue, comptime name: [:0]const u8, kind: Ki
     if (c.JS_DefinePropertyGetSet(scope.engine.context, rootOf(owner).prototype, atom, c.JS_DupValue(scope.engine.context, try function(scope, owner, "get " ++ name, kind)), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return js.capture(scope.engine);
 }
 fn identityTransform(engine: *em.Engine, constructor: c.JSValue) anyerror!c.JSValue {
-    return engine.checked(c.JS_CallConstructor(engine.context, constructor, 0, null));
+    return engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(engine.context, constructor, 0, null); });
 }
 pub fn install(engine: *em.Engine) !void {
     if (engine.native_module_values.contains(key)) return;
@@ -419,7 +426,7 @@ pub fn install(engine: *em.Engine) !void {
     try @import("native_transform_stream.zig").install(engine);
     const transform_constructor = try scope.global("TransformStream");
     const owner = try scope.own(try engine.checked(c.JS_NewObjectClass(engine.context, try classId(engine, "Native Request Owner", freeRoot, markRoot))));
-    const root = try engine.gpa.create(Root);
+    const root = (engine.gpa.create(Root) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     root.* = .{ .engine = engine, .constructor = c.pi_js_undefined(), .prototype = c.pi_js_undefined(), .url_constructor = c.pi_js_undefined(), .controller_constructor = c.pi_js_undefined(), .registry = c.pi_js_undefined(), .dependent_controllers = c.pi_js_undefined(), .abort_symbol = c.pi_js_undefined(), .interfaces = interfaces };
     inline for (std.meta.fields(idl.Interfaces)) |field| @field(root.interfaces, field.name) = c.JS_DupValue(engine.context, @field(interfaces, field.name));
     _ = c.JS_SetOpaque(owner, root);
@@ -428,11 +435,11 @@ pub fn install(engine: *em.Engine) !void {
     root.prototype = try js.object(engine);
     root.url_constructor = try js.global(engine, "URL");
     root.controller_constructor = try js.global(engine, "AbortController");
-    root.dependent_controllers = try engine.checked(c.JS_CallConstructor(engine.context, try scope.global("WeakMap"), 0, null));
+    root.dependent_controllers = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_CallConstructor(engine.context, try scope.global("WeakMap"), 0, null); });
     root.abort_symbol = c.JS_DupValue(engine.context, try scope.call(try scope.global("Symbol"), c.pi_js_undefined(), &.{try scope.text("abortController")}));
     const cleanup = try scope.own(try @import("native_node_function.zig").createArrow(engine, "", 1, registryCleanup, &.{}));
     var registry_args = [_]c.JSValue{cleanup};
-    root.registry = try engine.checked(c.JS_CallConstructor(engine.context, try scope.global("FinalizationRegistry"), 1, &registry_args));
+    root.registry = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(engine.context, try scope.global("FinalizationRegistry"), 1, &registry_args); });
     root.constructor = try @import("native_class.zig").constructor(engine, "_Request", 1, root.prototype, create, &.{owner});
     if (c.JS_DefinePropertyValueStr(engine.context, root.constructor, "name", c.JS_DupValue(engine.context, try scope.text("Request")), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     replace(engine, &root.interfaces.request, root.constructor);
@@ -448,7 +455,7 @@ pub fn install(engine: *em.Engine) !void {
     const tag = try js.atom(engine, try scope.get(try scope.global("Symbol"), "toStringTag"));
     defer c.JS_FreeAtom(engine.context, tag);
     if (c.JS_DefinePropertyValue(engine.context, root.prototype, tag, c.JS_DupValue(engine.context, try scope.text("Request")), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
-    try engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1);
+    (engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     try platform.setRequest(engine, root.constructor);
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
     if (c.JS_DefinePropertyValueStr(engine.context, global, "Request", c.JS_DupValue(engine.context, root.constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
@@ -464,7 +471,7 @@ pub fn bindTransfer(engine: *em.Engine, provider: TransferProvider) !void {
     const owner = engine.native_module_values.get(key) orelse return error.NativeWebRequestUnavailable;
     const root = rootOf(owner);
     const retained = c.JS_DupValue(engine.context, provider.owner);
-    if (root.transfer) |old| engine.freeValue(old.owner);
+    if (root.transfer) |old| engine.releaseNativeValue(old.owner);
     root.transfer = .{ .owner = retained, .create = provider.create };
 }
 /// Internal fetch handoff borrows the actual privately owned Request state.

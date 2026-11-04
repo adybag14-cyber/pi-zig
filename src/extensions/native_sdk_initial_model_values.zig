@@ -40,10 +40,14 @@ pub const Ops = struct {
         const e = o.s.engine;
         _ = e.nativeCallbackResult(c.pi_js_undefined());
         if (c.JS_HasException(e.context)) {
-            const reason = c.JS_GetException(e.context);
+            var generic_fatal: bool = false;
+            const reason = c.JS_PiGetExceptionWithFatal(e.context, &generic_fatal);
             const tag = c.pi_js_native_allocation_error_generation(reason); const distance = tag -% generation;
-            if (tag != 0 and distance != 0 and distance <= e.native_allocation_generation -% generation) c.JS_SetUncatchableError(e.context, reason);
-            _ = c.JS_Throw(e.context, reason);
+            if (tag != 0 and distance != 0 and distance <= e.native_allocation_generation -% generation) {
+                c.JS_SetUncatchableError(e.context, reason);
+                generic_fatal = true;
+            }
+            _ = c.JS_PiThrowNativePending(e.context, reason, generic_fatal);
             var completion = owned.Completion.initValue(e, @as(anyerror!c.JSValue, error.JavaScriptException));
             if (!c.JS_IsException(value)) completion.release(value);
             return o.own(try completion.finishValue());

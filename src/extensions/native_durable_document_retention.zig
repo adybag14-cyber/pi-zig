@@ -46,12 +46,22 @@ fn index(owner: *durable.State) *retention.Index {
 }
 fn milliseconds(owner: *durable.State) !f64 {
     if (owner.creation_owner) |harness| {
-        const state = @import("native_durable_harness.zig").state(owner.engine, harness) catch return retention.default_ms;
+        const state = @import("native_durable_harness.zig").state(owner.engine, harness) catch |err| {
+            try @import("native_pending_owner.zig").catchFailure(owner.engine, err);
+            owner.engine.freeValue(c.JS_GetException(owner.engine.context));
+            try @import("native_pending_owner.zig").checkFatal(owner.engine);
+            return retention.default_ms;
+        };
         return if (state.host_settings) |captured| readCapturedSettings(owner.engine, captured) else readSettings(owner.engine, state.options);
     }
     return owner.cache_policy.plain_ms;
 }
-fn now(owner: *durable.State) f64 {
+fn now(owner: *durable.State) !f64 {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(owner.engine);
+    pending_frame.enter() catch |err| return pending_frame.finishNumber(err);
+    return pending_frame.finishNumber(nowPendingBody(owner));
+}
+fn nowPendingBody(owner: *durable.State) !f64 {
     const engine = owner.engine;
     if (owner.cache_policy.clock) |callback| {
         const value = c.JS_Call(engine.context, callback, c.pi_js_undefined(), 0, null);
@@ -60,7 +70,9 @@ fn now(owner: *durable.State) f64 {
             var number: f64 = 0;
             if (c.JS_ToFloat64(engine.context, &number, value) == 0) return number;
         }
+        try @import("native_pending_owner.zig").checkFatal(engine);
         engine.freeValue(c.JS_GetException(engine.context));
+        try @import("native_pending_owner.zig").checkFatal(engine);
     }
     return @floatFromInt(std.Io.Clock.real.now(owner.session.?.io).toMilliseconds());
 }
@@ -96,7 +108,7 @@ pub fn touch(owner: *durable.State, address: json.Value, record_id: u64) !void {
     if (owner.closing) return;
     const values = index(owner);
     if (values.isPinned(record_id)) return;
-    const stamp = now(owner);
+    const stamp = try now(owner);
     if (values.lastUse(address)) |since| if (stamp - since < @min(1_000, (try milliseconds(owner)) / 10)) return;
     try values.move(address, record_id, stamp);
     if (owner.cache_policy.at == null or owner.cache_policy.at.? > stamp + (try milliseconds(owner))) try schedule(owner);
@@ -124,7 +136,7 @@ pub fn sweepOnLine(owner: *durable.State) !void {
 pub fn sweepReserved(owner: *durable.State) !void {
     if (std.Thread.getCurrentId() != owner.owner_thread or owner.session.?.ownerThread.load(.acquire) == 0) return error.DocumentSweepOutsideReservedLine;
     if (owner.closing) return;
-    const stamp = now(owner);
+    const stamp = try now(owner);
     const duration_ms = try milliseconds(owner);
     const values = index(owner);
     while (values.oldestExpired(stamp, duration_ms)) |oldest| {
@@ -159,7 +171,7 @@ fn schedule(owner: *durable.State) !void {
     const callback = try owner.engine.checked(c.JS_NewCFunctionData(owner.engine.context, ready, 0, 0, data.len, &data));
     defer owner.engine.freeValue(callback);
     owner.cache_policy.at = at;
-    const delay = at - now(owner);
+    const delay = at - (try now(owner));
     if (delay <= 0) {
         const queued = try globalCall(owner.engine, "queueMicrotask", &.{callback});
         owner.engine.freeValue(queued);
@@ -186,7 +198,12 @@ fn schedule(owner: *durable.State) !void {
     owner.engine.freeValue(unreferenced);
     owner.cache_policy.timer = timer;
 }
-fn ready(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn ready(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(readyPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn readyPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     const owner = durable.state(engine, data[0]) catch |err| return durable.reject(engine, err);
     owner.cache_policy.sweeps += 1;
@@ -203,7 +220,12 @@ fn ready(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_
     engine.freeValue(observed);
     return c.pi_js_undefined();
 }
-fn queuedSweep(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn queuedSweep(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(queuedSweepPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn queuedSweepPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     const owner = durable.state(engine, data[0]) catch |err| return durable.reject(engine, err);
     var generation: u32 = 0;
@@ -222,11 +244,14 @@ fn ignore(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.
 
 /// Match typeof value === "number" && value >= 0. In particular, neither
 /// boxed numbers nor arbitrary ToPrimitive methods are consulted.
-pub fn duration(engine: *Engine, value: c.JSValue) f64 {
+pub fn duration(engine: *Engine, value: c.JSValue) !f64 {
+    try @import("native_pending_owner.zig").checkFatal(engine);
     if (!c.JS_IsNumber(value)) return retention.default_ms;
     var number: f64 = 0;
     if (c.JS_ToFloat64(engine.context, &number, value) < 0) {
+        try @import("native_pending_owner.zig").checkFatal(engine);
         engine.freeValue(c.JS_GetException(engine.context));
+        try @import("native_pending_owner.zig").checkFatal(engine);
         return retention.default_ms;
     }
     return retention.duration(number);
@@ -236,26 +261,36 @@ pub fn duration(engine: *Engine, value: c.JSValue) f64 {
 /// Getter failures select the default without entering Engine.checked, which
 /// would replace the operation's captured exception/diagnostic with a cache
 /// bookkeeping failure. Call on the VM owner after capturing any original cause.
-pub fn readSettings(engine: *Engine, options: c.JSValue) f64 {
+pub fn readSettings(engine: *Engine, options: c.JSValue) !f64 {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(engine);
+    pending_frame.enter() catch |err| return pending_frame.finishNumber(err);
+    return pending_frame.finishNumber(readSettingsPendingBody(engine, options));
+}
+fn readSettingsPendingBody(engine: *Engine, options: c.JSValue) !f64 {
     const settings = c.JS_GetPropertyStr(engine.context, options, "settings");
     if (c.JS_IsException(settings)) {
-        engine.freeValue(c.JS_GetException(engine.context));
+        try discardOrdinarySettingFailure(engine);
         return retention.default_ms;
     }
     defer engine.freeValue(settings);
     if (c.JS_IsUndefined(settings) or c.JS_IsNull(settings)) return retention.default_ms;
     const selected = c.JS_GetPropertyStr(engine.context, settings, "documentRetentionMs");
     if (c.JS_IsException(selected)) {
-        engine.freeValue(c.JS_GetException(engine.context));
+        try discardOrdinarySettingFailure(engine);
         return retention.default_ms;
     }
     defer engine.freeValue(selected);
     return duration(engine, selected);
 }
 pub fn readCapturedSettings(engine: *Engine, captured: c.JSValue) !f64 {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(engine);
+    pending_frame.enter() catch |err| return pending_frame.finishNumber(err);
+    return pending_frame.finishNumber(readCapturedSettingsPendingBody(engine, captured));
+}
+fn readCapturedSettingsPendingBody(engine: *Engine, captured: c.JSValue) !f64 {
     // Ordinary bookkeeping failures preserve the operation's captured cause.
     // Trusted fatal reasons are rethrown exactly through the fallible callers.
-    if (engine.captured_exception) |reason| if (c.JS_IsUncatchableError(reason)) return error.JavaScriptException;
+    try @import("native_pending_owner.zig").checkFatal(engine);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
     // A supplier can reenter native callbacks and replace Engine's capture even
@@ -278,33 +313,25 @@ pub fn readCapturedSettings(engine: *Engine, captured: c.JSValue) !f64 {
         }
     }
     errdefer restore_previous = false;
-    const call_generation = engine.native_allocation_generation;
     const settings = if (c.JS_IsFunction(engine.context, captured)) c.JS_Call(engine.context, captured, c.pi_js_undefined(), 0, null) else c.JS_DupValue(engine.context, captured);
     if (c.JS_IsException(settings)) {
-        try discardOrdinarySettingFailure(engine, call_generation);
+        try discardOrdinarySettingFailure(engine);
         return retention.default_ms;
     }
     defer engine.freeValue(settings);
     if (c.JS_IsUndefined(settings) or c.JS_IsNull(settings)) return retention.default_ms;
-    const get_generation = engine.native_allocation_generation;
     const selected = c.JS_GetPropertyStr(engine.context, settings, "documentRetentionMs");
     if (c.JS_IsException(selected)) {
-        try discardOrdinarySettingFailure(engine, get_generation);
+        try discardOrdinarySettingFailure(engine);
         return retention.default_ms;
     }
     defer engine.freeValue(selected);
     return duration(engine, selected);
 }
-fn discardOrdinarySettingFailure(engine: *Engine, generation: u64) !void {
-    const reason = c.JS_GetException(engine.context);
-    defer engine.freeValue(reason);
-    try @import("native_async_body.zig").rethrowRecognizedAllocation(engine, reason, generation);
-    if (c.JS_IsUncatchableError(reason)) {
-        engine.native_exception_diagnostics_suppressed += 1;
-        defer engine.native_exception_diagnostics_suppressed -= 1;
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
-        unreachable;
-    }
+fn discardOrdinarySettingFailure(engine: *Engine) !void {
+    try @import("native_pending_owner.zig").checkFatal(engine);
+    engine.freeValue(c.JS_GetException(engine.context));
+    try @import("native_pending_owner.zig").checkFatal(engine);
 }
 
 test "native document retention reads exact numeric types without coercion" {
@@ -316,7 +343,7 @@ test "native document retention reads exact numeric types without coercion" {
     for (expected, 0..) |want, item_offset| {
         const value = try engine.checked(c.JS_GetPropertyUint32(engine.context, values, @intCast(item_offset)));
         defer engine.freeValue(value);
-        try std.testing.expectEqual(want, duration(engine, value));
+        try std.testing.expectEqual(want, try duration(engine, value));
     }
     const result = try engine.eval("if(coercions!==0)throw Error('retention coerced user value')", "retention-coercions.js", c.JS_EVAL_TYPE_GLOBAL);
     engine.freeValue(result);
@@ -327,12 +354,12 @@ test "native document retention reads current settings and contains getter failu
     defer engine.deinit();
     const options = try engine.eval("globalThis.retentionValues={value:Infinity,reads:0,failOptions:false,failField:false};({get settings(){retentionValues.reads++;if(retentionValues.failOptions)throw {options:true};return {get documentRetentionMs(){if(retentionValues.failField)throw {field:true};return retentionValues.value}}}})", "retention-settings.js", c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(options);
-    try std.testing.expectEqual(std.math.inf(f64), readSettings(engine, options));
+    try std.testing.expectEqual(std.math.inf(f64), try readSettings(engine, options));
     engine.freeValue(try engine.eval("retentionValues.value=0", "retention-change.js", c.JS_EVAL_TYPE_GLOBAL));
-    try std.testing.expectEqual(@as(f64, 0), readSettings(engine, options));
+    try std.testing.expectEqual(@as(f64, 0), try readSettings(engine, options));
     engine.freeValue(try engine.eval("retentionValues.failOptions=true", "retention-options-throw.js", c.JS_EVAL_TYPE_GLOBAL));
-    try std.testing.expectEqual(retention.default_ms, readSettings(engine, options));
+    try std.testing.expectEqual(retention.default_ms, try readSettings(engine, options));
     engine.freeValue(try engine.eval("retentionValues.failOptions=false;retentionValues.failField=true", "retention-field-throw.js", c.JS_EVAL_TYPE_GLOBAL));
-    try std.testing.expectEqual(retention.default_ms, readSettings(engine, options));
+    try std.testing.expectEqual(retention.default_ms, try readSettings(engine, options));
     engine.freeValue(try engine.eval("if(retentionValues.reads!==4)throw Error('settings not read once at each use')", "retention-settings-count.js", c.JS_EVAL_TYPE_GLOBAL));
 }

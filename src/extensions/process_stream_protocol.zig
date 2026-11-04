@@ -14,6 +14,7 @@ pub const Metadata = struct {
     columns: ?u32,
     rows: ?u32,
     has_shift_helper: bool = false,
+    has_modifier_helper: bool = false,
     has_vt_input_helper: bool = false,
 };
 pub const Lease = struct {
@@ -34,6 +35,7 @@ pub const Operation = union(enum) {
     control: Control,
     write: struct { output: Output, base64: []const u8 },
     is_shift_pressed,
+    is_modifier_pressed: []const u8,
     enable_vt_input,
 };
 pub const Request = struct { header: Header, operation: Operation };
@@ -61,7 +63,7 @@ fn optionalDimension(object: *const std.json.ObjectMap, name: []const u8) !?u32 
     return @intCast(item.integer);
 }
 pub fn readMetadata(object: *const std.json.ObjectMap) !Metadata {
-    return .{ .stdin_tty = try boolean(object, "stdinTTY"), .stdin_raw = try boolean(object, "stdinRaw"), .stdout_tty = try boolean(object, "stdoutTTY"), .stderr_tty = try boolean(object, "stderrTTY"), .columns = try optionalDimension(object, "columns"), .rows = try optionalDimension(object, "rows"), .has_shift_helper = if (object.contains("hasShiftHelper")) try boolean(object, "hasShiftHelper") else false, .has_vt_input_helper = if (object.contains("hasVTInputHelper")) try boolean(object, "hasVTInputHelper") else false };
+    return .{ .stdin_tty = try boolean(object, "stdinTTY"), .stdin_raw = try boolean(object, "stdinRaw"), .stdout_tty = try boolean(object, "stdoutTTY"), .stderr_tty = try boolean(object, "stderrTTY"), .columns = try optionalDimension(object, "columns"), .rows = try optionalDimension(object, "rows"), .has_shift_helper = if (object.contains("hasShiftHelper")) try boolean(object, "hasShiftHelper") else false, .has_modifier_helper = if (object.contains("hasModifierHelper")) try boolean(object, "hasModifierHelper") else false, .has_vt_input_helper = if (object.contains("hasVTInputHelper")) try boolean(object, "hasVTInputHelper") else false };
 }
 pub fn readLease(object: *const std.json.ObjectMap) !Lease {
     const incoming = try value(object, "version");
@@ -84,7 +86,11 @@ pub fn readRequest(object: *const std.json.ObjectMap) !Request {
         const encoding = try string(object, "encoding");
         if (encoding.len == 0 or encoding.len > maximum_encoding_bytes) return error.InvalidProcessStreamRecord;
         break :blk .{ .control = .{ .encoding = encoding } };
-    } else if (std.mem.eql(u8, method, "is_shift_pressed")) .is_shift_pressed else if (std.mem.eql(u8, method, "enable_vt_input")) .enable_vt_input else return error.InvalidProcessStreamRecord;
+    } else if (std.mem.eql(u8, method, "is_shift_pressed")) .is_shift_pressed else if (std.mem.eql(u8, method, "is_modifier_pressed")) blk: {
+        const name = try string(object, "name");
+        if (name.len > 15) return error.InvalidProcessStreamRecord;
+        break :blk .{ .is_modifier_pressed = name };
+    } else if (std.mem.eql(u8, method, "enable_vt_input")) .enable_vt_input else return error.InvalidProcessStreamRecord;
     return .{ .header = header, .operation = operation };
 }
 pub fn writeLease(writer: *std.Io.Writer, lease: Lease) !void {
@@ -99,7 +105,7 @@ pub fn writeMetadata(writer: *std.Io.Writer, metadata: Metadata) !void {
     try std.json.Stringify.value(metadata.columns, .{}, writer);
     try writer.writeAll(",\"rows\":");
     try std.json.Stringify.value(metadata.rows, .{}, writer);
-    try writer.print(",\"hasShiftHelper\":{s},\"hasVTInputHelper\":{s}", .{ if (metadata.has_shift_helper) "true" else "false", if (metadata.has_vt_input_helper) "true" else "false" });
+    try writer.print(",\"hasShiftHelper\":{s},\"hasModifierHelper\":{s},\"hasVTInputHelper\":{s}", .{ if (metadata.has_shift_helper) "true" else "false", if (metadata.has_modifier_helper) "true" else "false", if (metadata.has_vt_input_helper) "true" else "false" });
 }
 test "process stream protocol preserves full generation fences raw bytes and nullable pipe metadata" {
     const allocator = std.testing.allocator;

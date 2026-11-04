@@ -378,6 +378,9 @@ struct JSRuntime {
     uintptr_t stack_limit; /* lower stack limit */
 
     JSValue current_exception;
+    /* -1: raw event; 0/1: actual native owner cached ordinary/fatal policy.
+       This belongs to the pending completion, never to JSValue identity. */
+    int8_t pi_pending_generic_class;
     /* A request is not an event. The lease only blocks reentry while an
        actual native termination is temporarily held by a cleanup owner. */
 #ifdef CONFIG_ATOMICS
@@ -1204,6 +1207,7 @@ struct JSModuleDef {
        eval_exception */
     bool eval_has_exception;
     bool eval_has_fatal_exception; /* terminal host abort, not promise rejection */
+    bool eval_exception_generic_fatal; /* selected event class, not abort status */
     JSModuleDef *fatal_next; /* transient allocation-free fatal worklist */
     JSValue eval_exception;
     JSValue meta_obj; /* for import.meta */
@@ -1460,7 +1464,8 @@ static __exception int JS_ToArrayLengthFree(JSContext *ctx, uint32_t *plen,
 static JSValue JS_EvalObject(JSContext *ctx, JSValueConst this_obj,
                              JSValueConst val, int flags, int scope_idx);
 static JSValue js_new_suppressed_error(JSContext *ctx, JSValueConst error,
-                                       JSValueConst suppressed);
+                                       JSValueConst suppressed,
+                                       bool *terminal_abort);
 static __maybe_unused void JS_DumpString(JSRuntime *rt, JSString *p);
 static __maybe_unused void JS_DumpObjectHeader(JSRuntime *rt);
 static __maybe_unused void JS_DumpObject(JSRuntime *rt, JSObject *p);
@@ -1546,6 +1551,7 @@ static JSValue JS_ToStringFree(JSContext *ctx, JSValue val);
 typedef struct JSNativeAsyncPending {
     bool present;
     JSValue reason;
+    bool generic_fatal;
 } JSNativeAsyncPending;
 
 /* No guest value can have an exception-sentinel payload. This private
@@ -1573,6 +1579,42 @@ bool JS_PiIsExecutionTermination(JSValueConst value)
 static bool js_pi_is_uncatchable_exception(JSValueConst value)
 {
     return JS_PiIsExecutionTermination(value) || JS_IsUncatchableError(value);
+}
+
+/* Query only the actual current slot. A detached value is DATA unless its
+   native owner separately carries this classification. Private termination
+   remains governed by its existing dynamic lease and unwind marker. */
+static bool js_pi_pending_generic_fatal(JSRuntime *rt)
+{
+    if (JS_IsUninitialized(rt->current_exception) ||
+        JS_PiIsExecutionTermination(rt->current_exception))
+        return false;
+    if (rt->pi_pending_generic_class >= 0)
+        return rt->pi_pending_generic_class != 0;
+    return JS_IsUncatchableError(rt->current_exception);
+}
+
+bool JS_PiIsPendingUncatchable(JSContext *ctx)
+{
+    return JS_PiIsExecutionTermination(ctx->rt->current_exception) ||
+           js_pi_pending_generic_fatal(ctx->rt);
+}
+
+static bool js_pi_owned_pending_uncatchable(const JSNativeAsyncPending *owned)
+{
+    return owned->present &&
+        (JS_PiIsExecutionTermination(owned->reason) || owned->generic_fatal);
+}
+
+/* The reducer drained the current slot before this move. No finalizer runs
+   between installing the reason and its independently retained policy. */
+static void js_pi_restore_native_pending_rt(JSRuntime *rt, JSValue reason,
+                                            bool generic_fatal)
+{
+    assert(JS_IsUninitialized(rt->current_exception));
+    rt->current_exception = reason;
+    rt->pi_pending_generic_class =
+        !JS_PiIsExecutionTermination(reason) && generic_fatal ? 1 : 0;
 }
 
 /* A cancelled, already detached native completion still unwinds without
@@ -1689,9 +1731,10 @@ static void JS_ThrowInterrupted(JSContext *ctx);
 
 static JSValue js_pi_compiler_fail_owned(JSContext *ctx, JSValue owned)
 {
-    JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+    bool first_fatal = false;
+    JSValue first = JS_HasException(ctx) ? JS_PiGetExceptionWithFatal(ctx, &first_fatal) : JS_NULL;
     JS_FreeValue(ctx, owned);
-    return JS_Throw(ctx, first);
+    return JS_PiThrowNativePending(ctx, first, first_fatal);
 }
 static JSValue JS_ThrowTypeErrorRevokedProxy(JSContext *ctx);
 static JSValue js_proxy_getPrototypeOf(JSContext *ctx, JSValueConst obj);
@@ -1773,7 +1816,8 @@ static JSValue js_dynamic_import(JSContext *ctx, JSValueConst specifier,
                                  JSValueConst options);
 static void free_var_ref(JSRuntime *rt, JSVarRef *var_ref);
 static void js_async_function_free(JSRuntime *rt, JSAsyncFunctionData *s);
-static void js_mark_module_fatal_failure(JSModuleDef *module, JSValueConst error);
+static void js_mark_module_fatal_failure(JSModuleDef *module, JSValueConst error,
+                                          bool generic_fatal);
 static void js_release_coro(JSRuntime *rt, JSGCObjectHeader *coro);
 static JSValue js_new_promise_capability(JSContext *ctx,
                                          JSValue *resolving_funcs,
@@ -1843,25 +1887,36 @@ static JSValue js_callsite_bind_receiver(JSContext *ctx, JSValueConst receiver,
    frame retirement. Coroutine retirement uses its RT-only equivalent below. */
 static void js_callsite_release_receiver(JSContext *ctx, JSStackFrame *sf)
 {
-    JSValue saved = JS_UNDEFINED;
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED, false };
     JSValue receiver = sf->receiver;
-    bool pending = JS_HasException(ctx);
-    if (pending)
-        saved = JS_GetException(ctx);
     sf->receiver = JS_UNDEFINED;
-    JS_FreeValue(ctx, receiver);
-    if (pending) {
-        JS_FreeValue(ctx, JS_GetException(ctx));
-        JS_Throw(ctx, saved);
+    js_native_async_release(ctx, receiver, &owned);
+    if (owned.present)
+        JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
+}
+
+/* An ordinary pending value may belong to the error-stack hook protocol.
+   Only an actual uncatchable event prevents this completed native result from
+   reaching a C consumer; its returned object is DATA and is never classified. */
+static JSValue js_pi_finish_native_result(JSContext *ctx, JSValue result)
+{
+    if (JS_PiCheckExecutionTermination(ctx) ||
+        JS_PiIsPendingUncatchable(ctx)) {
+        JSNativeAsyncPending owned = { false, JS_UNDEFINED, false };
+        js_native_async_release(ctx, result, &owned);
+        if (owned.present)
+            JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
+        return JS_EXCEPTION;
     }
+    return result;
 }
 
 static JSValue js_pi_link_failure_free(JSContext *ctx, JSValue owned)
 {
-    JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+    bool first_fatal = false;
+    JSValue first = JS_HasException(ctx) ? JS_PiGetExceptionWithFatal(ctx, &first_fatal) : JS_NULL;
     JS_FreeValue(ctx, owned);
-    JS_FreeValue(ctx, JS_GetException(ctx));
-    return JS_Throw(ctx, first);
+    return JS_PiThrowNativePending(ctx, first, first_fatal);
 }
 
 static JSValue js_call_c_function_data(JSContext *ctx, JSValueConst func_obj,
@@ -2728,6 +2783,7 @@ JSRuntime *JS_NewRuntime2(const JSMallocFunctions *mf, void *opaque)
     JS_UpdateStackTop(rt);
 
     rt->current_exception = JS_UNINITIALIZED;
+    rt->pi_pending_generic_class = -1;
 
     /* V8 THROW_ON_FAILURE throws its read-only illegal_access_string. Keep
        one runtime-owned equivalent so a blocked entry never allocates. */
@@ -2902,6 +2958,7 @@ void JS_PiCancelExecutionTermination(JSRuntime *rt)
     if (!JS_PiIsExecutionTerminating(rt))
         return;
     rt->current_exception = JS_UNINITIALIZED;
+    rt->pi_pending_generic_class = -1;
     rt->pi_termination_in_flight = false;
 }
 
@@ -2946,8 +3003,10 @@ static void js_pi_record_aborted_native_call(JSContext *ctx, JSValueConst result
 {
     if (JS_IsException(result) && !JS_HasException(ctx) &&
         (JS_PiIsExecutionTermination(result) ||
-         ctx->rt->pi_termination_generation != entry_generation))
+         ctx->rt->pi_termination_generation != entry_generation)) {
         ctx->rt->current_exception = js_pi_termination_token();
+        ctx->rt->pi_pending_generic_class = -1;
+    }
 }
 
 void JS_ClearKeptObjects(JSRuntime *rt)
@@ -3008,14 +3067,19 @@ static void js_pi_continuation_take_pending_rt(JSRuntime *rt,
                                               JSNativeAsyncPending *owned)
 {
     while (!JS_IsUninitialized(rt->current_exception)) {
+        bool fatal = js_pi_pending_generic_fatal(rt);
         JSValue next = rt->current_exception;
         rt->current_exception = JS_UNINITIALIZED;
+        rt->pi_pending_generic_class = -1;
         if (!owned->present) {
             owned->present = true;
             owned->reason = next;
-        } else if (JS_PiNativePendingReplace(rt, owned->reason, next)) {
+            owned->generic_fatal = fatal;
+        } else if (JS_PiNativePendingReplaceClassified(rt,
+                       owned->reason, owned->generic_fatal, next, fatal)) {
             JSValue displaced = owned->reason;
             owned->reason = next;
+            owned->generic_fatal = fatal;
             JS_FreeValueRT(rt, displaced);
         } else {
             JS_FreeValueRT(rt, next);
@@ -3039,7 +3103,7 @@ void JS_PiSetContinuationPreservedEmbedderData(JSRuntime *rt, JSValueConst value
     JS_FreeValueRT(rt, previous);
     js_pi_continuation_take_pending_rt(rt, &pending);
     if (pending.present)
-        rt->current_exception = pending.reason;
+        js_pi_restore_native_pending_rt(rt, pending.reason, pending.generic_fatal);
 }
 
 void JS_SetExecutionContext(JSRuntime *rt, JSValueConst value)
@@ -3111,13 +3175,14 @@ static void js_pi_job_promise_hook(JSContext *ctx, JSJobEntry *e,
     if (JS_HasException(ctx)) {
         pending.present = true;
         pending.reason = js_dup(rt->current_exception);
+        pending.generic_fatal = js_pi_pending_generic_fatal(rt);
     }
     rt->promise_hook(ctx, type, e->promise, JS_UNDEFINED,
                      rt->promise_hook_opaque);
     JS_PiCheckExecutionTermination(ctx);
     js_native_async_take_pending(ctx, &pending);
     if (pending.present)
-        rt->current_exception = pending.reason;
+        js_pi_restore_native_pending_rt(rt, pending.reason, pending.generic_fatal);
 }
 
 /* Queue entries are native owners. Detach a complete queue before any root
@@ -3219,7 +3284,7 @@ int JS_PiFinishTerminatedMicrotasks(JSRuntime *rt)
     js_pi_continuation_take_pending_rt(rt, &pending);
     js_pi_job_list_retire(rt, &queued, &pending);
     if (pending.present) {
-        rt->current_exception = pending.reason;
+        js_pi_restore_native_pending_rt(rt, pending.reason, pending.generic_fatal);
         pending.present = false;
         pending.reason = JS_UNDEFINED;
     }
@@ -3232,7 +3297,7 @@ int JS_PiFinishTerminatedMicrotasks(JSRuntime *rt)
     js_pi_continuation_take_pending_rt(rt, &pending);
     js_pi_job_list_retire(rt, &aborted, &pending);
     if (pending.present)
-        rt->current_exception = pending.reason;
+        js_pi_restore_native_pending_rt(rt, pending.reason, pending.generic_fatal);
     rt->pi_finishing_terminated_jobs = false;
     return terminating ? 1 : 0;
 }
@@ -3312,7 +3377,7 @@ int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)
         !JS_PiIsExecutionTermination(rt->current_exception) &&
         ((!JS_IsException(e->result) && !JS_HasException(ctx)) ||
          (e->job_func == js_promise_resolve_thenable_job &&
-          JS_HasException(ctx) && JS_IsUncatchableError(rt->current_exception)))) {
+          JS_HasException(ctx) && js_pi_pending_generic_fatal(rt)))) {
         e->after_boundary_crossed = true;
         js_pi_job_promise_hook(ctx, e, JS_PROMISE_HOOK_AFTER);
     }
@@ -3338,7 +3403,7 @@ int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)
     js_pi_continuation_take_pending_rt(rt, &pending);
     js_pi_job_release_payload(rt, e, &pending);
     if (pending.present) {
-        rt->current_exception = pending.reason;
+        js_pi_restore_native_pending_rt(rt, pending.reason, pending.generic_fatal);
         pending.present = false;
         pending.reason = JS_UNDEFINED;
     }
@@ -3347,7 +3412,7 @@ int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)
     if (pending.present &&
         JS_PiIsExecutionTermination(pending.reason) &&
         rt->pi_termination_in_flight) {
-        rt->current_exception = pending.reason;
+        js_pi_restore_native_pending_rt(rt, pending.reason, pending.generic_fatal);
         js_pi_hold_terminated_job(rt, e);
         rt->pi_current_job = previous_job;
         *pctx = ctx;
@@ -3356,7 +3421,7 @@ int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)
     js_pi_job_retire(rt, e, &pending);
     rt->pi_current_job = previous_job;
     if (pending.present) {
-        rt->current_exception = pending.reason;
+        js_pi_restore_native_pending_rt(rt, pending.reason, pending.generic_fatal);
         ret = JS_PiIsExecutionTermination(pending.reason) ?
             JS_PI_JOB_TERMINATED : -1;
     }
@@ -3470,6 +3535,7 @@ void JS_FreeRuntime(JSRuntime *rt)
     {
         JSValue exception = rt->current_exception;
         rt->current_exception = JS_UNINITIALIZED;
+        rt->pi_pending_generic_class = -1;
         JS_FreeValueRT(rt, exception);
     }
 
@@ -9307,29 +9373,109 @@ JSValue JS_GetGlobalObject(JSContext *ctx)
 JSValue JS_Throw(JSContext *ctx, JSValue obj)
 {
     JSRuntime *rt = ctx->rt;
+    /* A native owner already selected this real first fatal event. A later
+       raw throw cannot downgrade it, even when the reason is primitive. */
+    if (JS_HasException(ctx) && js_pi_pending_generic_fatal(rt)) {
+        JSNativeAsyncPending owned = { false, JS_UNDEFINED, false };
+        js_native_async_take_pending(ctx, &owned);
+        if (JS_PiIsExecutionTermination(obj))
+            JS_PiNativePendingReplaceClassified(rt,
+                owned.reason, owned.generic_fatal, obj, false);
+        js_native_async_release(ctx, obj, &owned);
+        js_pi_restore_native_pending_rt(rt, owned.reason, owned.generic_fatal);
+        return JS_EXCEPTION;
+    }
     if (JS_PiIsExecutionTermination(obj)) {
         if (!rt->pi_termination_in_flight) {
             /* A cancelled cleanup completion cannot revive the event or
                displace a new real reason. It still cannot enter guest catch. */
-            if (JS_IsUninitialized(rt->current_exception))
+            if (JS_IsUninitialized(rt->current_exception)) {
                 rt->current_exception = obj;
+                rt->pi_pending_generic_class = -1;
+            }
             return JS_EXCEPTION;
         }
         if (!JS_PiIsExecutionTermination(rt->current_exception)) {
             JSValue displaced = rt->current_exception;
             rt->current_exception = obj;
+            rt->pi_pending_generic_class = -1;
             JS_FreeValue(ctx, displaced);
         }
         return JS_EXCEPTION;
     }
     if (JS_PiIsExecutionTerminating(rt)) {
-        /* Retire the supplied value with the native event still published.
-           Cancellation in that retirement is authoritative. */
+        /* Keep the actual event published so Cancel observes the same
+           condition. Independently own its immediate unwind while cleanup
+           may take/cancel the slot; the reducer reads the final lease. */
+        JSNativeAsyncPending owned = { true, js_dup(rt->current_exception), false };
         JS_FreeValue(ctx, obj);
+        js_native_async_take_pending(ctx, &owned);
+        js_pi_restore_native_pending_rt(rt, owned.reason, owned.generic_fatal);
         return JS_EXCEPTION;
     }
-    JS_FreeValue(ctx, rt->current_exception);
+    /* Detach before retirement: a native finalizer may publish a new actual
+       fatal event. Do not overwrite it or expose an already-freed slot. */
+    while (JS_HasException(ctx)) {
+        JSValue displaced;
+        if (js_pi_pending_generic_fatal(rt) ||
+            JS_PiIsExecutionTerminating(rt)) {
+            /* Re-enter only after a displaced ordinary root's cleanup
+               established this new event; the owning branches above retire. */
+            return JS_Throw(ctx, obj);
+        }
+        displaced = JS_GetException(ctx);
+        JS_FreeValue(ctx, displaced);
+    }
     rt->current_exception = obj;
+    rt->pi_pending_generic_class = -1;
+    return JS_EXCEPTION;
+}
+
+/* Restore an already-selected ACTUAL native completion. Its owner precedes
+   any pending event produced while its roots retire. This is not a producer
+   or a classifier for arbitrary JS values, diagnostics or Promise DATA. */
+JSValue JS_PiThrowNativePending(JSContext *ctx, JSValue reason,
+                                bool generic_fatal)
+{
+    JSNativeAsyncPending owned = {
+        true, reason, generic_fatal && !JS_PiIsExecutionTermination(reason)
+    };
+    js_native_async_take_pending(ctx, &owned);
+    js_pi_restore_native_pending_rt(ctx->rt, owned.reason, owned.generic_fatal);
+    return JS_EXCEPTION;
+}
+
+/* Publish a NEW ordinary source/diagnostic completion. Earlier actual
+   pending events precede it; public Error flags never classify this DATA.
+   Private termination tokens are host control, never valid source DATA. */
+JSValue JS_PiThrowExceptionData(JSContext *ctx, JSValue value)
+{
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED, false };
+    js_native_async_take_pending(ctx, &owned);
+    if (JS_PiIsExecutionTermination(value)) {
+        JS_FreeValue(ctx, value);
+        JS_ThrowInternalError(ctx,
+            "Private termination token cannot be thrown as exception DATA");
+        js_native_async_take_pending(ctx, &owned);
+        if (owned.present)
+            js_pi_restore_native_pending_rt(ctx->rt, owned.reason, owned.generic_fatal);
+        return JS_EXCEPTION;
+    }
+    if (!owned.present) {
+        owned.present = true;
+        owned.reason = value;
+        owned.generic_fatal = false;
+    } else if (JS_PiNativePendingReplaceClassified(ctx->rt,
+                   owned.reason, owned.generic_fatal, value, false)) {
+        JSValue displaced = owned.reason;
+        owned.reason = value;
+        owned.generic_fatal = false;
+        JS_FreeValue(ctx, displaced);
+    } else {
+        JS_FreeValue(ctx, value);
+    }
+    js_native_async_take_pending(ctx, &owned);
+    js_pi_restore_native_pending_rt(ctx->rt, owned.reason, owned.generic_fatal);
     return JS_EXCEPTION;
 }
 
@@ -9340,7 +9486,16 @@ JSValue JS_GetException(JSContext *ctx)
     JSRuntime *rt = ctx->rt;
     val = rt->current_exception;
     rt->current_exception = JS_UNINITIALIZED;
+    rt->pi_pending_generic_class = -1;
     return val;
+}
+
+/* Take the actual completion with its cached generic policy. Plain
+   JS_GetException intentionally drops that policy when producing value DATA. */
+JSValue JS_PiGetExceptionWithFatal(JSContext *ctx, bool *generic_fatal)
+{
+    *generic_fatal = js_pi_pending_generic_fatal(ctx->rt);
+    return JS_GetException(ctx);
 }
 
 bool JS_HasException(JSContext *ctx)
@@ -9570,10 +9725,11 @@ static int native_error_stack_hook(JSContext *ctx, JSValueConst error, int phase
 {
     JSRuntime *rt = ctx->rt;
     JSValue saved;
+    bool saved_fatal;
     int result;
     if (!rt->native_error_stack_hook || rt->native_error_stack_hook_active)
         return 0;
-    saved = JS_GetException(ctx);
+    saved = JS_PiGetExceptionWithFatal(ctx, &saved_fatal);
     rt->native_error_stack_hook_active = true;
     result = rt->native_error_stack_hook(ctx, error, phase, filter, filename,
                                        line, column, flags,
@@ -9588,8 +9744,7 @@ static int native_error_stack_hook(JSContext *ctx, JSValueConst error, int phase
         return -1;
     }
     if (result >= 0) {
-        JS_FreeValue(ctx, JS_GetException(ctx));
-        JS_Throw(ctx, saved);
+        JS_PiThrowNativePending(ctx, saved, saved_fatal);
     } else {
         JS_FreeValue(ctx, saved);
     }
@@ -9597,27 +9752,11 @@ static int native_error_stack_hook(JSContext *ctx, JSValueConst error, int phase
 }
 /* Runtime metadata cleanup may release a genuine native-finalizer prototype.
    Only reasons actually taken from the current slot enter this owner. */
-typedef struct JSPiMetadataPending {
-    bool present;
-    JSValue reason;
-} JSPiMetadataPending;
+typedef JSNativeAsyncPending JSPiMetadataPending;
 static bool js_pi_metadata_take_pending(JSContext *ctx, JSPiMetadataPending *owned)
 {
-    bool observed = false;
-    while (JS_HasException(ctx)) {
-        JSValue next = JS_GetException(ctx);
-        observed = true;
-        if (!owned->present) {
-            owned->present = true;
-            owned->reason = next;
-        } else if (JS_PiNativePendingReplace(ctx->rt, owned->reason, next)) {
-            JSValue displaced = owned->reason;
-            owned->reason = next;
-            JS_FreeValue(ctx, displaced);
-        } else {
-            JS_FreeValue(ctx, next);
-        }
-    }
+    bool observed = JS_HasException(ctx);
+    js_native_async_take_pending(ctx, owned);
     return observed;
 }
 static bool js_pi_metadata_release(JSContext *ctx, JSValue *slot,
@@ -9633,7 +9772,7 @@ static JSValue js_pi_metadata_fail_owned(JSContext *ctx, JSValue value)
 {
     JSPiMetadataPending owned = { false, JS_UNDEFINED };
     js_pi_metadata_release(ctx, &value, &owned);
-    return JS_Throw(ctx, owned.present ? owned.reason : JS_NULL);
+    return JS_PiThrowNativePending(ctx, owned.present ? owned.reason : JS_NULL, owned.present && owned.generic_fatal);
 }
 static int js_pi_append_logical_location(JSContext *ctx, DynBuf *output,
                                         JSAtom origin, int line, int column)
@@ -9661,13 +9800,13 @@ static int js_pi_append_logical_location(JSContext *ctx, DynBuf *output,
     if (js_pi_metadata_release(ctx, &text, &owned))
         goto fail;
     if (owned.present)
-        JS_Throw(ctx, owned.reason);
+        JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
     return 0;
 fail:
     js_pi_metadata_take_pending(ctx, &owned);
     JS_FreeCString(ctx, bytes);
     js_pi_metadata_release(ctx, &text, &owned);
-    JS_Throw(ctx, owned.present ? owned.reason : JS_NULL);
+    JS_PiThrowNativePending(ctx, owned.present ? owned.reason : JS_NULL, owned.present && owned.generic_fatal);
     return -2;
 }
 static int build_backtrace(JSContext *ctx, JSValueConst error_val,
@@ -9684,6 +9823,7 @@ static int build_backtrace(JSContext *ctx, JSValueConst error_val,
     bool backtrace_barrier, has_prepare, has_filter_func;
     bool strict_visibility = false;
     bool saved_had_exception = JS_HasException(ctx);
+    bool saved_generic_fatal = false;
     JSRuntime *rt;
     JSCallSiteData csd[64];
     uint32_t i;
@@ -9703,7 +9843,7 @@ static int build_backtrace(JSContext *ctx, JSValueConst error_val,
     error_obj = js_dup(error_val);
 
     // Save exception because conversion to double may fail.
-    saved_exception = JS_GetException(ctx);
+    saved_exception = JS_PiGetExceptionWithFatal(ctx, &saved_generic_fatal);
 
     // Extract stack trace limit.
     // Ignore error since it sets d to NAN anyway.
@@ -9717,7 +9857,7 @@ static int build_backtrace(JSContext *ctx, JSValueConst error_val,
         stack_trace_limit = fabs(d);
 
     // Restore current exception.
-    JS_Throw(ctx, saved_exception);
+    JS_PiThrowNativePending(ctx, saved_exception, saved_generic_fatal);
     saved_exception = JS_UNINITIALIZED;
 
     stack_trace_limit = min_int(stack_trace_limit, countof(csd));
@@ -9732,7 +9872,7 @@ static int build_backtrace(JSContext *ctx, JSValueConst error_val,
     }
 
     if (has_prepare) {
-        saved_exception = JS_GetException(ctx);
+        saved_exception = JS_PiGetExceptionWithFatal(ctx, &saved_generic_fatal);
         if (stack_trace_limit == 0)
             goto done;
         if (filename)
@@ -9872,7 +10012,7 @@ static int build_backtrace(JSContext *ctx, JSValueConst error_val,
         else
             stack = stack2;
         JS_FreeValue(ctx, prepare);
-        JS_Throw(ctx, saved_exception);
+        JS_PiThrowNativePending(ctx, saved_exception, saved_generic_fatal);
     } else {
         if (dbuf_error(&dbuf))
             stack = JS_NULL;
@@ -9931,7 +10071,7 @@ metadata_fail: {
     }
     js_pi_metadata_release(ctx, &error_obj, &owned);
     rt->in_build_stack_trace = false;
-    JS_Throw(ctx, owned.present ? owned.reason : JS_NULL);
+    JS_PiThrowNativePending(ctx, owned.present ? owned.reason : JS_NULL, owned.present && owned.generic_fatal);
     return -2; /* Distinct private metadata-capture failure, not legacy status. */
 }
 }
@@ -9969,7 +10109,7 @@ static int capture_error_stack(JSContext *ctx, JSValueConst error,
             object->u.native_error.stack_fallback_present = true;
             js_native_async_release(ctx, previous, &pending);
             if (pending.present) {
-                JS_Throw(ctx, pending.reason);
+                JS_PiThrowNativePending(ctx, pending.reason, pending.generic_fatal);
                 return -1;
             }
         }
@@ -10073,10 +10213,11 @@ static JSValue js_make_error2_tracked(JSContext *ctx, JSErrorEnum error_num,
         return js_pi_link_failure_free(ctx, obj);
     msg = JS_NewString(ctx, message);
     if (ctx->pi_link_preparing && (JS_IsException(msg) || JS_HasException(ctx))) {
-        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+        bool first_fatal = false;
+        JSValue first = JS_HasException(ctx) ? JS_PiGetExceptionWithFatal(ctx, &first_fatal) : JS_NULL;
         JS_FreeValue(ctx, msg);
         JS_FreeValue(ctx, obj);
-        return JS_Throw(ctx, first);
+        return JS_PiThrowNativePending(ctx, first, first_fatal);
     }
     if (ctx->pi_compiler_diagnostic && (JS_IsException(msg) || JS_HasException(ctx))) {
         js_pi_compiler_fail_owned(ctx, msg);
@@ -10088,9 +10229,10 @@ static JSValue js_make_error2_tracked(JSContext *ctx, JSErrorEnum error_num,
         int status = JS_DefinePropertyValue(ctx, obj, JS_ATOM_message, msg,
                                             JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);
         if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx))) {
-            JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+            bool first_fatal = false;
+            JSValue first = JS_HasException(ctx) ? JS_PiGetExceptionWithFatal(ctx, &first_fatal) : JS_NULL;
             JS_FreeValue(ctx, obj);
-            return JS_Throw(ctx, first);
+            return JS_PiThrowNativePending(ctx, first, first_fatal);
         }
         if (ctx->pi_compiler_diagnostic && (status < 0 || JS_HasException(ctx)))
             return js_pi_compiler_fail_owned(ctx, obj);
@@ -10202,9 +10344,10 @@ JS_ThrowError2(JSContext *ctx, JSErrorEnum error_num, bool add_backtrace,
     if (metadata_failed)
         return js_pi_metadata_fail_owned(ctx, obj);
     if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx))) {
-        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+        bool first_fatal = false;
+        JSValue first = JS_HasException(ctx) ? JS_PiGetExceptionWithFatal(ctx, &first_fatal) : JS_NULL;
         JS_FreeValue(ctx, obj);
-        return JS_Throw(ctx, first);
+        return JS_PiThrowNativePending(ctx, first, first_fatal);
     }
     if (ctx->pi_compiler_diagnostic && (JS_IsException(obj) || JS_HasException(ctx)))
         return js_pi_compiler_fail_owned(ctx, obj);
@@ -12930,6 +13073,8 @@ int JS_SetPropertyValue(JSContext *ctx, JSValueConst this_obj,
             if (JS_ToFloat64Free(ctx, &d, val)) {
             ta_cvt_fail:
                 if (flags & JS_PROP_REFLECT_DEFINE_PROPERTY) {
+                    if (JS_PiIsPendingUncatchable(ctx))
+                        return -1;
                     JS_FreeValue(ctx, JS_GetException(ctx));
                     return false;
                 }
@@ -19209,27 +19354,37 @@ static JSValue JS_GetIterator(JSContext *ctx, JSValueConst obj, bool is_async)
     return ret;
 }
 
+static void js_pi_async_take_terminal_pending(JSContext *ctx,
+                                                JSNativeAsyncPending *owned,
+                                                bool *terminal_abort);
+static void js_pi_async_release_terminal(JSContext *ctx, JSValue value,
+                                          JSNativeAsyncPending *owned,
+                                          bool *terminal_abort);
+
+/* Consume the exact local entitlement before publication can reenter. */
+static JSValue js_pi_disposal_publish_owned(JSContext *ctx,
+                                             JSNativeAsyncPending *owned)
+{
+    JSValue reason = owned->reason;
+    bool generic_fatal = owned->generic_fatal;
+    owned->present = false;
+    owned->reason = JS_UNDEFINED;
+    owned->generic_fatal = false;
+    return JS_PiThrowNativePending(ctx, reason, generic_fatal);
+}
+
 JSValue JS_PiGetAsyncIterator(JSContext *ctx, JSValueConst obj)
 {
-    JSValue result, reason, cleanup, displaced;
+    JSValue result;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
     if (JS_HasException(ctx))
         return JS_EXCEPTION;
     result = JS_GetIterator(ctx, obj, true);
     if (!JS_HasException(ctx))
         return result;
-    reason = JS_GetException(ctx);
-    JS_FreeValue(ctx, result);
-    while (JS_HasException(ctx)) {
-        cleanup = JS_GetException(ctx);
-        if (JS_PiNativePendingReplace(ctx->rt, reason, cleanup)) {
-            displaced = reason;
-            reason = cleanup;
-        } else {
-            displaced = cleanup;
-        }
-        JS_FreeValue(ctx, displaced);
-    }
-    return JS_Throw(ctx, reason);
+    js_native_async_release(ctx, result, &owned);
+    return js_pi_disposal_publish_owned(ctx, &owned);
 }
 
 /* return *pdone = 2 if the iterator object is not parsed */
@@ -19312,40 +19467,60 @@ static JSValue JS_IteratorNext(JSContext *ctx, JSValueConst enum_obj,
 static int JS_IteratorClose(JSContext *ctx, JSValueConst enum_obj,
                             bool is_exception_pending)
 {
-    JSValue method, ret, ex_obj;
-    int res;
+    JSValue method = JS_UNDEFINED, ret = JS_UNDEFINED;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
+    int res = is_exception_pending ? -1 : 0;
 
-    if (is_exception_pending) {
-        ex_obj = ctx->rt->current_exception;
-        ctx->rt->current_exception = JS_UNINITIALIZED;
-        res = -1;
-    } else {
-        ex_obj = JS_UNDEFINED;
-        res = 0;
-    }
+    /* Fatal unwind never enters a guest return method. A cancelled private
+       token is still uncatchable even though its reducer priority is lower. */
+    if (JS_PiIsPendingUncatchable(ctx))
+        return -1;
+    js_native_async_take_pending(ctx, &owned);
     method = JS_GetProperty(ctx, enum_obj, JS_ATOM_return);
-    if (JS_IsException(method)) {
+    if (JS_IsException(method) || JS_HasException(ctx)) {
         res = -1;
         goto done;
     }
-    if (JS_IsUndefined(method) || JS_IsNull(method)) {
+    if (JS_IsUndefined(method) || JS_IsNull(method))
         goto done;
-    }
-    ret = JS_CallFree(ctx, method, enum_obj, 0, NULL);
+    ret = JS_Call(ctx, method, enum_obj, 0, NULL);
+    js_native_async_release(ctx, method, &owned);
+    method = JS_UNDEFINED;
     if (!is_exception_pending) {
-        if (JS_IsException(ret)) {
+        if (JS_IsException(ret) || owned.present) {
             res = -1;
         } else if (!JS_IsObject(ret)) {
             JS_ThrowTypeErrorNotAnObject(ctx);
             res = -1;
         }
     }
-    JS_FreeValue(ctx, ret);
  done:
-    if (is_exception_pending) {
-        JS_Throw(ctx, ex_obj);
+    js_native_async_release(ctx, ret, &owned);
+    js_native_async_release(ctx, method, &owned);
+    if (owned.present) {
+        js_pi_disposal_publish_owned(ctx, &owned);
+        res = -1;
     }
     return res;
+}
+
+/* Inputs are owned ordinary completion DATA. Only pending events produced
+   while constructing/retiring the SuppressedError enter the event owner. */
+static JSValue js_pi_disposal_merge_owned(JSContext *ctx,
+                                           JSValue error, JSValue suppressed,
+                                           bool *terminal_abort)
+{
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
+    JSValue result = js_new_suppressed_error(ctx, error, suppressed, terminal_abort);
+    js_pi_async_release_terminal(ctx, error, &owned, terminal_abort);
+    js_pi_async_release_terminal(ctx, suppressed, &owned, terminal_abort);
+    if (owned.present) {
+        js_pi_async_release_terminal(ctx, result, &owned, terminal_abort);
+        return js_pi_disposal_publish_owned(ctx, &owned);
+    }
+    return result;
 }
 
 /* obj -> enum_rec (3 slots) */
@@ -20286,6 +20461,7 @@ static JSValue js_call_c_function(JSContext *ctx, JSValueConst func_obj,
             int done;
             ret_val = func.iterator_next(ctx, this_obj, argc, arg_buf,
                                          &done, p->u.cfunc.magic);
+            ret_val = js_pi_finish_native_result(ctx, ret_val);
             if (!JS_IsException(ret_val) && done != 2) {
                 ret_val = js_create_iterator_result(ctx, ret_val, done);
             }
@@ -20373,7 +20549,8 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
 static int js_pi_check_javascript_execution(JSContext *ctx, const JSObject *function)
 {
     JSRuntime *rt = ctx->rt;
-    if (JS_PiCheckExecutionTermination(ctx))
+    if (JS_PiCheckExecutionTermination(ctx) ||
+        JS_PiIsPendingUncatchable(ctx))
         return -1;
     if (likely(rt->pi_javascript_execution_allowed))
         return 0;
@@ -20389,7 +20566,8 @@ static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,
                                JSValueConst this_obj, JSValueConst new_target,
                                int argc, JSValueConst *argv, int flags)
 {
-    if (JS_PiCheckExecutionTermination(caller_ctx))
+    if (JS_PiCheckExecutionTermination(caller_ctx) ||
+        JS_PiIsPendingUncatchable(caller_ctx))
         return JS_EXCEPTION;
     if (unlikely(!caller_ctx->rt->pi_javascript_execution_allowed) &&
         JS_HasException(caller_ctx))
@@ -20409,14 +20587,7 @@ static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,
                 JSValue result = call_func(caller_ctx, func_obj, this_obj,
                                            argc, argv, flags);
                 js_pi_record_aborted_native_call(caller_ctx, result, generation);
-                if (JS_PiCheckExecutionTermination(caller_ctx)) {
-                    JSNativeAsyncPending pending = { false, JS_UNDEFINED };
-                    js_native_async_release(caller_ctx, result, &pending);
-                    if (pending.present)
-                        JS_Throw(caller_ctx, pending.reason);
-                    return JS_EXCEPTION;
-                }
-                return result;
+                return js_pi_finish_native_result(caller_ctx, result);
             }
         }
         if (js_pi_check_javascript_execution(caller_ctx, NULL))
@@ -20443,7 +20614,7 @@ static int js_pi_finish_consumed_value(JSContext *ctx, JSValue *slot,
         value = *slot;
         *slot = JS_UNDEFINED;
         js_native_async_release(ctx, value, &owned);
-        JS_Throw(ctx, owned.reason);
+        JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
         return -1;
     }
     return JS_IsException(value) ? -1 : 0;
@@ -21830,6 +22001,9 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
                 int idx;
                 JSValueConst val, method;
                 JSValue ret, error_state;
+                JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                               .generic_fatal = false };
+                bool terminal_abort = false;
 
                 idx = get_u16(pc);
                 pc += 2;
@@ -21838,22 +22012,26 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
                 error_state = sp[-1];
 
                 if (JS_IsNull(val) || JS_IsUndefined(val) ||
-                    JS_IsUninitialized(val)) {
-                    /* null/undefined (spec-permitted) or uninitialized
-                       (declaration threw before assignment). */
+                    JS_IsUninitialized(val))
                     BREAK;
-                }
                 sf->cur_pc = pc;
                 ret = JS_Call(ctx, method, val, 0, NULL);
-                if (JS_IsException(ret)) {
-                    JSValue new_error = JS_GetException(ctx);
+                if (JS_IsException(ret) || JS_HasException(ctx)) {
+                    JSValue new_error;
+                    js_pi_async_release_terminal(ctx, ret, &owned, &terminal_abort);
+                    if (owned.present)
+                        js_pi_disposal_publish_owned(ctx, &owned);
+                    if (terminal_abort || JS_PiIsPendingUncatchable(ctx))
+                        goto exception;
+                    new_error = JS_GetException(ctx); /* ordinary -> DATA */
                     if (!JS_IsUninitialized(error_state)) {
                         JSValue se;
-                        se = js_new_suppressed_error(ctx, new_error,
-                                                     error_state);
-                        JS_FreeValue(ctx, new_error);
-                        JS_FreeValue(ctx, error_state);
+                        sp[-1] = JS_UNINITIALIZED;
+                        se = js_pi_disposal_merge_owned(ctx, new_error, error_state,
+                                                        &terminal_abort);
                         if (JS_IsException(se)) {
+                            if (terminal_abort || JS_PiIsPendingUncatchable(ctx))
+                                goto exception;
                             sp[-1] = JS_GetException(ctx);
                         } else {
                             sp[-1] = se;
@@ -21862,7 +22040,11 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
                         sp[-1] = new_error;
                     }
                 } else {
-                    JS_FreeValue(ctx, ret);
+                    js_pi_async_release_terminal(ctx, ret, &owned, &terminal_abort);
+                    if (owned.present) {
+                        js_pi_disposal_publish_owned(ctx, &owned);
+                        goto exception;
+                    }
                 }
             }
             BREAK;
@@ -21897,13 +22079,16 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
             {
                 JSValue new_error = sp[-1];
                 JSValue error_state = sp[-2];
+                bool terminal_abort = false;
                 sp--;
                 if (!JS_IsUninitialized(error_state)) {
-                    JSValue se = js_new_suppressed_error(ctx, new_error,
-                                                         error_state);
-                    JS_FreeValue(ctx, new_error);
-                    JS_FreeValue(ctx, error_state);
+                    JSValue se;
+                    sp[-1] = JS_UNINITIALIZED;
+                    se = js_pi_disposal_merge_owned(ctx, new_error, error_state,
+                                                    &terminal_abort);
                     if (JS_IsException(se)) {
+                        if (terminal_abort || JS_PiIsPendingUncatchable(ctx))
+                            goto exception;
                         sp[-1] = JS_GetException(ctx);
                     } else {
                         sp[-1] = se;
@@ -21919,7 +22104,7 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
                 JSValue error_state = sp[-1];
                 sp--;
                 if (!JS_IsUninitialized(error_state)) {
-                    JS_Throw(ctx, error_state);
+                    JS_PiThrowExceptionData(ctx, error_state);
                     goto exception;
                 }
             }
@@ -23163,7 +23348,7 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
                 if (owned.present) {
                     if (!JS_IsException(converted))
                         js_native_async_release(ctx, converted, &owned);
-                    JS_Throw(ctx, owned.reason);
+                    JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
                     goto exception;
                 }
                 if (JS_IsException(converted))
@@ -23399,7 +23584,7 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
         build_backtrace(ctx, rt->current_exception, JS_UNDEFINED,
                         NULL, 0, 0, 0);
     }
-    if (!js_pi_is_uncatchable_exception(rt->current_exception)) {
+    if (!JS_PiIsPendingUncatchable(ctx)) {
         while (sp > stack_buf) {
             JSValue val = *--sp;
             JS_FreeValue(ctx, val);
@@ -23411,8 +23596,7 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
                     sp--;
                     JS_IteratorClose(ctx, sp[-1], true);
                 } else {
-                    *sp++ = rt->current_exception;
-                    rt->current_exception = JS_UNINITIALIZED;
+                    *sp++ = JS_GetException(ctx);
                     JS_FreeValueRT(rt, ctx->error_back_trace);
                     ctx->error_back_trace = JS_UNDEFINED;
                     pc = b->byte_code_buf + pos;
@@ -23454,7 +23638,7 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
             js_native_async_release(ctx, receiver, &owned);
             if (owned.present) {
                 js_native_async_release(ctx, ret_val, &owned);
-                ret_val = JS_Throw(ctx, owned.reason);
+                ret_val = JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
             }
         }
     }
@@ -23588,7 +23772,8 @@ static JSValue JS_CallConstructorInternal(JSContext *ctx,
     JSObject *p;
     JSFunctionBytecode *b;
 
-    if (JS_PiCheckExecutionTermination(ctx))
+    if (JS_PiCheckExecutionTermination(ctx) ||
+        JS_PiIsPendingUncatchable(ctx))
         return JS_EXCEPTION;
     if (unlikely(!ctx->rt->pi_javascript_execution_allowed) && JS_HasException(ctx))
         return JS_EXCEPTION;
@@ -23613,14 +23798,7 @@ static JSValue JS_CallConstructorInternal(JSContext *ctx,
             uint64_t generation = ctx->rt->pi_termination_generation;
             JSValue result = call_func(ctx, func_obj, new_target, argc, argv, flags);
             js_pi_record_aborted_native_call(ctx, result, generation);
-            if (JS_PiCheckExecutionTermination(ctx)) {
-                JSNativeAsyncPending pending = { false, JS_UNDEFINED };
-                js_native_async_release(ctx, result, &pending);
-                if (pending.present)
-                    JS_Throw(ctx, pending.reason);
-                return JS_EXCEPTION;
-            }
-            return result;
+            return js_pi_finish_native_result(ctx, result);
         }
     }
 
@@ -23757,24 +23935,43 @@ static void async_func_free(JSRuntime *rt, JSAsyncFunctionState *s)
 {
     JSStackFrame *sf;
     JSValue *sp;
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED, false };
 
     sf = &s->frame;
-
+    js_pi_continuation_take_pending_rt(rt, &owned);
     if (sf->arg_buf) {
-        /* close the closure variables. */
-        if (sf->var_ref_count != 0)
+        /* Closing var refs preserves the original root order. Its actual
+           pending result is reduced before any argument can retire. */
+        if (sf->var_ref_count != 0) {
             close_var_refs(rt, sf);
-
-        /* cannot free the function if it is running */
+            js_pi_continuation_take_pending_rt(rt, &owned);
+        }
         assert(sf->cur_sp != NULL);
         for(sp = sf->arg_buf; sp < sf->cur_sp; sp++) {
-            JS_FreeValueRT(rt, *sp);
+            JSValue value = *sp;
+            *sp = JS_UNDEFINED;
+            JS_FreeValueRT(rt, value);
+            js_pi_continuation_take_pending_rt(rt, &owned);
         }
         js_free_rt(rt, sf->arg_buf);
+        sf->arg_buf = NULL;
     }
-    JS_FreeValueRT(rt, sf->cur_func);
-    JS_FreeValueRT(rt, sf->receiver);
-    JS_FreeValueRT(rt, s->this_val);
+    {
+        JSValue value = sf->cur_func;
+        sf->cur_func = JS_UNDEFINED;
+        JS_FreeValueRT(rt, value);
+        js_pi_continuation_take_pending_rt(rt, &owned);
+        value = sf->receiver;
+        sf->receiver = JS_UNDEFINED;
+        JS_FreeValueRT(rt, value);
+        js_pi_continuation_take_pending_rt(rt, &owned);
+        value = s->this_val;
+        s->this_val = JS_UNDEFINED;
+        JS_FreeValueRT(rt, value);
+        js_pi_continuation_take_pending_rt(rt, &owned);
+    }
+    if (owned.present)
+        js_pi_restore_native_pending_rt(rt, owned.reason, owned.generic_fatal);
 }
 
 static JSValue async_func_resume(JSContext *ctx, JSAsyncFunctionState *s)
@@ -23977,49 +24174,84 @@ static void js_native_async_terminate_with_close(JSAsyncFunctionData *s);
 
 static void js_async_function_terminate(JSRuntime *rt, JSAsyncFunctionData *s)
 {
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED, false };
     /* The active bytecode function/realm dominates this borrowed identity.
        Clear it before releasing any frame roots, including GC finalization. */
     s->module = NULL;
-    if (s->is_active) {
+    if (!s->is_active)
+        return;
+    js_pi_continuation_take_pending_rt(rt, &owned);
+    if (s->native_body && s->native_close) {
+        js_native_async_terminate_with_close(s);
+        js_pi_continuation_take_pending_rt(rt, &owned);
+    } else {
+        s->is_active = false;
         if (s->native_body) {
             int i;
-            if (s->native_close) {
-                js_native_async_terminate_with_close(s);
-                return;
+            JSValue value;
+            /* Keep the original root order while detaching every entitlement
+               before its finalizer can reenter the retired activation. */
+            for (i = 0; i < s->native_argc; i++) {
+                value = s->native_argv[i];
+                s->native_argv[i] = JS_UNDEFINED;
+                JS_FreeValueRT(rt, value);
+                js_pi_continuation_take_pending_rt(rt, &owned);
             }
-            /* Match async_func_free's observable owners. Drop the extra body
-               view of lexical this while the function still owns its capture;
-               function/capture retirement then precedes the call receiver. */
-            for (i = 0; i < s->native_argc; i++)
-                JS_FreeValueRT(rt, s->native_argv[i]);
             js_free_rt(rt, s->native_argv);
             s->native_argv = NULL;
             s->native_argc = 0;
             s->native_supplied_argc = 0;
-            JS_FreeValueRT(rt, s->native_state);
+            value = s->native_state;
             s->native_state = JS_UNDEFINED;
-            JS_FreeValueRT(rt, s->native_this);
+            JS_FreeValueRT(rt, value);
+            js_pi_continuation_take_pending_rt(rt, &owned);
+            value = s->native_this;
             s->native_this = JS_UNDEFINED;
-            JS_FreeValueRT(rt, s->native_function);
+            JS_FreeValueRT(rt, value);
+            js_pi_continuation_take_pending_rt(rt, &owned);
+            value = s->native_function;
             s->native_function = JS_UNDEFINED;
-            JS_FreeValueRT(rt, s->native_receiver);
+            JS_FreeValueRT(rt, value);
+            js_pi_continuation_take_pending_rt(rt, &owned);
+            value = s->native_receiver;
             s->native_receiver = JS_UNDEFINED;
+            JS_FreeValueRT(rt, value);
+            js_pi_continuation_take_pending_rt(rt, &owned);
         } else {
             async_func_free(rt, &s->func_state);
+            js_pi_continuation_take_pending_rt(rt, &owned);
         }
-        s->is_active = false;
     }
+    if (owned.present)
+        js_pi_restore_native_pending_rt(rt, owned.reason, owned.generic_fatal);
 }
 
 static void js_async_function_free0(JSRuntime *rt, JSAsyncFunctionData *s)
 {
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED, false };
+    JSContext *native_ctx;
+    JSValue value;
+    js_pi_continuation_take_pending_rt(rt, &owned);
     js_async_function_terminate(rt, s);
-    JS_FreeValueRT(rt, s->resolving_funcs[0]);
-    JS_FreeValueRT(rt, s->resolving_funcs[1]);
-    if (s->native_ctx)
-        JS_FreeContext(s->native_ctx);
+    js_pi_continuation_take_pending_rt(rt, &owned);
+    value = s->resolving_funcs[0];
+    s->resolving_funcs[0] = JS_UNDEFINED;
+    JS_FreeValueRT(rt, value);
+    js_pi_continuation_take_pending_rt(rt, &owned);
+    value = s->resolving_funcs[1];
+    s->resolving_funcs[1] = JS_UNDEFINED;
+    JS_FreeValueRT(rt, value);
+    js_pi_continuation_take_pending_rt(rt, &owned);
+    native_ctx = s->native_ctx;
+    s->native_ctx = NULL;
+    if (native_ctx) {
+        JS_FreeContext(native_ctx);
+        js_pi_continuation_take_pending_rt(rt, &owned);
+    }
     remove_gc_object(&s->header);
     js_free_rt(rt, s);
+    if (owned.present)
+        js_pi_restore_native_pending_rt(rt, owned.reason, owned.generic_fatal);
 }
 
 static void js_async_function_free(JSRuntime *rt, JSAsyncFunctionData *s)
@@ -24051,7 +24283,8 @@ static void js_async_function_resolve_mark(JSRuntime *rt, JSValueConst val,
 
 static int js_async_function_resolve_create(JSContext *ctx,
                                             JSAsyncFunctionData *s,
-                                            JSValue *resolving_funcs)
+                                            JSValue *resolving_funcs,
+                                            bool *terminal_abort)
 {
     int i;
     JSObject *p;
@@ -24061,10 +24294,18 @@ static int js_async_function_resolve_create(JSContext *ctx,
             JS_NewObjectProtoClass(ctx, ctx->function_proto,
                                    JS_CLASS_ASYNC_FUNCTION_RESOLVE + i);
         if (JS_IsException(resolving_funcs[i])) {
+            JSNativeAsyncPending owned = { false, JS_UNDEFINED };
+            js_native_async_take_pending(ctx, &owned);
+            if (terminal_abort && js_pi_owned_pending_uncatchable(&owned))
+                *terminal_abort = true;
             if (i == 1)
-                JS_FreeValue(ctx, resolving_funcs[0]);
+                js_native_async_release(ctx, resolving_funcs[0], &owned);
+            if (terminal_abort && js_pi_owned_pending_uncatchable(&owned))
+                *terminal_abort = true;
             resolving_funcs[0] = JS_UNDEFINED;
             resolving_funcs[1] = JS_UNDEFINED;
+            if (owned.present)
+                JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
             return -1;
         }
         p = JS_VALUE_GET_OBJ(resolving_funcs[i]);
@@ -24172,28 +24413,26 @@ static JSValue js_native_async_function_step(JSAsyncFunctionData *s,
         s->native_supplied_argc, vc(s->native_argv), completion, input,
         &s->native_state, action);
     js_pi_record_aborted_native_call(ctx, output, generation);
-    if (JS_PiCheckExecutionTermination(ctx)) {
-        JSNativeAsyncPending pending = { false, JS_UNDEFINED };
-        js_native_async_release(ctx, output, &pending);
-        output = JS_EXCEPTION;
-        if (pending.present)
-            JS_Throw(ctx, pending.reason);
-    }
+    output = js_pi_finish_native_result(ctx, output);
     js_callsite_release_receiver(ctx, &frame);
     ctx->rt->current_stack_frame = frame.prev_frame;
-    return output;
+    return js_pi_finish_native_result(ctx, output);
 }
 
 static void js_native_async_take_pending(JSContext *ctx, JSNativeAsyncPending *owned)
 {
     while (JS_HasException(ctx)) {
-        JSValue next = JS_GetException(ctx);
+        bool fatal;
+        JSValue next = JS_PiGetExceptionWithFatal(ctx, &fatal);
         if (!owned->present) {
             owned->present = true;
             owned->reason = next;
-        } else if (JS_PiNativePendingReplace(ctx->rt, owned->reason, next)) {
+            owned->generic_fatal = fatal;
+        } else if (JS_PiNativePendingReplaceClassified(ctx->rt,
+                       owned->reason, owned->generic_fatal, next, fatal)) {
             JSValue displaced = owned->reason;
             owned->reason = next;
+            owned->generic_fatal = fatal;
             JS_FreeValue(ctx, displaced);
         } else {
             JS_FreeValue(ctx, next);
@@ -24207,6 +24446,20 @@ static void js_native_async_release(JSContext *ctx, JSValue value,
     js_native_async_take_pending(ctx, owned);
     JS_FreeValue(ctx, value);
     js_native_async_take_pending(ctx, owned);
+}
+
+/* Fixed caller-owned roots only; no allocation or guest settlement. */
+static JSValue js_pi_retire_native_failure(JSContext *ctx,
+                                           const JSValue *values, size_t count)
+{
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED, false };
+    size_t i;
+    js_native_async_take_pending(ctx, &owned);
+    for (i = 0; i < count; i++)
+        js_native_async_release(ctx, values[i], &owned);
+    if (owned.present)
+        return JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
+    return JS_EXCEPTION;
 }
 
 
@@ -24234,7 +24487,7 @@ static int js_pi_sync_store(JSContext *ctx, JSValue *slot, JSValue value)
         js_native_async_take_pending(ctx, &owned);
     }
     if (owned.present) {
-        JS_Throw(ctx, owned.reason);
+        JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
         return -1;
     }
     return 0;
@@ -24457,7 +24710,7 @@ JSValue JS_PiCallSyncArguments(JSContext *ctx, JSValueConst function,
     rt->current_stack_frame = sf->prev_frame;
     if (owned.present) {
         js_native_async_release(ctx, result, &owned);
-        return JS_Throw(ctx, owned.reason);
+        return JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
     }
     return result;
 }
@@ -24514,7 +24767,7 @@ static void js_native_async_terminate_with_close(JSAsyncFunctionData *s)
     JSContext *ctx = s->native_ctx;
     js_native_async_retire(ctx, s, &owned);
     if (owned.present)
-        JS_Throw(ctx, owned.reason);
+        JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
 }
 
 static bool js_native_async_function_resume(JSAsyncFunctionData *s,
@@ -24525,6 +24778,7 @@ static bool js_native_async_function_resume(JSAsyncFunctionData *s,
     JSValue output = JS_UNDEFINED, result, promise, resolving_funcs[2], ignored_funcs[2];
     JSValue resumed_input = JS_UNDEFINED;
     int action = -1, i, status, resolve_index;
+    bool terminal_abort = false;
 
  resume_body:
     js_native_async_take_pending(ctx, &owned);
@@ -24532,9 +24786,12 @@ static bool js_native_async_function_resume(JSAsyncFunctionData *s,
         goto rejected_event;
     action = -1;
     output = js_native_async_function_step(s, completion, input, &action);
+    /* Only the actual native adapter may report an already observed unwind.
+       An ordinary cleanup reason stays ordinary while this frame retires. */
+    terminal_abort |= action == JS_PI_AF_ABORTED;
     js_native_async_release(ctx, resumed_input, &owned);
     resumed_input = JS_UNDEFINED;
-    if (JS_IsException(output) && !owned.present) {
+    if ((JS_IsException(output) || terminal_abort) && !owned.present) {
         JS_ThrowInternalError(ctx, "Native async callback returned exception without pending reason");
         js_native_async_take_pending(ctx, &owned);
     }
@@ -24567,8 +24824,10 @@ static bool js_native_async_function_resume(JSAsyncFunctionData *s,
         js_native_async_release(ctx, promise, &owned);
         goto await_rejected;
     }
-    if (js_async_function_resolve_create(ctx, s, resolving_funcs)) {
+    if (js_async_function_resolve_create(ctx, s, resolving_funcs, &terminal_abort)) {
         js_native_async_release(ctx, promise, &owned);
+        if (terminal_abort)
+            goto rejected_event;
         goto await_rejected;
     }
     ignored_funcs[0] = ignored_funcs[1] = JS_UNDEFINED;
@@ -24584,7 +24843,7 @@ static bool js_native_async_function_resume(JSAsyncFunctionData *s,
         JS_ThrowInternalError(ctx, "Native Await failed without pending reason");
         js_native_async_take_pending(ctx, &owned);
     }
-    if (!js_pi_is_uncatchable_exception(owned.reason)) {
+    if (!js_pi_owned_pending_uncatchable(&owned)) {
         resumed_input = owned.reason;
         owned.present = false; owned.reason = JS_UNDEFINED;
         input = resumed_input;
@@ -24592,10 +24851,10 @@ static bool js_native_async_function_resume(JSAsyncFunctionData *s,
         goto resume_body;
     }
  rejected_event:
-    if (js_pi_is_uncatchable_exception(owned.reason)) {
+    if (terminal_abort || js_pi_owned_pending_uncatchable(&owned)) {
         js_native_async_release(ctx, resumed_input, &owned);
         js_native_async_retire(ctx, s, &owned);
-        JS_Throw(ctx, owned.reason); /* pending is empty; consumes owner */
+        JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal); /* pending is empty; consumes owner */
         return false;
     }
     output = owned.reason;
@@ -24609,57 +24868,105 @@ static bool js_native_async_function_resume(JSAsyncFunctionData *s,
     js_native_async_release(ctx, result, &owned);
     js_native_async_retire(ctx, s, &owned);
     if (owned.present) {
-        JS_Throw(ctx, owned.reason);
+        JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
         return false;
     }
     return true;
 }
 
+/* This owner holds only actual pending events. Await input and source
+   return/rejection payloads remain DATA. Clear the local entitlement before
+   publishing so reentrant retirement cannot take it twice. */
+static void js_pi_async_restore_owned_pending(JSContext *ctx,
+                                               JSNativeAsyncPending *owned)
+{
+    if (owned->present) {
+        JSValue reason = owned->reason;
+        bool generic_fatal = owned->generic_fatal;
+        owned->present = false;
+        owned->reason = JS_UNDEFINED;
+        owned->generic_fatal = false;
+        JS_PiThrowNativePending(ctx, reason, generic_fatal);
+    }
+}
+
+/* Record the historical abort before and after each root retirement.
+   A cancelled private event may be replaced by a later ordinary cleanup
+   event without undoing an already observed terminal unwind. */
+static void js_pi_async_take_terminal_pending(JSContext *ctx,
+                                                JSNativeAsyncPending *owned,
+                                                bool *terminal_abort)
+{
+    js_native_async_take_pending(ctx, owned);
+    if (js_pi_owned_pending_uncatchable(owned))
+        *terminal_abort = true;
+}
+
+static void js_pi_async_release_terminal(JSContext *ctx, JSValue value,
+                                          JSNativeAsyncPending *owned,
+                                          bool *terminal_abort)
+{
+    js_pi_async_take_terminal_pending(ctx, owned, terminal_abort);
+    JS_FreeValue(ctx, value);
+    js_pi_async_take_terminal_pending(ctx, owned, terminal_abort);
+}
+
 static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
 {
-    bool is_success = true;
-    bool module_fatal = false;
-    JSValue module_error = JS_UNDEFINED;
+    bool terminal_abort = false;
+    JSNativeAsyncPending owned = { .present = false,
+                                   .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
     JSValue func_ret, ret2;
 
     func_ret = async_func_resume(ctx, &s->func_state);
     if (JS_IsException(func_ret)) {
     fail:
-        if (unlikely(js_pi_is_uncatchable_exception(ctx->rt->current_exception))) {
-            is_success = false;
+        if (unlikely(terminal_abort || JS_PiIsPendingUncatchable(ctx))) {
+            terminal_abort = true;
+            js_native_async_take_pending(ctx, &owned);
         } else {
+            /* The actual ordinary exception becomes rejection DATA only
+               after the pending-event predicate has excluded fatality. */
             JSValue error = JS_GetException(ctx);
             ret2 = JS_Call(ctx, s->resolving_funcs[1], JS_UNDEFINED,
                            1, vc(&error));
-            if (s->module_execution &&
-                js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {
-                module_error = JS_GetException(ctx);
-                module_fatal = true;
-            }
-            JS_FreeValue(ctx, error);
+            js_native_async_take_pending(ctx, &owned);
+            if (js_pi_owned_pending_uncatchable(&owned))
+                terminal_abort = true;
+            js_pi_async_release_terminal(ctx, error, &owned, &terminal_abort);
         resolved:
-            /* Resolving callbacks may return undefined while a public hook
-               or enqueue failure leaves a fatal reason pending. It was held
-               before value cleanup; do not require an exception return. */
-            if (module_fatal)
-                is_success = false;
+            /* A resolving callback can return undefined while its hook
+               leaves a fatal event pending. Preserve it before cleanup. */
+            js_native_async_take_pending(ctx, &owned);
+            if (js_pi_owned_pending_uncatchable(&owned))
+                terminal_abort = true;
             if (unlikely(JS_IsException(ret2))) {
-                if (module_fatal || js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {
-                    is_success = false;
+                if (terminal_abort || js_pi_owned_pending_uncatchable(&owned)) {
+                    terminal_abort = true;
                 } else {
-                    abort(); /* BUG */
+                    abort(); /* BUG: retained ordinary resolving failure */
                 }
             }
-            JS_FreeValue(ctx, ret2);
+            js_pi_async_release_terminal(ctx, ret2, &owned, &terminal_abort);
         }
-        if (!is_success && s->module_execution) {
-            JSValue error = module_fatal ? module_error : JS_GetException(ctx);
-            if (s->module)
-                js_mark_module_fatal_failure(s->module, error);
+        {
+            /* The active caller/job owns ctx and its loaded ModuleDef list.
+               Save this borrowed identity before terminate clears s->module. */
+            JSModuleDef *module = s->module;
+            js_native_async_take_pending(ctx, &owned);
+            if (js_pi_owned_pending_uncatchable(&owned))
+                terminal_abort = true;
             js_async_function_terminate(ctx->rt, s);
-            JS_Throw(ctx, error);
-        } else {
-            js_async_function_terminate(ctx->rt, s);
+            js_native_async_take_pending(ctx, &owned);
+            if (js_pi_owned_pending_uncatchable(&owned))
+                terminal_abort = true;
+            /* Record once after cleanup selected the final actual reason.
+               Historical abort and its selected generic class are distinct. */
+            if (terminal_abort && module && owned.present)
+                js_mark_module_fatal_failure(module, owned.reason,
+                                             owned.generic_fatal);
+            js_pi_async_restore_owned_pending(ctx, &owned);
         }
     } else {
         JSValue value;
@@ -24669,66 +24976,62 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
             /* function returned */
             ret2 = JS_Call(ctx, s->resolving_funcs[0], JS_UNDEFINED,
                            1, vc(&value));
-            if (s->module_execution &&
-                js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {
-                module_error = JS_GetException(ctx);
-                module_fatal = true;
-            }
-            JS_FreeValue(ctx, value);
+            js_native_async_take_pending(ctx, &owned);
+            if (js_pi_owned_pending_uncatchable(&owned))
+                terminal_abort = true;
+            js_pi_async_release_terminal(ctx, value, &owned, &terminal_abort);
             goto resolved;
         } else {
             JSValue promise, resolving_funcs[2], resolving_funcs1[2];
             int i, res;
 
             /* await */
-            JS_FreeValue(ctx, func_ret); /* not used */
+            js_pi_async_release_terminal(ctx, func_ret, &owned, &terminal_abort); /* not used */
+            if (owned.present) {
+                js_pi_async_release_terminal(ctx, value, &owned, &terminal_abort);
+                js_pi_async_restore_owned_pending(ctx, &owned);
+                goto fail;
+            }
             promise = js_promise_resolve(ctx, ctx->promise_ctor,
                                          1, vc(&value), 0);
-            JS_FreeValue(ctx, value);
-            if (JS_IsException(promise))
-                goto fail;
-            if (s->module_execution && JS_HasException(ctx)) {
-                JSValue error = JS_GetException(ctx);
-                JS_FreeValue(ctx, promise);
-                JS_Throw(ctx, error);
-                goto fail;
-            }
-            if (js_async_function_resolve_create(ctx, s, resolving_funcs)) {
-                JSValue error = s->module_execution ? JS_GetException(ctx) : JS_UNDEFINED;
-                JS_FreeValue(ctx, promise);
-                if (s->module_execution)
-                    JS_Throw(ctx, error);
+            js_native_async_take_pending(ctx, &owned);
+            if (js_pi_owned_pending_uncatchable(&owned))
+                terminal_abort = true;
+            js_pi_async_release_terminal(ctx, value, &owned, &terminal_abort);
+            if (JS_IsException(promise) || owned.present) {
+                js_pi_async_release_terminal(ctx, promise, &owned, &terminal_abort);
+                js_pi_async_restore_owned_pending(ctx, &owned);
                 goto fail;
             }
-            if (s->module_execution && JS_HasException(ctx)) {
-                JSValue error = JS_GetException(ctx);
-                JS_FreeValue(ctx, promise);
+            if (js_async_function_resolve_create(ctx, s, resolving_funcs, &terminal_abort)) {
+                js_pi_async_release_terminal(ctx, promise, &owned, &terminal_abort);
+                js_pi_async_restore_owned_pending(ctx, &owned);
+                goto fail;
+            }
+            if (JS_HasException(ctx)) {
+                js_pi_async_release_terminal(ctx, promise, &owned, &terminal_abort);
                 for (i = 0; i < 2; i++)
-                    JS_FreeValue(ctx, resolving_funcs[i]);
-                JS_Throw(ctx, error);
+                    js_pi_async_release_terminal(ctx, resolving_funcs[i], &owned, &terminal_abort);
+                js_pi_async_restore_owned_pending(ctx, &owned);
                 goto fail;
             }
 
-            /* Note: no need to create 'thrownawayCapability' as in
-               the spec */
+            /* No thrownawayCapability is needed, as in the original. */
             for(i = 0; i < 2; i++)
                 resolving_funcs1[i] = JS_UNDEFINED;
             res = perform_promise_then(ctx, promise,
                                        vc(resolving_funcs),
                                        vc(resolving_funcs1), JS_UNDEFINED);
-            bool module_failed = s->module_execution &&
-                                 (res || JS_HasException(ctx));
-            JSValue error = module_failed ? JS_GetException(ctx) : JS_UNDEFINED;
-            JS_FreeValue(ctx, promise);
+            js_pi_async_release_terminal(ctx, promise, &owned, &terminal_abort);
             for(i = 0; i < 2; i++)
-                JS_FreeValue(ctx, resolving_funcs[i]);
-            if (module_failed)
-                JS_Throw(ctx, error);
-            if (res || module_failed)
+                js_pi_async_release_terminal(ctx, resolving_funcs[i], &owned, &terminal_abort);
+            if (res || owned.present) {
+                js_pi_async_restore_owned_pending(ctx, &owned);
                 goto fail;
+            }
         }
     }
-    return is_success;
+    return !terminal_abort;
 }
 
 static JSValue js_async_function_resolve_call(JSContext *ctx,
@@ -24875,7 +25178,8 @@ JSValue JS_PiNewNativeAsyncFunctionWithArguments(JSContext *ctx,
 }
 
 static JSValue js_native_async_function_call(JSContext *caller,
-    JSValueConst func_obj, JSValueConst this_obj, int argc, JSValueConst *argv)
+    JSValueConst func_obj, JSValueConst this_obj, int argc, JSValueConst *argv,
+    bool *terminal_abort)
 {
     JSFunctionBytecode *b = JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode;
     JSContext *ctx = b->realm;
@@ -24884,8 +25188,11 @@ static JSValue js_native_async_function_call(JSContext *caller,
     JSNativeAsyncPending owned = { false, JS_UNDEFINED };
     int i, count;
     (void)caller;
-    if (JS_HasException(ctx))
+    if (JS_HasException(ctx)) {
+        if (terminal_abort && JS_PiIsPendingUncatchable(ctx))
+            *terminal_abort = true;
         return JS_EXCEPTION;
+    }
     if (argc < 0 || (size_t)argc > SIZE_MAX / sizeof(JSValue))
         return JS_ThrowInternalError(ctx, "Invalid native async argument count");
     count = b->native_async_arguments ? max_int(argc, b->native_async_formal_count) : argc;
@@ -24921,34 +25228,59 @@ static JSValue js_native_async_function_call(JSContext *caller,
         for (; i < count; i++)
             s->native_argv[s->native_argc++] = JS_UNDEFINED;
     }
-    if (!js_native_async_function_resume(s, JS_PI_AF_START, JS_UNDEFINED))
+    if (!js_native_async_function_resume(s, JS_PI_AF_START, JS_UNDEFINED)) {
+        /* The actual resume reports a terminally retired frame even when a
+           cancelled private reason lost priority to ordinary cleanup. This
+           output records lifecycle only, never generic fatal classification. */
+        if (terminal_abort)
+            *terminal_abort = true;
         goto failed;
+    }
+    js_native_async_take_pending(ctx, &owned);
     js_async_function_free(ctx->rt, s);
+    js_native_async_take_pending(ctx, &owned);
+    if (owned.present) {
+        if (terminal_abort && js_pi_owned_pending_uncatchable(&owned))
+            *terminal_abort = true;
+        js_native_async_release(ctx, promise, &owned);
+        JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
+        return JS_EXCEPTION;
+    }
     return promise;
  failed:
     /* A newly failed resolving call may have settled promise with an owned
        return/rejection value. Preserve its fatal reason over that teardown. */
+    js_native_async_take_pending(ctx, &owned);
+    if (terminal_abort && js_pi_owned_pending_uncatchable(&owned))
+        *terminal_abort = true;
     js_native_async_release(ctx, promise, &owned);
+    if (terminal_abort && js_pi_owned_pending_uncatchable(&owned))
+        *terminal_abort = true;
     js_native_async_retire(ctx, s, &owned);
     js_async_function_free(ctx->rt, s);
     js_native_async_take_pending(ctx, &owned);
+    if (terminal_abort && js_pi_owned_pending_uncatchable(&owned))
+        *terminal_abort = true;
     if (owned.present)
-        JS_Throw(ctx, owned.reason);
+        JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
     return JS_EXCEPTION;
 }
 
 static JSValue js_async_function_call_internal(JSContext *ctx, JSValueConst func_obj,
                                       JSValueConst this_obj,
                                       int argc, JSValueConst *argv, int flags,
-                                      JSModuleDef *module)
+                                      JSModuleDef *module,
+                                      bool *pterminal_abort)
 {
-    JSValue promise, error;
+    JSValue promise;
+    bool terminal_abort = false;
     JSAsyncFunctionData *s;
 
     if (js_pi_check_javascript_execution(ctx, NULL))
         return JS_EXCEPTION;
     if (JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode->native_async_body)
-        return js_native_async_function_call(ctx, func_obj, this_obj, argc, argv);
+        return js_native_async_function_call(ctx, func_obj, this_obj, argc, argv,
+                                             pterminal_abort);
 
     s = js_mallocz(ctx, sizeof(*s));
     if (!s)
@@ -24967,15 +25299,22 @@ static JSValue js_async_function_call_internal(JSContext *ctx, JSValueConst func
 
     if (async_func_init(ctx, &s->func_state, func_obj, this_obj, argc, argv)) {
     fail:
-        /* Module START failure belongs to its DFS executor, not a later
-           unassociated continuation. Retain the first reason over cleanup. */
-        error = module ? JS_GetException(ctx) : JS_UNDEFINED;
+        /* START failure belongs to this actual caller. Preserve its event
+           classification through Promise/frame retirement, including null. */
+        JSNativeAsyncPending owned = { .present = false,
+                                       .reason = JS_UNDEFINED,
+                                       .generic_fatal = false };
+        js_native_async_take_pending(ctx, &owned);
+        terminal_abort |= js_pi_owned_pending_uncatchable(&owned);
         if (module)
             js_async_function_terminate(ctx->rt, s);
-        JS_FreeValue(ctx, promise);
+        js_pi_async_release_terminal(ctx, promise, &owned, &terminal_abort);
         js_async_function_free(ctx->rt, s);
-        if (module)
-            JS_Throw(ctx, error);
+        js_native_async_take_pending(ctx, &owned);
+        terminal_abort |= js_pi_owned_pending_uncatchable(&owned);
+        if (pterminal_abort)
+            *pterminal_abort |= terminal_abort;
+        js_pi_async_restore_owned_pending(ctx, &owned);
         return JS_EXCEPTION;
     }
     s->is_active = true;
@@ -24983,9 +25322,11 @@ static JSValue js_async_function_call_internal(JSContext *ctx, JSValueConst func
        already know its owning coroutine to root captured locals */
     s->func_state.frame.cur_gc_obj = &s->header;
 
-    if (!js_async_function_resume(ctx, s))
+    if (!js_async_function_resume(ctx, s)) {
+        terminal_abort = true;
         goto fail;
-    if (module && JS_HasException(ctx))
+    }
+    if (JS_HasException(ctx))
         goto fail;
     /* Only the exact module executor supplies this identity, after successful
        START. Until termination, frame.cur_func -> bytecode.realm retains its
@@ -24993,8 +25334,22 @@ static JSValue js_async_function_call_internal(JSContext *ctx, JSValueConst func
     if (module && s->is_active)
         s->module = module;
 
-    js_async_function_free(ctx->rt, s);
-
+    {
+        JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                       .generic_fatal = false };
+        js_native_async_take_pending(ctx, &owned);
+        js_async_function_free(ctx->rt, s);
+        js_native_async_take_pending(ctx, &owned);
+        if (owned.present) {
+            terminal_abort |= js_pi_owned_pending_uncatchable(&owned);
+            js_pi_async_release_terminal(ctx, promise, &owned, &terminal_abort);
+            terminal_abort |= js_pi_owned_pending_uncatchable(&owned);
+            if (pterminal_abort)
+                *pterminal_abort |= terminal_abort;
+            js_pi_async_restore_owned_pending(ctx, &owned);
+            return JS_EXCEPTION;
+        }
+    }
     return promise;
 }
 
@@ -25003,7 +25358,7 @@ static JSValue js_async_function_call(JSContext *ctx, JSValueConst func_obj,
                                       int argc, JSValueConst *argv, int flags)
 {
     return js_async_function_call_internal(ctx, func_obj, this_obj, argc, argv,
-                                         flags, NULL);
+                                         flags, NULL, NULL);
 }
 
 /* AsyncGenerator */
@@ -25030,6 +25385,7 @@ typedef struct JSAsyncGeneratorRequest {
 typedef struct JSAsyncGeneratorData {
     JSObject *generator; /* back pointer to the object (const) */
     JSAsyncGeneratorStateEnum state;
+    bool terminal_aborted; /* lifecycle only: no cached reason or class */
     JSAsyncFunctionState func_state;
     struct list_head queue; /* list of JSAsyncGeneratorRequest.link */
     /* NULL native_resume means the unchanged bytecode/frame implementation. */
@@ -25119,22 +25475,87 @@ static JSValue js_async_generator_resolve_function(JSContext *ctx,
                                           int argc, JSValueConst *argv,
                                           int magic, JSValueConst *func_data);
 
+static void js_async_generator_complete(JSContext *ctx,
+                                        JSAsyncGeneratorData *s);
+
+/* Retire a generator whose actual completion cannot be delivered. Detach
+   every request before frame/finalizer work, and never invoke their guest
+   resolving functions on this terminal route. The caller owns generator
+   and ctx throughout; the separate local event owner retains exact class. */
+static void js_pi_async_generator_retire_pending(JSContext *ctx,
+                                                   JSAsyncGeneratorData *s,
+                                                   JSNativeAsyncPending *owned)
+{
+    struct list_head retired, *el, *el1;
+    bool frame_live = s->state != JS_ASYNC_GENERATOR_STATE_COMPLETED &&
+                      s->state != JS_ASYNC_GENERATOR_STATE_AWAITING_RETURN;
+
+    js_native_async_take_pending(ctx, owned);
+    s->terminal_aborted = true;
+    s->state = JS_ASYNC_GENERATOR_STATE_COMPLETED;
+    init_list_head(&retired);
+    while (!list_empty(&s->queue)) {
+        el = s->queue.next;
+        list_del(el);
+        list_add_tail(el, &retired);
+    }
+    if (s->native_resume) {
+        JSContext *native_ctx = s->native_ctx;
+        JSValue native_owner = s->native_owner;
+        s->native_ctx = NULL;
+        s->native_owner = JS_UNDEFINED;
+        s->native_phase = PI_AG_PHASE_NONE;
+        js_native_async_release(ctx, native_owner, owned);
+        if (native_ctx)
+            JS_FreeContext(native_ctx);
+    } else if (frame_live) {
+        async_func_free(ctx->rt, &s->func_state);
+    }
+    js_native_async_take_pending(ctx, owned);
+    list_for_each_safe(el, el1, &retired) {
+        JSAsyncGeneratorRequest *req = list_entry(el, JSAsyncGeneratorRequest, link);
+        list_del(&req->link);
+        js_native_async_release(ctx, req->result, owned);
+        js_native_async_release(ctx, req->promise, owned);
+        js_native_async_release(ctx, req->resolving_funcs[0], owned);
+        js_native_async_release(ctx, req->resolving_funcs[1], owned);
+        js_free(ctx, req);
+        js_native_async_take_pending(ctx, owned);
+    }
+}
+
+/* Every caller of this helper already owns an ACTUAL escaping event.
+   A terminal lifecycle decision never fabricates a generic fatal class. */
+static void js_pi_async_generator_publish_failure(JSContext *ctx,
+                                                    JSAsyncGeneratorData *s,
+                                                    JSNativeAsyncPending *owned)
+{
+    js_pi_async_generator_retire_pending(ctx, s, owned);
+    js_pi_async_restore_owned_pending(ctx, owned);
+}
+
 static int js_async_generator_resolve_function_create(JSContext *ctx,
                                                       JSValue generator,
                                                       JSValue *resolving_funcs,
-                                                      bool is_resume_next)
+                                                      bool is_resume_next,
+                                                      bool *terminal_abort)
 {
     int i;
     JSValue func;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
 
+    resolving_funcs[0] = JS_UNDEFINED;
+    resolving_funcs[1] = JS_UNDEFINED;
     for(i = 0; i < 2; i++) {
         func = JS_NewCFunctionData(ctx, js_async_generator_resolve_function, 1,
                                    i + is_resume_next * 2, 1, vc(&generator));
-        if (JS_IsException(func)) {
-            if (i == 1)
-                JS_FreeValue(ctx, resolving_funcs[0]);
+        if (JS_IsException(func) || JS_HasException(ctx)) {
+            js_pi_async_release_terminal(ctx, func, &owned, terminal_abort);
+            js_pi_async_release_terminal(ctx, resolving_funcs[0], &owned, terminal_abort);
             resolving_funcs[0] = JS_UNDEFINED;
             resolving_funcs[1] = JS_UNDEFINED;
+            js_pi_async_restore_owned_pending(ctx, &owned);
             return -1;
         }
         resolving_funcs[i] = func;
@@ -25144,37 +25565,35 @@ static int js_async_generator_resolve_function_create(JSContext *ctx,
 
 static int js_async_generator_await(JSContext *ctx,
                                     JSAsyncGeneratorData *s,
-                                    JSValue value)
+                                    JSValue value, bool *terminal_abort)
 {
-    JSValue promise, resolving_funcs[2], resolving_funcs1[2];
-    int i, res;
+    JSValue promise = JS_UNDEFINED;
+    JSValue resolving_funcs[2] = { JS_UNDEFINED, JS_UNDEFINED };
+    JSValue resolving_funcs1[2] = { JS_UNDEFINED, JS_UNDEFINED };
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
+    int i, res = -1;
 
     promise = js_promise_resolve(ctx, ctx->promise_ctor,
                                  1, vc(&value), 0);
-    if (JS_IsException(promise))
-        goto fail;
-
-    if (js_async_generator_resolve_function_create(ctx, JS_MKPTR(JS_TAG_OBJECT, s->generator),
-                                                   resolving_funcs, false)) {
-        JS_FreeValue(ctx, promise);
-        goto fail;
-    }
-
-    /* Note: no need to create 'thrownawayCapability' as in
-       the spec */
-    for(i = 0; i < 2; i++)
-        resolving_funcs1[i] = JS_UNDEFINED;
-    res = perform_promise_then(ctx, promise,
-                               vc(resolving_funcs),
+    if (JS_IsException(promise) || JS_HasException(ctx))
+        goto done;
+    if (js_async_generator_resolve_function_create(ctx,
+            JS_MKPTR(JS_TAG_OBJECT, s->generator), resolving_funcs, false,
+            terminal_abort))
+        goto done;
+    /* No thrownawayCapability is needed, as in the original. */
+    res = perform_promise_then(ctx, promise, vc(resolving_funcs),
                                vc(resolving_funcs1), JS_UNDEFINED);
-    JS_FreeValue(ctx, promise);
+done:
+    js_pi_async_release_terminal(ctx, promise, &owned, terminal_abort);
     for(i = 0; i < 2; i++)
-        JS_FreeValue(ctx, resolving_funcs[i]);
-    if (res)
-        goto fail;
-    return 0;
- fail:
-    return -1;
+        js_pi_async_release_terminal(ctx, resolving_funcs[i], &owned, terminal_abort);
+    if (owned.present) {
+        js_pi_async_restore_owned_pending(ctx, &owned);
+        return -1;
+    }
+    return res;
 }
 
 static void js_async_generator_resolve_or_reject(JSContext *ctx,
@@ -25184,17 +25603,27 @@ static void js_async_generator_resolve_or_reject(JSContext *ctx,
 {
     JSAsyncGeneratorRequest *next;
     JSValue ret;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
 
+    if (JS_HasException(ctx)) {
+        js_pi_async_generator_publish_failure(ctx, s, &owned);
+        return;
+    }
+    if (s->terminal_aborted || list_empty(&s->queue))
+        return;
     next = list_entry(s->queue.next, JSAsyncGeneratorRequest, link);
     list_del(&next->link);
-    ret = JS_Call(ctx, next->resolving_funcs[is_reject], JS_UNDEFINED, 1,
-                  &result);
-    JS_FreeValue(ctx, ret);
-    JS_FreeValue(ctx, next->result);
-    JS_FreeValue(ctx, next->promise);
-    JS_FreeValue(ctx, next->resolving_funcs[0]);
-    JS_FreeValue(ctx, next->resolving_funcs[1]);
+    ret = JS_Call(ctx, next->resolving_funcs[is_reject], JS_UNDEFINED, 1, &result);
+    js_native_async_release(ctx, ret, &owned);
+    js_native_async_release(ctx, next->result, &owned);
+    js_native_async_release(ctx, next->promise, &owned);
+    js_native_async_release(ctx, next->resolving_funcs[0], &owned);
+    js_native_async_release(ctx, next->resolving_funcs[1], &owned);
     js_free(ctx, next);
+    js_native_async_take_pending(ctx, &owned);
+    if (owned.present)
+        js_pi_async_generator_publish_failure(ctx, s, &owned);
 }
 
 static void js_async_generator_resolve(JSContext *ctx,
@@ -25202,12 +25631,32 @@ static void js_async_generator_resolve(JSContext *ctx,
                                        JSValueConst value,
                                        bool done)
 {
-    JSValue result;
-    result = js_create_iterator_result(ctx, js_dup(value), done);
-    /* XXX: better exception handling ? */
-    js_async_generator_resolve_or_reject(ctx, s, result, 0);
-    JS_FreeValue(ctx, result);
- }
+    JSValue result = js_create_iterator_result(ctx, js_dup(value), done);
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
+    bool terminal_abort = false;
+
+    if (JS_IsException(result) || JS_HasException(ctx)) {
+        JSValue error;
+        js_pi_async_release_terminal(ctx, result, &owned, &terminal_abort);
+        if (terminal_abort) {
+            js_pi_async_generator_publish_failure(ctx, s, &owned);
+            return;
+        }
+        js_pi_async_restore_owned_pending(ctx, &owned);
+        error = JS_GetException(ctx); /* guarded ordinary failure -> DATA */
+        js_async_generator_complete(ctx, s);
+        js_native_async_take_pending(ctx, &owned);
+        if (!owned.present)
+            js_async_generator_resolve_or_reject(ctx, s, error, 1);
+        js_native_async_release(ctx, error, &owned);
+    } else {
+        js_async_generator_resolve_or_reject(ctx, s, result, 0);
+        js_native_async_release(ctx, result, &owned);
+    }
+    if (owned.present)
+        js_pi_async_generator_publish_failure(ctx, s, &owned);
+}
 
 static void js_async_generator_reject(JSContext *ctx,
                                        JSAsyncGeneratorData *s,
@@ -25219,13 +25668,32 @@ static void js_async_generator_reject(JSContext *ctx,
 static void js_async_generator_complete(JSContext *ctx,
                                         JSAsyncGeneratorData *s)
 {
-    if (s->state != JS_ASYNC_GENERATOR_STATE_COMPLETED) {
-        s->state = JS_ASYNC_GENERATOR_STATE_COMPLETED;
-        if (s->native_resume)
-            js_native_async_generator_retire(ctx->rt, s);
-        else
-            async_func_free(ctx->rt, &s->func_state);
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
+    bool terminal_abort = false;
+    bool frame_live;
+
+    if (s->state == JS_ASYNC_GENERATOR_STATE_COMPLETED)
+        return;
+    frame_live = s->state != JS_ASYNC_GENERATOR_STATE_AWAITING_RETURN;
+    s->state = JS_ASYNC_GENERATOR_STATE_COMPLETED;
+    js_pi_async_take_terminal_pending(ctx, &owned, &terminal_abort);
+    if (s->native_resume) {
+        JSContext *native_ctx = s->native_ctx;
+        JSValue native_owner = s->native_owner;
+        s->native_ctx = NULL;
+        s->native_owner = JS_UNDEFINED;
+        s->native_phase = PI_AG_PHASE_NONE;
+        js_pi_async_release_terminal(ctx, native_owner, &owned, &terminal_abort);
+        if (native_ctx)
+            JS_FreeContext(native_ctx);
+    } else if (frame_live) {
+        async_func_free(ctx->rt, &s->func_state);
     }
+    js_pi_async_take_terminal_pending(ctx, &owned, &terminal_abort);
+    if (terminal_abort)
+        js_pi_async_generator_retire_pending(ctx, s, &owned);
+    js_pi_async_restore_owned_pending(ctx, &owned);
 }
 
 /* The inherited bytecode path has an XXX for iterator-result OOM. Native
@@ -25235,83 +25703,96 @@ static void js_native_async_generator_resolve(JSContext *ctx,
                                               JSAsyncGeneratorData *s,
                                               JSValueConst value, bool done)
 {
-    JSValue result = js_create_iterator_result(ctx, js_dup(value), done);
-    if (JS_IsException(result)) {
-        JSValue exception = JS_GetException(ctx);
-        js_async_generator_complete(ctx, s);
-        js_async_generator_reject(ctx, s, exception);
-        JS_FreeValue(ctx, exception);
-    } else {
-        js_async_generator_resolve_or_reject(ctx, s, result, 0);
-        JS_FreeValue(ctx, result);
-    }
+    js_async_generator_resolve(ctx, s, value, done);
 }
 
 static int js_async_generator_completed_return(JSContext *ctx,
                                                JSAsyncGeneratorData *s,
-                                               JSValue value)
+                                               JSValue value,
+                                               bool *terminal_abort)
 {
-    JSValue promise, resolving_funcs[2], resolving_funcs1[2];
-    int res;
+    JSValue promise = JS_UNDEFINED;
+    JSValue resolving_funcs[2] = { JS_UNDEFINED, JS_UNDEFINED };
+    JSValue resolving_funcs1[2] = { JS_UNDEFINED, JS_UNDEFINED };
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
+    int res = -1;
 
-    // Can fail looking up JS_ATOM_constructor when is_reject==0.
-    promise = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&value),
-                                 /*is_reject*/0);
-    // A poisoned .constructor property is observable and the resulting
-    // exception should be delivered to the catch handler.
-    if (JS_IsException(promise)) {
-        JSValue err = JS_GetException(ctx);
-        promise = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&err),
-                                     /*is_reject*/1);
-        JS_FreeValue(ctx, err);
-        if (JS_IsException(promise))
-            return -1;
+    promise = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&value), 0);
+    if (JS_IsException(promise) || JS_HasException(ctx)) {
+        JSValue err;
+        js_pi_async_release_terminal(ctx, promise, &owned, terminal_abort);
+        promise = JS_UNDEFINED;
+        if (*terminal_abort)
+            goto done;
+        js_pi_async_restore_owned_pending(ctx, &owned);
+        err = JS_GetException(ctx); /* ordinary poisoned constructor */
+        promise = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&err), 1);
+        js_pi_async_release_terminal(ctx, err, &owned, terminal_abort);
+        if (JS_IsException(promise) || owned.present)
+            goto done;
     }
     if (js_async_generator_resolve_function_create(ctx,
-                                                   JS_MKPTR(JS_TAG_OBJECT, s->generator),
-                                                   resolving_funcs1,
-                                                   true)) {
-        JS_FreeValue(ctx, promise);
+            JS_MKPTR(JS_TAG_OBJECT, s->generator), resolving_funcs1, true,
+            terminal_abort))
+        goto done;
+    res = perform_promise_then(ctx, promise, vc(resolving_funcs1),
+                               vc(resolving_funcs), JS_UNDEFINED);
+done:
+    js_pi_async_release_terminal(ctx, resolving_funcs1[0], &owned, terminal_abort);
+    js_pi_async_release_terminal(ctx, resolving_funcs1[1], &owned, terminal_abort);
+    js_pi_async_release_terminal(ctx, promise, &owned, terminal_abort);
+    if (owned.present) {
+        js_pi_async_restore_owned_pending(ctx, &owned);
         return -1;
     }
-    resolving_funcs[0] = JS_UNDEFINED;
-    resolving_funcs[1] = JS_UNDEFINED;
-    res = perform_promise_then(ctx, promise,
-                               vc(resolving_funcs1),
-                               vc(resolving_funcs), JS_UNDEFINED);
-    JS_FreeValue(ctx, resolving_funcs1[0]);
-    JS_FreeValue(ctx, resolving_funcs1[1]);
-    JS_FreeValue(ctx, promise);
     return res;
 }
 
-static void js_native_async_generator_drive(JSAsyncGeneratorData *s,
+static void js_native_async_generator_drive(JSContext *caller_ctx,
+                                             JSAsyncGeneratorData *s,
                                              int completion,
                                              JSValueConst input)
 {
     JSContext *ctx = JS_DupContext(s->native_ctx);
-    JSValue value = js_dup(input);
+    JSValue value = js_dup(input), output = JS_UNDEFINED;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
+    bool terminal_abort = false;
     int action, phase;
 
     for (;;) {
-        JSValue output;
+        action = -1;
         if (js_poll_interrupts(ctx)) {
             output = JS_EXCEPTION;
         } else if (js_check_stack_overflow(ctx->rt, 0)) {
             output = JS_ThrowStackOverflow(ctx);
         } else {
-            action = -1;
             output = s->native_resume(ctx, s->native_owner, completion,
                                        value, &action);
         }
-        JS_FreeValue(ctx, value);
-        if (JS_IsException(output)) {
-            JSValue exception = JS_GetException(ctx);
+        /* The genuine native adapter can report an already observed abort
+           after cancellation selected an ordinary cleanup event. */
+        terminal_abort |= action == JS_PI_AG_ABORTED;
+        js_pi_async_release_terminal(ctx, value, &owned, &terminal_abort);
+        value = JS_UNDEFINED;
+        if (terminal_abort && !owned.present) {
+            JS_ThrowInternalError(ctx, "Native async generator aborted without pending reason");
+            js_pi_async_take_terminal_pending(ctx, &owned, &terminal_abort);
+        }
+        if (JS_IsException(output) || owned.present || terminal_abort) {
+actual_failure:
+            js_pi_async_release_terminal(ctx, output, &owned, &terminal_abort);
+            output = JS_UNDEFINED;
+            if (terminal_abort)
+                goto terminal;
+            js_pi_async_restore_owned_pending(ctx, &owned);
+            value = JS_GetException(ctx); /* ordinary actual failure -> DATA */
             js_async_generator_complete(ctx, s);
-            js_async_generator_reject(ctx, s, exception);
-            JS_FreeValue(ctx, exception);
-            JS_FreeContext(ctx);
-            return;
+            js_native_async_take_pending(ctx, &owned);
+            if (!owned.present)
+                js_async_generator_reject(ctx, s, value);
+            goto done;
         }
         switch (action) {
         case JS_PI_AG_AWAIT: phase = PI_AG_PHASE_AWAIT; break;
@@ -25319,56 +25800,79 @@ static void js_native_async_generator_drive(JSAsyncGeneratorData *s,
         case JS_PI_AG_RETURN: phase = PI_AG_PHASE_RETURN; break;
         case JS_PI_AG_COMPLETE:
             js_async_generator_complete(ctx, s);
-            js_native_async_generator_resolve(ctx, s, output, true);
-            JS_FreeValue(ctx, output);
-            JS_FreeContext(ctx);
-            return;
+            js_native_async_take_pending(ctx, &owned);
+            if (!owned.present)
+                js_native_async_generator_resolve(ctx, s, output, true);
+            goto done;
         case JS_PI_AG_THROW:
+            /* This explicit action's output is source completion DATA. */
             js_async_generator_complete(ctx, s);
-            js_async_generator_reject(ctx, s, output);
-            JS_FreeValue(ctx, output);
-            JS_FreeContext(ctx);
-            return;
+            js_native_async_take_pending(ctx, &owned);
+            if (!owned.present)
+                js_async_generator_reject(ctx, s, output);
+            goto done;
         default:
-            JS_FreeValue(ctx, output);
-            JS_ThrowTypeError(ctx, "invalid native async generator action");
-            value = JS_GetException(ctx);
-            js_async_generator_complete(ctx, s);
-            js_async_generator_reject(ctx, s, value);
-            JS_FreeValue(ctx, value);
-            JS_FreeContext(ctx);
-            return;
+            js_pi_async_release_terminal(ctx, output, &owned, &terminal_abort);
+            output = JS_UNDEFINED;
+            if (!owned.present)
+                JS_ThrowTypeError(ctx, "invalid native async generator action");
+            goto actual_failure;
         }
         s->native_phase = phase;
         s->state = JS_ASYNC_GENERATOR_STATE_EXECUTING;
-        if (js_async_generator_await(ctx, s, output) == 0) {
-            JS_FreeValue(ctx, output);
-            JS_FreeContext(ctx);
-            return;
+        {
+            int status = js_async_generator_await(ctx, s, output, &terminal_abort);
+            js_pi_async_release_terminal(ctx, output, &owned, &terminal_abort);
+            output = JS_UNDEFINED;
+            if (status == 0 && !owned.present)
+                goto done;
+            if (terminal_abort)
+                goto terminal;
+            /* Only ordinary PromiseResolve failure feeds source await. */
+            js_pi_async_restore_owned_pending(ctx, &owned);
+            value = JS_GetException(ctx);
+            s->native_phase = PI_AG_PHASE_NONE;
+            completion = phase == PI_AG_PHASE_AWAIT ? JS_PI_AG_AWAIT_REJECTED
+                                                     : JS_PI_AG_THROW_INPUT;
         }
-        JS_FreeValue(ctx, output);
-        /* PromiseResolve's poisoned constructor can fail synchronously.
-           Feed the raw exception back at the actual await/yield boundary. */
-        value = JS_GetException(ctx);
-        s->native_phase = PI_AG_PHASE_NONE;
-        completion = phase == PI_AG_PHASE_AWAIT ? JS_PI_AG_AWAIT_REJECTED
-                                                 : JS_PI_AG_THROW_INPUT;
     }
+terminal:
+    js_pi_async_generator_retire_pending(ctx, s, &owned);
+done:
+    js_pi_async_release_terminal(ctx, value, &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, output, &owned, &terminal_abort);
+    if (owned.present)
+        js_pi_async_generator_retire_pending(ctx, s, &owned);
+    /* caller_ctx has an independent live caller reference even if retiring
+       s removed its last stored native realm reference. */
+    JS_FreeContext(ctx);
+    js_native_async_take_pending(caller_ctx, &owned);
+    if (owned.present)
+        js_pi_async_generator_publish_failure(caller_ctx, s, &owned);
 }
 
 static void js_async_generator_resume_next(JSContext *ctx,
                                            JSAsyncGeneratorData *s)
 {
     JSAsyncGeneratorRequest *next;
-    JSValue func_ret, value;
+    JSValue func_ret = JS_UNDEFINED, value = JS_UNDEFINED;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
+    bool terminal_abort = false;
 
     for(;;) {
-        if (list_empty(&s->queue))
+        /* An ordinary rejected await is deliberately pending as the input
+           to this bytecode resume. It is not an unrelated delivery failure. */
+        if (JS_HasException(ctx) &&
+            !(s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING &&
+              !s->native_resume && s->func_state.throw_flag &&
+              !JS_PiIsPendingUncatchable(ctx)))
+            goto failure;
+        if (s->terminal_aborted || list_empty(&s->queue))
             break;
         next = list_entry(s->queue.next, JSAsyncGeneratorRequest, link);
         switch(s->state) {
         case JS_ASYNC_GENERATOR_STATE_EXECUTING:
-            /* only happens when restarting execution after await() */
             assert(!s->native_resume);
             goto resume_exec;
         case JS_ASYNC_GENERATOR_STATE_AWAITING_RETURN:
@@ -25377,8 +25881,10 @@ static void js_async_generator_resume_next(JSContext *ctx,
             if (next->completion_type == GEN_MAGIC_NEXT) {
                 if (s->native_resume) {
                     s->state = JS_ASYNC_GENERATOR_STATE_EXECUTING;
-                    js_native_async_generator_drive(s, JS_PI_AG_START,
+                    js_native_async_generator_drive(ctx, s, JS_PI_AG_START,
                                                      JS_UNDEFINED);
+                    if (JS_HasException(ctx))
+                        goto failure;
                     if (s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING)
                         goto done;
                     break;
@@ -25390,24 +25896,32 @@ static void js_async_generator_resume_next(JSContext *ctx,
             break;
         case JS_ASYNC_GENERATOR_STATE_COMPLETED:
             if (next->completion_type == GEN_MAGIC_NEXT) {
-                if (s->native_resume)
-                    js_native_async_generator_resolve(ctx, s, JS_UNDEFINED, true);
-                else
-                    js_async_generator_resolve(ctx, s, JS_UNDEFINED, true);
+                js_async_generator_resolve(ctx, s, JS_UNDEFINED, true);
             } else if (next->completion_type == GEN_MAGIC_RETURN) {
                 s->state = JS_ASYNC_GENERATOR_STATE_AWAITING_RETURN;
-                if (js_async_generator_completed_return(ctx, s, next->result) < 0 &&
-                    s->native_resume) {
-                    JSValue exception = JS_GetException(ctx);
-                    s->state = JS_ASYNC_GENERATOR_STATE_COMPLETED;
-                    js_async_generator_reject(ctx, s, exception);
-                    JS_FreeValue(ctx, exception);
+                if (js_async_generator_completed_return(ctx, s, next->result,
+                                                        &terminal_abort) < 0) {
+                    if (terminal_abort || JS_PiIsPendingUncatchable(ctx))
+                        goto failure;
+                    if (s->native_resume) {
+                        value = JS_GetException(ctx); /* ordinary -> DATA */
+                        s->state = JS_ASYNC_GENERATOR_STATE_COMPLETED;
+                        js_async_generator_reject(ctx, s, value);
+                        js_pi_async_release_terminal(ctx, value, &owned, &terminal_abort);
+                        value = JS_UNDEFINED;
+                        if (owned.present)
+                            goto failure;
+                    } else {
+                        goto failure;
+                    }
                 }
             } else {
                 js_async_generator_reject(ctx, s, next->result);
             }
+            if (JS_HasException(ctx))
+                goto failure;
             if (s->native_resume && s->state == JS_ASYNC_GENERATOR_STATE_COMPLETED)
-                break; /* drain native requests queued behind completed return */
+                break;
             goto done;
         case JS_ASYNC_GENERATOR_STATE_SUSPENDED_YIELD:
         case JS_ASYNC_GENERATOR_STATE_SUSPENDED_YIELD_STAR:
@@ -25416,20 +25930,32 @@ static void js_async_generator_resume_next(JSContext *ctx,
                 if (next->completion_type == GEN_MAGIC_RETURN) {
                     JSContext *realm = JS_DupContext(s->native_ctx);
                     s->native_phase = PI_AG_PHASE_RETURN_INPUT;
-                    if (js_async_generator_await(realm, s, next->result) < 0) {
-                        JSValue exception = JS_GetException(realm);
-                        s->native_phase = PI_AG_PHASE_NONE;
-                        js_native_async_generator_drive(s, JS_PI_AG_THROW_INPUT,
-                                                         exception);
-                        JS_FreeValue(realm, exception);
+                    if (js_async_generator_await(realm, s, next->result,
+                                                 &terminal_abort) < 0) {
+                        if (terminal_abort || JS_PiIsPendingUncatchable(realm)) {
+                            js_native_async_take_pending(realm, &owned);
+                        } else {
+                            value = JS_GetException(realm); /* ordinary -> DATA */
+                            s->native_phase = PI_AG_PHASE_NONE;
+                            js_native_async_generator_drive(realm, s,
+                                                             JS_PI_AG_THROW_INPUT, value);
+                            js_pi_async_release_terminal(realm, value, &owned, &terminal_abort);
+                            value = JS_UNDEFINED;
+                        }
                     }
+                    js_native_async_take_pending(realm, &owned);
                     JS_FreeContext(realm);
+                    js_native_async_take_pending(ctx, &owned);
+                    if (owned.present)
+                        goto failure;
                 } else {
-                    js_native_async_generator_drive(s,
+                    js_native_async_generator_drive(ctx, s,
                         next->completion_type == GEN_MAGIC_THROW ?
                             JS_PI_AG_THROW_INPUT : JS_PI_AG_NEXT,
                         next->result);
                 }
+                if (JS_HasException(ctx))
+                    goto failure;
                 if (s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING)
                     goto done;
                 break;
@@ -25437,14 +25963,13 @@ static void js_async_generator_resume_next(JSContext *ctx,
             value = js_dup(next->result);
             if (next->completion_type == GEN_MAGIC_THROW &&
                 s->state == JS_ASYNC_GENERATOR_STATE_SUSPENDED_YIELD) {
-                JS_Throw(ctx, value);
+                JS_PiThrowExceptionData(ctx, value);
+                value = JS_UNDEFINED;
                 s->func_state.throw_flag = true;
             } else {
-                /* 'yield' returns a value. 'yield *' also returns a value
-                   in case the 'throw' method is called */
                 s->func_state.frame.cur_sp[-1] = value;
-                s->func_state.frame.cur_sp[0] =
-                    js_int32(next->completion_type);
+                value = JS_UNDEFINED;
+                s->func_state.frame.cur_sp[0] = js_int32(next->completion_type);
                 s->func_state.frame.cur_sp++;
             exec_no_arg:
                 s->func_state.throw_flag = false;
@@ -25452,31 +25977,47 @@ static void js_async_generator_resume_next(JSContext *ctx,
             s->state = JS_ASYNC_GENERATOR_STATE_EXECUTING;
         resume_exec:
             func_ret = async_func_resume(ctx, &s->func_state);
-            if (JS_IsException(func_ret)) {
-                value = JS_GetException(ctx);
+            if (JS_IsException(func_ret) || JS_HasException(ctx)) {
+                js_pi_async_release_terminal(ctx, func_ret, &owned, &terminal_abort);
+                func_ret = JS_UNDEFINED;
+                if (terminal_abort)
+                    goto failure;
+                js_pi_async_restore_owned_pending(ctx, &owned);
+                value = JS_GetException(ctx); /* actual ordinary failure -> DATA */
                 js_async_generator_complete(ctx, s);
-                js_async_generator_reject(ctx, s, value);
-                JS_FreeValue(ctx, value);
+                js_native_async_take_pending(ctx, &owned);
+                if (!owned.present)
+                    js_async_generator_reject(ctx, s, value);
+                js_pi_async_release_terminal(ctx, value, &owned, &terminal_abort);
+                value = JS_UNDEFINED;
+                if (owned.present)
+                    goto failure;
             } else if (JS_VALUE_GET_TAG(func_ret) == JS_TAG_INT) {
                 int func_ret_code, ret;
                 value = s->func_state.frame.cur_sp[-1];
                 s->func_state.frame.cur_sp[-1] = JS_UNDEFINED;
                 func_ret_code = JS_VALUE_GET_INT(func_ret);
+                func_ret = JS_UNDEFINED;
                 switch(func_ret_code) {
                 case FUNC_RET_YIELD:
                 case FUNC_RET_YIELD_STAR:
-                    if (func_ret_code == FUNC_RET_YIELD_STAR)
-                        s->state = JS_ASYNC_GENERATOR_STATE_SUSPENDED_YIELD_STAR;
-                    else
-                        s->state = JS_ASYNC_GENERATOR_STATE_SUSPENDED_YIELD;
+                    s->state = func_ret_code == FUNC_RET_YIELD_STAR ?
+                        JS_ASYNC_GENERATOR_STATE_SUSPENDED_YIELD_STAR :
+                        JS_ASYNC_GENERATOR_STATE_SUSPENDED_YIELD;
                     js_async_generator_resolve(ctx, s, value, false);
-                    JS_FreeValue(ctx, value);
+                    js_pi_async_release_terminal(ctx, value, &owned, &terminal_abort);
+                    value = JS_UNDEFINED;
+                    if (owned.present)
+                        goto failure;
                     break;
                 case FUNC_RET_AWAIT:
-                    ret = js_async_generator_await(ctx, s, value);
-                    JS_FreeValue(ctx, value);
-                    if (ret < 0) {
-                        /* exception: throw it */
+                    ret = js_async_generator_await(ctx, s, value, &terminal_abort);
+                    js_pi_async_release_terminal(ctx, value, &owned, &terminal_abort);
+                    value = JS_UNDEFINED;
+                    if (terminal_abort)
+                        goto failure;
+                    if (ret < 0 || owned.present) {
+                        js_pi_async_restore_owned_pending(ctx, &owned);
                         s->func_state.throw_flag = true;
                         goto resume_exec;
                     }
@@ -25486,19 +26027,31 @@ static void js_async_generator_resume_next(JSContext *ctx,
                 }
             } else {
                 assert(JS_IsUndefined(func_ret));
-                /* end of function */
+                func_ret = JS_UNDEFINED;
                 value = s->func_state.frame.cur_sp[-1];
                 s->func_state.frame.cur_sp[-1] = JS_UNDEFINED;
                 js_async_generator_complete(ctx, s);
-                js_async_generator_resolve(ctx, s, value, true);
-                JS_FreeValue(ctx, value);
+                js_native_async_take_pending(ctx, &owned);
+                if (!owned.present)
+                    js_async_generator_resolve(ctx, s, value, true);
+                js_pi_async_release_terminal(ctx, value, &owned, &terminal_abort);
+                value = JS_UNDEFINED;
+                if (owned.present)
+                    goto failure;
             }
             break;
         default:
             abort();
         }
     }
- done: ;
+done:
+    return;
+failure:
+    js_native_async_take_pending(ctx, &owned);
+    js_pi_async_generator_retire_pending(ctx, s, &owned);
+    js_native_async_release(ctx, value, &owned);
+    js_native_async_release(ctx, func_ret, &owned);
+    js_pi_async_restore_owned_pending(ctx, &owned);
 }
 
 static JSValue js_async_generator_resolve_function(JSContext *ctx,
@@ -25509,22 +26062,25 @@ static JSValue js_async_generator_resolve_function(JSContext *ctx,
     bool is_reject = magic & 1;
     JSAsyncGeneratorData *s = JS_GetOpaque(func_data[0], JS_CLASS_ASYNC_GENERATOR);
     JSValueConst arg = argv[0];
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
 
-    /* XXX: what if s == NULL */
-
+    /* Old await callbacks can outlive terminal retirement. They must never
+       borrow the retired realm or consume a later request. */
+    if (!s || s->terminal_aborted || list_empty(&s->queue))
+        return JS_UNDEFINED;
+    if (JS_HasException(ctx))
+        goto failure;
     if (magic >= 2) {
-        /* resume next case in AWAITING_RETURN state */
         assert(s->state == JS_ASYNC_GENERATOR_STATE_AWAITING_RETURN ||
                s->state == JS_ASYNC_GENERATOR_STATE_COMPLETED);
         s->state = JS_ASYNC_GENERATOR_STATE_COMPLETED;
-        if (is_reject) {
+        if (is_reject)
             js_async_generator_reject(ctx, s, arg);
-        } else {
-            if (s->native_resume)
-                js_native_async_generator_resolve(ctx, s, arg, true);
-            else
-                js_async_generator_resolve(ctx, s, arg, true);
-        }
+        else
+            js_async_generator_resolve(ctx, s, arg, true);
+        if (JS_HasException(ctx))
+            goto failure;
         if (s->native_resume)
             js_async_generator_resume_next(ctx, s);
     } else if (s->native_resume && s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING) {
@@ -25536,28 +26092,35 @@ static JSValue js_async_generator_resolve_function(JSContext *ctx,
             js_native_async_generator_resolve(realm, s, arg, false);
         } else if (phase == PI_AG_PHASE_RETURN && !is_reject) {
             js_async_generator_complete(realm, s);
-            js_native_async_generator_resolve(realm, s, arg, true);
+            if (!JS_HasException(realm))
+                js_native_async_generator_resolve(realm, s, arg, true);
         } else {
             int completion = phase == PI_AG_PHASE_AWAIT ?
                 (is_reject ? JS_PI_AG_AWAIT_REJECTED : JS_PI_AG_AWAIT_FULFILLED) :
                 (is_reject ? JS_PI_AG_THROW_INPUT : JS_PI_AG_RETURN_INPUT);
-            js_native_async_generator_drive(s, completion, arg);
+            js_native_async_generator_drive(realm, s, completion, arg);
         }
+        js_native_async_take_pending(realm, &owned);
         JS_FreeContext(realm);
+        js_native_async_take_pending(ctx, &owned);
+        if (owned.present)
+            goto failure;
         if (s->state != JS_ASYNC_GENERATOR_STATE_EXECUTING)
             js_async_generator_resume_next(ctx, s);
     } else if (s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING) {
-        /* restart function execution after await() */
         s->func_state.throw_flag = is_reject;
-        if (is_reject) {
-            JS_Throw(ctx, js_dup(arg));
-        } else {
-            /* return value of await */
+        if (is_reject)
+            JS_PiThrowExceptionData(ctx, js_dup(arg));
+        else
             s->func_state.frame.cur_sp[-1] = js_dup(arg);
-        }
         js_async_generator_resume_next(ctx, s);
     }
+    if (JS_HasException(ctx))
+        goto failure;
     return JS_UNDEFINED;
+failure:
+    js_pi_async_generator_publish_failure(ctx, s, &owned);
+    return JS_EXCEPTION;
 }
 
 /* magic = GEN_MAGIC_x */
@@ -25566,22 +26129,33 @@ static JSValue js_async_generator_next(JSContext *ctx, JSValueConst this_val,
                                        int magic)
 {
     JSAsyncGeneratorData *s = JS_GetOpaque(this_val, JS_CLASS_ASYNC_GENERATOR);
-    JSValue promise, resolving_funcs[2];
+    JSValue promise, resolving_funcs[2] = { JS_UNDEFINED, JS_UNDEFINED };
     JSAsyncGeneratorRequest *req;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
+    bool terminal_abort = false, queued = false;
 
     promise = JS_NewPromiseCapability(ctx, resolving_funcs);
-    if (JS_IsException(promise))
-        return JS_EXCEPTION;
-    if (!s) {
+    if (JS_IsException(promise) || JS_HasException(ctx))
+        goto fail;
+    if (!s || s->terminal_aborted) {
         JSValue err, res2;
-        JS_ThrowTypeError(ctx, "not an AsyncGenerator object");
-        err = JS_GetException(ctx);
-        res2 = JS_Call(ctx, resolving_funcs[1], JS_UNDEFINED,
-                       1, vc(&err));
-        JS_FreeValue(ctx, err);
-        JS_FreeValue(ctx, res2);
-        JS_FreeValue(ctx, resolving_funcs[0]);
-        JS_FreeValue(ctx, resolving_funcs[1]);
+        if (!s)
+            JS_ThrowTypeError(ctx, "not an AsyncGenerator object");
+        else
+            JS_ThrowTypeError(ctx, "AsyncGenerator has been terminated");
+        if (JS_PiIsPendingUncatchable(ctx))
+            goto fail;
+        err = JS_GetException(ctx); /* new independent ordinary error */
+        res2 = JS_Call(ctx, resolving_funcs[1], JS_UNDEFINED, 1, vc(&err));
+        js_pi_async_release_terminal(ctx, err, &owned, &terminal_abort);
+        js_pi_async_release_terminal(ctx, res2, &owned, &terminal_abort);
+        js_pi_async_release_terminal(ctx, resolving_funcs[0], &owned, &terminal_abort);
+        resolving_funcs[0] = JS_UNDEFINED;
+        js_pi_async_release_terminal(ctx, resolving_funcs[1], &owned, &terminal_abort);
+        resolving_funcs[1] = JS_UNDEFINED;
+        if (owned.present)
+            goto fail;
         return promise;
     }
     req = js_mallocz(ctx, sizeof(*req));
@@ -25592,15 +26166,25 @@ static JSValue js_async_generator_next(JSContext *ctx, JSValueConst this_val,
     req->promise = js_dup(promise);
     req->resolving_funcs[0] = resolving_funcs[0];
     req->resolving_funcs[1] = resolving_funcs[1];
+    resolving_funcs[0] = JS_UNDEFINED;
+    resolving_funcs[1] = JS_UNDEFINED;
     list_add_tail(&req->link, &s->queue);
-    if (s->state != JS_ASYNC_GENERATOR_STATE_EXECUTING) {
+    queued = true;
+    if (s->state != JS_ASYNC_GENERATOR_STATE_EXECUTING)
         js_async_generator_resume_next(ctx, s);
-    }
+    if (JS_HasException(ctx))
+        goto fail;
     return promise;
- fail:
-    JS_FreeValue(ctx, resolving_funcs[0]);
-    JS_FreeValue(ctx, resolving_funcs[1]);
-    JS_FreeValue(ctx, promise);
+fail:
+    js_pi_async_take_terminal_pending(ctx, &owned, &terminal_abort);
+    if (s && (queued || terminal_abort))
+        js_pi_async_generator_retire_pending(ctx, s, &owned);
+    js_pi_async_release_terminal(ctx, resolving_funcs[0], &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, resolving_funcs[1], &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, promise, &owned, &terminal_abort);
+    if (s && terminal_abort)
+        js_pi_async_generator_retire_pending(ctx, s, &owned);
+    js_pi_async_restore_owned_pending(ctx, &owned);
     return JS_EXCEPTION;
 }
 
@@ -25610,7 +26194,9 @@ static JSValue js_async_generator_function_call(JSContext *ctx,
                                                 int argc, JSValueConst *argv,
                                                 int flags)
 {
-    JSValue obj, func_ret;
+    JSValue obj = JS_UNDEFINED, func_ret = JS_UNDEFINED;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
     JSAsyncGeneratorData *s;
 
     s = js_mallocz(ctx, sizeof(*s));
@@ -25626,12 +26212,15 @@ static JSValue js_async_generator_function_call(JSContext *ctx,
     /* execute the function up to 'OP_initial_yield' (no yield nor
        await are possible) */
     func_ret = async_func_resume(ctx, &s->func_state);
-    if (JS_IsException(func_ret))
+    if (JS_IsException(func_ret) || JS_HasException(ctx))
         goto fail;
-    JS_FreeValue(ctx, func_ret);
+    js_native_async_release(ctx, func_ret, &owned);
+    func_ret = JS_UNDEFINED;
+    if (owned.present)
+        goto fail;
 
     obj = js_create_from_ctor(ctx, func_obj, JS_CLASS_ASYNC_GENERATOR);
-    if (JS_IsException(obj))
+    if (JS_IsException(obj) || JS_HasException(ctx))
         goto fail;
     s->generator = JS_VALUE_GET_OBJ(obj);
     /* root captured locals against the async generator object (the initial
@@ -25640,7 +26229,11 @@ static JSValue js_async_generator_function_call(JSContext *ctx,
     JS_SetOpaqueInternal(obj, s);
     return obj;
  fail:
+    js_native_async_release(ctx, func_ret, &owned);
+    js_native_async_release(ctx, obj, &owned);
     js_async_generator_free(ctx->rt, s);
+    js_native_async_take_pending(ctx, &owned);
+    js_pi_async_restore_owned_pending(ctx, &owned);
     return JS_EXCEPTION;
 }
 
@@ -25660,6 +26253,8 @@ JSValue JS_PiNewNativeAsyncGenerator(JSContext *ctx, JSValueConst owner,
 {
     JSAsyncGeneratorData *s;
     JSValue object;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
     if (!resume)
         return JS_ThrowTypeError(ctx, "native async generator requires a resume callback");
     s = js_mallocz(ctx, sizeof(*s));
@@ -25673,9 +26268,12 @@ JSValue JS_PiNewNativeAsyncGenerator(JSContext *ctx, JSValueConst owner,
     object = JS_NewObjectProtoClass(ctx,
         JS_IsUndefined(prototype) ? ctx->class_proto[JS_CLASS_ASYNC_GENERATOR] : prototype,
         JS_CLASS_ASYNC_GENERATOR);
-    if (JS_IsException(object)) {
+    if (JS_IsException(object) || JS_HasException(ctx)) {
+        js_native_async_release(ctx, object, &owned);
         js_async_generator_free(ctx->rt, s);
-        return object;
+        js_native_async_take_pending(ctx, &owned);
+        js_pi_async_restore_owned_pending(ctx, &owned);
+        return JS_EXCEPTION;
     }
     s->generator = JS_VALUE_GET_OBJ(object);
     JS_SetOpaqueInternal(object, s);
@@ -26732,18 +27330,20 @@ static __exception int js_parse_regexp(JSParseState *s)
 
     body_str = string_buffer_end(b);
     if (s->pi_diagnostic && (JS_IsException(body_str) || JS_HasException(s->ctx))) {
-        JSValue first = JS_HasException(s->ctx) ? JS_GetException(s->ctx) : JS_NULL;
+        bool first_fatal = false;
+        JSValue first = JS_HasException(s->ctx) ? JS_PiGetExceptionWithFatal(s->ctx, &first_fatal) : JS_NULL;
         JS_FreeValue(s->ctx, body_str);
         string_buffer_free(b2);
-        JS_Throw(s->ctx, first);
+        JS_PiThrowNativePending(s->ctx, first, first_fatal);
         return -1;
     }
     flags_str = string_buffer_end(b2);
     if (s->pi_diagnostic && (JS_IsException(flags_str) || JS_HasException(s->ctx))) {
-        JSValue first = JS_HasException(s->ctx) ? JS_GetException(s->ctx) : JS_NULL;
+        bool first_fatal = false;
+        JSValue first = JS_HasException(s->ctx) ? JS_PiGetExceptionWithFatal(s->ctx, &first_fatal) : JS_NULL;
         JS_FreeValue(s->ctx, body_str);
         JS_FreeValue(s->ctx, flags_str);
-        JS_Throw(s->ctx, first);
+        JS_PiThrowNativePending(s->ctx, first, first_fatal);
         return -1;
     }
     if (JS_IsException(body_str) ||
@@ -34260,6 +34860,7 @@ static JSModuleDef *js_new_module_def(JSContext *ctx, JSAtom name)
     m->func_obj = JS_UNDEFINED;
     m->eval_exception = JS_UNDEFINED;
     m->eval_has_fatal_exception = false;
+    m->eval_exception_generic_fatal = false;
     m->fatal_next = NULL;
     m->meta_obj = JS_UNDEFINED;
     m->promise = JS_UNDEFINED;
@@ -35334,11 +35935,12 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
     return obj;
  fail:
     if (ctx->pi_link_preparing) {
-        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+        bool first_fatal = false;
+        JSValue first = JS_HasException(ctx) ? JS_PiGetExceptionWithFatal(ctx, &first_fatal) : JS_NULL;
         js_pi_link_sort_free(ctx, link_sort);
         js_free(ctx, s->exported_names);
         JS_FreeValue(ctx, obj);
-        return JS_Throw(ctx, first);
+        return JS_PiThrowNativePending(ctx, first, first_fatal);
     }
     js_free(ctx, s->exported_names);
     JS_FreeValue(ctx, obj);
@@ -35885,6 +36487,8 @@ static JSValue js_load_module_rejected(JSContext *ctx, JSValueConst this_val,
     JSValueConst *resolving_funcs = func_data;
     JSValueConst error;
     JSValue ret;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
 
     /* XXX: check if the test is necessary */
     if (argc >= 1)
@@ -35892,7 +36496,11 @@ static JSValue js_load_module_rejected(JSContext *ctx, JSValueConst this_val,
     else
         error = JS_UNDEFINED;
     ret = JS_Call(ctx, resolving_funcs[1], JS_UNDEFINED, 1, &error);
-    JS_FreeValue(ctx, ret);
+    js_native_async_release(ctx, ret, &owned);
+    if (owned.present) {
+        js_pi_async_restore_owned_pending(ctx, &owned);
+        return JS_EXCEPTION;
+    }
     return JS_UNDEFINED;
 }
 
@@ -35903,17 +36511,29 @@ static JSValue js_load_module_fulfilled(JSContext *ctx, JSValueConst this_val,
     JSValueConst *resolving_funcs = func_data;
     JSModuleDef *m = JS_VALUE_GET_PTR(func_data[2]);
     JSValue ret, ns;
+    bool terminal_abort = false;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
 
-    /* return the module namespace */
+    /* A namespace failure is an actual event, unlike a rejected input. */
     ns = JS_GetModuleNamespace(ctx, m);
-    if (JS_IsException(ns)) {
+    if (JS_IsException(ns) || JS_HasException(ctx)) {
+        js_pi_async_release_terminal(ctx, ns, &owned, &terminal_abort);
+        js_pi_async_restore_owned_pending(ctx, &owned);
+        if (terminal_abort || JS_PiIsPendingUncatchable(ctx))
+            return JS_EXCEPTION;
         JSValue err = JS_GetException(ctx);
-        js_load_module_rejected(ctx, JS_UNDEFINED, 1, vc(&err), 0, func_data);
-        return JS_UNDEFINED;
+        ret = js_load_module_rejected(ctx, JS_UNDEFINED, 1, vc(&err), 0, func_data);
+        js_pi_async_release_terminal(ctx, err, &owned, &terminal_abort);
+    } else {
+        ret = JS_Call(ctx, resolving_funcs[0], JS_UNDEFINED, 1, vc(&ns));
+        js_pi_async_release_terminal(ctx, ns, &owned, &terminal_abort);
     }
-    ret = JS_Call(ctx, resolving_funcs[0], JS_UNDEFINED, 1, vc(&ns));
-    JS_FreeValue(ctx, ret);
-    JS_FreeValue(ctx, ns);
+    js_pi_async_release_terminal(ctx, ret, &owned, &terminal_abort);
+    if (owned.present) {
+        js_pi_async_restore_owned_pending(ctx, &owned);
+        return JS_EXCEPTION;
+    }
     return JS_UNDEFINED;
 }
 
@@ -35922,30 +36542,37 @@ static void JS_LoadModuleInternal(JSContext *ctx, const char *basename,
                                   JSValueConst *resolving_funcs,
                                   JSValueConst attributes)
 {
-    JSValue evaluate_promise;
+    JSValue evaluate_promise = JS_UNDEFINED;
     JSModuleDef *m;
-    JSValue ret, err, func_obj, evaluate_resolving_funcs[2];
+    JSValue ret = JS_UNDEFINED, err, func_obj = JS_UNDEFINED;
+    JSValue evaluate_resolving_funcs[2] = { JS_UNDEFINED, JS_UNDEFINED };
     JSValueConst func_data[3];
+    bool terminal_abort = false;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
 
     m = js_host_resolve_imported_module(ctx, basename, filename, attributes);
     if (!m)
         goto fail;
 
     if (js_resolve_module(ctx, m) < 0) {
+        js_pi_async_take_terminal_pending(ctx, &owned, &terminal_abort);
         js_free_modules(ctx, JS_FREE_MODULE_NOT_RESOLVED);
+        js_pi_async_take_terminal_pending(ctx, &owned, &terminal_abort);
+        js_pi_async_restore_owned_pending(ctx, &owned);
         goto fail;
     }
 
-    /* Evaluate the module code */
+    /* EvalFunction consumes this actual module value on every path. */
     func_obj = JS_NewModuleValue(ctx, m);
     evaluate_promise = JS_EvalFunction(ctx, func_obj);
-    if (JS_IsException(evaluate_promise)) {
-    fail:
-        err = JS_GetException(ctx);
-        ret = JS_Call(ctx, resolving_funcs[1], JS_UNDEFINED, 1, vc(&err));
-        JS_FreeValue(ctx, ret); /* XXX: what to do if exception ? */
-        JS_FreeValue(ctx, err);
-        return;
+    func_obj = JS_UNDEFINED;
+    if (JS_IsException(evaluate_promise) || JS_HasException(ctx)) {
+        /* The module owner retains its terminal decision separately from
+           the final ordinary/generic class selected during frame cleanup. */
+        terminal_abort |= m->eval_has_fatal_exception ||
+            (m->cycle_root && m->cycle_root->eval_has_fatal_exception);
+        goto fail;
     }
 
     func_obj = JS_NewModuleValue(ctx, m);
@@ -35953,13 +36580,36 @@ static void JS_LoadModuleInternal(JSContext *ctx, const char *basename,
     func_data[1] = resolving_funcs[1];
     func_data[2] = func_obj;
     evaluate_resolving_funcs[0] = JS_NewCFunctionData(ctx, js_load_module_fulfilled, 0, 0, 3, func_data);
+    if (JS_IsException(evaluate_resolving_funcs[0]) || JS_HasException(ctx))
+        goto fail;
     evaluate_resolving_funcs[1] = JS_NewCFunctionData(ctx, js_load_module_rejected, 0, 0, 3, func_data);
-    JS_FreeValue(ctx, func_obj);
+    if (JS_IsException(evaluate_resolving_funcs[1]) || JS_HasException(ctx))
+        goto fail;
+    js_pi_async_release_terminal(ctx, func_obj, &owned, &terminal_abort);
+    func_obj = JS_UNDEFINED;
+    if (owned.present) {
+        js_pi_async_restore_owned_pending(ctx, &owned);
+        goto fail;
+    }
     ret = js_promise_then(ctx, evaluate_promise, 2, vc(evaluate_resolving_funcs));
-    JS_FreeValue(ctx, ret);
-    JS_FreeValue(ctx, evaluate_resolving_funcs[0]);
-    JS_FreeValue(ctx, evaluate_resolving_funcs[1]);
-    JS_FreeValue(ctx, evaluate_promise);
+    if (JS_IsException(ret) || JS_HasException(ctx))
+        goto fail;
+    goto done;
+ fail:
+    /* Only an actual ordinary event may become the import rejection value. */
+    if (!terminal_abort && !JS_PiIsPendingUncatchable(ctx)) {
+        err = JS_GetException(ctx);
+        JSValue rejected = JS_Call(ctx, resolving_funcs[1], JS_UNDEFINED, 1, vc(&err));
+        js_pi_async_release_terminal(ctx, rejected, &owned, &terminal_abort);
+        js_pi_async_release_terminal(ctx, err, &owned, &terminal_abort);
+    }
+ done:
+    js_pi_async_release_terminal(ctx, ret, &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, func_obj, &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, evaluate_resolving_funcs[0], &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, evaluate_resolving_funcs[1], &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, evaluate_promise, &owned, &terminal_abort);
+    js_pi_async_restore_owned_pending(ctx, &owned);
 }
 
 /* Return a promise or an exception in case of memory error. Used by
@@ -35968,13 +36618,20 @@ JSValue JS_LoadModule(JSContext *ctx, const char *basename,
                       const char *filename)
 {
     JSValue promise, resolving_funcs[2];
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
 
     promise = JS_NewPromiseCapability(ctx, resolving_funcs);
     if (JS_IsException(promise))
         return JS_EXCEPTION;
     JS_LoadModuleInternal(ctx, basename, filename, vc(resolving_funcs), JS_UNDEFINED);
-    JS_FreeValue(ctx, resolving_funcs[0]);
-    JS_FreeValue(ctx, resolving_funcs[1]);
+    js_native_async_release(ctx, resolving_funcs[0], &owned);
+    js_native_async_release(ctx, resolving_funcs[1], &owned);
+    if (owned.present) {
+        js_native_async_release(ctx, promise, &owned);
+        js_pi_async_restore_owned_pending(ctx, &owned);
+        return JS_EXCEPTION;
+    }
     return promise;
 }
 
@@ -35987,6 +36644,8 @@ static JSValue js_dynamic_import_job(JSContext *ctx,
     JSValueConst attributes = argv[4];
     const char *basename = NULL, *filename;
     JSValue ret, err;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
 
     if (!JS_IsString(basename_val)) {
         JS_ThrowTypeError(ctx, "no function filename for import()");
@@ -36003,13 +36662,21 @@ static JSValue js_dynamic_import_job(JSContext *ctx,
     JS_LoadModuleInternal(ctx, basename, filename, resolving_funcs, attributes);
     JS_FreeCString(ctx, filename);
     JS_FreeCString(ctx, basename);
-    return JS_UNDEFINED;
+    return JS_HasException(ctx) ? JS_EXCEPTION : JS_UNDEFINED;
  exception:
+    if (JS_PiIsPendingUncatchable(ctx)) {
+        JS_FreeCString(ctx, basename);
+        return JS_EXCEPTION;
+    }
     err = JS_GetException(ctx);
     ret = JS_Call(ctx, resolving_funcs[1], JS_UNDEFINED, 1, vc(&err));
-    JS_FreeValue(ctx, ret); /* XXX: what to do if exception ? */
-    JS_FreeValue(ctx, err);
+    js_native_async_release(ctx, ret, &owned);
+    js_native_async_release(ctx, err, &owned);
     JS_FreeCString(ctx, basename);
+    if (owned.present) {
+        js_pi_async_restore_owned_pending(ctx, &owned);
+        return JS_EXCEPTION;
+    }
     return JS_UNDEFINED;
 }
 
@@ -36023,11 +36690,15 @@ static JSValue js_dynamic_import_with_base(JSContext *ctx, JSValue basename_val,
     JSValue specifier_str = JS_UNDEFINED, attributes = JS_UNDEFINED;
     JSValue attributes_obj = JS_UNDEFINED;
     JSValue args[5];
+    bool terminal_abort = false;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
 
     promise = JS_NewPromiseCapability(ctx, resolving_funcs);
     if (JS_IsException(promise)) {
-        JS_FreeValue(ctx, basename_val);
-        return promise;
+        js_pi_async_release_terminal(ctx, basename_val, &owned, &terminal_abort);
+        js_pi_async_restore_owned_pending(ctx, &owned);
+        return JS_EXCEPTION;
     }
 
     /* the string conversion must occur here */
@@ -36064,7 +36735,11 @@ static JSValue js_dynamic_import_with_base(JSContext *ctx, JSValue basename_val,
                 if (JS_IsException(val))
                     goto exception1;
                 if (!JS_IsString(val)) {
-                    JS_FreeValue(ctx, val);
+                    js_pi_async_release_terminal(ctx, val, &owned, &terminal_abort);
+                    if (owned.present) {
+                        js_pi_async_restore_owned_pending(ctx, &owned);
+                        goto exception1;
+                    }
                     JS_ThrowTypeError(ctx, "module attribute values must be strings");
                     goto exception1;
                 }
@@ -36080,8 +36755,12 @@ static JSValue js_dynamic_import_with_base(JSContext *ctx, JSValue basename_val,
                 ctx->rt->module_check_attrs(ctx, ctx->rt->module_loader_opaque, attributes) < 0) {
                 goto exception;
             }
-            JS_FreeValue(ctx, attributes_obj);
+            js_pi_async_release_terminal(ctx, attributes_obj, &owned, &terminal_abort);
             attributes_obj = JS_UNDEFINED;
+            if (owned.present) {
+                js_pi_async_restore_owned_pending(ctx, &owned);
+                goto exception;
+            }
         }
     }
 
@@ -36095,18 +36774,26 @@ static JSValue js_dynamic_import_with_base(JSContext *ctx, JSValue basename_val,
        cause an unexpected recursion in js_evaluate_module() */
     JS_EnqueueJob(ctx, js_dynamic_import_job, 5, vc(args));
 done:
-    JS_FreeValue(ctx, basename_val);
-    JS_FreeValue(ctx, resolving_funcs[0]);
-    JS_FreeValue(ctx, resolving_funcs[1]);
-    JS_FreeValue(ctx, specifier_str);
-    JS_FreeValue(ctx, attributes);
+    js_pi_async_release_terminal(ctx, basename_val, &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, resolving_funcs[0], &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, resolving_funcs[1], &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, specifier_str, &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, attributes, &owned, &terminal_abort);
+    if (owned.present) {
+        js_pi_async_release_terminal(ctx, promise, &owned, &terminal_abort);
+        js_pi_async_restore_owned_pending(ctx, &owned);
+        return JS_EXCEPTION;
+    }
     return promise;
  exception:
-    JS_FreeValue(ctx, attributes_obj);
+    js_pi_async_release_terminal(ctx, attributes_obj, &owned, &terminal_abort);
+    js_pi_async_restore_owned_pending(ctx, &owned);
+    if (terminal_abort || JS_PiIsPendingUncatchable(ctx))
+        goto done;
     err = JS_GetException(ctx);
     ret = JS_Call(ctx, resolving_funcs[1], JS_UNDEFINED, 1, vc(&err));
-    JS_FreeValue(ctx, ret);
-    JS_FreeValue(ctx, err);
+    js_pi_async_release_terminal(ctx, ret, &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, err, &owned, &terminal_abort);
     goto done;
 }
 
@@ -36138,14 +36825,17 @@ JSValue JS_PiDynamicImportGraph0(JSContext *ctx, JSValueConst physical_basename,
 
 static void js_set_module_evaluated(JSContext *ctx, JSModuleDef *m)
 {
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
     m->status = JS_MODULE_STATUS_EVALUATED;
     if (!JS_IsUndefined(m->promise)) {
         JSValue ret_val;
         assert(m->cycle_root == m);
         JSValueConst value = JS_UNDEFINED;
         ret_val = JS_Call(ctx, m->resolving_funcs[0], JS_UNDEFINED, 1, &value);
-        JS_FreeValue(ctx, ret_val);
+        js_native_async_release(ctx, ret_val, &owned);
     }
+    js_pi_async_restore_owned_pending(ctx, &owned);
 }
 
 typedef struct {
@@ -36206,9 +36896,22 @@ static int exec_module_list_cmp(const void *p1, const void *p2, void *opaque)
         (m1->async_evaluation_timestamp < m2->async_evaluation_timestamp);
 }
 
-static int js_execute_async_module(JSContext *ctx, JSModuleDef *m);
+static int js_execute_async_module(JSContext *ctx, JSModuleDef *m,
+                                   bool *pterminal_abort);
 static int js_execute_sync_module(JSContext *ctx, JSModuleDef *m,
-                                  JSValue *pvalue);
+                                  JSValue *pvalue, bool *pterminal_abort,
+                                  bool *pgeneric_fatal);
+
+/* Only ACTUAL pending events enter this class output. Settled rejection DATA
+   and cached ordinary module values never invoke a value-based classifier. */
+static int js_pi_take_module_failure(JSContext *ctx, JSValue *pvalue,
+                                      bool *pterminal_abort,
+                                      bool *pgeneric_fatal)
+{
+    *pvalue = JS_PiGetExceptionWithFatal(ctx, pgeneric_fatal);
+    *pterminal_abort |= *pgeneric_fatal || JS_PiIsExecutionTermination(*pvalue);
+    return -1;
+}
 static void js_promise_set_handled(JSContext *ctx, JSValueConst promise);
 
 /* Fatal module execution has no rejection continuation. Retain its exact
@@ -36216,7 +36919,8 @@ static void js_promise_set_handled(JSContext *ctx, JSValueConst promise);
    capability. Mark-on-enqueue visits each affected module/parent edge once,
    without allocating or recursing, including cyclic parent graphs. */
 static void js_mark_module_fatal_failure(JSModuleDef *module,
-                                         JSValueConst error)
+                                         JSValueConst error,
+                                         bool generic_fatal)
 {
     JSModuleDef *pending, *m, *parent;
     int i;
@@ -36225,6 +36929,7 @@ static void js_mark_module_fatal_failure(JSModuleDef *module,
         return;
     module->eval_has_exception = true;
     module->eval_has_fatal_exception = true;
+    module->eval_exception_generic_fatal = generic_fatal;
     module->eval_exception = js_dup(error);
     module->status = JS_MODULE_STATUS_EVALUATED;
     module->async_evaluation = false;
@@ -36242,6 +36947,7 @@ static void js_mark_module_fatal_failure(JSModuleDef *module,
                 continue;
             parent->eval_has_exception = true;
             parent->eval_has_fatal_exception = true;
+            parent->eval_exception_generic_fatal = generic_fatal;
             parent->eval_exception = js_dup(error);
             parent->status = JS_MODULE_STATUS_EVALUATED;
             parent->async_evaluation = false;
@@ -36258,6 +36964,8 @@ static JSValue js_async_module_execution_rejected(JSContext *ctx, JSValueConst t
     JSModuleDef *module = JS_VALUE_GET_PTR(func_data[0]);
     JSValueConst error = argv[0];
     int i;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
 
     if (js_check_stack_overflow(ctx->rt, 0))
         return JS_ThrowStackOverflow(ctx);
@@ -36272,15 +36980,21 @@ static JSValue js_async_module_execution_rejected(JSContext *ctx, JSValueConst t
     assert(module->async_evaluation);
 
     module->eval_has_exception = true;
+    module->eval_exception_generic_fatal = false; /* rejected argv is DATA */
     module->eval_exception = js_dup(error);
     module->status = JS_MODULE_STATUS_EVALUATED;
 
     for(i = 0; i < module->async_parent_modules_count; i++) {
         JSModuleDef *m = module->async_parent_modules[i];
         JSValue m_obj = JS_NewModuleValue(ctx, m);
-        js_async_module_execution_rejected(ctx, JS_UNDEFINED, 1, &error, 0,
-                                           vc(&m_obj));
-        JS_FreeValue(ctx, m_obj);
+        JSValue ret = js_async_module_execution_rejected(ctx, JS_UNDEFINED, 1, &error, 0,
+                                                         vc(&m_obj));
+        js_native_async_release(ctx, ret, &owned);
+        js_native_async_release(ctx, m_obj, &owned);
+        if (owned.present) {
+            js_pi_async_restore_owned_pending(ctx, &owned);
+            return JS_EXCEPTION;
+        }
     }
 
     if (!JS_IsUndefined(module->promise)) {
@@ -36288,7 +37002,11 @@ static JSValue js_async_module_execution_rejected(JSContext *ctx, JSValueConst t
         assert(module->cycle_root == module);
         ret_val = JS_Call(ctx, module->resolving_funcs[1], JS_UNDEFINED,
                           1, &error);
-        JS_FreeValue(ctx, ret_val);
+        js_native_async_release(ctx, ret_val, &owned);
+    }
+    if (owned.present) {
+        js_pi_async_restore_owned_pending(ctx, &owned);
+        return JS_EXCEPTION;
     }
     return JS_UNDEFINED;
 }
@@ -36300,6 +37018,8 @@ static JSValue js_async_module_execution_fulfilled(JSContext *ctx, JSValueConst 
     JSModuleDef *module = JS_VALUE_GET_PTR(func_data[0]);
     ExecModuleList exec_list_s, *exec_list = &exec_list_s;
     int i;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
 
     if (module->status == JS_MODULE_STATUS_EVALUATED) {
         assert(module->eval_has_exception);
@@ -36310,6 +37030,8 @@ static JSValue js_async_module_execution_fulfilled(JSContext *ctx, JSValueConst 
     assert(module->async_evaluation);
     module->async_evaluation = false;
     js_set_module_evaluated(ctx, module);
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
 
     exec_list->tab = NULL;
     exec_list->count = 0;
@@ -36329,41 +37051,57 @@ static JSValue js_async_module_execution_fulfilled(JSContext *ctx, JSValueConst 
         if (m->status == JS_MODULE_STATUS_EVALUATED) {
             assert(m->eval_has_exception);
         } else if (m->has_tla) {
-            if (js_execute_async_module(ctx, m) < 0) {
-                JSValue error = JS_GetException(ctx);
-                if (js_pi_is_uncatchable_exception(error)) {
-                    js_mark_module_fatal_failure(m, error);
+            bool terminal_abort = false;
+            if (js_execute_async_module(ctx, m, &terminal_abort) < 0) {
+                bool generic_fatal = false;
+                JSValue error = JS_PiGetExceptionWithFatal(ctx, &generic_fatal);
+                if (terminal_abort || generic_fatal || JS_PiIsExecutionTermination(error)) {
+                    js_mark_module_fatal_failure(m, error, generic_fatal);
                     js_free(ctx, exec_list->tab);
-                    return JS_Throw(ctx, error);
+                    return JS_PiThrowNativePending(ctx, error, generic_fatal);
                 } else {
                     JSValue m_obj = JS_NewModuleValue(ctx, m);
                     JSValue result = js_async_module_execution_rejected(ctx,
                         JS_UNDEFINED, 1, vc(&error), 0, vc(&m_obj));
-                    JS_FreeValue(ctx, m_obj);
-                    JS_FreeValue(ctx, error);
-                    if (JS_IsException(result)) {
+                    bool failed = JS_IsException(result);
+                    js_native_async_release(ctx, m_obj, &owned);
+                    js_native_async_release(ctx, error, &owned);
+                    js_native_async_release(ctx, result, &owned);
+                    if (owned.present || failed) {
                         js_free(ctx, exec_list->tab);
-                        return result;
+                        js_pi_async_restore_owned_pending(ctx, &owned);
+                        return JS_EXCEPTION;
                     }
-                    JS_FreeValue(ctx, result);
                 }
             }
         } else {
             JSValue error;
-            if (js_execute_sync_module(ctx, m, &error) < 0) {
-                if (js_pi_is_uncatchable_exception(error)) {
-                    js_mark_module_fatal_failure(m, error);
+            bool fatal = false, generic_fatal = false;
+            if (js_execute_sync_module(ctx, m, &error, &fatal, &generic_fatal) < 0) {
+                if (fatal) {
+                    js_mark_module_fatal_failure(m, error, generic_fatal);
                     js_free(ctx, exec_list->tab);
-                    return JS_Throw(ctx, error);
+                    return JS_PiThrowNativePending(ctx, error, generic_fatal);
                 }
                 JSValue m_obj = JS_NewModuleValue(ctx, m);
-                js_async_module_execution_rejected(ctx, JS_UNDEFINED,
-                                                   1, vc(&error),
-                                                   0, vc(&m_obj));
-                JS_FreeValue(ctx, m_obj);
-                JS_FreeValue(ctx, error);
+                JSValue result = js_async_module_execution_rejected(ctx, JS_UNDEFINED,
+                                                                   1, vc(&error),
+                                                                   0, vc(&m_obj));
+                bool failed = JS_IsException(result);
+                js_native_async_release(ctx, result, &owned);
+                js_native_async_release(ctx, m_obj, &owned);
+                js_native_async_release(ctx, error, &owned);
+                if (owned.present || failed) {
+                    js_free(ctx, exec_list->tab);
+                    js_pi_async_restore_owned_pending(ctx, &owned);
+                    return JS_EXCEPTION;
+                }
             } else {
                 js_set_module_evaluated(ctx, m);
+                if (JS_HasException(ctx)) {
+                    js_free(ctx, exec_list->tab);
+                    return JS_EXCEPTION;
+                }
             }
         }
     }
@@ -36371,13 +37109,17 @@ static JSValue js_async_module_execution_fulfilled(JSContext *ctx, JSValueConst 
     return JS_UNDEFINED;
 }
 
-static int js_execute_async_module(JSContext *ctx, JSModuleDef *m)
+static int js_execute_async_module(JSContext *ctx, JSModuleDef *m,
+                                   bool *pterminal_abort)
 {
     JSValue promise = JS_UNDEFINED, m_obj = JS_UNDEFINED;
     JSValue resolve_funcs[2] = { JS_UNDEFINED, JS_UNDEFINED };
-    JSValue ret_val = JS_UNDEFINED, error;
+    JSValue ret_val = JS_UNDEFINED;
+    int result = 0;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
     promise = js_async_function_call_internal(ctx, m->func_obj, JS_UNDEFINED,
-                                             0, NULL, 0, m);
+                                             0, NULL, 0, m, pterminal_abort);
     if (JS_IsException(promise) || JS_HasException(ctx))
         goto fail;
     m_obj = JS_NewModuleValue(ctx, m);
@@ -36390,55 +37132,82 @@ static int js_execute_async_module(JSContext *ctx, JSModuleDef *m)
     ret_val = js_promise_then(ctx, promise, 2, vc(resolve_funcs));
     if (JS_IsException(ret_val) || JS_HasException(ctx))
         goto fail;
-    JS_FreeValue(ctx, ret_val);
-    JS_FreeValue(ctx, m_obj);
-    JS_FreeValue(ctx, resolve_funcs[0]);
-    JS_FreeValue(ctx, resolve_funcs[1]);
-    JS_FreeValue(ctx, promise);
-    return 0;
+    goto done;
 fail:
-    /* Retain the first pending reason across all owned-value cleanup. */
-    error = JS_GetException(ctx);
-    JS_FreeValue(ctx, ret_val);
-    JS_FreeValue(ctx, m_obj);
-    JS_FreeValue(ctx, resolve_funcs[0]);
-    JS_FreeValue(ctx, resolve_funcs[1]);
-    JS_FreeValue(ctx, promise);
-    JS_Throw(ctx, error);
-    return -1;
+    result = -1;
+done:
+    js_native_async_take_pending(ctx, &owned);
+    *pterminal_abort |= js_pi_owned_pending_uncatchable(&owned);
+    js_pi_async_release_terminal(ctx, ret_val, &owned, pterminal_abort);
+    js_pi_async_release_terminal(ctx, m_obj, &owned, pterminal_abort);
+    js_pi_async_release_terminal(ctx, resolve_funcs[0], &owned, pterminal_abort);
+    js_pi_async_release_terminal(ctx, resolve_funcs[1], &owned, pterminal_abort);
+    js_pi_async_release_terminal(ctx, promise, &owned, pterminal_abort);
+    if (owned.present) {
+        *pterminal_abort |= js_pi_owned_pending_uncatchable(&owned);
+        js_pi_async_restore_owned_pending(ctx, &owned);
+        return -1;
+    }
+    return result;
 }
 
 /* return < 0 in case of exception. *pvalue contains the exception. */
 static int js_execute_sync_module(JSContext *ctx, JSModuleDef *m,
-                                  JSValue *pvalue)
+                                  JSValue *pvalue, bool *pterminal_abort,
+                                  bool *pgeneric_fatal)
 {
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
+    *pgeneric_fatal = false;
     if (m->init_func) {
         /* C module init : no asynchronous execution */
-        if (m->init_func(ctx, m) < 0)
-            goto fail;
+        if (m->init_func(ctx, m) < 0 || JS_HasException(ctx))
+            return js_pi_take_module_failure(ctx, pvalue, pterminal_abort,
+                                              pgeneric_fatal);
     } else {
         JSValue promise;
         JSPromiseStateEnum state;
 
-        promise = js_async_function_call(ctx, m->func_obj, JS_UNDEFINED, 0, NULL, 0);
-        if (JS_IsException(promise))
-            goto fail;
+        promise = js_async_function_call_internal(ctx, m->func_obj, JS_UNDEFINED,
+                                                  0, NULL, 0, NULL, pterminal_abort);
+        if (JS_IsException(promise) || JS_HasException(ctx)) {
+            js_native_async_take_pending(ctx, &owned);
+            *pterminal_abort |= js_pi_owned_pending_uncatchable(&owned);
+            js_pi_async_release_terminal(ctx, promise, &owned, pterminal_abort);
+            js_pi_async_restore_owned_pending(ctx, &owned);
+            return js_pi_take_module_failure(ctx, pvalue, pterminal_abort,
+                                              pgeneric_fatal);
+        }
         state = JS_PromiseState(ctx, promise);
-        if (state == JS_PROMISE_FULFILLED) {
-            JS_FreeValue(ctx, promise);
-        } else if (state == JS_PROMISE_REJECTED) {
+        if (state == JS_PROMISE_REJECTED) {
+            /* Settled rejection is DATA. An actual cleanup event can change
+               the selected outcome without inferring from that value. */
             *pvalue = JS_PromiseResult(ctx, promise);
-            // rejection is propagated to module's evaluation promise; mark this internal
-            // promise as handled so it's not also surfaced as an unhandled rejection
             js_promise_set_handled(ctx, promise);
-            JS_FreeValue(ctx, promise);
+            js_native_async_take_pending(ctx, &owned);
+            *pterminal_abort |= js_pi_owned_pending_uncatchable(&owned);
+            js_pi_async_release_terminal(ctx, promise, &owned, pterminal_abort);
+            if (owned.present) {
+                *pterminal_abort |= js_pi_owned_pending_uncatchable(&owned);
+                js_pi_async_release_terminal(ctx, *pvalue, &owned, pterminal_abort);
+                js_pi_async_restore_owned_pending(ctx, &owned);
+                return js_pi_take_module_failure(ctx, pvalue, pterminal_abort,
+                                                  pgeneric_fatal);
+            }
             return -1;
-        } else {
-            JS_FreeValue(ctx, promise);
+        }
+        js_native_async_take_pending(ctx, &owned);
+        *pterminal_abort |= js_pi_owned_pending_uncatchable(&owned);
+        js_pi_async_release_terminal(ctx, promise, &owned, pterminal_abort);
+        if (owned.present) {
+            js_pi_async_restore_owned_pending(ctx, &owned);
+            return js_pi_take_module_failure(ctx, pvalue, pterminal_abort,
+                                              pgeneric_fatal);
+        }
+        if (state != JS_PROMISE_FULFILLED) {
             JS_ThrowTypeError(ctx, "promise is pending");
-        fail:
-            *pvalue = JS_GetException(ctx);
-            return -1;
+            return js_pi_take_module_failure(ctx, pvalue, pterminal_abort,
+                                              pgeneric_fatal);
         }
     }
     *pvalue = JS_UNDEFINED;
@@ -36449,15 +37218,15 @@ static int js_execute_sync_module(JSContext *ctx, JSModuleDef *m,
    exception) */
 static int js_inner_module_evaluation(JSContext *ctx, JSModuleDef *m,
                                       int index, JSModuleDef **pstack_top,
-                                      JSValue *pvalue, bool *pfatal)
+                                      JSValue *pvalue, bool *pfatal,
+                                      bool *pgeneric_fatal)
 {
     JSModuleDef *m1;
     int i;
 
     if (js_check_stack_overflow(ctx->rt, 0)) {
         JS_ThrowStackOverflow(ctx);
-        *pvalue = JS_GetException(ctx);
-        return -1;
+        return js_pi_take_module_failure(ctx, pvalue, pfatal, pgeneric_fatal);
     }
 
 #ifdef ENABLE_DUMPS // JS_DUMP_MODULE_RESOLVE
@@ -36472,6 +37241,7 @@ static int js_inner_module_evaluation(JSContext *ctx, JSModuleDef *m,
         if (m->eval_has_exception) {
             *pvalue = js_dup(m->eval_exception);
             *pfatal |= m->eval_has_fatal_exception;
+            *pgeneric_fatal = m->eval_exception_generic_fatal;
             return -1;
         } else {
             *pvalue = JS_UNDEFINED;
@@ -36496,7 +37266,7 @@ static int js_inner_module_evaluation(JSContext *ctx, JSModuleDef *m,
     for(i = 0; i < m->req_module_entries_count; i++) {
         JSReqModuleEntry *rme = &m->req_module_entries[i];
         m1 = rme->module;
-        index = js_inner_module_evaluation(ctx, m1, index, pstack_top, pvalue, pfatal);
+        index = js_inner_module_evaluation(ctx, m1, index, pstack_top, pvalue, pfatal, pgeneric_fatal);
         if (index < 0)
             return -1;
         assert(m1->status == JS_MODULE_STATUS_EVALUATING ||
@@ -36512,14 +37282,14 @@ static int js_inner_module_evaluation(JSContext *ctx, JSModuleDef *m,
             if (m1->eval_has_exception) {
                 *pvalue = js_dup(m1->eval_exception);
                 *pfatal |= m1->eval_has_fatal_exception;
+                *pgeneric_fatal = m1->eval_exception_generic_fatal;
                 return -1;
             }
         }
         if (m1->async_evaluation) {
             m->pending_async_dependencies++;
             if (js_resize_array(ctx, (void **)&m1->async_parent_modules, sizeof(m1->async_parent_modules[0]), &m1->async_parent_modules_size, m1->async_parent_modules_count + 1)) {
-                *pvalue = JS_GetException(ctx);
-                return -1;
+                return js_pi_take_module_failure(ctx, pvalue, pfatal, pgeneric_fatal);
             }
             m1->async_parent_modules[m1->async_parent_modules_count++] = m;
         }
@@ -36535,12 +37305,11 @@ static int js_inner_module_evaluation(JSContext *ctx, JSModuleDef *m,
         m->async_evaluation = true;
         m->async_evaluation_timestamp =
             ctx->rt->module_async_evaluation_next_timestamp++;
-        if (js_execute_async_module(ctx, m) < 0) {
-            *pvalue = JS_GetException(ctx);
-            return -1;
+        if (js_execute_async_module(ctx, m, pfatal) < 0) {
+            return js_pi_take_module_failure(ctx, pvalue, pfatal, pgeneric_fatal);
         }
     } else {
-        if (js_execute_sync_module(ctx, m, pvalue) < 0)
+        if (js_execute_sync_module(ctx, m, pvalue, pfatal, pgeneric_fatal) < 0)
             return -1;
     }
 
@@ -36571,7 +37340,9 @@ static JSValue js_evaluate_module(JSContext *ctx, JSModuleDef *m)
 {
     JSModuleDef *m1, *stack_top;
     JSValue ret_val, result;
-    bool fatal = false;
+    bool fatal = false, generic_fatal = false;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
 
     assert(m->status == JS_MODULE_STATUS_LINKED ||
            m->status == JS_MODULE_STATUS_EVALUATING_ASYNC ||
@@ -36584,7 +37355,8 @@ static JSValue js_evaluate_module(JSContext *ctx, JSModuleDef *m)
        The recorded terminal outcome still must not return a pending promise.
        Do not retag the old reason or manufacture a fresh allocation failure. */
     if (m->eval_has_fatal_exception)
-        return JS_Throw(ctx, js_dup(m->eval_exception));
+        return JS_PiThrowNativePending(ctx, js_dup(m->eval_exception),
+                                       m->eval_exception_generic_fatal);
     /* a promise may be created only on the cycle_root of a cycle */
     if (!JS_IsUndefined(m->promise))
         return js_dup(m->promise);
@@ -36593,14 +37365,16 @@ static JSValue js_evaluate_module(JSContext *ctx, JSModuleDef *m)
         return JS_EXCEPTION;
 
     stack_top = NULL;
-    if (js_inner_module_evaluation(ctx, m, 0, &stack_top, &result, &fatal) < 0) {
-        fatal |= js_pi_is_uncatchable_exception(result);
+    if (js_inner_module_evaluation(ctx, m, 0, &stack_top, &result, &fatal, &generic_fatal) < 0) {
+        /* fatal came only from actual pending transfer or recorded module
+           terminal ownership, never from PromiseResult DATA. */
         while (stack_top != NULL) {
             m1 = stack_top;
             assert(m1->status == JS_MODULE_STATUS_EVALUATING);
             m1->status = JS_MODULE_STATUS_EVALUATED;
             m1->eval_has_exception = true;
             m1->eval_has_fatal_exception = fatal;
+            m1->eval_exception_generic_fatal = generic_fatal;
             m1->eval_exception = js_dup(result);
             if (fatal)
                 m1->async_evaluation = false;
@@ -36610,11 +37384,15 @@ static JSValue js_evaluate_module(JSContext *ctx, JSModuleDef *m)
         assert(m->status == JS_MODULE_STATUS_EVALUATED);
         assert(m->eval_has_exception);
         if (fatal)
-            return JS_Throw(ctx, result);
-        JS_FreeValue(ctx, result);
+            return JS_PiThrowNativePending(ctx, result, generic_fatal);
+        js_native_async_release(ctx, result, &owned);
+        if (owned.present) {
+            js_pi_async_restore_owned_pending(ctx, &owned);
+            return JS_EXCEPTION;
+        }
         ret_val = JS_Call(ctx, m->resolving_funcs[1], JS_UNDEFINED,
                           1, vc(&m->eval_exception));
-        JS_FreeValue(ctx, ret_val);
+        js_native_async_release(ctx, ret_val, &owned);
     } else {
         assert(m->status == JS_MODULE_STATUS_EVALUATING_ASYNC ||
                m->status == JS_MODULE_STATUS_EVALUATED);
@@ -36624,9 +37402,13 @@ static JSValue js_evaluate_module(JSContext *ctx, JSModuleDef *m)
             JSValueConst value = JS_UNDEFINED;
             ret_val = JS_Call(ctx, m->resolving_funcs[0], JS_UNDEFINED,
                               1, &value);
-            JS_FreeValue(ctx, ret_val);
+            js_native_async_release(ctx, ret_val, &owned);
         }
         assert(stack_top == NULL);
+    }
+    if (owned.present) {
+        js_pi_async_restore_owned_pending(ctx, &owned);
+        return JS_EXCEPTION;
     }
     return js_dup(m->promise);
 }
@@ -37219,7 +38001,8 @@ static JSFunctionDef *js_new_function_def(JSContext *ctx,
 
     fd->filename = JS_NewAtom(ctx, filename);
     if (ctx->pi_compiler_diagnostic && (fd->filename == JS_ATOM_NULL || JS_HasException(ctx))) {
-        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+        bool first_fatal = false;
+        JSValue first = JS_HasException(ctx) ? JS_PiGetExceptionWithFatal(ctx, &first_fatal) : JS_NULL;
         /* No owned arrays/atoms beyond filename have been initialized here. */
         if (parent)
             list_del(&fd->link);
@@ -37227,7 +38010,7 @@ static JSFunctionDef *js_new_function_def(JSContext *ctx,
         JS_FreeAtom(ctx, fd->pi_source_url);
         JS_PiFreeScript(fd->pi_script);
         js_free(ctx, fd);
-        JS_Throw(ctx, first);
+        JS_PiThrowNativePending(ctx, first, first_fatal);
         return NULL;
     }
     fd->line_num = line_num;
@@ -41725,9 +42508,10 @@ layout_overflow:
     JS_ThrowInternalError(ctx, "compiled function layout exceeds VM capacity");
  fail:
     if (ctx->pi_compiler_diagnostic) {
-        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+        bool first_fatal = false;
+        JSValue first = JS_HasException(ctx) ? JS_PiGetExceptionWithFatal(ctx, &first_fatal) : JS_NULL;
         js_free_function_def(ctx, fd);
-        return JS_Throw(ctx, first);
+        return JS_PiThrowNativePending(ctx, first, first_fatal);
     }
     js_free_function_def(ctx, fd);
     return JS_EXCEPTION;
@@ -51021,47 +51805,79 @@ static JSValue js_iterator_proto_dispose(JSContext *ctx, JSValueConst this_val,
     return JS_CallFree(ctx, method, this_val, 0, NULL);
 }
 
+/* Only an actual ordinary exception may become rejection DATA here. */
+static JSValue js_pi_disposal_reject_actual(JSContext *ctx, bool terminal_abort)
+{
+    JSValue exc, promise;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
+    if (terminal_abort || JS_PiIsPendingUncatchable(ctx))
+        return JS_EXCEPTION;
+    exc = JS_GetException(ctx);
+    promise = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&exc), 1);
+    js_native_async_release(ctx, exc, &owned);
+    if (owned.present) {
+        js_native_async_release(ctx, promise, &owned);
+        return js_pi_disposal_publish_owned(ctx, &owned);
+    }
+    return promise;
+}
+
 static JSValue js_async_iterator_proto_dispose(JSContext *ctx,
                                                JSValueConst this_val,
                                                int argc, JSValueConst *argv)
 {
-    JSValue method, ret, promise, undef_fn, then_args[1], result;
-    JSValue undef = JS_UNDEFINED;
+    JSValue method = JS_UNDEFINED, ret = JS_UNDEFINED;
+    JSValue promise = JS_UNDEFINED, undef_fn = JS_UNDEFINED, result = JS_UNDEFINED;
+    JSValue undef = JS_UNDEFINED, then_args[1];
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
+    bool terminal_abort = false;
 
     method = JS_GetProperty(ctx, this_val, JS_ATOM_return);
-    if (JS_IsException(method)) {
-        JSValue exc = JS_GetException(ctx);
-        JSValue p = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&exc), 1);
-        JS_FreeValue(ctx, exc);
-        return p;
-    }
-    if (JS_IsUndefined(method)) {
+    if (JS_IsException(method) || JS_HasException(ctx))
+        goto reject_actual;
+    if (JS_IsUndefined(method))
         return js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&undef), 0);
-    }
     ret = JS_Call(ctx, method, this_val, 0, NULL);
-    JS_FreeValue(ctx, method);
-    if (JS_IsException(ret)) {
-        JSValue exc = JS_GetException(ctx);
-        JSValue p = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&exc), 1);
-        JS_FreeValue(ctx, exc);
-        return p;
-    }
-    /* Wrap in Promise.resolve(ret).then(() => undefined) */
+    js_pi_async_release_terminal(ctx, method, &owned, &terminal_abort);
+    method = JS_UNDEFINED;
+    if (JS_IsException(ret) || owned.present)
+        goto reject_actual;
     promise = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&ret), 0);
-    JS_FreeValue(ctx, ret);
-    if (JS_IsException(promise))
-        return promise;
-    undef_fn = JS_NewCFunctionData(ctx, js_async_dispose_to_undef, 0, 0, 0,
-                                   NULL);
-    if (JS_IsException(undef_fn)) {
-        JS_FreeValue(ctx, promise);
-        return JS_EXCEPTION;
-    }
+    js_pi_async_release_terminal(ctx, ret, &owned, &terminal_abort);
+    ret = JS_UNDEFINED;
+    if (JS_IsException(promise) || owned.present)
+        goto fail;
+    undef_fn = JS_NewCFunctionData(ctx, js_async_dispose_to_undef, 0, 0, 0, NULL);
+    if (JS_IsException(undef_fn) || JS_HasException(ctx))
+        goto fail;
     then_args[0] = undef_fn;
     result = JS_Invoke(ctx, promise, JS_ATOM_then, 1, vc(then_args));
-    JS_FreeValue(ctx, undef_fn);
-    JS_FreeValue(ctx, promise);
+    js_pi_async_release_terminal(ctx, undef_fn, &owned, &terminal_abort);
+    undef_fn = JS_UNDEFINED;
+    js_pi_async_release_terminal(ctx, promise, &owned, &terminal_abort);
+    promise = JS_UNDEFINED;
+    if (owned.present)
+        goto fail;
     return result;
+reject_actual:
+    js_pi_async_release_terminal(ctx, method, &owned, &terminal_abort);
+    method = JS_UNDEFINED;
+    js_pi_async_release_terminal(ctx, ret, &owned, &terminal_abort);
+    ret = JS_UNDEFINED;
+    if (owned.present)
+        js_pi_disposal_publish_owned(ctx, &owned);
+    return js_pi_disposal_reject_actual(ctx, terminal_abort);
+fail:
+    js_pi_async_release_terminal(ctx, method, &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, ret, &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, promise, &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, undef_fn, &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, result, &owned, &terminal_abort);
+    if (owned.present)
+        js_pi_disposal_publish_owned(ctx, &owned);
+    return JS_EXCEPTION;
 }
 
 static JSValue js_iterator_proto_iterator(JSContext *ctx, JSValueConst this_val,
@@ -54330,11 +55146,12 @@ static JSValue js_compile_regexp(JSContext *ctx, JSValueConst pattern,
          ctx->pi_compiler_diagnostic->interrupted)) {
         JSPiCompilerDiagnostic *diagnostic = ctx->pi_compiler_diagnostic;
         bool pending = JS_HasException(ctx);
-        JSValue first = pending ? JS_GetException(ctx) : JS_UNDEFINED;
+        bool first_fatal = false;
+        JSValue first = pending ? JS_PiGetExceptionWithFatal(ctx, &first_fatal) : JS_UNDEFINED;
         JS_FreeCString(ctx, str);
         js_free(ctx, re_bytecode_buf);
         if (pending)
-            return JS_Throw(ctx, first);
+            return JS_PiThrowNativePending(ctx, first, first_fatal);
         if (diagnostic->allocation_failed)
             return JS_ThrowOutOfMemory(ctx);
         if (diagnostic->stack_failed)
@@ -56459,17 +57276,18 @@ static JSValue pi_json_parse_with_error_hook(JSContext *ctx, JSValueConst source
     JSValue result = JS_ParseJSON_internal(ctx, str, len, "<input>", record);
     JSValue exception, replacement;
     JSObject *object;
+    bool generic_fatal = false;
     if (!JS_IsException(result) || !ctx->pi_json_parse_error_hook)
         return result;
-    exception = JS_GetException(ctx);
+    exception = JS_PiGetExceptionWithFatal(ctx, &generic_fatal);
     /* Fresh intrinsic subtype identity, never a mutable guest name/getter.
        OOM, interrupts, stack failures and all non-SyntaxErrors pass through. */
-    if (!JS_IsObject(exception) || js_pi_is_uncatchable_exception(exception))
-        return JS_Throw(ctx, exception);
+    if (!JS_IsObject(exception) || generic_fatal || JS_PiIsExecutionTermination(exception))
+        return JS_PiThrowNativePending(ctx, exception, generic_fatal);
     object = JS_VALUE_GET_OBJ(exception);
     if (object->class_id != JS_CLASS_ERROR ||
         object->shape->proto != JS_VALUE_GET_OBJ(ctx->native_error_proto[JS_SYNTAX_ERROR]))
-        return JS_Throw(ctx, exception);
+        return JS_PiThrowNativePending(ctx, exception, generic_fatal);
     replacement = ctx->pi_json_parse_error_hook(ctx, source, exception);
     JS_FreeValue(ctx, exception);
     if (JS_IsException(replacement))
@@ -60162,89 +60980,133 @@ typedef struct JSDisposableStack {
 } JSDisposableStack;
 
 static JSValue js_new_suppressed_error(JSContext *ctx, JSValueConst error,
-                                       JSValueConst suppressed)
+                                       JSValueConst suppressed,
+                                       bool *terminal_abort)
 {
-    JSValue obj;
+    JSValue obj = JS_UNDEFINED;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
 
-    /* Construct via the intrinsic prototype rather than going through
-       SuppressedError.prototype.constructor, which is user-writable. */
-    obj = JS_NewObjectProtoClass(ctx,
-                                 ctx->native_error_proto[JS_SUPPRESSED_ERROR],
+    if (JS_HasException(ctx))
+        goto fail;
+    obj = JS_NewObjectProtoClass(ctx, ctx->native_error_proto[JS_SUPPRESSED_ERROR],
                                  JS_CLASS_ERROR);
     js_pi_record_intrinsic_error(ctx, obj, JS_SUPPRESSED_ERROR);
-    if (JS_IsException(obj))
-        return JS_EXCEPTION;
-    JS_DefinePropertyValue(ctx, obj, JS_ATOM_error, js_dup(error),
-                           JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);
-    JS_DefinePropertyValue(ctx, obj, JS_ATOM_suppressed, js_dup(suppressed),
-                           JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);
+    if (JS_IsException(obj) || JS_HasException(ctx))
+        goto fail;
+    if (JS_DefinePropertyValue(ctx, obj, JS_ATOM_error, js_dup(error),
+                               JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE) < 0 ||
+        JS_HasException(ctx))
+        goto fail;
+    if (JS_DefinePropertyValue(ctx, obj, JS_ATOM_suppressed, js_dup(suppressed),
+                               JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE) < 0 ||
+        JS_HasException(ctx))
+        goto fail;
     if (build_backtrace(ctx, obj, JS_UNDEFINED, NULL, 0, 0,
-                    JS_BACKTRACE_FLAG_SKIP_FIRST_LEVEL) == -2)
-        return js_pi_metadata_fail_owned(ctx, obj);
+                       JS_BACKTRACE_FLAG_SKIP_FIRST_LEVEL) == -2 ||
+        JS_HasException(ctx))
+        goto fail;
     return obj;
+fail:
+    js_pi_async_release_terminal(ctx, obj, &owned, terminal_abort);
+    if (owned.present)
+        js_pi_disposal_publish_owned(ctx, &owned);
+    return JS_EXCEPTION;
 }
 
 /* Perform DisposeResources. Returns 0 on success, -1 on exception.
    completion_error is the pending error (JS_UNDEFINED if none).
    It is consumed (freed) by this function. */
+/* Detach each entitlement before freeing it. No user disposer is invoked
+   while retiring the rest of an aborted synchronous/async stack setup. */
+static void js_pi_disposal_retire_resources(JSContext *ctx,
+                                              JSDisposableStack *ds,
+                                              JSNativeAsyncPending *owned)
+{
+    int i, count = ds->resource_count;
+    ds->resource_count = 0;
+    for (i = count - 1; i >= 0; i--) {
+        JSValue value = ds->resources[i].value;
+        JSValue method = ds->resources[i].method;
+        ds->resources[i].value = JS_UNDEFINED;
+        ds->resources[i].method = JS_UNDEFINED;
+        js_native_async_release(ctx, value, owned);
+        js_native_async_release(ctx, method, owned);
+    }
+}
+
 static int js_dispose_resources(JSContext *ctx, JSDisposableStack *ds,
                                 JSValue completion_error)
 {
     JSValue error = completion_error;
-    bool has_error = !JS_IsUndefined(error);
+    bool has_error = !JS_IsUndefined(error), terminal_abort = false;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
     int i;
 
     ds->disposed = true;
-    /* dispose in LIFO order */
+    if (JS_HasException(ctx))
+        goto failure;
     for (i = ds->resource_count - 1; i >= 0; i--) {
         JSDisposableResource *res = &ds->resources[i];
-        JSValue ret;
-        if (JS_IsUndefined(res->method)) {
-            /* null/undefined resource, skip */
-            JS_FreeValue(ctx, res->value);
-            res->value = JS_UNDEFINED;
-            continue;
+        JSValue ret = JS_UNDEFINED, value = res->value, method = res->method;
+        bool failed;
+
+        if (!JS_IsUndefined(method)) {
+            switch (res->hint) {
+            case JS_DISPOSE_HINT_ADOPT:
+                ret = JS_Call(ctx, method, JS_UNDEFINED, 1, vc(&value));
+                break;
+            case JS_DISPOSE_HINT_DEFER:
+                ret = JS_Call(ctx, method, JS_UNDEFINED, 0, NULL);
+                break;
+            default:
+                ret = JS_Call(ctx, method, value, 0, NULL);
+                break;
+            }
         }
-        switch (res->hint) {
-        case JS_DISPOSE_HINT_ADOPT:
-            ret = JS_Call(ctx, res->method, JS_UNDEFINED, 1, vc(&res->value));
-            break;
-        case JS_DISPOSE_HINT_DEFER:
-            ret = JS_Call(ctx, res->method, JS_UNDEFINED, 0, NULL);
-            break;
-        default: /* JS_DISPOSE_HINT_SYNC */
-            ret = JS_Call(ctx, res->method, res->value, 0, NULL);
-            break;
-        }
-        JS_FreeValue(ctx, res->value);
-        JS_FreeValue(ctx, res->method);
+        failed = JS_IsException(ret) || JS_HasException(ctx);
         res->value = JS_UNDEFINED;
         res->method = JS_UNDEFINED;
-        if (JS_IsException(ret)) {
-            JSValue new_error = JS_GetException(ctx);
+        js_pi_async_release_terminal(ctx, value, &owned, &terminal_abort);
+        js_pi_async_release_terminal(ctx, method, &owned, &terminal_abort);
+        js_pi_async_release_terminal(ctx, ret, &owned, &terminal_abort);
+        if (terminal_abort)
+            goto failure;
+        if (failed || owned.present) {
+            JSValue new_error;
+            if (owned.present)
+                js_pi_disposal_publish_owned(ctx, &owned);
+            new_error = JS_GetException(ctx); /* actual ordinary -> DATA */
             if (has_error) {
-                JSValue suppressed = js_new_suppressed_error(ctx, new_error, error);
-                JS_FreeValue(ctx, new_error);
-                JS_FreeValue(ctx, error);
-                if (JS_IsException(suppressed)) {
+                JSValue previous = error;
+                error = JS_UNDEFINED;
+                error = js_pi_disposal_merge_owned(ctx, new_error, previous,
+                                                    &terminal_abort);
+                if (JS_IsException(error)) {
+                    if (terminal_abort || JS_PiIsPendingUncatchable(ctx))
+                        goto failure;
                     error = JS_GetException(ctx);
-                } else {
-                    error = suppressed;
                 }
             } else {
                 error = new_error;
                 has_error = true;
             }
-        } else {
-            JS_FreeValue(ctx, ret);
         }
     }
     ds->resource_count = 0;
     if (has_error) {
-        JS_Throw(ctx, error);
+        JS_PiThrowExceptionData(ctx, error);
         return -1;
     }
     return 0;
+failure:
+    js_native_async_take_pending(ctx, &owned);
+    js_pi_disposal_retire_resources(ctx, ds, &owned);
+    js_native_async_release(ctx, error, &owned);
+    if (owned.present)
+        js_pi_disposal_publish_owned(ctx, &owned);
+    return -1;
 }
 
 static void js_disposable_stack_clear(JSRuntime *rt, JSDisposableStack *ds)
@@ -60493,34 +61355,36 @@ static JSValue js_async_dispose_rethrow(JSContext *ctx, JSValueConst this_val,
                                         int magic, JSValueConst *func_data)
 {
     JSValue prev_err = js_dup(func_data[0]);
-    if (magic == 0) {
-        return JS_Throw(ctx, prev_err);
-    } else {
-        JSValue se = js_new_suppressed_error(ctx, argv[0], prev_err);
-        JS_FreeValue(ctx, prev_err);
-        if (JS_IsException(se))
-            return JS_EXCEPTION;
-        return JS_Throw(ctx, se);
-    }
+    bool terminal_abort = false;
+    if (magic == 0)
+        return JS_PiThrowExceptionData(ctx, prev_err);
+    JSValue se = js_pi_disposal_merge_owned(ctx, js_dup(argv[0]), prev_err,
+                                            &terminal_abort);
+    if (JS_IsException(se))
+        return JS_EXCEPTION;
+    return JS_PiThrowExceptionData(ctx, se);
 }
 
 static JSValue js_async_dispose_step(JSContext *ctx, JSValueConst this_val,
                                      int argc, JSValueConst *argv,
                                      int magic, JSValueConst *func_data)
 {
-    JSValueConst value = func_data[0];
-    JSValueConst method = func_data[1];
+    JSValueConst value = func_data[0], method = func_data[1];
     int hint = JS_VALUE_GET_INT(func_data[2]);
-    bool has_prev_err = (magic == 1);
-    JSValue ret;
+    bool has_prev_err = (magic == 1), terminal_abort = false;
+    JSValue ret = JS_UNDEFINED, ret_promise = JS_UNDEFINED;
+    JSValue resolve_fn = JS_UNDEFINED, reject_fn = JS_UNDEFINED;
+    JSValue result = JS_UNDEFINED, then_args[2];
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
 
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
     if (JS_IsUndefined(method)) {
-        /* null/undefined resource on async stack: Await(undefined) */
         if (has_prev_err)
-            return JS_Throw(ctx, js_dup(argv[0]));
+            return JS_PiThrowExceptionData(ctx, js_dup(argv[0]));
         return JS_UNDEFINED;
     }
-
     switch (hint) {
     case JS_DISPOSE_HINT_ADOPT:
         ret = JS_Call(ctx, method, JS_UNDEFINED, 1, &value);
@@ -60532,44 +61396,59 @@ static JSValue js_async_dispose_step(JSContext *ctx, JSValueConst this_val,
         ret = JS_Call(ctx, method, value, 0, NULL);
         break;
     }
-
-    if (JS_IsException(ret)) {
-        JSValue new_err = JS_GetException(ctx);
+    if (JS_IsException(ret) || JS_HasException(ctx)) {
+        JSValue new_err;
+        js_pi_async_release_terminal(ctx, ret, &owned, &terminal_abort);
+        ret = JS_UNDEFINED;
+        if (owned.present)
+            js_pi_disposal_publish_owned(ctx, &owned);
+        if (terminal_abort || JS_PiIsPendingUncatchable(ctx))
+            return JS_EXCEPTION;
+        new_err = JS_GetException(ctx);
         if (has_prev_err) {
-            JSValue se = js_new_suppressed_error(ctx, new_err, argv[0]);
-            JS_FreeValue(ctx, new_err);
+            JSValue se = js_pi_disposal_merge_owned(ctx, new_err, js_dup(argv[0]),
+                                                    &terminal_abort);
             if (JS_IsException(se))
                 return JS_EXCEPTION;
-            return JS_Throw(ctx, se);
+            return JS_PiThrowExceptionData(ctx, se);
         }
-        return JS_Throw(ctx, new_err);
+        return JS_PiThrowExceptionData(ctx, new_err);
     }
-
-    if (!has_prev_err) {
-        /* Propagate method result; next .then awaits it */
+    if (!has_prev_err)
         return ret;
-    }
 
-    /* Await ret, then rethrow the stored error (possibly wrapped) */
-    {
-        JSValueConst prev_err = argv[0];
-        JSValue ret_promise, resolve_fn, reject_fn, then_args[2], result;
-        ret_promise = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&ret), 0);
-        JS_FreeValue(ctx, ret);
-        if (JS_IsException(ret_promise))
-            return JS_EXCEPTION;
-        resolve_fn = JS_NewCFunctionData(ctx, js_async_dispose_rethrow, 0, 0,
-                                         1, &prev_err);
-        reject_fn = JS_NewCFunctionData(ctx, js_async_dispose_rethrow, 1, 1,
-                                        1, &prev_err);
-        then_args[0] = resolve_fn;
-        then_args[1] = reject_fn;
-        result = JS_Invoke(ctx, ret_promise, JS_ATOM_then, 2, vc(then_args));
-        JS_FreeValue(ctx, resolve_fn);
-        JS_FreeValue(ctx, reject_fn);
-        JS_FreeValue(ctx, ret_promise);
-        return result;
-    }
+    ret_promise = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&ret), 0);
+    js_pi_async_release_terminal(ctx, ret, &owned, &terminal_abort);
+    ret = JS_UNDEFINED;
+    if (JS_IsException(ret_promise) || owned.present)
+        goto fail;
+    resolve_fn = JS_NewCFunctionData(ctx, js_async_dispose_rethrow, 0, 0, 1, argv);
+    if (JS_IsException(resolve_fn) || JS_HasException(ctx))
+        goto fail;
+    reject_fn = JS_NewCFunctionData(ctx, js_async_dispose_rethrow, 1, 1, 1, argv);
+    if (JS_IsException(reject_fn) || JS_HasException(ctx))
+        goto fail;
+    then_args[0] = resolve_fn;
+    then_args[1] = reject_fn;
+    result = JS_Invoke(ctx, ret_promise, JS_ATOM_then, 2, vc(then_args));
+    js_pi_async_release_terminal(ctx, resolve_fn, &owned, &terminal_abort);
+    resolve_fn = JS_UNDEFINED;
+    js_pi_async_release_terminal(ctx, reject_fn, &owned, &terminal_abort);
+    reject_fn = JS_UNDEFINED;
+    js_pi_async_release_terminal(ctx, ret_promise, &owned, &terminal_abort);
+    ret_promise = JS_UNDEFINED;
+    if (owned.present)
+        goto fail;
+    return result;
+fail:
+    js_pi_async_release_terminal(ctx, ret, &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, ret_promise, &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, resolve_fn, &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, reject_fn, &owned, &terminal_abort);
+    js_pi_async_release_terminal(ctx, result, &owned, &terminal_abort);
+    if (owned.present)
+        js_pi_disposal_publish_owned(ctx, &owned);
+    return JS_EXCEPTION;
 }
 
 static JSValue js_disposable_stack_dispose(JSContext *ctx,
@@ -60582,53 +61461,46 @@ static JSValue js_disposable_stack_dispose(JSContext *ctx,
 
     s = JS_GetOpaque2(ctx, this_val, class_id);
     if (!s) {
-        if (class_id == JS_CLASS_ASYNC_DISPOSABLE_STACK) {
-            JSValue exc = JS_GetException(ctx);
-            JSValue p = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&exc),
-                                           /*is_reject*/1);
-            JS_FreeValue(ctx, exc);
-            return p;
-        }
+        if (class_id == JS_CLASS_ASYNC_DISPOSABLE_STACK)
+            return js_pi_disposal_reject_actual(ctx, false);
         return JS_EXCEPTION;
     }
     if (s->disposed) {
         if (class_id == JS_CLASS_ASYNC_DISPOSABLE_STACK) {
             JSValue undef = JS_UNDEFINED;
-            return js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&undef),
-                                      /*is_reject*/0);
+            return js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&undef), 0);
         }
         return JS_UNDEFINED;
     }
     if (class_id == JS_CLASS_ASYNC_DISPOSABLE_STACK) {
-        /* Per spec DisposeResources: iterate resources in LIFO order and
-           for each do Call + Await. The first Call happens synchronously
-           inside disposeAsync(); subsequent Calls fire in microtasks via a
-           Promise.then() chain so that each call sees the previous
-           dispose's promise already settled. */
+        /* Keep the first Call synchronous and the remaining calls lazy in
+           the original Promise.then chain. Actual fatal setup failure never
+           turns into rejection DATA or invokes another resource's method. */
         int i, count = s->resource_count;
-        JSValue chain, undef, ret;
+        JSValue chain = JS_UNDEFINED, ret = JS_UNDEFINED, new_chain = JS_UNDEFINED;
+        JSValue resolve_fn = JS_UNDEFINED, reject_fn = JS_UNDEFINED;
+        JSValue hint_val = JS_UNDEFINED, undef_fn = JS_UNDEFINED;
+        JSValue undef = JS_UNDEFINED;
+        JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                       .generic_fatal = false };
+        bool terminal_abort = false;
 
         s->disposed = true;
-
-        /* First (top-of-stack) resource: synchronous Call. */
-        undef = JS_UNDEFINED;
+        if (JS_HasException(ctx))
+            goto async_dispose_fail;
         i = count - 1;
         if (i < 0) {
-            chain = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&undef),
-                                       /*is_reject*/0);
-            if (JS_IsException(chain))
+            chain = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&undef), 0);
+            if (JS_IsException(chain) || JS_HasException(ctx))
                 goto async_dispose_fail;
         } else {
             JSDisposableResource *res = &s->resources[i];
             if (JS_IsUndefined(res->method)) {
-                /* null/undefined resource: Await(undefined) */
-                chain = js_promise_resolve(ctx, ctx->promise_ctor, 1,
-                                           vc(&undef), /*is_reject*/0);
+                chain = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&undef), 0);
             } else {
                 switch (res->hint) {
                 case JS_DISPOSE_HINT_ADOPT:
-                    ret = JS_Call(ctx, res->method, JS_UNDEFINED, 1,
-                                  vc(&res->value));
+                    ret = JS_Call(ctx, res->method, JS_UNDEFINED, 1, vc(&res->value));
                     break;
                 case JS_DISPOSE_HINT_DEFER:
                     ret = JS_Call(ctx, res->method, JS_UNDEFINED, 0, NULL);
@@ -60637,93 +61509,98 @@ static JSValue js_disposable_stack_dispose(JSContext *ctx,
                     ret = JS_Call(ctx, res->method, res->value, 0, NULL);
                     break;
                 }
-                if (JS_IsException(ret)) {
-                    JSValue err = JS_GetException(ctx);
-                    chain = js_promise_resolve(ctx, ctx->promise_ctor, 1,
-                                               vc(&err), /*is_reject*/1);
-                    JS_FreeValue(ctx, err);
+                if (JS_IsException(ret) || JS_HasException(ctx)) {
+                    if (JS_PiIsPendingUncatchable(ctx))
+                        goto async_dispose_fail;
+                    chain = js_pi_disposal_reject_actual(ctx, false);
                 } else {
-                    chain = js_promise_resolve(ctx, ctx->promise_ctor, 1,
-                                               vc(&ret), /*is_reject*/0);
-                    JS_FreeValue(ctx, ret);
+                    chain = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&ret), 0);
                 }
+                js_pi_async_release_terminal(ctx, ret, &owned, &terminal_abort);
+                ret = JS_UNDEFINED;
             }
-            JS_FreeValue(ctx, res->value);
-            JS_FreeValue(ctx, res->method);
-            res->value = JS_UNDEFINED;
-            res->method = JS_UNDEFINED;
-            if (JS_IsException(chain)) {
-                i--;
+            {
+                JSValue resource_value = res->value, resource_method = res->method;
+                res->value = JS_UNDEFINED;
+                res->method = JS_UNDEFINED;
+                js_pi_async_release_terminal(ctx, resource_value, &owned, &terminal_abort);
+                js_pi_async_release_terminal(ctx, resource_method, &owned, &terminal_abort);
+            }
+            if (JS_IsException(chain) || owned.present)
                 goto async_dispose_fail;
-            }
             i--;
         }
 
-        /* Remaining resources: chain lazy steps. */
         for (; i >= 0; i--) {
             JSDisposableResource *res = &s->resources[i];
             JSValueConst data[3];
-            JSValue hint_val, resolve_fn, reject_fn, then_args[2], new_chain;
+            JSValue then_args[2];
 
             hint_val = JS_NewInt32(ctx, res->hint);
             data[0] = res->value;
             data[1] = res->method;
             data[2] = hint_val;
-            resolve_fn = JS_NewCFunctionData(ctx, js_async_dispose_step, 0, 0,
-                                             3, data);
-            reject_fn = JS_NewCFunctionData(ctx, js_async_dispose_step, 1, 1,
-                                            3, data);
-            JS_FreeValue(ctx, hint_val);
-            JS_FreeValue(ctx, res->value);
-            JS_FreeValue(ctx, res->method);
-            res->value = JS_UNDEFINED;
-            res->method = JS_UNDEFINED;
-            if (JS_IsException(resolve_fn) || JS_IsException(reject_fn)) {
-                JS_FreeValue(ctx, resolve_fn);
-                JS_FreeValue(ctx, reject_fn);
-                JS_FreeValue(ctx, chain);
-                chain = JS_EXCEPTION;
+            resolve_fn = JS_NewCFunctionData(ctx, js_async_dispose_step, 0, 0, 3, data);
+            if (JS_IsException(resolve_fn) || JS_HasException(ctx))
                 goto async_dispose_fail;
+            reject_fn = JS_NewCFunctionData(ctx, js_async_dispose_step, 1, 1, 3, data);
+            if (JS_IsException(reject_fn) || JS_HasException(ctx))
+                goto async_dispose_fail;
+            js_pi_async_release_terminal(ctx, hint_val, &owned, &terminal_abort);
+            hint_val = JS_UNDEFINED;
+            {
+                JSValue resource_value = res->value, resource_method = res->method;
+                res->value = JS_UNDEFINED;
+                res->method = JS_UNDEFINED;
+                js_pi_async_release_terminal(ctx, resource_value, &owned, &terminal_abort);
+                js_pi_async_release_terminal(ctx, resource_method, &owned, &terminal_abort);
             }
+            if (owned.present)
+                goto async_dispose_fail;
             then_args[0] = resolve_fn;
             then_args[1] = reject_fn;
             new_chain = JS_Invoke(ctx, chain, JS_ATOM_then, 2, vc(then_args));
-            JS_FreeValue(ctx, resolve_fn);
-            JS_FreeValue(ctx, reject_fn);
-            JS_FreeValue(ctx, chain);
-            if (JS_IsException(new_chain)) {
-                chain = JS_EXCEPTION;
+            js_pi_async_release_terminal(ctx, resolve_fn, &owned, &terminal_abort);
+            resolve_fn = JS_UNDEFINED;
+            js_pi_async_release_terminal(ctx, reject_fn, &owned, &terminal_abort);
+            reject_fn = JS_UNDEFINED;
+            js_pi_async_release_terminal(ctx, chain, &owned, &terminal_abort);
+            chain = JS_UNDEFINED;
+            if (JS_IsException(new_chain) || owned.present)
                 goto async_dispose_fail;
-            }
             chain = new_chain;
+            new_chain = JS_UNDEFINED;
         }
         s->resource_count = 0;
-
         if (count > 0) {
-            JSValue undef_fn, then_args[1], new_chain;
-            undef_fn = JS_NewCFunctionData(ctx, js_async_dispose_to_undef,
-                                           0, 0, 0, NULL);
-            if (JS_IsException(undef_fn)) {
-                JS_FreeValue(ctx, chain);
-                return JS_EXCEPTION;
-            }
+            JSValue then_args[1];
+            undef_fn = JS_NewCFunctionData(ctx, js_async_dispose_to_undef, 0, 0, 0, NULL);
+            if (JS_IsException(undef_fn) || JS_HasException(ctx))
+                goto async_dispose_fail;
             then_args[0] = undef_fn;
             new_chain = JS_Invoke(ctx, chain, JS_ATOM_then, 1, vc(then_args));
-            JS_FreeValue(ctx, undef_fn);
-            JS_FreeValue(ctx, chain);
+            js_pi_async_release_terminal(ctx, undef_fn, &owned, &terminal_abort);
+            undef_fn = JS_UNDEFINED;
+            js_pi_async_release_terminal(ctx, chain, &owned, &terminal_abort);
+            chain = JS_UNDEFINED;
+            if (JS_IsException(new_chain) || owned.present)
+                goto async_dispose_fail;
             return new_chain;
         }
         return chain;
 
-    async_dispose_fail:
-        for (; i >= 0; i--) {
-            JSDisposableResource *res = &s->resources[i];
-            JS_FreeValue(ctx, res->value);
-            JS_FreeValue(ctx, res->method);
-            res->value = JS_UNDEFINED;
-            res->method = JS_UNDEFINED;
-        }
-        s->resource_count = 0;
+async_dispose_fail:
+        js_native_async_take_pending(ctx, &owned);
+        js_native_async_release(ctx, ret, &owned);
+        js_native_async_release(ctx, chain, &owned);
+        js_native_async_release(ctx, new_chain, &owned);
+        js_native_async_release(ctx, resolve_fn, &owned);
+        js_native_async_release(ctx, reject_fn, &owned);
+        js_native_async_release(ctx, hint_val, &owned);
+        js_native_async_release(ctx, undef_fn, &owned);
+        js_pi_disposal_retire_resources(ctx, s, &owned);
+        if (owned.present)
+            js_pi_disposal_publish_owned(ctx, &owned);
         return JS_EXCEPTION;
     }
     if (js_dispose_resources(ctx, s, JS_UNDEFINED) < 0)
@@ -60906,7 +61783,7 @@ static void promise_reaction_data_free(JSRuntime *rt,
         }
         js_pi_continuation_take_pending_rt(rt, &pending);
         if (pending.present)
-            rt->current_exception = pending.reason;
+            js_pi_restore_native_pending_rt(rt, pending.reason, pending.generic_fatal);
     }
     js_free_rt(rt, rd);
 }
@@ -60945,7 +61822,7 @@ static JSValue promise_reaction_job(JSContext *ctx, int argc,
         res = JS_Call(ctx, handler, JS_UNDEFINED, 1, &arg);
         is_reject = JS_IsException(res);
         if (is_reject) {
-            if (unlikely(js_pi_is_uncatchable_exception(ctx->rt->current_exception)))
+            if (unlikely(JS_PiIsPendingUncatchable(ctx)))
                 return JS_EXCEPTION;
             res = JS_GetException(ctx);
         }
@@ -61096,7 +61973,7 @@ static JSValue js_promise_resolve_thenable_job(JSContext *ctx,
         return JS_EXCEPTION;
     res = JS_Call(ctx, then, thenable, 2, vc(args));
     if (JS_HasException(ctx) &&
-        js_pi_is_uncatchable_exception(ctx->rt->current_exception))
+        JS_PiIsPendingUncatchable(ctx))
         goto done;
     if (JS_IsException(res)) {
         JSValue error = JS_GetException(ctx);
@@ -61111,7 +61988,7 @@ static JSValue js_promise_resolve_thenable_job(JSContext *ctx,
     js_native_async_release(ctx, args[1], &pending);
     if (pending.present) {
         js_native_async_release(ctx, res, &pending);
-        return JS_Throw(ctx, pending.reason);
+        return JS_PiThrowNativePending(ctx, pending.reason, pending.generic_fatal);
     }
     return res;
 }
@@ -61127,44 +62004,57 @@ static void js_promise_resolve_function_free_resolved(JSRuntime *rt,
 static int js_create_resolving_functions(JSContext *ctx,
                                          JSValue *resolving_funcs,
                                          JSValueConst promise)
-
 {
-    JSValue obj;
+    JSValue obj = JS_UNDEFINED;
     JSPromiseFunctionData *s;
     JSPromiseFunctionDataResolved *sr;
-    int i, ret;
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED, false };
+    int i;
 
     resolving_funcs[0] = JS_UNDEFINED;
     resolving_funcs[1] = JS_UNDEFINED;
+    if (JS_HasException(ctx))
+        return -1;
     sr = js_malloc(ctx, sizeof(*sr));
     if (!sr)
         return -1;
     sr->ref_count = 1;
-    sr->already_resolved = false; /* must be shared between the two functions */
-    ret = 0;
-    for(i = 0; i < 2; i++) {
+    sr->already_resolved = false; /* shared by the two functions */
+    for (i = 0; i < 2; i++) {
         obj = JS_NewObjectProtoClass(ctx, ctx->function_proto,
                                      JS_CLASS_PROMISE_RESOLVE_FUNCTION + i);
-        if (JS_IsException(obj))
-            goto fail;
+        if (JS_IsException(obj) || JS_HasException(ctx))
+            goto failed;
         s = js_malloc(ctx, sizeof(*s));
-        if (!s) {
-            JS_FreeValue(ctx, obj);
-        fail:
-            JS_FreeValue(ctx, resolving_funcs[0]);
-            resolving_funcs[0] = JS_UNDEFINED;
-            ret = -1;
-            break;
-        }
+        if (!s)
+            goto failed;
         sr->ref_count++;
         s->presolved = sr;
         s->promise = js_dup(promise);
         JS_SetOpaqueInternal(obj, s);
         js_function_set_properties(ctx, obj, JS_ATOM_empty_string, 1);
+        if (JS_HasException(ctx))
+            goto failed;
         resolving_funcs[i] = obj;
+        obj = JS_UNDEFINED;
     }
     js_promise_resolve_function_free_resolved(ctx->rt, sr);
-    return ret;
+    return 0;
+
+ failed:
+    /* Both output entitlements are cleared before any user finalizer can
+       observe the failed construction. The original pending event is owned. */
+    js_native_async_take_pending(ctx, &owned);
+    js_native_async_release(ctx, obj, &owned);
+    for (i = 0; i < 2; i++) {
+        JSValue value = resolving_funcs[i];
+        resolving_funcs[i] = JS_UNDEFINED;
+        js_native_async_release(ctx, value, &owned);
+    }
+    js_promise_resolve_function_free_resolved(ctx->rt, sr);
+    if (owned.present)
+        JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
+    return -1;
 }
 
 static void js_promise_resolve_function_finalizer(JSRuntime *rt,
@@ -61207,21 +62097,21 @@ static JSValue js_promise_resolve_value(JSContext *ctx,
     }
     then = JS_GetProperty(ctx, resolution, JS_ATOM_then);
     if (JS_HasException(ctx) &&
-        js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {
-        JSValue error = JS_GetException(ctx);
-        JS_FreeValue(ctx, then);
-        return JS_Throw(ctx, error);
+        JS_PiIsPendingUncatchable(ctx)) {
+        JSValue roots[] = { then };
+        return js_pi_retire_native_failure(ctx, roots, countof(roots));
     }
     if (JS_IsException(then)) {
         JSValue error;
     fail_reject:
+        if (JS_PiIsPendingUncatchable(ctx))
+            return JS_EXCEPTION;
         error = JS_GetException(ctx);
         fulfill_or_reject_promise(ctx, promise, error, true);
         if (JS_HasException(ctx) &&
-            js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {
-            JSValue fatal = JS_GetException(ctx);
-            JS_FreeValue(ctx, error);
-            return JS_Throw(ctx, fatal);
+            JS_PiIsPendingUncatchable(ctx)) {
+            JSValue roots[] = { error };
+            return js_pi_retire_native_failure(ctx, roots, countof(roots));
         }
         JS_FreeValue(ctx, error);
     } else if (!JS_IsFunction(ctx, then)) {
@@ -61229,10 +62119,8 @@ static JSValue js_promise_resolve_value(JSContext *ctx,
     done:
         fulfill_or_reject_promise(ctx, promise, resolution, is_reject);
         if (JS_HasException(ctx) &&
-            js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {
-            JSValue fatal = JS_GetException(ctx);
-            return JS_Throw(ctx, fatal);
-        }
+            JS_PiIsPendingUncatchable(ctx))
+            return JS_EXCEPTION;
     } else {
         args[0] = promise;
         args[1] = resolution;
@@ -61369,16 +62257,18 @@ static JSValue js_promise_new(JSContext *ctx, JSValueConst new_target,
                                JSValue *resolving_funcs)
 {
     JSValue obj;
-    JSRuntime *rt;
+    JSRuntime *rt = ctx->rt;
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED, false };
+    int i;
 
+    resolving_funcs[0] = resolving_funcs[1] = JS_UNDEFINED;
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
     obj = js_promise_new_object(ctx, new_target);
-    if (JS_IsException(obj))
-        return JS_EXCEPTION;
-    if (js_create_resolving_functions(ctx, resolving_funcs, obj)) {
-        JS_FreeValue(ctx, obj);
-        return JS_EXCEPTION;
-    }
-    rt = ctx->rt;
+    if (JS_IsException(obj) || JS_HasException(ctx))
+        goto failed;
+    if (js_create_resolving_functions(ctx, resolving_funcs, obj))
+        goto failed;
     if (rt->promise_hook) {
         JSValueConst parent_promise = JS_UNDEFINED;
         if (rt->parent_promise)
@@ -61386,7 +62276,21 @@ static JSValue js_promise_new(JSContext *ctx, JSValueConst new_target,
         rt->promise_hook(ctx, JS_PROMISE_HOOK_INIT, obj, parent_promise,
                          rt->promise_hook_opaque);
     }
+    if (JS_HasException(ctx))
+        goto failed;
     return obj;
+
+ failed:
+    js_native_async_take_pending(ctx, &owned);
+    for (i = 0; i < 2; i++) {
+        JSValue value = resolving_funcs[i];
+        resolving_funcs[i] = JS_UNDEFINED;
+        js_native_async_release(ctx, value, &owned);
+    }
+    js_native_async_release(ctx, obj, &owned);
+    if (owned.present)
+        JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
+    return JS_EXCEPTION;
 }
 
 JSValue JS_PiNewPendingPromise(JSContext *ctx)
@@ -61409,7 +62313,7 @@ JSValue JS_PiNewPendingPromise(JSContext *ctx)
     if (JS_HasException(ctx)) {
         JSNativeAsyncPending pending = { false, JS_UNDEFINED };
         js_native_async_release(ctx, obj, &pending);
-        JS_Throw(ctx, pending.reason);
+        JS_PiThrowNativePending(ctx, pending.reason, pending.generic_fatal);
         return JS_EXCEPTION;
     }
     return obj;
@@ -61429,6 +62333,10 @@ static JSValue js_promise_constructor(JSContext *ctx, JSValueConst new_target,
     if (JS_IsException(obj))
         return JS_EXCEPTION;
     ret = JS_Call(ctx, executor, JS_UNDEFINED, 2, vc(args));
+    if (JS_PiIsPendingUncatchable(ctx)) {
+        JSValue roots[] = { ret, args[0], args[1], obj };
+        return js_pi_retire_native_failure(ctx, roots, countof(roots));
+    }
     if (JS_IsException(ret)) {
         JSValue ret2, error;
         error = JS_GetException(ctx);
@@ -61478,30 +62386,46 @@ static JSValue js_new_promise_capability(JSContext *ctx,
                                          JSValue *resolving_funcs,
                                          JSValueConst ctor)
 {
-    JSValue executor, result_promise;
+    JSValue executor = JS_UNDEFINED, result_promise = JS_UNDEFINED;
     JSCFunctionDataRecord *s;
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED, false };
     int i;
 
+    resolving_funcs[0] = resolving_funcs[1] = JS_UNDEFINED;
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
     if (JS_IsUndefined(ctor) || js_same_value(ctx, ctor, ctx->promise_ctor))
         return js_promise_new(ctx, JS_UNDEFINED, resolving_funcs);
     executor = js_promise_executor_new(ctx);
-    if (JS_IsException(executor))
-        return JS_EXCEPTION;
+    if (JS_IsException(executor) || JS_HasException(ctx))
+        goto fail;
     result_promise = JS_CallConstructor(ctx, ctor, 1, vc(&executor));
-    if (JS_IsException(result_promise))
+    if (JS_IsException(result_promise) || JS_HasException(ctx))
         goto fail;
     s = JS_GetOpaque(executor, JS_CLASS_C_FUNCTION_DATA);
-    for(i = 0; i < 2; i++) {
+    for (i = 0; i < 2; i++) {
         if (check_function(ctx, s->data[i]))
             goto fail;
     }
-    for(i = 0; i < 2; i++)
+    for (i = 0; i < 2; i++)
         resolving_funcs[i] = js_dup(s->data[i]);
-    JS_FreeValue(ctx, executor);
+    js_native_async_release(ctx, executor, &owned);
+    executor = JS_UNDEFINED;
+    if (owned.present)
+        goto fail;
     return result_promise;
+
  fail:
-    JS_FreeValue(ctx, executor);
-    JS_FreeValue(ctx, result_promise);
+    js_native_async_take_pending(ctx, &owned);
+    js_native_async_release(ctx, executor, &owned);
+    for (i = 0; i < 2; i++) {
+        JSValue value = resolving_funcs[i];
+        resolving_funcs[i] = JS_UNDEFINED;
+        js_native_async_release(ctx, value, &owned);
+    }
+    js_native_async_release(ctx, result_promise, &owned);
+    if (owned.present)
+        JS_PiThrowNativePending(ctx, owned.reason, owned.generic_fatal);
     return JS_EXCEPTION;
 }
 
@@ -61629,6 +62553,10 @@ static JSValue js_promise_try(JSContext *ctx, JSValueConst this_val,
     if (JS_IsException(result_promise))
         return result_promise;
     ret = JS_Call(ctx, argv[0], JS_UNDEFINED, argc - 1, argv + 1);
+    if (JS_PiIsPendingUncatchable(ctx)) {
+        JSValue roots[] = { ret, resolving_funcs[0], resolving_funcs[1], result_promise };
+        return js_pi_retire_native_failure(ctx, roots, countof(roots));
+    }
     if (JS_IsException(ret)) {
         is_reject = 1;
         ret = JS_GetException(ctx);
@@ -61763,6 +62691,8 @@ static JSValue js_promise_all(JSContext *ctx, JSValueConst this_val,
     if (JS_IsException(iter)) {
         JSValue error;
     fail_reject:
+        if (JS_PiIsPendingUncatchable(ctx))
+            goto fail;
         error = JS_GetException(ctx);
         ret = JS_Call(ctx, resolving_funcs[1], JS_UNDEFINED, 1, vc(&error));
         JS_FreeValue(ctx, error);
@@ -61904,6 +62834,8 @@ static JSValue js_promise_race(JSContext *ctx, JSValueConst this_val,
     if (JS_IsException(iter)) {
         JSValue error;
     fail_reject:
+        if (JS_PiIsPendingUncatchable(ctx))
+            goto fail;
         error = JS_GetException(ctx);
         ret = JS_Call(ctx, resolving_funcs[1], JS_UNDEFINED, 1, vc(&error));
         JS_FreeValue(ctx, error);
@@ -62221,135 +63153,158 @@ static void js_async_from_sync_iterator_mark(JSRuntime *rt, JSValueConst val,
 static JSValue JS_CreateAsyncFromSyncIterator(JSContext *ctx,
                                               JSValue sync_iter)
 {
-    JSValue async_iter, next_method;
+    JSValue async_iter = JS_UNDEFINED, next_method = JS_UNDEFINED;
     JSAsyncFromSyncIteratorData *s;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
 
     next_method = JS_GetProperty(ctx, sync_iter, JS_ATOM_next);
-    if (JS_IsException(next_method))
-        return JS_EXCEPTION;
+    if (JS_IsException(next_method) || JS_HasException(ctx))
+        goto fail;
     async_iter = JS_NewObjectClass(ctx, JS_CLASS_ASYNC_FROM_SYNC_ITERATOR);
-    if (JS_IsException(async_iter)) {
-        JS_FreeValue(ctx, next_method);
-        return async_iter;
-    }
+    if (JS_IsException(async_iter) || JS_HasException(ctx))
+        goto fail;
     s = js_mallocz(ctx, sizeof(*s));
-    if (!s) {
-        JS_FreeValue(ctx, async_iter);
-        JS_FreeValue(ctx, next_method);
-        return JS_EXCEPTION;
-    }
+    if (!s)
+        goto fail;
     s->sync_iter = js_dup(sync_iter);
     s->next_method = next_method;
     JS_SetOpaqueInternal(async_iter, s);
     return async_iter;
+fail:
+    js_native_async_release(ctx, async_iter, &owned);
+    js_native_async_release(ctx, next_method, &owned);
+    if (owned.present)
+        js_pi_disposal_publish_owned(ctx, &owned);
+    return JS_EXCEPTION;
 }
 
 static JSValue js_async_from_sync_iterator_next(JSContext *ctx, JSValueConst this_val,
                                                 int argc, JSValueConst *argv,
                                                 int magic)
 {
-    JSValue promise, resolving_funcs[2], value, err, method;
+    JSValue promise, resolving_funcs[2] = { JS_UNDEFINED, JS_UNDEFINED };
+    JSValue value = JS_UNDEFINED, err = JS_UNDEFINED, method = JS_UNDEFINED;
+    JSValue wrapper = JS_UNDEFINED, unwrap = JS_UNDEFINED, ret = JS_UNDEFINED;
     JSAsyncFromSyncIteratorData *s;
-    int done;
-    int is_reject;
+    JSNativeAsyncPending owned = { .present = false, .reason = JS_UNDEFINED,
+                                   .generic_fatal = false };
+    bool terminal_abort = false;
+    int done, is_reject, res;
 
     promise = JS_NewPromiseCapability(ctx, resolving_funcs);
-    if (JS_IsException(promise))
-        return JS_EXCEPTION;
+    if (JS_IsException(promise) || JS_HasException(ctx))
+        goto fail;
     s = JS_GetOpaque(this_val, JS_CLASS_ASYNC_FROM_SYNC_ITERATOR);
     if (!s) {
         JS_ThrowTypeError(ctx, "not an Async-from-Sync Iterator");
-        goto reject;
+        goto reject_actual;
     }
-
     if (magic == GEN_MAGIC_NEXT) {
         method = js_dup(s->next_method);
     } else {
         method = JS_GetProperty(ctx, s->sync_iter,
-                                magic == GEN_MAGIC_RETURN ? JS_ATOM_return :
-                                JS_ATOM_throw);
-        if (JS_IsException(method))
-            goto reject;
+                                magic == GEN_MAGIC_RETURN ? JS_ATOM_return : JS_ATOM_throw);
+        if (JS_IsException(method) || JS_HasException(ctx))
+            goto reject_actual;
         if (JS_IsUndefined(method) || JS_IsNull(method)) {
             if (magic == GEN_MAGIC_RETURN) {
                 err = js_create_iterator_result(ctx, js_dup(argv[0]), true);
                 is_reject = 0;
             } else if (JS_IteratorClose(ctx, s->sync_iter, false)) {
-                err = JS_GetException(ctx);
-                is_reject = 1;
+                goto reject_actual;
             } else {
-                err = JS_MakeError2(ctx, JS_TYPE_ERROR, /*add_backtrace*/true,
-                                    "throw is not a method");
+                err = JS_MakeError2(ctx, JS_TYPE_ERROR, true, "throw is not a method");
                 is_reject = 1;
             }
-            goto done_resolve;
+            if (JS_IsException(err) || JS_HasException(ctx))
+                goto reject_actual;
+            goto resolve_data;
         }
     }
     value = JS_IteratorNext2(ctx, s->sync_iter, method,
                              argc >= 1 ? 1 : 0, argv, &done);
-    JS_FreeValue(ctx, method);
-    if (JS_IsException(value))
-        goto reject;
+    js_pi_async_release_terminal(ctx, method, &owned, &terminal_abort);
+    method = JS_UNDEFINED;
+    if (JS_IsException(value) || owned.present)
+        goto reject_actual;
     if (done == 2) {
         JSValue obj = value;
         value = JS_IteratorGetCompleteValue(ctx, obj, &done);
-        JS_FreeValue(ctx, obj);
-        if (JS_IsException(value))
-            goto reject;
+        js_pi_async_release_terminal(ctx, obj, &owned, &terminal_abort);
+        if (JS_IsException(value) || owned.present)
+            goto reject_actual;
     }
-
-    if (JS_IsException(value)) {
-        JSValue res2;
-    reject:
-        err = JS_GetException(ctx);
-        is_reject = 1;
-    done_resolve:
-        res2 = JS_Call(ctx, resolving_funcs[is_reject], JS_UNDEFINED,
-                       1, vc(&err));
-        JS_FreeValue(ctx, err);
-        JS_FreeValue(ctx, res2);
-        JS_FreeValue(ctx, resolving_funcs[0]);
-        JS_FreeValue(ctx, resolving_funcs[1]);
-        return promise;
-    }
+    wrapper = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&value), 0);
+    if (JS_IsException(wrapper) || JS_HasException(ctx))
+        goto reject_actual;
+    unwrap = js_async_from_sync_iterator_unwrap_func_create(ctx, done);
+    if (JS_IsException(unwrap) || JS_HasException(ctx))
+        goto fail;
+    js_pi_async_release_terminal(ctx, value, &owned, &terminal_abort);
+    value = JS_UNDEFINED;
+    if (owned.present)
+        goto fail;
     {
-        JSValue value_wrapper_promise, resolve_reject[2];
-        int res;
-
-        value_wrapper_promise = js_promise_resolve(ctx, ctx->promise_ctor,
-                                                   1, vc(&value), 0);
-        if (JS_IsException(value_wrapper_promise)) {
-            JS_FreeValue(ctx, value);
-            goto reject;
-        }
-
-        resolve_reject[0] =
-            js_async_from_sync_iterator_unwrap_func_create(ctx, done);
-        if (JS_IsException(resolve_reject[0])) {
-            JS_FreeValue(ctx, value_wrapper_promise);
-            goto fail;
-        }
-        JS_FreeValue(ctx, value);
-        resolve_reject[1] = JS_UNDEFINED;
-
-        res = perform_promise_then(ctx, value_wrapper_promise,
-                                   vc(resolve_reject),
+        JSValue resolve_reject[2] = { unwrap, JS_UNDEFINED };
+        res = perform_promise_then(ctx, wrapper, vc(resolve_reject),
                                    vc(resolving_funcs), promise);
-        JS_FreeValue(ctx, resolve_reject[0]);
-        JS_FreeValue(ctx, value_wrapper_promise);
-        JS_FreeValue(ctx, resolving_funcs[0]);
-        JS_FreeValue(ctx, resolving_funcs[1]);
-        if (res) {
-            JS_FreeValue(ctx, promise);
-            return JS_EXCEPTION;
-        }
     }
+    js_pi_async_release_terminal(ctx, unwrap, &owned, &terminal_abort);
+    unwrap = JS_UNDEFINED;
+    js_pi_async_release_terminal(ctx, wrapper, &owned, &terminal_abort);
+    wrapper = JS_UNDEFINED;
+    if (res || owned.present)
+        goto fail;
+    goto done;
+
+reject_actual:
+    /* Retire ordinary result roots before converting only the selected
+       actual ordinary event into this operation's rejection DATA. */
+    js_pi_async_release_terminal(ctx, value, &owned, &terminal_abort);
+    value = JS_UNDEFINED;
+    js_pi_async_release_terminal(ctx, err, &owned, &terminal_abort);
+    err = JS_UNDEFINED;
+    js_pi_async_release_terminal(ctx, method, &owned, &terminal_abort);
+    method = JS_UNDEFINED;
+    js_pi_async_release_terminal(ctx, wrapper, &owned, &terminal_abort);
+    wrapper = JS_UNDEFINED;
+    if (owned.present)
+        js_pi_disposal_publish_owned(ctx, &owned);
+    if (terminal_abort || JS_PiIsPendingUncatchable(ctx))
+        goto fail;
+    err = JS_GetException(ctx);
+    is_reject = 1;
+resolve_data:
+    ret = JS_Call(ctx, resolving_funcs[is_reject], JS_UNDEFINED, 1, vc(&err));
+    js_pi_async_release_terminal(ctx, err, &owned, &terminal_abort);
+    err = JS_UNDEFINED;
+    js_pi_async_release_terminal(ctx, ret, &owned, &terminal_abort);
+    ret = JS_UNDEFINED;
+    if (owned.present)
+        goto fail;
+done:
+    js_pi_async_release_terminal(ctx, method, &owned, &terminal_abort);
+    method = JS_UNDEFINED;
+    js_pi_async_release_terminal(ctx, resolving_funcs[0], &owned, &terminal_abort);
+    resolving_funcs[0] = JS_UNDEFINED;
+    js_pi_async_release_terminal(ctx, resolving_funcs[1], &owned, &terminal_abort);
+    resolving_funcs[1] = JS_UNDEFINED;
+    if (owned.present)
+        goto fail;
     return promise;
- fail:
-    JS_FreeValue(ctx, value);
-    JS_FreeValue(ctx, resolving_funcs[0]);
-    JS_FreeValue(ctx, resolving_funcs[1]);
-    JS_FreeValue(ctx, promise);
+fail:
+    js_native_async_release(ctx, value, &owned);
+    js_native_async_release(ctx, err, &owned);
+    js_native_async_release(ctx, method, &owned);
+    js_native_async_release(ctx, wrapper, &owned);
+    js_native_async_release(ctx, unwrap, &owned);
+    js_native_async_release(ctx, ret, &owned);
+    js_native_async_release(ctx, resolving_funcs[0], &owned);
+    js_native_async_release(ctx, resolving_funcs[1], &owned);
+    js_native_async_release(ctx, promise, &owned);
+    if (owned.present)
+        js_pi_disposal_publish_owned(ctx, &owned);
     return JS_EXCEPTION;
 }
 
@@ -69124,7 +70079,7 @@ void JS_PiNativeGlobalSetWeak(JSNativeGlobal *global)
     JS_FreeValueRT(rt, previous);
     js_pi_continuation_take_pending_rt(rt, &pending);
     if (pending.present)
-        rt->current_exception = pending.reason;
+        js_pi_restore_native_pending_rt(rt, pending.reason, pending.generic_fatal);
 }
 
 JSValue JS_PiNativeGlobalGet(JSNativeGlobal *global)
@@ -69153,7 +70108,7 @@ void JS_PiFreeNativeGlobal(JSNativeGlobal *global)
     JS_FreeValueRT(rt, previous);
     js_pi_continuation_take_pending_rt(rt, &pending);
     if (pending.present)
-        rt->current_exception = pending.reason;
+        js_pi_restore_native_pending_rt(rt, pending.reason, pending.generic_fatal);
     js_free_rt(rt, global);
 }
 
@@ -69728,8 +70683,8 @@ static void js_new_callsite_data(JSContext *ctx, JSCallSiteData *csd, JSStackFra
         csd->filename = JS_AtomToString(ctx, b->filename);
         if (JS_IsException(csd->filename)) {
             csd->filename = JS_NULL;
-            if (!pi_metadata)
-                JS_FreeValue(ctx, JS_GetException(ctx)); // Legacy behavior.
+            if (!pi_metadata && !JS_PiIsPendingUncatchable(ctx))
+                JS_FreeValue(ctx, JS_GetException(ctx)); // Ordinary legacy discard.
         }
         if (!pi_metadata || !JS_HasException(ctx))
             csd->source_name = b->pi_source_url != JS_ATOM_NULL
@@ -69762,8 +70717,8 @@ static void js_new_callsite_data2(JSContext *ctx, JSCallSiteData *csd, const cha
     csd->filename = JS_NewString(ctx, filename);
     if (JS_IsException(csd->filename)) {
         csd->filename = JS_NULL;
-        if (!ctx->pi_compiler_diagnostic)
-            JS_FreeValue(ctx, JS_GetException(ctx)); // Legacy behavior.
+        if (!ctx->pi_compiler_diagnostic && !JS_PiIsPendingUncatchable(ctx))
+            JS_FreeValue(ctx, JS_GetException(ctx)); // Ordinary legacy discard.
     }
     if (ctx->pi_compiler_diagnostic && JS_HasException(ctx))
         return;

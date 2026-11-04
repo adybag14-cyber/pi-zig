@@ -159,7 +159,7 @@ fn reject(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     return flow.settle(scope.engine, owner, true, reason);
 }
 fn rejectNative(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
-    const reason = try scope.own(flow.reason(scope.engine, err));
+    const reason = try scope.own(try flow.reason(scope.engine, err));
     return reject(scope, owner, reason);
 }
 fn fail(scope: *Scope, owner: c.JSValue, message: c.JSValue) !void {
@@ -180,7 +180,7 @@ fn start(scope: *Scope, owner: c.JSValue) !void {
     const allowed = secure(scope, base) catch |err| {
         const failure = scope.engine.nativeAllocationError(err, url_generation);
         if (failure != error.JavaScriptException) return failure;
-        const reason = try scope.own(flow.reason(scope.engine, failure));
+        const reason = try scope.own(try flow.reason(scope.engine, failure));
         const message = try scope.concat(try scope.concat(try scope.concat(try scope.text("Invalid token endpoint base URL \""), base), try scope.text("\": ")), try scope.stringify(reason));
         try @import("native_ai_partial_json.zig").discard(scope.engine, failure, url_generation);
         return fail(scope, owner, message);
@@ -239,7 +239,7 @@ fn exchange(scope: *Scope, owner: c.JSValue, contents: c.JSValue) !void {
         const response = scope.call(fetch, c.pi_js_undefined(), &.{ url, init }) catch |err| {
             const failure = scope.engine.nativeAllocationError(err, fetch_generation);
             if (failure != error.JavaScriptException) return failure;
-            const reason = try scope.own(flow.reason(scope.engine, failure));
+            const reason = try scope.own(try flow.reason(scope.engine, failure));
             const message = try scope.concat(try scope.concat(try scope.text("Failed to reach token endpoint "), url), try scope.concat(try scope.text(": "), try scope.stringify(reason)));
             try @import("native_ai_partial_json.zig").discard(scope.engine, failure, fetch_generation);
             return fail(scope, owner, message);

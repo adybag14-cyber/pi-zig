@@ -2,7 +2,7 @@
 //! Engine NativeInvocation.first can publish; callback inputs/flags cannot.
 const x = @import("native_sdk_exec_values.zig");
 const c = x.c;
-const State = struct { engine: *x.em.Engine, active: bool = false, first: ?c.JSValue = null };
+const State = struct { engine: *x.em.Engine, active: bool = false, first: ?c.JSValue = null, first_fatal: bool = false, terminated: bool = false };
 fn state(owner: c.JSValue) *State { return @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)).?)); }
 fn retire(rt: ?*c.JSRuntime, owner: c.JSValue) callconv(.c) void {
     const self: *State = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return));
@@ -27,9 +27,14 @@ pub fn create(o: *x.Ops) !c.JSValue {
 }
 pub fn record(owner: c.JSValue, invocation: *const x.em.Engine.NativeInvocation) void {
     const self = state(owner);
-    if (self.active and self.first == null) {
-        if (invocation.first) |reason| self.first = c.JS_DupValue(self.engine.context, reason);
-    }
+    if (!self.active) return;
+    self.terminated = self.terminated or invocation.terminated;
+    if (self.first == null) if (invocation.first) |reason| {
+        self.first = c.JS_DupValue(self.engine.context, reason);
+        // NativeInvocation.first is independently retained actual authority.
+        // Private priority remains dynamic; all other first events are generic fatal.
+        self.first_fatal = !c.JS_PiIsExecutionTermination(reason);
+    };
 }
 pub fn construct(o: *x.Ops, constructor: c.JSValue, executor: c.JSValue, owner: c.JSValue) !c.JSValue {
     const self = state(owner); const engine = o.s.engine;
@@ -38,14 +43,18 @@ pub fn construct(o: *x.Ops, constructor: c.JSValue, executor: c.JSValue, owner: 
     self.active = true; var args = [_]c.JSValue{executor};
     const result = c.JS_CallConstructor(engine.context, constructor, 1, &args);
     self.active = false; // A retained executor's later calls cannot poison this construction.
-    if (self.first) |reason| {
-        // The actual callback event has independent ownership. Put it in the
-        // stable completion before releasing result/captured/constructor errors.
-        const old: ?c.JSValue = if (c.JS_HasException(engine.context)) c.JS_GetException(engine.context) else null;
-        _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason));
-        var completion = x.owned.Completion.initValue(engine, @as(anyerror!c.JSValue, error.JavaScriptException));
+    // Observe an actual private token before earlier first-event selection.
+    // This preserves uniform history and does not poll a new request.
+    engine.releaseNativeValue(c.pi_js_undefined());
+    if (self.first != null or self.terminated or engine.nativeTerminationObserved()) {
+        // Keep the later actual tuple in the slot while restoring the earlier
+        // independently owned event. Both cached classes stay paired.
+        if (self.first) |reason| _ = c.JS_PiThrowNativePending(engine.context,
+            c.JS_DupValue(engine.context, reason), self.first_fatal);
+        const err: anyerror = if (self.terminated or engine.nativeTerminationObserved())
+            error.ExecutionTerminated else error.JavaScriptException;
+        var completion = x.owned.Completion.initValue(engine, @as(anyerror!c.JSValue, err));
         if (!c.JS_IsException(result)) completion.release(result);
-        if (old) |value| completion.release(value);
         return operation.finishValue(o.s, completion.finishValue());
     }
     return operation.finishValue(o.s, result);

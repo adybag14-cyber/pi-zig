@@ -51,7 +51,7 @@ pub const Queue = struct {
     fn admitKind(self: *Queue, manager: *tasks.Manager, kind: Kind, accepted: bool, conversation: u64, background: bool, context: c.JSValue) !c.JSValue {
         const engine = manager.engine;
         if (kind == .abort) try durable.checkCancellation(engine, context);
-        if (manager.closed and !accepted) return engine.checked(c.JS_Throw(engine.context, try tasks.schedulerClosedError(manager)));
+        if (manager.closed and !accepted) return engine.checked(c.JS_PiThrowExceptionData(engine.context, try tasks.schedulerClosedError(manager)));
         var functions: [2]c.JSValue = undefined;
         const pending = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
         errdefer {
@@ -63,12 +63,19 @@ pub const Queue = struct {
         return pending;
     }
     pub fn pump(self: *Queue, manager: *tasks.Manager) !bool {
+        var pending_frame = @import("native_pending_owner.zig").Frame.init(manager.engine);
+        pending_frame.enter() catch |err| return pending_frame.finishBool(err);
+        return pending_frame.finishBool(pumpPendingBody(self, manager));
+    }
+    fn pumpPendingBody(self: *Queue, manager: *tasks.Manager) !bool {
         const engine = manager.engine;
         if (self.items.items.len == 0) return false;
         // Mutations preserve admission order. A busy first request stays first.
         const request = self.items.items[0];
         const value = mark(manager, request) catch |err| {
+            try @import("native_pending_owner.zig").catchFailure(engine, err);
             _ = durable.reject(engine, err);
+            try @import("native_pending_owner.zig").checkFatal(engine);
             const reason = c.JS_GetException(engine.context);
             defer engine.freeValue(reason);
             const retired = self.items.orderedRemove(0);
@@ -88,9 +95,9 @@ pub const Queue = struct {
     }
     fn mark(manager: *tasks.Manager, request: Request) !?c.JSValue {
         const engine = manager.engine;
-        if (manager.closed and !request.accepted) return try engine.checked(c.JS_Throw(engine.context, try tasks.schedulerClosedError(manager)));
+        if (manager.closed and !request.accepted) return try engine.checked(c.JS_PiThrowExceptionData(engine.context, try tasks.schedulerClosedError(manager)));
         const native = try durable.state(engine, manager.session);
-        if (native.failure_reason) |cause| return try engine.checked(c.JS_Throw(engine.context, try @import("native_durable_errors.zig").sessionFailed(engine, cause)));
+        if (native.failure_reason) |cause| return try engine.checked(c.JS_PiThrowExceptionData(engine.context, try @import("native_durable_errors.zig").sessionFailed(engine, cause)));
         if (request.kind == .conversation) {
             const Read = struct {
                 fn apply(raw: ?*anyopaque, tx: *@import("../durable/session.zig").Transaction, _: @import("../durable/types.zig").Context) !@import("../durable/backend/json.zig").Value {
@@ -126,13 +133,23 @@ pub fn abortConversation(manager: *tasks.Manager, conversation: u64, background:
     defer engine.freeValue(marked);
     return sdk.invoke(engine, pending, "then", &.{marked});
 }
-fn queued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn queued(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(queuedPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn queuedPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     const manager = tasks.getManager(engine, data[0]) catch |err| return durable.reject(engine, err);
     const id = durable.number(engine, data[1]) catch |err| return durable.reject(engine, err);
     return manager.abort_controls.admitAccepted(manager, id, c.JS_ToBool(context, data[2]) != 0, data[3]) catch |err| durable.reject(engine, err);
 }
-fn afterMarked(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn afterMarked(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(afterMarkedPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn afterMarkedPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return afterMarkedOwned(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), data) catch |err| durable.reject(engine, err);
 }
@@ -156,7 +173,12 @@ fn afterMarkedOwned(engine: *Engine, reached: c.JSValue, data: [*c]c.JSValue) !c
     defer engine.freeValue(idle);
     return sdk.invoke(engine, all, "then", &.{idle});
 }
-fn afterTasks(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn afterTasks(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(afterTasksPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn afterTasksPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     const manager = tasks.getManager(engine, data[0]) catch |err| return durable.reject(engine, err);
     const conversation = durable.number(engine, data[1]) catch |err| return durable.reject(engine, err);

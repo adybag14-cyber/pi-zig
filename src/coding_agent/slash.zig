@@ -1371,6 +1371,7 @@ pub fn handle(ctx: SlashContext, line: []const u8) !SlashResult {
             return .handled;
         };
         _ = clipboard_mod.copyText(ctx.gpa, ctx.io, text, ctx.clipboard_options) catch |err| {
+            if (err == error.OutOfMemory) return error.OutOfMemory;
             var message_buffer: [160]u8 = undefined;
             const message = std.fmt.bufPrint(&message_buffer, "Failed to copy to clipboard: {s}", .{@errorName(err)}) catch "Failed to copy to clipboard";
             try tui_render.printLine(ctx.io, message);
@@ -2765,6 +2766,7 @@ test "slash copy writes the latest assistant text instead of printing it" {
         .settings_text = "",
         .clipboard_options = .{
             .platform = .macos,
+            .native_backend = clipboard_mod.native_clipboard.unavailable,
             .write_runner = .{ .context = &fake, .run_fn = Fake.run },
         },
     }, "/copy");

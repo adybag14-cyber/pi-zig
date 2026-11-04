@@ -42,7 +42,7 @@ fn begin(engine: *em.Engine, owner: c.JSValue, executor: c.JSValue) !void {
     try scope.set(try scope.get(agent, "_state"), "streamingMessage", c.pi_js_undefined());
     try scope.set(try scope.get(agent, "_state"), "errorMessage", c.pi_js_undefined());
     execute(engine, owner, executor) catch |err| {
-        const raw = flow.reason(engine, err);
+        const raw = try flow.reason(engine, err);
         defer engine.freeValue(raw);
         try failure(engine, owner, raw);
     };
@@ -63,7 +63,7 @@ fn continuation(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected
 
 fn failure(engine: *em.Engine, owner: c.JSValue, raw: c.JSValue) !void {
     awaitFailure(engine, owner, raw) catch |err| {
-        const replacement = flow.reason(engine, err);
+        const replacement = try flow.reason(engine, err);
         defer engine.freeValue(replacement);
         try finish(engine, owner, true, replacement);
     };
@@ -93,7 +93,13 @@ fn initialResolve(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) ca
     return c.pi_js_undefined();
 }
 
-fn captureResolve(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn captureResolve(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(captureResolvePendingBody(context, pending_arg1, argc, argv, pending_arg4, roots));
+}
+fn captureResolvePendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     sdk.put(engine, roots[0], "resolve", if (argc > 0) c.JS_DupValue(engine.context, argv[0]) else c.pi_js_undefined()) catch |err| return sdk.fail(engine, err);
     return c.pi_js_undefined();

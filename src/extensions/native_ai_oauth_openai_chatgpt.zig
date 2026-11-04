@@ -280,7 +280,7 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, failed: b
     const stage: Stage = @enumFromInt(stage_raw);
     if (failed) return finishFailure(&scope, owner, value);
     advance(&scope, owner, value, stage) catch |err| {
-        const reason = try scope.own(flow.reason(engine, err));
+        const reason = try scope.own(try flow.reason(engine, err));
         try finishFailure(&scope, owner, reason);
     };
 }

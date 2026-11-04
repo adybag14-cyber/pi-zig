@@ -9,7 +9,13 @@ const vm = @import("native_values.zig");
 pub fn create(engine: *Engine) !c.JSValue {
     return engine.checked(c.JS_NewCFunction(engine.context, callback, "prepareEditArguments", 1));
 }
-fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn callback(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callbackPendingBody(context, pending_arg1, argc, args));
+}
+fn callbackPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) c.JSValue {
     const engine = Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -18,81 +24,82 @@ fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSVal
 fn single(engine: *Engine, value: c.JSValue) !bool {
     if (!c.JS_IsObject(value) or c.JS_IsArray(value) or c.JS_IsFunction(engine.context, value)) return false;
     const old = try vm.get(engine, value, "oldText");
-    defer engine.freeValue(old);
+    defer engine.releaseNativeValue(old);
     if (!c.JS_IsString(old)) return false;
     const new = try vm.get(engine, value, "newText");
-    defer engine.freeValue(new);
+    defer engine.releaseNativeValue(new);
     return c.JS_IsString(new);
 }
 fn one(engine: *Engine, value: c.JSValue) !c.JSValue {
     const result = try vm.array(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     if (c.JS_SetPropertyUint32(engine.context, result, 0, c.JS_DupValue(engine.context, value)) < 0) return error.JavaScriptException;
     return result;
 }
 pub fn prepare(engine: *Engine, input: c.JSValue) !c.JSValue {
     if (!c.JS_IsObject(input) or c.JS_IsFunction(engine.context, input)) return c.JS_DupValue(engine.context, input);
     const original = try vm.get(engine, input, "edits");
-    defer engine.freeValue(original);
+    defer engine.releaseNativeValue(original);
     if (c.JS_IsString(original)) {
         const global = c.JS_GetGlobalObject(engine.context);
-        defer engine.freeValue(global);
+        defer engine.releaseNativeValue(global);
         const json = try vm.get(engine, global, "JSON");
-        defer engine.freeValue(json);
+        defer engine.releaseNativeValue(json);
         const parse = try vm.get(engine, json, "parse");
-        defer engine.freeValue(parse);
+        defer engine.releaseNativeValue(parse);
         const again = try vm.get(engine, input, "edits");
-        defer engine.freeValue(again);
+        defer engine.releaseNativeValue(again);
         var args = [_]c.JSValue{again};
-        const parsed = c.JS_Call(engine.context, parse, json, 1, &args);
+        const parsed = native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_Call(engine.context, parse, json, 1, &args); };
         if (c.JS_IsException(parsed)) {
-            engine.freeValue(c.JS_GetException(engine.context));
+            try @import("native_pending_owner.zig").checkFatal(engine);
+            engine.releaseNativeValue(c.JS_GetException(engine.context));
         } else {
-            defer engine.freeValue(parsed);
+            defer engine.releaseNativeValue(parsed);
             if (c.JS_IsArray(parsed)) try vm.put(engine, input, "edits", c.JS_DupValue(engine.context, parsed)) else if (try single(engine, parsed)) try vm.put(engine, input, "edits", try one(engine, parsed));
         }
     } else if (try single(engine, original)) {
         const again = try vm.get(engine, input, "edits");
-        defer engine.freeValue(again);
+        defer engine.releaseNativeValue(again);
         try vm.put(engine, input, "edits", try one(engine, again));
     }
     const old_check = try vm.get(engine, input, "oldText");
-    defer engine.freeValue(old_check);
+    defer engine.releaseNativeValue(old_check);
     if (!c.JS_IsString(old_check)) return c.JS_DupValue(engine.context, input);
     const new_check = try vm.get(engine, input, "newText");
-    defer engine.freeValue(new_check);
+    defer engine.releaseNativeValue(new_check);
     if (!c.JS_IsString(new_check)) return c.JS_DupValue(engine.context, input);
     const existing = try vm.get(engine, input, "edits");
-    defer engine.freeValue(existing);
+    defer engine.releaseNativeValue(existing);
     const edits = try vm.array(engine);
-    defer engine.freeValue(edits);
+    defer engine.releaseNativeValue(edits);
     if (c.JS_IsArray(existing)) {
         const values = try vm.get(engine, input, "edits");
-        defer engine.freeValue(values);
-        for (0..try vm.length(engine, values)) |index| if (c.JS_SetPropertyUint32(engine.context, edits, @intCast(index), try engine.checked(c.JS_GetPropertyUint32(engine.context, values, @intCast(index)))) < 0) return error.JavaScriptException;
+        defer engine.releaseNativeValue(values);
+        for (0..try vm.length(engine, values)) |index| if (c.JS_SetPropertyUint32(engine.context, edits, @intCast(index), try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetPropertyUint32(engine.context, values, @intCast(index)); })) < 0) return error.JavaScriptException;
     }
     const entry = try vm.object(engine);
-    defer engine.freeValue(entry);
+    defer engine.releaseNativeValue(entry);
     try vm.put(engine, entry, "oldText", try vm.get(engine, input, "oldText"));
     try vm.put(engine, entry, "newText", try vm.get(engine, input, "newText"));
     if (c.JS_SetPropertyUint32(engine.context, edits, @intCast(try vm.length(engine, edits)), c.JS_DupValue(engine.context, entry)) < 0) return error.JavaScriptException;
     const old_discard = try vm.get(engine, input, "oldText");
-    defer engine.freeValue(old_discard);
+    defer engine.releaseNativeValue(old_discard);
     const new_discard = try vm.get(engine, input, "newText");
-    defer engine.freeValue(new_discard);
+    defer engine.releaseNativeValue(new_discard);
     const rest = try vm.object(engine);
-    errdefer engine.freeValue(rest);
+    errdefer engine.releaseNativeValue(rest);
     const old_atom = c.JS_NewAtom(engine.context, "oldText");
     defer c.JS_FreeAtom(engine.context, old_atom);
     const new_atom = c.JS_NewAtom(engine.context, "newText");
     defer c.JS_FreeAtom(engine.context, new_atom);
     var properties: [*c]c.JSPropertyEnum = null;
     var count: u32 = 0;
-    if (c.JS_GetOwnPropertyNames(engine.context, &properties, &count, input, c.JS_GPN_STRING_MASK | c.JS_GPN_SYMBOL_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
+    if (native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetOwnPropertyNames(engine.context, &properties, &count, input, c.JS_GPN_STRING_MASK | c.JS_GPN_SYMBOL_MASK | c.JS_GPN_ENUM_ONLY); } < 0) return error.JavaScriptException;
     defer c.JS_FreePropertyEnum(engine.context, properties, count);
     for (properties[0..count]) |property| {
         if (property.atom == old_atom or property.atom == new_atom) continue;
-        const value = try engine.checked(c.JS_GetProperty(engine.context, input, property.atom));
+        const value = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetProperty(engine.context, input, property.atom); });
         if (c.JS_DefinePropertyValue(engine.context, rest, property.atom, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }
     try vm.put(engine, rest, "edits", c.JS_DupValue(engine.context, edits));

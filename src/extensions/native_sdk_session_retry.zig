@@ -22,6 +22,12 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
     }
 }
 fn dispatch(context: ?*c.JSContext, session: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, session, argc, argv, magic));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, session: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -59,7 +65,13 @@ fn callbacks(engine: *em.Engine, session: c.JSValue, source: c.JSValue) !c.JSVal
     inline for (.{ "onRetryScheduled", "onRetryAttemptStart", "onRetryFinished" }, 0..) |name, index| try scope.put(result, name, try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, emitCallback, name, if (index == 0) 4 else 0, index, roots.len, &roots))));
     return c.JS_DupValue(engine.context, result);
 }
-fn emitCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn emitCallback(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(emitCallbackPendingBody(context, pending_arg1, argc, argv, magic, roots));
+}
+fn emitCallbackPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -128,7 +140,7 @@ fn initial(engine: *em.Engine, owner: c.JSValue, message: c.JSValue) !void {
     _ = try scope.invoke(session, "_omitRecoveryAttempt", &.{message});
     try scope.set(session, "_retryAbortController", try scope.own(try js.builtin(engine, "AbortController", &.{})));
     beginSleep(engine, owner, delay) catch |err| {
-        const raw = flow.reason(engine, err);
+        const raw = try flow.reason(engine, err);
         defer engine.freeValue(raw);
         return slept(engine, owner, raw, true, 0);
     };
@@ -155,7 +167,7 @@ fn slept(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, failed: bool, _
             return flow.settle(engine, owner, true, value);
         }
         _ = scope.invoke(session, "_finishCancelledRetry", &.{}) catch |err| {
-            const raw = flow.reason(engine, err);
+            const raw = try flow.reason(engine, err);
             defer engine.freeValue(raw);
             try scope.set(session, "_retryAbortController", c.pi_js_undefined());
             return flow.settle(engine, owner, true, raw);
@@ -211,13 +223,25 @@ fn omit(engine: *em.Engine, session: c.JSValue, message: c.JSValue, raw_results:
     }
     _ = try scope.invoke(session, "_refreshFinalizedContext", &.{});
 }
-fn targetId(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn targetId(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(targetIdPendingBody(context, pending_arg1, argc, argv, pending_arg4, roots));
+}
+fn targetIdPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
     return js.invoke(engine, roots[0], "_findPersistedMessageEntryId", &.{if (argc > 0) argv[0] else c.pi_js_undefined()}) catch |err| sdk.fail(engine, err);
 }
-fn unresolvedTarget(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn unresolvedTarget(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(unresolvedTargetPendingBody(context, pending_arg1, argc, argv, pending_arg4, roots));
+}
+fn unresolvedTargetPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;

@@ -8,6 +8,7 @@ const scopes = @import("native_async_scope.zig");
 const lifetime = @import("native_context_lifetime.zig");
 const ui = @import("native_ui.zig");
 const c = js.c;
+const pending_owner = @import("native_pending_owner.zig");
 pub const Continue = *const fn (?*anyopaque, c.JSValue, c.JSValue) anyerror!c.JSValue;
 pub const Publish = *const fn (?*anyopaque, u64, []const u8) anyerror!void;
 const Manager = struct {
@@ -281,6 +282,11 @@ pub fn copyRetainedMetadata(engine: *js.Engine, anchor: c.JSValue, metadata: c.J
 /// Preserve both Source getter reads at the caller. The caller supplies the
 /// second read and its existing await operation; no added JS promise handlers.
 pub fn invoke(engine: *js.Engine, receiver: c.JSValue, callback: c.JSValue, prefix: c.JSValue, signal: c.JSValue, continuation: Continue, context: ?*anyopaque) !c.JSValue {
+    var frame = pending_owner.Frame.init(engine);
+    frame.enter() catch |err| return frame.finishValue(err);
+    return frame.finishValue(invokeOwned(engine, receiver, callback, prefix, signal, continuation, context));
+}
+fn invokeOwned(engine: *js.Engine, receiver: c.JSValue, callback: c.JSValue, prefix: c.JSValue, signal: c.JSValue, continuation: Continue, context: ?*anyopaque) !c.JSValue {
     const row = rowRecord(engine, receiver) orelse {
         const raw_result = try js.call(engine, callback, receiver, &.{prefix});
         defer engine.freeValue(raw_result);
@@ -345,6 +351,11 @@ fn run(task: *Task, callback: c.JSValue, prefix: c.JSValue, signal: c.JSValue, c
     return result;
 }
 pub fn pump(engine: *js.Engine) !bool {
+    var frame = pending_owner.Frame.init(engine);
+    frame.enter() catch |err| return frame.finishBool(err);
+    return frame.finishBool(pumpOwned(engine));
+}
+fn pumpOwned(engine: *js.Engine) !bool {
     const raw = engine.native_command_metadata orelse return false;
     const self: *Manager = @ptrCast(@alignCast(raw));
     var worked = false;
@@ -395,13 +406,45 @@ pub fn closeToken(engine: *js.Engine, token: c.JSValue) void {
 }
 fn closePreservingException(task: *Task) void {
     const engine = task.engine;
-    const original = if (engine.captured_exception) |value| c.JS_DupValue(engine.context, value) else null;
+    var frame = pending_owner.Frame.init(engine);
+    // Closing must retire the native task even during an existing unwind.
+    engine.enterNativeInvocation(&frame.invocation);
+    const original = engine.captured_exception;
+    engine.captured_exception = null;
+    _ = engine.nativeCallbackResult(c.pi_js_undefined());
+    var primary_fatal: bool = false;
+    const primary: ?c.JSValue = if (c.JS_HasException(engine.context))
+        c.JS_PiGetExceptionWithFatal(engine.context, &primary_fatal) else null;
+    if (primary) |value| _ = c.JS_PiThrowNativePending(engine.context,
+        c.JS_DupValue(engine.context, value), primary_fatal);
     task.close();
     if (original) |value| {
-        if (c.JS_HasException(engine.context)) engine.freeValue(c.JS_GetException(engine.context));
-        if (engine.captured_exception) |current| engine.freeValue(current);
+        while (engine.captured_exception) |current| {
+            engine.captured_exception = null;
+            engine.releaseNativeValue(current);
+        }
+        _ = engine.nativeCallbackResult(c.pi_js_undefined());
+        // Preserve the original ordinary diagnostic as Source requires, but
+        // never erase an actual fatal or a later ordinary reason selected
+        // after a private event was actually observed and then canceled.
+        if (!frame.invocation.terminated and c.JS_HasException(engine.context) and
+            !c.JS_PiIsPendingUncatchable(engine.context))
+            engine.releaseNativeValue(c.JS_GetException(engine.context));
+        while (engine.captured_exception) |current| {
+            engine.captured_exception = null;
+            engine.releaseNativeValue(current);
+        }
         engine.captured_exception = value;
     }
+    if (primary) |value| {
+        // A later actual private unwind can displace this ordinary entry.
+        // Preserve its selected cleanup reason instead of reviving the old one.
+        if (frame.terminated() and !primary_fatal and !c.JS_PiIsExecutionTermination(value))
+            engine.releaseNativeValue(value)
+        else
+            _ = c.JS_PiThrowNativePending(engine.context, value, primary_fatal);
+    }
+    _ = frame.finishCallback(c.pi_js_undefined());
 }
 pub fn retireOwner(engine: *js.Engine, owner_id: u64) void {
     const raw = engine.native_command_metadata orelse return;

@@ -215,7 +215,7 @@ fn acquireSync(scope: *Scope, owner: c.JSValue, path: c.JSValue) !c.JSValue {
     while (true) : (attempt += 1) {
         const generation = scope.engine.native_allocation_generation;
         const result = lockSyncAttempt(scope, owner, path) catch |err| {
-            const reason = try scope.own(flow.reason(scope.engine, err));
+            const reason = try scope.own(try flow.reason(scope.engine, err));
             if (!scope.truthy(try retryCode(scope, reason)) or attempt == 10) return throwValue(scope, reason);
             try @import("native_ai_partial_json.zig").discard(scope.engine, err, generation);
             const start = try dateNow(scope);
@@ -256,7 +256,7 @@ fn withLock(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, function: c.JS
     _ = try scope.invoke(receiver, "ensureFileExists", &.{});
     var release = c.pi_js_undefined();
     const result = syncBody(scope, owner, receiver, function, &release) catch |err| {
-        const reason = try scope.own(flow.reason(scope.engine, err));
+        const reason = try scope.own(try flow.reason(scope.engine, err));
         if (scope.truthy(release)) _ = try scope.call(release, c.pi_js_undefined(), &.{});
         return throwValue(scope, reason);
     };

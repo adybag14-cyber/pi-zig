@@ -452,6 +452,7 @@ const Selector = struct {
         const text = try self.copyTextAlloc(node.entry);
         defer self.gpa.free(text);
         _ = clipboard.copyText(self.gpa, self.io, text, self.clipboard_options) catch |err| {
+            if (err == error.OutOfMemory) return error.OutOfMemory;
             var buffer: [160]u8 = undefined;
             const message = std.fmt.bufPrint(&buffer, "Copy failed: {s}", .{@errorName(err)}) catch "Copy failed";
             return self.setStatus(message);
@@ -987,6 +988,7 @@ test "tree selector copy uses the native clipboard projection" {
     defer fake.copied.deinit(gpa);
     selector.clipboard_options = .{
         .platform = .macos,
+        .native_backend = clipboard.native_clipboard.unavailable,
         .write_runner = .{ .context = &fake, .run_fn = Fake.run },
     };
     const expected = try selector.copyTextAlloc(selector.currentNode().?.entry);

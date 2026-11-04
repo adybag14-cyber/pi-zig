@@ -41,7 +41,7 @@ fn suppress(scope: *Scope, err: anyerror, generation: u64) !void {
 }
 fn warn(scope: *Scope, roots: []const c.JSValue, path: c.JSValue, description: ?c.JSValue, err: anyerror, generation: u64) !void {
     if (scope.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-    const reason = try scope.own(flow.reason(scope.engine, err));
+    const reason = try scope.own(try flow.reason(scope.engine, err));
     clearException(scope.engine);
     const console = try scope.global("console");
     const log = try scope.get(console, "error");

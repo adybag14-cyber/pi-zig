@@ -33,7 +33,13 @@ fn constructAbort(engine: *em.Engine, target: c.JSValue, _: []const c.JSValue, v
     var args = [_]c.JSValue{try scope.text("Aborted")};
     return engine.checked(c.JS_CallConstructor2(engine.context, base, target, args.len, &args));
 }
-fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn dispatch(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, pending_arg1, argc, argv, pending_arg4, roots));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -120,7 +126,7 @@ fn continued(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, failed: boo
         .finished => try flow.settle(engine, owner, false, try scope.get(owner, "response")),
         .scheduled => {
             const slept = sleep(engine, try scope.get(owner, "delay"), try scope.get(owner, "signal"), try scope.get(owner, "abortErrorConstructor")) catch |err| {
-                const reason = flow.reason(engine, err);
+                const reason = try flow.reason(engine, err);
                 defer engine.freeValue(reason);
                 return continued(engine, owner, reason, true, @intFromEnum(Stage.slept));
             };
@@ -201,7 +207,13 @@ fn rejectAbort(scope: *Scope, reject: c.JSValue, constructor: c.JSValue) !void {
     const reason = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, constructor, 0, null)));
     _ = try scope.call(reject, c.pi_js_undefined(), &.{reason});
 }
-fn executeSleep(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn executeSleep(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(executeSleepPendingBody(context, pending_arg1, argc, argv, pending_arg4, roots));
+}
+fn executeSleepPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -222,7 +234,13 @@ fn initializeSleep(engine: *em.Engine, roots: [*c]c.JSValue, resolve: c.JSValue,
         _ = try scope.call(add, roots[1], &.{ try scope.text("abort"), listener, options });
     }
 }
-fn abortSleep(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn abortSleep(context: ?*c.JSContext, pending_arg1: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(abortSleepPendingBody(context, pending_arg1, pending_arg2, pending_arg3, pending_arg4, roots));
+}
+fn abortSleepPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;

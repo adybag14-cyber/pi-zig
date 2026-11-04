@@ -71,7 +71,7 @@ pub fn settings(engine: *Engine, input: c.JSValue) !c.JSValue {
     }
     const document_retention = try sdk.get(engine, input, "documentRetentionMs");
     defer engine.freeValue(document_retention);
-    try sdk.put(engine, result, "documentRetentionMs", c.JS_NewFloat64(engine.context, @import("native_durable_document_retention.zig").duration(engine, document_retention)));
+    try sdk.put(engine, result, "documentRetentionMs", c.JS_NewFloat64(engine.context, try @import("native_durable_document_retention.zig").duration(engine, document_retention)));
     return result;
 }
 pub fn install(engine: *Engine, exports: c.JSValue) !void {
@@ -187,6 +187,11 @@ fn report(engine: *Engine, callback: c.JSValue, failure: c.JSValue) !void {
 }
 /// Resolve refs on the owner. Maps preserve last-writer values and first insertion order.
 pub fn resolve(engine: *Engine, state: c.JSValue, snapshot: c.JSValue, resolved_settings: c.JSValue, reporter: c.JSValue) !c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(engine);
+    pending_frame.enter() catch |err| return pending_frame.finishValue(err);
+    return pending_frame.finishValue(resolvePendingBody(engine, state, snapshot, resolved_settings, reporter));
+}
+fn resolvePendingBody(engine: *Engine, state: c.JSValue, snapshot: c.JSValue, resolved_settings: c.JSValue, reporter: c.JSValue) !c.JSValue {
     const selected = try field(engine, state, "extensions");
     defer engine.freeValue(selected);
     const extensions = try sdk.array(engine);
@@ -273,11 +278,13 @@ pub fn resolve(engine: *Engine, state: c.JSValue, snapshot: c.JSValue, resolved_
             var failure = c.pi_js_undefined();
             defer engine.freeValue(failure);
             if (c.JS_IsException(wrapped)) {
+                try @import("native_pending_owner.zig").checkFatal(engine);
                 failure = c.JS_GetException(engine.context);
             } else {
                 const name = c.JS_GetPropertyStr(engine.context, wrapped, if (is_tool != 0) "name" else "key");
                 defer engine.freeValue(name);
                 if (c.JS_IsException(name)) {
+                    try @import("native_pending_owner.zig").checkFatal(engine);
                     failure = c.JS_GetException(engine.context);
                 } else if (!c.JS_IsStrictEqual(engine.context, name, target)) {
                     const old_name = try engine.toString(target);
@@ -391,7 +398,12 @@ pub fn resolveConversation(engine: *Engine, session: c.JSValue, options: c.JSVal
     defer engine.freeValue(callback);
     return sdk.invoke(engine, pending, "then", &.{callback});
 }
-fn resolvedConversation(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn resolvedConversation(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(resolvedConversationPendingBody(context, receiver, argc, argv, magic, data));
+}
+fn resolvedConversationPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -422,14 +434,24 @@ fn settingsFromSupplier(engine: *Engine, input: c.JSValue) !c.JSValue {
     defer engine.freeValue(value);
     return settings(engine, value);
 }
-fn initialAgent(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn initialAgent(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(initialAgentPendingBody(callback_context, callback_receiver, callback_argc, callback_argv));
+}
+fn initialAgentPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return sdk.object(engine) catch |err| durable.reject(engine, err);
 }
 fn checkpointAgent(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.pi_js_bool(context, 1);
 }
-fn configure(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn configure(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(configurePendingBody(context, receiver, argc, argv, magic, data));
+}
+fn configurePendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     if (argc < 3) return durable.rejectedPromise(engine, error.AgentChangeArgumentsRequired);
     return configureOwned(engine, argv[0], argv[1], argv[2], data[0]) catch |err| durable.rejectedPromise(engine, err);
@@ -442,7 +464,12 @@ pub fn configureOwned(engine: *Engine, tx: c.JSValue, conversation: c.JSValue, c
     defer engine.freeValue(callback);
     return sdk.invoke(engine, promise, "then", &.{callback});
 }
-fn configured(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn configured(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(configuredPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn configuredPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     if (argc == 0) return durable.reject(engine, error.AgentDraftRequired);
     applyChange(engine, argv[0], data[0]) catch |err| return durable.reject(engine, err);
@@ -458,12 +485,10 @@ fn applyChange(engine: *Engine, draft: c.JSValue, change: c.JSValue) !void {
             const atom = c.JS_NewAtom(engine.context, key.ptr);
             defer c.JS_FreeAtom(engine.context, atom);
             if (c.JS_DeleteProperty(engine.context, draft, atom, c.JS_PROP_THROW) < 0) {
-                const failure = c.JS_GetException(engine.context);
-                _ = try engine.checked(c.JS_Throw(engine.context, failure));
+                return error.JavaScriptException;
             }
         } else if (c.JS_SetPropertyStr(engine.context, draft, key.ptr, try durable.jsValue(engine, value)) < 0) {
-            const failure = c.JS_GetException(engine.context);
-            _ = try engine.checked(c.JS_Throw(engine.context, failure));
+            return error.JavaScriptException;
         }
     }
 }

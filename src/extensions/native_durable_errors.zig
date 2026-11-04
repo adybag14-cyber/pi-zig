@@ -15,10 +15,15 @@ pub fn throwMessage(engine: *Engine, message: []const u8) !void {
     defer engine.freeValue(text);
     var args = [_]c.JSValue{text};
     const failure = try engine.checked(c.JS_CallConstructor(engine.context, constructor, 1, &args));
-    _ = try engine.checked(c.JS_Throw(engine.context, failure));
+    _ = try engine.checked(c.JS_PiThrowExceptionData(engine.context, failure));
 }
 const Kind = enum(c_int) { ReadAfterWrite, StorageRequestError, SessionFailed, ConversationBusy };
 fn construct(context: ?*c.JSContext, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, kind: Kind) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(constructPendingBody(context, target, argc, argv, kind));
+}
+fn constructPendingBody(context: ?*c.JSContext, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, kind: Kind) c.JSValue {
     const engine = Engine.fromContext(context.?);
     if (c.JS_IsUndefined(target)) return c.JS_ThrowTypeError(context, "Class constructor %s cannot be invoked without 'new'", @as([*:0]const u8, @tagName(kind)));
     return create(engine, target, kind, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
@@ -103,6 +108,11 @@ pub fn isRequestError(engine: *Engine, value: c.JSValue) !bool {
     return found != 0;
 }
 pub fn errorMessage(engine: *Engine, value: c.JSValue) !c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(engine);
+    pending_frame.enter() catch |err| return pending_frame.finishValue(err);
+    return pending_frame.finishValue(errorMessagePendingBody(engine, value));
+}
+fn errorMessagePendingBody(engine: *Engine, value: c.JSValue) !c.JSValue {
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
     const base = try sdk.get(engine, global, "Error");
@@ -115,7 +125,9 @@ pub fn errorMessage(engine: *Engine, value: c.JSValue) !c.JSValue {
     var args = [_]c.JSValue{value};
     const converted = c.JS_Call(engine.context, string, c.pi_js_undefined(), 1, &args);
     if (!c.JS_IsException(converted)) return converted;
+    try @import("native_pending_owner.zig").checkFatal(engine);
     engine.freeValue(c.JS_GetException(engine.context));
+    try @import("native_pending_owner.zig").checkFatal(engine);
     const object = try sdk.get(engine, global, "Object");
     defer engine.freeValue(object);
     const prototype = try sdk.get(engine, object, "prototype");

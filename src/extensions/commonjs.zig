@@ -23,22 +23,22 @@ fn stringProperty(engine: *engine_mod.Engine, object: c.JSValue, name: [*:0]cons
 }
 
 fn cachedModule(engine: *engine_mod.Engine, filename: [:0]const u8) !c.JSValue {
-    return engine.checked(c.JS_GetPropertyStr(engine.context, engine.commonjs_cache, filename.ptr));
+    return engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, engine.commonjs_cache, filename.ptr); });
 }
 
 fn cachedExports(engine: *engine_mod.Engine, filename: [:0]const u8) !?c.JSValue {
     const module = try cachedModule(engine, filename);
-    defer engine.freeValue(module);
+    defer engine.releaseNativeValue(module);
     if (c.JS_IsUndefined(module)) return null;
     if (!c.JS_IsObject(module)) return error.InvalidCommonJsCacheEntry;
-    return try engine.checked(c.JS_GetPropertyStr(engine.context, module, "exports"));
+    return try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, module, "exports"); });
 }
 
 fn nativeRequire(engine: *engine_mod.Engine, filename: [:0]const u8, resolve_only: bool) !c.JSValue {
     var data = [_]c.JSValue{try engine.checked(c.JS_NewStringLen(engine.context, filename.ptr, filename.len))};
-    defer engine.freeValue(data[0]);
+    defer engine.releaseNativeValue(data[0]);
     const function = try engine.checked(c.JS_NewCFunctionData(engine.context, requireCallback, 1, @intFromBool(resolve_only), data.len, &data));
-    errdefer engine.freeValue(function);
+    errdefer engine.releaseNativeValue(function);
     if (!resolve_only) {
         try property(engine, function, "resolve", try nativeRequire(engine, filename, true));
         try property(engine, function, "cache", c.JS_DupValue(engine.context, engine.commonjs_cache));
@@ -49,25 +49,33 @@ fn nativeRequire(engine: *engine_mod.Engine, filename: [:0]const u8, resolve_onl
 
 pub fn install(engine: *engine_mod.Engine) !void {
     const module = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(module);
+    defer engine.releaseNativeValue(module);
     try property(engine, module, "createRequire", try engine.checked(c.JS_NewCFunction(engine.context, createRequire, "createRequire", 1)));
     try engine.registerDefaultModule("node:module", module);
     try engine.registerDefaultModule("module", module);
 }
 
-fn createRequire(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn createRequire(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(createRequirePendingBody(context, pending_arg1, argc, argv));
+}
+fn createRequirePendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return createRequireCall(engine, if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| {
         if (err == error.JavaScriptException) return engine.throwCaptured();
-        if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+        if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+        if (err == error.OutOfMemory) return @import("engine.zig").Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
         _ = c.JS_ThrowTypeError(context, "Native createRequire: %s", @as([*:0]const u8, @errorName(err)));
+        @import("native_pending_owner.zig").checkFatal(engine) catch return c.pi_js_exception();
         const value = c.JS_GetException(context);
-        if (!c.JS_IsError(value)) return c.JS_Throw(context, value);
+        if (!c.JS_IsError(value)) return c.JS_PiThrowExceptionData(context, value);
         if (c.JS_DefinePropertyValueStr(context, value, "code", c.JS_NewString(context, "ERR_INVALID_ARG_VALUE"), c.JS_PROP_C_W_E) < 0) {
-            engine.freeValue(value);
-            return c.JS_Throw(context, c.JS_GetException(context));
+            engine.releaseNativeValue(value);
+            return c.pi_js_exception();
         }
-        return c.JS_Throw(context, value);
+        return c.JS_PiThrowExceptionData(context, value);
     };
 }
 
@@ -76,32 +84,39 @@ fn createRequireCall(engine: *engine_mod.Engine, args: []c.JSValue) !c.JSValue {
     const path = if (native_url.isURL(engine, args[0])) actual_url: {
         if (!try native_url.visibleURL(engine, args[0])) return error.InvalidNativeRequireArgument;
         break :actual_url native_url.clonedFilePath(engine, args[0], builtin.os.tag == .windows) catch |err| {
-            if (err == error.OutOfMemory) return err;
-            if (c.JS_HasException(engine.context)) engine.freeValue(c.JS_GetException(engine.context));
+            try @import("native_pending_owner.zig").catchFailure(engine, err);
+            if (c.JS_HasException(engine.context)) engine.releaseNativeValue(c.JS_GetException(engine.context));
             return error.InvalidNativeRequireArgument;
         };
     } else string: {
         if (!c.JS_IsString(args[0])) return error.InvalidNativeRequireArgument;
-        const input = try engine.toString(args[0]);
+        const input = (engine.toString(args[0]) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(input);
-        break :string if (std.ascii.startsWithIgnoreCase(input, "file:")) try file_urls.toPath(engine.gpa, input, builtin.os.tag == .windows) else try engine.gpa.dupe(u8, input);
+        break :string if (std.ascii.startsWithIgnoreCase(input, "file:")) (file_urls.toPath(engine.gpa, input, builtin.os.tag == .windows) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; }) else (engine.gpa.dupe(u8, input) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     };
     defer engine.gpa.free(path);
     if (!std.fs.path.isAbsolute(path) or std.mem.indexOfScalar(u8, path, 0) != null) return error.InvalidNativeRequireFilename;
     const flavor: std.fs.path.PathType = if (builtin.os.tag == .windows) .windows else .posix;
-    const filename = if (path.len > 0 and flavor.isSep(u8, path[path.len - 1])) try std.fs.path.join(engine.gpa, &.{ path, "noop.js" }) else try engine.gpa.dupe(u8, path);
+    const filename = if (path.len > 0 and flavor.isSep(u8, path[path.len - 1])) (std.fs.path.join(engine.gpa, &.{ path, "noop.js" }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; }) else (engine.gpa.dupe(u8, path) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(filename);
     const platform = try platformFilename(engine, filename);
     defer engine.gpa.free(platform);
     return nativeRequire(engine, platform, false);
 }
 
-fn requireCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn requireCallback(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(requireCallbackPendingBody(context, pending_arg1, argc, argv, magic, data));
+}
+fn requireCallbackPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return requireCall(engine, data[0], if (argc == 0) &.{} else argv[0..@intCast(argc)], magic != 0) catch |err| {
         if (err == error.JavaScriptException) return engine.throwCaptured();
+        if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
         const message = if (err == error.JavaScriptException) engine.last_error orelse @errorName(err) else @errorName(err);
-        const terminated = engine.gpa.dupeZ(u8, message) catch return c.JS_ThrowOutOfMemory(context);
+        const terminated = engine.gpa.dupeZ(u8, message) catch return @import("engine.zig").Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
         defer engine.gpa.free(terminated);
         if (err == error.InvalidNativeRequireArgument) return c.JS_ThrowTypeError(context, "Native require: %s", terminated.ptr);
         return c.JS_ThrowReferenceError(context, "Native require: %s", terminated.ptr);
@@ -134,7 +149,7 @@ fn requireCall(engine: *engine_mod.Engine, base_value: c.JSValue, args: []c.JSVa
 
 fn createModule(engine: *engine_mod.Engine, filename: [:0]const u8, exports: c.JSValue) !c.JSValue {
     const module = try engine.checked(c.JS_NewObject(engine.context));
-    errdefer engine.freeValue(module);
+    errdefer engine.releaseNativeValue(module);
     const directory = std.fs.path.dirname(filename) orelse ".";
     try property(engine, module, "exports", c.JS_DupValue(engine.context, exports));
     try property(engine, module, "loaded", c.pi_js_bool(engine.context, 0));
@@ -152,6 +167,26 @@ fn removeCached(engine: *engine_mod.Engine, filename: [:0]const u8) void {
     _ = c.JS_DeleteProperty(engine.context, engine.commonjs_cache, atom, 0);
 }
 
+/// A selected linked native initializer uses the same ordinary Module/cache
+/// owner as CommonJS source. No generic DLL loader or process.dlopen is added.
+pub fn loadNative(engine: *engine_mod.Engine, name: []const u8, initialize: *const fn (*engine_mod.Engine, c.JSValue) anyerror!void) !c.JSValue {
+    if (std.mem.indexOfScalar(u8, name, 0) != null) return error.InvalidNativeModuleName;
+    const filename = try platformFilename(engine, name);
+    defer engine.gpa.free(filename);
+    if (try cachedExports(engine, filename)) |exports| return exports;
+    const exports = try engine.checked(c.JS_NewObject(engine.context));
+    defer engine.releaseNativeValue(exports);
+    const module = try createModule(engine, filename, exports);
+    defer engine.releaseNativeValue(module);
+    try property(engine, module, "require", try nativeRequire(engine, filename, false));
+    if (c.JS_SetPropertyStr(engine.context, engine.commonjs_cache, filename.ptr, c.JS_DupValue(engine.context, module)) < 0)
+        return error.JavaScriptException;
+    errdefer removeCached(engine, filename);
+    try initialize(engine, exports);
+    try property(engine, module, "loaded", c.pi_js_bool(engine.context, 1));
+    return engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, module, "exports"); });
+}
+
 pub fn load(engine: *engine_mod.Engine, input: []const u8, name: []const u8, json: bool) !c.JSValue {
     if (std.mem.indexOfScalar(u8, name, 0) != null) return error.InvalidNativeModuleName;
     const filename = try platformFilename(engine, name);
@@ -160,42 +195,42 @@ pub fn load(engine: *engine_mod.Engine, input: []const u8, name: []const u8, jso
     var source = input;
     if (std.mem.startsWith(u8, source, "\xef\xbb\xbf")) source = source[3..];
     if (json) {
-        const terminated = try engine.gpa.dupeZ(u8, source);
+        const terminated = (engine.gpa.dupeZ(u8, source) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(terminated);
         const exports = try engine.checked(c.JS_ParseJSON(engine.context, terminated.ptr, source.len, filename.ptr));
-        errdefer engine.freeValue(exports);
+        errdefer engine.releaseNativeValue(exports);
         const module = try createModule(engine, filename, exports);
-        defer engine.freeValue(module);
+        defer engine.releaseNativeValue(module);
         try property(engine, module, "loaded", c.pi_js_bool(engine.context, 1));
         if (c.JS_SetPropertyStr(engine.context, engine.commonjs_cache, filename.ptr, c.JS_DupValue(engine.context, module)) < 0) return error.JavaScriptException;
         return exports;
     }
     if (std.mem.startsWith(u8, source, "#!")) source = if (std.mem.indexOfScalar(u8, source, '\n')) |end| source[end..] else "";
     const exports = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(exports);
+    defer engine.releaseNativeValue(exports);
     const module = try createModule(engine, filename, exports);
-    defer engine.freeValue(module);
+    defer engine.releaseNativeValue(module);
     const require = try nativeRequire(engine, filename, false);
-    defer engine.freeValue(require);
+    defer engine.releaseNativeValue(require);
     try property(engine, module, "require", c.JS_DupValue(engine.context, require));
     if (c.JS_SetPropertyStr(engine.context, engine.commonjs_cache, filename.ptr, c.JS_DupValue(engine.context, module)) < 0) return error.JavaScriptException;
     errdefer removeCached(engine, filename);
     // Only the grammar needed to scope user-authored CommonJS input is added.
     // Resolution, cache ownership, modules and invocation are native Zig.
-    const wrapper = try std.fmt.allocPrint(engine.gpa, "(function(exports, require, module, __filename, __dirname) {{\n{s}\n}})", .{source});
+    const wrapper = (std.fmt.allocPrint(engine.gpa, "(function(exports, require, module, __filename, __dirname) {{\n{s}\n}})", .{source}) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(wrapper);
     const function = try engine.eval(wrapper, filename, c.JS_EVAL_TYPE_GLOBAL);
-    defer engine.freeValue(function);
+    defer engine.releaseNativeValue(function);
     const path = try engine.checked(c.JS_NewStringLen(engine.context, filename.ptr, filename.len));
-    defer engine.freeValue(path);
+    defer engine.releaseNativeValue(path);
     const directory = std.fs.path.dirname(filename) orelse ".";
     const dirname = try engine.checked(c.JS_NewStringLen(engine.context, directory.ptr, directory.len));
-    defer engine.freeValue(dirname);
+    defer engine.releaseNativeValue(dirname);
     var arguments = [_]c.JSValue{ exports, require, module, path, dirname };
-    const result = try engine.checked(c.JS_Call(engine.context, function, exports, arguments.len, &arguments));
-    defer engine.freeValue(result);
+    const result = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_Call(engine.context, function, exports, arguments.len, &arguments); });
+    defer engine.releaseNativeValue(result);
     try property(engine, module, "loaded", c.pi_js_bool(engine.context, 1));
-    return engine.checked(c.JS_GetPropertyStr(engine.context, module, "exports"));
+    return engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, module, "exports"); });
 }
 
 test "native CommonJS scopes exports caches JSON and rolls back failed evaluation" {

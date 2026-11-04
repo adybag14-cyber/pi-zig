@@ -61,9 +61,10 @@ fn imported(s: *v.Scope, namespace: c.JSValue, name: [*:0]const u8) !c.JSValue {
 }
 fn success(engine: *v.em.Engine, owned: c.JSValue) !c.JSValue {
     if (c.JS_HasException(engine.context)) {
-        const pending = c.JS_GetException(engine.context);
+        var generic_fatal: bool = false;
+        const pending = c.JS_PiGetExceptionWithFatal(engine.context, &generic_fatal);
         engine.freeValue(owned);
-        return engine.checked(c.JS_Throw(engine.context, pending));
+        return engine.checked(c.JS_PiThrowNativePending(engine.context, pending, generic_fatal));
     }
     return owned;
 }

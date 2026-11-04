@@ -160,7 +160,7 @@ pub const Frontend = struct {
         try streams.hydrateOutput(engine, self.output_tty, error_tty, self.size.columns, self.size.rows);
         self.active.store(true, .release);
         errdefer self.active.store(false, .release);
-        self.lease = try streams.bind(engine, .{ .context = self, .guard_fn = guard, .control_fn = control, .write_fn = write });
+        self.lease = try streams.bind(engine, .{ .context = self, .guard_fn = guard, .control_fn = control, .write_fn = write, .is_shift_pressed_fn = if (builtin.os.tag == .windows) shift else null, .is_modifier_pressed_fn = if (builtin.os.tag == .windows) modifier else null, .enable_vt_input_fn = if (builtin.os.tag == .windows) enableVTInput else null });
         self.previous_context = engine.host_control_context;
         self.previous_pump = engine.host_control_pump;
     }
@@ -187,6 +187,23 @@ pub const Frontend = struct {
         const self: *Frontend = @ptrCast(@alignCast(raw.?));
         if (!self.active.load(.acquire)) return error.NativeProcessFrontendClosed;
         if (self.owner != std.Thread.getCurrentId()) return error.NativeProcessWrongOwnerThread;
+    }
+    fn shift(raw: ?*anyopaque) !bool {
+        return modifier(raw, "shift");
+    }
+    fn modifier(raw: ?*anyopaque, name: []const u8) !bool {
+        try guard(raw);
+        if (name.len > 15) return error.InvalidProcessStreamRecord;
+        if (comptime builtin.os.tag != .windows) return false;
+        var terminated: [16:0]u8 = @splat(0);
+        @memcpy(terminated[0..name.len], name);
+        return @import("native_tui_win32_platform_abi.zig").pi_tui_win32_is_modifier_pressed(&terminated) != 0;
+    }
+    fn enableVTInput(raw: ?*anyopaque) !bool {
+        try guard(raw);
+        if (comptime builtin.os.tag != .windows) return false;
+        // Frontend.console owns and later restores this actual process mode.
+        return @import("native_tui_win32_platform_abi.zig").pi_tui_win32_enable_virtual_terminal_input() != 0;
     }
     fn write(raw: ?*anyopaque, output: streams.Output, bytes: []const u8) !void {
         try guard(raw);
@@ -327,9 +344,10 @@ pub const Frontend = struct {
             const referenced_timer = try timers.nextReferencedDeadline(self.engine);
             const builtin_pending = if (self.engine.native_sdk_builtin_execution_pending) |pending| pending(self.engine) else false;
             const ai_http_pending = if (self.engine.native_ai_http_pending) |pending| pending(self.engine) else false;
+            const clipboard_pending = if (self.engine.native_tui_platform_pending) |pending| pending(self.engine) else false;
             const env_pending = @import("native_env_io.zig").hasReferenced(self.engine);
             const input_pending = self.referencedInput();
-            if (!input_pending and referenced_timer == null and !builtin_pending and !ai_http_pending and !env_pending) return;
+            if (!input_pending and referenced_timer == null and !builtin_pending and !ai_http_pending and !env_pending and !clipboard_pending) return;
             const owner_worked = try self.engine.pumpControls();
             _ = try self.engine.drainReadyJobs();
             _ = try timers.pumpReady(self.engine);
@@ -347,8 +365,9 @@ pub const Frontend = struct {
             const input_now = self.referencedInput();
             const builtin_now = if (self.engine.native_sdk_builtin_execution_pending) |pending| pending(self.engine) else false;
             const ai_now = if (self.engine.native_ai_http_pending) |pending| pending(self.engine) else false;
-            if (!env_now and !input_now and !builtin_now and !ai_now and (try timers.nextReferencedDeadline(self.engine)) == null) continue;
-            if (env_now and !input_now and !builtin_now and !ai_now) {
+            const clipboard_now = if (self.engine.native_tui_platform_pending) |pending| pending(self.engine) else false;
+            if (!env_now and !input_now and !builtin_now and !ai_now and !clipboard_now and (try timers.nextReferencedDeadline(self.engine)) == null) continue;
+            if (env_now and !input_now and !builtin_now and !ai_now and !clipboard_now) {
                 const timeout: Io.Timeout = if (deadline) |due| .{ .duration = .{ .raw = .fromMilliseconds(@max(@as(i64, 0), due - now)), .clock = .awake } } else .none;
                 _ = try self.engine.native_owner_signal.waitAfter(self.io, owner_epoch, timeout);
                 continue;

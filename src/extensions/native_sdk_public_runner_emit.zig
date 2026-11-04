@@ -27,10 +27,20 @@ pub const State = struct {
         return self.values[@intFromEnum(root)];
     }
     pub fn replace(self: *State, engine: *em.Engine, root: Root, owned: c.JSValue) void {
-        engine.freeValue(self.get(root));
+        const previous = self.get(root);
         self.values[@intFromEnum(root)] = owned;
+        engine.releaseNativeValue(previous);
     }
 };
+// A direct native allocator outcome is a producer before deferred JS roots
+// can publish a later cleanup event. Other typed failures retain their class.
+fn nativeAllocation(engine: anytype, result: anytype) @TypeOf(result) {
+    return result catch |err| {
+        if (@as(anyerror, err) == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+        return err;
+    };
+}
+
 fn state(owner: c.JSValue) *State {
     return @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)).?));
 }
@@ -68,8 +78,8 @@ fn create(engine: *em.Engine, runner: c.JSValue, args: []const c.JSValue, kind: 
         engine.native_sdk_public_emit_class = class;
     }
     const owner = try engine.checked(c.JS_NewObjectClass(engine.context, @intCast(engine.native_sdk_public_emit_class)));
-    errdefer engine.freeValue(owner);
-    const retained = try engine.gpa.create(State);
+    errdefer engine.releaseNativeValue(owner);
+    const retained = try nativeAllocation(engine, engine.gpa.create(State));
     errdefer engine.gpa.destroy(retained);
     var values: [std.meta.fields(Root).len]c.JSValue = undefined;
     for (&values) |*value| value.* = c.pi_js_undefined();
@@ -80,7 +90,7 @@ fn create(engine: *em.Engine, runner: c.JSValue, args: []const c.JSValue, kind: 
     for (args[0..@min(args.len, 4)], 0..) |argument, index| values[@intFromEnum(Root.parameter0) + index] = c.JS_DupValue(engine.context, argument);
     retained.* = .{ .allocator = engine.gpa, .values = values, .kind = kind };
     if (c.JS_SetOpaque(owner, retained) < 0) {
-        for (retained.values) |value| engine.freeValue(value);
+        for (retained.values) |value| engine.releaseNativeValue(value);
         return error.OutOfMemory;
     }
     return owner;
@@ -88,9 +98,9 @@ fn create(engine: *em.Engine, runner: c.JSValue, args: []const c.JSValue, kind: 
 pub fn before(engine: *em.Engine, event: c.JSValue) !c.JSValue {
     inline for (.{ "session_before_switch", "session_before_fork", "session_before_compact", "session_before_tree" }) |name| {
         const current = try sdk.get(engine, event, "type");
-        defer engine.freeValue(current);
+        defer engine.releaseNativeValue(current);
         const expected = try sdk.text(engine, name);
-        defer engine.freeValue(expected);
+        defer engine.releaseNativeValue(expected);
         if (c.JS_IsStrictEqual(engine.context, current, expected)) return c.pi_js_bool(engine.context, 1);
     }
     return c.pi_js_bool(engine.context, 0);
@@ -101,16 +111,16 @@ pub fn emit(engine: *em.Engine, runner: c.JSValue, event: c.JSValue) !c.JSValue 
 pub fn run(engine: *em.Engine, runner: c.JSValue, args: []const c.JSValue, kind: Kind) !c.JSValue {
     var functions: [2]c.JSValue = undefined;
     const promise = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
-    errdefer engine.freeValue(promise);
-    defer for (functions) |function| engine.freeValue(function);
+    errdefer engine.releaseNativeValue(promise);
+    defer for (functions) |function| engine.releaseNativeValue(function);
     const owner = create(engine, runner, args, kind, functions) catch |err| {
-        const reason = captureReason(engine, err);
-        defer engine.freeValue(reason);
+        const reason = try captureReason(engine, err);
+        defer engine.releaseNativeValue(reason);
         const ignored = try js.call(engine, functions[1], c.pi_js_undefined(), &.{reason});
-        engine.freeValue(ignored);
+        engine.releaseNativeValue(ignored);
         return promise;
     };
-    defer engine.freeValue(owner);
+    defer engine.releaseNativeValue(owner);
     start(engine, owner) catch |err| try reject(engine, owner, err);
     return promise;
 }
@@ -131,22 +141,28 @@ fn start(engine: *em.Engine, owner: c.JSValue) !void {
 fn snapshotHandlers(engine: *em.Engine, owner: c.JSValue) !void {
     const retained = state(owner);
     const extensions = try sdk.get(engine, retained.get(.runner), "extensions");
-    defer engine.freeValue(extensions);
+    defer engine.releaseNativeValue(extensions);
     const event_type = if (retained.kind == .generic) try sdk.get(engine, retained.get(.event), "type") else try reducers.eventType(engine, retained);
-    defer engine.freeValue(event_type);
+    defer engine.releaseNativeValue(event_type);
     const method = try sdk.get(engine, extensions, "map");
-    defer engine.freeValue(method);
+    defer engine.releaseNativeValue(method);
     var roots = [_]c.JSValue{event_type};
     const mapper = try engine.checked(c.JS_NewCFunctionData2(engine.context, snapshotCall, "", 1, 0, roots.len, &roots));
-    defer engine.freeValue(mapper);
+    defer engine.releaseNativeValue(mapper);
     const snapshot = try js.call(engine, method, extensions, &.{mapper});
-    defer engine.freeValue(snapshot);
+    defer engine.releaseNativeValue(snapshot);
     const symbol = try engine.checked(JS_GetIteratorSymbol(engine.context));
-    defer engine.freeValue(symbol);
+    defer engine.releaseNativeValue(symbol);
     retained.outer = try js.Iterator.init(engine, snapshot, symbol);
     try advance(engine, owner);
 }
-fn snapshotCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn snapshotCall(context: ?*c.JSContext, ignored0: c.JSValue, argc: c_int, argv: [*c]c.JSValue, ignored1: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+    return frame.finishCallback(snapshotCallOwnedBody(context, ignored0, argc, argv, ignored1, roots));
+}
+fn snapshotCallOwnedBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -154,15 +170,15 @@ fn snapshotCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.J
 }
 fn snapshotRow(engine: *em.Engine, extension: c.JSValue, event_type: c.JSValue) !c.JSValue {
     const row = try sdk.object(engine);
-    errdefer engine.freeValue(row);
+    errdefer engine.releaseNativeValue(row);
     try sdk.put(engine, row, "ext", c.JS_DupValue(engine.context, extension));
     const registry = try sdk.get(engine, extension, "handlers");
-    defer engine.freeValue(registry);
+    defer engine.releaseNativeValue(registry);
     const handlers = try js.invoke(engine, registry, "get", &.{event_type});
-    defer engine.freeValue(handlers);
+    defer engine.releaseNativeValue(handlers);
     const copied = if (c.JS_IsNull(handlers) or c.JS_IsUndefined(handlers)) try sdk.array(engine) else try js.invoke(engine, handlers, "slice", &.{});
     try sdk.put(engine, row, "handlers", if (c.JS_IsNull(copied) or c.JS_IsUndefined(copied)) blk: {
-        engine.freeValue(copied);
+        engine.releaseNativeValue(copied);
         break :blk try sdk.array(engine);
     } else copied);
     return row;
@@ -172,31 +188,34 @@ fn advance(engine: *em.Engine, owner: c.JSValue) !void {
     while (!retained.finished) {
         if (retained.inner) |*iterator| {
             if (try iterator.next()) |handler| {
-                defer engine.freeValue(handler);
+                defer engine.releaseNativeValue(handler);
                 // Source constructs this event outside the handler try block.
                 if (retained.kind == .boundary) try reducers.prepare(engine, retained);
                 const value = invokeHandler(engine, retained, handler) catch |err| {
                     if (retained.kind == .tool_call) return err;
-                    const reason = captureReason(engine, err);
-                    defer engine.freeValue(reason);
+                    const reason = try captureReason(engine, err);
+                    defer engine.releaseNativeValue(reason);
                     try report(engine, retained, reason);
                     if (retained.kind == .boundary and try rebuildBoundary(engine, owner)) return;
                     continue;
                 };
-                defer engine.freeValue(value);
-                const promise = engine.checked(c.JS_PiPromiseResolve(engine.context, value)) catch |err| {
+                defer engine.releaseNativeValue(value);
+                const promise = (entry: {
+                    engine.checkNativeEntry() catch |err| break :entry @as(anyerror!c.JSValue, err);
+                    break :entry engine.checked(c.JS_PiPromiseResolve(engine.context, value));
+                }) catch |err| {
                     if (retained.kind == .tool_call) return err;
-                    const reason = captureReason(engine, err);
-                    defer engine.freeValue(reason);
+                    const reason = try captureReason(engine, err);
+                    defer engine.releaseNativeValue(reason);
                     try report(engine, retained, reason);
                     if (retained.kind == .boundary and try rebuildBoundary(engine, owner)) return;
                     continue;
                 };
-                defer engine.freeValue(promise);
+                defer engine.releaseNativeValue(promise);
                 awaitHandler(engine, owner, promise) catch |err| {
                     if (retained.kind == .tool_call) return err;
-                    const reason = captureReason(engine, err);
-                    defer engine.freeValue(reason);
+                    const reason = try captureReason(engine, err);
+                    defer engine.releaseNativeValue(reason);
                     try report(engine, retained, reason);
                     if (retained.kind == .boundary and try rebuildBoundary(engine, owner)) return;
                     continue;
@@ -207,12 +226,12 @@ fn advance(engine: *em.Engine, owner: c.JSValue) !void {
             retained.inner = null;
         }
         if (try retained.outer.?.next()) |row| {
-            defer engine.freeValue(row);
+            defer engine.releaseNativeValue(row);
             if (retained.kind != .tool_call) retained.replace(engine, .extension, try sdk.get(engine, row, "ext"));
             const handlers = try sdk.get(engine, row, "handlers");
-            defer engine.freeValue(handlers);
+            defer engine.releaseNativeValue(handlers);
             const symbol = try engine.checked(JS_GetIteratorSymbol(engine.context));
-            defer engine.freeValue(symbol);
+            defer engine.releaseNativeValue(symbol);
             retained.inner = try js.Iterator.init(engine, handlers, symbol);
         } else {
             if (retained.kind == .context and !retained.context_system) {
@@ -232,13 +251,20 @@ fn invokeHandler(engine: *em.Engine, retained: *State, handler: c.JSValue) !c.JS
 fn awaitHandler(engine: *em.Engine, owner: c.JSValue, promise: c.JSValue) !void {
     var roots = [_]c.JSValue{owner};
     const fulfilled = try engine.checked(c.JS_NewCFunctionData2(engine.context, resumeCall, "", 1, 0, roots.len, &roots));
-    defer engine.freeValue(fulfilled);
+    defer engine.releaseNativeValue(fulfilled);
     const rejected = try engine.checked(c.JS_NewCFunctionData2(engine.context, resumeCall, "", 1, 1, roots.len, &roots));
-    defer engine.freeValue(rejected);
+    defer engine.releaseNativeValue(rejected);
+    try engine.checkNativeEntry();
     const ignored = try engine.checked(c.JS_PromiseThen(engine.context, promise, fulfilled, rejected));
-    engine.freeValue(ignored);
+    engine.releaseNativeValue(ignored);
 }
-fn resumeCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, rejected: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn resumeCall(context: ?*c.JSContext, ignored0: c.JSValue, argc: c_int, argv: [*c]c.JSValue, rejected: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+    return frame.finishCallback(resumeCallOwnedBody(context, ignored0, argc, argv, rejected, roots));
+}
+fn resumeCallOwnedBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, rejected: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -255,7 +281,7 @@ fn resumeValue(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
         retained.phase = .handler;
         if (rejected) {
             if (initial) {
-                _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value));
+                _ = c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, value));
                 return js.capture(engine);
             }
             retained.boundary_valid = false;
@@ -269,15 +295,15 @@ fn resumeValue(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
     }
     if (rejected) {
         if (retained.kind == .tool_call) {
-            _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value));
+            _ = c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, value));
             return js.capture(engine);
         }
         try report(engine, retained, value);
     } else {
         const cancel = accept(engine, retained, value) catch |err| blk: {
             if (retained.kind == .tool_call) return err;
-            const reason = captureReason(engine, err);
-            defer engine.freeValue(reason);
+            const reason = try captureReason(engine, err);
+            defer engine.releaseNativeValue(reason);
             try report(engine, retained, reason);
             break :blk false;
         };
@@ -289,9 +315,10 @@ fn resumeValue(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
 fn buildBoundary(engine: *em.Engine, owner: c.JSValue) !void {
     const retained = state(owner);
     const value = try js.call(engine, retained.get(.parameter1), c.pi_js_undefined(), &.{retained.get(.current)});
-    defer engine.freeValue(value);
+    defer engine.releaseNativeValue(value);
+    try engine.checkNativeEntry();
     const promise = try engine.checked(c.JS_PiPromiseResolve(engine.context, value));
-    defer engine.freeValue(promise);
+    defer engine.releaseNativeValue(promise);
     try awaitHandler(engine, owner, promise);
 }
 fn rebuildBoundary(engine: *em.Engine, owner: c.JSValue) !bool {
@@ -300,8 +327,8 @@ fn rebuildBoundary(engine: *em.Engine, owner: c.JSValue) !bool {
     buildBoundary(engine, owner) catch |err| {
         retained.phase = .handler;
         retained.boundary_valid = false;
-        const reason = captureReason(engine, err);
-        defer engine.freeValue(reason);
+        const reason = try captureReason(engine, err);
+        defer engine.releaseNativeValue(reason);
         try reportBoundaryBuild(engine, retained, reason);
         return false;
     };
@@ -310,16 +337,17 @@ fn rebuildBoundary(engine: *em.Engine, owner: c.JSValue) !bool {
 fn accept(engine: *em.Engine, retained: *State, value: c.JSValue) !bool {
     if (retained.kind != .generic) return reducers.accept(engine, retained, value);
     const before_event = try js.invoke(engine, retained.get(.runner), "isSessionBeforeEvent", &.{retained.get(.event)});
-    defer engine.freeValue(before_event);
+    defer engine.releaseNativeValue(before_event);
     if (c.JS_ToBool(engine.context, before_event) != 1 or c.JS_ToBool(engine.context, value) != 1) return false;
     retained.replace(engine, .result, c.JS_DupValue(engine.context, value));
     const cancel = try sdk.get(engine, value, "cancel");
-    defer engine.freeValue(cancel);
+    defer engine.releaseNativeValue(cancel);
     return c.JS_ToBool(engine.context, cancel) == 1;
 }
 fn instanceOfError(engine: *em.Engine, reason: c.JSValue) !bool {
     const constructor = try js.global(engine, "Error");
-    defer engine.freeValue(constructor);
+    defer engine.releaseNativeValue(constructor);
+    try engine.checkNativeEntry();
     const result = c.JS_IsInstanceOf(engine.context, reason, constructor);
     if (result < 0) return js.capture(engine);
     return result != 0;
@@ -329,31 +357,31 @@ fn report(engine: *em.Engine, retained: *State, reason: c.JSValue) !void {
     // user_bash reports the exact failure and then rejects with that original
     // value. A throwing listener replaces it before this point is reached.
     if (retained.kind == .user_bash) {
-        _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason));
+        _ = c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, reason));
         return js.capture(engine);
     }
 }
 fn reportValue(engine: *em.Engine, retained: *State, reason: c.JSValue) !void {
     if (retained.kind == .cache or retained.kind == .input or retained.kind == .boundary) return reportInline(engine, retained, reason);
     const message = try errorMessage(engine, reason);
-    defer engine.freeValue(message);
+    defer engine.releaseNativeValue(message);
     const stack = if (try instanceOfError(engine, reason)) try sdk.get(engine, reason, "stack") else c.pi_js_undefined();
-    defer engine.freeValue(stack);
+    defer engine.releaseNativeValue(stack);
     const method = try sdk.get(engine, retained.get(.runner), "emitError");
-    defer engine.freeValue(method);
+    defer engine.releaseNativeValue(method);
     const error_value = try sdk.object(engine);
-    defer engine.freeValue(error_value);
+    defer engine.releaseNativeValue(error_value);
     try sdk.put(engine, error_value, "extensionPath", try sdk.get(engine, retained.get(.extension), "path"));
     try sdk.put(engine, error_value, "event", try reportEventType(engine, retained));
     try sdk.put(engine, error_value, "error", c.JS_DupValue(engine.context, message));
     try sdk.put(engine, error_value, "stack", c.JS_DupValue(engine.context, stack));
     const ignored = try js.call(engine, method, retained.get(.runner), &.{error_value});
-    engine.freeValue(ignored);
+    engine.releaseNativeValue(ignored);
 }
 fn errorMessage(engine: *em.Engine, reason: c.JSValue) !c.JSValue {
     return if (try instanceOfError(engine, reason)) sdk.get(engine, reason, "message") else blk: {
         const string = try js.global(engine, "String");
-        defer engine.freeValue(string);
+        defer engine.releaseNativeValue(string);
         break :blk try js.call(engine, string, c.pi_js_undefined(), &.{reason});
     };
 }
@@ -362,58 +390,57 @@ fn reportEventType(engine: *em.Engine, retained: *State) !c.JSValue {
 }
 fn reportInline(engine: *em.Engine, retained: *State, reason: c.JSValue) !void {
     const method = try sdk.get(engine, retained.get(.runner), "emitError");
-    defer engine.freeValue(method);
+    defer engine.releaseNativeValue(method);
     const error_value = try sdk.object(engine);
-    defer engine.freeValue(error_value);
+    defer engine.releaseNativeValue(error_value);
     try sdk.put(engine, error_value, "extensionPath", try sdk.get(engine, retained.get(.extension), "path"));
     try sdk.put(engine, error_value, "event", try reportEventType(engine, retained));
     try sdk.put(engine, error_value, "error", try errorMessage(engine, reason));
     try sdk.put(engine, error_value, "stack", if (try instanceOfError(engine, reason)) try sdk.get(engine, reason, "stack") else c.pi_js_undefined());
     const ignored = try js.call(engine, method, retained.get(.runner), &.{error_value});
-    engine.freeValue(ignored);
+    engine.releaseNativeValue(ignored);
 }
 fn reportBoundaryBuild(engine: *em.Engine, retained: *State, reason: c.JSValue) !void {
     const method = try sdk.get(engine, retained.get(.runner), "emitError");
-    defer engine.freeValue(method);
+    defer engine.releaseNativeValue(method);
     const error_value = try sdk.object(engine);
-    defer engine.freeValue(error_value);
+    defer engine.releaseNativeValue(error_value);
     try sdk.put(engine, error_value, "extensionPath", try sdk.get(engine, retained.get(.extension), "path"));
     try sdk.put(engine, error_value, "event", try reducers.eventType(engine, retained));
     const message = try errorMessage(engine, reason);
-    defer engine.freeValue(message);
+    defer engine.releaseNativeValue(message);
     // Template substitution performs ToString, including string-hint hooks
     // and Symbol rejection, before concatenating the literal prefix.
     const converted = try engine.checked(c.JS_ToString(engine.context, message));
-    defer engine.freeValue(converted);
+    defer engine.releaseNativeValue(converted);
     const prefix = try sdk.text(engine, "Invalid boundary entries: ");
-    defer engine.freeValue(prefix);
+    defer engine.releaseNativeValue(prefix);
     try sdk.put(engine, error_value, "error", try engine.checked(c.JS_PiBinaryOperator(engine.context, 0, prefix, converted)));
     try sdk.put(engine, error_value, "stack", if (try instanceOfError(engine, reason)) try sdk.get(engine, reason, "stack") else c.pi_js_undefined());
     const ignored = try js.call(engine, method, retained.get(.runner), &.{error_value});
-    engine.freeValue(ignored);
+    engine.releaseNativeValue(ignored);
 }
 fn finish(engine: *em.Engine, owner: c.JSValue) !void {
     const retained = state(owner);
     const result = if (retained.kind == .generic) c.JS_DupValue(engine.context, retained.get(.result)) else try reducers.output(engine, retained);
-    defer engine.freeValue(result);
+    defer engine.releaseNativeValue(result);
     if (retained.inner) |*iterator| try iterator.close();
     if (retained.outer) |*iterator| try iterator.close();
     retained.finished = true;
     const ignored = try js.call(engine, retained.get(.resolve), c.pi_js_undefined(), &.{result});
-    engine.freeValue(ignored);
+    engine.releaseNativeValue(ignored);
 }
-fn captureReason(engine: *em.Engine, err: anyerror) c.JSValue {
-    _ = sdk.fail(engine, err);
-    return c.JS_GetException(engine.context);
+fn captureReason(engine: *em.Engine, err: anyerror) !c.JSValue {
+    return @import("native_agent_async.zig").reason(engine, err);
 }
 fn reject(engine: *em.Engine, owner: c.JSValue, err: anyerror) !void {
     const retained = state(owner);
-    const reason = captureReason(engine, err);
-    defer engine.freeValue(reason);
+    const reason = try captureReason(engine, err);
+    defer engine.releaseNativeValue(reason);
     // Throw completion wins over exceptions thrown while closing iterators.
     if (retained.inner) |*iterator| iterator.closePreserving();
     if (retained.outer) |*iterator| iterator.closePreserving();
     retained.finished = true;
     const ignored = try js.call(engine, retained.get(.reject), c.pi_js_undefined(), &.{reason});
-    engine.freeValue(ignored);
+    engine.releaseNativeValue(ignored);
 }

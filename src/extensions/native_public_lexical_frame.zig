@@ -136,12 +136,15 @@ pub fn Frame(comptime Names: type) type {
             const value = c.JS_PiRetainNativeAsyncActivation(s.engine.context, state);
             _ = s.engine.nativeCallbackResult(c.pi_js_undefined());
             if (c.JS_HasException(s.engine.context)) {
-                const reason = c.JS_GetException(s.engine.context);
+                var generic_fatal: bool = false;
+                const reason = c.JS_PiGetExceptionWithFatal(s.engine.context, &generic_fatal);
                 const tag = c.pi_js_native_allocation_error_generation(reason);
                 const distance = tag -% generation;
-                if (tag != 0 and distance != 0 and distance <= s.engine.native_allocation_generation -% generation)
+                if (tag != 0 and distance != 0 and distance <= s.engine.native_allocation_generation -% generation) {
                     c.JS_SetUncatchableError(s.engine.context, reason);
-                _ = c.JS_Throw(s.engine.context, reason);
+                    generic_fatal = true;
+                }
+                _ = c.JS_PiThrowNativePending(s.engine.context, reason, generic_fatal);
                 var completion = v.owned.Completion.initValue(s.engine, @as(anyerror!c.JSValue, error.JavaScriptException));
                 if (!c.JS_IsException(value)) completion.release(value);
                 return boundary.finishValue(s, completion.finishValue());
@@ -270,12 +273,15 @@ fn uninitialized(s: *Scope, name: [*:0]const u8) anyerror {
     const raw = c.JS_ThrowReferenceError(s.engine.context, "%s is not initialized", name);
     _ = s.engine.nativeCallbackResult(c.pi_js_undefined());
     if (c.JS_HasException(s.engine.context)) {
-        const reason = c.JS_GetException(s.engine.context);
+        var generic_fatal: bool = false;
+        const reason = c.JS_PiGetExceptionWithFatal(s.engine.context, &generic_fatal);
         const tag = c.pi_js_native_allocation_error_generation(reason);
         const distance = tag -% generation;
-        if (tag != 0 and distance != 0 and distance <= s.engine.native_allocation_generation -% generation)
+        if (tag != 0 and distance != 0 and distance <= s.engine.native_allocation_generation -% generation) {
             c.JS_SetUncatchableError(s.engine.context, reason);
-        _ = c.JS_Throw(s.engine.context, reason);
+            generic_fatal = true;
+        }
+        _ = c.JS_PiThrowNativePending(s.engine.context, reason, generic_fatal);
     }
     _ = boundary.finishValue(s, raw) catch |err| return err;
     unreachable;

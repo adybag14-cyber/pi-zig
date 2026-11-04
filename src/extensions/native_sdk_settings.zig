@@ -142,7 +142,7 @@ const fields = [_]Field{
 };
 pub fn install(engine: *engine_mod.Engine, prototype: c.JSValue) !void {
     const imports = try default_accessors.acquire(engine);
-    defer engine.freeValue(imports);
+    defer engine.releaseNativeValue(imports);
     for (fields, 0..) |field, index| {
         const value = if (default_accessors.supports(field.name))
             try default_accessors.method(engine, field.name, imports)
@@ -151,48 +151,54 @@ pub fn install(engine: *engine_mod.Engine, prototype: c.JSValue) !void {
     }
 }
 fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, args: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callbackPendingBody(context, receiver, argc, args, magic));
+}
+fn callbackPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, args: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const owner = sdk.state(engine, receiver) catch |err| return sdk.fail(engine, err);
     return dispatch(engine, owner.data, fields[@intCast(magic)], if (argc > 0) args[0..@intCast(argc)] else &.{}) catch |err| sdk.fail(engine, err);
 }
 fn pathValue(engine: *engine_mod.Engine, root: c.JSValue, path: []const u8) !c.JSValue {
     var result = c.JS_DupValue(engine.context, root);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     var components = std.mem.splitScalar(u8, path, '.');
     while (components.next()) |component| {
         if (component.len == 0 or c.JS_IsUndefined(result) or c.JS_IsNull(result)) {
-            engine.freeValue(result);
+            engine.releaseNativeValue(result);
             return c.pi_js_undefined();
         }
-        const key = try engine.gpa.dupeZ(u8, component);
+        const key = (engine.gpa.dupeZ(u8, component) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(key);
         const next = try sdk.get(engine, result, key);
-        engine.freeValue(result);
+        engine.releaseNativeValue(result);
         result = next;
     }
     return result;
 }
 fn assignPath(engine: *engine_mod.Engine, root: c.JSValue, path: []const u8, value: c.JSValue) !void {
     var target = c.JS_DupValue(engine.context, root);
-    defer engine.freeValue(target);
+    defer engine.releaseNativeValue(target);
     var components = std.mem.splitScalar(u8, path, '.');
     while (components.next()) |component| {
-        const key = try engine.gpa.dupeZ(u8, component);
+        const key = (engine.gpa.dupeZ(u8, component) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(key);
         if (components.peek() == null) return sdk.put(engine, target, key, c.JS_DupValue(engine.context, value));
         var next = try sdk.get(engine, target, key);
         if (c.JS_ToBool(engine.context, next) != 1) {
-            engine.freeValue(next);
+            engine.releaseNativeValue(next);
             next = try sdk.object(engine);
             try sdk.put(engine, target, key, c.JS_DupValue(engine.context, next));
         }
-        engine.freeValue(target);
+        engine.releaseNativeValue(target);
         target = next;
     }
 }
 fn shallow(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
     const result = try sdk.object(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     try models.copy(engine, result, value);
     return result;
 }
@@ -200,26 +206,27 @@ pub fn clone(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
     var length: usize = 0;
     const bytes = c.JS_WriteObject(engine.context, &length, value, c.JS_WRITE_OBJ_REFERENCE);
     if (bytes == null) {
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const original = c.JS_GetException(engine.context);
-        defer engine.freeValue(original);
+        defer engine.releaseNativeValue(original);
         const message_value = try sdk.get(engine, original, "message");
-        defer engine.freeValue(message_value);
-        const message = try engine.toString(message_value);
+        defer engine.releaseNativeValue(message_value);
+        const message = (engine.toString(message_value) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(message);
         const failure = try @import("dom_exception.zig").create(engine, message, "DataCloneError");
-        return engine.checked(c.JS_Throw(engine.context, failure));
+        return engine.checked(c.JS_PiThrowExceptionData(engine.context, failure));
     }
     defer c.js_free(engine.context, bytes);
     return engine.checked(c.JS_ReadObject(engine.context, bytes, length, c.JS_READ_OBJ_REFERENCE));
 }
 fn same(engine: *engine_mod.Engine, value: c.JSValue, text: []const u8) !bool {
     const expected = try sdk.text(engine, text);
-    defer engine.freeValue(expected);
+    defer engine.releaseNativeValue(expected);
     return c.JS_IsStrictEqual(engine.context, value, expected);
 }
 fn env(engine: *engine_mod.Engine, name: [*:0]const u8) !c.JSValue {
     const environment = try @import("native_sdk_config_value.zig").processEnv(engine);
-    defer engine.freeValue(environment);
+    defer engine.releaseNativeValue(environment);
     return sdk.get(engine, environment, name);
 }
 fn uuid(engine: *engine_mod.Engine) !c.JSValue {
@@ -229,13 +236,13 @@ fn uuid(engine: *engine_mod.Engine) !c.JSValue {
 }
 pub fn normalizePath(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
     if (c.JS_ToBool(engine.context, value) != 1) return c.JS_DupValue(engine.context, value);
-    const raw = try engine.toString(value);
+    const raw = (engine.toString(value) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(raw);
     const windows = builtin.os.tag == .windows;
     if (windows and std.mem.startsWith(u8, raw, "/") and !std.mem.startsWith(u8, raw, "//") and std.mem.indexOfScalar(u8, raw, '\\') == null) {
         const body = if (std.mem.startsWith(u8, raw, "/mnt/")) raw[5..] else if (std.mem.startsWith(u8, raw, "/cygdrive/")) raw[10..] else raw[1..];
         if (body.len >= 1 and std.ascii.isAlphabetic(body[0]) and (body.len == 1 or body[1] == '/')) {
-            const converted = try std.fmt.allocPrint(engine.gpa, "{c}:\\{s}", .{ std.ascii.toUpper(body[0]), if (body.len > 1) body[2..] else "" });
+            const converted = (std.fmt.allocPrint(engine.gpa, "{c}:\\{s}", .{ std.ascii.toUpper(body[0]), if (body.len > 1) body[2..] else "" }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(converted);
             for (converted) |*char| if (char.* == '/') {
                 char.* = '\\';
@@ -245,16 +252,16 @@ pub fn normalizePath(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
     }
     if (std.mem.eql(u8, raw, "~") or std.mem.startsWith(u8, raw, "~/") or (windows and std.mem.startsWith(u8, raw, "~\\"))) {
         const home = try env(engine, if (windows) "USERPROFILE" else "HOME");
-        defer engine.freeValue(home);
-        const directory = try engine.toString(home);
+        defer engine.releaseNativeValue(home);
+        const directory = (engine.toString(home) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(directory);
         if (raw.len == 1) return sdk.text(engine, directory);
-        const joined = try std.fs.path.resolve(engine.gpa, &.{ directory, raw[2..] });
+        const joined = (std.fs.path.resolve(engine.gpa, &.{ directory, raw[2..] }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(joined);
         return sdk.text(engine, joined);
     }
     if (std.mem.startsWith(u8, raw, "file://")) {
-        const path = try @import("file_urls.zig").toPath(engine.gpa, raw, windows);
+        const path = (@import("file_urls.zig").toPath(engine.gpa, raw, windows) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(path);
         return sdk.text(engine, path);
     }
@@ -265,51 +272,51 @@ fn nullish(value: c.JSValue) bool {
 }
 fn number(engine: *engine_mod.Engine, value: c.JSValue) !f64 {
     var result: f64 = undefined;
-    if (c.JS_ToFloat64(engine.context, &result, value) < 0) return error.JavaScriptException;
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(engine.context, &result, value); } < 0) return error.JavaScriptException;
     return result;
 }
 fn failSetting(engine: *engine_mod.Engine, path: []const u8, value: c.JSValue) !c.JSValue {
-    const raw = try engine.toString(value);
+    const raw = (engine.toString(value) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(raw);
-    const message = try std.fmt.allocPrint(engine.gpa, "Invalid {s} setting: {s}", .{ path, raw });
+    const message = (std.fmt.allocPrint(engine.gpa, "Invalid {s} setting: {s}", .{ path, raw }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(message);
     const error_value = try engine.checked(c.JS_NewError(engine.context));
-    defer engine.freeValue(error_value);
+    defer engine.releaseNativeValue(error_value);
     try sdk.put(engine, error_value, "message", try sdk.text(engine, message));
-    return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, error_value)));
+    return engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, error_value)));
 }
 pub fn deepMerge(engine: *engine_mod.Engine, base: c.JSValue, update: c.JSValue, depth: usize) anyerror!c.JSValue {
     if (depth > 64) return error.NativeSDKSettingsDepth;
     const result = try shallow(engine, base);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     var names: [*c]c.JSPropertyEnum = null;
     var count: u32 = 0;
-    if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, update, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
+    if (native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_GetOwnPropertyNames(engine.context, &names, &count, update, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY); } < 0) return error.JavaScriptException;
     defer c.JS_FreePropertyEnum(engine.context, names, count);
     for (0..count) |index| {
-        const next = try engine.checked(c.JS_GetProperty(engine.context, update, names[index].atom));
-        defer engine.freeValue(next);
+        const next = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetProperty(engine.context, update, names[index].atom); });
+        defer engine.releaseNativeValue(next);
         if (c.JS_IsUndefined(next)) continue;
-        const previous = try engine.checked(c.JS_GetProperty(engine.context, base, names[index].atom));
-        defer engine.freeValue(previous);
+        const previous = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetProperty(engine.context, base, names[index].atom); });
+        defer engine.releaseNativeValue(previous);
         const value = if (c.JS_IsObject(previous) and !c.JS_IsArray(previous) and c.JS_IsObject(next) and !c.JS_IsArray(next)) try deepMerge(engine, previous, next, depth + 1) else c.JS_DupValue(engine.context, next);
         if (c.JS_DefinePropertyValue(engine.context, result, names[index].atom, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }
     if (depth == 0) {
         const inherited = try sdk.get(engine, base, "defaultTools");
-        defer engine.freeValue(inherited);
+        defer engine.releaseNativeValue(inherited);
         const changed = try sdk.get(engine, update, "defaultTools");
-        defer engine.freeValue(changed);
+        defer engine.releaseNativeValue(changed);
         if (c.JS_IsArray(inherited) and c.JS_IsArray(changed)) {
             var modifiers = true;
             for (0..try sdk.length(engine, changed)) |index| {
-                const item = try engine.checked(c.JS_GetPropertyUint32(engine.context, changed, @intCast(index)));
-                defer engine.freeValue(item);
+                const item = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, changed, @intCast(index)); });
+                defer engine.releaseNativeValue(item);
                 if (!c.JS_IsString(item)) {
                     modifiers = false;
                     break;
                 }
-                const text = try engine.toString(item);
+                const text = (engine.toString(item) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                 defer engine.gpa.free(text);
                 if (text.len == 0 or (text[0] != '+' and text[0] != '-')) {
                     modifiers = false;
@@ -334,9 +341,9 @@ fn setter(engine: *engine_mod.Engine, data: c.JSValue, field: Field, args: []con
     if (std.mem.startsWith(u8, field.name, "setProject")) {
         try storage.assertTrusted(engine, data);
         const old = try sdk.get(engine, data, "project");
-        defer engine.freeValue(old);
+        defer engine.releaseNativeValue(old);
         const next = try clone(engine, old);
-        defer engine.freeValue(next);
+        defer engine.releaseNativeValue(next);
         try assignPath(engine, next, field.path, first);
         try sdk.put(engine, data, "project", try clone(engine, next));
         try storage.mark(engine, data, field.path, true);
@@ -344,21 +351,21 @@ fn setter(engine: *engine_mod.Engine, data: c.JSValue, field: Field, args: []con
         return c.pi_js_undefined();
     }
     const global = try sdk.get(engine, data, "global");
-    defer engine.freeValue(global);
+    defer engine.releaseNativeValue(global);
     if (std.mem.eql(u8, field.name, "setDefaultModelAndProvider")) {
         try sdk.put(engine, global, "defaultProvider", c.JS_DupValue(engine.context, first));
         try sdk.put(engine, global, "defaultModel", if (args.len > 1) c.JS_DupValue(engine.context, args[1]) else c.pi_js_undefined());
         try storage.mark(engine, data, "defaultProvider", false);
         try storage.mark(engine, data, "defaultModel", false);
     } else if (std.mem.eql(u8, field.name, "setModelThinkingLevel") or std.mem.eql(u8, field.name, "removeModelThinkingLevel")) {
-        const p = try engine.toString(first);
+        const p = (engine.toString(first) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(p);
-        const m = try engine.toString(if (args.len > 1) args[1] else c.pi_js_undefined());
+        const m = (engine.toString(if (args.len > 1) args[1] else c.pi_js_undefined()) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(m);
-        const key = try std.fmt.allocPrintSentinel(engine.gpa, "{s}/{s}", .{ p, m }, 0);
+        const key = (std.fmt.allocPrintSentinel(engine.gpa, "{s}/{s}", .{ p, m }, 0) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(key);
         var levels = try sdk.get(engine, global, "modelThinkingLevels");
-        defer engine.freeValue(levels);
+        defer engine.releaseNativeValue(levels);
         if (field.name[0] == 'r') {
             if (!c.JS_IsObject(levels)) return c.pi_js_undefined();
             const atom = c.JS_NewAtom(engine.context, key);
@@ -366,7 +373,7 @@ fn setter(engine: *engine_mod.Engine, data: c.JSValue, field: Field, args: []con
             if (c.JS_DeleteProperty(engine.context, levels, atom, 0) < 0) return error.JavaScriptException;
             var properties: [*c]c.JSPropertyEnum = null;
             var count: u32 = 0;
-            if (c.JS_GetOwnPropertyNames(engine.context, &properties, &count, levels, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
+            if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetOwnPropertyNames(engine.context, &properties, &count, levels, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY); } < 0) return error.JavaScriptException;
             defer c.JS_FreePropertyEnum(engine.context, properties, count);
             if (count == 0) {
                 const root_atom = c.JS_NewAtom(engine.context, "modelThinkingLevels");
@@ -375,7 +382,7 @@ fn setter(engine: *engine_mod.Engine, data: c.JSValue, field: Field, args: []con
             }
         } else {
             if (!c.JS_IsObject(levels)) {
-                engine.freeValue(levels);
+                engine.releaseNativeValue(levels);
                 levels = try sdk.object(engine);
                 try sdk.put(engine, global, "modelThinkingLevels", c.JS_DupValue(engine.context, levels));
             }
@@ -384,31 +391,31 @@ fn setter(engine: *engine_mod.Engine, data: c.JSValue, field: Field, args: []con
         try storage.mark(engine, data, "modelThinkingLevels", false);
     } else {
         var value = c.JS_DupValue(engine.context, first);
-        defer engine.freeValue(value);
+        defer engine.releaseNativeValue(value);
         const name = field.name;
         if (std.mem.eql(u8, name, "setHttpIdleTimeoutMs")) {
             const n = try number(engine, first);
             if (!c.JS_IsNumber(first) or !std.math.isFinite(n) or n < 0) return failSetting(engine, field.path, first);
-            engine.freeValue(value);
+            engine.releaseNativeValue(value);
             value = c.JS_NewFloat64(engine.context, @floor(n));
         } else if (std.mem.eql(u8, name, "setEditorPaddingX") or std.mem.eql(u8, name, "setAutocompleteMaxVisible") or std.mem.eql(u8, name, "setImageWidthCells") or (std.mem.eql(u8, name, "setFullscreenWheelScrollLines") and !try same(engine, first, "auto"))) {
             const n = @floor(try number(engine, first));
             const min: f64 = if (std.mem.eql(u8, name, "setEditorPaddingX")) 0 else if (std.mem.eql(u8, name, "setAutocompleteMaxVisible")) 3 else 1;
             const max: f64 = if (std.mem.eql(u8, name, "setEditorPaddingX")) 3 else if (std.mem.eql(u8, name, "setAutocompleteMaxVisible")) 20 else if (std.mem.eql(u8, name, "setFullscreenWheelScrollLines")) 100 else std.math.inf(f64);
-            engine.freeValue(value);
+            engine.releaseNativeValue(value);
             value = c.JS_NewFloat64(engine.context, if (std.math.isNan(n)) n else @max(min, @min(max, n)));
         } else if (std.mem.eql(u8, name, "setWarnings")) {
-            engine.freeValue(value);
+            engine.releaseNativeValue(value);
             value = try shallow(engine, first);
         } else if (std.mem.eql(u8, name, "setNpmCommand") and c.JS_ToBool(engine.context, first) == 1) {
-            engine.freeValue(value);
+            engine.releaseNativeValue(value);
             value = try sdk.invoke(engine, first, "slice", &.{});
         }
         try assignPath(engine, global, field.path, value);
         try storage.mark(engine, data, field.path, false);
         if (std.mem.eql(u8, name, "setEnableAnalytics") and c.JS_ToBool(engine.context, first) == 1) {
             const tracking = try sdk.get(engine, global, "trackingId");
-            defer engine.freeValue(tracking);
+            defer engine.releaseNativeValue(tracking);
             if (c.JS_ToBool(engine.context, tracking) != 1) {
                 try sdk.put(engine, global, "trackingId", try uuid(engine));
                 try storage.mark(engine, data, "trackingId", false);
@@ -421,9 +428,9 @@ fn setter(engine: *engine_mod.Engine, data: c.JSValue, field: Field, args: []con
 fn dispatch(engine: *engine_mod.Engine, data: c.JSValue, field: Field, args: []const c.JSValue) !c.JSValue {
     if (field.mode == .set) return setter(engine, data, field, args);
     const root = try sdk.get(engine, data, if (std.mem.eql(u8, field.name, "getCacheWarmingMode") or std.mem.eql(u8, field.name, "getDefaultProjectTrust")) "global" else "settings");
-    defer engine.freeValue(root);
+    defer engine.releaseNativeValue(root);
     const raw = if (field.path.len > 0) try pathValue(engine, root, field.path) else c.pi_js_undefined();
-    defer engine.freeValue(raw);
+    defer engine.releaseNativeValue(raw);
     if (field.mode == .raw) return c.JS_DupValue(engine.context, raw);
     if (field.mode == .object) return shallow(engine, raw);
     if (field.mode == .array) return if (nullish(raw)) sdk.array(engine) else sdk.invoke(engine, raw, "slice", &.{});
@@ -436,12 +443,12 @@ fn special(engine: *engine_mod.Engine, data: c.JSValue, root: c.JSValue, field: 
     const name = field.name;
     if (std.mem.eql(u8, name, "getOrCreateDeviceId")) {
         const global = try sdk.get(engine, data, "global");
-        defer engine.freeValue(global);
+        defer engine.releaseNativeValue(global);
         var id = try sdk.get(engine, global, "deviceId");
-        errdefer engine.freeValue(id);
+        errdefer engine.releaseNativeValue(id);
         if (c.JS_ToBool(engine.context, id) != 1) {
             const created = try uuid(engine);
-            engine.freeValue(id);
+            engine.releaseNativeValue(id);
             id = created;
             try sdk.put(engine, global, "deviceId", c.JS_DupValue(engine.context, id));
             try @import("native_sdk_settings_storage.zig").mark(engine, data, "deviceId", false);
@@ -451,15 +458,15 @@ fn special(engine: *engine_mod.Engine, data: c.JSValue, root: c.JSValue, field: 
     }
     if (std.mem.eql(u8, name, "isProjectTrusted")) return sdk.get(engine, data, "projectTrusted");
     if (std.mem.eql(u8, name, "getSettings") or std.mem.eql(u8, name, "getGlobalSettings") or std.mem.eql(u8, name, "getProjectSettings")) {
-        const key = try engine.gpa.dupeZ(u8, field.path);
+        const key = (engine.gpa.dupeZ(u8, field.path) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(key);
         const target = try sdk.get(engine, data, key);
-        defer engine.freeValue(target);
+        defer engine.releaseNativeValue(target);
         return clone(engine, target);
     }
     if (std.mem.eql(u8, name, "getThemeSetting") or std.mem.eql(u8, name, "getTheme")) {
         if (!c.JS_IsString(raw)) return c.pi_js_undefined();
-        const text = try engine.toString(raw);
+        const text = (engine.toString(raw) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(text);
         return if (std.mem.eql(u8, name, "getTheme") and std.mem.indexOfScalar(u8, text, '/') != null) c.pi_js_undefined() else c.JS_DupValue(engine.context, raw);
     }
@@ -468,7 +475,7 @@ fn special(engine: *engine_mod.Engine, data: c.JSValue, root: c.JSValue, field: 
     if (std.mem.eql(u8, name, "getHttpIdleTimeoutMs") or std.mem.eql(u8, name, "getWebSocketConnectTimeoutMs")) {
         if (c.JS_IsUndefined(raw)) return if (std.mem.eql(u8, name, "getHttpIdleTimeoutMs")) c.JS_NewInt32(engine.context, 300000) else c.pi_js_undefined();
         if (c.JS_IsString(raw)) {
-            const text = try engine.toString(raw);
+            const text = (engine.toString(raw) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(text);
             if (std.ascii.eqlIgnoreCase(std.mem.trim(u8, text, " \t\r\n"), "disabled")) return c.JS_NewInt32(engine.context, 0);
             if (std.mem.trim(u8, text, " \t\r\n").len == 0) return failSetting(engine, field.path, raw);
@@ -480,44 +487,44 @@ fn special(engine: *engine_mod.Engine, data: c.JSValue, root: c.JSValue, field: 
     if (std.mem.eql(u8, name, "getShowHardwareCursor")) {
         if (!nullish(raw)) return c.JS_DupValue(engine.context, raw);
         const value = try env(engine, "PI_HARDWARE_CURSOR");
-        defer engine.freeValue(value);
+        defer engine.releaseNativeValue(value);
         return c.pi_js_bool(engine.context, @intFromBool(try same(engine, value, "1")));
     }
     if (std.mem.eql(u8, name, "getExternalEditorCommand")) {
         if (c.JS_IsString(raw)) {
-            const text = try engine.toString(raw);
+            const text = (engine.toString(raw) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(text);
             if (std.mem.trim(u8, text, " \t\r\n").len > 0) return c.JS_DupValue(engine.context, raw);
         }
         inline for (.{ "VISUAL", "EDITOR" }) |key| {
             const value = try env(engine, key);
             if (c.JS_ToBool(engine.context, value) == 1) return value;
-            engine.freeValue(value);
+            engine.releaseNativeValue(value);
         }
         return sdk.text(engine, if (builtin.os.tag == .windows) "notepad" else "nano");
     }
     if (std.mem.eql(u8, name, "getTerminalCapabilityOverrides")) {
         const result = try sdk.object(engine);
-        errdefer engine.freeValue(result);
+        errdefer engine.releaseNativeValue(result);
         const images = try pathValue(engine, root, "terminal.images");
-        defer engine.freeValue(images);
+        defer engine.releaseNativeValue(images);
         if (try same(engine, images, "kitty") or try same(engine, images, "iterm2")) try sdk.put(engine, result, "images", c.JS_DupValue(engine.context, images)) else if (c.JS_IsBool(images) and c.JS_ToBool(engine.context, images) == 0) try sdk.put(engine, result, "images", c.pi_js_null());
         inline for (.{ "trueColor", "hyperlinks" }) |key| {
             const value = try pathValue(engine, root, "terminal." ++ key);
-            defer engine.freeValue(value);
+            defer engine.releaseNativeValue(value);
             if (c.JS_IsBool(value)) try sdk.put(engine, result, key, c.JS_DupValue(engine.context, value));
         }
         return result;
     }
     if (std.mem.eql(u8, name, "getModelThinkingLevel")) {
-        const p = try engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined());
+        const p = (engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined()) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(p);
-        const m = try engine.toString(if (args.len > 1) args[1] else c.pi_js_undefined());
+        const m = (engine.toString(if (args.len > 1) args[1] else c.pi_js_undefined()) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(m);
-        const key = try std.fmt.allocPrintSentinel(engine.gpa, "{s}/{s}", .{ p, m }, 0);
+        const key = (std.fmt.allocPrintSentinel(engine.gpa, "{s}/{s}", .{ p, m }, 0) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(key);
         const levels = try sdk.get(engine, root, "modelThinkingLevels");
-        defer engine.freeValue(levels);
+        defer engine.releaseNativeValue(levels);
         return if (nullish(levels)) c.pi_js_undefined() else sdk.get(engine, levels, key);
     }
     if (std.mem.eql(u8, name, "getDefaultTools")) return defaultTools(engine, raw);
@@ -526,33 +533,33 @@ fn special(engine: *engine_mod.Engine, data: c.JSValue, root: c.JSValue, field: 
 fn defaultTools(engine: *engine_mod.Engine, raw: c.JSValue) !c.JSValue {
     if (c.JS_IsUndefined(raw)) return c.pi_js_undefined();
     const result = try sdk.array(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     if (!c.JS_IsArray(raw)) return result;
     var modifiers = false;
     for (0..try sdk.length(engine, raw)) |index| {
-        const value = try engine.checked(c.JS_GetPropertyUint32(engine.context, raw, @intCast(index)));
-        defer engine.freeValue(value);
+        const value = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyUint32(engine.context, raw, @intCast(index)); });
+        defer engine.releaseNativeValue(value);
         if (!c.JS_IsString(value)) continue;
-        const text = try engine.toString(value);
+        const text = (engine.toString(value) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(text);
         if (text.len > 0 and (text[0] == '+' or text[0] == '-')) modifiers = true else try sdk.append(engine, result, c.JS_DupValue(engine.context, value));
     }
     if (try sdk.length(engine, result) == 0 and modifiers) inline for (.{ "read", "bash", "edit", "write" }) |name| try sdk.append(engine, result, try sdk.text(engine, name));
     for (0..try sdk.length(engine, raw)) |index| {
-        const value = try engine.checked(c.JS_GetPropertyUint32(engine.context, raw, @intCast(index)));
-        defer engine.freeValue(value);
+        const value = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, raw, @intCast(index)); });
+        defer engine.releaseNativeValue(value);
         if (!c.JS_IsString(value)) continue;
-        const text = try engine.toString(value);
+        const text = (engine.toString(value) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(text);
         if (text.len == 0 or (text[0] != '+' and text[0] != '-')) continue;
         const name = try sdk.text(engine, text[1..]);
-        defer engine.freeValue(name);
+        defer engine.releaseNativeValue(name);
         const found = try sdk.invoke(engine, result, "indexOf", &.{name});
-        defer engine.freeValue(found);
+        defer engine.releaseNativeValue(found);
         const position = try number(engine, found);
         if (text[0] == '+' and position == -1 and text.len > 1) try sdk.append(engine, result, c.JS_DupValue(engine.context, name)) else if (text[0] == '-' and position >= 0) {
             const removed = try sdk.invoke(engine, result, "splice", &.{ found, c.JS_NewInt32(engine.context, 1) });
-            engine.freeValue(removed);
+            engine.releaseNativeValue(removed);
         }
     }
     return result;

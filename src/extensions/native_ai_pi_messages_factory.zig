@@ -111,7 +111,7 @@ fn transportFailure(scope: *Scope, owner: c.JSValue, raw: c.JSValue, stage: Stag
     return failure;
 }
 fn emergency(engine: *v.em.Engine, owner: c.JSValue, err: anyerror) !void {
-    const reason = flow.reason(engine, err);
+    const reason = try flow.reason(engine, err);
     defer engine.freeValue(reason);
     if (engine.captured_exception) |captured| {
         engine.captured_exception = null;
@@ -136,7 +136,7 @@ fn release(caller: *Scope, owner: c.JSValue) !void {
 }
 fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
     if (err == error.OutOfMemory) return emergency(scope.engine, owner, err);
-    const reason = flow.reason(scope.engine, err);
+    const reason = try flow.reason(scope.engine, err);
     defer scope.engine.freeValue(reason);
     if (scope.engine.captured_exception) |captured| {
         scope.engine.captured_exception = null;
@@ -159,7 +159,7 @@ fn allocationFailure(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !bool {
 fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     var failure = reason;
     release(scope, owner) catch |err| {
-        failure = try scope.own(flow.reason(scope.engine, err));
+        failure = try scope.own(try flow.reason(scope.engine, err));
         if (scope.engine.captured_exception) |captured| {
             scope.engine.captured_exception = null;
             scope.engine.freeValue(captured);

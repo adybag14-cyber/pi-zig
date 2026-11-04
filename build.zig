@@ -5,6 +5,23 @@ pub fn build(b: *std.Build) void {
     const install_light_theme = b.addInstallFileWithDir(b.path("src/themes/fixtures/light-original-6fb.json"), .bin, "theme/light.json");
     b.getInstallStep().dependOn(&install_dark_theme.step);
     b.getInstallStep().dependOn(&install_light_theme.step);
+    const install_tui_resources = b.step("install-native-tui-resources", "Install the exact physical TUI package and inert native module identities");
+    inline for (.{
+        "package.json",
+        "dist/index.js",
+        "dist/native-platform.js",
+        "dist/native-module-path.js",
+        "native/win32/prebuilds/win32-x64/win32-platform.node",
+        "native/win32/prebuilds/win32-arm64/win32-platform.node",
+        "native/linux/prebuilds/linux-x64/linux-platform-x11.node",
+        "native/linux/prebuilds/linux-arm64/linux-platform-x11.node",
+        "native/darwin/prebuilds/darwin-x64/darwin-platform.node",
+        "native/darwin/prebuilds/darwin-arm64/darwin-platform.node",
+    }) |relative| {
+        const resource = b.addInstallFileWithDir(b.path("vendor/pi-tui-native-platform/" ++ relative), .bin, "native-resources/pi-tui/" ++ relative);
+        install_tui_resources.dependOn(&resource.step);
+    }
+    b.getInstallStep().dependOn(install_tui_resources);
     const install_schemas = b.addInstallDirectory(.{ .source_dir = b.path("schemas"), .install_dir = .prefix, .install_subdir = "share/pi/schemas" });
     b.getInstallStep().dependOn(&install_schemas.step);
     const target = b.standardTargetOptions(.{});
@@ -98,6 +115,13 @@ pub fn build(b: *std.Build) void {
         .file = b.path("src/extensions/engine_abi.c"),
         .flags = &.{"-std=gnu11"},
     });
+    if (target.result.os.tag == .windows) {
+        quickjs.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_tui_win32_platform.c"),
+            .flags = &.{"-std=gnu11"},
+        });
+        quickjs.root_module.linkSystemLibrary("user32", .{});
+    }
     // One allocator/TLS domain is shared by native C++ parser and containers.
     const native_node_memory = @import("tools/build_native_node_memory.zig").add(b, target, optimize);
     // CommonJS/SDK consumers also reach StreamBase through the real filesystem.
@@ -289,14 +313,22 @@ pub fn build(b: *std.Build) void {
     }
 
     b.installArtifact(exe);
+    const native_clipboard_application_install = b.addInstallArtifact(exe, .{});
+    native_clipboard_application_install.step.dependOn(&install_dark_theme.step);
+    native_clipboard_application_install.step.dependOn(&install_light_theme.step);
+    native_clipboard_application_install.step.dependOn(&install_schemas.step);
+    native_clipboard_application_install.step.dependOn(install_tui_resources);
+    b.step("build-native-clipboard-application", "Compile and install the actual application with the shared clipboard consumer").dependOn(&native_clipboard_application_install.step);
     const sdk_embedder = b.addExecutable(.{
         .name = "pi-sdk-embedder",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_embedder.zig"), .target = target, .optimize = optimize, .imports = &.{.{ .name = "pi_zig", .module = mod }} }),
         .use_llvm = use_llvm,
     });
+    sdk_embedder.stack_size = 16 * 1024 * 1024;
     const sdk_install = b.addInstallArtifact(sdk_embedder, .{});
     sdk_install.step.dependOn(&install_dark_theme.step);
     sdk_install.step.dependOn(&install_light_theme.step);
+    sdk_install.step.dependOn(install_tui_resources);
     const main_ui_adapter_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_main_ui_adapter_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native Main UI adapter", "native Main UI sync" }, .use_llvm = use_llvm });
     linkQuickJs(b, main_ui_adapter_tests.root_module, quickjs, sqlite_lib_dir);
     main_ui_adapter_tests.root_module.addImport("catalog_tool", catalog_tool);
@@ -420,7 +452,7 @@ pub fn build(b: *std.Build) void {
     sqlite_server_step.dependOn(&install_sqlite_live.step);
 
     const run_step = b.step("run", "Run pi");
-    const run_cmd = b.addRunArtifact(exe);
+    const run_cmd = b.addSystemCommand(&.{b.getInstallPath(.bin, exe.out_filename)});
     run_step.dependOn(&run_cmd.step);
     run_cmd.step.dependOn(b.getInstallStep());
     if (b.args) |args| {
@@ -3804,6 +3836,64 @@ pub fn build(b: *std.Build) void {
     const editor_source_run = b.addRunArtifact(editor_source_tests);
     b.step("test-native-editor-source", "Replay Source Editor and CustomEditor fields editing rendering mouse and async lifecycle").dependOn(&editor_source_run.step);
     test_step.dependOn(&editor_source_run.step);
+    const native_tui_platform_tests = b.addTest(.{
+        .name = "pi-native-tui-platform-test",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_tui_win32_platform_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native TUI Win32"}, .use_llvm = use_llvm,
+    });
+    native_tui_platform_tests.stack_size = 16 * 1024 * 1024;
+    linkQuickJs(b, native_tui_platform_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, native_tui_platform_tests.root_module, typescript_parser);
+    linkSqlite(native_tui_platform_tests.root_module, sqlite_lib_dir, sqlite_library);
+    native_tui_platform_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        native_tui_platform_tests.root_module.linkSystemLibrary("advapi32", .{});
+        native_tui_platform_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    const native_tui_platform_install = b.addInstallArtifact(native_tui_platform_tests, .{});
+    native_tui_platform_install.step.dependOn(install_tui_resources);
+    b.step("build-native-tui-platform", "Compile and install the consumed Win32 helper controls without execution").dependOn(&native_tui_platform_install.step);
+    const native_tui_platform_run = b.addSystemCommand(&.{b.getInstallPath(.bin, native_tui_platform_tests.out_filename)});
+    native_tui_platform_run.step.dependOn(&native_tui_platform_install.step);
+    b.step("test-native-tui-platform", "Run installed Win32 helper controls after a separate qualification grant").dependOn(&native_tui_platform_run.step);
+    const native_clipboard_consumer_tests = b.addTest(.{
+        .name = "pi-native-clipboard-consumer-test",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_clipboard_consumer_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native clipboard consumer"}, .use_llvm = use_llvm,
+    });
+    native_clipboard_consumer_tests.stack_size = 16 * 1024 * 1024;
+    linkQuickJs(b, native_clipboard_consumer_tests.root_module, quickjs, sqlite_lib_dir);
+    native_clipboard_consumer_tests.root_module.linkLibrary(native_photon_library);
+    if (target.result.os.tag != .windows) native_clipboard_consumer_tests.root_module.linkSystemLibrary("m", .{});
+    const native_clipboard_consumer_install = b.addInstallArtifact(native_clipboard_consumer_tests, .{});
+    b.step("build-native-clipboard-consumer", "Compile and install the seven shared clipboard controls without execution").dependOn(&native_clipboard_consumer_install.step);
+    const native_clipboard_consumer_run = b.addSystemCommand(&.{b.getInstallPath(.bin, native_clipboard_consumer_tests.out_filename)});
+    native_clipboard_consumer_run.step.dependOn(&native_clipboard_consumer_install.step);
+    b.step("test-native-clipboard-consumer", "Run the installed shared clipboard controls").dependOn(&native_clipboard_consumer_run.step);
+
+    const native_clipboard_ui_oom_tests = b.addTest(.{
+        .name = "pi-native-clipboard-ui-oom-test",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_clipboard_ui_oom_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{
+            "native persistent UI allocation failure survives reaping and precedes queued responses",
+            "native invocation UI preserves actual callback allocation failure",
+        },
+        .use_llvm = use_llvm,
+    });
+    native_clipboard_ui_oom_tests.stack_size = 16 * 1024 * 1024;
+    linkQuickJs(b, native_clipboard_ui_oom_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, native_clipboard_ui_oom_tests.root_module, typescript_parser);
+    linkSqlite(native_clipboard_ui_oom_tests.root_module, sqlite_lib_dir, sqlite_library);
+    native_clipboard_ui_oom_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        native_clipboard_ui_oom_tests.root_module.linkSystemLibrary("advapi32", .{});
+        native_clipboard_ui_oom_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    const native_clipboard_ui_oom_install = b.addInstallArtifact(native_clipboard_ui_oom_tests, .{});
+    b.step("build-native-clipboard-ui-oom", "Compile and install the two actual UI allocation-failure controls without execution").dependOn(&native_clipboard_ui_oom_install.step);
+    const native_clipboard_ui_oom_run = b.addSystemCommand(&.{b.getInstallPath(.bin, native_clipboard_ui_oom_tests.out_filename)});
+    native_clipboard_ui_oom_run.step.dependOn(&native_clipboard_ui_oom_install.step);
+    b.step("test-native-clipboard-ui-oom", "Run the installed actual UI allocation-failure controls").dependOn(&native_clipboard_ui_oom_run.step);
     const tui_public_source_module = b.createModule(.{ .root_source_file = b.path("src/native_tui_public_source_test.zig"), .target = target, .optimize = optimize });
     linkQuickJs(b, tui_public_source_module, quickjs, sqlite_lib_dir);
     tui_public_source_module.addImport("catalog_tool", catalog_tool);

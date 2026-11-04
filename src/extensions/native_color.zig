@@ -7,17 +7,17 @@ const Method = enum(c_int) { indexedColor, rgbColor, oklchColor, okhslColor, par
 
 fn put(engine: *engine_mod.Engine, object: c.JSValue, name: [*:0]const u8, value: c.JSValue, flags: c_int) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, object, name, value, flags) < 0) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+        _ = try engine.checked(c.pi_js_exception());
         return error.JavaScriptException;
     }
 }
 fn get(engine: *engine_mod.Engine, object: c.JSValue, name: [*:0]const u8) !c.JSValue {
-    return engine.checked(c.JS_GetPropertyStr(engine.context, object, name));
+    return engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, object, name); });
 }
 pub fn number(engine: *engine_mod.Engine, value: c.JSValue) !f64 {
     var result: f64 = undefined;
-    if (c.JS_ToFloat64(engine.context, &result, value) < 0) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(engine.context, &result, value); } < 0) {
+        _ = try engine.checked(c.pi_js_exception());
         return error.JavaScriptException;
     }
     return result;
@@ -25,14 +25,16 @@ pub fn number(engine: *engine_mod.Engine, value: c.JSValue) !f64 {
 pub fn throwError(engine: *engine_mod.Engine, message: []const u8) anyerror {
     const exception = engine.checked(c.JS_NewError(engine.context)) catch |err| return err;
     const text = engine.checked(c.JS_NewStringLen(engine.context, message.ptr, message.len)) catch |err| {
-        engine.freeValue(exception);
+        if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+        engine.releaseNativeValue(exception);
         return err;
     };
     put(engine, exception, "message", text, c.JS_PROP_C_W_E) catch |err| {
-        engine.freeValue(exception);
+        if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+        engine.releaseNativeValue(exception);
         return err;
     };
-    _ = engine.checked(c.JS_Throw(engine.context, exception)) catch |err| return err;
+    _ = engine.checked(c.JS_PiThrowExceptionData(engine.context, exception)) catch |err| return err;
     unreachable;
 }
 fn invalid(engine: *engine_mod.Engine, value: c.JSValue, prefix: []const u8) anyerror {
@@ -66,7 +68,7 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue {
 fn channels(engine: *engine_mod.Engine, object: c.JSValue, comptime names: anytype) ![names.len]f64 {
     var rooted: [names.len]c.JSValue = undefined;
     var count: usize = 0;
-    defer for (rooted[0..count]) |value| engine.freeValue(value);
+    defer for (rooted[0..count]) |value| engine.releaseNativeValue(value);
     inline for (names, 0..) |name, index| {
         rooted[index] = try get(engine, object, name);
         count += 1;
@@ -77,9 +79,9 @@ fn channels(engine: *engine_mod.Engine, object: c.JSValue, comptime names: anyty
 }
 pub fn read(engine: *engine_mod.Engine, value: c.JSValue) !?colors.Color {
     const kind = try get(engine, value, "kind");
-    defer engine.freeValue(kind);
+    defer engine.releaseNativeValue(kind);
     if (!c.JS_IsString(kind)) return null;
-    const name = try engine.toString(kind);
+    const name = (engine.toString(kind) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(name);
     if (std.mem.eql(u8, name, "rgb")) {
         const fields = try channels(engine, value, .{ "r", "g", "b" });
@@ -100,13 +102,13 @@ pub fn read(engine: *engine_mod.Engine, value: c.JSValue) !?colors.Color {
 }
 fn record(engine: *engine_mod.Engine, comptime names: anytype, values: [names.len]f64) !c.JSValue {
     const object = try engine.checked(c.JS_NewObject(engine.context));
-    errdefer engine.freeValue(object);
+    errdefer engine.releaseNativeValue(object);
     inline for (names, 0..) |name, index| try put(engine, object, name, c.JS_NewFloat64(engine.context, values[index]), c.JS_PROP_C_W_E);
     return object;
 }
 pub fn create(engine: *engine_mod.Engine, value: colors.Color) !c.JSValue {
     const object = try engine.checked(c.JS_NewObject(engine.context));
-    errdefer engine.freeValue(object);
+    errdefer engine.releaseNativeValue(object);
     try put(engine, object, "kind", try engine.checked(c.JS_NewString(engine.context, @tagName(value))), c.JS_PROP_C_W_E);
     switch (value) {
         .indexed => |index| try put(engine, object, "index", c.JS_NewInt32(engine.context, index), c.JS_PROP_C_W_E),
@@ -128,7 +130,7 @@ pub fn freeze(engine: *engine_mod.Engine, object: c.JSValue) !void {
     // Use the intrinsic, rather than user-replaceable Object.freeze.
     var names: [*c]c.JSPropertyEnum = null;
     var length: u32 = 0;
-    if (c.JS_GetOwnPropertyNames(engine.context, &names, &length, object, c.JS_GPN_STRING_MASK) < 0) return error.OutOfMemory;
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetOwnPropertyNames(engine.context, &names, &length, object, c.JS_GPN_STRING_MASK); } < 0) return error.OutOfMemory;
     defer c.JS_FreePropertyEnum(engine.context, names, length);
     for (names[0..length]) |property| {
         if (c.JS_DefineProperty(engine.context, object, property.atom, c.pi_js_undefined(), c.pi_js_undefined(), c.pi_js_undefined(), c.JS_PROP_HAS_CONFIGURABLE | c.JS_PROP_HAS_WRITABLE) < 0) return error.JavaScriptException;
@@ -146,7 +148,7 @@ fn string(engine: *engine_mod.Engine, text: []const u8) !c.JSValue {
 }
 fn truth(engine: *engine_mod.Engine, object: c.JSValue, name: [*:0]const u8) !bool {
     const value = try get(engine, object, name);
-    defer engine.freeValue(value);
+    defer engine.releaseNativeValue(value);
     return c.JS_ToBool(engine.context, value) != 0;
 }
 pub fn style(engine: *engine_mod.Engine, text: c.JSValue, foreground: c.JSValue, background: c.JSValue, options: c.JSValue) !c.JSValue {
@@ -180,16 +182,16 @@ pub fn style(engine: *engine_mod.Engine, text: c.JSValue, foreground: c.JSValue,
 }
 pub fn ansiValue(engine: *engine_mod.Engine, value: c.JSValue, color_mode: colors.ColorMode, background: bool) !c.JSValue {
     const kind = try get(engine, value, "kind");
-    defer engine.freeValue(kind);
+    defer engine.releaseNativeValue(kind);
     if (c.JS_IsString(kind)) {
-        const name = try engine.toString(kind);
+        const name = (engine.toString(kind) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(name);
         if (std.mem.eql(u8, name, "indexed")) {
             const index = try get(engine, value, "index");
-            defer engine.freeValue(index);
-            const index_text = try engine.toString(index);
+            defer engine.releaseNativeValue(index);
+            const index_text = (engine.toString(index) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(index_text);
-            const result = try std.fmt.allocPrint(engine.gpa, "\x1b[{d};5;{s}m", .{ @as(u8, if (background) 48 else 38), index_text });
+            const result = (std.fmt.allocPrint(engine.gpa, "\x1b[{d};5;{s}m", .{ @as(u8, if (background) 48 else 38), index_text }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(result);
             return string(engine, result);
         }
@@ -199,18 +201,18 @@ pub fn ansiValue(engine: *engine_mod.Engine, value: c.JSValue, color_mode: color
         const rgb = colors.colorToRgb(color);
         var text: std.ArrayList(u8) = .empty;
         defer text.deinit(engine.gpa);
-        try text.appendSlice(engine.gpa, if (background) "\x1b[48;2;" else "\x1b[38;2;");
+        (text.appendSlice(engine.gpa, if (background) "\x1b[48;2;" else "\x1b[38;2;") catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         for ([_]f64{ rgb.r, rgb.g, rgb.b }, 0..) |channel, index| {
-            if (index != 0) try text.append(engine.gpa, ';');
+            if (index != 0) (text.append(engine.gpa, ';') catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             const rounded = c.JS_NewFloat64(engine.context, jsRound(channel));
-            const numeric = try engine.toString(rounded);
+            const numeric = (engine.toString(rounded) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(numeric);
-            try text.appendSlice(engine.gpa, numeric);
+            (text.appendSlice(engine.gpa, numeric) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         }
-        try text.append(engine.gpa, 'm');
+        (text.append(engine.gpa, 'm') catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         return string(engine, text.items);
     }
-    const text = try colors.colorAnsi(engine.gpa, color, color_mode, background);
+    const text = (colors.colorAnsi(engine.gpa, color, color_mode, background) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(text);
     return string(engine, text);
 }
@@ -223,18 +225,18 @@ fn jsRound(value: f64) f64 {
 fn hexValue(engine: *engine_mod.Engine, rgb: colors.Rgb) !c.JSValue {
     var result: std.ArrayList(u8) = .empty;
     defer result.deinit(engine.gpa);
-    try result.append(engine.gpa, '#');
+    (result.append(engine.gpa, '#') catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     for ([_]f64{ rgb.r, rgb.g, rgb.b }) |channel| {
         const value = c.JS_NewFloat64(engine.context, jsRound(channel));
         const method = try get(engine, value, "toString");
-        defer engine.freeValue(method);
+        defer engine.releaseNativeValue(method);
         var args = [_]c.JSValue{c.JS_NewInt32(engine.context, 16)};
-        const radix = try engine.checked(c.JS_Call(engine.context, method, value, 1, &args));
-        defer engine.freeValue(radix);
-        const digits = try engine.toString(radix);
+        const radix = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_Call(engine.context, method, value, 1, &args); });
+        defer engine.releaseNativeValue(radix);
+        const digits = (engine.toString(radix) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(digits);
-        if (digits.len < 2) try result.append(engine.gpa, '0');
-        try result.appendSlice(engine.gpa, digits);
+        if (digits.len < 2) (result.append(engine.gpa, '0') catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
+        (result.appendSlice(engine.gpa, digits) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     }
     return string(engine, result.items);
 }
@@ -285,21 +287,21 @@ fn operation(engine: *engine_mod.Engine, method: Method, args: []const c.JSValue
             const options = arg(args, 1);
             const color_mode = try mode(engine, arg(args, 2));
             const fg = try get(engine, options, "fg");
-            defer engine.freeValue(fg);
+            defer engine.releaseNativeValue(fg);
             const foreground = if (c.JS_ToBool(engine.context, fg) != 0) blk: {
                 const again = try get(engine, options, "fg");
-                defer engine.freeValue(again);
+                defer engine.releaseNativeValue(again);
                 break :blk try ansiValue(engine, again, color_mode, false);
             } else c.JS_DupValue(engine.context, fg);
-            defer engine.freeValue(foreground);
+            defer engine.releaseNativeValue(foreground);
             const bg = try get(engine, options, "bg");
-            defer engine.freeValue(bg);
+            defer engine.releaseNativeValue(bg);
             const background = if (c.JS_ToBool(engine.context, bg) != 0) blk: {
                 const again = try get(engine, options, "bg");
-                defer engine.freeValue(again);
+                defer engine.releaseNativeValue(again);
                 break :blk try ansiValue(engine, again, color_mode, true);
             } else c.JS_DupValue(engine.context, bg);
-            defer engine.freeValue(background);
+            defer engine.releaseNativeValue(background);
             return style(engine, arg(args, 0), foreground, background, options);
         },
         .foregroundAnsi, .backgroundAnsi => return ansiValue(engine, arg(args, 0), try mode(engine, arg(args, 1)), method == .backgroundAnsi),
@@ -307,7 +309,7 @@ fn operation(engine: *engine_mod.Engine, method: Method, args: []const c.JSValue
             const amount = try bounded(engine, arg(args, 2), "amount", 1);
             var space: colors.MixSpace = .oklch;
             if (c.JS_IsString(arg(args, 3))) {
-                const text = try engine.toString(arg(args, 3));
+                const text = (engine.toString(arg(args, 3)) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                 defer engine.gpa.free(text);
                 if (std.mem.eql(u8, text, "srgb")) space = .srgb;
             }
@@ -353,11 +355,18 @@ fn operation(engine: *engine_mod.Engine, method: Method, args: []const c.JSValue
         else => unreachable,
     }
 }
-fn call(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn call(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callPendingBody(context, pending_arg1, argc, argv, magic));
+}
+fn callPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return operation(engine, @enumFromInt(magic), if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| {
         if (err == error.JavaScriptException) return engine.throwCaptured();
-        if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+        if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+        if (err == error.OutOfMemory) return @import("engine.zig").Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
         return c.JS_ThrowTypeError(context, "Native color: %s", @as([*:0]const u8, @errorName(err)));
     };
 }

@@ -97,26 +97,26 @@ fn fresh(scope: *Scope, owner: c.JSValue, prototype: c.JSValue) !c.JSValue {
 }
 fn rangeError(scope: *Scope, message: c.JSValue) anyerror!noreturn {
     const error_value = try scope.own(try js.builtin(scope.engine, "RangeError", &.{message}));
-    _ = try scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, error_value)));
+    _ = try scope.engine.checked(c.JS_PiThrowExceptionData(scope.engine.context, c.JS_DupValue(scope.engine.context, error_value)));
     unreachable;
 }
 fn initialize(scope: *Scope, state: *State, init: c.JSValue, payload: ?body.Body) !void {
     var status: i32 = 0;
     const status_value = try scope.get(init, "status");
-    if (c.JS_ToInt32(scope.engine.context, &status, status_value) < 0) return js.capture(scope.engine);
+    if (native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_ToInt32(scope.engine.context, &status, status_value); } < 0) return js.capture(scope.engine);
     if (status < 200 or status > 599) try rangeError(scope, try scope.text("init[\"status\"] must be in the range of 200 to 599, inclusive."));
     const status_text = try scope.get(init, "statusText");
     const units = try @import("native_utf16.zig").unitsAlloc(scope.engine, status_text);
     defer scope.engine.gpa.free(units);
     for (units) |unit| if (!(unit == 9 or (unit >= 32 and unit <= 126) or (unit >= 128 and unit <= 255))) try web.typeError(scope, try scope.text("Invalid statusText"), null);
     state.status = @intCast(status);
-    scope.engine.freeValue(state.status_text);
+    scope.engine.releaseNativeValue(state.status_text);
     state.status_text = c.JS_DupValue(scope.engine.context, status_text);
     const header_init = try scope.get(init, "headers");
     if (!c.JS_IsNull(header_init) and !c.JS_IsUndefined(header_init)) {
         const filled = try scope.own(try headers.fromRecord(scope.engine, header_init));
         try headers.setGuard(scope.engine, filled, .response);
-        scope.engine.freeValue(state.headers);
+        scope.engine.releaseNativeValue(state.headers);
         state.headers = c.JS_DupValue(scope.engine.context, filled);
     }
     if (payload) |extracted| {
@@ -148,10 +148,11 @@ fn reject(scope: *Scope, failure: anyerror) !c.JSValue {
     if (failure == error.OutOfMemory) return failure;
     if (failure != error.JavaScriptException) return failure;
     _ = engine.throwCaptured();
+    try @import("native_pending_owner.zig").checkFatal(engine);
     const reason = try scope.own(c.JS_GetException(engine.context));
     var caps: [2]c.JSValue = undefined;
     const promise = try scope.own(try engine.checked(c.JS_NewPromiseCapability(engine.context, &caps)));
-    defer for (caps) |cap| engine.freeValue(cap);
+    defer for (caps) |cap| engine.releaseNativeValue(cap);
     _ = try scope.call(caps[1], c.pi_js_undefined(), &.{reason});
     return promise;
 }
@@ -162,20 +163,20 @@ fn clone(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, state: *State) !c
     const copied_headers = try scope.own(try headers.fromRecord(scope.engine, state.headers));
     try headers.setGuard(scope.engine, copied_headers, state.guard);
     const cloned = if (state.payload) |payload| try body.clone(scope, payload) else null;
-    scope.engine.freeValue(copy.headers);
+    scope.engine.releaseNativeValue(copy.headers);
     copy.headers = c.JS_DupValue(scope.engine.context, copied_headers);
     copy.status = state.status;
     copy.network_error = state.network_error;
     copy.basic = state.basic;
     copy.redirected = state.redirected;
     copy.guard = state.guard;
-    scope.engine.freeValue(copy.status_text);
+    scope.engine.releaseNativeValue(copy.status_text);
     copy.status_text = c.JS_DupValue(scope.engine.context, state.status_text);
-    scope.engine.freeValue(copy.url);
+    scope.engine.releaseNativeValue(copy.url);
     copy.url = c.JS_DupValue(scope.engine.context, state.url);
     if (cloned) |split| {
         copy.payload = ownBody(scope.engine, split.copy);
-        scope.engine.freeValue(state.payload.?.stream);
+        scope.engine.releaseNativeValue(state.payload.?.stream);
         state.payload.?.stream = c.JS_DupValue(scope.engine.context, split.original_stream);
         if (scope.truthy(state.url)) {
             try body.registerResponse(scope.engine, receiver, state.payload.?.stream);
@@ -223,7 +224,7 @@ fn inspect(scope: *Scope, receiver: c.JSValue, args: []const c.JSValue) !c.JSVal
     inline for (.{ "status", "statusText", "headers", "body", "bodyUsed", "ok", "redirected", "type", "url" }) |name| try scope.set(properties, name, try scope.get(receiver, name));
     const formatted = try @import("node_event_inspect.zig").inspect(scope.engine, properties, if (args.len > 0) depth: {
         var depth: i32 = 2;
-        if (c.JS_ToInt32(scope.engine.context, &depth, args[0]) < 0) return js.capture(scope.engine);
+        if (native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_ToInt32(scope.engine.context, &depth, args[0]); } < 0) return js.capture(scope.engine);
         break :depth depth;
     } else 2);
     defer scope.engine.gpa.free(formatted);
@@ -249,16 +250,17 @@ fn staticOperation(scope: *Scope, owner: c.JSValue, args: []const c.JSValue, kin
         const parsed_owned = js.builtin(scope.engine, "URL", &.{input}) catch |err| {
             if (err != error.JavaScriptException) return err;
             _ = scope.engine.throwCaptured();
+            try @import("native_pending_owner.zig").checkFatal(scope.engine);
             const cause = try scope.own(c.JS_GetException(scope.engine.context));
             const options = try scope.object();
             try scope.set(options, "cause", cause);
             const failure = try scope.own(try js.builtin(scope.engine, "TypeError", &.{ try scope.concat(try scope.text("Failed to parse URL from "), input), options }));
-            _ = try scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, failure)));
+            _ = try scope.engine.checked(c.JS_PiThrowExceptionData(scope.engine.context, c.JS_DupValue(scope.engine.context, failure)));
             unreachable;
         };
         const parsed = try scope.own(parsed_owned);
         var status: i32 = 0;
-        if (c.JS_ToInt32(scope.engine.context, &status, converted) < 0) return js.capture(scope.engine);
+        if (native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_ToInt32(scope.engine.context, &status, converted); } < 0) return js.capture(scope.engine);
         if (status != 301 and status != 302 and status != 303 and status != 307 and status != 308) try rangeError(scope, try scope.concat(try scope.text("Invalid status code "), converted));
         const result = try fresh(scope, owner, root.prototype);
         const state = try privateState(scope, owner, result, false);
@@ -277,6 +279,12 @@ fn staticOperation(scope: *Scope, owner: c.JSValue, args: []const c.JSValue, kin
     return result;
 }
 fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callbackPendingBody(context, receiver, argc, argv, magic, captures));
+}
+fn callbackPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, captures: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -284,7 +292,8 @@ fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]
     defer scope.deinit();
     const result = operation(&scope, captures[0], receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, @enumFromInt(magic)) catch |err| {
         if (err == error.JavaScriptException) return engine.throwCaptured();
-        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+        if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
         return c.JS_ThrowInternalError(context, "Native Response: %s", @as([*:0]const u8, @errorName(err)));
     };
     return c.JS_DupValue(context, result);
@@ -312,7 +321,7 @@ pub fn install(engine: *em.Engine, interfaces: idl.Interfaces) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const owner = try scope.own(try engine.checked(c.JS_NewObjectClass(engine.context, try classId(engine, "Native Response Owner", freeRoot, markRoot))));
-    const root = try engine.gpa.create(Root);
+    const root = (engine.gpa.create(Root) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     root.* = .{ .engine = engine, .constructor = c.pi_js_undefined(), .prototype = c.pi_js_undefined(), .object_prototype = c.pi_js_undefined(), .interfaces = interfaces };
     inline for (std.meta.fields(idl.Interfaces)) |field| @field(root.interfaces, field.name) = c.JS_DupValue(engine.context, @field(interfaces, field.name));
     _ = c.JS_SetOpaque(owner, root);
@@ -331,7 +340,7 @@ pub fn install(engine: *em.Engine, interfaces: idl.Interfaces) !void {
     inline for (.{ .{ "blob", Kind.blob }, .{ "arrayBuffer", Kind.arrayBuffer }, .{ "text", Kind.text }, .{ "json", Kind.json }, .{ "formData", Kind.formData }, .{ "bytes", Kind.bytes } }) |spec| try scope.set(root.prototype, spec[0], try function(&scope, owner, spec[0], 0, spec[1]));
     try symbolProperty(&scope, root.prototype, try scope.get(symbols, "toStringTag"), try scope.text("Response"), c.JS_PROP_CONFIGURABLE);
     inline for (.{ .{ "error", 0, Kind.static_error }, .{ "json", 1, Kind.static_json }, .{ "redirect", 1, Kind.static_redirect } }) |spec| try scope.set(root.constructor, spec[0], try function(&scope, owner, spec[0], spec[1], spec[2]));
-    try engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1);
+    (engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
     if (c.JS_DefinePropertyValueStr(engine.context, global, "Response", c.JS_DupValue(engine.context, root.constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     engine.native_module_values.putAssumeCapacity(cache_key, c.JS_DupValue(engine.context, owner));
@@ -356,10 +365,10 @@ pub fn fromTransport(engine: *em.Engine, input: Transport) !c.JSValue {
     const state = internalState(owner, result);
     state.status = input.status;
     state.basic = true;
-    engine.freeValue(state.status_text);
+    engine.releaseNativeValue(state.status_text);
     state.status_text = c.JS_DupValue(engine.context, input.status_text);
     const filled = try scope.own(try headers.fromRecord(engine, input.headers));
-    engine.freeValue(state.headers);
+    engine.releaseNativeValue(state.headers);
     state.headers = c.JS_DupValue(engine.context, filled);
     if (!c.JS_IsNull(input.body) and !c.JS_IsUndefined(input.body)) {
         const converted = try idl.bodyInit(&scope, root.interfaces, input.body, "Response", try scope.text("body"));
@@ -368,7 +377,7 @@ pub fn fromTransport(engine: *em.Engine, input: Transport) !c.JSValue {
     const parsed = try scope.own(try js.builtin(engine, "URL", &.{input.url}));
     try scope.set(parsed, "hash", try scope.text(""));
     const url = try scope.get(parsed, "href");
-    engine.freeValue(state.url);
+    engine.releaseNativeValue(state.url);
     state.url = c.JS_DupValue(engine.context, url);
     state.redirected = input.redirected;
     state.guard = .immutable;

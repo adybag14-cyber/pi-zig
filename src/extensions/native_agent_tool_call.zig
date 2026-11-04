@@ -48,7 +48,13 @@ pub fn prepare(engine: *em.Engine, context: c.JSValue, assistant: c.JSValue, cal
     beginPrepare(engine, pending.owner, context, assistant, call, config, signal, explicit_tools) catch |err| try flow.rejectError(engine, pending.owner, err);
     return pending.promise;
 }
-fn findTool(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn findTool(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(findToolPendingBody(context, pending_arg1, argc, argv, pending_arg4, roots));
+}
+fn findToolPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return matches(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), roots[0]) catch |err| sdk.fail(engine, err);
 }
@@ -110,7 +116,7 @@ fn prepareBody(engine: *em.Engine, owner: c.JSValue) !void {
     try finishPrepare(engine, owner);
 }
 fn prepareError(engine: *em.Engine, owner: c.JSValue, err: anyerror) !void {
-    const raw = flow.reason(engine, err);
+    const raw = try flow.reason(engine, err);
     defer engine.freeValue(raw);
     try prepareRawError(engine, owner, raw);
 }
@@ -162,7 +168,13 @@ fn beginExecution(engine: *em.Engine, owner: c.JSValue, prepared: c.JSValue, sig
     try scope.put(owner, "started", try scope.invoke(try scope.global("performance"), "now", &.{}));
     executionBody(engine, owner) catch |err| try executionError(engine, owner, err);
 }
-fn updateCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn updateCall(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(updateCallPendingBody(context, pending_arg1, argc, argv, pending_arg4, roots));
+}
+fn updateCallPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return updateValue(engine, roots[0], if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
 }
@@ -220,7 +232,7 @@ fn executionSuccess(engine: *em.Engine, owner: c.JSValue, value: c.JSValue) !voi
     try waitUpdates(engine, owner, false);
 }
 fn executionError(engine: *em.Engine, owner: c.JSValue, err: anyerror) !void {
-    const value = flow.reason(engine, err);
+    const value = try flow.reason(engine, err);
     defer engine.freeValue(value);
     try executionRawError(engine, owner, value);
 }
@@ -296,7 +308,7 @@ fn finalizeBody(engine: *em.Engine, owner: c.JSValue) !void {
     try flow.wait(afterFinalized, engine, owner, pending, 0);
 }
 fn finalizeError(engine: *em.Engine, owner: c.JSValue, err: anyerror) !void {
-    const value = flow.reason(engine, err);
+    const value = try flow.reason(engine, err);
     defer engine.freeValue(value);
     try finalizeRawError(engine, owner, value);
 }

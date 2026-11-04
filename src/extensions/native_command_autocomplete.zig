@@ -47,7 +47,13 @@ fn callbackBody(f: *Frame, kind: Callback, item: c.JSValue, capture: c.JSValue) 
         .findCommand => return f.boolean(f.equal(try commandName(f, item), capture)),
     }
 }
-fn callback(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn callback(ctx: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(ctx.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callbackPendingBody(ctx, pending_arg1, argc, argv, magic, data));
+}
+fn callbackPendingBody(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = js.Engine.fromContext(ctx.?);
     var f: Frame = .{ .engine = engine, .object = c.pi_js_undefined(), .bindings = data[0] };
     defer f.deinit();
@@ -69,12 +75,13 @@ fn resolved(f: *Frame, value: c.JSValue) !c.JSValue {
 }
 fn continueSuggestions(engine: *js.Engine, state: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) anyerror!c.JSValue {
     const token = try js.get(engine, state, "nativeArgumentOwner");
-    defer engine.freeValue(token);
+    defer engine.releaseNativeValue(token);
     const result = continueSuggestionsValue(engine, state, value, rejected, stage) catch |err| {
+        if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
         if (stage == 1) command_owners.closeToken(engine, token);
         return err;
     };
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     if (stage == 1) command_owners.completeToken(engine, token) catch |err| {
         command_owners.closeToken(engine, token);
         return err;
@@ -82,10 +89,10 @@ fn continueSuggestions(engine: *js.Engine, state: c.JSValue, value: c.JSValue, r
     return result;
 }
 fn continueSuggestionsValue(engine: *js.Engine, state: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) anyerror!c.JSValue {
-    if (rejected) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value)));
+    if (rejected) return engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, value)));
     if (stage == 2) return c.JS_DupValue(engine.context, value);
     const bindings = try js.get(engine, state, "bindings");
-    defer engine.freeValue(bindings);
+    defer engine.releaseNativeValue(bindings);
     var f: Frame = .{ .engine = engine, .object = state, .bindings = bindings };
     defer f.deinit();
     if (stage == 1 and !f.truth(try f.method(try f.global("Array"), "isArray", &.{value}))) return c.pi_js_null();
@@ -134,7 +141,7 @@ pub fn suggestions(f: *Frame, args: []const c.JSValue) anyerror!c.JSValue {
             errdefer iterator.closePreserving();
             var index = try f.n(combined, "length");
             while (try iterator.next()) |item| {
-                defer f.engine.freeValue(item);
+                defer f.engine.releaseNativeValue(item);
                 if (c.JS_DefinePropertyValueUint32(f.engine.context, combined, @intFromFloat(index), c.JS_DupValue(f.engine.context, item), c.JS_PROP_C_W_E) < 0) return js.capture(f.engine);
                 index += 1;
             }
@@ -160,16 +167,22 @@ fn delegate(f: *Frame, args: []const c.JSValue) !c.JSValue {
 }
 const Method = enum(c_int) { getSuggestions, applyCompletion, shouldTriggerFileCompletion };
 fn call(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(ctx.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callPendingBody(ctx, receiver, argc, argv, magic, data));
+}
+fn callPendingBody(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = js.Engine.fromContext(ctx.?);
     var f: Frame = .{ .engine = engine, .object = receiver, .bindings = data[0] };
     defer f.deinit();
     const method: Method = @enumFromInt(magic);
     const args: []const c.JSValue = if (argc > 0) argv[0..@intCast(argc)] else &.{};
     const holder = js.get(engine, data[0], "holder") catch |err| return a.fail(engine, err);
-    defer engine.freeValue(holder);
+    defer engine.releaseNativeValue(holder);
     if (c.JS_IsObject(holder)) {
         const active = js.get(engine, holder, "active") catch |err| return a.fail(engine, err);
-        defer engine.freeValue(active);
+        defer engine.releaseNativeValue(active);
         if (c.JS_ToBool(engine.context, active) == 0)
             return if (method == .getSuggestions) c.JS_NewSettledPromise(engine.context, false, c.pi_js_null()) else c.pi_js_null();
     }
@@ -178,30 +191,38 @@ fn call(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValu
         .applyCompletion => pure.applyCompletion(&f, args),
         .shouldTriggerFileCompletion => pure.trigger(&f, args),
     }) catch |err| {
+        @import("native_pending_owner.zig").catchFailure(engine, err) catch |fatal| return a.fail(engine, fatal);
         const exception = a.fail(engine, err);
         if (method != .getSuggestions) return exception;
+        @import("native_pending_owner.zig").checkFatal(engine) catch return c.pi_js_exception();
         const reason = c.JS_GetException(engine.context);
-        defer engine.freeValue(reason);
+        defer engine.releaseNativeValue(reason);
         return c.JS_NewSettledPromise(engine.context, true, reason);
     };
     return f.result(result);
 }
-fn commands(ctx: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn commands(ctx: ?*c.JSContext, pending_arg1: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, pending_arg4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(ctx.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(commandsPendingBody(ctx, pending_arg1, pending_arg2, pending_arg3, pending_arg4, data));
+}
+fn commandsPendingBody(ctx: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = js.Engine.fromContext(ctx.?);
     const snapshot = js.get(engine, data[0], "snapshot") catch |err| return a.fail(engine, err);
-    defer engine.freeValue(snapshot);
+    defer engine.releaseNativeValue(snapshot);
     return js.get(engine, snapshot, "mainAutocompleteCommands") catch |err| a.fail(engine, err);
 }
 pub fn create(engine: *js.Engine, metadata: c.JSValue, fallback: c.JSValue) !c.JSValue {
     const object = try js.object(engine);
-    errdefer engine.freeValue(object);
+    errdefer engine.releaseNativeValue(object);
     try js.define(engine, object, "commands", c.JS_DupValue(engine.context, metadata));
     try install(engine, object, fallback, c.pi_js_undefined());
     return object;
 }
 pub fn createForHolder(engine: *js.Engine, holder: c.JSValue, fallback: c.JSValue) !c.JSValue {
     const object = try js.object(engine);
-    errdefer engine.freeValue(object);
+    errdefer engine.releaseNativeValue(object);
     var capture = [_]c.JSValue{holder};
     const getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, commands, "get commands", 0, 0, 1, &capture));
     const atom = c.JS_NewAtom(engine.context, "commands");
@@ -212,7 +233,7 @@ pub fn createForHolder(engine: *js.Engine, holder: c.JSValue, fallback: c.JSValu
 }
 fn install(engine: *js.Engine, object: c.JSValue, fallback: c.JSValue, holder: c.JSValue) !void {
     const bindings = try js.object(engine);
-    defer engine.freeValue(bindings);
+    defer engine.releaseNativeValue(bindings);
     try pure.initialize(engine, bindings);
     try js.define(engine, bindings, "fallback", c.JS_DupValue(engine.context, fallback));
     try js.define(engine, bindings, "holder", c.JS_DupValue(engine.context, holder));
@@ -225,9 +246,9 @@ fn install(engine: *js.Engine, object: c.JSValue, fallback: c.JSValue, holder: c
         const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, call, entry[0], entry[2], @intFromEnum(entry[1]), 1, &data));
         if (entry[1] == .getSuggestions) {
             const prototype = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
-            defer engine.freeValue(prototype);
+            defer engine.releaseNativeValue(prototype);
             if (c.JS_SetPrototype(engine.context, function, prototype) < 0) {
-                engine.freeValue(function);
+                engine.releaseNativeValue(function);
                 return js.capture(engine);
             }
         }

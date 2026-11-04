@@ -201,7 +201,7 @@ const Task = struct {
         if (self.pid_published or self.pid.load(.acquire) == 0) return;
         const set = try scope.get(self.receiver, "activeChildPids");
         if (!h.nullish(set)) _ = scope.invoke(set, "add", &.{c.JS_NewUint32(scope.engine.context, self.pid.load(.acquire))}) catch |err| {
-            self.spawn_reason = @import("native_agent_async.zig").reason(scope.engine, err);
+            self.spawn_reason = try @import("native_agent_async.zig").reason(scope.engine, err);
             self.spawn_failed.store(true, .release);
             stop(self);
             return;
@@ -242,7 +242,7 @@ const Task = struct {
                 stop(self);
                 return error.OutOfMemory;
             }
-            self.callback_reason = @import("native_agent_async.zig").reason(scope.engine, err);
+            self.callback_reason = try @import("native_agent_async.zig").reason(scope.engine, err);
             self.callback_failed.store(true, .release);
             stop(self);
             return true;
@@ -273,13 +273,13 @@ const Task = struct {
                     successful = true;
                 },
                 .failure => |failure| {
-                    const cause = if (!c.JS_IsUndefined(self.callback_reason)) self.callback_reason else if (failure.cause) |native| try scope.own(@import("native_agent_async.zig").reason(scope.engine, native)) else c.pi_js_undefined();
+                    const cause = if (!c.JS_IsUndefined(self.callback_reason)) self.callback_reason else if (failure.cause) |native| try scope.own(try @import("native_agent_async.zig").reason(scope.engine, native)) else c.pi_js_undefined();
                     const message = if (failure.code == .callback_error and !c.JS_IsUndefined(cause)) try scope.get(try scope.call(try scope.get(self.bindings, "toError"), c.pi_js_undefined(), &.{cause}), "message") else if (failure.code == .timeout) try scope.concat(try scope.text("timeout:"), try scope.stringify(try h.optional(&scope, self.options, "timeout"))) else try scope.text(failure.message);
                     returned = try executionError(&scope, self.bindings, @tagName(failure.code), message, cause, failure.spillPath);
                 },
             }
         } else {
-            const cause = try scope.own(@import("native_agent_async.zig").reason(scope.engine, self.failure orelse error.NativeExecMissingTerminalResult));
+            const cause = try scope.own(try @import("native_agent_async.zig").reason(scope.engine, self.failure orelse error.NativeExecMissingTerminalResult));
             returned = try executionError(&scope, self.bindings, "spawn_error", try scope.get(try scope.call(try scope.get(self.bindings, "toError"), c.pi_js_undefined(), &.{cause}), "message"), cause, null);
         }
         if (self.mode == .raw) return task.settled(!successful, returned);

@@ -182,7 +182,7 @@ fn finish(scope: *Scope, owner: c.JSValue, rejected: bool, value: c.JSValue, can
     }
 }
 fn fail(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
-    const reason = flow.reason(scope.engine, err);
+    const reason = try flow.reason(scope.engine, err);
     defer scope.engine.freeValue(reason);
     if (scope.engine.captured_exception) |captured| {
         scope.engine.captured_exception = null;

@@ -3,7 +3,8 @@
 const std = @import("std");
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
-const js = @import("native_js_values.zig");
+const guest = @import("native_sdk_guest_operation.zig");
+const owned = @import("native_sdk_owned_completion.zig");
 pub const c = em.c;
 pub const Scope = struct {
     engine: *em.Engine,
@@ -11,27 +12,22 @@ pub const Scope = struct {
     inline_count: usize = 0,
     values: std.ArrayList(c.JSValue) = .empty,
     pub fn deinit(self: *Scope) void {
-        for (self.inline_values[0..self.inline_count]) |value| self.engine.freeValue(value);
-        for (self.values.items) |value| self.engine.freeValue(value);
-        self.values.deinit(self.engine.gpa);
+        const count = self.inline_count;
+        self.inline_count = 0;
+        var roots = self.values;
+        self.values = .empty;
+        for (self.inline_values[0..count]) |value| self.engine.releaseNativeValue(value);
+        for (roots.items) |value| self.engine.releaseNativeValue(value);
+        roots.deinit(self.engine.gpa);
     }
     pub fn own(self: *Scope, value: c.JSValue) !c.JSValue {
-        if (self.inline_count < self.inline_values.len) {
-            self.inline_values[self.inline_count] = value;
-            self.inline_count += 1;
-            return value;
-        }
-        self.values.append(self.engine.gpa, value) catch |err| {
-            self.engine.freeValue(value);
-            return err;
-        };
-        return value;
+        return owned.ownRoot(self, value);
     }
     pub fn get(self: *Scope, value: c.JSValue, name: [*:0]const u8) !c.JSValue {
-        return self.own(try sdk.get(self.engine, value, name));
+        return guest.get(self, value, name);
     }
     pub fn global(self: *Scope, name: [*:0]const u8) !c.JSValue {
-        return self.own(try js.global(self.engine, name));
+        return guest.global(self, name);
     }
     pub fn text(self: *Scope, bytes: []const u8) !c.JSValue {
         return self.own(try sdk.text(self.engine, bytes));
@@ -43,25 +39,25 @@ pub const Scope = struct {
         return self.own(try sdk.array(self.engine));
     }
     pub fn call(self: *Scope, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
-        return self.own(try js.call(self.engine, function, receiver, args));
+        return guest.call(self, function, receiver, args);
     }
     pub fn invoke(self: *Scope, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
-        return self.call(try self.get(receiver, name), receiver, args);
+        return guest.invoke(self, receiver, name, args);
     }
     pub fn put(self: *Scope, object_value: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
-        return sdk.put(self.engine, object_value, name, c.JS_DupValue(self.engine.context, value));
+        return guest.put(self, object_value, name, value);
     }
     pub fn set(self: *Scope, object_value: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
-        if (c.JS_SetPropertyStr(self.engine.context, object_value, name, c.JS_DupValue(self.engine.context, value)) < 0) return js.capture(self.engine);
+        return guest.set(self, object_value, name, value);
     }
     pub fn index(self: *Scope, target: c.JSValue, position: u32, value: c.JSValue) !void {
-        if (c.JS_DefinePropertyValueUint32(self.engine.context, target, position, c.JS_DupValue(self.engine.context, value), c.JS_PROP_C_W_E) < 0) return js.capture(self.engine);
+        return guest.index(self, target, position, value);
     }
     pub fn concat(self: *Scope, left: c.JSValue, right: c.JSValue) !c.JSValue {
-        return self.own(try self.engine.checked(c.JS_PiBinaryOperator(self.engine.context, 0, left, right)));
+        return guest.binary(self, 0, left, right);
     }
     pub fn stringify(self: *Scope, value: c.JSValue) !c.JSValue {
-        return self.own(try self.engine.checked(c.JS_ToString(self.engine.context, value)));
+        return guest.stringify(self, value);
     }
     pub fn truthy(self: *Scope, value: c.JSValue) bool {
         return c.JS_ToBool(self.engine.context, value) == 1;
@@ -70,7 +66,7 @@ pub const Scope = struct {
         return c.JS_IsStrictEqual(self.engine.context, left, right);
     }
     pub fn positive(self: *Scope, value: c.JSValue) !bool {
-        return self.truthy(try self.own(try self.engine.checked(c.JS_PiBinaryOperator(self.engine.context, 6, value, c.JS_NewInt32(self.engine.context, 0)))));
+        return self.truthy(try guest.binary(self, 6, value, c.JS_NewInt32(self.engine.context, 0)));
     }
 };
 pub fn nullish(value: c.JSValue) bool {

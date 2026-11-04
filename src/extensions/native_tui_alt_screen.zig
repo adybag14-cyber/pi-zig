@@ -112,6 +112,12 @@ fn body(f: *Frame, method: Method, args: []const c.JSValue) anyerror!c.JSValue {
     unreachable;
 }
 fn call(ctx: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(ctx.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callPendingBody(ctx, this, argc, argv, magic, data));
+}
+fn callPendingBody(ctx: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = js.Engine.fromContext(ctx.?);
     var f: Frame = .{ .engine = engine, .object = this, .bindings = data[0] };
     defer f.deinit();
@@ -119,8 +125,9 @@ fn call(ctx: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, m
     const result = body(&f, method, if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| {
         const failure = a.fail(engine, err);
         if (!asynchronous(method)) return failure;
+        @import("native_pending_owner.zig").checkFatal(engine) catch |pending_error| return if (pending_error == error.ExecutionTerminated) engine.throwExecutionTerminated() else c.pi_js_exception();
         const reason = c.JS_GetException(engine.context);
-        defer engine.freeValue(reason);
+        defer engine.releaseNativeValue(reason);
         return c.JS_NewSettledPromise(engine.context, true, reason);
     };
     if (asynchronous(method)) {
@@ -131,61 +138,67 @@ fn call(ctx: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, m
 }
 fn construct(engine: *js.Engine, target: c.JSValue, args: []const c.JSValue, data: []const c.JSValue) !c.JSValue {
     const self = try js.get(engine, data[0], "TuiAltScreen");
-    defer engine.freeValue(self);
-    const base = try engine.checked(c.JS_GetPrototype(engine.context, self));
-    defer engine.freeValue(base);
+    defer engine.releaseNativeValue(self);
+    const base = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPrototype(engine.context, self); });
+    defer engine.releaseNativeValue(base);
     var base_args = [_]c.JSValue{ v.arg(args, 0), v.arg(args, 1), v.arg(args, 2) };
-    const object = try engine.checked(c.JS_CallConstructor2(engine.context, base, target, 3, &base_args));
-    errdefer engine.freeValue(object);
+    const object = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor2(engine.context, base, target, 3, &base_args); });
+    errdefer engine.releaseNativeValue(object);
     var f: Frame = .{ .engine = engine, .object = object, .bindings = data[0] };
     defer f.deinit();
     try state.initialize(&f, args);
     return object;
 }
-fn dispatch(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn dispatch(ctx: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(ctx.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(ctx, pending_arg1, argc, argv, magic));
+}
+fn dispatchPendingBody(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = js.Engine.fromContext(ctx.?);
     const args: []const c.JSValue = if (argc > 0) argv[0..@intCast(argc)] else &.{};
     return (if (magic == 0) @import("native_mouse.zig").dispatch(engine, v.arg(args, 0), v.arg(args, 1)) else @import("native_mouse.zig").retarget(engine, v.arg(args, 0), v.arg(args, 1))) catch |err| a.fail(engine, err);
 }
 pub fn create(engine: *js.Engine, exports: c.JSValue, base: c.JSValue) !c.JSValue {
     const bindings = try js.object(engine);
-    defer engine.freeValue(bindings);
+    defer engine.releaseNativeValue(bindings);
     inline for (.{ "Container", "ScrollView", "getKeybindings", "isKeyRelease", "getCapabilities", "setCapabilities", "deleteAllKittyImages", "deleteAllKittyPlacements", "deleteKittyImage", "getKittyImagePlacement", "getKittyImagePlacementRows", "getKittyImageMetadata", "cropKittyImageLine", "isImageLine", "CURSOR_MARKER", "compositeTuiLine", "sliceByColumn", "stripTerminalSequences", "truncateToWidth", "visibleWidth" }) |name| try js.define(engine, bindings, name, try js.get(engine, exports, name));
     const symbol = try js.global(engine, "Symbol");
-    defer engine.freeValue(symbol);
+    defer engine.releaseNativeValue(symbol);
     try js.define(engine, bindings, "iteratorSymbol", try js.get(engine, symbol, "iterator"));
     try js.define(engine, bindings, "primitiveSymbol", try js.get(engine, symbol, "toPrimitive"));
     inline for (.{ .{ "layoutSymbol", "@earendil-works/pi-tui/layout-node" }, .{ "viewportSymbol", "@earendil-works/pi-tui/viewport" } }) |item| {
         const key = try v.text(engine, item[1]);
-        defer engine.freeValue(key);
+        defer engine.releaseNativeValue(key);
         try js.define(engine, bindings, item[0], try js.invoke(engine, symbol, "for", &.{key}));
     }
     const joiners = try js.array(engine);
-    defer engine.freeValue(joiners);
+    defer engine.releaseNativeValue(joiners);
     inline for (.{ "/", "-" }) |text| {
         const value = try v.text(engine, text);
-        defer engine.freeValue(value);
+        defer engine.releaseNativeValue(value);
         try js.push(engine, joiners, value);
     }
     const set = try js.global(engine, "Set");
-    defer engine.freeValue(set);
+    defer engine.releaseNativeValue(set);
     var joiner_args = [_]c.JSValue{joiners};
-    try js.define(engine, bindings, "wordJoiners", try engine.checked(c.JS_CallConstructor(engine.context, set, 1, &joiner_args)));
+    try js.define(engine, bindings, "wordJoiners", try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(engine.context, set, 1, &joiner_args); }));
     try js.define(engine, bindings, "osc133ZonePrefix", try @import("native_tui_base_utilities.zig").regexp(engine, "^(?:\x1b\\]133;[ABC](?:\\x07|\\x1b\\\\))+", ""));
     try js.define(engine, bindings, "osc133PromptStart", try @import("native_tui_base_utilities.zig").regexp(engine, "^\x1b\\]133;A(?:\\x07|\\x1b\\\\)", ""));
     try js.define(engine, bindings, "WheelScrollAccelerator", try @import("native_wheel_scroll.zig").create(engine));
     try js.define(engine, bindings, "AltScreenFlashContainer", try @import("native_alt_screen_flash.zig").create(engine, exports));
     try js.define(engine, bindings, "AltScreenSearchComponent", try @import("native_alt_screen_search_component.zig").create(engine, exports));
     const search_exports = try @import("native_alt_screen_search_index.zig").create(engine, exports);
-    defer engine.freeValue(search_exports);
+    defer engine.releaseNativeValue(search_exports);
     inline for (.{ "AltScreenSearchIndex", "getAltScreenSearchMatchKey" }) |name| try js.define(engine, bindings, name, try js.get(engine, search_exports, name));
     inline for (.{ .{ "dispatchMouseEvent", 0 }, .{ "retargetMouseEvent", 1 } }) |item| try js.define(engine, bindings, item[0], try engine.checked(c.JS_NewCFunction2(engine.context, @ptrCast(&dispatch), item[0], 2, c.JS_CFUNC_generic_magic, item[1])));
     try @import("native_tui_alt_utilities.zig").install(engine, bindings);
     try @import("native_tui_layout.zig").install(engine, bindings);
     const parent = try js.get(engine, base, "prototype");
-    defer engine.freeValue(parent);
+    defer engine.releaseNativeValue(parent);
     const prototype = try engine.checked(c.JS_NewObjectProto(engine.context, parent));
-    defer engine.freeValue(prototype);
+    defer engine.releaseNativeValue(prototype);
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     try js.define(engine, bindings, "altPrototype", c.JS_DupValue(engine.context, prototype));
     inline for (std.meta.fields(Method)) |field| {
@@ -194,10 +207,10 @@ pub fn create(engine: *js.Engine, exports: c.JSValue, base: c.JSValue) !c.JSValu
         var data = [_]c.JSValue{bindings};
         const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, call, if (getter) "get " ++ field.name else field.name, length(method), field.value, 1, &data));
         var transferred = false;
-        defer if (!transferred) engine.freeValue(function);
+        defer if (!transferred) engine.releaseNativeValue(function);
         if (asynchronous(method)) {
             const intrinsic = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
-            defer engine.freeValue(intrinsic);
+            defer engine.releaseNativeValue(intrinsic);
             if (c.JS_SetPrototype(engine.context, function, intrinsic) < 0) {
                 return js.capture(engine);
             }
@@ -216,7 +229,7 @@ pub fn create(engine: *js.Engine, exports: c.JSValue, base: c.JSValue) !c.JSValu
         }
     }
     const constructor = try @import("native_class.zig").constructor(engine, "TuiAltScreen", 3, prototype, construct, &.{bindings});
-    errdefer engine.freeValue(constructor);
+    errdefer engine.releaseNativeValue(constructor);
     if (c.JS_SetPrototype(engine.context, constructor, base) < 0) return js.capture(engine);
     try js.define(engine, bindings, "TuiAltScreen", c.JS_DupValue(engine.context, constructor));
     return constructor;

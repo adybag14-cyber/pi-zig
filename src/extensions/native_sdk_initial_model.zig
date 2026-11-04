@@ -171,13 +171,13 @@ fn findMatchBody(o: *x.Ops, available: c.JSValue, key: c.JSValue, id: c.JSValue)
 }
 fn matchesDefault(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = x.em.Engine.fromContext(context.?);
-    engine.checkNativeEntry() catch return engine.throwCaptured();
+    var callback_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    callback_owner.enter() catch return callback_owner.finishCallback(c.pi_js_exception());
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    var invocation: x.em.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
     var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
     const value = x.owned.finishValue(&s, matches(&o, if (argc > 0) args[0] else c.pi_js_undefined(), roots[0..2])) catch |err| @import("native_sdk.zig").fail(engine, err);
-    return engine.leaveNativeInvocation(&invocation, value);
+    return callback_owner.finishCallback(value);
 }
 fn matches(o: *x.Ops, row: c.JSValue, roots: []const c.JSValue) !c.JSValue {
     if (!o.equal(try o.get(row, "provider"), roots[0])) return c.pi_js_bool(o.s.engine.context, 0);
@@ -243,7 +243,7 @@ const Iterator = struct {
             _ = c.JS_ThrowInternalError(e.context, "interrupted");
             const reason = c.JS_GetException(e.context);
             c.JS_SetUncatchableError(e.context, reason);
-            _ = try e.checked(c.JS_Throw(e.context, reason)); unreachable;
+            _ = try e.checked(c.JS_PiThrowNativePending(e.context, reason, true)); unreachable;
         }
         const step = try o.call(self.next_function, self.value, &.{});
         if (!c.JS_IsObject(step)) return o.typeError("iterator must return an object");

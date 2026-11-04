@@ -148,6 +148,16 @@ const NativeReadSession = struct {
     bytes: usize = 0,
     finished: bool = false,
     failure: ?anyerror = null,
+    ui_terminal_failure: ?anyerror = null,
+
+    fn publishUiAllocationFailure(self: *@This()) void {
+        self.mutex.lockUncancelable(self.runtime.io);
+        defer self.mutex.unlock(self.runtime.io);
+        // A previously recorded reader failure wins. Once published, retain
+        // this cause even if the pipe reader later observes owner shutdown.
+        if (self.ui_terminal_failure == null)
+            self.ui_terminal_failure = self.failure orelse error.OutOfMemory;
+    }
 
     fn reader(self: *@This()) Io.Cancelable!void {
         defer self.runtime.process_io.active.store(false, .release);
@@ -266,6 +276,10 @@ const NativeReadSession = struct {
             self.wake.reset();
             try dialogs.progress();
             self.mutex.lockUncancelable(self.runtime.io);
+            if (self.ui_terminal_failure) |err| {
+                self.mutex.unlock(self.runtime.io);
+                return err;
+            }
             const selected = selected: {
                 for (self.records.items, 0..) |record, index| {
                     var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
@@ -570,7 +584,11 @@ const NativeDialog = struct {
             self.session.wake.set(self.runtime.io);
         }
         self.execute() catch |err| {
-            if (!self.cancelled.load(.acquire)) self.failure = err;
+            if (!self.cancelled.load(.acquire)) {
+                self.failure = err;
+                if (self.service_header != null and err == error.OutOfMemory)
+                    self.session.publishUiAllocationFailure();
+            }
         };
     }
 
@@ -581,6 +599,7 @@ const NativeDialog = struct {
         defer if (failure) |text| allocator.free(text);
         const result = if (self.bridge) |bridge| bridge.request_fn(bridge.context, allocator, self.method, self.args) catch |err| blk: {
             if (self.cancelled.load(.acquire)) return;
+            if (err == error.OutOfMemory) return err;
             failure = try std.fmt.allocPrint(allocator, "native UI request failed: {s}", .{@errorName(err)});
             break :blk null;
         } else try allocator.dupe(u8, if (std.mem.eql(u8, self.method, "confirm")) "false" else "null");
@@ -796,6 +815,118 @@ const NativeUiServices = struct {
         return true;
     }
 };
+
+
+test "native persistent UI allocation failure survives reaping and precedes queued responses" {
+    const Probe = struct {
+        fn request(context: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) ![]u8 {
+            const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(context.?));
+            return failing.allocator().dupe(u8, "null");
+        }
+        fn action(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) !void {}
+    };
+    var runtime: Runtime = undefined;
+    runtime.io = std.testing.io;
+    const allocator = std.heap.page_allocator;
+    for ([_]enum { allocation_failure, earlier_reader_failure, cancelled }{ .allocation_failure, .earlier_reader_failure, .cancelled }) |mode| {
+        var session: NativeReadSession = .{ .runtime = &runtime };
+        defer session.deinit();
+        if (mode == .earlier_reader_failure) session.failure = error.JavaScriptExtensionClosed;
+        try session.records.ensureUnusedCapacity(allocator, 1);
+        const queued = try allocator.dupe(u8, "{}");
+        session.records.appendAssumeCapacity(queued);
+        session.bytes = queued.len;
+
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = 0 });
+        var services: NativeUiServices = .{};
+        defer services.deinit(&runtime);
+        try services.requests.ensureUnusedCapacity(allocator, 1);
+        const request = allocated: {
+            const method = try allocator.dupe(u8, "input");
+            errdefer allocator.free(method);
+            const args = try allocator.dupe(u8, "{}");
+            errdefer allocator.free(args);
+            const item = try allocator.create(NativeDialog);
+            item.* = .{
+                .runtime = &runtime,
+                .session = &session,
+                .bridge = .{ .context = &failing, .request_fn = Probe.request, .action_fn = Probe.action },
+                .invocation_id = 1,
+                .id = 1,
+                .method = method,
+                .args = args,
+                .service_header = .{
+                    .lease = .{ .owner_generation = 1, .service_id = 1, .service_generation = 1, .extension_id = 1 },
+                    .request_id = 1,
+                },
+            };
+            break :allocated item;
+        };
+        services.requests.appendAssumeCapacity(request);
+        request.cancelled.store(mode == .cancelled, .release);
+        try request.run();
+        try std.testing.expect(request.done.load(.acquire));
+        try std.testing.expectEqual(mode == .cancelled, request.failure == null);
+        services.reap();
+        try std.testing.expectEqual(@as(usize, 0), services.requests.items.len);
+
+        var dialogs: NativeDialogs = .{ .runtime = &runtime, .session = &session, .invocation_id = 1 };
+        defer dialogs.deinit();
+        if (mode == .cancelled) {
+            try std.testing.expect(session.ui_terminal_failure == null);
+            const response = try session.next(&dialogs);
+            defer allocator.free(response);
+            try std.testing.expectEqualStrings("{}", response);
+        } else {
+            const expected = if (mode == .earlier_reader_failure) error.JavaScriptExtensionClosed else error.OutOfMemory;
+            try std.testing.expectError(expected, session.next(&dialogs));
+            try std.testing.expectEqual(@as(usize, 1), session.records.items.len);
+            try std.testing.expectEqual(@as(usize, 2), session.bytes);
+            // A later transport failure must not replace the published cause.
+            session.failure = error.InvalidNativeUiServiceIdentity;
+            try std.testing.expectError(expected, session.next(&dialogs));
+        }
+    }
+}
+
+test "native invocation UI preserves actual callback allocation failure" {
+    const Probe = struct {
+        fn request(context: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) ![]u8 {
+            const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(context.?));
+            return failing.allocator().dupe(u8, "true");
+        }
+        fn action(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) !void {}
+    };
+    var runtime: Runtime = undefined;
+    runtime.io = std.testing.io;
+    var session: NativeReadSession = .{ .runtime = &runtime };
+    defer session.deinit();
+    var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = 0 });
+    const allocator = std.heap.page_allocator;
+    const request = allocated: {
+        const method = try allocator.dupe(u8, "copyToClipboard");
+        errdefer allocator.free(method);
+        const args = try allocator.dupe(u8, "{\"text\":\"value\"}");
+        errdefer allocator.free(args);
+        const item = try allocator.create(NativeDialog);
+        item.* = .{
+            .runtime = &runtime,
+            .session = &session,
+            .bridge = .{ .context = &failing, .request_fn = Probe.request, .action_fn = Probe.action },
+            .invocation_id = 1,
+            .id = 1,
+            .method = method,
+            .args = args,
+        };
+        break :allocated item;
+    };
+    var dialogs: NativeDialogs = .{ .runtime = &runtime, .session = &session, .invocation_id = 1, .active = request };
+    defer dialogs.deinit();
+    try request.run();
+    try std.testing.expectError(error.OutOfMemory, dialogs.progress());
+    try std.testing.expect(dialogs.active == null);
+    try std.testing.expect(session.ui_terminal_failure == null);
+}
 
 const NativeDialogs = struct {
     runtime: *Runtime,
@@ -2745,6 +2876,15 @@ pub const Runtime = struct {
         watch_provider_retirement: bool,
     ) ![]u8 {
         if (self.shared_owner) |owner| return self.exchangeGroupView(owner, request, abort_flag, update_fn, update_ctx, stream_event_fn, stream_event_ctx, watch_provider_retirement);
+        if (self.native_read_session) |session| {
+            session.mutex.lockUncancelable(self.io);
+            const failure = session.ui_terminal_failure;
+            session.mutex.unlock(self.io);
+            if (failure) |err| {
+                self.closeUnlocked();
+                return err;
+            }
+        }
         if (self.backend == .native) try self.requireNativeRequest(request);
         self.clearLastErrorUnlocked();
         try self.prepareUiServiceEpoch();

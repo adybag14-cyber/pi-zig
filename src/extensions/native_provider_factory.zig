@@ -31,7 +31,7 @@ fn hasCapability(scope: *Scope, entries: c.JSValue, key: [*:0]const u8) !bool {
     const Predicate = struct {
         fn call(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
             const value = try js.getKey(engine, if (args.len > 0) args[0] else c.pi_js_undefined(), roots[0]);
-            defer engine.freeValue(value);
+            defer engine.releaseNativeValue(value);
             return c.JS_NewBool(engine.context, !c.JS_IsUndefined(value));
         }
     };
@@ -56,7 +56,7 @@ fn methodFunction(scope: *Scope, state: c.JSValue, method: Method) !c.JSValue {
 }
 fn methodCall(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var raw: i32 = 0;
-    if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return js.capture(engine);
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToInt32(engine.context, &raw, roots[1]); } < 0) return js.capture(engine);
     const method: Method = @enumFromInt(raw);
     return invoke(engine, roots[0], method, args);
 }
@@ -67,7 +67,7 @@ fn asyncBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: [
         const job = try scope.object();
         try scope.put(job, "state", roots[0]);
         var raw: i32 = 0;
-        if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return js.capture(engine);
+        if (native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_ToInt32(engine.context, &raw, roots[1]); } < 0) return js.capture(engine);
         const method: Method = @enumFromInt(raw);
         try scope.put(job, "context", if (args.len > (if (method == .refreshModels) @as(usize, 0) else 1)) args[if (method == .refreshModels) 0 else 1] else c.pi_js_undefined());
         async_functions.replaceState(engine, slot, c.JS_DupValue(engine.context, job));
@@ -80,7 +80,7 @@ fn asyncBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: [
     }
     if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, input) };
     var raw: i32 = 0;
-    if (c.JS_ToInt32(engine.context, &raw, try scope.get(slot.*, "stage")) < 0) return js.capture(engine);
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToInt32(engine.context, &raw, try scope.get(slot.*, "stage")); } < 0) return js.capture(engine);
     return advance(engine, slot.*, input, @enumFromInt(raw));
 }
 pub fn install(engine: *em.Engine, exports: c.JSValue, cache: c.JSValue) !void {
@@ -91,7 +91,13 @@ pub fn install(engine: *em.Engine, exports: c.JSValue, cache: c.JSValue) !void {
     };
     try js.define(engine, exports, "createProvider", try functions.create(engine, "createProvider", 1, Factory.call, &.{cache}));
 }
-fn construct(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn construct(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, args: [*c]c.JSValue, pending_arg4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(constructPendingBody(context, pending_arg1, argc, args, pending_arg4, data));
+}
+fn constructPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return create(engine, data[0], if (argc > 0) args[0] else c.pi_js_undefined()) catch |err| @import("native_durable.zig").reject(engine, err);
 }
@@ -123,10 +129,10 @@ fn create(engine: *em.Engine, cache: c.JSValue, input: c.JSValue) !c.JSValue {
     const classifier_entries = try implementations(&scope, classifiers);
     if (try vm.length(engine, streams) == 0 and try vm.length(engine, image_entries) == 0 and try vm.length(engine, classifier_entries) == 0) {
         const error_constructor = try scope.global("Error");
-        const id = try scope.own(try engine.checked(c.JS_ToString(engine.context, try scope.get(input, "id"))));
+        const id = try scope.own(try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_ToString(engine.context, try scope.get(input, "id")); }));
         const message = try scope.concat(try scope.concat(try scope.text("Provider "), id), try scope.text(": at least one of \"api\", \"images\", or \"classifiers\" is required."));
-        const reason = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, error_constructor, 1, @constCast(&[_]c.JSValue{message}))));
-        return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
+        const reason = try scope.own(try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(engine.context, error_constructor, 1, @constCast(&[_]c.JSValue{message})); }));
+        return engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, reason)));
     }
     try scope.put(state, "baseline", try scope.get(input, "models"));
     try scope.put(state, "dynamic", try scope.array());
@@ -148,7 +154,13 @@ fn create(engine: *em.Engine, cache: c.JSValue, input: c.JSValue) !c.JSValue {
     if (scope.truthy(classifiers) and try vm.length(engine, classifier_entries) > 0) try scope.put(provider, "classify", try methodFunction(&scope, state, .classify));
     return c.JS_DupValue(engine.context, provider);
 }
-fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn dispatch(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, args: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, pending_arg1, argc, args, raw, data));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     const method: Method = @enumFromInt(raw);
     return invoke(engine, data[0], method, args[0..@intCast(argc)]) catch |err| switch (method) {
@@ -166,7 +178,7 @@ fn catalog(scope: *Scope, state: c.JSValue, chat_only: bool) !c.JSValue {
     defer iterator.deinit();
     errdefer iterator.closePreserving();
     while (try iterator.next()) |owned_model| {
-        defer scope.engine.freeValue(owned_model);
+        defer scope.engine.releaseNativeValue(owned_model);
         var row: Scope = .{ .engine = scope.engine };
         defer row.deinit();
         const Match = struct {
@@ -178,7 +190,7 @@ fn catalog(scope: *Scope, state: c.JSValue, chat_only: bool) !c.JSValue {
             }
         };
         const position_value = try row.invoke(result, "findIndex", &.{try row.own(try functions.createArrow(scope.engine, "", 1, Match.call, &.{ owned_model, get_model_type }))});
-        if (row.truthy(try row.own(try scope.engine.checked(c.JS_PiBinaryOperator(scope.engine.context, 7, position_value, c.JS_NewInt32(scope.engine.context, 0)))))) {
+        if (row.truthy(try row.own(try scope.engine.checked(native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_PiBinaryOperator(scope.engine.context, 7, position_value, c.JS_NewInt32(scope.engine.context, 0)); })))) {
             // Assignment follows ordinary Set semantics, including patched setters.
             try js.setKey(scope.engine, result, position_value, owned_model);
         } else {
@@ -219,7 +231,7 @@ fn missing(scope: *Scope, state: c.JSValue, method: Method, model: c.JSValue) !c
     const message = try scope.concat(try scope.concat(try scope.concat(prefix, middle), try scope.stringify(try scope.get(model, "api"))), try scope.text("\""));
     const constructor = try scope.get(try scope.get(try scope.get(state, "store"), "cache"), "models_error_constructor");
     var args = [_]c.JSValue{ try scope.text(if (method == .stream or method == .streamSimple) "stream" else "provider"), message };
-    return scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, constructor, args.len, &args)));
+    return scope.own(try scope.engine.checked(native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(scope.engine.context, constructor, args.len, &args); }));
 }
 fn invoke(engine: *em.Engine, state: c.JSValue, method: Method, args: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
@@ -251,12 +263,18 @@ fn invoke(engine: *em.Engine, state: c.JSValue, method: Method, args: []const c.
             const result = try scope.call(try scope.get(lexical, if (method == .generateImages) "imageErrorResult" else "classifierErrorResult"), c.pi_js_undefined(), &.{ model, reason });
             return c.JS_DupValue(engine.context, result);
         }
-        return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
+        return engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, reason)));
     }
     const pending = try scope.invoke(entry, @tagName(method), &.{ model, try scope.get(job, "context"), try scope.get(job, "options") });
     return c.JS_DupValue(engine.context, pending);
 }
-fn deferredSetup(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn deferredSetup(context: ?*c.JSContext, pending_arg1: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, pending_arg4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(deferredSetupPendingBody(context, pending_arg1, pending_arg2, pending_arg3, pending_arg4, data));
+}
+fn deferredSetupPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return setupCall(engine, data[0]) catch |err| @import("native_durable.zig").reject(engine, err);
 }
@@ -265,19 +283,25 @@ fn setupCall(engine: *em.Engine, job: c.JSValue) !c.JSValue {
     defer scope.deinit();
     const state = try scope.get(job, "state");
     var raw: i32 = 0;
-    if (c.JS_ToInt32(engine.context, &raw, try scope.get(job, "method")) < 0) return js.capture(engine);
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToInt32(engine.context, &raw, try scope.get(job, "method")); } < 0) return js.capture(engine);
     const method: Method = @enumFromInt(raw);
     const model = try scope.get(job, "model");
     const entry = if (method == .stream or method == .streamSimple) c.pi_js_undefined() else try implementation(&scope, state, method, model);
-    if (!scope.truthy(entry) or (method == .fetchDeferred and !scope.truthy(try scope.get(entry, "fetchDeferred")))) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, try missing(&scope, state, method, model))));
+    if (!scope.truthy(entry) or (method == .fetchDeferred and !scope.truthy(try scope.get(entry, "fetchDeferred")))) return engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, try missing(&scope, state, method, model))));
     return c.JS_DupValue(engine.context, try scope.invoke(entry, @tagName(method), &.{ model, try scope.get(job, "context"), try scope.get(job, "options") }));
 }
 fn wait(scope: *Scope, job: c.JSValue, value: c.JSValue, stage: Stage) !async_functions.Action {
     try scope.put(job, "stage", c.JS_NewInt32(scope.engine.context, @intFromEnum(stage)));
     return .{ .awaited = c.JS_DupValue(scope.engine.context, value) };
 }
-fn update(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
-    if (c.JS_DefinePropertyValueStr(context, data[0], "dynamic", c.JS_DupValue(context, data[1]), c.JS_PROP_C_W_E) < 0) return c.JS_Throw(context, c.JS_GetException(context));
+fn update(context: ?*c.JSContext, pending_arg1: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, pending_arg4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(updatePendingBody(context, pending_arg1, pending_arg2, pending_arg3, pending_arg4, data));
+}
+fn updatePendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
+    if (c.JS_DefinePropertyValueStr(context, data[0], "dynamic", c.JS_DupValue(context, data[1]), c.JS_PROP_C_W_E) < 0) return c.pi_js_exception();
     return c.pi_js_undefined();
 }
 fn publication(scope: *Scope, job: c.JSValue, models: c.JSValue, persist: bool) !c.JSValue {

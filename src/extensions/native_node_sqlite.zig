@@ -84,6 +84,9 @@ fn throwError(s: *v.Scope, kind: enum { type_error, range_error, error_value }, 
     const text = s.engine.gpa.dupeZ(u8, message) catch |err| return err; defer s.engine.gpa.free(text);
     const reason = if (kind == .error_value) s.own(v.checked(s.engine, c.JS_NewError(s.engine.context)) catch |err| return err) catch |err| return err else blk: {
         _ = if (kind == .type_error) c.JS_ThrowTypeError(s.engine.context, "%s", text.ptr) else c.JS_ThrowRangeError(s.engine.context, "%s", text.ptr);
+        // Error stack hooks may leave an actual fatal producer. Preserve it
+        // before taking an ordinary constructor result for code decoration.
+        @import("native_pending_owner.zig").checkFatal(s.engine) catch |err| return err;
         break :blk s.own(c.JS_GetException(s.engine.context)) catch |err| return err;
     };
     if (kind == .error_value) {
@@ -91,7 +94,7 @@ fn throwError(s: *v.Scope, kind: enum { type_error, range_error, error_value }, 
         if (c.JS_DefinePropertyValueStr(s.engine.context, reason, "message", c.JS_DupValue(s.engine.context, message_value), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(s.engine);
     }
     s.put(reason, "code", s.text(code) catch |err| return err) catch |err| return err;
-    _ = v.checked(s.engine, c.JS_Throw(s.engine.context, c.JS_DupValue(s.engine.context, reason))) catch |err| return err;
+    _ = v.checked(s.engine, c.JS_PiThrowExceptionData(s.engine.context, c.JS_DupValue(s.engine.context, reason))) catch |err| return err;
     unreachable;
 }
 fn sqlError(s: *v.Scope, db: ?*Db) anyerror {
@@ -102,7 +105,7 @@ fn sqlError(s: *v.Scope, db: ?*Db) anyerror {
     s.put(reason, "code", s.text("ERR_SQLITE_ERROR") catch |err| return err) catch |err| return err;
     s.put(reason, "errcode", c.JS_NewInt32(s.engine.context, code)) catch |err| return err;
     s.put(reason, "errstr", s.text(std.mem.span(sqlite3_errstr(code))) catch |err| return err) catch |err| return err;
-    _ = v.checked(s.engine, c.JS_Throw(s.engine.context, c.JS_DupValue(s.engine.context, reason))) catch |err| return err; unreachable;
+    _ = v.checked(s.engine, c.JS_PiThrowExceptionData(s.engine.context, c.JS_DupValue(s.engine.context, reason))) catch |err| return err; unreachable;
 }
 fn check(s: *v.Scope, db: ?*Db, result: c_int) !void { if (result != 0) return sqlError(s, db); }
 fn string(s: *v.Scope, value: c.JSValue, field: []const u8) ![:0]u8 {

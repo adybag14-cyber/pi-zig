@@ -28,6 +28,6 @@ fn capturePending(engine: *v.em.Engine) anyerror {
     // Capture must not stringify an existing reason or read guest diagnostics.
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    _ = engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context))) catch |err| return err;
+    _ = engine.checked(c.pi_js_exception()) catch |err| return err;
     unreachable;
 }

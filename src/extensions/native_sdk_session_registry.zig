@@ -60,10 +60,22 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
     }
 }
 fn methodCallback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(methodCallbackPendingBody(context, receiver, argc, argv, magic));
+}
+fn methodCallbackPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return dispatch(engine, receiver, @enumFromInt(magic), if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
 }
-fn mapperCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn mapperCallback(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(mapperCallbackPendingBody(context, pending_arg1, argc, argv, magic, roots));
+}
+fn mapperCallbackPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return mapped(engine, @enumFromInt(magic), roots[0], if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
 }
@@ -202,13 +214,19 @@ fn wrap(scope: *Scope, definition: c.JSValue, runner: c.JSValue, from_agent: boo
     try scope.put(result, "execute", execute);
     return result;
 }
-fn toolExecute(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn toolExecute(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(toolExecutePendingBody(context, pending_arg1, argc, argv, magic, roots));
+}
+fn toolExecutePendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     if (magic == 0) return executeWrapped(engine, roots[0], roots[1], argv[0..@intCast(argc)]) catch |err| sdk.fail(engine, err);
     // The original AgentTool-to-definition arrow is async: synchronous throws
     // reject and returned thenables are adopted by the intrinsic promise.
     const result = executeAgent(engine, roots[0], argv[0..@intCast(argc)]) catch |err| {
-        const reason = @import("native_agent_async.zig").reason(engine, err);
+        const reason = @import("native_agent_async.zig").reason(engine, err) catch |failure| return @import("native_sdk.zig").fail(engine, failure);
         defer engine.freeValue(reason);
         return rejected(engine, reason) catch |failure| sdk.fail(engine, failure);
     };
@@ -244,7 +262,13 @@ fn wrappedRows(scope: *Scope, registered: c.JSValue, runner: c.JSValue) !c.JSVal
     const callback = try scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, wrapCallback, "", 1, 0, roots.len, &roots)));
     return scope.call(callee, registered, &.{callback});
 }
-fn wrapCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn wrapCallback(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(wrapCallbackPendingBody(context, pending_arg1, argc, argv, pending_arg4, roots));
+}
+fn wrapCallbackPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -570,7 +594,13 @@ fn closure(scope: *Scope, receiver: c.JSValue, runner: c.JSValue, kind: Closure)
     }
     return value;
 }
-fn closureCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn closureCallback(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(closureCallbackPendingBody(context, pending_arg1, argc, argv, magic, roots));
+}
+fn closureCallbackPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     const args = if (argc > 0) argv[0..@intCast(argc)] else &.{};
     const kind: Closure = @enumFromInt(magic);
@@ -593,7 +623,13 @@ fn bindCore(scope: *Scope, receiver: c.JSValue, runner: c.JSValue) !void {
     // capture the same live receiver and actual runner rather than snapshots.
     _ = try scope.call(bind, runner, &.{ actions, context, providers });
 }
-fn reportSendError(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn reportSendError(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(reportSendErrorPendingBody(context, pending_arg1, argc, argv, magic, roots));
+}
+fn reportSendErrorPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -726,7 +762,7 @@ fn compactAsync(engine: *em.Engine, receiver: c.JSValue, options: c.JSValue) !vo
     defer scope.deinit();
     scope.put(pending.owner, "options", options) catch |err| return flow.rejectError(engine, pending.owner, err);
     compactStart(engine, pending.owner) catch |err| {
-        compactError(engine, pending.owner, flow.reason(engine, err)) catch |failure| try flow.rejectError(engine, pending.owner, failure);
+        compactError(engine, pending.owner, try try try flow.reason(engine, err)) catch |failure| try flow.rejectError(engine, pending.owner, failure);
     };
 }
 fn compactStart(engine: *em.Engine, owner: c.JSValue) !void {
@@ -746,7 +782,7 @@ fn compactSettled(engine: *em.Engine, owner: c.JSValue, result: c.JSValue, faile
     const options = try scope.get(owner, "options");
     const complete = if (temp.nullish(options)) c.pi_js_undefined() else try scope.get(options, "onComplete");
     if (!temp.nullish(complete)) {
-        _ = scope.call(complete, options, &.{result}) catch |err| return compactError(engine, owner, @import("native_agent_async.zig").reason(engine, err));
+        _ = scope.call(complete, options, &.{result}) catch |err| return compactError(engine, owner, try @import("native_agent_async.zig").reason(engine, err));
     }
     try @import("native_agent_async.zig").settle(engine, owner, false, c.pi_js_undefined());
 }

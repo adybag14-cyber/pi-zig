@@ -126,7 +126,7 @@ fn closeBody(s: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     return wait(s, owner, returned, .closing);
 }
 fn closeBodyError(s: *Scope, owner: c.JSValue, err: anyerror) !void {
-    const reason = try s.own(flow.reason(s.engine, err));
+    const reason = try s.own(try flow.reason(s.engine, err));
     if (s.engine.captured_exception) |captured| {
         s.engine.captured_exception = null;
         s.engine.freeValue(captured);
@@ -137,7 +137,7 @@ fn aborted(s: *Scope, owner: c.JSValue) !bool {
     return s.truthy(try v.optional(s, try v.optional(s, try s.get(owner, "options"), "signal"), "aborted"));
 }
 fn failError(s: *Scope, owner: c.JSValue, err: anyerror) !void {
-    const reason = flow.reason(s.engine, err);
+    const reason = try flow.reason(s.engine, err);
     defer s.engine.freeValue(reason);
     if (s.engine.captured_exception) |captured| {
         s.engine.captured_exception = null;

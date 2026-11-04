@@ -3051,19 +3051,31 @@ const ExtensionShortcutContext = struct {
         const self: *ExtensionShortcutContext = @ptrCast(@alignCast(raw));
         var paste = coding.clipboard.readPaste(self.host.gpa, self.io, .{
             .environ = self.environ,
-        }) catch return .handled_continue;
+        }) catch |err| {
+            if (err == error.OutOfMemory) return error.OutOfMemory;
+            return .handled_continue;
+        };
         if (paste == null) return .handled_continue;
         defer paste.?.deinit(self.host.gpa);
 
         switch (paste.?) {
             .text => |text| {
-                const normalized = tui.line_editor.normalizePasteAlloc(self.host.gpa, text) catch return .handled_continue;
+                const normalized = tui.line_editor.normalizePasteAlloc(self.host.gpa, text) catch |err| {
+                    if (err == error.OutOfMemory) return error.OutOfMemory;
+                    return .handled_continue;
+                };
                 defer self.host.gpa.free(normalized);
                 if (normalized.len > 0) try self.editor.insert(normalized);
             },
             .image => |image| {
-                const path = self.clipboard_store.saveImage(image) catch return .handled_continue;
-                const reference = coding.clipboard.formatAttachmentReference(self.host.gpa, path) catch return .handled_continue;
+                const path = self.clipboard_store.saveImage(image) catch |err| {
+                    if (err == error.OutOfMemory) return error.OutOfMemory;
+                    return .handled_continue;
+                };
+                const reference = coding.clipboard.formatAttachmentReference(self.host.gpa, path) catch |err| {
+                    if (err == error.OutOfMemory) return error.OutOfMemory;
+                    return .handled_continue;
+                };
                 defer self.host.gpa.free(reference);
                 const before = self.editor.slice();
                 if (self.editor.cursor > 0 and !std.ascii.isWhitespace(before[self.editor.cursor - 1])) try self.editor.insert(" ");

@@ -27,7 +27,13 @@ pub fn install(engine: *em.Engine, instance: c.JSValue, store: c.JSValue) !void 
     var data = [_]c.JSValue{store};
     inline for (std.meta.fields(Action)) |field| try scope.put(instance, field.name, try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, field.name, if (field.value == 0) 4 else 1, field.value, data.len, &data))));
 }
-fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn dispatch(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, args: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, pending_arg1, argc, args, raw, data));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return invoke(engine, data[0], @enumFromInt(raw), args[0..@intCast(argc)]) catch |err| @import("native_durable.zig").rejectedPromise(engine, err);
 }
@@ -40,7 +46,7 @@ fn raise(scope: *Scope, state: c.JSValue, code: []const u8, message: c.JSValue) 
     const text = scope.engine.toString(message) catch |err| return err;
     defer scope.engine.gpa.free(text);
     const reason = scope.own(models.fromCause(scope.engine, scope.get(state, "store") catch |err| return err, code, text, c.pi_js_undefined()) catch |err| return err) catch |err| return err;
-    _ = scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, reason))) catch |err| return err;
+    _ = scope.engine.checked(c.JS_PiThrowExceptionData(scope.engine.context, c.JS_DupValue(scope.engine.context, reason))) catch |err| return err;
     unreachable;
 }
 fn invoke(engine: *em.Engine, store: c.JSValue, action: Action, args: []const c.JSValue) !c.JSValue {
@@ -61,7 +67,7 @@ fn invoke(engine: *em.Engine, store: c.JSValue, action: Action, args: []const c.
         const pending = scope.invoke(try scope.get(store, "credentials"), "delete", &.{ id, options }) catch |err| {
             if (err != error.JavaScriptException or engine.captured_exception == null) return err;
             const reason = try storeFailure(&scope, state, engine.captured_exception.?, "delete");
-            return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
+            return engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, reason)));
         };
         return c.JS_DupValue(engine.context, try wait(&scope, state, pending, .logout_ready));
     }
@@ -94,7 +100,13 @@ fn settle(scope: *Scope, state: c.JSValue, value: c.JSValue, rejected: bool) !c.
     _ = try scope.call(try scope.get(state, if (rejected) "reject" else "resolve"), c.pi_js_undefined(), &.{value});
     return c.pi_js_undefined();
 }
-fn callback(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn callback(context: ?*c.JSContext, pending_arg1: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callbackPendingBody(context, pending_arg1, pending_arg2, pending_arg3, magic, data));
+}
+fn callbackPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return callbackInner(engine, data[0], magic == 0) catch |err| @import("native_durable.zig").rejectedPromise(engine, err);
 }
@@ -111,6 +123,7 @@ fn callbackInner(engine: *em.Engine, state: c.JSValue, mutation: bool) !c.JSValu
 }
 fn advance(engine: *em.Engine, state: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) anyerror!c.JSValue {
     return advanceInner(engine, state, value, rejected, raw) catch |err| {
+        try @import("native_pending_owner.zig").catchFailure(engine, err);
         // A host failure formatting a mutation error must still retire the
         // separately-owned login capability. The mutation remains observed.
         var scope: Scope = .{ .engine = engine };
@@ -118,8 +131,9 @@ fn advance(engine: *em.Engine, state: c.JSValue, value: c.JSValue, rejected: boo
         const reject = scope.get(state, "reject") catch return err;
         if (c.JS_IsFunction(engine.context, reject)) {
             _ = @import("native_durable.zig").reject(engine, err);
+            try @import("native_pending_owner.zig").checkFatal(engine);
             const reason = c.JS_GetException(engine.context);
-            defer engine.freeValue(reason);
+            defer engine.releaseNativeValue(reason);
             _ = settle(&scope, state, reason, true) catch {};
         }
         return err;
@@ -130,17 +144,17 @@ fn advanceInner(engine: *em.Engine, state: c.JSValue, value: c.JSValue, rejected
     defer scope.deinit();
     const stage: Stage = @enumFromInt(raw);
     if (stage == .logout_ready) {
-        if (rejected) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, try storeFailure(&scope, state, value, "delete"))));
+        if (rejected) return engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, try storeFailure(&scope, state, value, "delete"))));
         return c.pi_js_undefined();
     }
     if (stage == .login_ready) {
-        if (rejected) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value)));
+        if (rejected) return engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, value)));
         try scope.put(state, "credential", value);
         try scope.put(state, "started", c.pi_js_bool(engine.context, 0));
         try scope.put(state, "closed", c.pi_js_bool(engine.context, 0));
         var functions: [2]c.JSValue = undefined;
         const result = try scope.own(try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions)));
-        defer for (functions) |function| engine.freeValue(function);
+        defer for (functions) |function| engine.releaseNativeValue(function);
         try scope.put(state, "resolve", functions[0]);
         try scope.put(state, "reject", functions[1]);
         var data = [_]c.JSValue{state};

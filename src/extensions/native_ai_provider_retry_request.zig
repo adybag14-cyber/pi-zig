@@ -55,7 +55,7 @@ fn request(scope: *Scope, owner: c.JSValue) !asynchronous.Action {
             try @import("native_async_body.zig").rethrowRecognizedAllocation(scope.engine, reason, generation);
             if (c.JS_IsUncatchableError(reason)) return err;
         };
-        const reason = try scope.own(flow.reason(scope.engine, err));
+        const reason = try scope.own(try flow.reason(scope.engine, err));
         if (scope.engine.captured_exception) |captured| {
             scope.engine.captured_exception = null;
             scope.engine.freeValue(captured);

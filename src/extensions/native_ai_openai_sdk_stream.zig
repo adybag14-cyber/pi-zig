@@ -32,7 +32,7 @@ fn messages(engine: *v.em.Engine, iterable: c.JSValue, codec: c.JSValue) !c.JSVa
 }
 fn captured(scope: *Scope, err: anyerror) !c.JSValue {
     if (err != error.JavaScriptException) return err;
-    const reason = try scope.own(flow.reason(scope.engine, err));
+    const reason = try scope.own(try flow.reason(scope.engine, err));
     if (scope.engine.captured_exception) |value| {
         scope.engine.captured_exception = null;
         scope.engine.freeValue(value);

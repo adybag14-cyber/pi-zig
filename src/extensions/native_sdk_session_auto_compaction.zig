@@ -17,6 +17,12 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "_runAutoCompaction", c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
 }
 fn dispatch(context: ?*c.JSContext, session: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, session, argc, argv));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, session: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -80,13 +86,13 @@ fn step(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, 
     advance(engine, owner, value, rejected, @enumFromInt(magic)) catch |err| try handle(engine, owner, err);
 }
 fn handle(engine: *em.Engine, owner: c.JSValue, err: anyerror) !void {
-    const reason = flow.reason(engine, err);
+    const reason = try flow.reason(engine, err);
     defer engine.freeValue(reason);
     const phase = try sdk.get(engine, owner, "phase");
     defer engine.freeValue(phase);
     if (c.JS_IsStrictEqual(engine.context, phase, c.JS_NewInt32(engine.context, 1))) {
         caught(engine, owner, reason) catch |failure| {
-            const replacement = flow.reason(engine, failure);
+            const replacement = try flow.reason(engine, failure);
             defer engine.freeValue(replacement);
             try finish(engine, owner, true, replacement);
         };
@@ -135,7 +141,13 @@ fn summarize(engine: *em.Engine, owner: c.JSValue, custom: c.JSValue) !void {
     const value = try scope.call(function, session, &.{ try scope.get(owner, "preparation"), try scope.get(owner, "model"), c.pi_js_undefined(), try scope.get(try scope.get(owner, "controller"), "signal"), try scope.get(owner, "reason") });
     try flow.wait(step, engine, owner, value, @intFromEnum(Stage.summary));
 }
-fn findSaved(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn findSaved(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(findSavedPendingBody(context, pending_arg1, argc, argv, pending_arg4, roots));
+}
+fn findSavedPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();

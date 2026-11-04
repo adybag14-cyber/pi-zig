@@ -22,13 +22,9 @@ fn boundary(scope: *Scope, owner: c.JSValue) !u64 {
     if (c.JS_ToUint32(scope.engine.context, &low, low_value) < 0 or c.JS_ToUint32(scope.engine.context, &high, high_value) < 0) return @import("native_js_values.zig").capture(scope.engine);
     return (@as(u64, high) << 32) | low;
 }
-pub fn nativeAllocationReason(engine: *em.Engine, owner: c.JSValue, value: c.JSValue) !bool {
-    const tagged = c.pi_js_native_allocation_error_generation(value);
-    if (tagged == 0) return false;
-    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
-    const generation = try boundary(&scope, owner);
-    const distance = tagged -% generation;
-    return distance != 0 and distance <= engine.native_allocation_generation -% generation;
+pub fn nativeAllocationReason(engine: *em.Engine, _: c.JSValue, _: c.JSValue) !bool {
+    try @import("native_pending_owner.zig").checkFatal(engine);
+    return false;
 }
 pub fn wait(comptime _: *const fn (*em.Engine, c.JSValue, c.JSValue, bool, c_int) anyerror!void, engine: *em.Engine, owner: c.JSValue, value: c.JSValue, stage: c_int) !void {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit();
@@ -42,11 +38,14 @@ pub fn rejectError(engine: *em.Engine, owner: c.JSValue, err: anyerror) !void {
     // Trusted allocator failure must reach the primitive's scoped uncatchable
     // host-OOM path, rather than becoming an ordinary recorded guest throw.
     if (try nativeFailure(engine, owner, err)) return error.OutOfMemory;
-    const value = reason(engine, err); defer engine.freeValue(value);
+    const value = try reason(engine, err); defer engine.freeValue(value);
     try settle(engine, owner, true, value);
 }
-pub fn nativeFailure(engine: *em.Engine, owner: c.JSValue, err: anyerror) !bool {
-    if (err == error.OutOfMemory) return true;
-    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
-    return engine.nativeAllocationError(err, try boundary(&scope, owner)) == error.OutOfMemory;
+pub fn nativeFailure(engine: *em.Engine, _: c.JSValue, err: anyerror) !bool {
+    if (err == error.OutOfMemory) {
+        _ = engine.throwNativeOutOfMemoryFatal();
+        return true;
+    }
+    try @import("native_pending_owner.zig").catchFailure(engine, err);
+    return false;
 }

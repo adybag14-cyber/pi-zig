@@ -10,32 +10,27 @@ const ranges = @import("native_semver785_range.zig");
 const c = em.c;
 const Method = enum { valid, validRange, gt, rcompare, satisfies, maxSatisfying };
 pub fn create(engine: *em.Engine) !c.JSValue {
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    frame.enter() catch |err| return frame.finishValue(err);
+    return frame.finishValue(createOwned(engine));
+}
+fn createOwned(engine: *em.Engine) !c.JSValue {
     try engine.checkNativeEntry();
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    var invocation: em.Engine.NativeInvocation = .{};
-    engine.enterNativeInvocation(&invocation);
     var boundary: Scope = .{ .engine = engine };
-    const result = createInner(engine) catch |err| {
-        const failure = if (c.JS_HasException(engine.context)) c.JS_Throw(engine.context, c.JS_GetException(engine.context))
-            else if (err == error.OutOfMemory) engine.throwNativeOutOfMemoryFatal()
-            else engine.throwCaptured();
-        _ = engine.checked(engine.leaveNativeInvocation(&invocation, failure)) catch return err;
-        return err;
-    };
-    const final = boundary.complete(result, engine.native_allocation_generation) catch |err| {
-        _ = engine.checked(engine.leaveNativeInvocation(&invocation, engine.throwCaptured())) catch return err;
-        return err;
-    };
-    return engine.checked(engine.leaveNativeInvocation(&invocation, final));
+    const result = try createInner(engine);
+    return boundary.complete(result, engine.native_allocation_generation);
 }
 fn createInner(engine: *em.Engine) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    errdefer |err| scope.failed(err);
+    return scope.finishOutcome(createBody(&scope));
+}
+fn createBody(scope: *Scope) !c.JSValue {
+    const engine = scope.engine;
     const context = try scope.plain();
-    try ops.put(&scope, context, "regex", try scope.own(try @import("native_semver785_regex.zig").create(engine)));
-    try ops.put(&scope, context, "cache", try scope.builtin("Map", &.{}));
+    try ops.put(scope, context, "regex", try scope.own(try @import("native_semver785_regex.zig").create(engine)));
+    try ops.put(scope, context, "cache", try scope.builtin("Map", &.{}));
     const result = try scope.object();
     inline for (std.meta.fields(Method)) |field| {
         const method: Method = @enumFromInt(field.value);
@@ -46,7 +41,7 @@ fn createInner(engine: *em.Engine) !c.JSValue {
                 return boundary.complete(returned, host.native_allocation_generation);
             }
         };
-        try ops.put(&scope, result, field.name, try scope.own(try functions.createArrow(engine, field.name, if (method == .valid or method == .validRange) 2 else 3, Adapter.call, &.{context})));
+        try ops.put(scope, result, field.name, try scope.own(try functions.createArrow(engine, field.name, if (method == .valid or method == .validRange) 2 else 3, Adapter.call, &.{context})));
     }
     return c.JS_DupValue(engine.context, result);
 }
@@ -69,21 +64,23 @@ fn caught(engine: *em.Engine, err: anyerror) !void {
 }
 fn invoke(engine: *em.Engine, method: Method, args: []const c.JSValue, context: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    errdefer |err| scope.failed(err);
+    return scope.finishOutcome(invokeBody(&scope, method, args, context));
+}
+fn invokeBody(scope: *Scope, method: Method, args: []const c.JSValue, context: c.JSValue) !c.JSValue {
+    const engine = scope.engine;
     const options = arg(args, if (method == .valid or method == .validRange) 1 else 2);
-    if (scope.truthy(options)) return v.typeError(&scope, &.{try scope.text("Native semver 7.8.5 PackageManager binding supports default options only")});
+    if (scope.truthy(options)) return v.typeError(scope, &.{try scope.text("Native semver 7.8.5 PackageManager binding supports default options only")});
     const regex = try scope.get(context, "regex");
     switch (method) {
         .valid => {
-            const version = v.create(&scope, regex, arg(args, 0)) catch |err| {
+            const version = v.create(scope, regex, arg(args, 0)) catch |err| {
                 try caught(engine, err);
                 return c.pi_js_null();
             };
             return c.JS_DupValue(engine.context, try scope.get(version, "version"));
         },
         .validRange => {
-            const formatted = validRange(&scope, context, arg(args, 0)) catch |err| {
+            const formatted = validRange(scope, context, arg(args, 0)) catch |err| {
                 try caught(engine, err);
                 return c.pi_js_null();
             };
@@ -92,22 +89,22 @@ fn invoke(engine: *em.Engine, method: Method, args: []const c.JSValue, context: 
         .gt, .rcompare => {
             // rcompare delegates to compare(b,a): constructor failures and
             // live string methods must retain that reversed evaluation order.
-            const first = try v.create(&scope, regex, arg(args, if (method == .rcompare) 1 else 0));
-            const second = try v.create(&scope, regex, arg(args, if (method == .rcompare) 0 else 1));
-            const compared = try v.compare(&scope, regex, first, second);
+            const first = try v.create(scope, regex, arg(args, if (method == .rcompare) 1 else 0));
+            const second = try v.create(scope, regex, arg(args, if (method == .rcompare) 0 else 1));
+            const compared = try v.compare(scope, regex, first, second);
             return if (method == .gt) c.pi_js_bool(engine.context, @intFromBool(compared > 0)) else c.JS_NewInt32(engine.context, compared);
         },
         .satisfies, .maxSatisfying => {
-            const range = ranges.create(&scope, context, arg(args, 1)) catch |err| {
+            const range = ranges.create(scope, context, arg(args, 1)) catch |err| {
                 try caught(engine, err);
                 return if (method == .satisfies) c.pi_js_bool(engine.context, 0) else c.pi_js_null();
             };
-            if (method == .satisfies) return c.pi_js_bool(engine.context, @intFromBool(try testInput(&scope, context, range, arg(args, 0))));
+            if (method == .satisfies) return c.pi_js_bool(engine.context, @intFromBool(try testInput(scope, context, range, arg(args, 0))));
             const owner = try scope.plain();
-            try ops.put(&scope, owner, "context", context);
-            try ops.put(&scope, owner, "range", range);
-            try ops.put(&scope, owner, "max", c.pi_js_null());
-            try ops.put(&scope, owner, "maxSV", c.pi_js_null());
+            try ops.put(scope, owner, "context", context);
+            try ops.put(scope, owner, "range", range);
+            try ops.put(scope, owner, "max", c.pi_js_null());
+            try ops.put(scope, owner, "maxSV", c.pi_js_null());
             const versions = arg(args, 0);
             const for_each = try scope.get(versions, "forEach");
             const callback = try scope.own(try functions.createArrow(engine, "", 1, maximum, &.{owner}));
@@ -139,12 +136,13 @@ fn maximum(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []c
 }
 fn maximumInner(engine: *em.Engine, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    errdefer |err| scope.failed(err);
+    return scope.finishOutcome(maximumBody(&scope, args, roots));
+}
+fn maximumBody(scope: *Scope, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     const owner = roots[0];
     const context = try scope.get(owner, "context");
     const candidate = arg(args, 0);
-    if (!try testInput(&scope, context, try scope.get(owner, "range"), candidate)) return c.pi_js_undefined();
+    if (!try testInput(scope, context, try scope.get(owner, "range"), candidate)) return c.pi_js_undefined();
     const current = try scope.get(owner, "max");
     var replace = !scope.truthy(current);
     const regex = try scope.get(context, "regex");
@@ -153,11 +151,11 @@ fn maximumInner(engine: *em.Engine, args: []const c.JSValue, roots: []const c.JS
         // SemVer.compare(string) returns immediately for the exact formatted
         // string before constructing another version. Equal builds retain the
         // first original candidate rather than returning a normalized copy.
-        if (!c.JS_IsString(candidate) or !scope.equal(candidate, try scope.get(previous, "version"))) replace = try v.compare(&scope, regex, previous, try v.create(&scope, regex, candidate)) == -1;
+        if (!c.JS_IsString(candidate) or !scope.equal(candidate, try scope.get(previous, "version"))) replace = try v.compare(scope, regex, previous, try v.create(scope, regex, candidate)) == -1;
     }
     if (replace) {
-        try ops.put(&scope, owner, "max", candidate);
-        try ops.put(&scope, owner, "maxSV", try v.create(&scope, regex, candidate));
+        try ops.put(scope, owner, "max", candidate);
+        try ops.put(scope, owner, "maxSV", try v.create(scope, regex, candidate));
     }
     return c.pi_js_undefined();
 }

@@ -45,7 +45,7 @@ fn load(scope: *Scope, pending: c.JSValue) !void {
     try flow.wait(continued, scope.engine, pending, promise, 0);
 }
 fn failedError(scope: *Scope, pending: c.JSValue, err: anyerror) !void {
-    const reason = flow.reason(scope.engine, err);
+    const reason = try flow.reason(scope.engine, err);
     defer scope.engine.freeValue(reason);
     if (scope.engine.captured_exception) |captured| {
         scope.engine.captured_exception = null;

@@ -25,6 +25,12 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue, config_dir: c.JSValue) 
     }
 }
 fn dispatch(context: ?*c.JSContext, loader: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, loader, argc, argv, magic, roots));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, loader: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -53,7 +59,7 @@ fn discard(scope: *Scope, err: anyerror, generation: u64) !void {
 fn caught(scope: *Scope, err: anyerror, generation: u64, diagnostics: c.JSValue, path: c.JSValue, fallback: []const u8) !void {
     const original = scope.engine.nativeAllocationError(err, generation);
     if (original == error.OutOfMemory) return original;
-    const reason = try scope.own(flow.reason(scope.engine, original));
+    const reason = try scope.own(try flow.reason(scope.engine, original));
     if (scope.engine.captured_exception) |value| scope.engine.freeValue(value);
     scope.engine.captured_exception = null;
     const error_constructor = try scope.global("Error");

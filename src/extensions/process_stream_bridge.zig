@@ -36,5 +36,6 @@ pub const Bridge = struct {
     attach_fn: ?*const fn (?*anyopaque, Sink) anyerror!void = null,
     detach_fn: ?*const fn (?*anyopaque, Sink) void = null,
     is_shift_pressed_fn: ?*const fn (?*anyopaque) anyerror!bool = null,
+    is_modifier_pressed_fn: ?*const fn (?*anyopaque, []const u8) anyerror!bool = null,
     enable_vt_input_fn: ?*const fn (?*anyopaque) anyerror!bool = null,
 };

@@ -49,7 +49,7 @@ pub fn post(engine: *v.em.Engine, retry: c.JSValue, args: []const c.JSValue, con
     return pending.promise;
 }
 fn rejectError(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
-    const reason = flow.reason(scope.engine, err);
+    const reason = try flow.reason(scope.engine, err);
     defer scope.engine.freeValue(reason);
     if (scope.engine.captured_exception) |captured| {
         scope.engine.captured_exception = null;
@@ -207,7 +207,7 @@ fn attempt(scope: *Scope, pending: c.JSValue) !void {
         try scope.put(init, "signal", signal);
         const fetched = scope.call(fetch, c.pi_js_undefined(), &.{ request_url, init }) catch |err| {
             if (err == error.OutOfMemory) return rejectAttemptError(scope, pending, err);
-            const reason = flow.reason(scope.engine, err);
+            const reason = try flow.reason(scope.engine, err);
             defer scope.engine.freeValue(reason);
             if (scope.engine.captured_exception) |captured| {
                 scope.engine.captured_exception = null;
@@ -248,7 +248,7 @@ fn attempt(scope: *Scope, pending: c.JSValue) !void {
     try flow.wait(attemptContinued, scope.engine, pending, try scope.get(http, "ready"), @intFromEnum(Stage.head));
 }
 fn rejectAttemptError(scope: *Scope, pending: c.JSValue, err: anyerror) !void {
-    const reason = flow.reason(scope.engine, err);
+    const reason = try flow.reason(scope.engine, err);
     defer scope.engine.freeValue(reason);
     if (scope.engine.captured_exception) |captured| {
         scope.engine.captured_exception = null;

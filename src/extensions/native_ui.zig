@@ -9,6 +9,7 @@ const native_footer_data = @import("native_footer_data.zig");
 const terminal_input = @import("native_terminal_input.zig");
 const protocol = @import("component_protocol.zig");
 const c = engine_mod.c;
+const pending_owner = @import("native_pending_owner.zig");
 
 pub const Bridge = struct {
     context: ?*anyopaque = null,
@@ -252,9 +253,15 @@ pub const Manager = struct {
     }
 
     pub fn begin(self: *Manager, generation: u32, snapshot: ?c.JSValue, signal: ?c.JSValue) !void {
+        var frame = pending_owner.Frame.init(self.engine);
+        frame.enter() catch |err| return frame.finishVoid(err);
+        return frame.finishVoid(self.beginOwned(generation, snapshot, signal));
+    }
+    fn beginOwned(self: *Manager, generation: u32, snapshot: ?c.JSValue, signal: ?c.JSValue) !void {
         if (self.invocation_clock == std.math.maxInt(u32)) return error.NativeUiGenerationExhausted;
         if (self.component_clock == std.math.maxInt(u64)) return error.NativeUiGenerationExhausted;
         self.finish();
+        try pending_owner.checkFatal(self.engine);
         self.generation = @max(generation, self.invocation_clock + 1);
         self.invocation_clock = self.generation;
         self.components.generation = @max(self.components.generation, self.component_clock + 1);
@@ -308,13 +315,19 @@ pub const Manager = struct {
     }
 
     pub fn finish(self: *Manager) void {
+        var frame = pending_owner.Frame.init(self.engine);
+        self.engine.enterNativeInvocation(&frame.invocation);
+        self.finishOwned();
+        _ = frame.finishCallback(c.pi_js_undefined());
+    }
+    fn finishOwned(self: *Manager) void {
         while (self.pending.items.len > 0) self.cancel(self.pending.items[self.pending.items.len - 1].id) catch {};
         while (self.customs.items.len != 0) {
             var custom_request = self.customs.pop().?;
             custom_request.releaseMouse(self.engine);
             if (custom_request.presented) self.engine.host_ui_pending -= 1;
-            if (self.bridge) |bridge| if (bridge.component_close) |close| close(bridge.context, custom_request.fence) catch {};
-            self.components.close(custom_request.fence.component_id, custom_request.fence.generation, c.pi_js_undefined()) catch {};
+            if (self.bridge) |bridge| if (bridge.component_close) |close| close(bridge.context, custom_request.fence) catch |err| { pending_owner.catchFailure(self.engine, err) catch {}; };
+            self.components.close(custom_request.fence.component_id, custom_request.fence.generation, c.pi_js_undefined()) catch |err| { pending_owner.catchFailure(self.engine, err) catch {}; };
             self.engine.freeValue(custom_request.promise);
             self.engine.freeValue(custom_request.options);
             if (custom_request.overlay_options) |options| self.engine.freeValue(options);
@@ -323,7 +336,7 @@ pub const Manager = struct {
             if (custom_request.focus_target) |target| self.engine.freeValue(target);
             if (custom_request.restore_target) |target| self.engine.freeValue(target);
         }
-        self.components.retireGeneration(c.pi_js_undefined()) catch {};
+        self.components.retireGeneration(c.pi_js_undefined()) catch |err| { pending_owner.catchFailure(self.engine, err) catch {}; };
         if (self.signal) |signal| self.engine.freeValue(signal);
         self.signal = null;
         self.active = false;
@@ -361,6 +374,12 @@ pub const Manager = struct {
         return c.pi_js_undefined();
     }
     fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        var frame = pending_owner.Frame.init(engine);
+        frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+        return frame.finishCallback(invokeOwned(context, argc, argv, magic, data));
+    }
+    fn invokeOwned(context: ?*c.JSContext, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         @import("native_async_scope.zig").requireOwnedUiLive(engine) catch |err| return fail(engine, err);
         const method: Method = @enumFromInt(magic);
@@ -447,7 +466,8 @@ pub const Manager = struct {
 
     fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
         if (err == error.JavaScriptException) return engine.throwCaptured();
-        if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
+        if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
         return c.JS_ThrowTypeError(engine.context, "Native UI: %s", @as([*:0]const u8, @errorName(err)));
     }
 
@@ -458,13 +478,13 @@ pub const Manager = struct {
     }
 
     fn rejectError(self: *Manager, reject: c.JSValue, err: anyerror) !void {
-        _ = fail(self.engine, err);
-        const reason = c.JS_GetException(self.engine.context);
+        const reason = try self.exceptionReason(err);
         defer self.engine.freeValue(reason);
         try self.call(reject, reason);
     }
 
     fn rejectedPromise(self: *Manager, err: anyerror) !c.JSValue {
+        try pending_owner.catchFailure(self.engine, err);
         var capabilities: [2]c.JSValue = undefined;
         const promise = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &capabilities));
         errdefer self.engine.freeValue(promise);
@@ -538,11 +558,20 @@ pub const Manager = struct {
 
     fn overlayCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
+        var frame = pending_owner.Frame.init(engine);
+        frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+        return frame.finishCallback(overlayCallOwned(context, argc, argv, magic, data));
+    }
+    fn overlayCallOwned(context: ?*c.JSContext, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
         const method: OverlayMethod = @enumFromInt(magic);
         var service_guard = if (!c.JS_IsUndefined(data[3])) @import("native_ui_service.zig").Service.enterCallback(engine, data[3]) catch |err| return fail(engine, err) else null;
         defer if (service_guard) |*guard| guard.restore();
         if (!c.JS_IsUndefined(data[3]) and service_guard == null) return if (method == .isHidden) c.pi_js_bool(context, 1) else if (method == .isFocused) c.pi_js_bool(context, 0) else c.pi_js_undefined();
-        const self = current(engine, data) catch return if (method == .isHidden) c.pi_js_bool(context, 1) else if (method == .isFocused) c.pi_js_bool(context, 0) else c.pi_js_undefined();
+        const self = current(engine, data) catch |err| {
+            pending_owner.catchFailure(engine, err) catch |fatal| return fail(engine, fatal);
+            return if (method == .isHidden) c.pi_js_bool(context, 1) else if (method == .isFocused) c.pi_js_bool(context, 0) else c.pi_js_undefined();
+        };
         var token_id: i64 = 0;
         if (c.JS_ToInt64(context, &token_id, data[2]) < 0) return engine.throwCaptured();
         return self.overlayOperation(@intCast(token_id), method, if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
@@ -673,10 +702,10 @@ pub const Manager = struct {
         defer c.JS_FreeAtom(self.engine.context, atom);
         const has = c.JS_HasProperty(self.engine.context, value, atom);
         if (has < 0) {
-            _ = try self.engine.checked(c.JS_Throw(self.engine.context, c.JS_GetException(self.engine.context)));
+            _ = try self.engine.checked(c.pi_js_exception());
         }
         if (has != 0 and c.JS_SetProperty(self.engine.context, value, atom, c.pi_js_bool(self.engine.context, @intFromBool(focused))) < 0) {
-            _ = try self.engine.checked(c.JS_Throw(self.engine.context, c.JS_GetException(self.engine.context)));
+            _ = try self.engine.checked(c.pi_js_exception());
         }
     }
     fn changeFocus(self: *Manager, fence: protocol.Fence, mode: protocol.FocusMode, target: ?c.JSValue) !void {
@@ -685,9 +714,12 @@ pub const Manager = struct {
         if (selected.focus_target_generation == std.math.maxInt(u64) or selected.next_target_id == std.math.maxInt(u64)) return error.NativeFocusTargetLimit;
         selected.focus_target_generation += 1;
         const focus_revision = selected.focus_target_generation;
-        const root: ?c.JSValue = self.rootComponent(fence) catch |err| switch (err) {
-            error.NativeComponentNotReady => null,
-            else => return err,
+        const root: ?c.JSValue = self.rootComponent(fence) catch |err| blk: {
+            try pending_owner.catchFailure(self.engine, err);
+            break :blk switch (err) {
+                error.NativeComponentNotReady => null,
+                else => return err,
+            };
         };
         defer if (root) |value| self.engine.freeValue(value);
         const value = if (mode == .custom) if (target orelse root) |value| c.JS_DupValue(self.engine.context, value) else null else null;
@@ -853,7 +885,9 @@ pub const Manager = struct {
         defer self.engine.freeValue(facade);
         const opened = try self.components.openWithFacade(if (args.len == 0) c.pi_js_undefined() else args[0], self.theme, self.keybindings, facade);
         errdefer self.engine.freeValue(opened.result);
-        errdefer self.components.close(opened.id, opened.generation, c.pi_js_undefined()) catch {};
+        errdefer self.components.close(opened.id, opened.generation, c.pi_js_undefined()) catch |err| {
+            pending_owner.catchFailure(self.engine, err) catch {};
+        };
         if (c.JS_PromiseState(self.engine.context, opened.result) != c.JS_PROMISE_PENDING) return opened.result;
         const fence: protocol.Fence = .{ .token = token_id, .generation = opened.generation, .invocation_id = self.invocation_id, .component_id = opened.id };
         const custom_request: Custom = .{ .fence = fence, .ui_generation = self.generation, .promise = opened.result, .width = self.width, .height = self.height, .options = options, .overlay = overlay, .saved_editor_text = saved_editor_text };
@@ -923,10 +957,14 @@ pub const Manager = struct {
         try self.components.reject(fence.component_id, fence.generation, reason);
     }
     fn exceptionReason(self: *Manager, err: anyerror) !c.JSValue {
-        return if (err == error.JavaScriptException and self.engine.captured_exception != null) c.JS_DupValue(self.engine.context, self.engine.captured_exception.?) else blk: {
-            _ = fail(self.engine, err);
-            break :blk c.JS_GetException(self.engine.context);
-        };
+        try pending_owner.catchFailure(self.engine, err);
+        if (c.JS_HasException(self.engine.context)) return c.JS_GetException(self.engine.context);
+        if (err == error.JavaScriptException and self.engine.captured_exception != null)
+            return c.JS_DupValue(self.engine.context, self.engine.captured_exception.?);
+        _ = fail(self.engine, err);
+        try pending_owner.checkFatal(self.engine);
+        if (!c.JS_HasException(self.engine.context)) return error.UiFailureWithoutPendingReason;
+        return c.JS_GetException(self.engine.context);
     }
 
     fn findCustom(self: *Manager, fence: protocol.Fence) ?*Custom {
@@ -1033,6 +1071,7 @@ pub const Manager = struct {
         var index: usize = 0;
         var foreground_seen = false;
         while (index < self.customs.items.len) {
+            try pending_owner.checkFatal(self.engine);
             const custom_request = self.customs.items[index];
             if (c.JS_PromiseState(self.engine.context, custom_request.promise) != c.JS_PROMISE_PENDING) {
                 var removed = self.customs.orderedRemove(index);
@@ -1068,6 +1107,7 @@ pub const Manager = struct {
             };
             if (self.components.ready(custom_request.fence.component_id, custom_request.fence.generation) and self.components.dirty(custom_request.fence.component_id, custom_request.fence.generation)) {
                 var rendered = self.renderCustom(custom_request) catch |err| {
+                    try pending_owner.catchFailure(self.engine, err);
                     if (err == error.NativeFocusChanged) {
                         try self.components.invalidate(custom_request.fence.component_id, custom_request.fence.generation);
                         return true;
@@ -1101,6 +1141,11 @@ pub const Manager = struct {
     }
 
     pub fn componentControl(self: *Manager, control: *const protocol.Control) !bool {
+        var frame = pending_owner.Frame.init(self.engine);
+        frame.enter() catch |err| return frame.finishBool(err);
+        return frame.finishBool(self.componentControlOwned(control));
+    }
+    fn componentControlOwned(self: *Manager, control: *const protocol.Control) !bool {
         if (!self.active or self.invocation_id != control.fence.invocation_id) return false;
         const selected = for (self.customs.items) |*custom_request| {
             if (protocol.Fence.matches(custom_request.fence, control.fence)) break custom_request;
@@ -1110,7 +1155,10 @@ pub const Manager = struct {
         switch (control.kind) {
             .close_ack => |ok| {
                 if (!selected.closing) return false;
-                const target = if (selected.focus_target) |value| c.JS_DupValue(self.engine.context, value) else self.rootComponent(fence) catch null;
+                const target = if (selected.focus_target) |value| c.JS_DupValue(self.engine.context, value) else self.rootComponent(fence) catch |err| blk: {
+                    try pending_owner.catchFailure(self.engine, err);
+                    break :blk null;
+                };
                 defer if (target) |value| self.engine.freeValue(value);
                 if (target) |value| self.setFocusedProperty(value, false) catch |err| {
                     const reason = try self.exceptionReason(err);
@@ -1136,6 +1184,7 @@ pub const Manager = struct {
                 if (control.target_id != selected.focus_target_id or (control.target_generation != 0 and control.target_generation != selected.focus_target_generation)) return false;
                 if (selected.overlay) if (selected.layout) |layout| if (layout.hidden or !selected.focused) return false;
                 self.inputFocused(fence, data) catch |err| {
+                    try pending_owner.catchFailure(self.engine, err);
                     if (err == error.NativeComponentClosed or err == error.NativeComponentClosing) return false;
                     try self.rejectCustom(fence, err);
                 };
@@ -1151,6 +1200,7 @@ pub const Manager = struct {
                 if (selected.closing) return false;
                 if (selected.overlay) if (selected.layout) |layout| if (layout.hidden) return false;
                 const outcome = self.mouseControl(fence, control.mouse_sequence, event) catch |err| {
+                    try pending_owner.catchFailure(self.engine, err);
                     if (err != error.NativeComponentClosed and err != error.NativeComponentClosing) try self.rejectCustom(fence, err);
                     return true;
                 };
@@ -1303,6 +1353,7 @@ pub const Manager = struct {
 
     fn dialog(self: *Manager, method: Method, args: []c.JSValue) !c.JSValue {
         if (method == .custom) return self.custom(args) catch |err| {
+            try pending_owner.catchFailure(self.engine, err);
             var capabilities: [2]c.JSValue = undefined;
             const promise = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &capabilities));
             errdefer self.engine.freeValue(promise);
@@ -1419,15 +1470,51 @@ pub const Manager = struct {
     }
 
     fn detach(self: *Manager, pending: *Pending) void {
-        for (pending.signals[0..pending.signal_count]) |signal| {
-            if (!self.engine.native_fatal_teardown) {
-                var args = [_]c.JSValue{ self.abort_text, pending.listener };
-                const result = c.JS_Call(self.engine.context, self.remove_listener, signal, args.len, &args);
-                if (c.JS_IsException(result)) self.engine.freeValue(c.JS_GetException(self.engine.context)) else self.engine.freeValue(result);
-            }
-            self.engine.freeValue(signal);
-        }
+        const engine = self.engine;
+        var frame = pending_owner.Frame.init(engine);
+        engine.enterNativeInvocation(&frame.invocation);
+        const original = engine.captured_exception;
+        engine.captured_exception = null;
+        _ = engine.nativeCallbackResult(c.pi_js_undefined());
+        var primary_fatal: bool = false;
+        const primary: ?c.JSValue = if (c.JS_HasException(engine.context))
+            c.JS_PiGetExceptionWithFatal(engine.context, &primary_fatal) else null;
+        if (primary) |value| _ = c.JS_PiThrowNativePending(engine.context,
+            c.JS_DupValue(engine.context, value), primary_fatal);
+        // Reentrant cleanup cannot consume the same native entitlement twice.
+        const signals = pending.signals;
+        const count = pending.signal_count;
         pending.signal_count = 0;
+        for (signals[0..count]) |signal| {
+            if (!engine.native_fatal_teardown and !frame.terminated() and
+                !c.JS_PiIsPendingUncatchable(engine.context)) {
+                var args = [_]c.JSValue{ self.abort_text, pending.listener };
+                const result = c.JS_Call(engine.context, self.remove_listener, signal, args.len, &args);
+                engine.releaseNativeValue(result);
+                // Source ignores ordinary remove-listener failures. An actual
+                // fatal or a canceled-private completion remains owned.
+                if (!frame.terminated() and c.JS_HasException(engine.context) and
+                    !c.JS_PiIsPendingUncatchable(engine.context))
+                    engine.releaseNativeValue(c.JS_GetException(engine.context));
+            }
+            engine.releaseNativeValue(signal);
+        }
+        if (original) |value| {
+            while (engine.captured_exception) |diagnostic| {
+                engine.captured_exception = null;
+                engine.releaseNativeValue(diagnostic);
+            }
+            engine.captured_exception = value;
+        }
+        if (primary) |value| {
+            // A later actual private unwind can displace this ordinary entry.
+            // Preserve its selected cleanup reason instead of reviving the old one.
+            if (frame.terminated() and !primary_fatal and !c.JS_PiIsExecutionTermination(value))
+                engine.releaseNativeValue(value)
+            else
+                _ = c.JS_PiThrowNativePending(engine.context, value, primary_fatal);
+        }
+        _ = frame.finishCallback(c.pi_js_undefined());
     }
 
     fn takePending(self: *Manager, id: u32) ?Pending {
@@ -1440,10 +1527,15 @@ pub const Manager = struct {
 
     fn freePending(self: *Manager, pending: *Pending) void {
         self.detach(pending);
-        for ([_]c.JSValue{ pending.resolve, pending.reject, pending.listener }) |value| self.engine.freeValue(value);
+        for ([_]c.JSValue{ pending.resolve, pending.reject, pending.listener }) |value| self.engine.releaseNativeValue(value);
     }
 
     pub fn respond(self: *Manager, id: u32, ok: bool, value: c.JSValue) !void {
+        var frame = pending_owner.Frame.init(self.engine);
+        frame.enter() catch |err| return frame.finishVoid(err);
+        return frame.finishVoid(self.respondOwned(id, ok, value));
+    }
+    fn respondOwned(self: *Manager, id: u32, ok: bool, value: c.JSValue) !void {
         var pending = self.takePending(id) orelse return;
         defer self.freePending(&pending);
         if (!self.active or pending.generation != self.generation) return;
@@ -1475,7 +1567,10 @@ pub const Manager = struct {
     }
     fn persistThemeJob(context: ?*c.JSContext, _: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
-        return persistTheme(engine, args[0], args[1]) catch |err| fail(engine, err);
+        var frame = pending_owner.Frame.init(engine);
+        frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+        const result = persistTheme(engine, args[0], args[1]) catch |err| fail(engine, err);
+        return frame.finishCallback(result);
     }
     fn persistTheme(engine: *engine_mod.Engine, token: c.JSValue, serial: c.JSValue) !c.JSValue {
         var guard = (try @import("native_ui_service.zig").Service.enterCallback(engine, token)) orelse return c.pi_js_undefined();
@@ -1499,9 +1594,17 @@ pub const Manager = struct {
     }
 
     pub fn cancel(self: *Manager, id: u32) !void {
+        var frame = pending_owner.Frame.init(self.engine);
+        // finish() repeatedly cancels while unwinding. Ownership must enter
+        // without rejecting before takePending makes mandatory progress.
+        self.engine.enterNativeInvocation(&frame.invocation);
+        return frame.finishVoid(self.cancelOwned(id));
+    }
+    fn cancelOwned(self: *Manager, id: u32) !void {
         var pending = self.takePending(id) orelse return;
         defer self.freePending(&pending);
         if (self.engine.native_fatal_teardown) return;
+        try pending_owner.checkFatal(self.engine);
         if (!pending.provider_request) if (self.bridge) |bridge| bridge.cancel(bridge.context, id) catch |err| {
             try self.rejectError(pending.reject, err);
             return err;
@@ -1517,6 +1620,11 @@ pub const Manager = struct {
     /// with the invocation's original abort reason. All capabilities remain
     /// on the QuickJS owner thread; the host transports only JSON records.
     pub fn requestProvider(self: *Manager, method: []const u8, object: c.JSValue) !c.JSValue {
+        var frame = pending_owner.Frame.init(self.engine);
+        frame.enter() catch |err| return frame.finishValue(err);
+        return frame.finishValue(self.requestProviderOwned(method, object));
+    }
+    fn requestProviderOwned(self: *Manager, method: []const u8, object: c.JSValue) !c.JSValue {
         if (!self.active or self.bridge == null or self.signal == null) return error.NativeProviderSignalMissing;
         if (self.pending.items.len >= 128 or self.next_id == std.math.maxInt(u32)) return error.NativeDialogLimit;
         var capabilities: [2]c.JSValue = undefined;
@@ -1569,6 +1677,12 @@ pub const Manager = struct {
     }
 
     fn oauthCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        var frame = pending_owner.Frame.init(engine);
+        frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+        return frame.finishCallback(oauthCallbackOwned(context, argc, argv, magic, data));
+    }
+    fn oauthCallbackOwned(context: ?*c.JSContext, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         const method: OAuthMethod = @enumFromInt(magic);
         const self = current(engine, data) catch |err| return fail(engine, err);
@@ -1681,6 +1795,11 @@ pub const Manager = struct {
     }
 
     pub fn poll(self: *Manager) !bool {
+        var frame = pending_owner.Frame.init(self.engine);
+        frame.enter() catch |err| return frame.finishBool(err);
+        return frame.finishBool(self.pollOwned());
+    }
+    fn pollOwned(self: *Manager) !bool {
         var changed = try self.pollCustom();
         if (try self.footer_data.poll()) changed = true;
         if (try self.editors.pumpDirty()) changed = true;
@@ -1702,9 +1821,16 @@ pub const Manager = struct {
 
     fn onAbort(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
+        var frame = pending_owner.Frame.init(engine);
+        frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+        return frame.finishCallback(onAbortOwned(context, data));
+    }
+    fn onAbortOwned(context: ?*c.JSContext, data: [*c]c.JSValue) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
         var id: u32 = 0;
         if (c.JS_ToUint32(context, &id, data[2]) < 0) return engine.throwCaptured();
-        const self = current(engine, data) catch {
+        const self = current(engine, data) catch |err| {
+            pending_owner.catchFailure(engine, err) catch |fatal| return fail(engine, fatal);
             const manager: *Manager = @ptrCast(@alignCast(engine.native_ui_manager orelse return c.pi_js_undefined()));
             if (!c.JS_IsStrictEqual(context, manager.token, data[0])) return c.pi_js_undefined();
             var generation: u32 = 0;

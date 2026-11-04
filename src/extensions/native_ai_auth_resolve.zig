@@ -157,7 +157,7 @@ fn readCredentialBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValu
     const generation = s.engine.native_allocation_generation;
     readStart(s, job, arg(args, 0), arg(args, 1), arg(args, 2)) catch |err| {
         if (s.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-        try failWrapped(s, job, "auth", "Credential store read failed for ", try s.own(flow.reason(s.engine, err)));
+        try failWrapped(s, job, "auth", "Credential store read failed for ", try s.own(try flow.reason(s.engine, err)));
     };
     return body.action(s, job);
 }
@@ -220,7 +220,7 @@ fn apiBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: [
     const generation = s.engine.native_allocation_generation;
     apiStart(s, job, arg(args, 1), arg(args, 3)) catch |err| {
         if (s.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-        try failWrapped(s, job, "auth", "API key auth failed for provider ", try s.own(flow.reason(s.engine, err)));
+        try failWrapped(s, job, "auth", "API key auth failed for provider ", try s.own(try flow.reason(s.engine, err)));
     };
     return body.action(s, job);
 }
@@ -272,7 +272,7 @@ fn derive(s: *Scope, job: c.JSValue, credential: c.JSValue) !void {
     const generation = s.engine.native_allocation_generation;
     deriveStart(s, job, credential) catch |err| {
         if (s.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-        try failWrapped(s, job, "oauth", "OAuth auth derivation failed for ", try s.own(flow.reason(s.engine, err)));
+        try failWrapped(s, job, "oauth", "OAuth auth derivation failed for ", try s.own(try flow.reason(s.engine, err)));
     };
 }
 fn deriveStart(s: *Scope, job: c.JSValue, credential: c.JSValue) !void {
@@ -324,7 +324,7 @@ fn refreshStart(s: *Scope, job: c.JSValue) !void {
             try cleanup(s, job);
             return error.OutOfMemory;
         }
-        try finishModify(s, job, try s.own(flow.reason(s.engine, err)), true);
+        try finishModify(s, job, try s.own(try flow.reason(s.engine, err)), true);
     };
 }
 fn modifyStart(s: *Scope, job: c.JSValue) !void {
@@ -358,7 +358,7 @@ fn refreshMutationBody(s: *Scope, job: c.JSValue, current: c.JSValue) !void {
     const generation = s.engine.native_allocation_generation;
     refreshCall(s, job, parent, current) catch |err| {
         if (s.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-        try failWrapped(s, job, "oauth", "OAuth refresh failed for ", try s.own(flow.reason(s.engine, err)));
+        try failWrapped(s, job, "oauth", "OAuth refresh failed for ", try s.own(try flow.reason(s.engine, err)));
     };
 }
 fn refreshCall(s: *Scope, job: c.JSValue, parent: c.JSValue, current: c.JSValue) !void {
@@ -377,7 +377,7 @@ fn modifyFailure(s: *Scope, job: c.JSValue, raw: c.JSValue) !c.JSValue {
 }
 fn finishModify(s: *Scope, job: c.JSValue, value: c.JSValue, failed: bool) !void {
     var failure = value;
-    if (failed) failure = modifyFailure(s, job, value) catch |err| try s.own(flow.reason(s.engine, err));
+    if (failed) failure = modifyFailure(s, job, value) catch |err| try s.own(try flow.reason(s.engine, err));
     // Source finally executes even when instanceof/throwIfAborted/wrapping fail.
     try cleanup(s, job);
     if (failed) return reject(s, job, failure);

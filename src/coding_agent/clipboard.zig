@@ -1,14 +1,13 @@
-//! Cross-platform clipboard integration for the native interactive editor.
+//! Clipboard integration for the native interactive editor.
 //!
-//! Image paste follows the original Pi order: prefer image data, then fall
-//! back to plain text. Linux supports Wayland (`wl-paste`) and X11 (`xclip`),
-//! WSL can query the Windows clipboard through PowerShell, macOS supports
-//! `pngpaste` with an AppleScript fallback, and Windows uses PowerShell's
-//! System.Windows.Forms clipboard API. Termux intentionally skips image paste
-//! but retains `termux-clipboard-get` text fallback.
+//! Uses the pinned Pi command order, including empty versus unavailable image
+//! results and the WSL UTF8-file route. The linked Win32 helper shares the same
+//! C worker implementation as TUI, with a standalone per-operation owner.
 const std = @import("std");
 const builtin = @import("builtin");
-const image_process = @import("../ai/image_process.zig");
+const image_mime = @import("../ai/images.zig");
+const photon = @import("../ai/photon_native.zig");
+pub const native_clipboard = @import("native_clipboard.zig");
 const osc52 = @import("../tui/osc52.zig");
 const file_permissions = @import("../file_permissions.zig");
 const Io = std.Io;
@@ -95,6 +94,17 @@ pub const OutputWriter = struct {
     }
 };
 
+/// Conversion returns a separately owned output, or null for an ordinary
+/// codec failure. A genuine allocation failure must remain OutOfMemory.
+pub const PngConverter = struct {
+    context: ?*anyopaque = null,
+    convert_fn: *const fn (?*anyopaque, std.mem.Allocator, []const u8, usize) anyerror!?[]u8,
+
+    pub fn convert(self: PngConverter, gpa: std.mem.Allocator, bytes: []const u8, memory_limit: usize) !?[]u8 {
+        return self.convert_fn(self.context, gpa, bytes, memory_limit);
+    }
+};
+
 pub const Options = struct {
     environ: ?*const std.process.Environ.Map = null,
     platform: ?Platform = null,
@@ -104,6 +114,14 @@ pub const Options = struct {
     write_runner: ?WriteRunner = null,
     output_writer: ?OutputWriter = null,
     osc52_fallback: bool = true,
+    native_backend: native_clipboard.Backend = .{},
+    png_converter: ?PngConverter = null,
+    /// Matches Engine.Options' existing 64 MiB default. Each C worker owner
+    /// accounts its job, copied data and stack. After its join/destruction,
+    /// Photon uses the same explicit limit for its separate tracked guard.
+    /// Host conversion/returned buffers remain owned by gpa; this is neither
+    /// a combined concurrent budget nor a process-wide memory limit.
+    native_memory_limit: usize = native_clipboard.default_memory_limit,
 };
 
 pub const CopyResult = struct {
@@ -158,21 +176,14 @@ pub const TempStore = struct {
     }
 
     pub fn saveImage(self: *TempStore, image: ClipboardImage) ![]const u8 {
-        const extension = extensionForMime(image.mime_type);
-        const root = try tempRoot(self.gpa, self.environ, self.temp_dir);
-        defer self.gpa.free(root);
-        const stamp = std.Io.Clock.real.now(self.io).toMilliseconds();
-        const sequence = temp_counter.fetchAdd(1, .monotonic);
-        const name = try std.fmt.allocPrint(self.gpa, "pi-clipboard-{d}-{x}.{s}", .{ stamp, sequence, extension });
-        defer self.gpa.free(name);
-        const path = try std.fs.path.join(self.gpa, &.{ root, name });
+        const path = try temporaryPath(self.gpa, self.io, self.environ, self.temp_dir, extensionForMime(image.mime_type));
         errdefer self.gpa.free(path);
-
-        const permissions = file_permissions.privateFile();
         const file = try std.Io.Dir.cwd().createFile(self.io, path, .{
             .truncate = true,
-            .permissions = permissions,
+            .exclusive = true,
+            .permissions = file_permissions.privateFile(),
         });
+        errdefer std.Io.Dir.cwd().deleteFile(self.io, path) catch {};
         defer file.close(self.io);
         try file.writeStreamingAll(self.io, image.bytes);
         try self.paths.append(self.gpa, path);
@@ -180,18 +191,43 @@ pub const TempStore = struct {
     }
 };
 
-var temp_counter: std.atomic.Value(u64) = .init(1);
-
 pub fn copyText(gpa: std.mem.Allocator, io: Io, text: []const u8, options: Options) !CopyResult {
     if (text.len > max_clipboard_bytes) return error.ClipboardTooLarge;
+    const platform = options.platform orelse nativePlatform();
+    const environ = options.environ;
+    var result: CopyResult = .{};
+    result.native = try copyNative(gpa, io, text, options);
+    var copied = result.native;
 
-    var result = CopyResult{};
-    result.native = copyNative(gpa, io, text, options);
-    if (options.osc52_fallback and (isRemoteSession(options.environ) or !result.native)) {
-        result.osc52 = try emitOsc52(gpa, io, text, options);
+    if (!copied and platform == .linux and try isWsl(gpa, io, environ)) {
+        if (options.osc52_fallback and envHas(environ, "WT_SESSION"))
+            result.osc52 = try emitOsc52(gpa, io, text, options);
+        if (result.osc52) {
+            copied = true;
+        } else {
+            result.native = copyViaWindowsClipboard(gpa, io, text, options) catch |err| blk: {
+                if (err == error.OutOfMemory) return error.OutOfMemory;
+                break :blk false;
+            };
+            copied = result.native;
+        }
     }
-    if (!result.native and !result.osc52) return error.ClipboardUnavailable;
-    return result;
+
+    const headless = platform == .linux and !envHas(environ, "DISPLAY") and
+        !envHas(environ, "WAYLAND_DISPLAY") and !envHas(environ, "TERMUX_VERSION");
+    var oversized = false;
+    if (options.osc52_fallback and !result.osc52 and (isRemoteSession(environ) or (!copied and headless))) {
+        result.osc52 = try emitOsc52(gpa, io, text, options);
+        if (result.osc52) copied = true else oversized = true;
+    }
+    if (copied) return result;
+    if (oversized) return error.ClipboardOsc52TooLarge;
+    if (envHas(environ, "TERMUX_VERSION")) return error.ClipboardTermuxUnavailable;
+    if (platform == .linux) {
+        if (envHas(environ, "WAYLAND_DISPLAY")) return error.ClipboardWaylandUnavailable;
+        if (envHas(environ, "DISPLAY")) return error.ClipboardX11Unavailable;
+    }
+    return error.ClipboardUnavailable;
 }
 
 pub fn isRemoteSession(environ: ?*const std.process.Environ.Map) bool {
@@ -199,43 +235,54 @@ pub fn isRemoteSession(environ: ?*const std.process.Environ.Map) bool {
         std.mem.eql(u8, envGet(environ, "PI_CLIPBOARD_OSC52") orelse "", "1");
 }
 
-fn copyNative(gpa: std.mem.Allocator, io: Io, text: []const u8, options: Options) bool {
-    const environ = options.environ;
+fn copyNative(gpa: std.mem.Allocator, io: Io, text: []const u8, options: Options) !bool {
     const platform = options.platform orelse nativePlatform();
-
-    if (envHas(environ, "TERMUX_VERSION")) {
-        if (tryWrite(gpa, io, &.{options.commands.termux_clipboard_set}, text, options)) return true;
-    }
-
-    return switch (platform) {
-        .macos => tryWrite(gpa, io, &.{options.commands.pbcopy}, text, options),
-        .windows => blk: {
-            if (tryWrite(gpa, io, &.{options.commands.clip}, text, options)) break :blk true;
-            const script = "[Console]::In.ReadToEnd() | Set-Clipboard";
-            break :blk tryWrite(gpa, io, &.{ options.commands.powershell, "-NoProfile", "-NonInteractive", "-Command", script }, text, options);
-        },
-        .linux => blk: {
-            const wayland = isWaylandSession(environ) and envHas(environ, "WAYLAND_DISPLAY");
-            const x11 = envHas(environ, "DISPLAY");
-            if (wayland and tryWrite(gpa, io, &.{options.commands.wl_copy}, text, options)) break :blk true;
-            if (x11) {
-                if (tryWrite(gpa, io, &.{ options.commands.xclip, "-selection", "clipboard" }, text, options)) break :blk true;
-                if (tryWrite(gpa, io, &.{ options.commands.xsel, "--clipboard", "--input" }, text, options)) break :blk true;
-            }
-            // WSL terminals commonly have neither a Wayland nor X11 display.
-            if (isWsl(io, environ)) {
-                if (tryWrite(gpa, io, &.{options.commands.clip}, text, options)) break :blk true;
-                const script = "[Console]::In.ReadToEnd() | Set-Clipboard";
-                if (tryWrite(gpa, io, &.{ options.commands.powershell, "-NoProfile", "-NonInteractive", "-Command", script }, text, options)) break :blk true;
-            }
+    if (platform != .linux) {
+        const copied = options.native_backend.setText(gpa, text, options.native_memory_limit) catch |err| blk: {
+            if (err == error.OutOfMemory) return error.OutOfMemory;
             break :blk false;
+        };
+        if (copied) return true;
+    }
+    switch (platform) {
+        .macos => return tryWrite(gpa, io, &.{options.commands.pbcopy}, text, options),
+        .windows => return tryWrite(gpa, io, &.{options.commands.clip}, text, options),
+        .linux, .other => {
+            if (envHas(options.environ, "TERMUX_VERSION") and
+                try tryWrite(gpa, io, &.{options.commands.termux_clipboard_set}, text, options)) return true;
+            if (envHas(options.environ, "WAYLAND_DISPLAY") and
+                try tryWrite(gpa, io, &.{options.commands.wl_copy}, text, options)) return true;
+            if (envHas(options.environ, "DISPLAY")) {
+                if (try tryWrite(gpa, io, &.{ options.commands.xclip, "-selection", "clipboard" }, text, options)) return true;
+                if (try tryWrite(gpa, io, &.{ options.commands.xsel, "--clipboard", "--input" }, text, options)) return true;
+            }
+            return false;
         },
-        .other => false,
+    }
+}
+
+fn tryWrite(gpa: std.mem.Allocator, io: Io, argv: []const []const u8, input: []const u8, options: Options) !bool {
+    return writeCommand(gpa, io, argv, input, write_timeout_ms, options) catch |err| {
+        if (err == error.OutOfMemory) return error.OutOfMemory;
+        return false;
     };
 }
 
-fn tryWrite(gpa: std.mem.Allocator, io: Io, argv: []const []const u8, input: []const u8, options: Options) bool {
-    return writeCommand(gpa, io, argv, input, write_timeout_ms, options) catch false;
+fn copyViaWindowsClipboard(gpa: std.mem.Allocator, io: Io, text: []const u8, options: Options) !bool {
+    var temporary = try PrivateFile.create(gpa, io, options, "txt");
+    defer temporary.deinit();
+    try temporary.file.?.writeStreamingAll(io, text);
+    temporary.close();
+    const target = try windowsPath(gpa, io, temporary.path, options) orelse return false;
+    defer gpa.free(target);
+    const quoted = try quotePowerShellPath(gpa, target);
+    defer gpa.free(quoted);
+    const script = try std.fmt.allocPrint(gpa,
+        "Set-Clipboard -Value ([System.IO.File]::ReadAllText('{s}', [System.Text.Encoding]::UTF8))", .{quoted});
+    defer gpa.free(script);
+    const output = try capture(gpa, io, &.{ options.commands.powershell, "-NoProfile", "-Command", script }, powershell_timeout_ms, options) orelse return false;
+    defer gpa.free(output);
+    return true;
 }
 
 fn writeCommand(
@@ -269,20 +316,14 @@ fn runWrite(
     timeout_ms: u64,
     options: Options,
 ) !bool {
-    const path = try temporaryPath(gpa, options.environ, options.temp_dir, "txt");
-    defer {
-        std.Io.Dir.cwd().deleteFile(io, path) catch {};
-        gpa.free(path);
-    }
-    const permissions = file_permissions.privateFile();
-    {
-        const stage = try std.Io.Dir.cwd().createFile(io, path, .{ .truncate = true, .permissions = permissions });
-        defer stage.close(io);
-        try stage.writeStreamingAll(io, input);
-    }
+    var temporary = try PrivateFile.create(gpa, io, options, "txt");
+    defer temporary.deinit();
+    try temporary.file.?.writeStreamingAll(io, input);
+    temporary.close();
 
-    const stdin_file = try std.Io.Dir.cwd().openFile(io, path, .{});
-    var child = std.process.spawn(io, .{
+    const stdin_file = try std.Io.Dir.cwd().openFile(io, temporary.path, .{});
+    defer stdin_file.close(io);
+    var child = try std.process.spawn(io, .{
         .argv = argv,
         .environ_map = options.environ,
         .stdin = .{ .file = stdin_file },
@@ -290,26 +331,33 @@ fn runWrite(
         .stderr = .ignore,
         .pgid = if (builtin.os.tag == .windows) null else 0,
         .create_no_window = builtin.os.tag == .windows,
-    }) catch {
-        stdin_file.close(io);
-        return false;
-    };
-    stdin_file.close(io);
+    });
+    defer child.kill(io);
+    if (comptime builtin.os.tag == .windows) {
+        const term = try waitWindowsProcess(&child, io, commandDeadline(io, timeout_ms)) orelse return false;
+        return successfulTerm(term);
+    }
+    return waitLegacyProcess(&child, io, timeout_ms);
+}
 
+/// Existing POSIX process mechanics are retained in this Windows port. Their
+/// separate process-owner qualification is not inferred from the Win32 path.
+fn waitLegacyProcess(child: *std.process.Child, io: Io, timeout_ms: u64) !bool {
     const WaitState = struct {
         child: *std.process.Child,
         io: Io,
         done: std.atomic.Value(bool) = .init(false),
         term: ?std.process.Child.Term = null,
     };
-    var state = WaitState{ .child = &child, .io = io };
+    var state = WaitState{ .child = child, .io = io };
     const waiter = std.Thread.spawn(.{}, struct {
         fn run(s: *WaitState) void {
             defer s.done.store(true, .release);
             s.term = s.child.wait(s.io) catch null;
         }
-    }.run, .{&state}) catch {
+    }.run, .{&state}) catch |err| {
         child.kill(io);
+        if (err == error.OutOfMemory) return error.OutOfMemory;
         return false;
     };
 
@@ -317,7 +365,7 @@ fn runWrite(
     var timed_out = false;
     while (!state.done.load(.acquire)) {
         if (elapsed >= timeout_ms) {
-            forceKillProcess(&child);
+            forceKillProcess(child);
             timed_out = true;
             break;
         }
@@ -332,6 +380,50 @@ fn runWrite(
     return switch (term) {
         .exited => |code| code == 0,
         else => false,
+    };
+}
+
+fn commandDeadline(io: Io, timeout_ms: u64) Io.Clock.Timestamp {
+    const duration_ms: i64 = @intCast(@min(timeout_ms, @as(u64, @intCast(std.math.maxInt(i64)))));
+    return .fromNow(io, .{ .raw = .fromMilliseconds(duration_ms), .clock = .awake });
+}
+
+fn successfulTerm(term: std.process.Child.Term) bool {
+    return switch (term) {
+        .exited => |code| code == 0,
+        else => false,
+    };
+}
+
+/// Pinned Windows Child.wait preserves its live handles on cancellation.
+/// Select cancellation joins both tasks before the caller may kill or retire
+/// the child. The POSIX implementation has different cancellation ownership.
+fn waitWindowsProcess(child: *std.process.Child, io: Io, deadline: Io.Clock.Timestamp) !?std.process.Child.Term {
+    const Event = union(enum) {
+        exited: std.process.Child.WaitError!std.process.Child.Term,
+        deadline: Io.Cancelable!void,
+    };
+    const Tasks = struct {
+        fn wait(owned: *std.process.Child, task_io: Io) std.process.Child.WaitError!std.process.Child.Term {
+            return owned.wait(task_io);
+        }
+        fn timeout(task_io: Io, end: Io.Clock.Timestamp) Io.Cancelable!void {
+            return end.wait(task_io);
+        }
+    };
+    var buffer: [2]Event = undefined;
+    var selected: Io.Select(Event) = .init(io, &buffer);
+    defer selected.cancelDiscard();
+    try selected.concurrent(.exited, Tasks.wait, .{ child, io });
+    try selected.concurrent(.deadline, Tasks.timeout, .{ io, deadline });
+    const event = try selected.await();
+    selected.cancelDiscard();
+    return switch (event) {
+        .exited => |term| try term,
+        .deadline => |elapsed| blk: {
+            try elapsed;
+            break :blk null;
+        },
     };
 }
 
@@ -352,184 +444,234 @@ pub fn readPaste(gpa: std.mem.Allocator, io: Io, options: Options) !?Paste {
     return null;
 }
 
+const RawImage = struct {
+    bytes: []u8,
+    /// Static supported MIME, or null when the bytes need Photon conversion.
+    mime_type: ?[]const u8,
+};
+const ImageAttempt = union(enum) { unavailable, empty, image: RawImage };
+
 pub fn readClipboardImage(gpa: std.mem.Allocator, io: Io, options: Options) !?ClipboardImage {
-    const environ = options.environ;
-    if (envHas(environ, "TERMUX_VERSION")) return null;
-    return switch (options.platform orelse nativePlatform()) {
-        .linux => readLinuxImage(gpa, io, options),
-        .macos => readMacImage(gpa, io, options),
-        .windows => readPowerShellImage(gpa, io, options, false),
-        .other => null,
+    if (envHas(options.environ, "TERMUX_VERSION")) return null;
+    var attempt: ImageAttempt = .unavailable;
+    if ((options.platform orelse nativePlatform()) == .linux) {
+        const wsl = try isWsl(gpa, io, options.environ);
+        if (isWaylandSession(options.environ) or wsl)
+            attempt = try readWlPasteImage(gpa, io, options);
+        if (attempt == .unavailable) attempt = try readXclipImage(gpa, io, options);
+        if (attempt != .image and wsl) {
+            // A Windows no-image result preserves Linux's empty/unavailable
+            // state, so empty Wayland contents never expose stale X11 data.
+            if (try readPowerShellImage(gpa, io, options)) |image|
+                attempt = .{ .image = .{ .bytes = image.bytes, .mime_type = "image/png" } };
+        }
+        if (attempt == .unavailable) attempt = try readNativeImage(gpa, options);
+    } else {
+        attempt = try readNativeImage(gpa, options);
+    }
+    const image = switch (attempt) {
+        .unavailable, .empty => return null,
+        .image => |value| value,
     };
+    if (image.mime_type) |mime| return .{ .bytes = image.bytes, .mime_type = mime };
+    defer gpa.free(image.bytes);
+    const converted = try convertToPng(gpa, image.bytes, options) orelse return null;
+    if (converted.len == 0) {
+        gpa.free(converted);
+        return null;
+    }
+    return .{ .bytes = converted, .mime_type = "image/png" };
 }
 
 pub fn readClipboardText(gpa: std.mem.Allocator, io: Io, options: Options) !?[]u8 {
-    const environ = options.environ;
-    const platform = options.platform orelse nativePlatform();
-    var bytes: ?[]u8 = null;
-
-    if (envHas(environ, "TERMUX_VERSION")) {
-        bytes = try capture(gpa, io, &.{options.commands.termux_clipboard_get}, text_read_timeout_ms, options);
-    } else switch (platform) {
-        .linux => {
-            if (isWaylandSession(environ) and envHas(environ, "WAYLAND_DISPLAY")) {
-                bytes = try capture(gpa, io, &.{ options.commands.wl_paste, "--no-newline", "--type", "text" }, read_timeout_ms, options);
-                if (bytes == null) bytes = try capture(gpa, io, &.{ options.commands.wl_paste, "--no-newline", "--type", "text/plain;charset=utf-8" }, read_timeout_ms, options);
-            }
-            if (bytes == null and isWsl(io, environ)) {
-                bytes = try capture(gpa, io, &.{ options.commands.powershell, "-NoProfile", "-NonInteractive", "-Command", "Get-Clipboard -Raw" }, powershell_timeout_ms, options);
-            }
-            if (bytes == null) bytes = try capture(gpa, io, &.{ options.commands.xclip, "-selection", "clipboard", "-o" }, read_timeout_ms, options);
-            if (bytes == null) bytes = try capture(gpa, io, &.{ options.commands.xsel, "--clipboard", "--output" }, read_timeout_ms, options);
-        },
-        .macos => bytes = try capture(gpa, io, &.{options.commands.pbpaste}, read_timeout_ms, options),
-        .windows => bytes = try capture(gpa, io, &.{ options.commands.powershell, "-NoProfile", "-NonInteractive", "-Command", "Get-Clipboard -Raw" }, powershell_timeout_ms, options),
-        .other => {},
+    if (envHas(options.environ, "TERMUX_VERSION")) {
+        if (try capture(gpa, io, &.{options.commands.termux_clipboard_get}, text_read_timeout_ms, options)) |bytes|
+            return textResult(gpa, bytes);
     }
-
-    const owned = bytes orelse return null;
-    if (owned.len == 0 or !std.unicode.utf8ValidateSlice(owned) or std.mem.indexOfScalar(u8, owned, 0) != null) {
-        gpa.free(owned);
+    if ((options.platform orelse nativePlatform()) == .linux) {
+        if (envHas(options.environ, "WAYLAND_DISPLAY")) {
+            if (try capture(gpa, io, &.{ options.commands.wl_paste, "--no-newline", "--type", "text" }, text_read_timeout_ms, options)) |bytes|
+                return textResult(gpa, bytes);
+        }
+        if (envHas(options.environ, "DISPLAY")) {
+            if (try capture(gpa, io, &.{ options.commands.xclip, "-selection", "clipboard", "-out" }, text_read_timeout_ms, options)) |bytes|
+                return textResult(gpa, bytes);
+            if (try capture(gpa, io, &.{ options.commands.xsel, "--clipboard", "--output" }, text_read_timeout_ms, options)) |bytes|
+                return textResult(gpa, bytes);
+        }
+    }
+    const native = options.native_backend.getText(gpa, options.native_memory_limit) catch |err| {
+        if (err == error.OutOfMemory) return error.OutOfMemory;
         return null;
-    }
-    return owned;
+    };
+    return switch (native) {
+        .unavailable, .empty => null,
+        .value => |bytes| try textResult(gpa, bytes),
+    };
 }
 
-fn readLinuxImage(gpa: std.mem.Allocator, io: Io, options: Options) !?ClipboardImage {
-    const environ = options.environ;
-    const wayland = isWaylandSession(environ);
-    const wsl = isWsl(io, environ);
-
-    if (wayland or wsl) {
-        if (try readWlPasteImage(gpa, io, options)) |image| return image;
-        if (try readXclipImage(gpa, io, options)) |image| return image;
-    }
-    if (wsl) if (try readPowerShellImage(gpa, io, options, true)) |image| return image;
-    if (!wayland) if (try readXclipImage(gpa, io, options)) |image| return image;
-    return null;
-}
-
-fn readWlPasteImage(gpa: std.mem.Allocator, io: Io, options: Options) !?ClipboardImage {
-    const list = (try capture(gpa, io, &.{ options.commands.wl_paste, "--list-types" }, list_timeout_ms, options)) orelse return null;
-    defer gpa.free(list);
-    const selected = selectPreferredImageMimeType(list) orelse return null;
-    const bytes = (try capture(gpa, io, &.{ options.commands.wl_paste, "--type", selected, "--no-newline" }, read_timeout_ms, options)) orelse return null;
-    return validatedImage(gpa, bytes);
-}
-
-fn readXclipImage(gpa: std.mem.Allocator, io: Io, options: Options) !?ClipboardImage {
-    var preferred: ?[]const u8 = null;
-    const targets = try capture(gpa, io, &.{ options.commands.xclip, "-selection", "clipboard", "-t", "TARGETS", "-o" }, list_timeout_ms, options);
-    defer if (targets) |value| gpa.free(value);
-    if (targets) |value| preferred = selectPreferredImageMimeType(value);
-
-    const candidates = [_][]const u8{ "image/png", "image/jpeg", "image/webp", "image/gif", "image/bmp" };
-    if (preferred) |mime| {
-        if (try capture(gpa, io, &.{ options.commands.xclip, "-selection", "clipboard", "-t", mime, "-o" }, read_timeout_ms, options)) |bytes| {
-            if (validatedImage(gpa, bytes)) |image| return image;
-        }
-    }
-    for (candidates) |mime| {
-        if (preferred) |first| if (std.ascii.eqlIgnoreCase(first, mime)) continue;
-        if (try capture(gpa, io, &.{ options.commands.xclip, "-selection", "clipboard", "-t", mime, "-o" }, read_timeout_ms, options)) |bytes| {
-            if (validatedImage(gpa, bytes)) |image| return image;
-        }
-    }
-    return null;
-}
-
-fn readMacImage(gpa: std.mem.Allocator, io: Io, options: Options) !?ClipboardImage {
-    if (try capture(gpa, io, &.{ options.commands.pngpaste, "-" }, read_timeout_ms, options)) |bytes| {
-        if (validatedImage(gpa, bytes)) |image| return image;
-    }
-
-    const path = try temporaryPath(gpa, options.environ, options.temp_dir, "png");
-    defer {
-        std.Io.Dir.cwd().deleteFile(io, path) catch {};
-        gpa.free(path);
-    }
-    const script =
-        \\on run argv
-        \\  set outPath to item 1 of argv
-        \\  try
-        \\    set pngData to the clipboard as «class PNGf»
-        \\    set outFile to open for access POSIX file outPath with write permission
-        \\    set eof outFile to 0
-        \\    write pngData to outFile
-        \\    close access outFile
-        \\    return "ok"
-        \\  on error
-        \\    try
-        \\      close access POSIX file outPath
-        \\    end try
-        \\    return "empty"
-        \\  end try
-        \\end run
-    ;
-    const result = try capture(gpa, io, &.{ options.commands.osascript, "-e", script, path }, powershell_timeout_ms, options);
-    defer if (result) |value| gpa.free(value);
-    if (result == null or !std.mem.eql(u8, std.mem.trim(u8, result.?, " \t\r\n"), "ok")) return null;
-    const bytes = std.Io.Dir.cwd().readFileAlloc(io, path, gpa, .limited(max_clipboard_bytes)) catch return null;
-    return validatedImage(gpa, bytes);
-}
-
-fn readPowerShellImage(gpa: std.mem.Allocator, io: Io, options: Options, wsl: bool) !?ClipboardImage {
-    const path = try temporaryPath(gpa, options.environ, options.temp_dir, "png");
-    defer {
-        std.Io.Dir.cwd().deleteFile(io, path) catch {};
-        gpa.free(path);
-    }
-    var target_path: []u8 = undefined;
-    if (wsl) {
-        target_path = (try capture(gpa, io, &.{ options.commands.wslpath, "-w", path }, list_timeout_ms, options)) orelse return null;
-    } else {
-        target_path = try gpa.dupe(u8, path);
-    }
-    defer gpa.free(target_path);
-    const target = std.mem.trim(u8, target_path, " \t\r\n");
-    if (target.len == 0) return null;
-
-    const script =
-        \\& { param([string]$path)
-        \\  Add-Type -AssemblyName System.Windows.Forms
-        \\  Add-Type -AssemblyName System.Drawing
-        \\  $img = [System.Windows.Forms.Clipboard]::GetImage()
-        \\  if ($null -eq $img) { exit 3 }
-        \\  try { $img.Save($path, [System.Drawing.Imaging.ImageFormat]::Png) } finally { $img.Dispose() }
-        \\}
-    ;
-    const output = try capture(gpa, io, &.{ options.commands.powershell, "-NoProfile", "-NonInteractive", "-Command", script, target }, powershell_timeout_ms, options);
-    defer if (output) |value| gpa.free(value);
-    if (output == null) return null;
-    const bytes = std.Io.Dir.cwd().readFileAlloc(io, path, gpa, .limited(max_clipboard_bytes)) catch return null;
-    return validatedImage(gpa, bytes);
-}
-
-fn validatedImage(gpa: std.mem.Allocator, bytes: []u8) ?ClipboardImage {
+fn textResult(gpa: std.mem.Allocator, bytes: []u8) !?[]u8 {
     if (bytes.len == 0) {
         gpa.free(bytes);
         return null;
     }
-    const info = image_process.inspect(bytes) orelse {
-        gpa.free(bytes);
-        return null;
-    };
-    return .{ .bytes = bytes, .mime_type = info.mime_type };
+    return try decodeOwnedUtf8(gpa, bytes);
 }
 
-/// Input is newline-separated MIME targets. Returned slices borrow `raw`.
+fn decodeOwnedUtf8(gpa: std.mem.Allocator, bytes: []u8) ![]u8 {
+    if (std.unicode.utf8ValidateSlice(bytes)) return bytes;
+    defer gpa.free(bytes);
+    return native_clipboard.decodeUtf8Alloc(gpa, bytes);
+}
+
+fn readWlPasteImage(gpa: std.mem.Allocator, io: Io, options: Options) !ImageAttempt {
+    const raw = try capture(gpa, io, &.{ options.commands.wl_paste, "--list-types" }, list_timeout_ms, options) orelse return .unavailable;
+    const list = try decodeOwnedUtf8(gpa, raw);
+    defer gpa.free(list);
+    const selected = selectPreferredImageMimeType(list) orelse return .empty;
+    const bytes = try capture(gpa, io, &.{ options.commands.wl_paste, "--type", selected, "--no-newline" }, read_timeout_ms, options) orelse return .unavailable;
+    return advertisedImage(gpa, bytes, selected);
+}
+
+fn readXclipImage(gpa: std.mem.Allocator, io: Io, options: Options) !ImageAttempt {
+    const raw = try capture(gpa, io, &.{ options.commands.xclip, "-selection", "clipboard", "-t", "TARGETS", "-o" }, list_timeout_ms, options) orelse return .unavailable;
+    const targets = try decodeOwnedUtf8(gpa, raw);
+    defer gpa.free(targets);
+    const preferred = selectPreferredImageMimeType(targets) orelse return .empty;
+    const bytes = try capture(gpa, io, &.{ options.commands.xclip, "-selection", "clipboard", "-t", preferred, "-o" }, read_timeout_ms, options) orelse return .unavailable;
+    return advertisedImage(gpa, bytes, preferred);
+}
+
+fn advertisedImage(gpa: std.mem.Allocator, bytes: []u8, mime: []const u8) ImageAttempt {
+    if (bytes.len == 0) {
+        gpa.free(bytes);
+        return .empty;
+    }
+    // The source trusts a supported advertised MIME without dimensions or a
+    // second magic-byte check. Unsupported types share the linked PNG codec.
+    return .{ .image = .{ .bytes = bytes, .mime_type = supportedMime(mime) } };
+}
+
+fn readNativeImage(gpa: std.mem.Allocator, options: Options) !ImageAttempt {
+    // Unlike readClipboardText, the original native image call can reject.
+    const native = try options.native_backend.getImage(gpa, options.native_memory_limit);
+    return switch (native) {
+        .unavailable => .unavailable,
+        .empty => .empty,
+        .value => |bytes| blk: {
+            if (bytes.len == 0) {
+                gpa.free(bytes);
+                break :blk .empty;
+            }
+            const detected = detectNativeMime(bytes);
+            break :blk .{ .image = .{ .bytes = bytes, .mime_type = if (detected) |mime| supportedMime(mime) else null } };
+        },
+    };
+}
+
+fn detectNativeMime(bytes: []const u8) ?[]const u8 {
+    // The shared sniffer accepts a broader GIF prefix; the pinned clipboard
+    // target accepts only these two actual signatures.
+    if (std.mem.startsWith(u8, bytes, "GIF") and
+        !std.mem.startsWith(u8, bytes, "GIF87a") and !std.mem.startsWith(u8, bytes, "GIF89a")) return null;
+    return image_mime.detectSupportedMime(bytes);
+}
+
+fn supportedMime(mime: []const u8) ?[]const u8 {
+    const base = baseMime(mime);
+    inline for (.{ "image/png", "image/jpeg", "image/webp", "image/gif" }) |candidate|
+        if (std.ascii.eqlIgnoreCase(base, candidate)) return candidate;
+    return null;
+}
+
+fn convertToPng(gpa: std.mem.Allocator, bytes: []const u8, options: Options) !?[]u8 {
+    // Photon uses zero to mean unlimited; never turn an explicit zero owner
+    // budget into an unlimited codec operation.
+    if (options.native_memory_limit == 0) return error.OutOfMemory;
+    if (options.png_converter) |converter| {
+        return converter.convert(gpa, bytes, options.native_memory_limit) catch |err| {
+            if (err == error.OutOfMemory) return error.OutOfMemory;
+            return null;
+        };
+    }
+    // A native clipboard read has already destroyed and joined its C job.
+    // Photon accounts its own tracked codec graph under a sequential limit;
+    // input and escaped output remain separately owned gpa buffers.
+    const converted = photon.transform(gpa, .{ .encoded = bytes }, .{
+        .format = .png,
+        .memory_limit = options.native_memory_limit,
+    }) catch |err| {
+        if (err == error.OutOfMemory) return error.OutOfMemory;
+        return null;
+    };
+    return converted.bytes;
+}
+
+fn readPowerShellImage(gpa: std.mem.Allocator, io: Io, options: Options) !?ClipboardImage {
+    return readPowerShellImageInner(gpa, io, options) catch |err| {
+        if (err == error.OutOfMemory) return error.OutOfMemory;
+        return null;
+    };
+}
+
+fn readPowerShellImageInner(gpa: std.mem.Allocator, io: Io, options: Options) !?ClipboardImage {
+    var temporary = try PrivateFile.create(gpa, io, options, "png");
+    defer temporary.deinit();
+    temporary.close();
+    const target = try windowsPath(gpa, io, temporary.path, options) orelse return null;
+    defer gpa.free(target);
+    const quoted = try quotePowerShellPath(gpa, target);
+    defer gpa.free(quoted);
+    const script = try std.fmt.allocPrint(gpa,
+        "Add-Type -AssemblyName System.Windows.Forms; Add-Type -AssemblyName System.Drawing; " ++
+        "$path = '{s}'; $img = [System.Windows.Forms.Clipboard]::GetImage(); " ++
+        "if ($img) {{ try {{ $img.Save($path, [System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'ok' }} " ++
+        "finally {{ $img.Dispose() }} }} else {{ Write-Output 'empty' }}", .{quoted});
+    defer gpa.free(script);
+    const raw = try capture(gpa, io, &.{ options.commands.powershell, "-NoProfile", "-Command", script }, powershell_timeout_ms, options) orelse return null;
+    const output = try decodeOwnedUtf8(gpa, raw);
+    defer gpa.free(output);
+    if (!std.mem.eql(u8, trimText(output), "ok")) return null;
+    const bytes = try std.Io.Dir.cwd().readFileAlloc(io, temporary.path, gpa, .limited(max_clipboard_bytes));
+    if (bytes.len == 0) {
+        gpa.free(bytes);
+        return null;
+    }
+    return .{ .bytes = bytes, .mime_type = "image/png" };
+}
+
+fn windowsPath(gpa: std.mem.Allocator, io: Io, path: []const u8, options: Options) !?[]u8 {
+    const raw = try capture(gpa, io, &.{ options.commands.wslpath, "-w", path }, list_timeout_ms, options) orelse return null;
+    const decoded = try decodeOwnedUtf8(gpa, raw);
+    defer gpa.free(decoded);
+    const trimmed = trimText(decoded);
+    if (trimmed.len == 0) return null;
+    return try gpa.dupe(u8, trimmed);
+}
+
+fn quotePowerShellPath(gpa: std.mem.Allocator, path: []const u8) ![]u8 {
+    var out: std.ArrayList(u8) = .empty;
+    errdefer out.deinit(gpa);
+    for (path) |byte| {
+        try out.append(gpa, byte);
+        if (byte == '\'') try out.append(gpa, '\'');
+    }
+    return out.toOwnedSlice(gpa);
+}
+
+/// Input is newline-separated MIME targets. Returned slices borrow raw.
 pub fn selectPreferredImageMimeType(raw: []const u8) ?[]const u8 {
-    const preferred = [_][]const u8{ "image/png", "image/jpeg", "image/webp", "image/gif", "image/bmp" };
+    const preferred = [_][]const u8{ "image/png", "image/jpeg", "image/webp", "image/gif" };
     for (preferred) |candidate| {
-        var lines = std.mem.splitAny(u8, raw, "\r\n");
+        var lines = std.mem.splitScalar(u8, raw, '\n');
         while (lines.next()) |line_raw| {
-            const line = std.mem.trim(u8, line_raw, " \t");
+            const line = trimText(line_raw);
             if (std.ascii.eqlIgnoreCase(baseMime(line), candidate)) return line;
         }
     }
-    var lines = std.mem.splitAny(u8, raw, "\r\n");
+    var lines = std.mem.splitScalar(u8, raw, '\n');
     while (lines.next()) |line_raw| {
-        const line = std.mem.trim(u8, line_raw, " \t");
+        const line = trimText(line_raw);
         if (std.ascii.startsWithIgnoreCase(baseMime(line), "image/")) return line;
     }
     return null;
@@ -537,7 +679,34 @@ pub fn selectPreferredImageMimeType(raw: []const u8) ?[]const u8 {
 
 fn baseMime(value: []const u8) []const u8 {
     const end = std.mem.indexOfScalar(u8, value, ';') orelse value.len;
-    return std.mem.trim(u8, value[0..end], " \t\r\n");
+    return trimText(value[0..end]);
+}
+
+/// ECMAScript trim whitespace, applied after Buffer-compatible UTF8 decoding.
+fn trimText(value: []const u8) []const u8 {
+    const whitespace = [_][]const u8{
+        " ", "\t", "\n", "\r", "\x0b", "\x0c", "\xc2\xa0", "\xe1\x9a\x80",
+        "\xe2\x80\x80", "\xe2\x80\x81", "\xe2\x80\x82", "\xe2\x80\x83",
+        "\xe2\x80\x84", "\xe2\x80\x85", "\xe2\x80\x86", "\xe2\x80\x87",
+        "\xe2\x80\x88", "\xe2\x80\x89", "\xe2\x80\x8a", "\xe2\x80\xa8",
+        "\xe2\x80\xa9", "\xe2\x80\xaf", "\xe2\x81\x9f", "\xe3\x80\x80", "\xef\xbb\xbf",
+    };
+    var trimmed = value;
+    leading: while (trimmed.len != 0) {
+        for (whitespace) |item| if (std.mem.startsWith(u8, trimmed, item)) {
+            trimmed = trimmed[item.len..];
+            continue :leading;
+        };
+        break;
+    }
+    trailing: while (trimmed.len != 0) {
+        for (whitespace) |item| if (std.mem.endsWith(u8, trimmed, item)) {
+            trimmed = trimmed[0 .. trimmed.len - item.len];
+            continue :trailing;
+        };
+        break;
+    }
+    return trimmed;
 }
 
 pub fn formatAttachmentReference(gpa: std.mem.Allocator, path: []const u8) ![]u8 {
@@ -570,13 +739,17 @@ fn nativePlatform() Platform {
 }
 
 pub fn isWaylandSession(environ: ?*const std.process.Environ.Map) bool {
-    return envHas(environ, "WAYLAND_DISPLAY") or if (envGet(environ, "XDG_SESSION_TYPE")) |value| std.ascii.eqlIgnoreCase(value, "wayland") else false;
+    return envHas(environ, "WAYLAND_DISPLAY") or
+        std.mem.eql(u8, envGet(environ, "XDG_SESSION_TYPE") orelse "", "wayland");
 }
 
-fn isWsl(io: Io, environ: ?*const std.process.Environ.Map) bool {
+fn isWsl(gpa: std.mem.Allocator, io: Io, environ: ?*const std.process.Environ.Map) !bool {
     if (envHas(environ, "WSL_DISTRO_NAME") or envHas(environ, "WSLENV")) return true;
-    const release = std.Io.Dir.cwd().readFileAlloc(io, "/proc/version", std.heap.page_allocator, .limited(64 * 1024)) catch return false;
-    defer std.heap.page_allocator.free(release);
+    const release = std.Io.Dir.cwd().readFileAlloc(io, "/proc/version", gpa, .limited(64 * 1024)) catch |err| {
+        if (err == error.OutOfMemory) return error.OutOfMemory;
+        return false;
+    };
+    defer gpa.free(release);
     return std.ascii.indexOfIgnoreCase(release, "microsoft") != null or std.ascii.indexOfIgnoreCase(release, "wsl") != null;
 }
 
@@ -595,11 +768,60 @@ fn capture(
     timeout_ms: u64,
     options: Options,
 ) !?[]u8 {
-    if (options.runner) |runner| return runner.run(gpa, io, argv, timeout_ms, options.environ);
-    return runCapture(gpa, io, argv, timeout_ms, options.environ);
+    const outcome = if (options.runner) |runner|
+        runner.run(gpa, io, argv, timeout_ms, options.environ)
+    else if (comptime builtin.os.tag == .windows)
+        runCaptureWindows(gpa, io, argv, timeout_ms, options.environ)
+    else
+        runCaptureLegacy(gpa, io, argv, timeout_ms, options.environ);
+    return outcome catch |err| {
+        if (err == error.OutOfMemory) return error.OutOfMemory;
+        return null;
+    };
 }
 
-fn runCapture(
+fn runCaptureWindows(
+    gpa: std.mem.Allocator,
+    io: Io,
+    argv: []const []const u8,
+    timeout_ms: u64,
+    environ: ?*const std.process.Environ.Map,
+) !?[]u8 {
+    var child = try std.process.spawn(io, .{
+        .argv = argv,
+        .stdin = .ignore,
+        .stdout = .pipe,
+        .stderr = .ignore,
+        .environ_map = environ,
+        .create_no_window = true,
+    });
+    defer child.kill(io);
+    const deadline = commandDeadline(io, timeout_ms);
+    // Detach before any wait task: successful Child.wait closes its attached
+    // streams, while this owner alone must retire the pending read and pipe.
+    const stdout_file = child.stdout.?;
+    child.stdout = null;
+    defer stdout_file.close(io);
+    var storage: Io.File.MultiReader.Buffer(1) = undefined;
+    var reader: Io.File.MultiReader = undefined;
+    reader.init(gpa, io, storage.toStreams(), &.{stdout_file});
+    defer reader.deinit();
+    while (reader.fill(4096, .{ .deadline = deadline })) |_| {
+        try reader.checkAnyError();
+        if (reader.reader(0).buffered().len > max_clipboard_bytes) return null;
+    } else |err| switch (err) {
+        error.EndOfStream => {},
+        else => return err,
+    }
+    try reader.checkAnyError();
+    // stdout EOF does not imply process exit. The same deadline covers the
+    // wait, including a command that closes stdout and remains alive.
+    const term = try waitWindowsProcess(&child, io, deadline) orelse return null;
+    if (!successfulTerm(term)) return null;
+    return try reader.toOwnedSlice(0);
+}
+
+fn runCaptureLegacy(
     gpa: std.mem.Allocator,
     io: Io,
     argv: []const []const u8,
@@ -613,7 +835,10 @@ fn runCapture(
         .stderr_limit = .limited(256 * 1024),
         .environ_map = environ,
         .timeout = .{ .duration = .{ .raw = .fromMilliseconds(duration_ms), .clock = .real } },
-    }) catch return null;
+    }) catch |err| {
+        if (err == error.OutOfMemory) return error.OutOfMemory;
+        return null;
+    };
     defer gpa.free(result.stderr);
     const ok = switch (result.term) {
         .exited => |code| code == 0,
@@ -636,11 +861,49 @@ fn tempRoot(gpa: std.mem.Allocator, environ: ?*const std.process.Environ.Map, ex
     return gpa.dupe(u8, if (builtin.os.tag == .windows) "." else "/tmp");
 }
 
-fn temporaryPath(gpa: std.mem.Allocator, environ: ?*const std.process.Environ.Map, explicit: ?[]const u8, extension: []const u8) ![]u8 {
+const PrivateFile = struct {
+    gpa: std.mem.Allocator,
+    io: Io,
+    path: []u8,
+    file: ?Io.File,
+
+    fn create(gpa: std.mem.Allocator, io: Io, options: Options, extension: []const u8) !PrivateFile {
+        const path = try temporaryPath(gpa, io, options.environ, options.temp_dir, extension);
+        errdefer gpa.free(path);
+        const file = try Io.Dir.cwd().createFile(io, path, .{
+            .truncate = true,
+            .exclusive = true,
+            .permissions = file_permissions.privateFile(),
+        });
+        // Cleanup ownership begins only after exclusive creation succeeds.
+        return .{ .gpa = gpa, .io = io, .path = path, .file = file };
+    }
+
+    fn close(self: *PrivateFile) void {
+        if (self.file) |file| file.close(self.io);
+        self.file = null;
+    }
+
+    fn deinit(self: *PrivateFile) void {
+        self.close();
+        Io.Dir.cwd().deleteFile(self.io, self.path) catch {};
+        self.gpa.free(self.path);
+        self.* = undefined;
+    }
+};
+
+fn temporaryPath(gpa: std.mem.Allocator, io: Io, environ: ?*const std.process.Environ.Map, explicit: ?[]const u8, extension: []const u8) ![]u8 {
     const root = try tempRoot(gpa, environ, explicit);
     defer gpa.free(root);
-    const sequence = temp_counter.fetchAdd(1, .monotonic);
-    const name = try std.fmt.allocPrint(gpa, "pi-clipboard-stage-{x}.{s}", .{ sequence, extension });
+    var random: [16]u8 = undefined;
+    try io.randomSecure(&random);
+    var encoded: [32]u8 = undefined;
+    const hex = "0123456789abcdef";
+    for (random, 0..) |byte, index| {
+        encoded[index * 2] = hex[byte >> 4];
+        encoded[index * 2 + 1] = hex[byte & 0x0f];
+    }
+    const name = try std.fmt.allocPrint(gpa, "pi-clipboard-stage-{s}.{s}", .{ encoded, extension });
     defer gpa.free(name);
     return std.fs.path.join(gpa, &.{ root, name });
 }
@@ -679,7 +942,7 @@ test "Wayland clipboard image and text use bounded command paths" {
             _: ?*const std.process.Environ.Map,
         ) !?[]u8 {
             const self: *@This() = @ptrCast(@alignCast(raw));
-            try std.testing.expect(timeout_ms <= read_timeout_ms);
+            try std.testing.expect(timeout_ms <= text_read_timeout_ms);
             if (argv.len >= 2 and std.mem.eql(u8, argv[1], "--list-types")) {
                 self.list_calls += 1;
                 return @as(?[]u8, try allocator.dupe(u8, "text/plain\nimage/png\n"));
@@ -727,31 +990,32 @@ test "Wayland clipboard image and text use bounded command paths" {
     try std.testing.expectEqual(@as(usize, 1), fake.text_calls);
 }
 
-test "macOS clipboard text uses pbpaste rather than image transport" {
+test "macOS clipboard text uses the native helper without a command fallback" {
     const Fake = struct {
-        command: ?[]const u8 = null,
-        fn run(
-            raw: *anyopaque,
-            allocator: std.mem.Allocator,
-            _: Io,
-            argv: []const []const u8,
-            _: u64,
-            _: ?*const std.process.Environ.Map,
-        ) !?[]u8 {
+        native_calls: usize = 0,
+        command_calls: usize = 0,
+        fn get(raw: ?*anyopaque, gpa: std.mem.Allocator, memory_limit: usize) !native_clipboard.Read {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.native_calls += 1;
+            try std.testing.expectEqual(native_clipboard.default_memory_limit, memory_limit);
+            return .{ .value = try gpa.dupe(u8, "mac clipboard") };
+        }
+        fn run(raw: *anyopaque, _: std.mem.Allocator, _: Io, _: []const []const u8, _: u64, _: ?*const std.process.Environ.Map) !?[]u8 {
             const self: *@This() = @ptrCast(@alignCast(raw));
-            self.command = argv[0];
-            if (!std.mem.eql(u8, argv[0], "pbpaste")) return null;
-            return @as(?[]u8, try allocator.dupe(u8, "mac clipboard"));
+            self.command_calls += 1;
+            return null;
         }
     };
-    var fake = Fake{};
+    var fake: Fake = .{};
     const text = (try readClipboardText(std.testing.allocator, std.testing.io, .{
         .platform = .macos,
+        .native_backend = .{ .context = &fake, .get_text_fn = Fake.get },
         .runner = .{ .context = &fake, .run_fn = Fake.run },
     })).?;
     defer std.testing.allocator.free(text);
-    try std.testing.expectEqualStrings("pbpaste", fake.command.?);
     try std.testing.expectEqualStrings("mac clipboard", text);
+    try std.testing.expectEqual(@as(usize, 1), fake.native_calls);
+    try std.testing.expectEqual(@as(usize, 0), fake.command_calls);
 }
 
 test "Termux skips image probing and retains text clipboard fallback" {
@@ -984,7 +1248,7 @@ test "Wayland copy falls back to X11 and remote sessions also emit bounded OSC 5
     try std.testing.expectEqualStrings("\x1b]52;c;aGVsbG8=\x07", sink.bytes.items);
 }
 
-test "copy falls back to OSC 52 and rejects oversized terminal payloads" {
+test "headless Linux copy uses OSC 52 and reports its size limit" {
     const Sink = struct {
         bytes: std.ArrayList(u8) = .empty,
         fn write(raw: *anyopaque, _: Io, bytes: []const u8) !void {
@@ -994,8 +1258,15 @@ test "copy falls back to OSC 52 and rejects oversized terminal payloads" {
     };
     var sink = Sink{};
     defer sink.bytes.deinit(std.testing.allocator);
+    const NoCommand = struct {
+        fn run(_: *anyopaque, _: std.mem.Allocator, _: Io, _: []const []const u8, _: u64, _: ?*const std.process.Environ.Map) !?[]u8 {
+            return null;
+        }
+    };
     const result = try copyText(std.testing.allocator, std.testing.io, "fallback", .{
-        .platform = .other,
+        .platform = .linux,
+        .native_backend = native_clipboard.unavailable,
+        .runner = .{ .context = &sink, .run_fn = NoCommand.run },
         .output_writer = .{ .context = &sink, .write_fn = Sink.write },
     });
     try std.testing.expect(!result.native and result.osc52);
@@ -1005,8 +1276,10 @@ test "copy falls back to OSC 52 and rejects oversized terminal payloads" {
     const too_large = try std.testing.allocator.alloc(u8, (osc52.max_encoded_length / 4) * 3 + 4);
     defer std.testing.allocator.free(too_large);
     @memset(too_large, 'x');
-    try std.testing.expectError(error.ClipboardUnavailable, copyText(std.testing.allocator, std.testing.io, too_large, .{
-        .platform = .other,
+    try std.testing.expectError(error.ClipboardOsc52TooLarge, copyText(std.testing.allocator, std.testing.io, too_large, .{
+        .platform = .linux,
+        .native_backend = native_clipboard.unavailable,
+        .runner = .{ .context = &sink, .run_fn = NoCommand.run },
         .output_writer = .{ .context = &sink, .write_fn = Sink.write },
     }));
     try std.testing.expectEqual(@as(usize, 0), sink.bytes.items.len);
@@ -1045,6 +1318,7 @@ test "Termux and Windows copy select their native commands" {
     var windows = Fake{ .expected = "clip" };
     const windows_result = try copyText(std.testing.allocator, std.testing.io, "windows", .{
         .platform = .windows,
+        .native_backend = native_clipboard.unavailable,
         .write_runner = .{ .context = &windows, .run_fn = Fake.run },
     });
     try std.testing.expect(windows_result.native and !windows_result.osc52);

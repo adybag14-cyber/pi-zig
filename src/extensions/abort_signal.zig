@@ -59,7 +59,9 @@ fn stateFor(engine: *engine_mod.Engine, value: c.JSValue) !*State {
 }
 
 fn fail(context: ?*c.JSContext, err: anyerror) c.JSValue {
+    if (err == error.ExecutionTerminated) return @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated();
     if (err == error.JavaScriptException) return engine_mod.Engine.fromContext(context.?).throwCaptured();
+    if (err == error.ExecutionTerminated) return engine_mod.Engine.fromContext(context.?).throwExecutionTerminated();
     if (err == error.OutOfMemory) return engine_mod.Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
     return c.JS_ThrowTypeError(context, "Native AbortSignal: %s", @as([*:0]const u8, @errorName(err)));
 }
@@ -79,16 +81,16 @@ pub fn addNativeListener(engine: *engine_mod.Engine, signal: c.JSValue, callback
     const self = try stateFor(engine, signal);
     if (self.listeners.items.len >= 4096 or self.next_id == std.math.maxInt(u32)) return error.NativeAbortListenerLimit;
     const retained = c.JS_DupValue(engine.context, callback);
-    errdefer engine.freeValue(retained);
+    errdefer engine.releaseNativeValue(retained);
     const id = self.next_id;
-    try self.listeners.append(engine.gpa, .{ .callback = retained, .once = true, .capture = false, .id = id });
+    (self.listeners.append(engine.gpa, .{ .callback = retained, .once = true, .capture = false, .id = id }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     self.next_id += 1;
     return id;
 }
 pub fn removeNativeListener(engine: *engine_mod.Engine, signal: c.JSValue, id: u32) !void {
     const self = try stateFor(engine, signal);
     for (self.listeners.items, 0..) |listener, index| if (listener.id == id) {
-        engine.freeValue(self.listeners.orderedRemove(index).callback);
+        engine.releaseNativeValue(self.listeners.orderedRemove(index).callback);
         return;
     };
 }
@@ -102,20 +104,20 @@ pub fn abort(engine: *engine_mod.Engine, signal: c.JSValue, reason: c.JSValue) !
     if (state.aborted) return;
     const owned_reason = if (c.JS_IsUndefined(reason)) try defaultReason(engine) else c.JS_DupValue(engine.context, reason);
     var committed = false;
-    defer if (!committed) engine.freeValue(owned_reason);
+    defer if (!committed) engine.releaseNativeValue(owned_reason);
     var snapshot: std.ArrayList(Listener) = .empty;
     defer {
-        for (snapshot.items) |listener| engine.freeValue(listener.callback);
+        for (snapshot.items) |listener| engine.releaseNativeValue(listener.callback);
         snapshot.deinit(engine.gpa);
     }
-    try snapshot.ensureTotalCapacity(engine.gpa, state.listeners.items.len);
+    (snapshot.ensureTotalCapacity(engine.gpa, state.listeners.items.len) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     for (state.listeners.items) |listener| snapshot.appendAssumeCapacity(.{ .callback = c.JS_DupValue(engine.context, listener.callback), .once = listener.once, .capture = listener.capture, .id = listener.id, .onabort = listener.onabort });
     const event = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(event);
+    defer engine.releaseNativeValue(event);
     if (c.JS_DefinePropertyValueStr(engine.context, event, "type", c.JS_NewString(engine.context, "abort"), c.JS_PROP_ENUMERABLE) < 0 or
         c.JS_DefinePropertyValueStr(engine.context, event, "target", c.JS_DupValue(engine.context, signal), c.JS_PROP_ENUMERABLE) < 0 or
         c.JS_DefinePropertyValueStr(engine.context, event, "currentTarget", c.JS_DupValue(engine.context, signal), c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
-    engine.freeValue(state.reason);
+    engine.releaseNativeValue(state.reason);
     state.reason = owned_reason;
     state.aborted = true;
     committed = true;
@@ -126,37 +128,46 @@ pub fn abort(engine: *engine_mod.Engine, signal: c.JSValue, reason: c.JSValue) !
             break;
         };
         const index = live orelse continue;
-        if (listener.once) engine.freeValue(state.listeners.orderedRemove(index).callback);
+        if (listener.once) engine.releaseNativeValue(state.listeners.orderedRemove(index).callback);
         const callback = if (listener.onabort) state.onabort else listener.callback;
-        const function = if (c.JS_IsFunction(engine.context, callback)) c.JS_DupValue(engine.context, callback) else c.JS_GetPropertyStr(engine.context, callback, "handleEvent");
+        const function = if (c.JS_IsFunction(engine.context, callback)) c.JS_DupValue(engine.context, callback) else native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, callback, "handleEvent"); };
         if (c.JS_IsException(function)) {
             try reportListenerError(engine);
             continue;
         }
-        defer engine.freeValue(function);
+        defer engine.releaseNativeValue(function);
         if (!c.JS_IsFunction(engine.context, function)) continue;
         var args = [_]c.JSValue{event};
-        const result = c.JS_Call(engine.context, function, if (c.JS_IsFunction(engine.context, callback)) signal else callback, 1, &args);
-        if (c.JS_IsException(result)) try reportListenerError(engine) else engine.freeValue(result);
+        const result = native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_Call(engine.context, function, if (c.JS_IsFunction(engine.context, callback)) signal else callback, 1, &args); };
+        if (c.JS_IsException(result)) try reportListenerError(engine) else engine.releaseNativeValue(result);
     }
 }
 
-fn reportJob(context: ?*c.JSContext, _: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
-    return c.JS_Throw(context, c.JS_DupValue(context, args[0]));
+fn reportJob(context: ?*c.JSContext, pending_arg1: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(reportJobPendingBody(context, pending_arg1, args));
+}
+fn reportJobPendingBody(context: ?*c.JSContext, _: c_int, args: [*c]c.JSValue) c.JSValue {
+    return c.JS_PiThrowExceptionData(context, c.JS_DupValue(context, args[0]));
 }
 
 fn reportListenerError(engine: *engine_mod.Engine) !void {
+    try @import("native_pending_owner.zig").checkFatal(engine);
     const exception = c.JS_GetException(engine.context);
-    if (c.JS_IsUncatchableError(exception)) {
-        _ = c.JS_Throw(engine.context, exception);
-        return error.JavaScriptException;
-    }
-    defer engine.freeValue(exception);
+    defer engine.releaseNativeValue(exception);
     var args = [_]c.JSValue{exception};
-    if (c.JS_EnqueueJob(engine.context, reportJob, 1, &args) < 0) return error.JavaScriptException;
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_EnqueueJob(engine.context, reportJob, 1, &args); } < 0) return error.JavaScriptException;
 }
 
 fn signalCall(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(signalCallPendingBody(context, this, argc, argv, magic));
+}
+fn signalCallPendingBody(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
     return signalMethod(engine_mod.Engine.fromContext(context.?), this, @enumFromInt(magic), args) catch |err| fail(context, err);
 }
@@ -177,30 +188,30 @@ fn signalMethod(engine: *engine_mod.Engine, this: c.JSValue, method: Method, arg
             if (c.JS_IsFunction(engine.context, value)) {
                 const callback = c.JS_DupValue(engine.context, value);
                 if (existing) |index| {
-                    engine.freeValue(state.listeners.items[index].callback);
+                    engine.releaseNativeValue(state.listeners.items[index].callback);
                     state.listeners.items[index].callback = callback;
                 } else {
-                    errdefer engine.freeValue(callback);
+                    errdefer engine.releaseNativeValue(callback);
                     if (state.listeners.items.len >= 4096 or state.next_id == std.math.maxInt(u32)) return error.NativeAbortListenerLimit;
-                    try state.listeners.append(engine.gpa, .{ .callback = callback, .once = false, .capture = false, .id = state.next_id, .onabort = true });
+                    (state.listeners.append(engine.gpa, .{ .callback = callback, .once = false, .capture = false, .id = state.next_id, .onabort = true }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                     state.onabort_id = state.next_id;
                     state.next_id += 1;
                 }
             } else if (existing) |index| {
-                engine.freeValue(state.listeners.orderedRemove(index).callback);
+                engine.releaseNativeValue(state.listeners.orderedRemove(index).callback);
                 state.onabort_id = null;
             }
-            engine.freeValue(state.onabort);
+            engine.releaseNativeValue(state.onabort);
             state.onabort = c.JS_DupValue(engine.context, value);
             return c.pi_js_undefined();
         },
-        .throwIfAborted => return if (state.aborted) c.JS_Throw(engine.context, c.JS_DupValue(engine.context, state.reason)) else c.pi_js_undefined(),
+        .throwIfAborted => return if (state.aborted) c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, state.reason)) else c.pi_js_undefined(),
         .add, .remove => {
             if (args.len < 2) return error.InvalidAbortListener;
             // Listener removal participates in promise settlement. Borrow the
             // VM conversion instead of allocating host memory during cleanup.
-            const kind = c.JS_ToCString(engine.context, args[0]) orelse {
-                _ = engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context))) catch {};
+            const kind = native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_ToCString(engine.context, args[0]); } orelse {
+                _ = engine.checked(c.pi_js_exception()) catch {};
                 return error.JavaScriptException;
             };
             defer c.JS_FreeCString(engine.context, kind);
@@ -211,47 +222,59 @@ fn signalMethod(engine: *engine_mod.Engine, this: c.JSValue, method: Method, arg
             var once = false;
             if (args.len > 2) {
                 if (c.JS_IsBool(args[2])) capture = c.JS_ToBool(engine.context, args[2]) != 0 else if (c.JS_IsObject(args[2])) {
-                    const capture_value = try engine.checked(c.JS_GetPropertyStr(engine.context, args[2], "capture"));
-                    defer engine.freeValue(capture_value);
+                    const capture_value = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, args[2], "capture"); });
+                    defer engine.releaseNativeValue(capture_value);
                     capture = c.JS_ToBool(engine.context, capture_value) != 0;
                     if (method == .add) {
-                        const once_value = try engine.checked(c.JS_GetPropertyStr(engine.context, args[2], "once"));
-                        defer engine.freeValue(once_value);
+                        const once_value = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, args[2], "once"); });
+                        defer engine.releaseNativeValue(once_value);
                         once = c.JS_ToBool(engine.context, once_value) != 0;
                     }
                 }
             }
             for (state.listeners.items, 0..) |listener, index| if (!listener.onabort and listener.capture == capture and c.JS_IsStrictEqual(engine.context, listener.callback, args[1])) {
-                if (method == .remove) engine.freeValue(state.listeners.orderedRemove(index).callback);
+                if (method == .remove) engine.releaseNativeValue(state.listeners.orderedRemove(index).callback);
                 return c.pi_js_undefined();
             };
             if (method == .remove) return c.pi_js_undefined();
             if (state.listeners.items.len >= 4096 or state.next_id == std.math.maxInt(u32)) return error.NativeAbortListenerLimit;
             const callback = c.JS_DupValue(engine.context, args[1]);
-            errdefer engine.freeValue(callback);
-            try state.listeners.append(engine.gpa, .{ .callback = callback, .once = once, .capture = capture, .id = state.next_id });
+            errdefer engine.releaseNativeValue(callback);
+            (state.listeners.append(engine.gpa, .{ .callback = callback, .once = once, .capture = capture, .id = state.next_id }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             state.next_id += 1;
             return c.pi_js_undefined();
         },
     }
 }
 
-fn illegalSignal(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn illegalSignal(context: ?*c.JSContext, pending_arg1: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(illegalSignalPendingBody(context, pending_arg1, pending_arg2, pending_arg3));
+}
+fn illegalSignalPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) c.JSValue {
     return c.JS_ThrowTypeError(context, "Illegal AbortSignal constructor");
 }
 
-fn controllerConstructor(context: ?*c.JSContext, new_target: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn controllerConstructor(context: ?*c.JSContext, new_target: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(controllerConstructorPendingBody(context, new_target, pending_arg2, pending_arg3));
+}
+fn controllerConstructorPendingBody(context: ?*c.JSContext, new_target: c.JSValue, _: c_int, _: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return constructController(engine, new_target) catch |err| fail(context, err);
 }
 
 fn constructController(engine: *engine_mod.Engine, new_target: c.JSValue) !c.JSValue {
     const signal = try create(engine);
-    errdefer engine.freeValue(signal);
-    const state = try engine.gpa.create(Controller);
+    errdefer engine.releaseNativeValue(signal);
+    const state = (engine.gpa.create(Controller) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     errdefer engine.gpa.destroy(state);
-    const prototype = try engine.checked(c.JS_GetPropertyStr(engine.context, new_target, "prototype"));
-    defer engine.freeValue(prototype);
+    const prototype = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, new_target, "prototype"); });
+    defer engine.releaseNativeValue(prototype);
     const object = try engine.checked(c.JS_NewObjectProtoClass(engine.context, prototype, engine.abort_controller_class));
     state.* = .{ .engine = engine, .signal = signal };
     _ = c.JS_SetOpaque(object, state);
@@ -259,6 +282,12 @@ fn constructController(engine: *engine_mod.Engine, new_target: c.JSValue) !c.JSV
 }
 
 fn controllerCall(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(controllerCallPendingBody(context, this, argc, argv, magic));
+}
+fn controllerCallPendingBody(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const state: *Controller = @ptrCast(@alignCast(c.JS_GetOpaque(this, engine.abort_controller_class) orelse return c.JS_ThrowTypeError(context, "Illegal AbortController receiver")));
     if (state.engine != engine) return c.JS_ThrowTypeError(context, "Illegal AbortController receiver");
@@ -267,25 +296,44 @@ fn controllerCall(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*
     return c.pi_js_undefined();
 }
 
-fn staticAbort(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn staticAbort(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(staticAbortPendingBody(context, pending_arg1, argc, argv));
+}
+fn staticAbortPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const signal = create(engine) catch |err| return fail(context, err);
     abort(engine, signal, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| {
-        engine.freeValue(signal);
+        if (err == error.OutOfMemory) _ = @import("engine.zig").Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
+        engine.releaseNativeValue(signal);
         return fail(context, err);
     };
     return signal;
 }
 
-fn timeoutFire(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn timeoutFire(context: ?*c.JSContext, pending_arg1: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, pending_arg4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(timeoutFirePendingBody(context, pending_arg1, pending_arg2, pending_arg3, pending_arg4, data));
+}
+fn timeoutFirePendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const reason = dom_exception.create(engine, "The operation was aborted due to timeout", "TimeoutError") catch |err| return fail(context, err);
-    defer engine.freeValue(reason);
+    defer engine.releaseNativeValue(reason);
     abort(engine, data[0], reason) catch |err| return fail(context, err);
     return c.pi_js_undefined();
 }
 
-fn staticTimeout(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn staticTimeout(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(staticTimeoutPendingBody(context, pending_arg1, argc, argv));
+}
+fn staticTimeoutPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return timeoutSignal(engine, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| fail(context, err);
 }
@@ -293,46 +341,59 @@ fn staticTimeout(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
 fn timeoutSignal(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
     if (!c.JS_IsNumber(value)) return error.InvalidSignalTimeout;
     var delay: f64 = 0;
-    if (c.JS_ToFloat64(engine.context, &delay, value) < 0) return error.JavaScriptException;
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(engine.context, &delay, value); } < 0) return error.JavaScriptException;
     if (!std.math.isFinite(delay) or delay < 0 or delay != @trunc(delay) or delay > std.math.maxInt(u32)) return error.InvalidSignalTimeout;
     const signal = try create(engine);
-    errdefer engine.freeValue(signal);
+    errdefer engine.releaseNativeValue(signal);
     var data = [_]c.JSValue{signal};
     const callback = try engine.checked(c.JS_NewCFunctionData2(engine.context, timeoutFire, "abort timeout", 0, 0, 1, &data));
-    defer engine.freeValue(callback);
+    defer engine.releaseNativeValue(callback);
     const id = try timers.scheduleOnce(engine, callback, @intFromFloat(delay));
-    engine.freeValue(id);
+    engine.releaseNativeValue(id);
     return signal;
 }
 
-fn forwardAbort(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn forwardAbort(context: ?*c.JSContext, pending_arg1: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, pending_arg4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(forwardAbortPendingBody(context, pending_arg1, pending_arg2, pending_arg3, pending_arg4, data));
+}
+fn forwardAbortPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const source = stateFor(engine, data[0]) catch |err| return fail(context, err);
     abort(engine, data[1], source.reason) catch |err| return fail(context, err);
     return c.pi_js_undefined();
 }
 
-fn staticAny(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn staticAny(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(staticAnyPendingBody(context, pending_arg1, argc, argv));
+}
+fn staticAnyPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return anySignal(engine, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| fail(context, err);
 }
 
 fn anySignal(engine: *engine_mod.Engine, values: c.JSValue) !c.JSValue {
     if (!c.JS_IsArray(values)) return error.InvalidSignalList;
-    const length = try engine.checked(c.JS_GetPropertyStr(engine.context, values, "length"));
-    defer engine.freeValue(length);
+    const length = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetPropertyStr(engine.context, values, "length"); });
+    defer engine.releaseNativeValue(length);
     var count: u32 = 0;
-    if (c.JS_ToUint32(engine.context, &count, length) < 0) return error.JavaScriptException;
+    if (native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_ToUint32(engine.context, &count, length); } < 0) return error.JavaScriptException;
     if (count > 4096) return error.NativeAbortListenerLimit;
     // Validate all sources before adding callbacks to any of them.
-    const storage = try engine.gpa.alloc(c.JSValue, count);
+    const storage = (engine.gpa.alloc(c.JSValue, count) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(storage);
     var initialized: usize = 0;
-    defer for (storage[0..initialized]) |source| engine.freeValue(source);
+    defer for (storage[0..initialized]) |source| engine.releaseNativeValue(source);
     for (0..count) |index| {
-        const source = try engine.checked(c.JS_GetPropertyUint32(engine.context, values, @intCast(index)));
+        const source = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, values, @intCast(index)); });
         _ = stateFor(engine, source) catch |err| {
-            engine.freeValue(source);
+        if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+            engine.releaseNativeValue(source);
             return err;
         };
         var duplicate = false;
@@ -341,7 +402,7 @@ fn anySignal(engine: *engine_mod.Engine, values: c.JSValue) !c.JSValue {
             break;
         };
         if (duplicate) {
-            engine.freeValue(source);
+            engine.releaseNativeValue(source);
             continue;
         }
         storage[initialized] = source;
@@ -349,7 +410,7 @@ fn anySignal(engine: *engine_mod.Engine, values: c.JSValue) !c.JSValue {
     }
     const sources = storage[0..initialized];
     const combined = try create(engine);
-    errdefer engine.freeValue(combined);
+    errdefer engine.releaseNativeValue(combined);
     for (sources) |source| {
         const state = try stateFor(engine, source);
         if (state.aborted) {
@@ -362,12 +423,12 @@ fn anySignal(engine: *engine_mod.Engine, values: c.JSValue) !c.JSValue {
     for (sources) |source| {
         const state = try stateFor(engine, source);
         if (state.listeners.items.len >= 4096 or state.next_id == std.math.maxInt(u32)) return error.NativeAbortListenerLimit;
-        try state.listeners.ensureUnusedCapacity(engine.gpa, 1);
+        (state.listeners.ensureUnusedCapacity(engine.gpa, 1) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     }
-    const callbacks = try engine.gpa.alloc(c.JSValue, sources.len);
+    const callbacks = (engine.gpa.alloc(c.JSValue, sources.len) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(callbacks);
     var ready: usize = 0;
-    defer for (callbacks[0..ready]) |callback| engine.freeValue(callback);
+    defer for (callbacks[0..ready]) |callback| engine.releaseNativeValue(callback);
     for (sources, callbacks) |source, *callback| {
         var data = [_]c.JSValue{ source, combined };
         callback.* = try engine.checked(c.JS_NewCFunctionData2(engine.context, forwardAbort, "combined abort", 1, 0, data.len, &data));
@@ -385,9 +446,9 @@ fn accessor(engine: *engine_mod.Engine, prototype: c.JSValue, name: [:0]const u8
     const atom = c.JS_NewAtom(engine.context, name.ptr);
     defer c.JS_FreeAtom(engine.context, atom);
     const read = try engine.checked(c.pi_js_function_magic(engine.context, getter, name.ptr, 0, get_magic));
-    defer engine.freeValue(read);
+    defer engine.releaseNativeValue(read);
     const write = if (setter) |callback| try engine.checked(c.pi_js_function_magic(engine.context, callback, name.ptr, 1, set_magic)) else c.pi_js_undefined();
-    defer engine.freeValue(write);
+    defer engine.releaseNativeValue(write);
     if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, c.JS_DupValue(engine.context, read), c.JS_DupValue(engine.context, write), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
 }
 
@@ -400,9 +461,9 @@ pub fn install(engine: *engine_mod.Engine) !void {
     const controller_class: c.JSClassDef = .{ .class_name = "AbortController", .finalizer = controllerFinalizer, .gc_mark = controllerMark, .call = null, .exotic = null };
     if (c.JS_NewClass(engine.runtime, engine.abort_signal_class, &signal_class) < 0 or c.JS_NewClass(engine.runtime, engine.abort_controller_class, &controller_class) < 0) return error.NativeAbortClassFailed;
     const prototype = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(prototype);
+    defer engine.releaseNativeValue(prototype);
     const constructor = try engine.checked(c.JS_NewCFunction2(engine.context, illegalSignal, "AbortSignal", 0, c.JS_CFUNC_constructor, 0));
-    defer engine.freeValue(constructor);
+    defer engine.releaseNativeValue(constructor);
     if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return error.JavaScriptException;
     c.JS_SetClassProto(engine.context, engine.abort_signal_class, c.JS_DupValue(engine.context, prototype));
     try accessor(engine, prototype, "aborted", signalCall, @intFromEnum(Method.aborted), null, 0);
@@ -415,15 +476,15 @@ pub fn install(engine: *engine_mod.Engine) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, constructor, "timeout", c.JS_NewCFunction(engine.context, staticTimeout, "timeout", 1), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     if (c.JS_DefinePropertyValueStr(engine.context, constructor, "any", c.JS_NewCFunction(engine.context, staticAny, "any", 1), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     const controller_prototype = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(controller_prototype);
+    defer engine.releaseNativeValue(controller_prototype);
     const controller_constructor = try engine.checked(c.JS_NewCFunction2(engine.context, controllerConstructor, "AbortController", 0, c.JS_CFUNC_constructor, 0));
-    defer engine.freeValue(controller_constructor);
+    defer engine.releaseNativeValue(controller_constructor);
     if (c.JS_SetConstructor(engine.context, controller_constructor, controller_prototype) < 0) return error.JavaScriptException;
     c.JS_SetClassProto(engine.context, engine.abort_controller_class, c.JS_DupValue(engine.context, controller_prototype));
     try accessor(engine, controller_prototype, "signal", controllerCall, 0, null, 0);
     if (c.JS_DefinePropertyValueStr(engine.context, controller_prototype, "abort", c.pi_js_function_magic(engine.context, controllerCall, "abort", 0, 1), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
+    defer engine.releaseNativeValue(global);
     if (c.JS_DefinePropertyValueStr(engine.context, global, "AbortSignal", c.JS_DupValue(engine.context, constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0 or
         c.JS_DefinePropertyValueStr(engine.context, global, "AbortController", c.JS_DupValue(engine.context, controller_constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     engine.abort_signals_ready = true;

@@ -21,7 +21,12 @@ fn callback(engine: *Engine, data: c.JSValue, action: Action, name: [:0]const u8
 fn argument(args: []const c.JSValue, index: usize) c.JSValue {
     return if (index < args.len) args[index] else c.pi_js_undefined();
 }
-fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn dispatch(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return act(engine, data[0], @enumFromInt(magic), if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| durable.reject(engine, err);
 }
@@ -82,14 +87,21 @@ pub fn create(engine: *Engine, session: c.JSValue, conversation: c.JSValue, init
 pub fn install(engine: *Engine, exports: c.JSValue) !void {
     try @import("native_tool_info.zig").putData(engine, exports, "watchEvents", try engine.checked(c.JS_NewCFunction(engine.context, acquire, "watchEvents", 3)));
 }
-fn acquire(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn acquire(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(acquirePendingBody(context, receiver, argc, argv));
+}
+fn acquirePendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return acquireOwned(engine, if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| durable.rejectedPromise(engine, err);
 }
 fn acquireOwned(engine: *Engine, args: []const c.JSValue) !c.JSValue {
     const owner = @import("native_durable_harness.zig").state(engine, argument(args, 0)) catch {
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const pending = c.JS_GetException(engine.context);
         engine.freeValue(pending);
+        try @import("native_pending_owner.zig").checkFatal(engine);
         return @import("native_sdk.zig").sourceError(engine, "Not a Harness");
     };
     if (owner.conversation != null) return @import("native_sdk.zig").sourceError(engine, "Not a Harness");

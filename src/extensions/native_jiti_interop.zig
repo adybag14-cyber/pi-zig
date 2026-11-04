@@ -5,6 +5,7 @@ const v = @import("native_ai_provider_values.zig");
 const c = v.c;
 const Scope = v.Scope;
 const body = @import("native_async_body.zig");
+const pending_owner = @import("native_pending_owner.zig");
 fn put(engine: *v.em.Engine, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void { try v.js.define(engine, target, name, c.JS_DupValue(engine.context, value)); }
 fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < args.len) args[index] else c.pi_js_undefined(); }
 fn instance(s: *Scope, value: c.JSValue, constructor: c.JSValue) !bool {
@@ -48,23 +49,19 @@ pub fn interopDefault(engine: *v.em.Engine, value: c.JSValue) !c.JSValue {
 }
 /// Native ordinary callback exit: return this error after restoring the owned
 /// reason to the VM. The primitive/VM owns it; no captured catch slot remains.
-pub fn callbackFailure(engine: *v.em.Engine, err: anyerror, generation: u64) anyerror {
-    if (err == error.OutOfMemory) {
-        _ = engine.throwNativeOutOfMemory();
-        const reason = c.JS_GetException(engine.context);
-        c.JS_SetUncatchableError(engine.context, reason);
-        _ = c.JS_Throw(engine.context, reason);
-        return error.JavaScriptException;
-    }
-    if (err != error.JavaScriptException) return err;
-    const reason = engine.captured_exception orelse return err;
-    if (!c.JS_IsUncatchableError(reason)) body.rethrowRecognizedAllocation(engine, reason, generation) catch |fatal| {
-        if (fatal != error.JavaScriptException) return fatal;
+pub fn callbackFailure(engine: *v.em.Engine, err: anyerror, _: u64) anyerror {
+    // A typed host allocation failure is a producer. Diagnostic values and
+    // an enclosing generation interval never supply fatal authority.
+    if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+    engine.releaseNativeValue(c.pi_js_undefined());
+    if (err == error.ExecutionTerminated or engine.nativeTerminationObserved())
+        return error.ExecutionTerminated;
+    if (c.JS_HasException(engine.context)) return error.JavaScriptException;
+    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
+        engine.captured_exception = null;
+        _ = c.JS_PiThrowExceptionData(engine.context, reason);
     };
-    const owned = engine.captured_exception orelse return err;
-    engine.captured_exception = null;
-    _ = c.JS_Throw(engine.context, owned);
-    return error.JavaScriptException;
+    return if (err == error.OutOfMemory) error.JavaScriptException else err;
 }
 fn trap(engine: *v.em.Engine, name: [*:0]const u8, length: c_int, kind: c_int, root: c.JSValue) !c.JSValue {
     // VM-owned function-data roots are traced/charged/freed by the existing C
@@ -76,14 +73,18 @@ fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVal
     const engine = v.em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
+    var owner = pending_owner.Frame.init(engine);
+    owner.enter() catch return owner.finishCallback(c.pi_js_exception());
     const args: []const c.JSValue = if (argc > 0) argv[0..@intCast(argc)] else &.{};
     const generation = engine.native_allocation_generation;
     const result = if (kind == 0) getValue(engine, arg(args, 0), arg(args, 1), roots[0]) else applyValue(engine, arg(args, 1), arg(args, 2), roots[0]);
-    return result catch |err| {
+    const completed = result catch |err| failure: {
         const current = callbackFailure(engine, err, generation);
-        if (current == error.JavaScriptException) return engine.throwCaptured();
-        return c.JS_ThrowTypeError(engine.context, "Native jiti interop trap: %s", @as([*:0]const u8, @errorName(current)));
+        if (current == error.ExecutionTerminated) break :failure c.JS_PiNativeTerminationResult();
+        if (current == error.JavaScriptException) break :failure engine.throwCaptured();
+        break :failure c.JS_ThrowTypeError(context, "Native jiti interop trap: %s", @as([*:0]const u8, @errorName(current)));
     };
+    return owner.finishCallback(completed);
 }
 fn getValue(engine: *v.em.Engine, target: c.JSValue, prop: c.JSValue, owner: c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit();

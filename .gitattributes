@@ -162,3 +162,7 @@ verification/sdk-default-real-assembly-4954-20261016/source44-proof/Run-SdkRunti
 verification/sdk-default-real-assembly-4954-20261016/source15-proof/Run-SdkAsyncBrandSource-20261016.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/sdk-default-real-assembly-4954-20261016/source48-proof/Run-SdkLoaderInputsSource-20261016.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/sdk-default-real-assembly-4954-20261016/source39-proof/Run-SdkModulePolicySourceV2-20261016.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+
+# Preserve exact reviewed CRLF bytes in these native ownership helpers.
+src/extensions/native_node_operation_scope.zig -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+src/extensions/native_sdk_git_url_values.zig -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

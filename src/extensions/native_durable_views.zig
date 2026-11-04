@@ -35,7 +35,12 @@ fn callback(engine: *Engine, data: c.JSValue, action: Action, arity: c_int) !c.J
     var captures = [_]c.JSValue{data};
     return engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, "", arity, @intFromEnum(action), captures.len, &captures));
 }
-fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, action: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn dispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, action: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, receiver, argc, argv, action, data));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, action: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return act(engine, data[0], @enumFromInt(action), (if (argc > 0) argv[0..@intCast(argc)] else &.{})) catch |err| durable.reject(engine, err);
 }
@@ -59,7 +64,7 @@ fn act(engine: *Engine, owner: c.JSValue, action: Action, args: []const c.JSValu
     if (action == .report) {
         const report = try scope.get(owner, "onReport");
         if (c.JS_IsUndefined(report)) return c.pi_js_undefined();
-        durable.contained(engine, report, &.{arg(args, 0)});
+        try durable.contained(engine, report, &.{arg(args, 0)});
         return c.pi_js_undefined();
     }
     if (action == .advance) {
@@ -174,7 +179,12 @@ fn acquireMode(engine: *Engine, session: c.JSValue, options: c.JSValue, id: c.JS
     defer engine.freeValue(queued);
     return durable.enqueue(engine, session, queued);
 }
-fn attach(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, watch: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn attach(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(attachPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn attachPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, watch: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return attachOwned(engine, data[0], data[1], data[2], watch) catch |err| durable.reject(engine, err);
 }

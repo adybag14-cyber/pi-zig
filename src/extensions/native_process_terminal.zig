@@ -364,10 +364,7 @@ fn terminalOp_forwardInputSequence(engine: *js.Engine, object: c.JSValue, _: c.J
             detect = try textEquals(engine, current_platform, "win32");
         }
     }
-    const shifted = if (detect) @import("native_process_streams.zig").isShiftPressed(engine) catch |err| blk: {
-        if (err == error.JavaScriptException) clearException(engine);
-        break :blk false;
-    } else false;
+    const shifted = if (detect) try @import("native_tui_platform_loader.zig").isNativeModifierPressed(engine, "shift") else false;
     const normalized = if (detect and shifted) try v.text(engine, "\x1b[13;2u") else c.JS_DupValue(engine.context, first);
     defer engine.freeValue(normalized);
     const handler = try js.get(engine, object, "inputHandler");
@@ -393,10 +390,8 @@ fn terminalOp_enableWindowsVTInput(engine: *js.Engine, _: c.JSValue, _: c.JSValu
     defer engine.freeValue(process);
     const platform = try js.get(engine, process, "platform");
     defer engine.freeValue(platform);
-    if (try textEquals(engine, platform, "win32")) _ = @import("native_process_streams.zig").enableVirtualTerminalInput(engine) catch |err| blk: {
-        if (err == error.JavaScriptException) clearException(engine);
-        break :blk false;
-    };
+    if (try textEquals(engine, platform, "win32"))
+        try @import("native_tui_platform_loader.zig").enableWindowsVTInput(engine);
     return c.pi_js_undefined();
 }
 fn terminalOp_stop(engine: *js.Engine, object: c.JSValue, state: c.JSValue, _: Method, _: []const c.JSValue) !c.JSValue {

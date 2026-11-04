@@ -39,7 +39,12 @@ pub fn find(engine: *Engine, live: c.JSValue, task_id: c.JSValue) !c.JSValue {
     }
     return c.pi_js_undefined();
 }
-fn matchesTask(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn matchesTask(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(matchesTaskPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn matchesTaskPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     const slot = if (argc > 0) argv[0] else c.pi_js_undefined();
     const id = vm.get(engine, slot, "taskId") catch |err| return @import("native_durable.zig").reject(engine, err);
@@ -114,7 +119,6 @@ fn deleteProperty(engine: *Engine, receiver: c.JSValue, name: [:0]const u8) !voi
     const atom = c.JS_NewAtom(engine.context, name);
     defer c.JS_FreeAtom(engine.context, atom);
     if (c.JS_DeleteProperty(engine.context, receiver, atom, c.JS_PROP_THROW) < 0) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
-        unreachable;
+        return error.JavaScriptException;
     }
 }

@@ -134,7 +134,7 @@ fn nativeReady(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejecte
     defer scope.deinit();
     if (rejected) return flow.settle(engine, owner, true, try abortReason(&scope, owner, value));
     readyResponse(&scope, owner, value) catch |err| {
-        const original = try scope.own(flow.reason(engine, err));
+        const original = try scope.own(try flow.reason(engine, err));
         const generation = engine.native_allocation_generation;
         _ = scope.invoke(try scope.get(owner, "iterator"), "return", &.{}) catch |close_error| discarded: {
             try @import("native_ai_partial_json.zig").discard(engine, close_error, generation);

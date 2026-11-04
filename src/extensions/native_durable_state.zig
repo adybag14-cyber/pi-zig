@@ -163,7 +163,12 @@ pub fn acquire(engine: *Engine, session: c.JSValue, args: []const c.JSValue) !c.
     defer engine.freeValue(callback);
     return durable.enqueueRead(engine, session, callback, c.pi_js_undefined());
 }
-fn queued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn queued(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(queuedPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn queuedPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return queuedOwned(engine, data) catch |err| durable.reject(engine, err);
 }
@@ -241,7 +246,12 @@ fn valueGetter(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.J
     const self = state(engine, receiver) catch |err| return durable.reject(engine, err);
     return c.JS_DupValue(engine.context, self.value);
 }
-fn method(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int) callconv(.c) c.JSValue {
+fn method(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(methodPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic));
+}
+fn methodPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return methodOwned(engine, receiver, if (argc > 0) argv[0] else c.pi_js_undefined(), operation) catch |err| durable.reject(engine, err);
 }
@@ -271,7 +281,12 @@ fn methodOwned(engine: *Engine, receiver: c.JSValue, listener: c.JSValue, operat
     try drainSubscriber(engine, object);
     return cancel;
 }
-fn unsubscribe(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn unsubscribe(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(unsubscribePendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn unsubscribePendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     detach(engine, data[0]) catch |err| return durable.reject(engine, err);
     return c.pi_js_undefined();
@@ -287,13 +302,23 @@ fn detach(engine: *Engine, object: c.JSValue) !void {
         break;
     };
 }
-fn closing(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn closing(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(closingPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn closingPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     const self = state(engine, data[0]) catch |err| return durable.reject(engine, err);
     self.dispose() catch |err| return durable.reject(engine, err);
     return c.pi_js_undefined();
 }
-fn publication(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn publication(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(publicationPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn publicationPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     receive(engine, data[0], argv[0], if (argc > 1) argv[1] else c.pi_js_undefined()) catch |err| return durable.reject(engine, err);
     return c.pi_js_undefined();
@@ -357,7 +382,12 @@ fn receive(engine: *Engine, object: c.JSValue, publication_value: c.JSValue, con
         }
     }
 }
-fn flushCallback(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn flushCallback(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(flushCallbackPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn flushCallbackPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     flush(engine, data[0]) catch |err| return durable.reject(engine, err);
     return c.pi_js_undefined();
@@ -388,6 +418,11 @@ fn flush(engine: *Engine, object: c.JSValue) !void {
     }
 }
 fn drainSubscriber(engine: *Engine, object: c.JSValue) anyerror!void {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(engine);
+    pending_frame.enter() catch |err| return pending_frame.finishVoid(err);
+    return pending_frame.finishVoid(drainSubscriberPendingBody(engine, object));
+}
+fn drainSubscriberPendingBody(engine: *Engine, object: c.JSValue) anyerror!void {
     const sub = try subscriber(engine, object);
     const self = try state(engine, sub.owner);
     if (sub.running or sub.closed) return;
@@ -410,6 +445,7 @@ fn drainSubscriber(engine: *Engine, object: c.JSValue) anyerror!void {
         var args = [_]c.JSValue{ frame.value, frame.context, delivery };
         const returned = c.JS_Call(engine.context, sub.listener, c.pi_js_undefined(), 3, &args);
         if (c.JS_IsException(returned)) {
+            try @import("native_pending_owner.zig").checkFatal(engine);
             const failure = c.JS_GetException(engine.context);
             defer engine.freeValue(failure);
             try reportState(self, failure);
@@ -433,7 +469,12 @@ fn drainSubscriber(engine: *Engine, object: c.JSValue) anyerror!void {
         return;
     }
 }
-fn settled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, failure: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn settled(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(settledPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn settledPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, failure: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     const sub = subscriber(engine, data[0]) catch |err| return durable.reject(engine, err);
     sub.running = false;
@@ -474,7 +515,7 @@ fn reportState(self: *State, failure: c.JSValue) !void {
     self.engine.freeValue(result);
 }
 fn reportJob(context: ?*c.JSContext, _: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
-    return c.JS_Throw(context, c.JS_DupValue(context, argv[0]));
+    return c.JS_PiThrowExceptionData(context, c.JS_DupValue(context, argv[0]));
 }
 fn allocationExercise(gpa: std.mem.Allocator) !void {
     const engine = try Engine.init(gpa, .{});

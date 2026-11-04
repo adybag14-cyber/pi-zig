@@ -147,7 +147,7 @@ fn step(scope: *Scope, owner: c.JSValue, value: c.JSValue, rejected: bool, stage
     }
 }
 fn fatal(engine: *js.Engine, owner: c.JSValue, err: anyerror) !void {
-    const reason = flow.reason(engine, err);
+    const reason = try flow.reason(engine, err);
     defer engine.freeValue(reason);
     try fatalReason(engine, owner, reason);
 }
@@ -181,7 +181,7 @@ fn continued(engine: *js.Engine, owner: c.JSValue, value: c.JSValue, rejected: b
         if (err == error.OutOfMemory) {
             try fatal(engine, owner, err);
         } else {
-            const reason = flow.reason(engine, err);
+            const reason = try flow.reason(engine, err);
             defer engine.freeValue(reason);
             const data = try js.get(engine, owner, "agent");
             defer engine.freeValue(data);
@@ -192,7 +192,13 @@ fn continued(engine: *js.Engine, owner: c.JSValue, value: c.JSValue, rejected: b
     };
     try flow.settle(engine, owner, false, c.pi_js_undefined());
 }
-fn abortCallback(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn abortCallback(context: ?*c.JSContext, pending_arg1: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(abortCallbackPendingBody(context, pending_arg1, pending_arg2, pending_arg3, pending_arg4, roots));
+}
+fn abortCallbackPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -228,7 +234,7 @@ pub fn start(scope: *Scope, bindings: c.JSValue, source: c.JSValue, destination:
         if (err == error.OutOfMemory) {
             try fatal(scope.engine, external.owner, err);
         } else {
-            const reason = flow.reason(scope.engine, err);
+            const reason = try flow.reason(scope.engine, err);
             defer scope.engine.freeValue(reason);
             finish(scope, data, true, reason) catch try fatalReason(scope.engine, external.owner, reason);
         }
@@ -259,7 +265,7 @@ fn startOwned(scope: *Scope, data: c.JSValue, bindings: c.JSValue, source: c.JSV
     try wait(scope, data, destination_closed, .destinationClosed);
     if (try writable.closeQueuedOrInFlightNative(scope.engine, destination) or try writable.isClosedNative(scope.engine, destination)) {
         const err = @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_INVALID_STATE", "Invalid state: Destination WritableStream is closed");
-        const reason = flow.reason(scope.engine, err);
+        const reason = try flow.reason(scope.engine, err);
         defer scope.engine.freeValue(reason);
         try destinationFailure(scope, data, reason);
     }

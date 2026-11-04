@@ -230,7 +230,7 @@ fn emitFinal(engine: *em.Engine, owner: c.JSValue) !void {
 fn continueAwait(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, stage_int: c_int) !void {
     const stage: Stage = @enumFromInt(stage_int);
     resumeCore(engine, owner, value, rejected, stage) catch |err| {
-        const raw = flow.reason(engine, err);
+        const raw = try flow.reason(engine, err);
         defer engine.freeValue(raw);
         try fail(engine, owner, raw);
     };

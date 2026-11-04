@@ -14,47 +14,56 @@ pub const Bundle = struct {
     import_function: c.JSValue,
     pub fn deinit(self: Bundle, engine: *em.Engine) void {
         self.eager.deinit(engine);
-        engine.freeValue(self.syntax);
-        engine.freeValue(self.load);
-        engine.freeValue(self.readiness);
-        engine.freeValue(self.import_function);
+        engine.releaseNativeValue(self.syntax);
+        engine.releaseNativeValue(self.load);
+        engine.releaseNativeValue(self.readiness);
+        engine.releaseNativeValue(self.import_function);
     }
     pub fn ready(self: Bundle, engine: *em.Engine) bool {
         return index.ready(engine, self.eager.core);
     }
 };
 fn settle(engine: *em.Engine, state: c.JSValue, key: [*:0]const u8, value: c.JSValue) !void {
-    const function = try engine.checked(c.JS_GetPropertyStr(engine.context, state, key));
-    defer engine.freeValue(function);
+    const function = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, state, key); });
+    defer engine.releaseNativeValue(function);
     var args = [_]c.JSValue{value};
-    const result = try engine.checked(c.JS_Call(engine.context, function, c.pi_js_undefined(), args.len, &args));
-    engine.freeValue(result);
+    const result = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_Call(engine.context, function, c.pi_js_undefined(), args.len, &args); });
+    engine.releaseNativeValue(result);
 }
 fn rejectPrivateReadiness(engine: *em.Engine, state: c.JSValue) !void {
     _ = c.JS_ThrowTypeError(engine.context, "Actual complete191 grammar registration is required");
+    try @import("native_pending_owner.zig").checkFatal(engine);
     const reason = c.JS_GetException(engine.context);
-    defer engine.freeValue(reason);
+    defer engine.releaseNativeValue(reason);
     try settle(engine, state, "readyReject", reason);
 }
 fn importIndex(engine: *em.Engine, state: c.JSValue) !void {
-    const core = try engine.checked(c.JS_GetPropertyStr(engine.context, state, "core"));
-    defer engine.freeValue(core);
+    const core = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, state, "core"); });
+    defer engine.releaseNativeValue(core);
     const ready = index.registerAll(engine, core) catch |err| {
+        if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
         _ = sdk.fail(engine, err);
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const reason = c.JS_GetException(engine.context);
-        defer engine.freeValue(reason);
+        defer engine.releaseNativeValue(reason);
         try settle(engine, state, "importReject", reason);
         try settle(engine, state, "readyReject", reason);
         return;
     };
-    const namespace = try engine.checked(c.JS_GetPropertyStr(engine.context, state, "namespace"));
-    defer engine.freeValue(namespace);
+    const namespace = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, state, "namespace"); });
+    defer engine.releaseNativeValue(namespace);
     // Source import success and private actual-factory readiness are distinct.
     // A safe-mode factory fallback still fulfills Source's module import.
     try settle(engine, state, "importResolve", namespace);
     if (ready) try settle(engine, state, "readyResolve", c.pi_js_undefined()) else try rejectPrivateReadiness(engine, state);
 }
 fn importJob(context: ?*c.JSContext, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(importJobPendingBody(context, argc, argv));
+}
+fn importJobPendingBody(context: ?*c.JSContext, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     if (argc != 1) return c.JS_ThrowInternalError(engine.context, "Native full-index job state absent");
     importIndex(engine, argv[0]) catch |err| return sdk.fail(engine, err);
@@ -74,7 +83,7 @@ fn requestImport(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: 
         try s.put(state, "importResolve", resolve);
         try s.put(state, "importReject", reject);
         var args = [_]c.JSValue{state};
-        if (c.JS_EnqueueJob(engine.context, importJob, args.len, &args) < 0) return @import("native_js_values.zig").capture(engine);
+        if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_EnqueueJob(engine.context, importJob, args.len, &args); } < 0) return @import("native_js_values.zig").capture(engine);
     }
     return c.JS_DupValue(engine.context, pending);
 }

@@ -10,11 +10,11 @@ pub const Frame = @import("component_protocol.zig").Frame;
 
 pub fn frameToValue(self: *const Frame, engine: *engine_mod.Engine) !c.JSValue {
     const array = try engine.checked(c.JS_NewArray(engine.context));
-    errdefer engine.freeValue(array);
+    errdefer engine.releaseNativeValue(array);
     for (self.lines, 0..) |line, index| {
         const value = try engine.checked(c.JS_NewStringLen(engine.context, line.ptr, line.len));
         if (c.JS_SetPropertyUint32(engine.context, array, @intCast(index), value) < 0) {
-            _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+            _ = try engine.checked(c.pi_js_exception());
             return error.JavaScriptException;
         }
     }
@@ -37,17 +37,17 @@ fn appendLines(gpa: std.mem.Allocator, lines: *std.ArrayList([]u8), bytes: *usiz
 /// compatibility boundary. Copy all bytes before any later user callback.
 pub fn normalize(engine: *engine_mod.Engine, value: c.JSValue) !Frame {
     const predicate = try arrayPredicate(engine);
-    defer engine.freeValue(predicate);
+    defer engine.releaseNativeValue(predicate);
     return normalizeWithPredicate(engine, value, predicate);
 }
 
 pub fn arrayPredicate(engine: *engine_mod.Engine) !c.JSValue {
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
-    const array = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "Array"));
-    defer engine.freeValue(array);
-    const predicate = try engine.checked(c.JS_GetPropertyStr(engine.context, array, "isArray"));
-    errdefer engine.freeValue(predicate);
+    defer engine.releaseNativeValue(global);
+    const array = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, global, "Array"); });
+    defer engine.releaseNativeValue(array);
+    const predicate = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, array, "isArray"); });
+    errdefer engine.releaseNativeValue(predicate);
     if (!c.JS_IsFunction(engine.context, predicate)) return error.NativeArrayIntrinsicMissing;
     return predicate;
 }
@@ -60,45 +60,45 @@ pub fn normalizeWithPredicate(engine: *engine_mod.Engine, value: c.JSValue, pred
     }
     var bytes: usize = 0;
     if (c.JS_IsString(value)) {
-        const text = try engine.toString(value);
+        const text = (engine.toString(value) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(text);
-        try appendLines(engine.gpa, &lines, &bytes, text);
+        (appendLines(engine.gpa, &lines, &bytes, text) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     } else if (!c.JS_IsNull(value) and !c.JS_IsUndefined(value)) {
         var args = [_]c.JSValue{value};
-        const is_array = try engine.checked(c.JS_Call(engine.context, predicate, c.pi_js_undefined(), 1, &args));
-        defer engine.freeValue(is_array);
+        const is_array = try engine.checked(native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_Call(engine.context, predicate, c.pi_js_undefined(), 1, &args); });
+        defer engine.releaseNativeValue(is_array);
         if (c.JS_ToBool(engine.context, is_array) == 0) return error.InvalidNativeComponentLines;
-        const length = try engine.checked(c.JS_GetPropertyStr(engine.context, value, "length"));
-        defer engine.freeValue(length);
+        const length = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetPropertyStr(engine.context, value, "length"); });
+        defer engine.releaseNativeValue(length);
         var number: f64 = 0;
-        if (c.JS_ToFloat64(engine.context, &number, length) < 0) {
-            _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+        if (native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_ToFloat64(engine.context, &number, length); } < 0) {
+            _ = try engine.checked(c.pi_js_exception());
             return error.JavaScriptException;
         }
         if (!std.math.isFinite(number) or number < 0 or number > maximum_lines) return error.NativeComponentFrameLimit;
         const count: usize = @intFromFloat(@floor(number));
         for (0..count) |index| {
-            const line = try engine.checked(c.JS_GetPropertyUint32(engine.context, value, @intCast(index)));
-            defer engine.freeValue(line);
+            const line = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, value, @intCast(index)); });
+            defer engine.releaseNativeValue(line);
             if (!c.JS_IsString(line)) return error.InvalidNativeComponentLines;
-            const text = try engine.toString(line);
+            const text = (engine.toString(line) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(text);
-            try appendLines(engine.gpa, &lines, &bytes, text);
+            (appendLines(engine.gpa, &lines, &bytes, text) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         }
     }
-    return .{ .gpa = engine.gpa, .lines = try lines.toOwnedSlice(engine.gpa), .bytes = bytes };
+    return .{ .gpa = engine.gpa, .lines = (lines.toOwnedSlice(engine.gpa) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; }), .bytes = bytes };
 }
 
 pub fn callMethod(engine: *engine_mod.Engine, component: c.JSValue, name: [*:0]const u8, args: []c.JSValue, optional: bool) !?c.JSValue {
     if (engine.native_fatal_teardown) return if (optional) null else error.NativeApplicationFatal;
-    const function = try engine.checked(c.JS_GetPropertyStr(engine.context, component, name));
-    defer engine.freeValue(function);
+    const function = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, component, name); });
+    defer engine.releaseNativeValue(function);
     if (c.JS_IsUndefined(function) or c.JS_IsNull(function)) {
         if (optional) return null;
         return error.NativeComponentMethodMissing;
     }
     if (!c.JS_IsFunction(engine.context, function)) return error.InvalidNativeComponentMethod;
-    return try engine.checked(c.JS_Call(engine.context, function, component, @intCast(args.len), if (args.len == 0) null else args.ptr));
+    return try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_Call(engine.context, function, component, @intCast(args.len), if (args.len == 0) null else args.ptr); });
 }
 
 const Handle = struct { engine: *engine_mod.Engine, manager: ?*Manager, id: u64, generation: u64, ui_service: ?c.JSValue = null, ignore_late_factory: bool = false };
@@ -130,13 +130,20 @@ fn handleMark(runtime: ?*c.JSRuntime, object: c.JSValue, marker: ?*const c.JS_Ma
     if (self.ui_service) |service| c.JS_MarkValue(runtime, service, marker);
 }
 
-fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn callback(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callbackPendingBody(context, pending_arg1, argc, argv, magic, data));
+}
+fn callbackPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     var class_id: u32 = 0;
-    if (c.JS_ToUint32(context, &class_id, data[1]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
+    if (native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_ToUint32(context, &class_id, data[1]); } < 0) return c.pi_js_exception();
     const handle: *Handle = @ptrCast(@alignCast(c.JS_GetOpaque(data[0], class_id) orelse return c.JS_ThrowTypeError(context, "Invalid native component handle")));
     var service_guard = if (handle.ui_service) |service| @import("native_ui_service.zig").Service.enterCallback(engine, service) catch |err| {
         if (err == error.JavaScriptException) return engine.throwCaptured();
+        if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
         return c.JS_ThrowTypeError(context, "Native component service: %s", @as([*:0]const u8, @errorName(err)));
     } else null;
     defer if (service_guard) |*guard| guard.restore();
@@ -145,7 +152,7 @@ fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVal
         if (magic == 2 and !handle.ignore_late_factory and c.JS_IsObject(value)) {
             // A factory may settle after close/reload or manager destruction.
             // Its native callback needs no manager pointer to release it.
-            if (callMethod(engine, value, "dispose", &.{}, true) catch null) |result| engine.freeValue(result);
+            if (callMethod(engine, value, "dispose", &.{}, true) catch null) |result| engine.releaseNativeValue(result);
         }
         return c.pi_js_undefined();
     };
@@ -154,10 +161,12 @@ fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVal
     if (magic == 2 or magic == 3) {
         if (magic == 2) manager.finishFactory(handle.id, handle.generation, value, handle.ignore_late_factory) catch |err| {
             if (err == error.JavaScriptException) return engine.throwCaptured();
-            return c.JS_ThrowOutOfMemory(context);
+            if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+            return @import("engine.zig").Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
         } else manager.rejectFactory(handle.id, handle.generation, value) catch |err| {
             if (err == error.JavaScriptException) return engine.throwCaptured();
-            return c.JS_ThrowOutOfMemory(context);
+            if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+            return @import("engine.zig").Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
         };
         return c.pi_js_undefined();
     }
@@ -169,7 +178,8 @@ fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVal
     }
     manager.complete(handle.id, handle.generation, value) catch |err| {
         if (err == error.JavaScriptException) return engine.throwCaptured();
-        if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+        if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+        if (err == error.OutOfMemory) return @import("engine.zig").Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
         return c.JS_ThrowTypeError(context, "Native component callback: %s", @as([*:0]const u8, @errorName(err)));
     };
     return c.pi_js_undefined();
@@ -200,17 +210,17 @@ pub const Manager = struct {
         const definition: c.JSClassDef = .{ .class_name = "Native Component Handle", .finalizer = handleFinalizer, .gc_mark = handleMark, .call = null, .exotic = null };
         if (c.JS_NewClass(engine.runtime, id, &definition) < 0) return error.OutOfMemory;
         const array_is_array = try arrayPredicate(engine);
-        errdefer engine.freeValue(array_is_array);
+        errdefer engine.releaseNativeValue(array_is_array);
         const global = c.JS_GetGlobalObject(engine.context);
-        defer engine.freeValue(global);
-        const promise_type = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "Promise"));
-        errdefer engine.freeValue(promise_type);
-        const promise_resolve = try engine.checked(c.JS_GetPropertyStr(engine.context, promise_type, "resolve"));
-        errdefer engine.freeValue(promise_resolve);
-        const prototype = try engine.checked(c.JS_GetPropertyStr(engine.context, promise_type, "prototype"));
-        defer engine.freeValue(prototype);
-        const promise_then = try engine.checked(c.JS_GetPropertyStr(engine.context, prototype, "then"));
-        errdefer engine.freeValue(promise_then);
+        defer engine.releaseNativeValue(global);
+        const promise_type = try engine.checked(native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_GetPropertyStr(engine.context, global, "Promise"); });
+        errdefer engine.releaseNativeValue(promise_type);
+        const promise_resolve = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetPropertyStr(engine.context, promise_type, "resolve"); });
+        errdefer engine.releaseNativeValue(promise_resolve);
+        const prototype = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, promise_type, "prototype"); });
+        defer engine.releaseNativeValue(prototype);
+        const promise_then = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, prototype, "then"); });
+        errdefer engine.releaseNativeValue(promise_then);
         if (!c.JS_IsFunction(engine.context, promise_resolve) or !c.JS_IsFunction(engine.context, promise_then)) return error.NativePromiseIntrinsicMissing;
         return .{ .engine = engine, .array_is_array = array_is_array, .promise_type = promise_type, .promise_resolve = promise_resolve, .promise_then = promise_then, .handle_class = id };
     }
@@ -218,20 +228,20 @@ pub const Manager = struct {
     pub fn deinit(self: *Manager) void {
         self.retireGeneration(c.pi_js_undefined()) catch {};
         self.retiring = true;
-        if (self.ui_service) |service| self.engine.freeValue(service);
+        if (self.ui_service) |service| self.engine.releaseNativeValue(service);
         self.ui_service = null;
         self.entries.deinit(self.engine.gpa);
-        self.engine.freeValue(self.array_is_array);
-        for ([_]c.JSValue{ self.promise_type, self.promise_resolve, self.promise_then }) |value| self.engine.freeValue(value);
+        self.engine.releaseNativeValue(self.array_is_array);
+        for ([_]c.JSValue{ self.promise_type, self.promise_resolve, self.promise_then }) |value| self.engine.releaseNativeValue(value);
     }
     pub fn forkInvocation(self: *const Manager) Manager {
         return .{ .engine = self.engine, .array_is_array = c.JS_DupValue(self.engine.context, self.array_is_array), .promise_type = c.JS_DupValue(self.engine.context, self.promise_type), .promise_resolve = c.JS_DupValue(self.engine.context, self.promise_resolve), .promise_then = c.JS_DupValue(self.engine.context, self.promise_then), .handle_class = self.handle_class, .generation = self.generation, .completion_bridge = self.completion_bridge, .ui_service = if (self.ui_service) |service| c.JS_DupValue(self.engine.context, service) else null };
     }
 
     fn freeEntry(self: *Manager, entry: *Entry) void {
-        if (entry.component) |component| self.engine.freeValue(component);
-        if (entry.pending_completion) |value| self.engine.freeValue(value);
-        for ([_]c.JSValue{ entry.handle, entry.promise, entry.resolve, entry.reject }) |value| self.engine.freeValue(value);
+        if (entry.component) |component| self.engine.releaseNativeValue(component);
+        if (entry.pending_completion) |value| self.engine.releaseNativeValue(value);
+        for ([_]c.JSValue{ entry.handle, entry.promise, entry.resolve, entry.reject }) |value| self.engine.releaseNativeValue(value);
         self.engine.gpa.destroy(entry);
     }
 
@@ -240,15 +250,15 @@ pub const Manager = struct {
         entry.settled = true;
         if (self.engine.native_fatal_teardown) return;
         const function_value = c.JS_DupValue(self.engine.context, if (success) entry.resolve else entry.reject);
-        defer self.engine.freeValue(function_value);
+        defer self.engine.releaseNativeValue(function_value);
         var args = [_]c.JSValue{value};
-        const result = try self.engine.checked(c.JS_Call(self.engine.context, function_value, c.pi_js_undefined(), 1, &args));
-        self.engine.freeValue(result);
+        const result = try self.engine.checked(native_guest_0: { try self.engine.checkNativeEntry(); break :native_guest_0 c.JS_Call(self.engine.context, function_value, c.pi_js_undefined(), 1, &args); });
+        self.engine.releaseNativeValue(result);
     }
 
     fn discardComponent(self: *Manager, component: c.JSValue) void {
         if (!c.JS_IsObject(component)) return;
-        if (callMethod(self.engine, component, "dispose", &.{}, true) catch null) |value| self.engine.freeValue(value);
+        if (callMethod(self.engine, component, "dispose", &.{}, true) catch null) |value| self.engine.releaseNativeValue(value);
     }
 
     fn rejectFactory(self: *Manager, id: u64, generation: u64, reason: c.JSValue) !void {
@@ -276,8 +286,9 @@ pub const Manager = struct {
         }
         if (!c.JS_IsObject(component)) {
             _ = c.JS_ThrowTypeError(self.engine.context, "Native custom factory must return a Component");
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const reason = c.JS_GetException(self.engine.context);
-            defer self.engine.freeValue(reason);
+            defer self.engine.releaseNativeValue(reason);
             return self.rejectFactory(id, generation, reason);
         }
         entry.component = c.JS_DupValue(self.engine.context, component);
@@ -288,7 +299,7 @@ pub const Manager = struct {
 
     fn function(self: *Manager, handle: c.JSValue, name: [*:0]const u8, magic: c_int) !c.JSValue {
         var data = [_]c.JSValue{ handle, c.JS_NewInt64(self.engine.context, self.handle_class) };
-        defer self.engine.freeValue(data[1]);
+        defer self.engine.releaseNativeValue(data[1]);
         return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, callback, name, 1, magic, 2, &data));
     }
 
@@ -309,31 +320,31 @@ pub const Manager = struct {
         var capabilities: [2]c.JSValue = undefined;
         const promise = try engine.checked(c.JS_NewPromiseCapability(engine.context, &capabilities));
         var transferred = false;
-        defer if (!transferred) for ([_]c.JSValue{ promise, capabilities[0], capabilities[1] }) |value| engine.freeValue(value);
+        defer if (!transferred) for ([_]c.JSValue{ promise, capabilities[0], capabilities[1] }) |value| engine.releaseNativeValue(value);
         const handle = try engine.checked(c.JS_NewObjectClass(engine.context, self.handle_class));
         var handle_transferred = false;
-        defer if (!handle_transferred) engine.freeValue(handle);
-        const state = try engine.gpa.create(Handle);
+        defer if (!handle_transferred) engine.releaseNativeValue(handle);
+        const state = (engine.gpa.create(Handle) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         state.* = .{ .engine = engine, .manager = self, .id = id, .generation = generation, .ui_service = if (self.ui_service) |service| c.JS_DupValue(engine.context, service) else null };
         _ = c.JS_SetOpaque(handle, state);
-        const entry = try engine.gpa.create(Entry);
+        const entry = (engine.gpa.create(Entry) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         errdefer if (!transferred) engine.gpa.destroy(entry);
         entry.* = .{ .id = id, .generation = generation, .handle = handle, .promise = promise, .resolve = capabilities[0], .reject = capabilities[1] };
-        try self.entries.put(engine.gpa, id, entry);
+        (self.entries.put(engine.gpa, id, entry) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         transferred = true;
         handle_transferred = true;
         var keep = false;
         defer if (!keep) self.close(id, generation, c.pi_js_undefined()) catch {};
         const result_promise = c.JS_DupValue(engine.context, promise);
-        errdefer engine.freeValue(result_promise);
+        errdefer engine.releaseNativeValue(result_promise);
         const tui = try engine.checked(c.JS_NewObjectProto(engine.context, facade));
-        defer engine.freeValue(tui);
+        defer engine.releaseNativeValue(tui);
         const request = try self.function(handle, "requestRender", 1);
         if (c.JS_DefinePropertyValueStr(engine.context, tui, "requestRender", request, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
         const done = try self.function(handle, "done", 0);
-        defer engine.freeValue(done);
+        defer engine.releaseNativeValue(done);
         var args = [_]c.JSValue{ tui, theme, keybindings, done };
-        const returned = engine.checked(c.JS_Call(engine.context, factory, c.pi_js_undefined(), args.len, &args)) catch |err| {
+        const returned = engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_Call(engine.context, factory, c.pi_js_undefined(), args.len, &args); }) catch |err| {
             if (err != error.JavaScriptException) return err;
             if (self.entries.get(id)) |active| {
                 if (!active.settled) try self.rejectFactory(id, generation, engine.captured_exception orelse c.pi_js_undefined()) else self.close(id, generation, c.pi_js_undefined()) catch {};
@@ -341,23 +352,23 @@ pub const Manager = struct {
             keep = true;
             return .{ .id = id, .generation = generation, .result = result_promise };
         };
-        defer engine.freeValue(returned);
+        defer engine.releaseNativeValue(returned);
         var resolve_args = [_]c.JSValue{returned};
-        const pending = try engine.checked(c.JS_Call(engine.context, self.promise_resolve, self.promise_type, 1, &resolve_args));
-        defer engine.freeValue(pending);
+        const pending = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_Call(engine.context, self.promise_resolve, self.promise_type, 1, &resolve_args); });
+        defer engine.releaseNativeValue(pending);
         const state_value = c.JS_PromiseState(engine.context, pending);
         if (state_value == c.JS_PROMISE_FULFILLED or state_value == c.JS_PROMISE_REJECTED) {
             const component = c.JS_PromiseResult(engine.context, pending);
-            defer engine.freeValue(component);
+            defer engine.releaseNativeValue(component);
             if (state_value == c.JS_PROMISE_FULFILLED) try self.finishFactory(id, generation, component, state.ignore_late_factory) else try self.rejectFactory(id, generation, component);
         } else {
             const resolved = try self.function(handle, "factoryReady", 2);
-            defer engine.freeValue(resolved);
+            defer engine.releaseNativeValue(resolved);
             const rejected = try self.function(handle, "factoryRejected", 3);
-            defer engine.freeValue(rejected);
+            defer engine.releaseNativeValue(rejected);
             var then_args = [_]c.JSValue{ resolved, rejected };
-            const observed = try engine.checked(c.JS_Call(engine.context, self.promise_then, pending, 2, &then_args));
-            engine.freeValue(observed);
+            const observed = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_Call(engine.context, self.promise_then, pending, 2, &then_args); });
+            engine.releaseNativeValue(observed);
         }
         // Resolve custom() immediately after done(), even if an asynchronous
         // factory has not returned its component yet. Reaction handles keep
@@ -403,7 +414,7 @@ pub const Manager = struct {
         const entry = self.entries.get(id) orelse return;
         if (entry.generation != generation or entry.pending_completion == null) return;
         const value = c.JS_DupValue(self.engine.context, entry.pending_completion.?);
-        defer self.engine.freeValue(value);
+        defer self.engine.releaseNativeValue(value);
         try self.settle(entry, value, entry.pending_success);
         self.close(id, generation, c.pi_js_undefined()) catch {};
     }
@@ -415,7 +426,7 @@ pub const Manager = struct {
         // Host cleanup can reject a staged success, but the original callback
         // rejection remains primary when cleanup also fails.
         if (!entry.pending_success) return self.acknowledgeCompletion(id, generation);
-        self.engine.freeValue(entry.pending_completion.?);
+        self.engine.releaseNativeValue(entry.pending_completion.?);
         entry.pending_completion = null;
         try self.settle(entry, reason, false);
         self.close(id, generation, reason) catch {};
@@ -434,21 +445,21 @@ pub const Manager = struct {
 
     pub fn property(self: *Manager, id: u64, generation: u64, name: [*:0]const u8) !c.JSValue {
         const component = try self.snapshot(id, generation);
-        defer self.engine.freeValue(component);
-        return self.engine.checked(c.JS_GetPropertyStr(self.engine.context, component, name));
+        defer self.engine.releaseNativeValue(component);
+        return self.engine.checked(native_guest_0: { try self.engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(self.engine.context, component, name); });
     }
 
     pub fn render(self: *Manager, id: u64, generation: u64, width: usize) !Frame {
         if (width > 16_384) return error.NativeComponentViewportLimit;
         const component = try self.snapshot(id, generation);
-        defer self.engine.freeValue(component);
+        defer self.engine.releaseNativeValue(component);
         const revision = self.entries.get(id).?.revision;
         var args = [_]c.JSValue{c.JS_NewInt64(self.engine.context, @intCast(width))};
-        defer self.engine.freeValue(args[0]);
+        defer self.engine.releaseNativeValue(args[0]);
         const pending = (try callMethod(self.engine, component, "render", &args, false)).?;
-        defer self.engine.freeValue(pending);
+        defer self.engine.releaseNativeValue(pending);
         const value = try self.engine.awaitValue(pending);
-        defer self.engine.freeValue(value);
+        defer self.engine.releaseNativeValue(value);
         var frame = try normalizeWithPredicate(self.engine, value, self.array_is_array);
         errdefer frame.deinit();
         const active = self.entries.get(id) orelse return error.NativeComponentClosed;
@@ -460,13 +471,13 @@ pub const Manager = struct {
     pub fn input(self: *Manager, id: u64, generation: u64, data: []const u8) !void {
         if (data.len > 64 * 1024) return error.NativeComponentInputLimit;
         const component = try self.snapshot(id, generation);
-        defer self.engine.freeValue(component);
+        defer self.engine.releaseNativeValue(component);
         var args = [_]c.JSValue{try self.engine.checked(c.JS_NewStringLen(self.engine.context, data.ptr, data.len))};
-        defer self.engine.freeValue(args[0]);
+        defer self.engine.releaseNativeValue(args[0]);
         if (try callMethod(self.engine, component, "handleInput", &args, true)) |pending| {
-            defer self.engine.freeValue(pending);
+            defer self.engine.releaseNativeValue(pending);
             const result = try self.engine.awaitValue(pending);
-            self.engine.freeValue(result);
+            self.engine.releaseNativeValue(result);
         }
         if (self.entries.get(id)) |entry| if (entry.generation == generation) {
             entry.dirty = true;
@@ -476,11 +487,11 @@ pub const Manager = struct {
 
     pub fn invalidate(self: *Manager, id: u64, generation: u64) !void {
         const component = try self.snapshot(id, generation);
-        defer self.engine.freeValue(component);
+        defer self.engine.releaseNativeValue(component);
         if (try callMethod(self.engine, component, "invalidate", &.{}, true)) |pending| {
-            defer self.engine.freeValue(pending);
+            defer self.engine.releaseNativeValue(pending);
             const result = try self.engine.awaitValue(pending);
-            self.engine.freeValue(result);
+            self.engine.releaseNativeValue(result);
         }
         if (self.entries.get(id)) |entry| if (entry.generation == generation) {
             entry.dirty = true;
@@ -519,11 +530,12 @@ pub const Manager = struct {
         };
         if (entry.component) |component| {
             const pending = callMethod(self.engine, component, "dispose", &.{}, true) catch |err| {
+        if (err == error.OutOfMemory) _ = self.engine.throwNativeOutOfMemoryFatal();
                 if (first_error) |original| return original;
                 return err;
             };
             if (pending) |value| {
-                defer self.engine.freeValue(value);
+                defer self.engine.releaseNativeValue(value);
                 // Upstream dispose is synchronous; do not start an unbounded
                 // await from retirement or teardown.
             }
@@ -535,15 +547,17 @@ pub const Manager = struct {
     /// retire. Retain it across arbitrary dispose getters/callbacks.
     pub fn closePreservingException(self: *Manager, id: u64, generation: u64, reason: c.JSValue) !void {
         const original = if (self.engine.captured_exception) |value| c.JS_DupValue(self.engine.context, value) else null;
-        defer if (original) |value| self.engine.freeValue(value);
+        defer if (original) |value| self.engine.releaseNativeValue(value);
         self.close(id, generation, reason) catch |err| {
+            try @import("native_pending_owner.zig").catchFailure(self.engine, err);
             if (original) |value| {
-                _ = self.engine.checked(c.JS_Throw(self.engine.context, c.JS_DupValue(self.engine.context, value))) catch {};
+                _ = self.engine.checked(c.JS_PiThrowExceptionData(self.engine.context, c.JS_DupValue(self.engine.context, value))) catch {};
                 return;
             }
             return err;
         };
-        if (original) |value| _ = self.engine.checked(c.JS_Throw(self.engine.context, c.JS_DupValue(self.engine.context, value))) catch {};
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
+        if (original) |value| _ = self.engine.checked(c.JS_PiThrowExceptionData(self.engine.context, c.JS_DupValue(self.engine.context, value))) catch {};
     }
 
     pub fn retireGeneration(self: *Manager, reason: c.JSValue) !void {

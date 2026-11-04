@@ -26,6 +26,12 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue, dependencies: c.JSValue
     }
 }
 fn dispatch(context: ?*c.JSContext, session: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, session, argc, argv, magic, roots));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, session: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -72,7 +78,7 @@ fn auth(engine: *em.Engine, owner: c.JSValue, stage: Stage) !void {
     const generation = engine.native_allocation_generation;
     invokeAuth(engine, owner, stage) catch |err| {
         if (err == error.OutOfMemory or engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-        const raw = flow.reason(engine, err);
+        const raw = try flow.reason(engine, err);
         defer engine.freeValue(raw);
         return rejected(engine, owner, stage, raw);
     };
@@ -116,7 +122,7 @@ fn advance(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, failed: bool,
         .optional => {
             // Source's try covers response getters, spread and header filtering.
             const result = optionalResult(&scope, owner, value) catch |err| {
-                const reason = flow.reason(engine, err);
+                const reason = try flow.reason(engine, err);
                 defer engine.freeValue(reason);
                 return rejected(engine, owner, .optional, reason);
             };
@@ -168,7 +174,13 @@ fn headers(scope: *Scope, value: c.JSValue) !c.JSValue {
     const filtered = try scope.call(filter, entries, &.{predicate});
     return scope.call(from_entries, object, &.{filtered});
 }
-fn keepHeader(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn keepHeader(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(keepHeaderPendingBody(context, pending_arg1, argc, argv));
+}
+fn keepHeaderPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;

@@ -43,6 +43,7 @@ pub fn construct(engine: *Engine, constructor: c.JSValue, pattern: c.JSValue, fl
     var args = [_]c.JSValue{ pattern, flags orelse c.pi_js_undefined() };
     const result = c.JS_CallConstructor(engine.context, constructor, if (flags != null) 2 else 1, &args);
     if (!c.JS_IsException(result) or !c.JS_IsStrictEqual(engine.context, constructor, engine.intrinsic_regexp_constructor) or !c.JS_IsString(pattern)) return engine.checked(result);
+    try @import("native_pending_owner.zig").checkFatal(engine);
     const failure = c.JS_GetException(engine.context);
     defer engine.freeValue(failure);
     const message_value = try vm.get(engine, failure, "message");

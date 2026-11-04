@@ -83,7 +83,7 @@ fn Body(comptime layer: Layer) type {
             var s: Scope = .{ .engine = engine };
             defer s.deinit();
             return step(&s, owner, completion, input) catch |err| {
-                const reason = try s.own(flow.reason(engine, err));
+                const reason = try s.own(try flow.reason(engine, err));
                 if (engine.captured_exception) |captured| {
                     engine.captured_exception = null;
                     engine.freeValue(captured);

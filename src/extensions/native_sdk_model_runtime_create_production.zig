@@ -146,7 +146,13 @@ fn afterConfig(engine: *em.Engine, owner: c.JSValue, config: c.JSValue) !void {
     }
     try finish(engine, owner, false, runtime);
 }
-fn wrapProvider(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn wrapProvider(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(wrapProviderPendingBody(context, pending_arg1, argc, argv, pending_arg4, roots));
+}
+fn wrapProviderPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return wrapped(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), roots[0], roots[1], roots[2]) catch |err| sdk.fail(engine, err);
 }
@@ -157,7 +163,13 @@ fn wrapped(engine: *em.Engine, provider: c.JSValue, bindings: c.JSValue, options
     if (scope.equal(try scope.get(provider, "id"), try scope.text("openrouter"))) return c.JS_DupValue(engine.context, try imported(&scope, bindings, "withPersonalizedCatalog", &.{ provider, try scope.get(bindings, "personalizeOpenRouterCatalog"), try scope.get(options, "catalogBaseUrl"), generated_at }));
     return c.JS_DupValue(engine.context, try imported(&scope, bindings, "withRemoteCatalog", &.{ provider, try scope.get(options, "catalogBaseUrl"), generated_at }));
 }
-fn abortRefresh(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn abortRefresh(context: ?*c.JSContext, pending_arg1: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(abortRefreshPendingBody(context, pending_arg1, pending_arg2, pending_arg3, pending_arg4, roots));
+}
+fn abortRefreshPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return js.invoke(engine, roots[0], "abort", &.{}) catch |err| sdk.fail(engine, err);
 }
@@ -173,7 +185,7 @@ fn finish(engine: *em.Engine, owner: c.JSValue, rejected: bool, value: c.JSValue
 }
 fn fail(engine: *em.Engine, owner: c.JSValue, err: anyerror) !void {
     const native_failure = try flow.nativeFailure(engine, owner, err);
-    const reason = flow.reason(engine, err);
+    const reason = try flow.reason(engine, err);
     defer engine.freeValue(reason);
     finish(engine, owner, true, reason) catch |failure| try flow.rejectError(engine, owner, failure);
     if (native_failure) return error.OutOfMemory;

@@ -77,8 +77,9 @@ fn mark(runtime: ?*c.JSRuntime, holder: c.JSValue, marker: ?*const c.JS_MarkFunc
 }
 fn takeSuccess(engine: *v.em.Engine, owned: c.JSValue) !c.JSValue {
     if (c.JS_HasException(engine.context)) {
-        const pending = c.JS_GetException(engine.context); engine.freeValue(owned);
-        return engine.checked(c.JS_Throw(engine.context, pending));
+        var generic_fatal: bool = false;
+        const pending = c.JS_PiGetExceptionWithFatal(engine.context, &generic_fatal); engine.freeValue(owned);
+        return engine.checked(c.JS_PiThrowNativePending(engine.context, pending, generic_fatal));
     }
     return owned;
 }

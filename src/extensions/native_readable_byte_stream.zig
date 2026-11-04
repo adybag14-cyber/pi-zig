@@ -235,7 +235,13 @@ fn errored(scope: *Scope, self: *State, reason: c.JSValue) !void {
     }
     try settleClosed(scope, self, true, reason);
 }
-fn algorithm(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, raw: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn algorithm(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, raw: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(algorithmPendingBody(context, pending_arg1, argc, argv, raw, roots));
+}
+fn algorithmPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, raw: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -244,7 +250,7 @@ fn algorithm(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVa
     const stage: Await = @enumFromInt(@divTrunc(raw, 2));
     const self = stream(roots[0]);
     algorithmStep(&scope, roots[0], self, roots[1], item, rejected, stage) catch |err| {
-        const reason = async_value.reason(engine, err);
+        const reason = async_value.reason(engine, err) catch |failure| return @import("native_sdk.zig").fail(engine, failure);
         defer engine.freeValue(reason);
         errored(&scope, self, reason) catch |failure| return @import("native_durable.zig").reject(engine, failure);
     };
@@ -275,13 +281,13 @@ fn pull(scope: *Scope, object: c.JSValue, self: *State) !void {
     self.pulling = true;
     const pending = if (c.JS_IsUndefined(self.pull)) c.pi_js_undefined() else scope.call(self.pull, self.source, &.{self.controller}) catch |err| {
         self.pulling = false;
-        const reason = async_value.reason(scope.engine, err);
+        const reason = try async_value.reason(scope.engine, err);
         defer scope.engine.freeValue(reason);
         return errored(scope, self, reason);
     };
     awaitAlgorithm(scope, object, pending, c.pi_js_undefined(), .pull) catch |err| {
         self.pulling = false;
-        const reason = async_value.reason(scope.engine, err);
+        const reason = try async_value.reason(scope.engine, err);
         defer scope.engine.freeValue(reason);
         return errored(scope, self, reason);
     };
@@ -758,7 +764,7 @@ fn operate(scope: *Scope, receiver: c.JSValue, roots: [*c]c.JSValue, method: Met
             }
             if (!self.byte_source) {
                 enqueueValue(scope, self, first) catch |err| {
-                    const reason = async_value.reason(scope.engine, err);
+                    const reason = try async_value.reason(scope.engine, err);
                     defer scope.engine.freeValue(reason);
                     try errored(scope, self, reason);
                     return h.throw(scope, reason);
@@ -795,6 +801,12 @@ fn operate(scope: *Scope, receiver: c.JSValue, roots: [*c]c.JSValue, method: Met
     }
 }
 fn dispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, raw: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, receiver, argc, argv, raw, roots));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, raw: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -854,13 +866,19 @@ fn construct(engine: *js.Engine, target: c.JSValue, args: []const c.JSValue, con
     try awaitAlgorithm(&scope, object, pending, c.pi_js_undefined(), .start);
     return c.JS_DupValue(engine.context, object);
 }
-fn privateCancel(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn privateCancel(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(privateCancelPendingBody(context, pending_arg1, argc, argv, pending_arg4, roots));
+}
+fn privateCancelPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
     if (argc < 1) return c.JS_ThrowTypeError(context, "Missing native stream");
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const class = classId(&scope, roots[0], "byteStreamClass") catch |err| return @import("native_durable.zig").reject(engine, err);
-    const raw = c.JS_GetOpaque2(context, argv[0], class) orelse return c.JS_Throw(context, c.JS_GetException(context));
+    const raw = c.JS_GetOpaque2(context, argv[0], class) orelse return c.pi_js_exception();
     const self: *State = @ptrCast(@alignCast(raw));
     const returned = cancel(&scope, argv[0], self, if (argc > 1) argv[1] else c.pi_js_undefined()) catch |err| return @import("native_durable.zig").rejectedPromise(engine, err);
     return c.JS_DupValue(context, returned);
@@ -902,6 +920,12 @@ fn publicOperate(scope: *Scope, receiver: c.JSValue, bindings: c.JSValue, group:
     return operate(scope, receiver, &roots, method, args);
 }
 fn publicDispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, raw: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(publicDispatchPendingBody(context, receiver, argc, argv, raw, roots));
+}
+fn publicDispatchPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, raw: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();

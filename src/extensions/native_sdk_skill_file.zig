@@ -30,7 +30,7 @@ fn warning(scope: *Scope, diagnostics: c.JSValue, message: c.JSValue, path: c.JS
 fn failure(scope: *Scope, diagnostics: c.JSValue, path: c.JSValue, err: anyerror, generation: u64, fallback: []const u8) !void {
     const original = scope.engine.nativeAllocationError(err, generation);
     if (original == error.OutOfMemory) return original;
-    const reason = try scope.own(flow.reason(scope.engine, original));
+    const reason = try scope.own(try flow.reason(scope.engine, original));
     if (scope.engine.captured_exception) |value| scope.engine.freeValue(value);
     scope.engine.captured_exception = null;
     const constructor = try scope.global("Error");

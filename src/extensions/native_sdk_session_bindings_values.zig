@@ -22,11 +22,15 @@ pub const Scope = struct {
         // Reserved for the listed direct, no-guest VM allocators below and the
         // private null-prototype stage allocation. Never get/call/coercion.
         if (c.JS_HasException(self.engine.context)) {
-            const reason = c.JS_GetException(self.engine.context);
+            var generic_fatal: bool = false;
+            const reason = c.JS_PiGetExceptionWithFatal(self.engine.context, &generic_fatal);
             const tag = c.pi_js_native_allocation_error_generation(reason);
             const distance = tag -% generation;
-            if (tag != 0 and distance != 0 and distance <= self.engine.native_allocation_generation -% generation) c.JS_SetUncatchableError(self.engine.context, reason);
-            _ = c.JS_Throw(self.engine.context, reason);
+            if (tag != 0 and distance != 0 and distance <= self.engine.native_allocation_generation -% generation) {
+                c.JS_SetUncatchableError(self.engine.context, reason);
+                generic_fatal = true;
+            }
+            _ = c.JS_PiThrowNativePending(self.engine.context, reason, generic_fatal);
         }
         return self.raw(value, generation);
     }

@@ -1,0 +1,143 @@
+// Guest regression for exact native-module-path default options and real cache priority.
+// Run once in a fresh Engine with the validated installed resource root supplied.
+import { createRequire } from "node:module";
+import * as path from "node:path";
+import { pathToFileURL } from "node:url";
+import * as shortTui from "pi-tui";
+import * as scopedTui from "@earendil-works/pi-tui";
+
+function check(condition, message) {
+    if (!condition) throw new Error("TUI candidate options/cache: " + message);
+}
+check(typeof nativeTuiTestResourceRoot === "string" && path.isAbsolute(nativeTuiTestResourceRoot),
+    "actual absolute resource root required");
+check(process.platform === "win32", "this case requires the actual Windows target");
+check(process.arch === "x64" || process.arch === "arm64", "supported actual architecture required");
+check(typeof shortTui.getNativeClipboard === "function" &&
+    typeof scopedTui.getNativeClipboard === "function", "public getter missing");
+
+const root = nativeTuiTestResourceRoot;
+const candidateUrl = pathToFileURL(path.join(root, "dist", "native-module-path.js")).href;
+const packageEntry = path.join(root, "dist", "index.js");
+const actualExecPath = process.execPath;
+const localRequire = createRequire(pathToFileURL(path.join(root, "dist", "native-platform.js")));
+const originalArch = Object.getOwnPropertyDescriptor(process, "arch");
+const actualArch = process.arch;
+const otherArch = actualArch === "x64" ? "arm64" : "x64";
+const architectures = [actualArch, otherArch];
+const filenames = architectures.map(arch => localRequire.resolve(path.join(
+    root, "native", "win32", "prebuilds", "win32-" + arch, "win32-platform.node")));
+const previousCache = filenames.map(filename => ({
+    present: Object.hasOwn(localRequire.cache, filename),
+    value: localRequire.cache[filename],
+}));
+const optionNames = ["moduleUrl", "resolvePackage", "execPath"];
+const previousOptions = optionNames.map(name => Object.getOwnPropertyDescriptor(Object.prototype, name));
+const trace = [];
+const optionReceivers = [];
+let optionReceiver;
+let activeCase = -1;
+
+function optionRead(receiver, name) {
+    check(Object.getPrototypeOf(receiver) === Object.prototype, "default options prototype");
+    check(Object.getOwnPropertyNames(receiver).length === 0, "default options must be empty");
+    if (optionReceiver === undefined) {
+        optionReceiver = receiver;
+        optionReceivers.push(receiver);
+    }
+    check(receiver === optionReceiver, "all option reads must use the same default object");
+    trace.push("option:" + name);
+}
+const helpers = architectures.map((arch, index) => {
+    const text = function getText() { return Promise.resolve(null); };
+    const image = function getImage() { return Promise.resolve(null); };
+    return {
+        marker: "cache-" + arch,
+        get getText() {
+            check(this === helpers[index], "getText getter receiver");
+            trace.push("helper:getText:" + arch);
+            return text;
+        },
+        get getImage() {
+            check(this === helpers[index], "getImage getter receiver");
+            trace.push("helper:getImage:" + arch);
+            return image;
+        },
+    };
+});
+
+try {
+    // Both exact physical prebuild paths are resolved before installing overrides.
+    // The second is foreign to the actual host; its cached exports must still win.
+    for (let index = 0; index < filenames.length; index++) {
+        const filename = filenames[index];
+        localRequire.cache[filename] = {
+            id: filename, filename, loaded: true, children: [], exports: helpers[index],
+        };
+    }
+    Object.defineProperty(Object.prototype, "moduleUrl", {
+        configurable: true,
+        get() { optionRead(this, "moduleUrl"); return candidateUrl; },
+    });
+    Object.defineProperty(Object.prototype, "resolvePackage", {
+        configurable: true,
+        get() {
+            optionRead(this, "resolvePackage");
+            return function resolvePackage(specifier) {
+                check(this === undefined, "nullish resolver call must have undefined receiver");
+                check(specifier === "@earendil-works/pi-tui", "exact package specifier");
+                trace.push("resolve:" + specifier);
+                return packageEntry;
+            };
+        },
+    });
+    Object.defineProperty(Object.prototype, "execPath", {
+        configurable: true,
+        get() { optionRead(this, "execPath"); return actualExecPath; },
+    });
+
+    for (activeCase = 0; activeCase < architectures.length; activeCase++) {
+        const arch = architectures[activeCase];
+        Object.defineProperty(process, "arch", {
+            configurable: true,
+            enumerable: originalArch ? originalArch.enumerable : true,
+            writable: false,
+            value: arch,
+        });
+        optionReceiver = undefined;
+        const start = trace.length;
+        const helper = shortTui.getNativeClipboard();
+        check(helper === helpers[activeCase], "real require.cache exports identity for " + arch);
+        const expected = [
+            "option:moduleUrl",
+            "option:resolvePackage",
+            "resolve:@earendil-works/pi-tui",
+            "option:execPath",
+            "helper:getText:" + arch,
+            "helper:getImage:" + arch,
+        ];
+        check(JSON.stringify(trace.slice(start)) === JSON.stringify(expected),
+            "option/load evaluation order for " + arch + ": " + JSON.stringify(trace.slice(start)));
+        const beforeCached = trace.length;
+        check(scopedTui.getNativeClipboard() === helper, "scoped alias must share helper cache");
+        check(shortTui.getNativeClipboard() === helper, "repeat must share helper cache");
+        check(trace.length === beforeCached, "cache hit must not repeat options or helper shape reads");
+    }
+    check(optionReceivers.length === 2 && optionReceivers[0] !== optionReceivers[1],
+        "each uncached lookup needs a fresh default options object");
+    Object.defineProperty(process, "arch", originalArch);
+    const beforeReturn = trace.length;
+    check(scopedTui.getNativeClipboard() === helpers[0], "returning to actual architecture retains cache");
+    check(trace.length === beforeReturn, "retained first cache hit must not repeat candidate reads");
+} finally {
+    if (originalArch) Object.defineProperty(process, "arch", originalArch);
+    else delete process.arch;
+    for (let index = 0; index < optionNames.length; index++) {
+        if (previousOptions[index]) Object.defineProperty(Object.prototype, optionNames[index], previousOptions[index]);
+        else delete Object.prototype[optionNames[index]];
+    }
+    for (let index = 0; index < filenames.length; index++) {
+        if (previousCache[index].present) localRequire.cache[filenames[index]] = previousCache[index].value;
+        else delete localRequire.cache[filenames[index]];
+    }
+}

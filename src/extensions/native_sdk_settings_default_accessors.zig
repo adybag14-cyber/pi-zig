@@ -79,8 +79,11 @@ pub fn supports(name: []const u8) bool {
     return std.meta.stringToEnum(Kind, name) != null;
 }
 pub fn method(engine: *Engine, name: []const u8, imports: c.JSValue) !c.JSValue {
-    inline for (std.meta.tags(Kind)) |kind| {
-        if (std.mem.eql(u8, name, @tagName(kind))) return h.expression(engine, methodBody, .{ kind, imports });
+    inline for (comptime std.meta.tags(Kind)) |kind| {
+        if (std.mem.eql(u8, name, @tagName(kind))) {
+            var method_scope: Scope = .{ .engine = engine };
+            return v.owned.finishValue(&method_scope, methodBody(&method_scope, kind, imports));
+        }
     }
     return error.ActualSettingsDefaultAccessorRequired;
 }

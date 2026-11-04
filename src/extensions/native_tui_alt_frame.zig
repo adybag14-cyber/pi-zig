@@ -11,15 +11,11 @@ pub const Frame = struct {
     values: std.ArrayList(c.JSValue) = .empty,
     native_steps: usize = 0,
     pub fn deinit(self: *Frame) void {
-        for (self.values.items) |value| self.engine.freeValue(value);
+        for (self.values.items) |value| self.engine.releaseNativeValue(value);
         self.values.deinit(self.engine.gpa);
     }
     pub fn own(self: *Frame, value: c.JSValue) anyerror!c.JSValue {
-        self.values.append(self.engine.gpa, value) catch |err| {
-            self.engine.freeValue(value);
-            return err;
-        };
-        return value;
+        return @import("native_sdk_owned_completion.zig").ownRoot(self, value);
     }
     pub fn result(self: *Frame, value: c.JSValue) c.JSValue {
         return c.JS_DupValue(self.engine.context, value);
@@ -34,12 +30,20 @@ pub const Frame = struct {
         return self.own(try js.getKey(self.engine, object, self.num(index)));
     }
     pub fn global(self: *Frame, name: [*:0]const u8) anyerror!c.JSValue {
+        var pending = @import("native_pending_owner.zig").Frame.init(self.engine);
+        pending.enter() catch |err| { pending.finishVoid(err) catch |failure| return failure; unreachable; };
+        const value = globalPendingBody(self, name) catch |err| { pending.finishVoid(err) catch |failure| return failure; unreachable; };
+        // Scope retains every returned borrow through the sentinel finish.
+        try pending.finishVoid({});
+        return value;
+    }
+    fn globalPendingBody(self: *Frame, name: [*:0]const u8) anyerror!c.JSValue {
         const root = c.JS_GetGlobalObject(self.engine.context);
-        defer self.engine.freeValue(root);
+        defer self.engine.releaseNativeValue(root);
         const atom = c.JS_NewAtom(self.engine.context, name);
         if (atom == c.JS_ATOM_NULL) return js.capture(self.engine);
         defer c.JS_FreeAtom(self.engine.context, atom);
-        const exists = c.JS_HasProperty(self.engine.context, root, atom);
+        const exists = native_guest_0: { try self.engine.checkNativeEntry(); break :native_guest_0 c.JS_HasProperty(self.engine.context, root, atom); };
         if (exists < 0) return js.capture(self.engine);
         if (exists == 0) {
             _ = try self.engine.checked(c.JS_ThrowReferenceError(self.engine.context, "%s is not defined", name));
@@ -54,6 +58,7 @@ pub const Frame = struct {
         return self.own(try js.array(self.engine));
     }
     pub fn literal(self: *Frame, elements: []const c.JSValue) anyerror!c.JSValue {
+        try self.engine.checkNativeEntry();
         const output = try self.array();
         for (elements, 0..) |element, index| {
             if (c.JS_DefinePropertyValueUint32(self.engine.context, output, @intCast(index), c.JS_DupValue(self.engine.context, element), c.JS_PROP_C_W_E) < 0) return js.capture(self.engine);
@@ -67,6 +72,14 @@ pub const Frame = struct {
         return self.own(try js.spread(self.engine, object));
     }
     pub fn copy(self: *Frame, source_array: c.JSValue) anyerror!c.JSValue {
+        var pending = @import("native_pending_owner.zig").Frame.init(self.engine);
+        pending.enter() catch |err| { pending.finishVoid(err) catch |failure| return failure; unreachable; };
+        const value = copyPendingBody(self, source_array) catch |err| { pending.finishVoid(err) catch |failure| return failure; unreachable; };
+        // Scope retains every returned borrow through the sentinel finish.
+        try pending.finishVoid({});
+        return value;
+    }
+    fn copyPendingBody(self: *Frame, source_array: c.JSValue) anyerror!c.JSValue {
         const result_array = try self.array();
         const symbol = try self.get(self.bindings, "iteratorSymbol");
         var iterator = try js.Iterator.init(self.engine, source_array, symbol);
@@ -74,18 +87,28 @@ pub const Frame = struct {
         errdefer iterator.closePreserving();
         var index: u32 = 0;
         while (try iterator.next()) |item| {
-            defer self.engine.freeValue(item);
+            defer self.engine.releaseNativeValue(item);
+            try self.engine.checkNativeEntry();
             if (c.JS_DefinePropertyValueUint32(self.engine.context, result_array, index, c.JS_DupValue(self.engine.context, item), c.JS_PROP_C_W_E) < 0) return js.capture(self.engine);
             index += 1;
         }
         return result_array;
     }
     pub fn pair(self: *Frame, iterable: c.JSValue) anyerror![2]c.JSValue {
+        var pending = @import("native_pending_owner.zig").Frame.init(self.engine);
+        pending.enter() catch |err| { pending.finishVoid(err) catch |failure| return failure; unreachable; };
+        const value = pairPendingBody(self, iterable) catch |err| { pending.finishVoid(err) catch |failure| return failure; unreachable; };
+        // Scope retains every returned borrow through the sentinel finish.
+        try pending.finishVoid({});
+        return value;
+    }
+    fn pairPendingBody(self: *Frame, iterable: c.JSValue) anyerror![2]c.JSValue {
         const values = try js.pair(self.engine, iterable, try self.get(self.bindings, "iteratorSymbol"));
         // Getting the symbol can grow the list, so reserve again before
         // transferring the two values returned by iterator destructuring.
         self.values.ensureUnusedCapacity(self.engine.gpa, 2) catch |err| {
-            for (values) |value| self.engine.freeValue(value);
+            if (err == error.OutOfMemory) _ = self.engine.throwNativeOutOfMemoryFatal();
+            for (values) |value| self.engine.releaseNativeValue(value);
             return err;
         };
         self.values.appendAssumeCapacity(values[0]);
@@ -93,6 +116,7 @@ pub const Frame = struct {
         return values;
     }
     pub fn set(self: *Frame, object: c.JSValue, name: [*:0]const u8, value: c.JSValue) anyerror!void {
+        try self.engine.checkNativeEntry();
         return v.set(self.engine, object, name, c.JS_DupValue(self.engine.context, value));
     }
     pub fn put(self: *Frame, name: [*:0]const u8, value: c.JSValue) anyerror!void {
@@ -117,12 +141,14 @@ pub const Frame = struct {
         return self.call(try self.get(self.bindings, name), c.pi_js_undefined(), args);
     }
     pub fn construct(self: *Frame, constructor: c.JSValue, args: []const c.JSValue) anyerror!c.JSValue {
-        return self.own(try self.engine.checked(c.JS_CallConstructor(self.engine.context, constructor, @intCast(args.len), @constCast(args.ptr))));
+        try self.engine.checkNativeEntry();
+        return self.own(try self.engine.checked(native_guest_0: { try self.engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(self.engine.context, constructor, @intCast(args.len), @constCast(args.ptr)); }));
     }
     pub fn math(self: *Frame, name: [*:0]const u8, args: []const c.JSValue) anyerror!f64 {
         return self.number(try self.method(try self.global("Math"), name, args));
     }
     pub fn number(self: *Frame, value: c.JSValue) anyerror!f64 {
+        try self.engine.checkNativeEntry();
         return v.number(self.engine, value);
     }
     pub fn n(self: *Frame, object: c.JSValue, name: [*:0]const u8) anyerror!f64 {
@@ -158,9 +184,11 @@ pub const Frame = struct {
         return c.JS_IsNull(value) or c.JS_IsUndefined(value);
     }
     pub fn concat(self: *Frame, parts: []const c.JSValue) anyerror!c.JSValue {
+        try self.engine.checkNativeEntry();
         return self.own(try v.concat(self.engine, parts));
     }
     pub fn add(self: *Frame, a: c.JSValue, b: c.JSValue) anyerror!c.JSValue {
+        try self.engine.checkNativeEntry();
         return self.own(try @import("native_tui_value_arithmetic.zig").add(self.engine, a, b, try self.get(self.bindings, "primitiveSymbol")));
     }
     pub fn width(self: *Frame, value: c.JSValue) anyerror!f64 {
@@ -175,7 +203,9 @@ pub const Frame = struct {
     }
 };
 pub fn fail(engine: *js.Engine, err: anyerror) c.JSValue {
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
     return c.JS_ThrowTypeError(engine.context, "Native TuiAltScreen: %s", @as([*:0]const u8, @errorName(err)));
 }

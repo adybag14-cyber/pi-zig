@@ -182,7 +182,7 @@ const Transport = struct {
     fn next(self: *Transport) !?WireRecord {
         while (true) {
             self.engine.beginInvocation();
-            self.pumpIdle() catch |err| {
+            @import("native_worker_owner_turn.zig").run(self.engine, Transport.pumpIdle, .{self}) catch |err| {
                 if (err != error.JavaScriptException) return err;
                 if (self.fatal_manager) |manager| {
                     try manager.capturedUncaught();
@@ -197,6 +197,10 @@ const Transport = struct {
             };
             try self.publishMetadataSafe();
             var deadline = try timers.nextDeadline(self.engine);
+            if (self.engine.native_tui_platform_pending) |pending| if (pending(self.engine)) {
+                const due = std.Io.Clock.awake.now(self.io).toMilliseconds() +| 5;
+                deadline = if (deadline) |previous| @min(previous, due) else due;
+            };
             for (self.group.ui.services.items) |service| if (service.deadline()) |due| {
                 deadline = if (deadline) |previous| @min(previous, due) else due;
             };
@@ -1034,9 +1038,12 @@ const Transport = struct {
     }
 };
 
-const Loader = struct {
+pub const Loader = struct {
     io: std.Io,
     engine: *engine_mod.Engine,
+    pub fn bind(self: *Loader) void {
+        self.engine.setSourceLoader(.{ .context = self, .load = source, .normalize = normalize, .normalize_require = normalizeRequire, .input = input });
+    }
     fn normalize(context: ?*anyopaque, gpa: std.mem.Allocator, base: []const u8, specifier: []const u8) anyerror![]u8 {
         return normalizeMode(context, gpa, base, specifier, false);
     }
@@ -1064,6 +1071,8 @@ const Loader = struct {
 
     fn input(context: ?*anyopaque, engine: *engine_mod.Engine, name: []const u8) anyerror!engine_mod.ModuleInput {
         const self: *@This() = @ptrCast(@alignCast(context.?));
+        if (std.mem.endsWith(u8, name, ".node"))
+            return .{ .exports = try @import("native_tui_win32_platform.zig").load(engine, self.io, name) };
         const bytes = try source(context, engine.gpa, name);
         errdefer engine.gpa.free(bytes);
         var is_commonjs = std.mem.endsWith(u8, name, ".cjs") or std.mem.endsWith(u8, name, ".cts");
@@ -1661,14 +1670,13 @@ pub fn runSdkFileWithEnvironment(gpa: std.mem.Allocator, io: std.Io, script_path
     const engine = try engine_mod.Engine.init(gpa, .{ .main_module = true });
     defer engine.deinit();
     var loader: Loader = .{ .io = io, .engine = engine };
-    engine.setSourceLoader(.{ .context = &loader, .load = Loader.source, .normalize = Loader.normalize, .normalize_require = Loader.normalizeRequire, .input = Loader.input });
+    loader.bind();
     const group = try native_group.Group.init(engine);
     defer group.deinit();
     const binding = try group.add(script_path);
     engine.native_sdk_extension_group = group;
     defer engine.native_sdk_extension_group = null;
     try timers.install(engine, io);
-    try binding.installSchemas();
     try node_path.install(engine, io);
     try node_url.install(engine);
     try node_fs.install(engine, io);
@@ -1678,6 +1686,8 @@ pub fn runSdkFileWithEnvironment(gpa: std.mem.Allocator, io: std.Io, script_path
     try text_decoder.install(engine);
     try @import("native_web_fetch.zig").install(engine);
     try @import("native_process.zig").install(engine, io, environment, arguments);
+    try @import("native_tui_platform_resources.zig").bindInstalled(engine, io);
+    try binding.installSchemas();
     engine.native_console_stdout = true;
     var stdio: @import("native_stdio_frontend.zig").Frontend = undefined;
     try stdio.init(engine, io);
@@ -1767,7 +1777,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
         engine.freeValue(owner);
     };
     var loader: Loader = .{ .io = io, .engine = engine };
-    engine.setSourceLoader(.{ .context = &loader, .load = Loader.source, .normalize = Loader.normalize, .normalize_require = Loader.normalizeRequire, .input = Loader.input });
+    loader.bind();
     const group = try native_group.Group.init(engine);
     defer group.deinit();
     group.renderers.owner_generation = owner_generation;
@@ -1779,7 +1789,6 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     try @import("native_process.zig").install(engine, io, environment, arguments);
     const fatal_manager = if (fatal_lease != null) try application_fatal.Manager.init(engine) else null;
     defer if (fatal_manager) |manager| manager.deinit();
-    try bindings.installSchemas();
     try node_path.install(engine, io);
     try node_url.install(engine);
     try node_fs.install(engine, io);
@@ -1788,6 +1797,8 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     try text_encoding.install(engine);
     try text_decoder.install(engine);
     try @import("native_web_fetch.zig").install(engine);
+    try @import("native_tui_platform_resources.zig").bindInstalled(engine, io);
+    try bindings.installSchemas();
     const bootstrap = if (startup_context) |value| try encoded(gpa, value) else null;
     defer if (bootstrap) |bytes| gpa.free(bytes);
     var output_buffer: [8192]u8 = undefined;
@@ -1989,9 +2000,11 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             const owner = try component_protocol.identifier(request.object.get("ownerGeneration") orelse return error.InvalidNativeTypedProviderRequest);
             if (version != .integer or version.integer != 1 or owner != group.renderers.owner_generation) return error.InvalidNativeTypedProviderRequest;
             typed_tickets.begin(selected_binding, transport.active_id, request.object) catch |err| {
+                if (err == error.NativeClipboardCompletionFailed or @import("native_tui_win32_clipboard_promise.zig").hasFailed(engine)) return error.NativeClipboardCompletionFailed;
                 try writeFailure(allocator, writer, engine.last_error orelse @errorName(err));
                 continue;
             };
+            if (@import("native_tui_win32_clipboard_promise.zig").hasFailed(engine)) return error.NativeClipboardCompletionFailed;
             try writer.print("\x1e{{\"ok\":true,\"invocationId\":\"{s}\",\"result\":{{\"ticketId\":\"{s}\",\"pending\":true}}}}\n", .{ transport.active_id, transport.active_id });
             try writer.flush();
             continue;
@@ -2049,7 +2062,8 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
                 continue;
             };
             const added_id = added.owner_id;
-            loadSource(gpa, io, engine, &loader, added, path) catch |err| {
+            @import("native_worker_owner_turn.zig").run(engine, loadSource, .{ gpa, io, engine, &loader, added, path }) catch |err| {
+                if (err == error.NativeWorkerFatal) return @as(anyerror!void, err);
                 group.remove(added_id) catch |cleanup_error| {
                     try writeFailure(allocator, writer, @errorName(cleanup_error));
                     return @as(anyerror!void, cleanup_error);
@@ -2074,6 +2088,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
         const previous_invocation_generation = selected_binding.invocation_generation;
         owner_phase = "invocation";
         const result = invoke(gpa, selected_binding, &transport, request.object) catch |err| {
+            if (err == error.NativeClipboardCompletionFailed or @import("native_tui_win32_clipboard_promise.zig").hasFailed(engine)) return error.NativeClipboardCompletionFailed;
             // Own the primary diagnostic before serializing the admitted queue;
             // a secondary allocation/serialization failure cannot replace it.
             const diagnostic = try gpa.dupe(u8, engine.last_error orelse @errorName(err));
@@ -2105,6 +2120,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             continue;
         };
         defer gpa.free(result);
+        if (@import("native_tui_win32_clipboard_promise.zig").hasFailed(engine)) return error.NativeClipboardCompletionFailed;
         owner_phase = "response-projection";
         const projected = try transport.withUpdates(result);
         defer gpa.free(projected);

@@ -25,16 +25,23 @@ pub fn create(engine: *em.Engine, owner: c.JSValue, comptime body: Resume, insta
     const Adapter = struct {
         fn call(context: ?*c.JSContext, state: c.JSValue, raw: c_int, input: c.JSValue, action: [*c]c_int) callconv(.c) c.JSValue {
             const host = em.Engine.fromContext(context.?);
-            host.checkNativeEntry() catch return host.throwCaptured();
-            host.native_exception_diagnostics_suppressed += 1;
-            defer host.native_exception_diagnostics_suppressed -= 1;
             var invocation: em.Engine.NativeInvocation = .{};
             host.enterNativeInvocation(&invocation);
+            host.checkNativeEntry() catch |err| return host.leaveNativeInvocation(
+                &invocation, failAction(host, err, action));
+            host.native_exception_diagnostics_suppressed += 1;
+            defer host.native_exception_diagnostics_suppressed -= 1;
             const value = invokeStep(host, state, raw, input, action);
             return host.leaveNativeInvocation(&invocation, value);
         }
+        fn failAction(host: *em.Engine, err: anyerror, action: [*c]c_int) c.JSValue {
+            // This discriminator records actual native unwind history only.
+            // The selected pending reason retains its independent class.
+            if (err == error.ExecutionTerminated) action[0] = c.JS_PI_AG_ABORTED;
+            return @import("native_sdk.zig").fail(host, err);
+        }
         fn invokeStep(host: *em.Engine, state: c.JSValue, raw: c_int, input: c.JSValue, action: [*c]c_int) c.JSValue {
-            const step = body(host, state, @enumFromInt(raw), input) catch |err| return @import("native_sdk.zig").fail(host, err);
+            const step = body(host, state, @enumFromInt(raw), input) catch |err| return failAction(host, err, action);
             return switch (step) {
                 .awaited => |value| result(action, c.JS_PI_AG_AWAIT, value),
                 .yielded => |value| result(action, c.JS_PI_AG_YIELD, value),

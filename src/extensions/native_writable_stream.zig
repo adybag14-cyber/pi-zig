@@ -253,7 +253,7 @@ fn promiseCallback(self: *State, function: c.JSValue, args: []const c.JSValue) !
     const receiver_root = c.JS_DupValue(self.engine.context, self.sink);
     defer self.engine.freeValue(receiver_root);
     const result = if (c.JS_IsUndefined(function)) c.pi_js_undefined() else js.call(self.engine, function_root, receiver_root, args) catch |err| {
-        const reason = async_value.reason(self.engine, err);
+        const reason = async_value.reason(self.engine, err) catch |failure| return @import("native_sdk.zig").fail(self.engine, failure);
         defer self.engine.freeValue(reason);
         return pendingReject(self.engine, reason);
     };
@@ -433,10 +433,16 @@ pub fn retireAfterHostFailureNative(e: *Engine, value: c.JSValue, reason: c.JSVa
     defer e.freeValue(retained_reason);
     failAll(self, retained_reason);
 }
-fn continuation(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn continuation(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(continuationPendingBody(context, pending_arg1, argc, argv, magic, roots));
+}
+fn continuationPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
     const self = streamState(roots[0]);
     continueAlgorithm(roots[0], self, if (argc > 0) argv[0] else c.pi_js_undefined(), @mod(magic, 2) != 0, @enumFromInt(@divTrunc(magic, 2))) catch |err| {
-        const reason = async_value.reason(self.engine, err);
+        const reason = async_value.reason(self.engine, err) catch |failure| return @import("native_sdk.zig").fail(self.engine, failure);
         defer self.engine.freeValue(reason);
         failAll(self, reason);
     };
@@ -550,7 +556,7 @@ pub fn releaseWriterNative(e: *Engine, value: c.JSValue) !void {
     if (c.JS_IsUndefined(reason)) {
         const err = stateError(e, "Writer has been released");
         e.freeValue(reason);
-        reason = async_value.reason(e, err);
+        reason = try async_value.reason(e, err);
         try @import("native_sdk.zig").put(e, try retained(e), "releasedError", c.JS_DupValue(e.context, reason));
     }
     try rejectCapability(e, &writer.ready, reason);
@@ -581,7 +587,7 @@ pub fn writerWriteNative(e: *Engine, value: c.JSValue, chunk: c.JSValue) !c.JSVa
     const self = streamState(stream);
     const size_algorithm = try s.own(c.JS_DupValue(e.context, self.size_algorithm));
     const raw_size = if (c.JS_IsUndefined(size_algorithm)) c.JS_NewInt32(e.context, 1) else s.call(size_algorithm, c.pi_js_undefined(), &.{chunk}) catch |err| blk: {
-        const reason = try s.own(async_value.reason(e, err));
+        const reason = try s.own(try async_value.reason(e, err));
         try controllerErrorNative(e, self.controller, reason);
         break :blk c.JS_NewInt32(e.context, 1);
     };
@@ -599,14 +605,14 @@ pub fn writerWriteNative(e: *Engine, value: c.JSValue, chunk: c.JSValue) !c.JSVa
     var size: f64 = undefined;
     const size_error: ?anyerror = if (c.JS_ToFloat64(e.context, &size, raw_size) < 0) js.capture(e) else if (!std.math.isFinite(size) or size < 0) invalidValue(e, "size", c.JS_NewFloat64(e.context, size)) else null;
     if (size_error) |err| {
-        const reason = try s.own(async_value.reason(e, err));
+        const reason = try s.own(try async_value.reason(e, err));
         try controllerErrorNative(e, self.controller, reason);
         return returned;
     }
     const owned_chunk = c.JS_DupValue(e.context, chunk);
     self.chunks.append(e.gpa, .{ .value = owned_chunk, .size = size }) catch |err| {
         e.freeValue(owned_chunk);
-        const reason = async_value.reason(e, err);
+        const reason = try async_value.reason(e, err);
         defer e.freeValue(reason);
         failAll(self, reason);
         return returned;
@@ -765,7 +771,13 @@ fn operate(e: *Engine, receiver: c.JSValue, group: Group, method: Method, args: 
         },
     }
 }
-fn dispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn dispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, pending_arg5: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, receiver, argc, argv, magic, pending_arg5));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, _: [*c]c.JSValue) c.JSValue {
     const e = Engine.fromContext(context.?);
     const group: Group = @enumFromInt(@divTrunc(magic, 100));
     const method: Method = @enumFromInt(@mod(magic, 100));

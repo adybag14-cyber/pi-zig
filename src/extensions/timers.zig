@@ -49,7 +49,7 @@ const Scheduler = struct {
     handle_class: c.JSClassID = 0,
     timers: std.ArrayList(Timer) = .empty,
     fn freeTimer(self: *Scheduler, timer: Timer) void {
-        self.engine.freeValue(timer.handle);
+        self.engine.releaseNativeValue(timer.handle);
     }
 };
 
@@ -70,12 +70,20 @@ fn cleanup(engine: *engine_mod.Engine) void {
 }
 
 fn failure(context: ?*c.JSContext, err: anyerror) c.JSValue {
+    if (err == error.ExecutionTerminated) return @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated();
     if (err == error.JavaScriptException) return engine_mod.Engine.fromContext(context.?).throwCaptured();
-    if (err == error.OutOfMemory) return engine_mod.Engine.fromContext(context.?).throwNativeOutOfMemory();
+    if (err == error.ExecutionTerminated) return engine_mod.Engine.fromContext(context.?).throwExecutionTerminated();
+    if (err == error.OutOfMemory) return engine_mod.Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
     return c.JS_ThrowTypeError(context, "Native timer: %s", @as([*:0]const u8, @errorName(err)));
 }
 
-fn scheduleCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn scheduleCall(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(scheduleCallPendingBody(context, pending_arg1, argc, argv, magic));
+}
+fn scheduleCallPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
     return schedule(engine_mod.Engine.fromContext(context.?), args, magic == 1) catch |err| failure(context, err);
 }
@@ -84,26 +92,32 @@ fn schedule(engine: *engine_mod.Engine, args: []c.JSValue, repeat: bool) !c.JSVa
     const state = try scheduler(engine);
     if (args.len == 0 or !c.JS_IsFunction(engine.context, args[0])) return error.InvalidTimerCallback;
     var raw_delay: f64 = 0;
-    if (args.len > 1 and c.JS_ToFloat64(engine.context, &raw_delay, args[1]) < 0) return error.JavaScriptException;
+    if (args.len > 1 and native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(engine.context, &raw_delay, args[1]); } < 0) return error.JavaScriptException;
     const delay: i64 = if (!std.math.isFinite(raw_delay) or raw_delay < 1 or raw_delay > std.math.maxInt(i32)) 1 else @intFromFloat(@trunc(raw_delay));
     if (state.timers.items.len >= 4096 or state.next_id == std.math.maxInt(u32)) return error.NativeTimerLimit;
     const handle = try createHandle(engine, state.next_id, delay, repeat, args);
-    defer engine.freeValue(handle);
+    defer engine.releaseNativeValue(handle);
     const timer: Timer = .{
         .id = state.next_id,
         .deadline_ms = std.Io.Clock.awake.now(state.io).toMilliseconds() + delay,
         .handle = c.JS_DupValue(engine.context, handle),
     };
-    errdefer engine.freeValue(timer.handle);
-    try state.timers.append(engine.gpa, timer);
+    errdefer engine.releaseNativeValue(timer.handle);
+    (state.timers.append(engine.gpa, timer) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     state.next_id += 1;
     return c.JS_DupValue(engine.context, handle);
 }
 
-fn handleCall(context: ?*c.JSContext, this: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn handleCall(context: ?*c.JSContext, this: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(handleCallPendingBody(context, this, pending_arg2, pending_arg3, magic, data));
+}
+fn handleCallPendingBody(context: ?*c.JSContext, this: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     var class_id: u32 = 0;
-    if (c.JS_ToUint32(context, &class_id, data[0]) < 0) return engine.throwCaptured();
+    if (native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_ToUint32(context, &class_id, data[0]); } < 0) return engine.throwCaptured();
     const retained: *HandleState = @ptrCast(@alignCast(c.JS_GetOpaque(this, class_id) orelse return c.JS_ThrowTypeError(context, "Illegal timer handle receiver")));
     if (magic == 0) return c.JS_NewInt64(context, retained.id);
     const state = scheduler(engine) catch |err| return failure(context, err);
@@ -141,7 +155,7 @@ fn refreshExpired(engine: *engine_mod.Engine, handle: c.JSValue) !void {
 
 fn createHandle(engine: *engine_mod.Engine, id: u32, delay: i64, repeat: bool, args: []c.JSValue) !c.JSValue {
     const state = try scheduler(engine);
-    const retained = try engine.gpa.create(HandleState);
+    const retained = (engine.gpa.create(HandleState) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     const arguments = engine.gpa.alloc(c.JSValue, if (args.len > 2) args.len - 2 else 0) catch |err| {
         engine.gpa.destroy(retained);
         return err;
@@ -149,22 +163,23 @@ fn createHandle(engine: *engine_mod.Engine, id: u32, delay: i64, repeat: bool, a
     for (arguments, 0..) |*argument, index| argument.* = c.JS_DupValue(engine.context, args[index + 2]);
     retained.* = .{ .gpa = engine.gpa, .id = id, .delay_ms = delay, .interval_ms = if (repeat) delay else null, .callback = c.JS_DupValue(engine.context, args[0]), .arguments = arguments, .async_scope = @import("native_async_scope.zig").capture(engine) };
     const object = engine.checked(c.JS_NewObjectClass(engine.context, state.handle_class)) catch |err| {
-        engine.freeValue(retained.callback);
-        engine.freeValue(retained.async_scope);
-        for (arguments) |argument| engine.freeValue(argument);
+        if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+        engine.releaseNativeValue(retained.callback);
+        engine.releaseNativeValue(retained.async_scope);
+        for (arguments) |argument| engine.releaseNativeValue(argument);
         engine.gpa.free(arguments);
         engine.gpa.destroy(retained);
         return err;
     };
     _ = c.JS_SetOpaque(object, retained);
-    errdefer engine.freeValue(object);
+    errdefer engine.releaseNativeValue(object);
     // Method closures carry only the immutable native brand, never their own
     // handle. Capturing object here creates seven handle/method self-cycles,
     // delaying release of callback state until runtime cycle collection after
     // scheduler/context teardown. Brand the supplied receiver instead, as Node
     // does, so an unreachable timer releases its native ownership immediately.
     var data = [_]c.JSValue{c.JS_NewInt64(engine.context, state.handle_class)};
-    defer engine.freeValue(data[0]);
+    defer engine.releaseNativeValue(data[0]);
     inline for (.{ .{ "valueOf", 0 }, .{ "ref", 1 }, .{ "unref", 2 }, .{ "hasRef", 3 }, .{ "refresh", 4 }, .{ "close", 5 } }) |entry| {
         const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, handleCall, entry[0], 0, entry[1], data.len, &data));
         if (c.JS_DefinePropertyValueStr(engine.context, object, entry[0], function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
@@ -176,12 +191,12 @@ fn createHandle(engine: *engine_mod.Engine, id: u32, delay: i64, repeat: bool, a
 
 pub fn scheduleOnce(engine: *engine_mod.Engine, callback: c.JSValue, delay_ms: u32) !c.JSValue {
     var args = [_]c.JSValue{ callback, c.JS_NewInt64(engine.context, delay_ms) };
-    defer engine.freeValue(args[1]);
+    defer engine.releaseNativeValue(args[1]);
     return schedule(engine, &args, false);
 }
 pub fn scheduleInterval(engine: *engine_mod.Engine, callback: c.JSValue, delay_ms: u32) !c.JSValue {
     var args = [_]c.JSValue{ callback, c.JS_NewInt64(engine.context, delay_ms) };
-    defer engine.freeValue(args[1]);
+    defer engine.releaseNativeValue(args[1]);
     return schedule(engine, &args, true);
 }
 pub fn cancelHandle(engine: *engine_mod.Engine, handle: c.JSValue) !void {
@@ -194,7 +209,13 @@ pub fn cancelHandle(engine: *engine_mod.Engine, handle: c.JSValue) !void {
     };
 }
 
-fn clearCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn clearCall(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(clearCallPendingBody(context, pending_arg1, argc, argv));
+}
+fn clearCallPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const state = scheduler(engine) catch |err| return failure(context, err);
     if (argc == 0) return c.pi_js_undefined();
@@ -205,12 +226,12 @@ fn clearCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVa
         retained.cancelled = true;
     } else if (c.JS_IsNumber(argv[0])) {
         var number: f64 = 0;
-        if (c.JS_ToFloat64(context, &number, argv[0]) < 0) return engine.throwCaptured();
+        if (native_guest_1: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_1 c.JS_ToFloat64(context, &number, argv[0]); } < 0) return engine.throwCaptured();
         if (!std.math.isFinite(number) or number < 1 or number > std.math.maxInt(u32) or number != @trunc(number)) return c.pi_js_undefined();
         id = @intFromFloat(number);
     } else if (c.JS_IsString(argv[0])) {
         var length: usize = 0;
-        const encoded = c.JS_ToCStringLen(context, &length, argv[0]) orelse return engine.throwCaptured();
+        const encoded = native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_ToCStringLen(context, &length, argv[0]); } orelse return engine.throwCaptured();
         defer c.JS_FreeCString(context, encoded);
         const text = encoded[0..length];
         // Node looks up the exact decimal ID string, without numeric coercion.
@@ -232,65 +253,89 @@ fn clearCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVa
     return c.pi_js_undefined();
 }
 
-fn microtaskJob(context: ?*c.JSContext, _: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
-    return c.JS_Call(context, argv[0], c.pi_js_undefined(), 0, null);
+fn microtaskJob(context: ?*c.JSContext, pending_arg1: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(microtaskJobPendingBody(context, pending_arg1, argv));
+}
+fn microtaskJobPendingBody(context: ?*c.JSContext, _: c_int, argv: [*c]c.JSValue) c.JSValue {
+    return native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_Call(context, argv[0], c.pi_js_undefined(), 0, null); };
 }
 
-fn queueMicrotask(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn queueMicrotask(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(queueMicrotaskPendingBody(context, pending_arg1, argc, argv));
+}
+fn queueMicrotaskPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     if (argc == 0 or !c.JS_IsFunction(context, argv[0])) return c.JS_ThrowTypeError(context, "queueMicrotask requires a function");
     var args = [_]c.JSValue{argv[0]};
-    if (c.JS_EnqueueJob(context, microtaskJob, 1, &args) < 0) return c.JS_Throw(context, c.JS_GetException(context));
+    if (native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_EnqueueJob(context, microtaskJob, 1, &args); } < 0) return c.pi_js_exception();
     return c.pi_js_undefined();
 }
 
-fn promiseCallback(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn promiseCallback(context: ?*c.JSContext, pending_arg1: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(promiseCallbackPendingBody(context, pending_arg1, pending_arg2, pending_arg3, magic, data));
+}
+fn promiseCallbackPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const record = data[0];
-    const signal = c.JS_GetPropertyStr(context, record, "signal");
+    const signal = native_guest_7: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_7 c.JS_GetPropertyStr(context, record, "signal"); };
     if (c.JS_IsException(signal)) return signal;
-    defer engine.freeValue(signal);
+    defer engine.releaseNativeValue(signal);
     if (magic == 1) {
-        const handle = c.JS_GetPropertyStr(context, record, "handle");
+        const handle = native_guest_6: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_6 c.JS_GetPropertyStr(context, record, "handle"); };
         if (c.JS_IsException(handle)) return handle;
-        defer engine.freeValue(handle);
+        defer engine.releaseNativeValue(handle);
         var args = [_]c.JSValue{handle};
         const cleared = clearCall(context, c.pi_js_undefined(), 1, &args);
         if (c.JS_IsException(cleared)) return cleared;
-        engine.freeValue(cleared);
+        engine.releaseNativeValue(cleared);
     } else if (!c.JS_IsUndefined(signal)) {
-        const listener = c.JS_GetPropertyStr(context, record, "listener");
+        const listener = native_guest_5: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_5 c.JS_GetPropertyStr(context, record, "listener"); };
         if (c.JS_IsException(listener)) return listener;
-        defer engine.freeValue(listener);
-        const remove = c.JS_GetPropertyStr(context, signal, "removeEventListener");
+        defer engine.releaseNativeValue(listener);
+        const remove = native_guest_4: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_4 c.JS_GetPropertyStr(context, signal, "removeEventListener"); };
         if (c.JS_IsException(remove)) return remove;
-        defer engine.freeValue(remove);
+        defer engine.releaseNativeValue(remove);
         var args = [_]c.JSValue{ c.JS_NewString(context, "abort"), listener };
-        defer engine.freeValue(args[0]);
-        const removed = c.JS_Call(context, remove, signal, args.len, &args);
+        defer engine.releaseNativeValue(args[0]);
+        const removed = native_guest_3: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_3 c.JS_Call(context, remove, signal, args.len, &args); };
         if (c.JS_IsException(removed)) return removed;
-        engine.freeValue(removed);
+        engine.releaseNativeValue(removed);
     }
-    const settle = c.JS_GetPropertyStr(context, record, if (magic == 1) "reject" else "resolve");
+    const settle = native_guest_2: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_2 c.JS_GetPropertyStr(context, record, if (magic == 1) "reject" else "resolve"); };
     if (c.JS_IsException(settle)) return settle;
-    defer engine.freeValue(settle);
-    const value = if (magic == 1) abortedPromiseError(engine, signal) catch |err| return failure(context, err) else c.JS_GetPropertyStr(context, record, "value");
+    defer engine.releaseNativeValue(settle);
+    const value = if (magic == 1) abortedPromiseError(engine, signal) catch |err| return failure(context, err) else native_guest_1: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_1 c.JS_GetPropertyStr(context, record, "value"); };
     if (c.JS_IsException(value)) return value;
-    defer engine.freeValue(value);
+    defer engine.releaseNativeValue(value);
     var args = [_]c.JSValue{value};
-    return c.JS_Call(context, settle, c.pi_js_undefined(), 1, &args);
+    return native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_Call(context, settle, c.pi_js_undefined(), 1, &args); };
 }
 
 fn abortedPromiseError(engine: *engine_mod.Engine, signal: c.JSValue) !c.JSValue {
     const error_value = try engine.checked(c.JS_NewError(engine.context));
-    errdefer engine.freeValue(error_value);
-    const reason = try engine.checked(c.JS_GetPropertyStr(engine.context, signal, "reason"));
+    errdefer engine.releaseNativeValue(error_value);
+    const reason = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, signal, "reason"); });
     if (c.JS_DefinePropertyValueStr(engine.context, error_value, "cause", reason, c.JS_PROP_C_W_E) < 0 or
         c.JS_DefinePropertyValueStr(engine.context, error_value, "name", c.JS_NewString(engine.context, "AbortError"), c.JS_PROP_C_W_E) < 0 or
         c.JS_DefinePropertyValueStr(engine.context, error_value, "code", c.JS_NewString(engine.context, "ABORT_ERR"), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     return error_value;
 }
 
-fn promiseTimeout(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn promiseTimeout(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(promiseTimeoutPendingBody(context, pending_arg1, argc, argv));
+}
+fn promiseTimeoutPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
     return schedulePromise(engine_mod.Engine.fromContext(context.?), args) catch |err| failure(context, err);
 }
@@ -302,49 +347,50 @@ fn recordProperty(engine: *engine_mod.Engine, record: c.JSValue, key: [*:0]const
 fn schedulePromise(engine: *engine_mod.Engine, args: []c.JSValue) !c.JSValue {
     var capabilities: [2]c.JSValue = undefined;
     const promise = try engine.checked(c.JS_NewPromiseCapability(engine.context, &capabilities));
-    errdefer engine.freeValue(promise);
-    defer engine.freeValue(capabilities[0]);
-    defer engine.freeValue(capabilities[1]);
+    errdefer engine.releaseNativeValue(promise);
+    defer engine.releaseNativeValue(capabilities[0]);
+    defer engine.releaseNativeValue(capabilities[1]);
     if (args.len > 0 and !c.JS_IsUndefined(args[0]) and !c.JS_IsNumber(args[0])) {
         // Unlike callback timers, timers/promises requires a primitive number.
         // Its validation failure rejects the returned promise before options
         // getters are consulted; it must not throw or coerce the delay object.
         _ = c.JS_ThrowTypeError(engine.context, "The \"delay\" argument must be of type number");
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const reason = c.JS_GetException(engine.context);
-        defer engine.freeValue(reason);
+        defer engine.releaseNativeValue(reason);
         try recordProperty(engine, reason, "code", try engine.checked(c.JS_NewString(engine.context, "ERR_INVALID_ARG_TYPE")));
         var rejected_args = [_]c.JSValue{reason};
-        const rejected = try engine.checked(c.JS_Call(engine.context, capabilities[1], c.pi_js_undefined(), 1, &rejected_args));
-        engine.freeValue(rejected);
+        const rejected = try engine.checked(native_guest_5: { try engine.checkNativeEntry(); break :native_guest_5 c.JS_Call(engine.context, capabilities[1], c.pi_js_undefined(), 1, &rejected_args); });
+        engine.releaseNativeValue(rejected);
         return promise;
     }
-    const signal = if (args.len > 2 and c.JS_IsObject(args[2])) try engine.checked(c.JS_GetPropertyStr(engine.context, args[2], "signal")) else c.pi_js_undefined();
-    defer engine.freeValue(signal);
+    const signal = if (args.len > 2 and c.JS_IsObject(args[2])) try engine.checked(native_guest_4: { try engine.checkNativeEntry(); break :native_guest_4 c.JS_GetPropertyStr(engine.context, args[2], "signal"); }) else c.pi_js_undefined();
+    defer engine.releaseNativeValue(signal);
     if (!c.JS_IsUndefined(signal) and (engine.abort_signal_class == 0 or c.JS_GetOpaque(signal, engine.abort_signal_class) == null)) return error.InvalidPromiseTimerSignal;
     const record = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
-    defer engine.freeValue(record);
+    defer engine.releaseNativeValue(record);
     try recordProperty(engine, record, "resolve", c.JS_DupValue(engine.context, capabilities[0]));
     try recordProperty(engine, record, "reject", c.JS_DupValue(engine.context, capabilities[1]));
     try recordProperty(engine, record, "signal", c.JS_DupValue(engine.context, signal));
     try recordProperty(engine, record, "value", if (args.len > 1) c.JS_DupValue(engine.context, args[1]) else c.pi_js_undefined());
     var data = [_]c.JSValue{record};
     const callback = try engine.checked(c.JS_NewCFunctionData2(engine.context, promiseCallback, "promise timer", 0, 0, 1, &data));
-    defer engine.freeValue(callback);
+    defer engine.releaseNativeValue(callback);
     if (!c.JS_IsUndefined(signal)) {
-        const aborted = try engine.checked(c.JS_GetPropertyStr(engine.context, signal, "aborted"));
-        defer engine.freeValue(aborted);
+        const aborted = try engine.checked(native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_GetPropertyStr(engine.context, signal, "aborted"); });
+        defer engine.releaseNativeValue(aborted);
         if (c.JS_ToBool(engine.context, aborted) != 0) {
             const reason = try abortedPromiseError(engine, signal);
-            defer engine.freeValue(reason);
+            defer engine.releaseNativeValue(reason);
             var arguments = [_]c.JSValue{reason};
-            const result = try engine.checked(c.JS_Call(engine.context, capabilities[1], c.pi_js_undefined(), 1, &arguments));
-            engine.freeValue(result);
+            const result = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_Call(engine.context, capabilities[1], c.pi_js_undefined(), 1, &arguments); });
+            engine.releaseNativeValue(result);
             return promise;
         }
     }
     var timer_args = [_]c.JSValue{ callback, if (args.len > 0) args[0] else c.pi_js_undefined() };
     const handle = try schedule(engine, &timer_args, false);
-    defer engine.freeValue(handle);
+    defer engine.releaseNativeValue(handle);
     // The new ID is known independently of JS coercion; remove the timer on
     // any later setup failure, even when the context holds a pending exception.
     const timer_id = (try scheduler(engine)).next_id - 1;
@@ -358,17 +404,17 @@ fn schedulePromise(engine: *engine_mod.Engine, args: []c.JSValue) !c.JSValue {
     try recordProperty(engine, record, "handle", c.JS_DupValue(engine.context, handle));
     if (!c.JS_IsUndefined(signal)) {
         const listener = try engine.checked(c.JS_NewCFunctionData2(engine.context, promiseCallback, "abort promise timer", 1, 1, 1, &data));
-        defer engine.freeValue(listener);
+        defer engine.releaseNativeValue(listener);
         try recordProperty(engine, record, "listener", c.JS_DupValue(engine.context, listener));
-        const add = try engine.checked(c.JS_GetPropertyStr(engine.context, signal, "addEventListener"));
-        defer engine.freeValue(add);
+        const add = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, signal, "addEventListener"); });
+        defer engine.releaseNativeValue(add);
         const options = try engine.checked(c.JS_NewObject(engine.context));
-        defer engine.freeValue(options);
+        defer engine.releaseNativeValue(options);
         try recordProperty(engine, options, "once", c.pi_js_bool(engine.context, 1));
         var arguments = [_]c.JSValue{ c.JS_NewString(engine.context, "abort"), listener, options };
-        defer engine.freeValue(arguments[0]);
-        const result = try engine.checked(c.JS_Call(engine.context, add, signal, arguments.len, &arguments));
-        engine.freeValue(result);
+        defer engine.releaseNativeValue(arguments[0]);
+        const result = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_Call(engine.context, add, signal, arguments.len, &arguments); });
+        engine.releaseNativeValue(result);
     }
     return promise;
 }
@@ -452,10 +498,10 @@ fn fire(state: *Scheduler, index: usize) !bool {
     if (retained.interval_ms) |interval| {
         const repeated: Timer = .{ .id = timer.id, .deadline_ms = std.Io.Clock.awake.now(state.io).toMilliseconds() + interval, .handle = c.JS_DupValue(engine.context, timer.handle) };
         errdefer state.freeTimer(repeated);
-        try state.timers.append(engine.gpa, repeated);
+        (state.timers.append(engine.gpa, repeated) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     }
-    const result = try engine.checked(c.JS_Call(engine.context, retained.callback, timer.handle, @intCast(retained.arguments.len), retained.arguments.ptr));
-    engine.freeValue(result);
+    const result = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_Call(engine.context, retained.callback, timer.handle, @intCast(retained.arguments.len), retained.arguments.ptr); });
+    engine.releaseNativeValue(result);
     try @import("node_events.zig").drainHostTicks(engine);
     return true;
 }
@@ -463,19 +509,19 @@ fn fire(state: *Scheduler, index: usize) !bool {
 pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
     if (engine.host_scheduler != null) return error.NativeTimersAlreadyInstalled;
     try @import("native_immediates.zig").install(engine);
-    const state = try engine.gpa.create(Scheduler);
+    const state = (engine.gpa.create(Scheduler) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     errdefer engine.gpa.destroy(state);
     state.* = .{ .engine = engine, .io = io };
     _ = c.JS_NewClassID(engine.runtime, &state.handle_class);
     const handle_class: c.JSClassDef = .{ .class_name = "Timeout", .finalizer = handleFinalizer, .gc_mark = handleMark, .call = null, .exotic = null };
     if (c.JS_NewClass(engine.runtime, state.handle_class, &handle_class) < 0) return error.OutOfMemory;
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
-    const symbols = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "Symbol"));
-    defer engine.freeValue(symbols);
-    const primitive = try engine.checked(c.JS_GetPropertyStr(engine.context, symbols, "toPrimitive"));
-    defer engine.freeValue(primitive);
-    state.primitive_atom = c.JS_ValueToAtom(engine.context, primitive);
+    defer engine.releaseNativeValue(global);
+    const symbols = try engine.checked(native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_GetPropertyStr(engine.context, global, "Symbol"); });
+    defer engine.releaseNativeValue(symbols);
+    const primitive = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetPropertyStr(engine.context, symbols, "toPrimitive"); });
+    defer engine.releaseNativeValue(primitive);
+    state.primitive_atom = native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_ValueToAtom(engine.context, primitive); };
     if (state.primitive_atom == c.JS_ATOM_NULL) return error.OutOfMemory;
     errdefer c.JS_FreeAtom(engine.context, state.primitive_atom);
     inline for (.{ .{ "setTimeout", 0 }, .{ "setInterval", 1 } }) |entry| {
@@ -489,15 +535,15 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
     const microtask = try engine.checked(c.JS_NewCFunction(engine.context, queueMicrotask, "queueMicrotask", 1));
     if (c.JS_DefinePropertyValueStr(engine.context, global, "queueMicrotask", microtask, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     const module = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(module);
+    defer engine.releaseNativeValue(module);
     inline for (.{ "setTimeout", "setInterval", "clearTimeout", "clearInterval", "setImmediate", "clearImmediate" }) |name| {
-        const value = try engine.checked(c.JS_GetPropertyStr(engine.context, global, name));
+        const value = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, global, name); });
         if (c.JS_DefinePropertyValueStr(engine.context, module, name, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }
     try engine.registerDefaultModule("node:timers", module);
     try engine.registerDefaultModule("timers", module);
     const promise_module = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(promise_module);
+    defer engine.releaseNativeValue(promise_module);
     if (c.JS_DefinePropertyValueStr(engine.context, promise_module, "setTimeout", c.JS_NewCFunction(engine.context, promiseTimeout, "setTimeout", 2), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     try engine.registerDefaultModule("node:timers/promises", promise_module);
     try engine.registerDefaultModule("timers/promises", promise_module);

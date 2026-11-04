@@ -18,6 +18,12 @@ pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, exports, "_startRun", c.JS_DupValue(engine.context, method), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
 }
 fn start(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(startPendingBody(context, receiver, argc, argv));
+}
+fn startPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return begin(engine, receiver, if (argc > 0) argv[0] else c.pi_js_undefined(), if (argc > 1) argv[1] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
 }
@@ -37,7 +43,7 @@ fn initialize(engine: *em.Engine, owner: c.JSValue, trigger: c.JSValue, started:
     try scope.set(receiver, "_isAgentRunActive", c.pi_js_bool(engine.context, 1));
     try scope.set(receiver, "_agentRunAbortRequested", c.pi_js_bool(engine.context, 0));
     const prepared = scope.invoke(receiver, "_prepareRun", &.{trigger}) catch |err| {
-        const reason = flow.reason(engine, err);
+        const reason = try flow.reason(engine, err);
         defer engine.freeValue(reason);
         return prepareFailed(engine, owner, reason);
     };
@@ -51,7 +57,7 @@ fn continuation(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected
         const entered = try sdk.get(engine, owner, "enteredRunTry");
         defer engine.freeValue(entered);
         if (c.JS_ToBool(engine.context, entered) == 1) {
-            const reason = flow.reason(engine, err);
+            const reason = try flow.reason(engine, err);
             defer engine.freeValue(reason);
             return finalize(engine, owner, reason, true);
         }

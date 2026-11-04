@@ -157,8 +157,10 @@ pub fn decodeUtf8(engine: *engine_mod.Engine, bytes: []const u8) ![]u8 {
 }
 
 fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
     if (err == error.UnsupportedEncoding) return c.JS_ThrowRangeError(engine.context, "Unsupported TextDecoder encoding");
     return c.JS_ThrowTypeError(engine.context, "Native TextDecoder: %s", @as([*:0]const u8, @errorName(err)));
 }
@@ -178,8 +180,8 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
 fn option(engine: *engine_mod.Engine, options: c.JSValue, name: [*:0]const u8) !bool {
     if (c.JS_IsUndefined(options) or c.JS_IsNull(options)) return false;
     if (!c.JS_IsObject(options)) return error.InvalidTextDecoderOptions;
-    const value = try engine.checked(c.JS_GetPropertyStr(engine.context, options, name));
-    defer engine.freeValue(value);
+    const value = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, options, name); });
+    defer engine.releaseNativeValue(value);
     const boolean = c.JS_ToBool(engine.context, value);
     if (boolean < 0) return error.JavaScriptException;
     return boolean != 0;
@@ -200,24 +202,30 @@ fn parseLabel(label: []const u8) !Encoding {
 }
 
 fn construct(context: ?*c.JSContext, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(constructPendingBody(context, target, argc, argv));
+}
+fn constructPendingBody(context: ?*c.JSContext, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return constructValue(engine, target, argc, argv) catch |err| fail(engine, err);
 }
 
 fn constructValue(engine: *engine_mod.Engine, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue) !c.JSValue {
-    const label = if (argc == 0 or c.JS_IsUndefined(argv[0])) try engine.gpa.dupe(u8, "utf-8") else try engine.toString(argv[0]);
+    const label = if (argc == 0 or c.JS_IsUndefined(argv[0])) (engine.gpa.dupe(u8, "utf-8") catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; }) else (engine.toString(argv[0]) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(label);
     const encoding = try parseLabel(label);
     const options = if (argc > 1) argv[1] else c.pi_js_undefined();
     const fatal = try option(engine, options, "fatal");
     const ignore_bom = try option(engine, options, "ignoreBOM");
-    var prototype = try engine.checked(c.JS_GetPropertyStr(engine.context, target, "prototype"));
+    var prototype = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, target, "prototype"); });
     if (!c.JS_IsObject(prototype)) {
-        engine.freeValue(prototype);
+        engine.releaseNativeValue(prototype);
         prototype = try engine.checked(c.JS_GetClassProto(engine.context, engine.text_decoder_class));
     }
-    defer engine.freeValue(prototype);
-    const state = try engine.gpa.create(State);
+    defer engine.releaseNativeValue(prototype);
+    const state = (engine.gpa.create(State) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     errdefer engine.gpa.destroy(state);
     state.* = .{ .engine = engine, .encoding = encoding, .fatal = fatal, .ignore_bom = ignore_bom };
     const object = try engine.checked(c.JS_NewObjectProtoClass(engine.context, prototype, engine.text_decoder_class));
@@ -226,31 +234,32 @@ fn constructValue(engine: *engine_mod.Engine, target: c.JSValue, argc: c_int, ar
 }
 
 fn callGetter(engine: *engine_mod.Engine, getter: c.JSValue, receiver: c.JSValue) !c.JSValue {
-    return engine.checked(c.JS_Call(engine.context, getter, receiver, 0, null));
+    return engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_Call(engine.context, getter, receiver, 0, null); });
 }
 
 fn indexGetter(engine: *engine_mod.Engine, getter: c.JSValue, receiver: c.JSValue, type_error_prototype: c.JSValue) !?usize {
-    const value = c.JS_Call(engine.context, getter, receiver, 0, null);
+    const value = native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_Call(engine.context, getter, receiver, 0, null); };
     if (c.JS_IsException(value)) {
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const exception = c.JS_GetException(engine.context);
         if (c.JS_IsDataView(receiver) and c.JS_IsError(exception)) {
-            const prototype = c.JS_GetPrototype(engine.context, exception);
+            const prototype = native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPrototype(engine.context, exception); };
             const out_of_bounds = !c.JS_IsException(prototype) and c.JS_IsStrictEqual(engine.context, prototype, type_error_prototype);
-            engine.freeValue(prototype);
+            engine.releaseNativeValue(prototype);
             if (out_of_bounds) {
                 // This captured C getter can throw TypeError only for the
                 // branded view's bounds. Other exceptions, including OOM,
                 // retain their original value and propagate.
-                engine.freeValue(exception);
+                engine.releaseNativeValue(exception);
                 return null;
             }
         }
-        _ = c.JS_Throw(engine.context, exception);
+        _ = c.JS_PiThrowExceptionData(engine.context, exception);
         return error.JavaScriptException;
     }
-    defer engine.freeValue(value);
+    defer engine.releaseNativeValue(value);
     var index: u64 = 0;
-    if (c.JS_ToIndex(engine.context, &index, value) < 0) return error.JavaScriptException;
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToIndex(engine.context, &index, value); } < 0) return error.JavaScriptException;
     return std.math.cast(usize, index) orelse error.InvalidTextDecoderInput;
 }
 
@@ -261,10 +270,10 @@ fn inputBytes(engine: *engine_mod.Engine, value: c.JSValue, getters: [*c]c.JSVal
     const view = c.JS_GetTypedArrayType(value) >= 0 or c.JS_IsDataView(value);
     const base: usize = if (c.JS_IsDataView(value)) 0 else 3;
     const buffer = if (view) try callGetter(engine, getters[base], value) else c.JS_DupValue(engine.context, value);
-    defer engine.freeValue(buffer);
+    defer engine.releaseNativeValue(buffer);
     if (c.JS_IsArrayBuffer(buffer)) {
         const detached = try callGetter(engine, getters[6], buffer);
-        defer engine.freeValue(detached);
+        defer engine.releaseNativeValue(detached);
         if (c.JS_ToBool(engine.context, detached) != 0) return &.{};
     }
     const offset = if (view) (try indexGetter(engine, getters[base + 1], value, getters[7])) orelse return &.{} else 0;
@@ -277,7 +286,13 @@ fn inputBytes(engine: *engine_mod.Engine, value: c.JSValue, getters: [*c]c.JSVal
     return if (count == 0) &.{} else bytes[offset .. offset + count];
 }
 
-fn decode(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, getters: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn decode(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, getters: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(decodePendingBody(context, this, argc, argv, pending_arg4, getters));
+}
+fn decodePendingBody(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, getters: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return decodeValue(engine, this, argc, argv, getters) catch |err| fail(engine, err);
 }
@@ -292,7 +307,13 @@ fn decodeValue(engine: *engine_mod.Engine, this: c.JSValue, argc: c_int, argv: [
     return engine.checked(c.JS_NewStringLen(engine.context, output.ptr, output.len));
 }
 
-fn attribute(context: ?*c.JSContext, this: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn attribute(context: ?*c.JSContext, this: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(attributePendingBody(context, this, pending_arg2, pending_arg3, magic));
+}
+fn attributePendingBody(context: ?*c.JSContext, this: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const state = stateFor(engine, this) catch |err| return fail(engine, err);
     return switch (magic) {
@@ -311,11 +332,11 @@ fn intrinsicGetter(engine: *engine_mod.Engine, prototype: c.JSValue, name: [*:0]
     const atom = c.JS_NewAtom(engine.context, name);
     defer c.JS_FreeAtom(engine.context, atom);
     var descriptor: c.JSPropertyDescriptor = undefined;
-    const found = c.JS_GetOwnProperty(engine.context, &descriptor, prototype, atom);
+    const found = native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetOwnProperty(engine.context, &descriptor, prototype, atom); };
     if (found < 0) return error.JavaScriptException;
     if (found == 0) return error.MissingTextDecoderIntrinsic;
-    engine.freeValue(descriptor.value);
-    engine.freeValue(descriptor.setter);
+    engine.releaseNativeValue(descriptor.value);
+    engine.releaseNativeValue(descriptor.setter);
     return descriptor.getter;
 }
 
@@ -325,24 +346,24 @@ pub fn install(engine: *engine_mod.Engine) !void {
     const definition: c.JSClassDef = .{ .class_name = "TextDecoder", .finalizer = finalizer, .gc_mark = null, .call = null, .exotic = null };
     if (c.JS_NewClass(engine.runtime, engine.text_decoder_class, &definition) < 0) return error.TextDecoderClassFailed;
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
-    const data_view = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "DataView"));
-    defer engine.freeValue(data_view);
-    const dv_prototype = try engine.checked(c.JS_GetPropertyStr(engine.context, data_view, "prototype"));
-    defer engine.freeValue(dv_prototype);
-    const uint8 = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "Uint8Array"));
-    defer engine.freeValue(uint8);
-    const uint8_prototype = try engine.checked(c.JS_GetPropertyStr(engine.context, uint8, "prototype"));
-    defer engine.freeValue(uint8_prototype);
-    const ta_prototype = try engine.checked(c.JS_GetPrototype(engine.context, uint8_prototype));
-    defer engine.freeValue(ta_prototype);
-    const array_buffer = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "ArrayBuffer"));
-    defer engine.freeValue(array_buffer);
-    const ab_prototype = try engine.checked(c.JS_GetPropertyStr(engine.context, array_buffer, "prototype"));
-    defer engine.freeValue(ab_prototype);
+    defer engine.releaseNativeValue(global);
+    const data_view = try engine.checked(native_guest_8: { try engine.checkNativeEntry(); break :native_guest_8 c.JS_GetPropertyStr(engine.context, global, "DataView"); });
+    defer engine.releaseNativeValue(data_view);
+    const dv_prototype = try engine.checked(native_guest_7: { try engine.checkNativeEntry(); break :native_guest_7 c.JS_GetPropertyStr(engine.context, data_view, "prototype"); });
+    defer engine.releaseNativeValue(dv_prototype);
+    const uint8 = try engine.checked(native_guest_6: { try engine.checkNativeEntry(); break :native_guest_6 c.JS_GetPropertyStr(engine.context, global, "Uint8Array"); });
+    defer engine.releaseNativeValue(uint8);
+    const uint8_prototype = try engine.checked(native_guest_5: { try engine.checkNativeEntry(); break :native_guest_5 c.JS_GetPropertyStr(engine.context, uint8, "prototype"); });
+    defer engine.releaseNativeValue(uint8_prototype);
+    const ta_prototype = try engine.checked(native_guest_4: { try engine.checkNativeEntry(); break :native_guest_4 c.JS_GetPrototype(engine.context, uint8_prototype); });
+    defer engine.releaseNativeValue(ta_prototype);
+    const array_buffer = try engine.checked(native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_GetPropertyStr(engine.context, global, "ArrayBuffer"); });
+    defer engine.releaseNativeValue(array_buffer);
+    const ab_prototype = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetPropertyStr(engine.context, array_buffer, "prototype"); });
+    defer engine.releaseNativeValue(ab_prototype);
     var getters: [8]c.JSValue = undefined;
     var initialized: usize = 0;
-    defer for (getters[0..initialized]) |getter| engine.freeValue(getter);
+    defer for (getters[0..initialized]) |getter| engine.releaseNativeValue(getter);
     for ([_]c.JSValue{ dv_prototype, ta_prototype }, 0..) |proto, group| {
         for ([_][*:0]const u8{ "buffer", "byteOffset", "byteLength" }, 0..) |name, index| {
             getters[group * 3 + index] = try intrinsicGetter(engine, proto, name);
@@ -351,14 +372,14 @@ pub fn install(engine: *engine_mod.Engine) !void {
     }
     getters[6] = try intrinsicGetter(engine, ab_prototype, "detached");
     initialized += 1;
-    const type_error = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "TypeError"));
-    defer engine.freeValue(type_error);
-    getters[7] = try engine.checked(c.JS_GetPropertyStr(engine.context, type_error, "prototype"));
+    const type_error = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, global, "TypeError"); });
+    defer engine.releaseNativeValue(type_error);
+    getters[7] = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, type_error, "prototype"); });
     initialized += 1;
     const prototype = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(prototype);
+    defer engine.releaseNativeValue(prototype);
     const constructor = try engine.checked(c.JS_NewCFunction2(engine.context, construct, "TextDecoder", 0, c.JS_CFUNC_constructor, 0));
-    defer engine.freeValue(constructor);
+    defer engine.releaseNativeValue(constructor);
     if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return error.JavaScriptException;
     c.JS_SetClassProto(engine.context, engine.text_decoder_class, c.JS_DupValue(engine.context, prototype));
     const method = try engine.checked(c.JS_NewCFunctionData(engine.context, decode, 0, 0, getters.len, &getters));
@@ -374,7 +395,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     // before a guest can replace the global, prototype methods or getters.
     const js = @import("native_js_values.zig");
     const owner = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
-    defer engine.freeValue(owner);
+    defer engine.releaseNativeValue(owner);
     try js.define(engine, owner, "constructor", c.JS_DupValue(engine.context, constructor));
     try js.define(engine, owner, "decode", try js.get(engine, prototype, "decode"));
     inline for (.{ "encoding", "fatal", "ignoreBOM" }) |name| try js.define(engine, owner, name, try intrinsicGetter(engine, prototype, name));

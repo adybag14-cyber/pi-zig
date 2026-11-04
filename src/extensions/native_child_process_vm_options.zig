@@ -88,7 +88,7 @@ fn loopBudget(engine: *js.Engine) !void {
     engine.interrupts +|= 1;
     if (!engine.cancelled.load(.acquire) and engine.interrupts <= engine.options.interrupt_budget) return;
     _ = c.JS_ThrowInternalError(engine.context, "interrupted"); const reason = c.JS_GetException(engine.context);
-    c.JS_SetUncatchableError(engine.context, reason); _ = try engine.checked(c.JS_Throw(engine.context, reason));
+    c.JS_SetUncatchableError(engine.context, reason); _ = try engine.checked(c.JS_PiThrowNativePending(engine.context, reason, true));
 }
 fn copyCoverage(scope: *Scope, process: c.JSValue, environment: c.JSValue, option_env: c.JSValue, has_own: c.JSValue) !void {
     const name = try scope.text("NODE_V8_COVERAGE");

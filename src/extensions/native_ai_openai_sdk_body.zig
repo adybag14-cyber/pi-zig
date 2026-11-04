@@ -25,7 +25,7 @@ pub fn create(engine: *v.em.Engine, transport: c.JSValue, convert_failure: c.JSV
             errdefer host.freeValue(pending.promise);
             if (row.truthy(try row.get(roots[0], "closed"))) try flow.settle(host, pending.owner, false, try result(&row, c.pi_js_undefined(), true)) else {
                 const read = row.invoke(try row.get(roots[0], "events"), "next", &.{}) catch |err| {
-                    const reason = flow.reason(host, err);
+                    const reason = try flow.reason(host, err);
                     defer host.freeValue(reason);
                     try continued(host, pending.owner, reason, true, 0);
                     return pending.promise;

@@ -14,11 +14,11 @@ fn getter(scope: *Scope, prototype: c.JSValue, name: [*:0]const u8) !c.JSValue {
     if (atom == c.JS_ATOM_NULL) return js.capture(scope.engine);
     defer c.JS_FreeAtom(scope.engine.context, atom);
     var descriptor: c.JSPropertyDescriptor = undefined;
-    const found = c.JS_GetOwnProperty(scope.engine.context, &descriptor, prototype, atom);
+    const found = native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_GetOwnProperty(scope.engine.context, &descriptor, prototype, atom); };
     if (found < 0) return js.capture(scope.engine);
     if (found == 0) return error.MissingCryptoIntrinsic;
-    defer scope.engine.freeValue(descriptor.value);
-    defer scope.engine.freeValue(descriptor.setter);
+    defer scope.engine.releaseNativeValue(descriptor.value);
+    defer scope.engine.releaseNativeValue(descriptor.setter);
     return scope.own(descriptor.getter);
 }
 fn function(scope: *Scope, owner: c.JSValue, name: [*:0]const u8, length: c_int, kind: Method) !c.JSValue {
@@ -37,12 +37,12 @@ fn tag(scope: *Scope, prototype: c.JSValue, name: []const u8) !void {
 }
 fn codedError(scope: *Scope, owner: c.JSValue, message: []const u8, code: []const u8) !c.JSValue {
     var args = [_]c.JSValue{try scope.text(message)};
-    const value = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.get(owner, "typeError"), 1, &args)));
+    const value = try scope.own(try scope.engine.checked(native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(scope.engine.context, try scope.get(owner, "typeError"), 1, &args); }));
     try scope.put(value, "code", try scope.text(code));
-    return scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, value)));
+    return scope.engine.checked(c.JS_PiThrowExceptionData(scope.engine.context, c.JS_DupValue(scope.engine.context, value)));
 }
 fn domError(engine: *em.Engine, name: []const u8, message: []const u8) !c.JSValue {
-    return engine.checked(c.JS_Throw(engine.context, try @import("dom_exception.zig").create(engine, message, name)));
+    return engine.checked(c.JS_PiThrowExceptionData(engine.context, try @import("dom_exception.zig").create(engine, message, name)));
 }
 fn illegal(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
@@ -83,7 +83,7 @@ fn make(scope: *Scope) !c.JSValue {
     // replace globals/prototypes. Public data.byteLength stays guest-observable.
     const array_buffer = try scope.global("ArrayBuffer");
     try scope.put(owner, "isView", try scope.get(array_buffer, "isView"));
-    const typed_prototype = try scope.own(try engine.checked(c.JS_GetPrototype(engine.context, try scope.get(try scope.global("Uint8Array"), "prototype"))));
+    const typed_prototype = try scope.own(try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPrototype(engine.context, try scope.get(try scope.global("Uint8Array"), "prototype")); }));
     const data_prototype = try scope.get(try scope.global("DataView"), "prototype");
     inline for (.{ "buffer", "byteOffset", "byteLength" }, .{ "typedBuffer", "typedOffset", "typedLength" }, .{ "dataBuffer", "dataOffset", "dataLength" }) |name, typed_name, data_name| {
         try scope.put(owner, typed_name, try getter(scope, typed_prototype, name));
@@ -127,6 +127,12 @@ fn uuid(engine: *em.Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []
     return engine.checked(c.JS_NewStringLen(engine.context, &result, result.len));
 }
 fn dispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, receiver, argc, argv, magic, roots));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -168,50 +174,55 @@ fn dataLength(scope: *Scope, owner: c.JSValue, data: c.JSValue) !c.JSValue {
         // the source's single public property read would not perform.
         if (c.JS_IsProxy(current)) return scope.get(data, "byteLength");
         var descriptor: c.JSPropertyDescriptor = undefined;
-        const found = c.JS_GetOwnProperty(engine.context, &descriptor, current, atom);
+        const found = native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetOwnProperty(engine.context, &descriptor, current, atom); };
         if (found < 0) return js.capture(engine);
         if (found != 0) {
-            defer engine.freeValue(descriptor.value);
-            defer engine.freeValue(descriptor.getter);
-            defer engine.freeValue(descriptor.setter);
+            defer engine.releaseNativeValue(descriptor.value);
+            defer engine.releaseNativeValue(descriptor.getter);
+            defer engine.releaseNativeValue(descriptor.setter);
             intrinsic = scope.equal(descriptor.getter, try scope.get(owner, "dataLength"));
             break;
         }
-        current = try scope.own(try engine.checked(c.JS_GetPrototype(engine.context, current)));
+        current = try scope.own(try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPrototype(engine.context, current); }));
     }
     return scope.get(data, "byteLength") catch |err| {
+        try @import("native_pending_owner.zig").catchFailure(engine, err);
         if (!intrinsic or err != error.JavaScriptException) return err;
-        // Only translate the actual detached backing-store diagnostic. An
-        // allocator failure while invoking this intrinsic must remain OOM.
-        if (engine.captured_exception) |exception| {
-            if (c.pi_js_native_allocation_error_generation(exception) != 0) return err;
-        }
+        // Only the intrinsic getter's ordinary diagnostic is translated.
+        // Actual allocator/private events were propagated before this DATA path.
         const backing = try scope.call(try scope.get(owner, "dataBuffer"), data, &.{});
         var total: usize = 0;
         _ = c.JS_GetArrayBuffer(engine.context, &total, backing);
         if (!c.JS_HasException(engine.context)) return err;
-        engine.freeValue(c.JS_GetException(engine.context));
+        try @import("native_pending_owner.zig").checkFatal(engine);
+        engine.releaseNativeValue(c.JS_GetException(engine.context));
         return @import("native_js_values.zig").typeError(engine, "Cannot perform get DataView.prototype.byteLength on a detached ArrayBuffer");
     };
 }
-fn settleDigest(context: ?*c.JSContext, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn settleDigest(context: ?*c.JSContext, pending_arg1: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(settleDigestPendingBody(context, pending_arg1, roots));
+}
+fn settleDigestPendingBody(context: ?*c.JSContext, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     // VM jobs retain/mark these genuine values until execution or teardown.
-    return c.JS_Call(context, roots[0], c.pi_js_undefined(), 1, &roots[1]);
+    return native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_Call(context, roots[0], c.pi_js_undefined(), 1, &roots[1]); };
 }
 fn digestPromise(scope: *Scope, value: c.JSValue) !c.JSValue {
     const engine = scope.engine;
     var functions: [2]c.JSValue = undefined;
     const promise = try scope.own(try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions)));
-    defer for (functions) |function_value| engine.freeValue(function_value);
+    defer for (functions) |function_value| engine.releaseNativeValue(function_value);
     var roots = [_]c.JSValue{ functions[0], value };
-    if (c.JS_EnqueueJob(engine.context, settleDigest, roots.len, &roots) < 0) return js.capture(engine);
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_EnqueueJob(engine.context, settleDigest, roots.len, &roots); } < 0) return js.capture(engine);
     return c.JS_DupValue(engine.context, promise);
 }
 fn digest(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
     const engine = scope.engine;
     try brand(scope, owner, receiver, true);
     if (args.len < 2) {
-        const message = try std.fmt.allocPrint(engine.gpa, prefix ++ ": 2 arguments required, but only {d} present.", .{args.len});
+        const message = (std.fmt.allocPrint(engine.gpa, prefix ++ ": 2 arguments required, but only {d} present.", .{args.len}) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(message);
         return codedError(scope, owner, message, "ERR_MISSING_ARGS");
     }
@@ -224,7 +235,7 @@ fn digest(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, args: []const c.
     const name_value = if (c.JS_IsString(algorithm)) algorithm else try scope.get(algorithm, "name");
     if (c.JS_IsUndefined(name_value)) return codedError(scope, owner, "Failed to normalize algorithm: passed algorithm can not be converted to 'Algorithm' because 'name' is required in 'Algorithm'.", "ERR_MISSING_OPTION");
     const name_string = try domString(scope, owner, name_value, true);
-    const name = try engine.toString(try scope.call(try scope.get(owner, "upperCase"), name_string, &.{}));
+    const name = (engine.toString(try scope.call(try scope.get(owner, "upperCase"), name_string, &.{})) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(name);
     const Hash = enum { sha1, sha256, sha384, sha512 };
     var hash: ?Hash = null;
@@ -243,7 +254,7 @@ fn digest(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, args: []const c.
         const length_value = try scope.call(try scope.get(owner, if (typed) "typedLength" else "dataLength"), data, &.{});
         var numeric_offset: i64 = 0;
         var numeric_length: i64 = 0;
-        if (c.JS_ToInt64(engine.context, &numeric_offset, offset_value) < 0 or c.JS_ToInt64(engine.context, &numeric_length, length_value) < 0) return js.capture(engine);
+        if (native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_ToInt64(engine.context, &numeric_offset, offset_value); } < 0 or native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToInt64(engine.context, &numeric_length, length_value); } < 0) return js.capture(engine);
         offset = @intCast(numeric_offset);
         length = @intCast(numeric_length);
     }
@@ -254,7 +265,8 @@ fn digest(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, args: []const c.
         // float typed view as an empty input. DataView's observable length
         // getter has already rejected above. Do not turn an invalid brand into
         // empty bytes: the BufferSource conversion proved this backing brand.
-        engine.freeValue(c.JS_GetException(engine.context));
+        try @import("native_pending_owner.zig").checkFatal(engine);
+        engine.releaseNativeValue(c.JS_GetException(engine.context));
         total = 0;
     }
     if (!view) length = total;

@@ -113,9 +113,10 @@ pub fn caught(engine: *em.Engine, err: anyerror) !c.JSValue {
     var current = err;
     const actual = engine.nativeCallbackResult(c.pi_js_undefined());
     if (c.JS_IsException(actual) and c.JS_HasException(engine.context)) {
-        const reason = c.JS_GetException(engine.context);
-        const fatal = c.JS_IsUncatchableError(reason); // ACTUAL pending event.
-        _ = engine.checked(c.JS_Throw(engine.context, reason)) catch |capture_error| capture: {
+        var generic_fatal: bool = false;
+        const reason = c.JS_PiGetExceptionWithFatal(engine.context, &generic_fatal);
+        const fatal = generic_fatal or c.JS_PiIsExecutionTermination(reason);
+        _ = engine.checked(c.JS_PiThrowNativePending(engine.context, reason, generic_fatal)) catch |capture_error| capture: {
             if (fatal) return capture_error;
             break :capture c.pi_js_undefined();
         };
@@ -141,9 +142,6 @@ pub fn raise(s: *Scope, message: []const u8) !c.JSValue {
 /// Promise constructor swallow a direct trusted GPA failure before AF sees it.
 pub fn callbackFailure(engine: *em.Engine, err: anyerror) anyerror {
     if (err != error.OutOfMemory) return err;
-    _ = engine.throwNativeOutOfMemoryFatal();
-    const reason = c.JS_GetException(engine.context);
-    c.JS_SetUncatchableError(engine.context, reason);
-    _ = engine.checked(c.JS_Throw(engine.context, reason)) catch |failure_error| return failure_error;
+    _ = engine.checked(engine.throwNativeOutOfMemoryFatal()) catch |failure_error| return failure_error;
     unreachable;
 }

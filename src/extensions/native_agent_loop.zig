@@ -167,7 +167,13 @@ fn startResponse(engine: *em.Engine, owner: c.JSValue) !void {
     const result = try scope.own(try @import("native_agent_response.zig").run(engine, try scope.get(owner, "context"), try scope.get(owner, "config"), try scope.get(owner, "signal"), try scope.get(owner, "emit"), try scope.get(owner, "stream")));
     try turnWait(engine, owner, result, .response);
 }
-fn toolCallFilter(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn toolCallFilter(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(toolCallFilterPendingBody(context, pending_arg1, argc, argv));
+}
+fn toolCallFilterPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return isToolCall(engine, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
 }
@@ -239,7 +245,7 @@ fn turnResume(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: 
     const stage: TurnStage = @enumFromInt(stage_int);
     if (rejected) return closeReject(engine, owner, value);
     turnCore(engine, owner, value, stage) catch |err| {
-        const raw = flow.reason(engine, err);
+        const raw = try flow.reason(engine, err);
         defer engine.freeValue(raw);
         return closeReject(engine, owner, raw);
     };

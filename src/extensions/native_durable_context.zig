@@ -114,7 +114,12 @@ fn addSignal(engine: *Engine, bindings: c.JSValue, abort_key: c.JSValue, signal:
     }
     return objects.create(engine, bindings, "ContextValue", &.{ parent, abort_key, combined });
 }
-fn cancel(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn cancel(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(cancelPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn cancelPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return sdk.invoke(engine, data[0], "abort", argv[0..@intCast(argc)]) catch |err| durable.reject(engine, err);
 }
@@ -134,6 +139,11 @@ pub fn abortError(engine: *Engine, signal: c.JSValue) !c.JSValue {
     return @import("dom_exception.zig").create(engine, "The operation was aborted", "AbortError");
 }
 pub fn awaitWithContext(engine: *Engine, promise: c.JSValue, context: c.JSValue) !c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(engine);
+    pending_frame.enter() catch |err| return pending_frame.finishValue(err);
+    return pending_frame.finishValue(awaitWithContextPendingBody(engine, promise, context));
+}
+fn awaitWithContextPendingBody(engine: *Engine, promise: c.JSValue, context: c.JSValue) !c.JSValue {
     const signal = try sdk.get(engine, context, "abortSignal");
     defer engine.freeValue(signal);
     if (c.JS_IsUndefined(signal)) return c.JS_DupValue(engine.context, promise);
@@ -155,7 +165,9 @@ pub fn awaitWithContext(engine: *Engine, promise: c.JSValue, context: c.JSValue)
     // executor. Their raw errors reject this waiter, rather than throwing from
     // awaitWithContext or issuing an extra observable removeEventListener call.
     attachWaiter(engine, promise, signal, functions) catch |err| {
+        try @import("native_pending_owner.zig").catchFailure(engine, err);
         _ = durable.reject(engine, err);
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const failure = c.JS_GetException(engine.context);
         defer engine.freeValue(failure);
         var args = [_]c.JSValue{failure};
@@ -183,7 +195,12 @@ fn attachWaiter(engine: *Engine, promise: c.JSValue, signal: c.JSValue, function
     const result = try sdk.invoke(engine, promise, "then", &.{ fulfilled, rejected });
     engine.freeValue(result);
 }
-fn waitSettled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn waitSettled(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(waitSettledPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn waitSettledPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return waitSettledOwned(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), operation, data) catch |err| durable.reject(engine, err);
 }

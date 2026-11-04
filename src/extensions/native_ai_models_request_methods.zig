@@ -85,7 +85,7 @@ fn resumeBody(engine: *v.em.Engine, state: c.JSValue, completion: async_function
         break :blk advance(&s, state, input, @enumFromInt(raw));
     }) catch |err| {
         if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-        return failed(&s, state, try s.own(@import("native_agent_async.zig").reason(engine, err)));
+        return failed(&s, state, try s.own(try @import("native_agent_async.zig").reason(engine, err)));
     };
 }
 fn unsupported(s: *Scope, imports: c.JSValue, model: c.JSValue, suffix: []const u8) anyerror {

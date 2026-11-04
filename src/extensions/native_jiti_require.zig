@@ -7,6 +7,7 @@ const resolution = @import("native_jiti_resolve.zig");
 const interop = @import("native_jiti_interop.zig");
 const cache = @import("native_jiti_module_cache.zig");
 const body = @import("native_async_body.zig");
+const pending_owner = @import("native_pending_owner.zig");
 pub const Inputs = struct {
     resolve_inputs: resolution.Inputs,
     node_file_url_to_path: c.JSValue,
@@ -38,35 +39,36 @@ fn exported(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: 
     return require(engine, fromRoots(engine, roots), arg(args, 0), arg(args, 1), arg(args, 2));
 }
 fn exportedNativeImport(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    // ModuleCallable suppresses diagnostics before this private callback. A
-    // previous diagnostic capture is not a new exception event in this call.
+    // ModuleCallable owns this callback. Earlier diagnostic DATA cannot
+    // classify a new event, and each retired diagnostic root is normalized.
     const prior = engine.captured_exception;
     engine.captured_exception = null;
     defer {
-        if (engine.captured_exception == null) engine.captured_exception = prior else if (prior) |reason| engine.freeValue(reason);
+        if (engine.captured_exception == null) engine.captured_exception = prior else if (prior) |reason| engine.releaseNativeValue(reason);
     }
+    try pending_owner.checkFatal(engine);
     if (c.JS_HasException(engine.context)) return v.js.capture(engine);
-    const generation = engine.native_allocation_generation;
     const result = nativeImportOrRequire(engine, fromRoots(engine, roots), arg(args, 0), arg(args, 1), arg(args, 2)) catch |err| {
+        try pending_owner.catchFailure(engine, err);
         if (err == error.JavaScriptException) {
             if (engine.captured_exception == null and c.JS_HasException(engine.context)) {
                 const capture_error = v.js.capture(engine);
                 if (capture_error != error.JavaScriptException) return capture_error;
             }
-            const reason = engine.captured_exception orelse return error.MissingNativeImportCurrentCapturedReason;
-            if (c.JS_IsUncatchableError(reason)) return err;
-            try body.rethrowRecognizedAllocation(engine, reason, generation);
+            try pending_owner.checkFatal(engine);
+            if (engine.captured_exception == null) return error.MissingNativeImportCurrentCapturedReason;
         }
         return err;
     };
-    // A public host hook can leave an actual event despite a success value.
-    // Do not return/publish a success over that still-pending VM event.
-    if (c.JS_HasException(engine.context)) {
-        const pending = c.JS_GetException(engine.context);
-        engine.freeValue(result);
-        return engine.checked(c.JS_Throw(engine.context, pending));
+    // Keep the actual tuple in the VM until its native owner has recorded it,
+    // then retire any success under that same owner and per-root boundary.
+    const completed = engine.nativeCallbackResult(result);
+    if (engine.nativeTerminationObserved()) {
+        if (!c.JS_IsException(completed)) engine.releaseNativeValue(completed);
+        return error.ExecutionTerminated;
     }
-    return result;
+    if (c.JS_IsException(completed)) return error.JavaScriptException;
+    return completed;
 }
 fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < args.len) args[index] else c.pi_js_undefined(); }
 /// Borrowed inputs/ctx/id/opts; owned exact raw result or Promise. Ordinary
@@ -186,7 +188,10 @@ fn nativeInner(engine: *v.em.Engine, inputs: Inputs, context: c.JSValue, id: c.J
     return interop.jitiInteropDefault(engine, context, try s.invoke(context, "nativeRequire", &.{id}));
 }
 fn debug(engine: *v.em.Engine, inputs: Inputs, args: []const c.JSValue) !void {
-    const ignored = try v.js.call(engine, inputs.debug, c.pi_js_undefined(), args); engine.freeValue(ignored);
+    const ignored = try v.js.call(engine, inputs.debug, c.pi_js_undefined(), args);
+    engine.releaseNativeValue(ignored);
+    try pending_owner.checkFatal(engine);
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
 }
 fn fallbackDebug(engine: *v.em.Engine, inputs: Inputs, context: c.JSValue, id: c.JSValue, reason: c.JSValue) !void {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
@@ -218,12 +223,16 @@ fn callback(engine: *v.em.Engine, inputs: Inputs, kind: Callback, context: c.JSV
 }
 fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, kind: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = v.em.Engine.fromContext(context.?);
+    var owner = pending_owner.Frame.init(engine);
+    owner.enter() catch return owner.finishCallback(c.pi_js_exception());
     const generation = engine.native_allocation_generation;
-    return callbackInner(engine, @enumFromInt(kind), roots[0..21], if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| {
+    const completed = callbackInner(engine, @enumFromInt(kind), roots[0..21], if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| failure: {
         const current = interop.callbackFailure(engine, err, generation);
-        if (current == error.JavaScriptException) return engine.throwCaptured();
-        return c.JS_ThrowTypeError(context, "Native jiti callback: %s", @as([*:0]const u8, @errorName(current)));
+        if (current == error.ExecutionTerminated) break :failure c.JS_PiNativeTerminationResult();
+        if (current == error.JavaScriptException) break :failure engine.throwCaptured();
+        break :failure c.JS_ThrowTypeError(context, "Native jiti callback: %s", @as([*:0]const u8, @errorName(current)));
     };
+    return owner.finishCallback(completed);
 }
 fn fromRoots(engine: *v.em.Engine, roots: []const c.JSValue) Inputs {
     return .{

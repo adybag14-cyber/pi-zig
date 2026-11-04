@@ -143,7 +143,7 @@ fn redirected(scope: *Scope, owner: c.JSValue, head: c.JSValue, status: u32) !bo
     const current_url = try scope.get(owner, "current_url");
     const next = scope.own(js.builtin(scope.engine, "URL", &.{ location, current_url }) catch |err| {
         cleanupTransport(scope, owner);
-        try reject(scope, owner, try scope.own(flow.reason(scope.engine, err)), true);
+        try reject(scope, owner, try scope.own(try flow.reason(scope.engine, err)), true);
         return true;
     }) catch |err| {
         cleanupTransport(scope, owner);

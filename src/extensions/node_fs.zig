@@ -22,16 +22,16 @@ pub fn installWithStreams(engine: *engine_mod.Engine, io: std.Io, actual_process
         try @import("node_path.zig").install(engine, io);
     const actual_paths = (try engine.requireBuiltin("node:path")) orelse
         return error.ActualFilesystemPathOwnerRequired;
-    defer engine.freeValue(actual_paths);
+    defer engine.releaseNativeValue(actual_paths);
     return installMode(engine, io, true, actual_paths);
 }
 fn installMode(engine: *engine_mod.Engine, io: std.Io, with_streams: bool, module_paths: ?c.JSValue) !void {
     engine.native_io = io;
     try node_buffer.install(engine);
     const exports = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(exports);
+    defer engine.releaseNativeValue(exports);
     const constants = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
-    defer engine.freeValue(constants);
+    defer engine.releaseNativeValue(constants);
     inline for (.{ "F_OK", "R_OK", "W_OK", "X_OK" }) |name| {
         if (c.JS_DefinePropertyValueStr(engine.context, constants, name, c.JS_NewInt32(engine.context, @field(std.c, name)), c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
     }
@@ -42,7 +42,7 @@ fn installMode(engine: *engine_mod.Engine, io: std.Io, with_streams: bool, modul
         if (c.JS_DefinePropertyValueStr(engine.context, exports, name.ptr, function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }
     const promises = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(promises);
+    defer engine.releaseNativeValue(promises);
     inline for (std.meta.fields(PromiseMethod)) |field| {
         const name: [:0]const u8 = field.name;
         const function = try engine.checked(c.pi_js_function_magic(engine.context, invokePromise, name.ptr, if (field.value == @intFromEnum(PromiseMethod.appendFile)) 3 else 2, @intCast(field.value)));
@@ -60,13 +60,21 @@ fn installMode(engine: *engine_mod.Engine, io: std.Io, with_streams: bool, modul
     try engine.registerDefaultModule("fs/promises", promises);
 }
 
-fn invokePromise(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn invokePromise(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(invokePromisePendingBody(context, pending_arg1, argc, argv, magic));
+}
+fn invokePromisePendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     var resolvers: [2]c.JSValue = undefined;
     const promise = c.JS_NewPromiseCapability(context, &resolvers);
     if (c.JS_IsException(promise)) return promise;
-    defer engine.freeValue(resolvers[0]);
-    defer engine.freeValue(resolvers[1]);
+    var promise_owned = true;
+    defer if (promise_owned) engine.releaseNativeValue(promise);
+    defer engine.releaseNativeValue(resolvers[0]);
+    defer engine.releaseNativeValue(resolvers[1]);
     const method: Method = switch (@as(PromiseMethod, @enumFromInt(magic))) {
         .readFile => .readFileSync,
         .writeFile => .writeFileSync,
@@ -78,9 +86,11 @@ fn invokePromise(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
     var failed = false;
     const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
     var snapshot: ?c.JSValue = null;
-    defer if (snapshot) |value| engine.freeValue(value);
+    defer if (snapshot) |value| engine.releaseNativeValue(value);
     const value = callCaptured(engine, method, args, &snapshot) catch |err| failure: {
+        @import("native_pending_owner.zig").catchFailure(engine, err) catch |fatal_error| return if (fatal_error == error.ExecutionTerminated) engine.throwExecutionTerminated() else engine.throwCaptured();
         failed = true;
+        @import("native_pending_owner.zig").checkFatal(@import("engine.zig").Engine.fromContext(context.?)) catch |pending_error| return if (pending_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else c.pi_js_exception();
         if (c.JS_HasException(context)) break :failure c.JS_GetException(context);
         if (err == error.JavaScriptException) {
             if (engine.captured_exception) |exception| break :failure c.JS_DupValue(context, exception);
@@ -88,18 +98,21 @@ fn invokePromise(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
         var error_args = [_]c.JSValue{snapshot orelse c.pi_js_undefined()};
         break :failure filesystemError(engine, err, method, if (snapshot != null) &error_args else args);
     };
-    defer engine.freeValue(value);
+    defer engine.releaseNativeValue(value);
     if (c.JS_IsException(value)) {
-        engine.freeValue(promise);
+        engine.releaseNativeValue(promise);
+        promise_owned = false;
         return value;
     }
     var arguments = [_]c.JSValue{value};
-    const settled = c.JS_Call(context, resolvers[@intFromBool(failed)], c.pi_js_undefined(), arguments.len, &arguments);
+    const settled = native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_Call(context, resolvers[@intFromBool(failed)], c.pi_js_undefined(), arguments.len, &arguments); };
     if (c.JS_IsException(settled)) {
-        engine.freeValue(promise);
+        engine.releaseNativeValue(promise);
+        promise_owned = false;
         return settled;
     }
-    engine.freeValue(settled);
+    engine.releaseNativeValue(settled);
+    promise_owned = false;
     return promise;
 }
 
@@ -173,23 +186,32 @@ test "native filesystem append preserves all eight original Node text binary fla
     try std.testing.expect(json.equal(expected, actual.value));
 }
 
-fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn invoke(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(invokePendingBody(context, pending_arg1, argc, argv, magic));
+}
+fn invokePendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
     var snapshot: ?c.JSValue = null;
-    defer if (snapshot) |value| engine.freeValue(value);
+    defer if (snapshot) |value| engine.releaseNativeValue(value);
     return callCaptured(engine, @enumFromInt(magic), args, &snapshot) catch |err| {
+        @import("native_pending_owner.zig").catchFailure(engine, err) catch |fatal_error| return if (fatal_error == error.ExecutionTerminated) engine.throwExecutionTerminated() else engine.throwCaptured();
         if (@as(Method, @enumFromInt(magic)) == .existsSync and err != error.OutOfMemory) {
             // Node's existence probe suppresses path validation and getter
             // exceptions. Allocation failure remains a native exception.
-            if (c.JS_HasException(context)) engine.freeValue(c.JS_GetException(context));
+            @import("native_pending_owner.zig").checkFatal(@import("engine.zig").Engine.fromContext(context.?)) catch |pending_error| return if (pending_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else c.pi_js_exception();
+            if (c.JS_HasException(context)) engine.releaseNativeValue(c.JS_GetException(context));
             return c.pi_js_bool(context, 0);
         }
         if (err == error.JavaScriptException) return engine.throwCaptured();
+        if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
         var error_args = [_]c.JSValue{snapshot orelse c.pi_js_undefined()};
         const failure = filesystemError(engine, err, @enumFromInt(magic), if (snapshot != null) &error_args else args);
         if (c.JS_IsException(failure)) return failure;
-        return c.JS_Throw(context, failure);
+        return c.JS_PiThrowExceptionData(context, failure);
     };
 }
 
@@ -197,7 +219,7 @@ fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue
 /// that native operation without consulting a later mutable fs object field.
 pub fn readUtf8(engine: *engine_mod.Engine, path: c.JSValue) !c.JSValue {
     const codec = try engine.checked(c.JS_NewString(engine.context, "utf-8"));
-    defer engine.freeValue(codec);
+    defer engine.releaseNativeValue(codec);
     var parameters = [_]c.JSValue{ path, codec };
     return engine.checked(invoke(engine.context, c.pi_js_undefined(), parameters.len, &parameters, @intFromEnum(Method.readFileSync)));
 }
@@ -224,14 +246,15 @@ fn filesystemCode(err: anyerror) ?[:0]const u8 {
 }
 
 fn filesystemError(engine: *engine_mod.Engine, err: anyerror, method: Method, args: []c.JSValue) c.JSValue {
-    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
     if (native_url.isFilePathError(err)) return native_url.filePathErrorValue(engine, err);
     const failure = c.JS_NewError(engine.context);
     if (c.JS_IsException(failure)) return failure;
     const message = c.JS_NewString(engine.context, @as([*:0]const u8, @errorName(err)));
     if (c.JS_DefinePropertyValueStr(engine.context, failure, "message", message, c.JS_PROP_C_W_E) < 0) {
-        engine.freeValue(failure);
-        return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+        engine.releaseNativeValue(failure);
+        return c.pi_js_exception();
     }
     if (filesystemCode(err)) |code| {
         const syscall: [:0]const u8 = switch (method) {
@@ -246,24 +269,33 @@ fn filesystemError(engine: *engine_mod.Engine, err: anyerror, method: Method, ar
             // Actual Source482 exposes this complete Node message through the
             // skill_expansion error listener. Reuse only the validated retained
             // string path; never repeat a user-authored path coercion.
-            const path = engine.toString(args[0]) catch {
-                engine.freeValue(failure);
-                return engine.throwNativeOutOfMemory();
+            engine.checkNativeEntry() catch |entry_error| {
+                const result = if (entry_error == error.ExecutionTerminated) engine.throwExecutionTerminated() else engine.throwCaptured();
+                engine.releaseNativeValue(failure);
+                return engine.nativeCallbackResult(result);
+            };
+            const path = engine.toString(args[0]) catch |conversion_error| {
+                const result = if (conversion_error == error.OutOfMemory) engine.throwNativeOutOfMemoryFatal()
+                    else if (conversion_error == error.ExecutionTerminated) engine.throwExecutionTerminated()
+                    else engine.throwCaptured();
+                engine.releaseNativeValue(failure);
+                return engine.nativeCallbackResult(result);
             };
             defer engine.gpa.free(path);
             const detail = std.fmt.allocPrint(engine.gpa, "ENOENT: no such file or directory, {s} '{s}'", .{ syscall, path }) catch {
-                engine.freeValue(failure);
-                return engine.throwNativeOutOfMemory();
+                const result = engine.throwNativeOutOfMemoryFatal();
+                engine.releaseNativeValue(failure);
+                return engine.nativeCallbackResult(result);
             };
             defer engine.gpa.free(detail);
             const detail_value = c.JS_NewStringLen(engine.context, detail.ptr, detail.len);
             if (c.JS_IsException(detail_value)) {
-                engine.freeValue(failure);
+                engine.releaseNativeValue(failure);
                 return detail_value;
             }
             if (c.JS_DefinePropertyValueStr(engine.context, failure, "message", detail_value, c.JS_PROP_C_W_E) < 0) {
-                engine.freeValue(failure);
-                return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+                engine.releaseNativeValue(failure);
+                return c.pi_js_exception();
             }
         }
         const fields = [_]struct { key: [*:0]const u8, text: [:0]const u8 }{
@@ -272,16 +304,16 @@ fn filesystemError(engine: *engine_mod.Engine, err: anyerror, method: Method, ar
         };
         for (fields) |field| {
             if (c.JS_DefinePropertyValueStr(engine.context, failure, field.key, c.JS_NewString(engine.context, field.text.ptr), c.JS_PROP_C_W_E) < 0) {
-                engine.freeValue(failure);
-                return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+                engine.releaseNativeValue(failure);
+                return c.pi_js_exception();
             }
         }
         // The validated path remains an input value. Never invoke user coercion
         // again while constructing an operation's error.
         if (args.len != 0 and c.JS_IsString(args[0])) {
             if (c.JS_DefinePropertyValueStr(engine.context, failure, "path", c.JS_DupValue(engine.context, args[0]), c.JS_PROP_C_W_E) < 0) {
-                engine.freeValue(failure);
-                return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+                engine.releaseNativeValue(failure);
+                return c.pi_js_exception();
             }
         }
     }
@@ -360,8 +392,8 @@ test "native filesystem and readdir accept actual URL objects real paths errors 
 }
 
 fn optionBoolean(engine: *engine_mod.Engine, options: c.JSValue, key: [*:0]const u8) !bool {
-    const value = try engine.checked(c.JS_GetPropertyStr(engine.context, options, key));
-    defer engine.freeValue(value);
+    const value = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, options, key); });
+    defer engine.releaseNativeValue(value);
     return c.JS_ToBool(engine.context, value) == 1;
 }
 
@@ -383,14 +415,14 @@ fn writeOptions(engine: *engine_mod.Engine, args: []c.JSValue, append: bool) !Wr
         return options;
     }
     if (!c.JS_IsObject(args[2])) return error.InvalidNativeFilesystemOptions;
-    const encoding = try engine.checked(c.JS_GetPropertyStr(engine.context, args[2], "encoding"));
-    defer engine.freeValue(encoding);
+    const encoding = try engine.checked(native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_GetPropertyStr(engine.context, args[2], "encoding"); });
+    defer engine.releaseNativeValue(encoding);
     options.encoding = try parseEncoding(engine, encoding);
-    const flag = try engine.checked(c.JS_GetPropertyStr(engine.context, args[2], "flag"));
-    defer engine.freeValue(flag);
+    const flag = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetPropertyStr(engine.context, args[2], "flag"); });
+    defer engine.releaseNativeValue(flag);
     if (!c.JS_IsUndefined(flag)) {
         if (!c.JS_IsString(flag)) return error.UnsupportedNativeWriteFlag;
-        const name = try engine.toString(flag);
+        const name = (engine.toString(flag) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(name);
         if (append and (std.mem.eql(u8, name, "a") or std.mem.eql(u8, name, "ax"))) {
             options.file.exclusive = std.mem.eql(u8, name, "ax");
@@ -400,11 +432,11 @@ fn writeOptions(engine: *engine_mod.Engine, args: []c.JSValue, append: bool) !Wr
             options.file.exclusive = std.mem.eql(u8, name, "wx");
         } else return error.UnsupportedNativeWriteFlag;
     }
-    const mode = try engine.checked(c.JS_GetPropertyStr(engine.context, args[2], "mode"));
-    defer engine.freeValue(mode);
+    const mode = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, args[2], "mode"); });
+    defer engine.releaseNativeValue(mode);
     if (!c.JS_IsUndefined(mode)) return error.UnsupportedNativeFileMode;
-    const signal = try engine.checked(c.JS_GetPropertyStr(engine.context, args[2], "signal"));
-    defer engine.freeValue(signal);
+    const signal = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, args[2], "signal"); });
+    defer engine.releaseNativeValue(signal);
     if (!c.JS_IsUndefined(signal)) return error.UnsupportedNativeFilesystemSignal;
     return options;
 }
@@ -439,7 +471,7 @@ fn callCaptured(engine: *engine_mod.Engine, method: Method, args: []c.JSValue, s
         return @import("node_events.zig").codedError(engine, "TypeError", "ERR_INVALID_ARG_TYPE", "The path argument must be a string, Buffer or URL; FileHandle requires its native provider");
     }
     const io = engine.native_io orelse return error.NativeIoUnavailable;
-    const path = if (native_url.isURL(engine, args[0])) try native_url.filePath(engine, args[0], builtin.os.tag == .windows) else try engine.toString(args[0]);
+    const path = if (native_url.isURL(engine, args[0])) try native_url.filePath(engine, args[0], builtin.os.tag == .windows) else (engine.toString(args[0]) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(path);
     if (native_url.isURL(engine, args[0])) snapshot.* = try engine.checked(c.JS_NewStringLen(engine.context, path.ptr, path.len));
     if (std.mem.indexOfScalar(u8, path, 0) != null) return error.InvalidNativeFilesystemPath;
@@ -450,8 +482,8 @@ fn callCaptured(engine: *engine_mod.Engine, method: Method, args: []c.JSValue, s
                 if (c.JS_IsString(args[1])) {
                     text_encoding = try parseEncoding(engine, args[1]);
                 } else if (c.JS_IsObject(args[1])) {
-                    const value = try engine.checked(c.JS_GetPropertyStr(engine.context, args[1], "encoding"));
-                    defer engine.freeValue(value);
+                    const value = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, args[1], "encoding"); });
+                    defer engine.releaseNativeValue(value);
                     if (!c.JS_IsNull(value) and !c.JS_IsUndefined(value)) {
                         text_encoding = try parseEncoding(engine, value);
                     }
@@ -460,7 +492,7 @@ fn callCaptured(engine: *engine_mod.Engine, method: Method, args: []c.JSValue, s
             const bytes = try std.Io.Dir.cwd().readFileAlloc(io, path, engine.gpa, .limited(64 * 1024 * 1024));
             defer engine.gpa.free(bytes);
             if (text_encoding) |codec| {
-                const text = try node_buffer.encodings.decode(engine.gpa, bytes, codec);
+                const text = (node_buffer.encodings.decode(engine.gpa, bytes, codec) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                 defer engine.gpa.free(text);
                 return engine.checked(c.JS_NewStringLen(engine.context, text.ptr, text.len));
             }
@@ -470,9 +502,9 @@ fn callCaptured(engine: *engine_mod.Engine, method: Method, args: []c.JSValue, s
             if (args.len < 2) return error.MissingFilesystemData;
             const options = try writeOptions(engine, args, method == .appendFileSync);
             if (c.JS_IsString(args[1])) {
-                const text = try engine.toString(args[1]);
+                const text = (engine.toString(args[1]) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                 defer engine.gpa.free(text);
-                const bytes = try node_buffer.encodings.encode(engine.gpa, text, options.encoding);
+                const bytes = (node_buffer.encodings.encode(engine.gpa, text, options.encoding) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                 defer engine.gpa.free(bytes);
                 const file = try std.Io.Dir.cwd().createFile(io, path, options.file);
                 defer file.close(io);
@@ -483,7 +515,7 @@ fn callCaptured(engine: *engine_mod.Engine, method: Method, args: []c.JSValue, s
                 var length: usize = 0;
                 var element_bytes: usize = 0;
                 const backing = if (c.JS_IsArrayBuffer(args[1])) c.JS_DupValue(engine.context, args[1]) else try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, args[1], &offset, &length, &element_bytes));
-                defer engine.freeValue(backing);
+                defer engine.releaseNativeValue(backing);
                 const bytes = c.JS_GetArrayBuffer(engine.context, &backing_length, backing);
                 if (bytes == null and (backing_length != 0 or c.JS_HasException(engine.context))) return error.UnsupportedNativeFilesystemData;
                 if (c.JS_IsArrayBuffer(args[1])) length = backing_length;
@@ -502,7 +534,7 @@ fn callCaptured(engine: *engine_mod.Engine, method: Method, args: []c.JSValue, s
         .accessSync => {
             var mode: i32 = 0;
             if (args.len > 1 and !c.JS_IsUndefined(args[1])) {
-                if (c.JS_ToInt32(engine.context, &mode, args[1]) < 0) return error.JavaScriptException;
+                if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToInt32(engine.context, &mode, args[1]); } < 0) return error.JavaScriptException;
                 if (mode < 0 or mode > 7) return error.InvalidNativeAccessMode;
             }
             try std.Io.Dir.cwd().access(io, path, .{ .read = mode & 4 != 0, .write = mode & 2 != 0, .execute = mode & 1 != 0 });

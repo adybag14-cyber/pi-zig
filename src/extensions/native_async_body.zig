@@ -42,53 +42,38 @@ pub fn action(s: anytype, job: c.JSValue) !native.Action {
     };
 }
 pub fn failure(engine: *v.em.Engine, err: anyerror) anyerror!native.Action {
-    // Only a trusted classified host failure enters the primitive's scoped
-    // uncatchable path. Guest names/messages and old native tags are irrelevant.
-    if (err == error.OutOfMemory) return err;
-    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
-        if (c.JS_IsUncatchableError(reason)) return error.JavaScriptException;
-    };
-    return .{ .thrown = flow.reason(engine, err) };
+    try @import("native_pending_owner.zig").catchFailure(engine, err);
+    return .{ .thrown = try flow.reason(engine, err) };
 }
-/// The caller snapshots generation before the fallible host/guest boundary.
-/// Engine classification excludes historical tags and guest lookalikes.
-pub fn failureSince(engine: *v.em.Engine, err: anyerror, generation: u64) anyerror!native.Action {
-    return failure(engine, engine.nativeAllocationError(err, generation));
+/// The stable producer owner supplies actual authority across the operation.
+/// A broad host/guest interval cannot classify captured diagnostic DATA.
+pub fn failureSince(engine: *v.em.Engine, err: anyerror, _: u64) anyerror!native.Action {
+    return failure(engine, err);
 }
-
-/// A captured failed operation is trusted only when its private allocation tag
-/// was born inside that operation's explicit host boundary. Settled Promise
-/// rejection DATA is not a failed producer event, even with a fresh private tag.
-/// Preserve Engine's unsigned wrap
-/// rule and rethrow that exact value; never allocate a replacement error.
-/// Historical or guest lookalike reasons return normally to Source's catch.
-pub fn rethrowRecognizedAllocation(engine: *v.em.Engine, reason: c.JSValue, boundary_generation: u64) !void {
-    const tagged = c.pi_js_native_allocation_error_generation(reason);
-    const distance = tagged -% boundary_generation;
-    if (tagged == 0 or distance == 0 or distance > engine.native_allocation_generation -% boundary_generation) return;
-    c.JS_SetUncatchableError(engine.context, reason);
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
-    unreachable;
+/// A rejection or captured reason is DATA. Independently owned actual events
+/// may still prevent source continuation; no tag/flag on DATA supplies proof.
+pub fn rethrowRecognizedAllocation(engine: *v.em.Engine, _: c.JSValue, _: u64) !void {
+    try @import("native_pending_owner.zig").checkFatal(engine);
 }
-
 /// C3 delivers Await rejection input as borrowed DATA. Actual pending events
 /// take precedence; a retained diagnostic/captured value is not a new event.
 /// Never inspect, mark or clear flags/private tags on the rejection input.
 pub fn enterRejectedContinuation(engine: *v.em.Engine) !void {
+    _ = engine.nativeCallbackResult(c.pi_js_undefined());
     if (!c.JS_HasException(engine.context)) return;
-    // Own the actual event outside both mutable slots while retiring the old
-    // diagnostic. Finite native finalizers may publish another pending event;
-    // ordinary cleanup cannot replace the first actual fatal. A diagnostic
-    // value released here is DATA, regardless of its own bit/private tag.
-    var chosen = c.JS_GetException(engine.context);
+    var generic_fatal: bool = false;
+    var chosen = c.JS_PiGetExceptionWithFatal(engine.context, &generic_fatal);
+    var terminal_abort = c.JS_PiIsExecutionTermination(chosen);
     while (c.JS_HasException(engine.context) or engine.captured_exception != null) {
         if (c.JS_HasException(engine.context)) {
-            const pending = c.JS_GetException(engine.context);
-            if (!c.JS_IsUncatchableError(chosen) and c.JS_IsUncatchableError(pending)) {
+            var next_generic_fatal: bool = false;
+            const pending = c.JS_PiGetExceptionWithFatal(engine.context, &next_generic_fatal);
+            if (c.JS_PiIsExecutionTermination(pending)) terminal_abort = true;
+            if (c.JS_PiNativePendingReplaceClassified(engine.runtime,
+                chosen, generic_fatal, pending, next_generic_fatal)) {
                 const displaced = chosen;
                 chosen = pending;
+                generic_fatal = next_generic_fatal;
                 engine.freeValue(displaced);
             } else engine.freeValue(pending);
         } else {
@@ -96,9 +81,8 @@ pub fn enterRejectedContinuation(engine: *v.em.Engine) !void {
             engine.captured_exception = null;
             engine.freeValue(diagnostic);
         }
+        if (!generic_fatal) _ = engine.nativeCallbackResult(c.pi_js_undefined());
     }
-    // Consumes the owned reason. No diagnostic conversion or VM operation can
-    // replace it between this transfer and the adapter's JS_EXCEPTION exit.
-    engine.captured_exception = chosen;
-    return error.JavaScriptException;
+    _ = c.JS_PiThrowNativePending(engine.context, chosen, generic_fatal);
+    return if (terminal_abort) error.ExecutionTerminated else error.JavaScriptException;
 }

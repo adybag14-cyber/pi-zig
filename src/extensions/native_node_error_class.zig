@@ -21,7 +21,7 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visitor: ?*const c.JS_MarkFunc
 fn call(_: ?*c.JSContext, function: c.JSValue, new_target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
     const self: *State = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)).?));
     var s = Scope.init(self.engine);
-    return s.finish(invoke(&s, self, function, new_target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags)) catch |err| f.failure(self.engine, err, 0);
+    return s.finishCallback(invoke(&s, self, function, new_target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags)) catch |err| f.failure(self.engine, err, 0);
 }
 fn invoke(s: *Scope, self: *State, function: c.JSValue, target: c.JSValue, args: []const c.JSValue, flags: c_int) !c.JSValue {
     try s.pending();

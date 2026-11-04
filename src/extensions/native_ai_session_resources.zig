@@ -47,7 +47,7 @@ fn invoke(engine: *em.Engine, registry: c.JSValue, magic: c_int, value: c.JSValu
         const generation = engine.native_allocation_generation;
         const result = js.call(engine, cleanup, c.pi_js_undefined(), &.{value}) catch |err| {
             if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-            const reason = flow.reason(engine, err);
+            const reason = try flow.reason(engine, err);
             defer engine.freeValue(reason);
             _ = try scope.invoke(errors, "push", &.{reason});
             continue;
@@ -62,7 +62,13 @@ fn invoke(engine: *em.Engine, registry: c.JSValue, magic: c_int, value: c.JSValu
     }
     return c.pi_js_undefined();
 }
-fn unregister(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn unregister(context: ?*c.JSContext, pending_arg1: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(unregisterPendingBody(context, pending_arg1, pending_arg2, pending_arg3, pending_arg4, roots));
+}
+fn unregisterPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     const result = js.invoke(engine, roots[0], "delete", &.{roots[1]}) catch |err| return sdk.fail(engine, err);
     engine.freeValue(result);

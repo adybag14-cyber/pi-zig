@@ -66,5 +66,5 @@ pub fn throwHostFailure(engine: *js.Engine, _: u64) !void {
     _ = c.JS_ThrowInternalError(engine.context, "Native Linux spawn admission could not establish a safe exec decision");
     const reason = c.JS_GetException(engine.context);
     if (c.JS_IsError(reason)) c.JS_SetUncatchableError(engine.context, reason);
-    _ = try engine.checked(c.JS_Throw(engine.context, reason));
+    _ = try engine.checked(c.JS_PiThrowNativePending(engine.context, reason, true));
 }

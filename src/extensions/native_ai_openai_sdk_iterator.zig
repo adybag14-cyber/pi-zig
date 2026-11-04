@@ -41,7 +41,7 @@ pub fn close(scope: *Scope, owner: c.JSValue, input: c.JSValue, thrown: bool) !g
     try scope.put(owner, "closing", c.pi_js_bool(scope.engine.context, 1));
     const pending = scope.call(method, iterator, &.{}) catch |err| {
         if (err != error.JavaScriptException or !thrown) return err;
-        const ignored = flow.reason(scope.engine, err);
+        const ignored = try flow.reason(scope.engine, err);
         scope.engine.freeValue(ignored);
         if (scope.engine.captured_exception) |captured| {
             scope.engine.captured_exception = null;

@@ -14,7 +14,13 @@ pub fn install(engine: *engine_mod.Engine, constructor: c.JSValue) !void {
         .findById => 3,
     }, @intCast(field.value))));
 }
-fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn callback(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callbackPendingBody(context, pending_arg1, argc, argv, magic));
+}
+fn callbackPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     var args = [_]c.JSValue{c.pi_js_undefined()} ** 4;
     for (0..@min(args.len, @as(usize, @intCast(@max(argc, 0))))) |index| args[index] = argv[index];
@@ -32,7 +38,7 @@ pub fn defaultDirectory(engine: *engine_mod.Engine, working: c.JSValue) ![]u8 {
 pub fn directory(engine: *engine_mod.Engine, working: c.JSValue, selected: c.JSValue) ![]u8 {
     if (c.JS_ToBool(engine.context, selected) == 1) {
         const normalized = try @import("native_sdk_settings.zig").normalizePath(engine, selected);
-        defer engine.freeValue(normalized);
+        defer engine.releaseNativeValue(normalized);
         return engine.toString(normalized);
     }
     const result = try defaultDirectory(engine, working);
@@ -70,26 +76,27 @@ pub fn freeCandidates(engine: *engine_mod.Engine, items: []Candidate) void {
     engine.gpa.free(items);
 }
 fn headerCandidate(engine: *engine_mod.Engine, line: []const u8) !c.JSValue {
-    const terminated = try engine.gpa.dupeZ(u8, line);
+    const terminated = (engine.gpa.dupeZ(u8, line) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(terminated);
     const row = c.JS_ParseJSON(engine.context, terminated, line.len, "session-header");
     if (c.JS_IsException(row)) {
-        engine.freeValue(c.JS_GetException(engine.context));
+        try @import("native_pending_owner.zig").checkFatal(engine);
+        engine.releaseNativeValue(c.JS_GetException(engine.context));
         return c.pi_js_undefined();
     }
     if (c.JS_ToBool(engine.context, row) != 1) {
-        engine.freeValue(row);
+        engine.releaseNativeValue(row);
         return c.pi_js_undefined();
     }
-    errdefer engine.freeValue(row);
+    errdefer engine.releaseNativeValue(row);
     const typ = try sdk.get(engine, row, "type");
-    defer engine.freeValue(typ);
+    defer engine.releaseNativeValue(typ);
     const tag = try sdk.text(engine, "session");
-    defer engine.freeValue(tag);
+    defer engine.releaseNativeValue(tag);
     const id = try sdk.get(engine, row, "id");
-    defer engine.freeValue(id);
+    defer engine.releaseNativeValue(id);
     if (c.JS_IsStrictEqual(engine.context, typ, tag) and c.JS_IsString(id)) return row;
-    engine.freeValue(row);
+    engine.releaseNativeValue(row);
     return c.pi_js_null();
 }
 pub fn readHeader(engine: *engine_mod.Engine, path: []const u8) !c.JSValue {
@@ -125,7 +132,7 @@ pub fn readHeader(engine: *engine_mod.Engine, path: []const u8) !c.JSValue {
 }
 pub fn matchesCwd(engine: *engine_mod.Engine, header: c.JSValue, resolved: []const u8) !bool {
     const cwd = try sdk.get(engine, header, "cwd");
-    defer engine.freeValue(cwd);
+    defer engine.releaseNativeValue(cwd);
     if (!c.JS_IsString(cwd) or c.JS_ToBool(engine.context, cwd) != 1) return false;
     const path = try sdk.resolveSdkPath(engine, cwd);
     defer engine.gpa.free(path);
@@ -142,10 +149,11 @@ fn dispatch(engine: *engine_mod.Engine, method: Method, args: []const c.JSValue)
     const working = try sdk.resolveSdkPath(engine, args[0]);
     defer engine.gpa.free(working);
     const items = enumerate(engine, path, method == .continueRecent) catch |err| {
+        if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
         if (err == error.OutOfMemory) return err;
         if (method == .findById) return c.pi_js_undefined();
         const directory_value = try sdk.text(engine, path);
-        defer engine.freeValue(directory_value);
+        defer engine.releaseNativeValue(directory_value);
         return sdk.initManager(engine, &.{ args[0], directory_value }, true);
     };
     defer freeCandidates(engine, items);
@@ -156,74 +164,75 @@ fn dispatch(engine: *engine_mod.Engine, method: Method, args: []const c.JSValue)
     }.less);
     for (items) |item| {
         const header = readHeader(engine, item.path) catch |err| {
+        if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
             if (err == error.OutOfMemory) return err;
             continue;
         };
-        defer engine.freeValue(header);
+        defer engine.releaseNativeValue(header);
         if (!c.JS_IsObject(header)) continue;
         if (method == .findById) {
             const id = try sdk.get(engine, header, "id");
-            defer engine.freeValue(id);
+            defer engine.releaseNativeValue(id);
             if (!c.JS_IsStrictEqual(engine.context, id, args[1])) continue;
         }
         if (filter and !try matchesCwd(engine, header, working)) continue;
         const result = try sdk.text(engine, item.path);
         if (method == .findById) return result;
-        defer engine.freeValue(result);
+        defer engine.releaseNativeValue(result);
         const directory_value = try sdk.text(engine, path);
-        defer engine.freeValue(directory_value);
+        defer engine.releaseNativeValue(directory_value);
         return files.open(engine, &.{ result, directory_value, args[0] });
     }
     if (method == .findById) return c.pi_js_undefined();
     const directory_value = try sdk.text(engine, path);
-    defer engine.freeValue(directory_value);
+    defer engine.releaseNativeValue(directory_value);
     return sdk.initManager(engine, &.{ args[0], directory_value }, true);
 }
 fn fork(engine: *engine_mod.Engine, args: []const c.JSValue) !c.JSValue {
     const source = try sdk.resolveSdkPath(engine, args[0]);
     defer engine.gpa.free(source);
     const entries = try files.load(engine, source);
-    defer engine.freeValue(entries);
+    defer engine.releaseNativeValue(entries);
     if (try sdk.length(engine, entries) == 0) {
-        const message = try std.fmt.allocPrint(engine.gpa, "Cannot fork: source session file is empty or invalid: {s}", .{source});
+        const message = (std.fmt.allocPrint(engine.gpa, "Cannot fork: source session file is empty or invalid: {s}", .{source}) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(message);
         return sdk.sourceError(engine, message);
     }
     const working = try sdk.resolveSdkPath(engine, args[1]);
     defer engine.gpa.free(working);
     const working_value = try sdk.text(engine, working);
-    defer engine.freeValue(working_value);
+    defer engine.releaseNativeValue(working_value);
     const path = try directory(engine, working_value, args[2]);
     defer engine.gpa.free(path);
     const directory_value = try sdk.text(engine, path);
-    defer engine.freeValue(directory_value);
+    defer engine.releaseNativeValue(directory_value);
     const options = try sdk.object(engine);
-    defer engine.freeValue(options);
+    defer engine.releaseNativeValue(options);
     try @import("native_sdk_models.zig").copy(engine, options, args[3]);
     try sdk.put(engine, options, "parentSession", try sdk.text(engine, source));
     const manager = try sdk.initManager(engine, &.{ working_value, directory_value, options }, true);
-    errdefer engine.freeValue(manager);
+    errdefer engine.releaseNativeValue(manager);
     const owner = try sdk.state(engine, manager);
     const rows = try sdk.get(engine, owner.data, "entries");
-    defer engine.freeValue(rows);
+    defer engine.releaseNativeValue(rows);
     for (1..try sdk.length(engine, entries)) |index| {
-        const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, entries, @intCast(index)));
-        defer engine.freeValue(row);
+        const row = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyUint32(engine.context, entries, @intCast(index)); });
+        defer engine.releaseNativeValue(row);
         const typ = try sdk.get(engine, row, "type");
-        defer engine.freeValue(typ);
+        defer engine.releaseNativeValue(typ);
         const tag = try sdk.text(engine, "session");
-        defer engine.freeValue(tag);
+        defer engine.releaseNativeValue(tag);
         if (!c.JS_IsStrictEqual(engine.context, typ, tag)) try sdk.append(engine, rows, c.JS_DupValue(engine.context, row));
     }
     if (try sdk.length(engine, rows) > 0) {
-        const last = try engine.checked(c.JS_GetPropertyUint32(engine.context, rows, try sdk.length(engine, rows) - 1));
-        defer engine.freeValue(last);
+        const last = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, rows, try sdk.length(engine, rows) - 1); });
+        defer engine.releaseNativeValue(last);
         try sdk.put(engine, owner.data, "leafId", try sdk.get(engine, last, "id"));
     }
     try sdk.rebuildSessionIndex(engine, owner.data);
     const output_path = try sdk.get(engine, owner.data, "sessionFile");
-    defer engine.freeValue(output_path);
-    const output = try engine.toString(output_path);
+    defer engine.releaseNativeValue(output_path);
+    const output = (engine.toString(output_path) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(output);
     const file = try std.Io.Dir.cwd().createFile(engine.native_io orelse return error.NativeSDKRequiresIO, output, .{ .exclusive = true });
     file.close(engine.native_io.?);

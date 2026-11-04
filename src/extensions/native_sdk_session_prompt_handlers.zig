@@ -22,7 +22,13 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
 fn arg(argc: c_int, argv: [*c]c.JSValue, index: usize) c.JSValue {
     return if (index < @as(usize, @intCast(argc))) argv[index] else c.pi_js_undefined();
 }
-fn dispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn dispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, pending_arg5: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, receiver, argc, argv, magic, pending_arg5));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, _: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     if (magic == 2) return @import("native_sdk_skill_expansion.zig").expandSession(engine, receiver, arg(argc, argv, 0)) catch |err| sdk.fail(engine, err);
     const pending = flow.create(engine, receiver) catch |err| return sdk.fail(engine, err);
@@ -94,7 +100,7 @@ fn command(engine: *em.Engine, owner: c.JSValue, text: c.JSValue) !void {
     const generation = engine.native_allocation_generation;
     const pending = scope.invoke(selected, "handler", &.{ arguments, context }) catch |err| {
         if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-        const reason = flow.reason(engine, err);
+        const reason = try flow.reason(engine, err);
         defer engine.freeValue(reason);
         return commandComplete(engine, owner, reason, true, 0);
     };

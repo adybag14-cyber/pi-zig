@@ -134,7 +134,7 @@ pub fn decode(scope: *Scope, sse: c.JSValue, json: c.JSValue) !c.JSValue {
     return scope.invoke(json, "parseJsonWithRepair", &.{data}) catch |err| {
         const classified = scope.engine.nativeAllocationError(err, generation);
         if (classified == error.OutOfMemory) return classified;
-        const reason = @import("native_agent_async.zig").reason(scope.engine, err);
+        const reason = try @import("native_agent_async.zig").reason(scope.engine, err);
         defer scope.engine.freeValue(reason);
         const failure = try parseFailure(scope, sse, reason);
         return scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, failure)));

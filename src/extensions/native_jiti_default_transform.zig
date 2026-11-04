@@ -30,8 +30,9 @@ fn completion(engine:*v.em.Engine,imports:Imports,options:c.JSValue)!c.JSValue{
     if(c.JS_HasException(engine.context))return v.js.capture(engine);
     const value=try values(engine,imports,options);
     if(c.JS_HasException(engine.context)){
-        const reason=c.JS_GetException(engine.context);engine.freeValue(value);
-        return engine.checked(c.JS_Throw(engine.context,reason));
+        var generic_fatal: bool = false;
+        const reason = c.JS_PiGetExceptionWithFatal(engine.context, &generic_fatal);engine.freeValue(value);
+        return engine.checked(c.JS_PiThrowNativePending(engine.context, reason, generic_fatal));
     }
     return value;
 }

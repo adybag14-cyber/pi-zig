@@ -135,57 +135,119 @@ fn validateFunctionWrapped(engine:*v.em.Engine,receiver:c.JSValue,args:[]const c
     const result=runValidateFunctionWrapped(&s,receiver,args,roots,generation) catch |err| return retireValidationFailure(&s,err,generation);
     return c.JS_DupValue(engine.context,result);
 }
-fn runValidateFunctionWrapped(s:*v.Scope,receiver:c.JSValue,args:[]const c.JSValue,roots:[]const c.JSValue,generation:u64)!c.JSValue{
+fn runValidateFunctionWrapped(s:*v.Scope,receiver:c.JSValue,args:[]const c.JSValue,roots:[]const c.JSValue,_:u64)!c.JSValue{
     const engine=s.engine;
     const result=h.call(s,roots[0],receiver,args) catch |err| {
         if(err!=error.JavaScriptException)return err;
+        // The surrounding real module invocation retains actual fatal capture
+        // independently. A saved diagnostic bit/tag is never catch authority.
+        const pending_result=engine.nativeCallbackResult(c.pi_js_undefined());
+        if(engine.nativeTerminationObserved())return error.ExecutionTerminated;
+        if(c.JS_HasException(engine.context)){
+            if(c.JS_PiIsPendingUncatchable(engine.context))return error.JavaScriptException;
+            _=engine.checked(pending_result) catch |actual| ordinary:{
+                if(actual!=error.JavaScriptException)return actual;
+                break :ordinary c.pi_js_undefined();
+            };
+        }
         const captured=engine.captured_exception orelse return err;
-        if(c.JS_IsUncatchableError(captured))return err;
-        try @import("native_async_body.zig").rethrowRecognizedAllocation(engine,captured,generation);
         engine.captured_exception=null;
-        const reason=try s.own(captured); // first inline slot, before any getter.
+        const reason=try s.own(captured);
         if(s.truthy(try h.get(s,roots[1],"stackTraceLimit"))) _=try h.call(s,roots[2],c.pi_js_undefined(),&.{reason,try h.get(s,roots[3],"wrapper")});
-        return h.throwValue(engine,reason);
+        // An ordinary explicit source rethrow does not inherit a historical
+        // native bit from diagnostic DATA.
+        _=engine.checked(c.JS_PiThrowExceptionData(engine.context,c.JS_DupValue(engine.context,reason))) catch |actual|return actual;
+        unreachable;
     };
     return result;
 }
-/// Only this new catch boundary retires its private temporary roots here.
-/// Shared Scope/Engine are unchanged. A caught native holder can finalize
-/// while another Source getter/capture error is unwinding; protect first
-/// ordinary/first actual fatal across EACH release rather than replaying it.
+/// Only this catch boundary retires its private temporary roots here. The
+/// enclosing module invocation supplies independently retained fatal events;
+/// every actual slot take carries its generic class alongside the reason.
 const ValidationCleanup=struct{
-    engine:*v.em.Engine,selected:?c.JSValue=null,fatal:bool=false,
-    fn currentFatal(self:*ValidationCleanup,reason:c.JSValue,generation:u64)bool{
-        if(c.JS_IsUncatchableError(reason))return true;
-        const tag=c.pi_js_native_allocation_error_generation(reason);const distance=tag-%generation;
-        if(tag==0 or distance==0 or distance>self.engine.native_allocation_generation-%generation)return false;
-        c.JS_SetUncatchableError(self.engine.context,reason);return true;
+    engine:*v.em.Engine,selected:?c.JSValue=null,fatal:bool=false,actual_pending:bool=false,terminated:bool=false,
+    fn isFatal(self:*const ValidationCleanup)bool{
+        const reason=self.selected orelse return false;
+        return self.actual_pending and (if(c.JS_PiIsExecutionTermination(reason))
+            c.JS_PiNativePendingPriority(self.engine.runtime,reason)>0 else self.fatal);
     }
-    fn select(self:*ValidationCleanup,reason:c.JSValue,generation:u64)?c.JSValue{
-        const fatal=self.currentFatal(reason,generation);
-        if(self.selected==null){self.selected=reason;self.fatal=fatal;return null;}
-        if(!self.fatal and fatal){const old=self.selected;self.selected=reason;self.fatal=true;return old;}
-        return reason;
+    fn rememberProducer(self:*ValidationCleanup,reason:c.JSValue,generic_fatal:bool,actual_pending:bool)void{
+        if(!actual_pending)return;
+        const private=c.JS_PiIsExecutionTermination(reason);
+        if(private and self.engine.nativeTerminationObserved())return;
+        if(!private and !generic_fatal)return;
+        const invocation=self.engine.native_fatal_invocation orelse return;
+        std.debug.assert(invocation.active);
+        if(!private)if(invocation.first)|first|{
+            if(!c.JS_PiIsExecutionTermination(first) or
+                c.JS_PiNativePendingPriority(self.engine.runtime,first)>0)return;
+        };
+        // Proven actual policy/history reaches the stable owner before cleanup.
+        _=c.JS_PiThrowNativePending(self.engine.context,c.JS_DupValue(self.engine.context,reason),generic_fatal);
+        self.engine.releaseNativeValue(c.pi_js_undefined());
+        var duplicate_fatal:bool=false;
+        const duplicate=c.JS_PiGetExceptionWithFatal(self.engine.context,&duplicate_fatal);
+        // A different actual normalization winner stays pending.
+        if(duplicate_fatal==generic_fatal and c.JS_IsStrictEqual(self.engine.context,duplicate,reason))
+            self.engine.freeValue(duplicate)
+        else _=c.JS_PiThrowNativePending(self.engine.context,duplicate,duplicate_fatal);
     }
-    fn collect(self:*ValidationCleanup,generation:u64)void{
-        const pending:?c.JSValue=if(c.JS_HasException(self.engine.context))c.JS_GetException(self.engine.context)else null;
+    fn select(self:*ValidationCleanup,reason:c.JSValue,generic_fatal:bool,actual_pending:bool)?c.JSValue{
+        self.rememberProducer(reason,generic_fatal,actual_pending);
+        self.terminated=self.terminated or self.engine.nativeTerminationObserved() or
+            (actual_pending and c.JS_PiIsExecutionTermination(reason));
+        if(self.selected)|prior|{
+            const replace=if(self.actual_pending and actual_pending)
+                c.JS_PiNativePendingReplaceClassified(self.engine.runtime,prior,self.fatal,reason,generic_fatal)
+            else if(!self.actual_pending) actual_pending and (generic_fatal or
+                (c.JS_PiIsExecutionTermination(reason) and c.JS_PiNativePendingPriority(self.engine.runtime,reason)>0))
+            else c.JS_PiIsExecutionTermination(prior) and c.JS_PiNativePendingPriority(self.engine.runtime,prior)<0;
+            if(!replace)return reason;
+            self.selected=reason;self.fatal=generic_fatal;self.actual_pending=actual_pending;return prior;
+        }
+        self.selected=reason;self.fatal=generic_fatal;self.actual_pending=actual_pending;return null;
+    }
+    fn collect(self:*ValidationCleanup,release_generation:?u64)void{
+        if(!self.isFatal())_=self.engine.nativeCallbackResult(c.pi_js_undefined());
+        self.terminated=self.terminated or self.engine.nativeTerminationObserved();
+        var generic_fatal:bool=false;
+        const pending:?c.JSValue=if(c.JS_HasException(self.engine.context))
+            c.JS_PiGetExceptionWithFatal(self.engine.context,&generic_fatal)else null;
         const captured=self.engine.captured_exception;self.engine.captured_exception=null;
-        var retired:[2]?c.JSValue=.{null,null};
-        if(pending)|reason|retired[0]=self.select(reason,generation);
-        if(captured)|reason|retired[1]=self.select(reason,generation);
-        for(retired)|value|if(value)|reason|self.release(reason);
+        var retired:?c.JSValue=null;
+        if(pending)|reason|{
+            if(!c.JS_PiIsExecutionTermination(reason))if(release_generation)|generation|{
+                const tag=c.pi_js_native_allocation_error_generation(reason);const distance=tag-%generation;
+                if(tag!=0 and distance!=0 and distance<=self.engine.native_allocation_generation-%generation){
+                    c.JS_SetUncatchableError(self.engine.context,reason);generic_fatal=true;
+                }
+            };
+            retired=self.select(reason,generic_fatal,true);
+        }
+        // Snapshot both channels before any release. Captured-only cleanup is
+        // DATA even if a formerly fatal Error still has an old native marker.
+        if(retired)|reason|self.release(reason);
+        if(captured)|reason|self.release(reason);
     }
     fn release(self:*ValidationCleanup,reason:c.JSValue)void{
         const generation=self.engine.native_allocation_generation;self.engine.freeValue(reason);self.collect(generation);
     }
 };
-fn retireValidationFailure(s:*v.Scope,err:anyerror,generation:u64)anyerror{
-    const engine=s.engine;var cleanup:ValidationCleanup=.{.engine=engine};
-    const pending:?c.JSValue=if(c.JS_HasException(engine.context))c.JS_GetException(engine.context)else null;
+fn retireValidationFailure(s:*v.Scope,err:anyerror,_:u64)anyerror{
+    const engine=s.engine;var cleanup:ValidationCleanup=.{.engine=engine,.terminated=err==error.ExecutionTerminated or engine.nativeTerminationObserved()};
+    _=engine.nativeCallbackResult(c.pi_js_undefined());
+    cleanup.terminated=cleanup.terminated or engine.nativeTerminationObserved();
+    var generic_fatal:bool=false;
+    const pending:?c.JSValue=if(c.JS_HasException(engine.context))
+        c.JS_PiGetExceptionWithFatal(engine.context,&generic_fatal)else null;
     const captured=engine.captured_exception;engine.captured_exception=null;
     var history:?c.JSValue=null;
-    if(pending)|reason|{_=cleanup.select(reason,generation);history=captured;}else if(err==error.JavaScriptException){if(captured)|reason|_=cleanup.select(reason,generation);}else history=captured;
-    if(err==error.OutOfMemory){const before=engine.native_allocation_generation;_=engine.throwNativeOutOfMemory();cleanup.collect(before);}
+    if(pending)|reason|{_=cleanup.select(reason,generic_fatal,true);history=captured;}
+    else if(err==error.JavaScriptException){if(captured)|reason|_=cleanup.select(reason,false,false);}
+    else history=captured;
+    if(err==error.OutOfMemory and !cleanup.isFatal()){
+        _=engine.throwNativeOutOfMemoryFatal();cleanup.collect(null);
+    }
     if(history)|reason|cleanup.release(reason);
     const count=s.inline_count;s.inline_count=0;
     for(s.inline_values[0..count])|value|cleanup.release(value);
@@ -193,10 +255,16 @@ fn retireValidationFailure(s:*v.Scope,err:anyerror,generation:u64)anyerror{
     for(values)|value|cleanup.release(value);
     if(cleanup.selected)|reason|{
         cleanup.selected=null;
-        _=engine.checked(c.JS_Throw(engine.context,reason)) catch |actual|return actual;
+        const result=if(cleanup.actual_pending)
+            c.JS_PiThrowNativePending(engine.context,reason,cleanup.fatal)
+        else c.JS_PiThrowExceptionData(engine.context,reason);
+        // This is an inner host error union. Its outer stable module owner
+        // remains active until the genuine C callback publishes the event.
+        if(cleanup.terminated or engine.nativeTerminationObserved())return error.ExecutionTerminated;
+        _=engine.checked(result) catch |actual|return if(engine.nativeTerminationObserved()) error.ExecutionTerminated else actual;
         unreachable;
     }
-    return err;
+    return if(cleanup.terminated or engine.nativeTerminationObserved()) error.ExecutionTerminated else err;
 }
 fn argValueMessage(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     try h.pending(engine); var s: v.Scope = .{ .engine=engine }; defer s.deinit();
@@ -212,4 +280,95 @@ fn argValueMessage(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, 
     result = try h.binary(&s,.add,result,try s.text(" '")); result = try h.binary(&s,.add,result,name); result = try h.binary(&s,.add,result,try s.text("' "));
     result = try h.binary(&s,.add,result,try text(&s,reason)); result = try h.binary(&s,.add,result,try s.text(". Received ")); result = try h.binary(&s,.add,result,inspected);
     return c.JS_DupValue(engine.context,result);
+}
+
+test "readline cleanup preserves primitive fatal capture until actual callback owner publication" {
+    for ([_]bool{ false, true }) |native_fatal| {
+        const engine = try v.em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        const later = try engine.checked(c.JS_NewError(engine.context)); defer engine.freeValue(later);
+        if (native_fatal) c.JS_SetUncatchableError(engine.context, later);
+        const witness = try @import("native_node_fs_mkdir_exit.zig").Testing.cleanup(engine, later);
+        var invocation: v.em.Engine.NativeInvocation = .{};
+        engine.enterNativeInvocation(&invocation);
+        var scope: v.Scope = .{ .engine = engine };
+        _ = try scope.own(witness);
+        if (native_fatal) {
+            c.JS_SetMemoryLimit(engine.runtime, 1);
+            _ = engine.throwNativeOutOfMemoryFatal();
+            c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
+        } else _ = c.JS_Throw(engine.context, c.pi_js_null());
+        const failure = retireValidationFailure(&scope, error.JavaScriptException, engine.native_allocation_generation);
+        try std.testing.expectEqual(error.JavaScriptException, failure);
+        scope.deinit();
+        _ = engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());
+        _ = engine.throwCaptured();
+        try std.testing.expect(c.JS_HasException(engine.context));
+        var fatal: bool = false;
+        const reason = c.JS_PiGetExceptionWithFatal(engine.context, &fatal); defer engine.freeValue(reason);
+        try std.testing.expect(c.JS_IsNull(reason));
+        try std.testing.expectEqual(native_fatal, fatal);
+        try std.testing.expect(!c.JS_IsUncatchableError(reason));
+        try std.testing.expect(!c.JS_PiIsPendingUncatchable(engine.context));
+        try std.testing.expect(engine.native_fatal_invocation == null);
+    }
+    // Cancellation can leave only active native history. Retire the same
+    // private temporary ownership and preserve any ordinary cleanup tuple.
+    for ([_]bool{ false, true }) |ordinary_cleanup| {
+        const native = @import("native_node_fs_mkdir_exit.zig").Testing;
+        const engine = try v.em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        const witness: ?c.JSValue = if (ordinary_cleanup) try native.cleanup(engine, c.pi_js_null()) else null;
+        var invocation: v.em.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
+        var scope: v.Scope = .{ .engine = engine };
+        if (witness) |value| _ = try scope.own(value);
+        c.JS_PiRequestExecutionTermination(engine.runtime);
+        try std.testing.expect(c.JS_PiCheckExecutionTermination(engine.context) < 0);
+        engine.releaseNativeValue(c.pi_js_undefined());
+        c.JS_PiCancelExecutionTermination(engine.runtime);
+        if (c.JS_HasException(engine.context)) {
+            var canceled_fatal: bool = false;
+            const canceled = c.JS_PiGetExceptionWithFatal(engine.context, &canceled_fatal);
+            try std.testing.expect(c.JS_PiIsExecutionTermination(canceled)); engine.freeValue(canceled);
+        }
+        try std.testing.expect(engine.nativeTerminationObserved());
+        const failure = retireValidationFailure(&scope, error.JavaScriptException, engine.native_allocation_generation);
+        try std.testing.expectEqual(error.ExecutionTerminated, failure);
+        try std.testing.expectEqual(@as(usize, 0), scope.inline_count);
+        try std.testing.expect(engine.captured_exception == null);
+        scope.deinit();
+        _ = engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());
+        if (ordinary_cleanup) {
+            var fatal: bool = true;
+            const reason = c.JS_PiGetExceptionWithFatal(engine.context, &fatal);
+            try std.testing.expect(c.JS_IsNull(reason) and !fatal); engine.freeValue(reason);
+        } else try std.testing.expect(!c.JS_HasException(engine.context));
+        try std.testing.expect(!engine.nativeTerminationObserved());
+        try std.testing.expect(engine.native_fatal_invocation == null);
+    }
+    // The original generic first survives, but a canceled private cleanup
+    // still records Engine history before the following real finalizer.
+    {
+        const native = @import("native_node_fs_mkdir_exit.zig").Testing;
+        const engine = try v.em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        var probe: native.PrivateHistoryProbe = .{ .engine = engine };
+        const emitter = try native.historyCleanup(&probe, true);
+        const observer = try native.historyCleanup(&probe, false);
+        var invocation: v.em.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
+        var scope: v.Scope = .{ .engine = engine };
+        _ = try scope.own(emitter); _ = try scope.own(observer);
+        c.JS_SetMemoryLimit(engine.runtime, 1);
+        _ = engine.throwNativeOutOfMemoryFatal();
+        c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
+        const failure = retireValidationFailure(&scope, error.JavaScriptException, engine.native_allocation_generation);
+        try std.testing.expectEqual(error.ExecutionTerminated, failure);
+        try std.testing.expectEqual(@as(usize, 2), probe.calls);
+        try std.testing.expect(probe.emitted and probe.canceled and probe.observed);
+        try std.testing.expect(invocation.terminated);
+        scope.deinit();
+        _ = engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());
+        var fatal: bool = false;
+        const reason = c.JS_PiGetExceptionWithFatal(engine.context, &fatal); defer engine.freeValue(reason);
+        try std.testing.expect(c.JS_IsNull(reason) and fatal);
+        try std.testing.expect(!engine.nativeTerminationObserved());
+        try std.testing.expect(engine.native_fatal_invocation == null);
+    }
 }

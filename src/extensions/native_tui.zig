@@ -39,19 +39,21 @@ pub fn containsComponent(engine: *engine_mod.Engine, root: c.JSValue, target: c.
 const Method = enum(c_int) { render, invalidate, setText, setLines, setBgFn, addChild, removeChild, clear, handleMouse };
 
 fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
     return c.JS_ThrowTypeError(engine.context, "Native TUI component: %s", @as([*:0]const u8, @errorName(err)));
 }
 fn define(engine: *engine_mod.Engine, object: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, object, name, value, c.JS_PROP_C_W_E) < 0) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+        _ = try engine.checked(c.pi_js_exception());
         return error.JavaScriptException;
     }
 }
 fn set(engine: *engine_mod.Engine, object: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
     if (c.JS_SetPropertyStr(engine.context, object, name, value) < 0) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+        _ = try engine.checked(c.pi_js_exception());
         return error.JavaScriptException;
     }
 }
@@ -78,6 +80,12 @@ fn constructorMark(runtime: ?*c.JSRuntime, object: c.JSValue, mark: ?*const c.JS
     c.JS_MarkValue(runtime, state.array_is_array, mark);
 }
 fn constructorCall(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(constructorCallPendingBody(context, function, target, argc, argv, flags));
+}
+fn constructorCallPendingBody(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     if (flags & c.JS_CALL_FLAG_CONSTRUCTOR == 0) return c.JS_ThrowTypeError(context, "Native TUI classes require new");
     const state: *Constructor = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)).?));
@@ -85,11 +93,11 @@ fn constructorCall(context: ?*c.JSContext, function: c.JSValue, target: c.JSValu
 }
 fn construct(state: *Constructor, target: c.JSValue, args: []c.JSValue) !c.JSValue {
     const engine = state.engine;
-    const selected = try engine.checked(c.JS_GetPropertyStr(engine.context, target, "prototype"));
-    defer engine.freeValue(selected);
+    const selected = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, target, "prototype"); });
+    defer engine.releaseNativeValue(selected);
     const object = try engine.checked(c.JS_NewObjectProtoClass(engine.context, if (c.JS_IsObject(selected)) selected else state.prototype, state.node_class));
-    errdefer engine.freeValue(object);
-    const node = try engine.gpa.create(Node);
+    errdefer engine.releaseNativeValue(object);
+    const node = (engine.gpa.create(Node) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     node.* = .{ .engine = engine, .kind = state.kind, .text = c.pi_js_undefined(), .padding_x = c.pi_js_undefined(), .padding_y = c.pi_js_undefined(), .background = c.pi_js_undefined(), .array_is_array = c.JS_DupValue(engine.context, state.array_is_array) };
     _ = c.JS_SetOpaque(object, node);
     switch (state.kind) {
@@ -110,29 +118,35 @@ fn construct(state: *Constructor, target: c.JSValue, args: []c.JSValue) !c.JSVal
     return object;
 }
 fn invalidateNode(node: *Node) void {
-    if (node.cache) |value| node.engine.freeValue(value);
+    if (node.cache) |value| node.engine.releaseNativeValue(value);
     node.cache = null;
     node.revision +%= 1;
 }
 fn methodCall(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(methodCallPendingBody(context, this, argc, argv, magic, data));
+}
+fn methodCallPendingBody(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     var class_id: u32 = 0;
-    if (c.JS_ToUint32(context, &class_id, data[0]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
+    if (native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_ToUint32(context, &class_id, data[0]); } < 0) return c.pi_js_exception();
     const node: *Node = @ptrCast(@alignCast(c.JS_GetOpaque(this, class_id) orelse return c.JS_ThrowTypeError(context, "Illegal native TUI receiver")));
     return operation(node, this, @enumFromInt(magic), if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
 }
 fn count(engine: *engine_mod.Engine, value: c.JSValue, ceil: bool) !usize {
     var number: f64 = 0;
-    if (c.JS_ToFloat64(engine.context, &number, value) < 0) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+    if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(engine.context, &number, value); } < 0) {
+        _ = try engine.checked(c.pi_js_exception());
         return error.JavaScriptException;
     }
     if (!std.math.isFinite(number) or number < 0 or number > 16_384) return error.NativeTuiLayoutLimit;
     return @intFromFloat(if (ceil) @ceil(number) else @floor(number));
 }
 fn children(engine: *engine_mod.Engine, object: c.JSValue) !c.JSValue {
-    const array = try engine.checked(c.JS_GetPropertyStr(engine.context, object, "children"));
-    errdefer engine.freeValue(array);
+    const array = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, object, "children"); });
+    errdefer engine.releaseNativeValue(array);
     if (!c.JS_IsObject(array)) return error.InvalidNativeTuiChildren;
     return array;
 }
@@ -144,7 +158,7 @@ fn operation(node: *Node, object: c.JSValue, method: Method, args: []c.JSValue) 
     if (method == .setText or method == .setLines or method == .setBgFn) {
         const slot = if (method == .setText) &node.text else if (method == .setLines) &node.padding_y else &node.background;
         const replacement = c.JS_DupValue(engine.context, first);
-        engine.freeValue(slot.*);
+        engine.releaseNativeValue(slot.*);
         slot.* = replacement;
         invalidateNode(node);
         return c.pi_js_undefined();
@@ -157,32 +171,32 @@ fn operation(node: *Node, object: c.JSValue, method: Method, args: []c.JSValue) 
     invalidateNode(node);
     if (node.kind != .container and node.kind != .box) return c.pi_js_undefined();
     const array = try children(engine, object);
-    defer engine.freeValue(array);
-    const length = try engine.checked(c.JS_GetPropertyStr(engine.context, array, "length"));
-    defer engine.freeValue(length);
+    defer engine.releaseNativeValue(array);
+    const length = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, array, "length"); });
+    defer engine.releaseNativeValue(length);
     const size = try count(engine, length, false);
     if (size >= components.maximum_lines and method == .addChild) return error.NativeTuiChildrenLimit;
     if (method == .addChild) {
         var pushed = [_]c.JSValue{first};
         const result = (try components.callMethod(engine, array, "push", &pushed, false)).?;
-        engine.freeValue(result);
+        engine.releaseNativeValue(result);
     } else if (method == .removeChild) {
         var searched = [_]c.JSValue{first};
         const index = (try components.callMethod(engine, array, "indexOf", &searched, false)).?;
-        defer engine.freeValue(index);
+        defer engine.releaseNativeValue(index);
         if (!c.JS_IsStrictEqual(engine.context, index, c.JS_NewInt32(engine.context, -1))) {
             // A user indexOf callback may replace children before splice.
             const current = try children(engine, object);
-            defer engine.freeValue(current);
+            defer engine.releaseNativeValue(current);
             var removed = [_]c.JSValue{ index, c.JS_NewInt32(engine.context, 1) };
             const result = (try components.callMethod(engine, current, "splice", &removed, false)).?;
-            engine.freeValue(result);
+            engine.releaseNativeValue(result);
         }
     } else if (method == .invalidate) {
         for (0..size) |index| {
-            const child = try engine.checked(c.JS_GetPropertyUint32(engine.context, array, @intCast(index)));
-            defer engine.freeValue(child);
-            if (try components.callMethod(engine, child, "invalidate", &.{}, true)) |value| engine.freeValue(value);
+            const child = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, array, @intCast(index)); });
+            defer engine.releaseNativeValue(child);
+            if (try components.callMethod(engine, child, "invalidate", &.{}, true)) |value| engine.releaseNativeValue(value);
         }
     }
     return c.pi_js_undefined();
@@ -197,19 +211,19 @@ fn padded(node: *Node, line: []const u8, width: usize, left: usize) ![]u8 {
     const engine = node.engine;
     var output: std.ArrayList(u8) = .empty;
     defer output.deinit(engine.gpa);
-    try output.appendNTimes(engine.gpa, ' ', left);
-    try output.appendSlice(engine.gpa, line);
-    try output.appendNTimes(engine.gpa, ' ', left);
+    (output.appendNTimes(engine.gpa, ' ', left) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
+    (output.appendSlice(engine.gpa, line) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
+    (output.appendNTimes(engine.gpa, ' ', left) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     const visible = terminal_text.visibleWidth(output.items);
-    if (visible < width) try output.appendNTimes(engine.gpa, ' ', width - visible);
+    if (visible < width) (output.appendNTimes(engine.gpa, ' ', width - visible) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     if (c.JS_IsUndefined(node.background)) return output.toOwnedSlice(engine.gpa);
     const background = c.JS_DupValue(engine.context, node.background);
-    defer engine.freeValue(background);
+    defer engine.releaseNativeValue(background);
     if (!c.JS_IsFunction(engine.context, background)) return error.InvalidNativeTuiBackground;
     var args = [_]c.JSValue{try engine.checked(c.JS_NewStringLen(engine.context, output.items.ptr, output.items.len))};
-    defer engine.freeValue(args[0]);
-    const result = try engine.checked(c.JS_Call(engine.context, background, c.pi_js_undefined(), 1, &args));
-    defer engine.freeValue(result);
+    defer engine.releaseNativeValue(args[0]);
+    const result = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_Call(engine.context, background, c.pi_js_undefined(), 1, &args); });
+    defer engine.releaseNativeValue(result);
     if (!c.JS_IsString(result)) return error.InvalidNativeTuiBackground;
     return engine.toString(result);
 }
@@ -248,11 +262,11 @@ fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
     if (node.kind == .spacer) {
         const amount = try count(engine, node.padding_y, true);
         if (amount > components.maximum_lines) return error.NativeComponentFrameLimit;
-        for (0..amount) |_| try appendOwned(engine, &output, try engine.gpa.dupe(u8, ""));
+        for (0..amount) |_| (appendOwned(engine, &output, (engine.gpa.dupe(u8, "") catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; })) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     } else if (node.kind == .text) {
-        const source = if (c.JS_ToBool(engine.context, node.text) == 0) try engine.gpa.dupe(u8, "") else blk: {
+        const source = if (c.JS_ToBool(engine.context, node.text) == 0) (engine.gpa.dupe(u8, "") catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; }) else blk: {
             if (!c.JS_IsString(node.text)) return error.InvalidNativeTuiText;
-            break :blk try engine.toString(node.text);
+            break :blk (engine.toString(node.text) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         };
         defer engine.gpa.free(source);
         if (source.len > components.maximum_frame_bytes) return error.NativeComponentFrameLimit;
@@ -263,9 +277,9 @@ fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
             var normalized: std.ArrayList(u8) = .empty;
             defer normalized.deinit(engine.gpa);
             for (source) |byte| if (byte == '\t') {
-                try normalized.appendSlice(engine.gpa, "   ");
+                (normalized.appendSlice(engine.gpa, "   ") catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             } else {
-                try normalized.append(engine.gpa, byte);
+                (normalized.append(engine.gpa, byte) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             };
             for (0..vertical) |_| try appendOwned(engine, &output, try padded(node, "", width, 0));
             try wrappedText(node, normalized.items, width, left, &output);
@@ -273,44 +287,44 @@ fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
         }
     } else {
         const array = try children(engine, object);
-        defer engine.freeValue(array);
-        const length = try engine.checked(c.JS_GetPropertyStr(engine.context, array, "length"));
-        defer engine.freeValue(length);
+        defer engine.releaseNativeValue(array);
+        const length = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetPropertyStr(engine.context, array, "length"); });
+        defer engine.releaseNativeValue(length);
         const amount = try count(engine, length, false);
         if (amount > components.maximum_lines) return error.NativeTuiChildrenLimit;
         const left = try count(engine, node.padding_x, false);
         const vertical = try count(engine, node.padding_y, true);
         const inner_width = @max(@as(usize, 1), width -| left * 2);
         const mouse_children = try engine.checked(c.JS_NewArray(engine.context));
-        defer engine.freeValue(mouse_children);
+        defer engine.releaseNativeValue(mouse_children);
         var rendered: std.ArrayList([]u8) = .empty;
         defer {
             for (rendered.items) |line| engine.gpa.free(line);
             rendered.deinit(engine.gpa);
         }
         for (0..amount) |index| {
-            const child = try engine.checked(c.JS_GetPropertyUint32(engine.context, array, @intCast(index)));
-            defer engine.freeValue(child);
+            const child = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyUint32(engine.context, array, @intCast(index)); });
+            defer engine.releaseNativeValue(child);
             var args = [_]c.JSValue{c.JS_NewInt64(engine.context, @intCast(if (node.kind == .box) inner_width else width))};
-            defer engine.freeValue(args[0]);
+            defer engine.releaseNativeValue(args[0]);
             const pending = (try components.callMethod(engine, child, "render", &args, false)).?;
-            defer engine.freeValue(pending);
+            defer engine.releaseNativeValue(pending);
             const result = try engine.awaitValue(pending);
-            defer engine.freeValue(result);
+            defer engine.releaseNativeValue(result);
             var frame = try components.normalizeWithPredicate(engine, result, node.array_is_array);
             defer frame.deinit();
             const mouse_child = try engine.checked(c.JS_NewObject(engine.context));
             var child_transferred = false;
-            defer if (!child_transferred) engine.freeValue(mouse_child);
+            defer if (!child_transferred) engine.releaseNativeValue(mouse_child);
             try define(engine, mouse_child, "component", c.JS_DupValue(engine.context, child));
-            try define(engine, mouse_child, "height", try engine.checked(c.JS_GetPropertyStr(engine.context, result, "length")));
+            try define(engine, mouse_child, "height", try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, result, "length"); }));
             child_transferred = true;
             if (c.JS_SetPropertyUint32(engine.context, mouse_children, @intCast(index), mouse_child) < 0) return error.JavaScriptException;
-            for (frame.lines) |line| try appendOwned(engine, &rendered, try engine.gpa.dupe(u8, line));
+            for (frame.lines) |line| (appendOwned(engine, &rendered, (engine.gpa.dupe(u8, line) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; })) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         }
         const mouse_layout = try engine.checked(c.JS_NewObject(engine.context));
         var mouse_transferred = false;
-        defer if (!mouse_transferred) engine.freeValue(mouse_layout);
+        defer if (!mouse_transferred) engine.releaseNativeValue(mouse_layout);
         try define(engine, mouse_layout, "width", c.JS_NewFloat64(engine.context, @floatFromInt(if (node.kind == .box) inner_width else width)));
         try define(engine, mouse_layout, "children", c.JS_DupValue(engine.context, mouse_children));
         mouse_transferred = true;
@@ -318,7 +332,7 @@ fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
         if (rendered.items.len != 0) {
             if (vertical > components.maximum_lines / 2) return error.NativeComponentFrameLimit;
             for (0..vertical) |_| try appendOwned(engine, &output, try padded(node, "", width, 0));
-            for (rendered.items) |line| try appendOwned(engine, &output, if (node.kind == .box) try padded(node, line, width, left) else try engine.gpa.dupe(u8, line));
+            for (rendered.items) |line| (appendOwned(engine, &output, if (node.kind == .box) try padded(node, line, width, left) else (engine.gpa.dupe(u8, line) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; })) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             for (0..vertical) |_| try appendOwned(engine, &output, try padded(node, "", width, 0));
         }
     }
@@ -330,7 +344,7 @@ fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
     const frame: components.Frame = .{ .gpa = engine.gpa, .lines = output.items, .bytes = bytes };
     const result = try components.frameToValue(&frame, engine);
     if ((node.kind == .text or node.kind == .spacer) and node.revision == revision) {
-        if (node.cache) |previous| engine.freeValue(previous);
+        if (node.cache) |previous| engine.releaseNativeValue(previous);
         node.cache = c.JS_DupValue(engine.context, result);
         node.cache_width = width;
     }
@@ -338,15 +352,21 @@ fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
 }
 
 const Helper = enum(c_int) { visibleWidth, matchesKey, parseKey, isKeyRelease, isKeyRepeat, decodePrintableKey, decodeKittyPrintable, setKittyProtocolActive, isKittyProtocolActive, truncateToWidth, wrapTextWithAnsi, renderFakeCursor };
-fn helperCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn helperCall(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(helperCallPendingBody(context, pending_arg1, argc, argv, magic));
+}
+fn helperCallPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return helper(engine, @enumFromInt(magic), if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
 }
 fn helper(engine: *engine_mod.Engine, method: Helper, args: []c.JSValue) !c.JSValue {
     if (method == .renderFakeCursor) {
-        const text = try engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined());
+        const text = (engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined()) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(text);
-        const wrapped = try std.fmt.allocPrint(engine.gpa, "{s}{s}{s}", .{ @import("../tui/cursor_markers.zig").fake_start, text, @import("../tui/cursor_markers.zig").fake_end });
+        const wrapped = (std.fmt.allocPrint(engine.gpa, "{s}{s}{s}", .{ @import("../tui/cursor_markers.zig").fake_start, text, @import("../tui/cursor_markers.zig").fake_end }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(wrapped);
         return engine.checked(c.JS_NewStringLen(engine.context, wrapped.ptr, wrapped.len));
     }
@@ -359,21 +379,21 @@ fn helper(engine: *engine_mod.Engine, method: Helper, args: []c.JSValue) !c.JSVa
     if (method == .visibleWidth) {
         const units = try @import("native_utf16.zig").unitsAlloc(engine, args[0]);
         defer engine.gpa.free(units);
-        const width = try @import("../tui/utf16_terminal.zig").visibleWidth(engine.gpa, units);
+        const width = (@import("../tui/utf16_terminal.zig").visibleWidth(engine.gpa, units) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         return engine.checked(c.JS_NewInt64(engine.context, @intCast(width)));
     }
     if (method == .wrapTextWithAnsi) {
         const units = try @import("native_utf16.zig").unitsAlloc(engine, args[0]);
         defer engine.gpa.free(units);
         var width: f64 = 0;
-        if (c.JS_ToFloat64(engine.context, &width, if (args.len > 1) args[1] else c.pi_js_undefined()) < 0) return @import("native_js_values.zig").capture(engine);
+        if (native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_ToFloat64(engine.context, &width, if (args.len > 1) args[1] else c.pi_js_undefined()); } < 0) return @import("native_js_values.zig").capture(engine);
         const lines = try @import("native_utf16_wrap.zig").wrap(engine, units, width);
         defer {
             for (lines) |line| engine.gpa.free(line);
             engine.gpa.free(lines);
         }
         const result = try @import("native_js_values.zig").array(engine);
-        errdefer engine.freeValue(result);
+        errdefer engine.releaseNativeValue(result);
         for (lines, 0..) |line, index| if (c.JS_SetPropertyUint32(engine.context, result, @intCast(index), try @import("native_utf16.zig").string(engine, line)) < 0) return @import("native_js_values.zig").capture(engine);
         return result;
     }
@@ -381,19 +401,19 @@ fn helper(engine: *engine_mod.Engine, method: Helper, args: []c.JSValue) !c.JSVa
         const units = try @import("native_utf16.zig").unitsAlloc(engine, args[0]);
         defer engine.gpa.free(units);
         var width: f64 = 0;
-        if (c.JS_ToFloat64(engine.context, &width, if (args.len > 1) args[1] else c.pi_js_undefined()) < 0) return @import("native_js_values.zig").capture(engine);
-        const ellipsis = if (args.len > 2 and !c.JS_IsUndefined(args[2])) try @import("native_utf16.zig").unitsAlloc(engine, args[2]) else try engine.gpa.dupe(u16, std.unicode.utf8ToUtf16LeStringLiteral("..."));
+        if (native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(engine.context, &width, if (args.len > 1) args[1] else c.pi_js_undefined()); } < 0) return @import("native_js_values.zig").capture(engine);
+        const ellipsis = if (args.len > 2 and !c.JS_IsUndefined(args[2])) try @import("native_utf16.zig").unitsAlloc(engine, args[2]) else (engine.gpa.dupe(u16, std.unicode.utf8ToUtf16LeStringLiteral("...")) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(ellipsis);
-        const clipped = try @import("../tui/utf16_terminal.zig").truncateOptionsAlloc(engine.gpa, units, width, ellipsis, args.len > 3 and c.JS_ToBool(engine.context, args[3]) != 0);
+        const clipped = (@import("../tui/utf16_terminal.zig").truncateOptionsAlloc(engine.gpa, units, width, ellipsis, args.len > 3 and c.JS_ToBool(engine.context, args[3]) != 0) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(clipped);
         return @import("native_utf16.zig").string(engine, clipped);
     }
-    const text = try engine.toString(args[0]);
+    const text = (engine.toString(args[0]) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(text);
     return switch (method) {
         .matchesKey => blk: {
             if (args.len < 2 or !c.JS_IsString(args[1])) return error.InvalidNativeTuiKey;
-            const name = try engine.toString(args[1]);
+            const name = (engine.toString(args[1]) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(name);
             break :blk c.pi_js_bool(engine.context, @intFromBool(keys.matchesKey(text, name)));
         },
@@ -401,20 +421,26 @@ fn helper(engine: *engine_mod.Engine, method: Helper, args: []c.JSValue) !c.JSVa
         .isKeyRepeat => c.pi_js_bool(engine.context, @intFromBool(keys.isKeyRepeat(text))),
         .parseKey => blk: {
             const parsed = keys.parseKey(text) orelse break :blk c.pi_js_undefined();
-            const name = try parsed.formatAlloc(engine.gpa);
+            const name = (parsed.formatAlloc(engine.gpa) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(name);
             break :blk try engine.checked(c.JS_NewStringLen(engine.context, name.ptr, name.len));
         },
         .decodeKittyPrintable => try @import("native_input.zig").decodeKittyPrintable(engine, text),
         .decodePrintableKey => blk: {
-            const decoded = try keys.decodePrintableKey(engine.gpa, text) orelse break :blk c.pi_js_undefined();
+            const decoded = (keys.decodePrintableKey(engine.gpa, text) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; }) orelse break :blk c.pi_js_undefined();
             defer engine.gpa.free(decoded);
             break :blk try engine.checked(c.JS_NewStringLen(engine.context, decoded.ptr, decoded.len));
         },
         else => unreachable,
     };
 }
-fn keyCombination(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn keyCombination(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(keyCombinationPendingBody(context, pending_arg1, argc, argv, pending_arg4, data));
+}
+fn keyCombinationPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const prefix = engine.toString(data[0]) catch |err| return fail(engine, err);
     defer engine.gpa.free(prefix);
@@ -435,7 +461,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     const constructor_definition: c.JSClassDef = .{ .class_name = "Native TUI Constructor", .finalizer = constructorFinalizer, .gc_mark = constructorMark, .call = constructorCall, .exotic = null };
     if (c.JS_NewClass(engine.runtime, node_class, &node_definition) < 0 or c.JS_NewClass(engine.runtime, constructor_class, &constructor_definition) < 0) return error.OutOfMemory;
     const exports = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(exports);
+    defer engine.releaseNativeValue(exports);
     try @import("native_color.zig").install(engine, exports);
     try @import("native_mouse.zig").install(engine, exports);
     try @import("native_keybindings.zig").install(engine, exports);
@@ -446,7 +472,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     try @import("native_settings_list.zig").install(engine, exports);
     try define(engine, exports, "CURSOR_MARKER", try engine.checked(c.JS_NewString(engine.context, @import("../tui/cursor_markers.zig").cursor)));
     const array_is_array = try components.arrayPredicate(engine);
-    defer engine.freeValue(array_is_array);
+    defer engine.releaseNativeValue(array_is_array);
     inline for (std.meta.fields(Helper)) |field| {
         const name: [:0]const u8 = field.name;
         const arity: c_int = switch (@as(Helper, @enumFromInt(field.value))) {
@@ -457,31 +483,31 @@ pub fn install(engine: *engine_mod.Engine) !void {
         try define(engine, exports, name.ptr, try engine.checked(c.pi_js_function_magic(engine.context, helperCall, name.ptr, arity, @intCast(field.value))));
     }
     const key = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(key);
+    defer engine.releaseNativeValue(key);
     inline for (.{ "escape", "esc", "enter", "return", "tab", "space", "backspace", "delete", "insert", "clear", "home", "end", "pageUp", "pageDown", "up", "down", "left", "right", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10", "f11", "f12" }) |name| try define(engine, key, name, try engine.checked(c.JS_NewString(engine.context, name)));
     inline for (.{ .{ "backtick", "`" }, .{ "hyphen", "-" }, .{ "equals", "=" }, .{ "leftbracket", "[" }, .{ "rightbracket", "]" }, .{ "backslash", "\\" }, .{ "semicolon", ";" }, .{ "quote", "'" }, .{ "comma", "," }, .{ "period", "." }, .{ "slash", "/" }, .{ "exclamation", "!" }, .{ "at", "@" }, .{ "hash", "#" }, .{ "dollar", "$" }, .{ "percent", "%" }, .{ "caret", "^" }, .{ "ampersand", "&" }, .{ "asterisk", "*" }, .{ "leftparen", "(" }, .{ "rightparen", ")" }, .{ "underscore", "_" }, .{ "plus", "+" }, .{ "pipe", "|" }, .{ "tilde", "~" }, .{ "leftbrace", "{" }, .{ "rightbrace", "}" }, .{ "colon", ":" }, .{ "lessthan", "<" }, .{ "greaterthan", ">" }, .{ "question", "?" } }) |symbol| try define(engine, key, symbol[0], try engine.checked(c.JS_NewString(engine.context, symbol[1])));
     inline for (.{ "ctrl", "shift", "alt", "super", "ctrlShift", "shiftCtrl", "ctrlAlt", "altCtrl", "shiftAlt", "altShift", "ctrlSuper", "superCtrl", "shiftSuper", "superShift", "altSuper", "superAlt", "ctrlShiftAlt", "ctrlShiftSuper" }) |name| {
         var prefix: std.ArrayList(u8) = .empty;
         defer prefix.deinit(engine.gpa);
         for (name, 0..) |byte, index| {
-            if (std.ascii.isUpper(byte) and index != 0) try prefix.append(engine.gpa, '+');
-            try prefix.append(engine.gpa, std.ascii.toLower(byte));
+            if (std.ascii.isUpper(byte) and index != 0) (prefix.append(engine.gpa, '+') catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
+            (prefix.append(engine.gpa, std.ascii.toLower(byte)) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         }
-        try prefix.append(engine.gpa, '+');
+        (prefix.append(engine.gpa, '+') catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         var data = [_]c.JSValue{try engine.checked(c.JS_NewStringLen(engine.context, prefix.items.ptr, prefix.items.len))};
-        defer engine.freeValue(data[0]);
+        defer engine.releaseNativeValue(data[0]);
         try define(engine, key, name, try engine.checked(c.JS_NewCFunctionData2(engine.context, keyCombination, name, 1, 0, 1, &data)));
     }
     try define(engine, exports, "Key", c.JS_DupValue(engine.context, key));
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
-    const function_type = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "Function"));
-    defer engine.freeValue(function_type);
-    const function_prototype = try engine.checked(c.JS_GetPropertyStr(engine.context, function_type, "prototype"));
-    defer engine.freeValue(function_prototype);
+    defer engine.releaseNativeValue(global);
+    const function_type = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, global, "Function"); });
+    defer engine.releaseNativeValue(function_type);
+    const function_prototype = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, function_type, "prototype"); });
+    defer engine.releaseNativeValue(function_prototype);
     inline for (.{ .{ "Text", Kind.text }, .{ "Container", Kind.container }, .{ "Box", Kind.box }, .{ "Spacer", Kind.spacer } }) |item| {
         const prototype = try engine.checked(c.JS_NewObject(engine.context));
-        defer engine.freeValue(prototype);
+        defer engine.releaseNativeValue(prototype);
         inline for (.{ .{ "render", Method.render }, .{ "invalidate", Method.invalidate }, .{ "setText", Method.setText }, .{ "setLines", Method.setLines }, .{ "setCustomBgFn", Method.setBgFn }, .{ "setBgFn", Method.setBgFn }, .{ "addChild", Method.addChild }, .{ "removeChild", Method.removeChild }, .{ "clear", Method.clear }, .{ "handleMouse", Method.handleMouse } }) |operation_name| {
             const available = operation_name[1] == .render or operation_name[1] == .invalidate or
                 (item[1] == .text and (operation_name[1] == .setText or std.mem.eql(u8, operation_name[0], "setCustomBgFn"))) or
@@ -491,13 +517,13 @@ pub fn install(engine: *engine_mod.Engine) !void {
                 (item[1] == .box and std.mem.eql(u8, operation_name[0], "setBgFn"));
             if (available) {
                 var data = [_]c.JSValue{c.JS_NewInt64(engine.context, node_class)};
-                defer engine.freeValue(data[0]);
+                defer engine.releaseNativeValue(data[0]);
                 try define(engine, prototype, operation_name[0], try engine.checked(c.JS_NewCFunctionData2(engine.context, methodCall, operation_name[0], 1, @intFromEnum(operation_name[1]), 1, &data)));
             }
         }
         const constructor = try engine.checked(c.JS_NewObjectProtoClass(engine.context, function_prototype, constructor_class));
-        defer engine.freeValue(constructor);
-        const state = try engine.gpa.create(Constructor);
+        defer engine.releaseNativeValue(constructor);
+        const state = (engine.gpa.create(Constructor) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         state.* = .{ .engine = engine, .prototype = c.JS_DupValue(engine.context, prototype), .array_is_array = c.JS_DupValue(engine.context, array_is_array), .node_class = node_class, .kind = item[1] };
         _ = c.JS_SetOpaque(constructor, state);
         _ = c.JS_SetConstructorBit(engine.context, constructor, true);
@@ -521,6 +547,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     try @import("native_markdown_component.zig").install(engine, exports);
     try @import("native_editor.zig").install(engine, exports);
     try @import("native_tui_screens.zig").install(engine, exports);
+    try @import("native_tui_platform_loader.zig").install(engine, exports);
     try @import("native_tui_function_metadata.zig").install(engine, exports);
     try engine.registerValueModule("@earendil-works/pi-tui", exports);
     try engine.registerValueModule("@mariozechner/pi-tui", exports);
@@ -593,11 +620,17 @@ test "original structural RGB exceptional magnitudes and indexed ANSI retain gue
 }
 
 fn themeCall(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(themeCallPendingBody(context, receiver, argc, argv, magic));
+}
+fn themeCallPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return themeOperation(engine, receiver, magic, if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
 }
 fn themeOperation(engine: *engine_mod.Engine, receiver: c.JSValue, magic: c_int, args: []c.JSValue) !c.JSValue {
-    if (magic == 10) return engine.checked(c.JS_GetPropertyStr(engine.context, receiver, "_nativeColorMode"));
+    if (magic == 10) return engine.checked(native_guest_4: { try engine.checkNativeEntry(); break :native_guest_4 c.JS_GetPropertyStr(engine.context, receiver, "_nativeColorMode"); });
     const color_magic: ?c_int = switch (magic) {
         0, 8 => 0,
         1, 9 => 1,
@@ -605,46 +638,46 @@ fn themeOperation(engine: *engine_mod.Engine, receiver: c.JSValue, magic: c_int,
     };
     const opening_only = magic == 8 or magic == 9;
     const index: usize = if (color_magic != null) 1 else 0;
-    const text = if (opening_only) try engine.gpa.dupe(u8, "") else try engine.toString(if (args.len > index) args[index] else c.pi_js_undefined());
+    const text = if (opening_only) (engine.gpa.dupe(u8, "") catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; }) else (engine.toString(if (args.len > index) args[index] else c.pi_js_undefined()) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(text);
     if (color_magic != null and c.JS_IsObject(receiver)) {
-        const colors = try engine.checked(c.JS_GetPropertyStr(engine.context, receiver, "_nativeColors"));
-        defer engine.freeValue(colors);
+        const colors = try engine.checked(native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_GetPropertyStr(engine.context, receiver, "_nativeColors"); });
+        defer engine.releaseNativeValue(colors);
         if (c.JS_IsObject(colors)) {
-            const name = try engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined());
+            const name = (engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined()) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(name);
-            const name_z = try engine.gpa.dupeZ(u8, name);
+            const name_z = (engine.gpa.dupeZ(u8, name) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(name_z);
-            const selected = try engine.checked(c.JS_GetPropertyStr(engine.context, colors, name_z.ptr));
-            defer engine.freeValue(selected);
+            const selected = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetPropertyStr(engine.context, colors, name_z.ptr); });
+            defer engine.releaseNativeValue(selected);
             if (c.JS_IsString(selected)) {
-                const foreground = try engine.toString(selected);
+                const foreground = (engine.toString(selected) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                 defer engine.gpa.free(foreground);
-                const parameters = if (color_magic.? == 0) try engine.gpa.dupe(u8, foreground) else if (std.mem.startsWith(u8, foreground, "38;")) try std.mem.concat(engine.gpa, u8, &.{ "48", foreground[2..] }) else blk: {
+                const parameters = if (color_magic.? == 0) (engine.gpa.dupe(u8, foreground) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; }) else if (std.mem.startsWith(u8, foreground, "38;")) (std.mem.concat(engine.gpa, u8, &.{ "48", foreground[2..] }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; }) else blk: {
                     const number = std.fmt.parseInt(u16, foreground, 10) catch 39;
-                    break :blk try std.fmt.allocPrint(engine.gpa, "{d}", .{number + 10});
+                    break :blk (std.fmt.allocPrint(engine.gpa, "{d}", .{number + 10}) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                 };
                 defer engine.gpa.free(parameters);
-                const dim_tokens = try engine.checked(c.JS_GetPropertyStr(engine.context, receiver, "_nativeDim"));
-                defer engine.freeValue(dim_tokens);
-                const dim_token = if (c.JS_IsObject(dim_tokens)) try engine.checked(c.JS_GetPropertyStr(engine.context, dim_tokens, name_z.ptr)) else c.pi_js_undefined();
-                defer engine.freeValue(dim_token);
+                const dim_tokens = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, receiver, "_nativeDim"); });
+                defer engine.releaseNativeValue(dim_tokens);
+                const dim_token = if (c.JS_IsObject(dim_tokens)) try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, dim_tokens, name_z.ptr); }) else c.pi_js_undefined();
+                defer engine.releaseNativeValue(dim_token);
                 const faint = color_magic.? == 0 and c.JS_ToBool(engine.context, dim_token) == 1;
-                const painted = if (opening_only) try std.fmt.allocPrint(engine.gpa, "\x1b[{s}m{s}", .{ parameters, if (faint) "\x1b[2m" else "" }) else try std.fmt.allocPrint(engine.gpa, "\x1b[{s}m{s}{s}\x1b[{s}m", .{ parameters, if (faint) "\x1b[2m" else "", text, if (faint) "22;39" else if (color_magic.? == 0) "39" else "49" });
+                const painted = if (opening_only) (std.fmt.allocPrint(engine.gpa, "\x1b[{s}m{s}", .{ parameters, if (faint) "\x1b[2m" else "" }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; }) else (std.fmt.allocPrint(engine.gpa, "\x1b[{s}m{s}{s}\x1b[{s}m", .{ parameters, if (faint) "\x1b[2m" else "", text, if (faint) "22;39" else if (color_magic.? == 0) "39" else "49" }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                 defer engine.gpa.free(painted);
                 return engine.checked(c.JS_NewStringLen(engine.context, painted.ptr, painted.len));
             }
             const unknown = try engine.checked(c.JS_NewError(engine.context));
-            defer engine.freeValue(unknown);
-            const message = try std.fmt.allocPrint(engine.gpa, "Unknown theme color: {s}", .{name});
+            defer engine.releaseNativeValue(unknown);
+            const message = (std.fmt.allocPrint(engine.gpa, "Unknown theme color: {s}", .{name}) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(message);
             try define(engine, unknown, "message", try engine.checked(c.JS_NewStringLen(engine.context, message.ptr, message.len)));
-            _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, unknown)));
+            _ = try engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, unknown)));
             return error.JavaScriptException;
         }
     }
     const style: []const u8 = if (color_magic != null) blk: {
-        const name = try engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined());
+        const name = (engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined()) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(name);
         const foreground: []const u8 = if (std.mem.eql(u8, name, "error")) "31" else if (std.mem.eql(u8, name, "success")) "32" else if (std.mem.eql(u8, name, "warning")) "33" else if (std.mem.eql(u8, name, "accent") or std.mem.eql(u8, name, "border")) "36" else if (std.mem.eql(u8, name, "dim") or std.mem.eql(u8, name, "muted")) "90" else "39";
         if (color_magic.? == 1) break :blk if (std.mem.eql(u8, name, "error")) "41" else if (std.mem.eql(u8, name, "success")) "42" else if (std.mem.eql(u8, name, "warning")) "43" else "49";
@@ -666,13 +699,13 @@ fn themeOperation(engine: *engine_mod.Engine, receiver: c.JSValue, magic: c_int,
         6 => "27",
         else => "29",
     };
-    const painted = if (opening_only) try std.fmt.allocPrint(engine.gpa, "\x1b[{s}m", .{style}) else try std.fmt.allocPrint(engine.gpa, "\x1b[{s}m{s}\x1b[{s}m", .{ style, text, closing });
+    const painted = if (opening_only) (std.fmt.allocPrint(engine.gpa, "\x1b[{s}m", .{style}) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; }) else (std.fmt.allocPrint(engine.gpa, "\x1b[{s}m{s}\x1b[{s}m", .{ style, text, closing }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(painted);
     return engine.checked(c.JS_NewStringLen(engine.context, painted.ptr, painted.len));
 }
 pub fn createTheme(engine: *engine_mod.Engine) !c.JSValue {
     const object = try engine.checked(c.JS_NewObject(engine.context));
-    errdefer engine.freeValue(object);
+    errdefer engine.releaseNativeValue(object);
     try define(engine, object, "name", try engine.checked(c.JS_NewString(engine.context, "default")));
     try define(engine, object, "_nativeColorMode", try engine.checked(c.JS_NewString(engine.context, if (try themeTrueColor(engine)) "truecolor" else "256color")));
     inline for (.{ "fg", "bg", "bold", "dim", "italic", "underline", "inverse", "strikethrough", "getFgAnsi", "getBgAnsi", "getColorMode" }, 0..) |name, index| try define(engine, object, name, try engine.checked(c.pi_js_function_magic(engine.context, themeCall, name, if (index < 2) 2 else if (index == 10) 0 else 1, @intCast(index))));
@@ -680,23 +713,23 @@ pub fn createTheme(engine: *engine_mod.Engine) !c.JSValue {
 }
 pub fn themeTrueColor(engine: *engine_mod.Engine) !bool {
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
-    const process = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "process"));
-    defer engine.freeValue(process);
+    defer engine.releaseNativeValue(global);
+    const process = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetPropertyStr(engine.context, global, "process"); });
+    defer engine.releaseNativeValue(process);
     // Bare embedded-engine component tests have no terminal binding.
     if (!c.JS_IsObject(process)) return true;
-    const variables = try engine.checked(c.JS_GetPropertyStr(engine.context, process, "env"));
-    defer engine.freeValue(variables);
+    const variables = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, process, "env"); });
+    defer engine.releaseNativeValue(variables);
     if (!c.JS_IsObject(variables)) return true;
     var arena = std.heap.ArenaAllocator.init(engine.gpa);
     defer arena.deinit();
     const images = @import("../tui/terminal_image.zig");
     var env: images.Environment = .{};
     inline for (.{ .{ "term_program", "TERM_PROGRAM" }, .{ "terminal_emulator", "TERMINAL_EMULATOR" }, .{ "term", "TERM" }, .{ "color_term", "COLORTERM" }, .{ "tmux", "TMUX" }, .{ "kitty_window_id", "KITTY_WINDOW_ID" }, .{ "ghostty_resources_dir", "GHOSTTY_RESOURCES_DIR" }, .{ "wezterm_pane", "WEZTERM_PANE" }, .{ "warp_session_id", "WARP_SESSION_ID" }, .{ "warp_terminal_session_uuid", "WARP_TERMINAL_SESSION_UUID" }, .{ "iterm_session_id", "ITERM_SESSION_ID" }, .{ "wt_session", "WT_SESSION" }, .{ "pi_true_color", "PI_TRUE_COLOR" } }) |field| {
-        const value = try engine.checked(c.JS_GetPropertyStr(engine.context, variables, field[1]));
-        defer engine.freeValue(value);
+        const value = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, variables, field[1]); });
+        defer engine.releaseNativeValue(value);
         if (c.JS_IsString(value)) {
-            const text = try engine.toString(value);
+            const text = (engine.toString(value) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(text);
             @field(env, field[0]) = try arena.allocator().dupe(u8, text);
         }
@@ -739,10 +772,10 @@ pub fn hydrateTheme(engine: *engine_mod.Engine, target: c.JSValue, resource: c.J
     const variables = root.object.getPtr("vars");
     const vars = if (variables) |value| if (value.* == .object) &value.object else null else null;
     const colors = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(colors);
-    const color_mode = try engine.checked(c.JS_GetPropertyStr(engine.context, target, "_nativeColorMode"));
-    defer engine.freeValue(color_mode);
-    const mode = try engine.toString(color_mode);
+    defer engine.releaseNativeValue(colors);
+    const color_mode = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, target, "_nativeColorMode"); });
+    defer engine.releaseNativeValue(color_mode);
+    const mode = (engine.toString(color_mode) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(mode);
     var entries = colors_value.object.iterator();
     while (entries.next()) |entry| {
@@ -761,7 +794,7 @@ pub fn hydrateTheme(engine: *engine_mod.Engine, target: c.JSValue, resource: c.J
     if (root.object.get("name")) |name| if (name == .string) try define(engine, target, "name", try engine.checked(c.JS_NewStringLen(engine.context, name.string.ptr, name.string.len)));
     try define(engine, target, "_nativeColors", c.JS_DupValue(engine.context, colors));
     const faint = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(faint);
+    defer engine.releaseNativeValue(faint);
     if (root.object.get("dim")) |list| if (list == .array) for (list.array.items) |item| {
         if (item != .string) continue;
         const name = try arena.allocator().dupeZ(u8, item.string);

@@ -18,7 +18,13 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, name, c.JS_DupValue(engine.context, method), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     }
 }
-fn dispatch(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn dispatch(context: ?*c.JSContext, receiver: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, receiver, pending_arg2, pending_arg3, magic));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return begin(engine, receiver, magic != 0) catch |err| sdk.fail(engine, err);
 }
@@ -95,7 +101,13 @@ fn boundaryStart(engine: *em.Engine, owner: c.JSValue) !void {
     const result = try scope.call(emit, runner, &.{ event, callback });
     try flow.wait(continuation, engine, owner, result, @intFromEnum(Stage.boundary));
 }
-fn buildContext(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn buildContext(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, args: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(buildContextPendingBody(context, pending_arg1, argc, args, pending_arg4, roots));
+}
+fn buildContextPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -103,7 +115,7 @@ fn buildContext(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.J
     return c.JS_DupValue(context, result);
 }
 fn fail(engine: *em.Engine, owner: c.JSValue, err: anyerror) !void {
-    const reason = flow.reason(engine, err);
+    const reason = try flow.reason(engine, err);
     defer engine.freeValue(reason);
     try clearBoundary(engine, owner);
     try flow.settle(engine, owner, true, reason);

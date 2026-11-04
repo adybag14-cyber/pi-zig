@@ -45,7 +45,7 @@ pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
     const exports = try s.object(); try s.put(exports, "NodeSqliteDatabase", db_ctor);
     try s.put(exports, "openNodeSqliteDatabase", try s.own(try af.createResumable(engine, "openNodeSqliteDatabase", 1, open, &.{graph})));
     try s.put(graph, "exports", exports);
-    const retained = c.JS_DupValue(engine.context, graph); engine.native_module_values.put(engine.gpa, cache_key, retained) catch |err| { engine.freeValue(retained); return err; };
+    const retained = c.JS_DupValue(engine.context, graph); engine.native_module_values.put(engine.gpa, cache_key, retained) catch |err| { if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); engine.releaseNativeValue(retained); return err; };
     return c.JS_DupValue(engine.context, exports);
 }
 fn queueConstructor(engine: *em.Engine, target: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue { var s: v.Scope = .{ .engine = engine }; defer s.deinit(); errdefer |err| s.captureUnwind(err); return c.JS_DupValue(engine.context, try queue.create(&s, try v.objectFor(&s, target))); }
@@ -101,7 +101,7 @@ fn callSpread(s: *v.Scope, function: c.JSValue, receiver: c.JSValue, iterable: c
     var steps: u64 = 0;
     while (true) {
         steps +|= 1;
-        if (s.engine.cancelled.load(.acquire) or (steps % 256 == 0 and blk: { s.engine.interrupts +|= 1; break :blk s.engine.interrupts > s.engine.options.interrupt_budget; })) { _ = c.JS_ThrowInternalError(s.engine.context, "interrupted"); const reason = c.JS_GetException(s.engine.context); c.JS_SetUncatchableError(s.engine.context, reason); _ = try v.checked(s.engine, c.JS_Throw(s.engine.context, reason)); unreachable; }
+        if (s.engine.cancelled.load(.acquire) or (steps % 256 == 0 and blk: { s.engine.interrupts +|= 1; break :blk s.engine.interrupts > s.engine.options.interrupt_budget; })) { _ = c.JS_ThrowInternalError(s.engine.context, "interrupted"); const reason = c.JS_GetException(s.engine.context); c.JS_SetUncatchableError(s.engine.context, reason); _ = try v.checked(s.engine, c.JS_PiThrowNativePending(s.engine.context, reason, true)); unreachable; }
         const step = try v.call(s, next, iterator, &.{}); if (!c.JS_IsObject(step)) return js.typeError(s.engine, "Iterator result is not an object");
         if (s.truthy(try v.get(s, step, "done"))) break;
         try arguments.append(s.engine.gpa, try v.get(s, step, "value"));
@@ -168,7 +168,7 @@ fn closeOperation(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots:
     try v.set(&s, adapter, "closed", c.pi_js_bool(engine.context, 1)); _ = try v.invoke(&s, try v.get(&s, adapter, "statements"), "clear", &.{});
     const failed: ?c.JSValue = blk: { checkpointAttempt(&s, adapter) catch |err| break :blk try s.own(try v.caught(engine, err)); break :blk null; };
     _ = try v.invoke(&s, try v.get(&s, adapter, "database"), "close", &.{});
-    if (failed) |reason| return v.checked(engine, c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
+    if (failed) |reason| return v.checked(engine, c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, reason)));
     return c.pi_js_undefined();
 }
 fn open(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) anyerror!af.Action {

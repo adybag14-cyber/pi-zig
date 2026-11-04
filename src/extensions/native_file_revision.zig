@@ -7,6 +7,7 @@ const em = @import("engine.zig");
 const fs = @import("native_file_stat.zig");
 const url = @import("native_url.zig");
 const c = em.c;
+const pending_owner = @import("native_pending_owner.zig");
 
 /// The caller owns the returned string. This typed native entry is shared by
 /// AuthStorage, FileAuthStorageBackend and FileModelsStore.
@@ -28,18 +29,27 @@ pub fn format(gpa: std.mem.Allocator, info: fs.Stat) ![]u8 {
 /// file URL objects at runtime; it rejects ordinary objects without coercing
 /// their toString. The Source catch also suppresses URL getter exceptions.
 pub fn getFileRevision(engine: *em.Engine, path: c.JSValue) !c.JSValue {
-    const generation = engine.native_allocation_generation;
+    var frame = pending_owner.Frame.init(engine);
+    frame.enter() catch |err| return frame.finishValue(err);
+    return frame.finishValue(getFileRevisionOwned(engine, path));
+}
+fn getFileRevisionOwned(engine: *em.Engine, path: c.JSValue) !c.JSValue {
     const previous = if (engine.captured_exception) |value| c.JS_DupValue(engine.context, value) else null;
-    defer if (previous) |value| engine.freeValue(value);
+    defer if (previous) |value| engine.releaseNativeValue(value);
     return get(engine, path) catch |err| {
-        // Preserve the host's private allocator-failure boundary even when a
-        // URL getter transports that marked error through a JS callback. A
-        // user Error merely named OutOfMemory still follows Source's catch.
-        if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-        if (c.JS_HasException(engine.context)) engine.freeValue(c.JS_GetException(engine.context));
-        // A caught URL getter exception must not replace the host's retained
-        // exception identity with a failure that Source has suppressed.
-        if (engine.captured_exception) |value| engine.freeValue(value);
+        // Source suppresses an ordinary stat/path/getter failure. Only the
+        // actual slot/invocation or a real typed allocator result can bypass
+        // that catch; diagnostic flags and a whole guest generation cannot.
+        try pending_owner.catchFailure(engine, err);
+        if (c.JS_HasException(engine.context)) engine.releaseNativeValue(c.JS_GetException(engine.context));
+        try pending_owner.checkFatal(engine);
+        // Detach the diagnostic entitlement before its destructor can record
+        // another actual event, then restore the old DATA identity.
+        while (engine.captured_exception) |value| {
+            engine.captured_exception = null;
+            engine.releaseNativeValue(value);
+            try pending_owner.checkFatal(engine);
+        }
         engine.captured_exception = if (previous) |value| c.JS_DupValue(engine.context, value) else null;
         return c.pi_js_undefined();
     };
@@ -52,7 +62,7 @@ fn pathText(engine: *em.Engine, value: c.JSValue) ![]u8 {
         var length: usize = 0;
         var element: usize = 0;
         const backing = try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, value, &offset, &length, &element));
-        defer engine.freeValue(backing);
+        defer engine.releaseNativeValue(backing);
         var total: usize = 0;
         const bytes = c.JS_GetArrayBuffer(engine.context, &total, backing);
         if (c.JS_HasException(engine.context) or offset > total or length > total - offset or (bytes == null and length != 0)) return error.InvalidFileStatPath;
@@ -74,5 +84,9 @@ pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
 }
 fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
-    return getFileRevision(engine, if (argc > 0) args[0] else c.pi_js_undefined()) catch |err| @import("native_durable.zig").reject(engine, err);
+    var frame = pending_owner.Frame.init(engine);
+    frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+    const result = getFileRevision(engine, if (argc > 0) args[0] else c.pi_js_undefined())
+        catch |err| @import("native_durable.zig").reject(engine, err);
+    return frame.finishCallback(result);
 }

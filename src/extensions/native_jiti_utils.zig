@@ -14,9 +14,10 @@ fn put(engine: *v.em.Engine, object: c.JSValue, name: [*:0]const u8, value: c.JS
 }
 fn initializationValue(engine: *v.em.Engine, owned: c.JSValue) !c.JSValue {
     if (c.JS_HasException(engine.context)) {
-        const pending_reason = c.JS_GetException(engine.context);
+        var generic_fatal: bool = false;
+        const pending_reason = c.JS_PiGetExceptionWithFatal(engine.context, &generic_fatal);
         engine.freeValue(owned);
-        return engine.checked(c.JS_Throw(engine.context, pending_reason));
+        return engine.checked(c.JS_PiThrowNativePending(engine.context, pending_reason, generic_fatal));
     }
     return owned;
 }

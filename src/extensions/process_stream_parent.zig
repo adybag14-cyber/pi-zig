@@ -19,6 +19,7 @@ pub const Parent = struct {
         try bridge.guard_fn(bridge.context);
         var metadata = try bridge.metadata_fn(bridge.context);
         metadata.has_shift_helper = bridge.is_shift_pressed_fn != null;
+        metadata.has_modifier_helper = bridge.is_modifier_pressed_fn != null;
         metadata.has_vt_input_helper = bridge.enable_vt_input_fn != null;
         self.bridge = bridge;
         self.lease = lease;
@@ -97,6 +98,7 @@ pub const Parent = struct {
                 try bridge.write_fn(bridge.context, payload.output, bytes);
             },
             .is_shift_pressed => return if (bridge.is_shift_pressed_fn) |query| query(bridge.context) else false,
+            .is_modifier_pressed => |name| return if (bridge.is_modifier_pressed_fn) |query| query(bridge.context, name) else false,
             .enable_vt_input => return if (bridge.enable_vt_input_fn) |query| query(bridge.context) else false,
         }
         return true;

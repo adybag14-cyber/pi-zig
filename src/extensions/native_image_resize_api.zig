@@ -7,14 +7,19 @@ const worker = @import("native_image_vm_worker.zig");
 const promises = @import("native_image_worker_promise.zig");
 const strategy = @import("native_image_resize_strategy.zig");
 const function = @import("native_node_function.zig");
+const pending = @import("native_pending_owner.zig");
+const sdk = @import("native_sdk.zig");
 fn rejected(engine: *js.Engine, err: anyerror) !c.JSValue {
-    const reason = if (err == error.JavaScriptException) blk: {
-        _ = engine.throwCaptured();
-        break :blk c.JS_GetException(engine.context);
-    } else blk: {
-        _ = engine.throwNativeOutOfMemory();
-        break :blk c.JS_GetException(engine.context);
-    };
+    try pending.catchFailure(engine, err);
+    const reason = if (c.JS_HasException(engine.context)) c.JS_GetException(engine.context)
+        else if (err == error.JavaScriptException and engine.captured_exception != null)
+            c.JS_DupValue(engine.context, engine.captured_exception.?)
+        else blk: {
+            _ = sdk.fail(engine, err);
+            try pending.checkFatal(engine);
+            if (!c.JS_HasException(engine.context)) return error.ImageFailureWithoutPendingReason;
+            break :blk c.JS_GetException(engine.context);
+        };
     defer engine.freeValue(reason);
     var handlers: [2]c.JSValue = undefined;
     const promise = try engine.checked(c.JS_NewPromiseCapability(engine.context, &handlers));
@@ -37,12 +42,10 @@ fn bytes(engine: *js.Engine, value: c.JSValue) !BufferView {
     if (offset > total or length > total - offset or (pointer == null and length != 0)) return js.typeError(engine, "Invalid image byte buffer");
     return .{ .backing = backing, .bytes = if (length == 0) &.{} else pointer[offset .. offset + length] };
 }
-fn fallback(engine: *js.Engine, _: c.JSValue, rejected_arguments: []const c.JSValue, retained: []const c.JSValue) !c.JSValue {
-    if (rejected_arguments.len > 0) if (engine.native_allocation_exception) |native| {
-        if (c.JS_IsStrictEqual(engine.context, rejected_arguments[0], native)) {
-            return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, native)));
-        }
-    };
+fn fallback(engine: *js.Engine, _: c.JSValue, _: []const c.JSValue, retained: []const c.JSValue) !c.JSValue {
+    // Promise rejection arguments are DATA. Only the actual owner may block
+    // the source fallback, including when a former diagnostic is rejected.
+    try pending.checkFatal(engine);
     const input = try bytes(engine, retained[0]);
     defer engine.freeValue(input.backing);
     return strategy.resize(engine, input.bytes, retained[1], retained[2]);
@@ -59,11 +62,13 @@ fn invokeAsync(engine: *js.Engine, arguments: []const c.JSValue) !c.JSValue {
     const request = start(engine, input, mime, options) catch |err| {
         // Source attempts the original options again when clone/worker setup
         // fails. Discard that first error, preserving the fallback's exception.
-        if (err == error.OutOfMemory) return rejected(engine, err);
+        try pending.catchFailure(engine, err);
         if (err == error.JavaScriptException) {
-            _ = engine.throwCaptured();
+            if (!c.JS_HasException(engine.context)) _ = engine.throwCaptured();
+            try pending.checkFatal(engine);
             const ignored = c.JS_GetException(engine.context);
             engine.freeValue(ignored);
+            try pending.checkFatal(engine);
         }
         const result = fallback(engine, c.pi_js_undefined(), &.{}, &.{ input, mime, options }) catch |fallback_error| return rejected(engine, fallback_error);
         defer engine.freeValue(result);
@@ -101,6 +106,11 @@ fn start(engine: *js.Engine, input: c.JSValue, mime: c.JSValue, options: c.JSVal
     };
 }
 pub fn create(engine: *js.Engine) !c.JSValue {
+    var frame = pending.Frame.init(engine);
+    frame.enter() catch |err| return frame.finishValue(err);
+    return frame.finishValue(createOwned(engine));
+}
+fn createOwned(engine: *js.Engine) !c.JSValue {
     const result = try engine.checked(c.JS_NewCFunction(engine.context, call, "resizeImage", 3));
     errdefer engine.freeValue(result);
     const prototype = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
@@ -110,9 +120,9 @@ pub fn create(engine: *js.Engine) !c.JSValue {
 }
 fn call(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
-    return invoke(engine, receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, &.{}) catch |err| {
-        if (err == error.JavaScriptException) return engine.throwCaptured();
-        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
-        return c.JS_ThrowTypeError(context, "Native image function: %s", @as([*:0]const u8, @errorName(err)));
-    };
+    var frame = pending.Frame.init(engine);
+    frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+    const result = invoke(engine, receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, &.{})
+        catch |err| sdk.fail(engine, err);
+    return frame.finishCallback(result);
 }

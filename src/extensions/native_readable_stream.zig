@@ -44,7 +44,13 @@ fn copyBytes(scope: *Scope, input: c.JSValue) !c.JSValue {
     var args = [_]c.JSValue{copied};
     return scope.own(try scope.engine.checked(c.JS_NewTypedArray(scope.engine.context, args.len, &args, c.JS_TYPED_ARRAY_UINT8)));
 }
-fn sourceStart(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, branch: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn sourceStart(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, branch: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(sourceStartPendingBody(context, pending_arg1, argc, argv, branch, roots));
+}
+fn sourceStartPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, branch: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -105,7 +111,7 @@ fn continued(engine: *js.Engine, owner: c.JSValue, value: c.JSValue, rejected: b
     defer scope.deinit();
     continueValue(&scope, owner, value, rejected, @enumFromInt(raw)) catch |err| {
         if (@as(Stage, @enumFromInt(raw)) == .teeRead) {
-            const reason = async_value.reason(engine, err);
+            const reason = try async_value.reason(engine, err);
             defer engine.freeValue(reason);
             if (err == error.OutOfMemory) {
                 try teeHostFailure(engine, owner, reason);
@@ -324,6 +330,12 @@ fn cancelTee(scope: *Scope, data: c.JSValue, reason: c.JSValue, second: bool) !c
     return scope.get(data, "cancelPromise");
 }
 fn dispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, raw: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, receiver, argc, argv, raw, roots));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, raw: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();

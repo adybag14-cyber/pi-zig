@@ -12,6 +12,24 @@ const native_tui = @import("native_tui.zig");
 const native_renderers = @import("native_renderers.zig");
 const native_models = @import("native_models.zig");
 const c = engine_mod.c;
+
+/// Publish a real typed host allocation failure before caller-owned roots retire.
+/// No diagnostic value, allocation generation range, or Error flag is evidence.
+fn retainHostAllocationFailure(engine: *engine_mod.Engine, outcome: anytype) @TypeOf(outcome) {
+    return outcome catch |err| {
+        if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+        return err;
+    };
+}
+fn nativeText(engine: *engine_mod.Engine, value: c.JSValue) ![]u8 {
+    try engine.checkNativeEntry();
+    return retainHostAllocationFailure(engine, engine.toString(value));
+}
+fn nativeStringify(engine: *engine_mod.Engine, value: c.JSValue) ![]u8 {
+    try engine.checkNativeEntry();
+    return retainHostAllocationFailure(engine, engine.stringify(value));
+}
+
 const OwnerToken = struct { gpa: std.mem.Allocator, binding: ?*Bindings = null };
 fn ownerFinalizer(_: ?*c.JSRuntime, object: c.JSValue) callconv(.c) void {
     const owner: *OwnerToken = @ptrCast(@alignCast(c.JS_GetOpaque(object, c.JS_GetClassID(object)) orelse return));
@@ -154,10 +172,10 @@ pub const Bindings = struct {
     }
     pub fn finishTicket(self: *Bindings, value: c.JSValue) ![]u8 {
         const result = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         try self.actionProperty(result, "value", c.JS_DupValue(self.engine.context, value));
         try self.mergeActions(result);
-        return self.engine.stringify(result);
+        return nativeStringify(self.engine, result);
     }
     pub fn retireTicket(self: *Bindings) void {
         self.finishInvocation();
@@ -172,10 +190,10 @@ pub const Bindings = struct {
         self.clearInvocationRoots();
     }
     fn clearInvocationRoots(self: *Bindings) void {
-        for (self.actions.items) |action| self.engine.freeValue(action);
+        for (self.actions.items) |action| self.engine.releaseNativeValue(action);
         self.actions.deinit(self.gpa);
         self.actions = .empty;
-        if (self.context_snapshot) |snapshot| self.engine.freeValue(snapshot);
+        if (self.context_snapshot) |snapshot| self.engine.releaseNativeValue(snapshot);
         self.context_snapshot = null;
         if (self.sdk_context) |scope| self.freeSdkContext(scope);
         self.sdk_context = null;
@@ -198,23 +216,23 @@ pub const Bindings = struct {
         const renderers = if (services) |shared| shared.renderers else try native_renderers.Manager.init(engine);
         errdefer if (services == null) renderers.deinit();
         if (services == null) ui_manager.main_renderers = renderers;
-        const self = try gpa.create(Bindings);
+        const self = try retainHostAllocationFailure(engine, gpa.create(Bindings));
         errdefer gpa.destroy(self);
         var owner_class: c.JSClassID = 0;
         _ = c.JS_NewClassID(engine.runtime, &owner_class);
         const definition: c.JSClassDef = .{ .class_name = "Native Extension Owner", .finalizer = ownerFinalizer, .gc_mark = null, .call = null, .exotic = null };
         if (c.JS_NewClass(engine.runtime, owner_class, &definition) < 0) return error.OutOfMemory;
         const owner_token = try engine.checked(c.JS_NewObjectClass(engine.context, @intCast(owner_class)));
-        errdefer engine.freeValue(owner_token);
-        const owner = try gpa.create(OwnerToken);
+        errdefer engine.releaseNativeValue(owner_token);
+        const owner = try retainHostAllocationFailure(engine, gpa.create(OwnerToken));
         owner.* = .{ .gpa = gpa };
         _ = c.JS_SetOpaque(owner_token, owner);
         const api = try engine.checked(c.JS_NewObject(engine.context));
-        errdefer engine.freeValue(api);
+        errdefer engine.releaseNativeValue(api);
         const context_guard = try context_lifetime.create(engine);
-        errdefer engine.freeValue(context_guard);
+        errdefer engine.releaseNativeValue(context_guard);
         var owner_data = [_]c.JSValue{ owner_token, c.JS_NewInt64(engine.context, owner_class) };
-        defer engine.freeValue(owner_data[1]);
+        defer engine.releaseNativeValue(owner_data[1]);
         inline for (std.meta.fields(Method)) |field| {
             const name: [:0]const u8 = field.name;
             const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, invokeRegistration, name.ptr, 2, @intCast(field.value), owner_data.len, &owner_data));
@@ -346,7 +364,7 @@ pub const Bindings = struct {
         self.providers.deinit();
         var handlers = self.handlers.iterator();
         while (handlers.next()) |entry| {
-            for (entry.value_ptr.items) |value| self.engine.freeValue(value);
+            for (entry.value_ptr.items) |value| self.engine.releaseNativeValue(value);
             entry.value_ptr.deinit(self.gpa);
             self.gpa.free(entry.key_ptr.*);
         }
@@ -357,15 +375,15 @@ pub const Bindings = struct {
         self.command_order.deinit(self.gpa);
         self.freeTable(&self.flags);
         self.freeTable(&self.flag_overrides);
-        for (self.actions.items) |action| self.engine.freeValue(action);
+        for (self.actions.items) |action| self.engine.releaseNativeValue(action);
         self.actions.deinit(self.gpa);
-        self.engine.freeValue(self.api);
-        self.engine.freeValue(self.owner_token);
-        self.engine.freeValue(self.context_guard);
-        if (self.context_snapshot) |snapshot| self.engine.freeValue(snapshot);
+        self.engine.releaseNativeValue(self.api);
+        self.engine.releaseNativeValue(self.owner_token);
+        self.engine.releaseNativeValue(self.context_guard);
+        if (self.context_snapshot) |snapshot| self.engine.releaseNativeValue(snapshot);
         if (self.sdk_context) |scope| self.freeSdkContext(scope);
-        if (self.source_info_value) |value| self.engine.freeValue(value);
-        if (self.sdk_command_row) |value| self.engine.freeValue(value);
+        if (self.source_info_value) |value| self.engine.releaseNativeValue(value);
+        if (self.sdk_command_row) |value| self.engine.releaseNativeValue(value);
         if (self.source_path) |path| self.gpa.free(path);
         const gpa = self.gpa;
         gpa.destroy(self);
@@ -384,7 +402,7 @@ pub const Bindings = struct {
                 if (service.identity.service_generation == self.ui_manager.service_epoch) break service;
             } else new: {
                 if (self.main_ui_services.items.len >= 64) return error.NativeUiServiceLimit;
-                try self.main_ui_services.ensureUnusedCapacity(self.gpa, 1);
+                try retainHostAllocationFailure(self.engine, self.main_ui_services.ensureUnusedCapacity(self.gpa, 1));
                 const service = try @import("native_ui_service.zig").Service.create(self);
                 self.main_ui_services.appendAssumeCapacity(service);
                 break :new service;
@@ -398,6 +416,7 @@ pub const Bindings = struct {
     fn fromOwnerData(engine: *engine_mod.Engine, data: [*c]c.JSValue, offset: usize) !*Bindings {
         if (!@import("native_async_scope.zig").isSdkScope(engine)) try @import("native_async_scope.zig").requireLive(engine);
         const binding = resolveOwnerData(engine, data, offset) catch |err| {
+            try @import("native_pending_owner.zig").catchFailure(engine, err);
             // A retired SDK scope retains its original canonical stale reason
             // even after its native owner token has detached the Binding.
             try @import("native_async_scope.zig").requireLive(engine);
@@ -408,6 +427,7 @@ pub const Bindings = struct {
     }
     fn resolveOwnerData(engine: *engine_mod.Engine, data: [*c]c.JSValue, offset: usize) !*Bindings {
         var class: i64 = 0;
+        try @import("native_pending_owner.zig").checkFatal(engine);
         if (c.JS_ToInt64(engine.context, &class, data[offset + 1]) < 0) return error.JavaScriptException;
         const owner: *OwnerToken = @ptrCast(@alignCast(c.JS_GetOpaque(data[offset], @intCast(class)) orelse return error.StaleNativeExtensionOwner));
         const binding = owner.binding orelse return error.StaleNativeExtensionOwner;
@@ -423,7 +443,7 @@ pub const Bindings = struct {
     fn freeTable(self: *Bindings, table: *std.StringHashMapUnmanaged(c.JSValue)) void {
         var entries = table.iterator();
         while (entries.next()) |entry| {
-            self.engine.freeValue(entry.value_ptr.*);
+            self.engine.releaseNativeValue(entry.value_ptr.*);
             self.gpa.free(entry.key_ptr.*);
         }
         table.deinit(self.gpa);
@@ -432,17 +452,17 @@ pub const Bindings = struct {
     fn store(self: *Bindings, table: *std.StringHashMapUnmanaged(c.JSValue), name: []const u8, value: c.JSValue) !void {
         if (table.getPtr(name)) |previous| {
             const retained = c.JS_DupValue(self.engine.context, value);
-            self.engine.freeValue(previous.*);
+            self.engine.releaseNativeValue(previous.*);
             previous.* = retained;
             return;
         }
-        const key = try self.gpa.dupe(u8, name);
+        const key = try retainHostAllocationFailure(self.engine, self.gpa.dupe(u8, name));
         errdefer self.gpa.free(key);
         const owned = c.JS_DupValue(self.engine.context, value);
-        errdefer self.engine.freeValue(owned);
+        errdefer self.engine.releaseNativeValue(owned);
         const order: ?*std.ArrayList([]const u8) = if (table == &self.tools) &self.tool_order else if (table == &self.commands) &self.command_order else null;
-        try table.ensureUnusedCapacity(self.gpa, 1);
-        if (order) |list| try list.ensureUnusedCapacity(self.gpa, 1);
+        try retainHostAllocationFailure(self.engine, table.ensureUnusedCapacity(self.gpa, 1));
+        if (order) |list| try retainHostAllocationFailure(self.engine, list.ensureUnusedCapacity(self.gpa, 1));
         table.putAssumeCapacityNoClobber(key, owned);
         if (order) |list| list.appendAssumeCapacity(key);
     }
@@ -479,15 +499,16 @@ pub const Bindings = struct {
             }
             var unbound = self.factory_active;
             if (self.context_snapshot) |snapshot| {
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const bound = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "nativeRuntimeBound"));
-                defer self.engine.freeValue(bound);
+                defer self.engine.releaseNativeValue(bound);
                 if (c.JS_IsBool(bound)) unbound = c.JS_ToBool(self.engine.context, bound) == 0;
             }
             if (unbound) {
                 const message = try self.engine.checked(c.JS_NewString(self.engine.context, "Extension runtime not initialized. Action methods cannot be called during extension loading."));
-                defer self.engine.freeValue(message);
+                defer self.engine.releaseNativeValue(message);
                 const reason = try @import("native_js_values.zig").builtin(self.engine, "Error", &.{message});
-                return self.engine.checked(c.JS_Throw(self.engine.context, reason));
+                return self.engine.checked(c.JS_PiThrowExceptionData(self.engine.context, reason));
             }
             if (self.sdk_resource_owner and method != .sendUserMessage and (if (self.sdk_context) |scope| scope.provenance == .source_runtime else true)) {
                 // Admission still comes from the genuine private caller and
@@ -497,7 +518,7 @@ pub const Bindings = struct {
                 var admitted = try @import("native_sdk_resource_owners.zig").retainCaller(self);
                 defer admitted.deinit();
                 const runtime = try @import("native_sdk_runtime_flags.zig").runtime(self.engine, self.owner_token);
-                defer self.engine.freeValue(runtime);
+                defer self.engine.releaseNativeValue(runtime);
                 const count: usize = switch (method) {
                     .appendEntry, .setLabel => 2,
                     .setSessionName, .setThinkingLevel, .setActiveTools, .setModel => 1,
@@ -519,8 +540,8 @@ pub const Bindings = struct {
             const name_value = if (args.len > 0) args[0] else c.pi_js_undefined();
             const options = if (args.len > 1) args[1] else c.pi_js_undefined();
             const snapshot = try @import("native_sdk_command_registry.zig").register(self.engine, row, name_value, options);
-            defer self.engine.freeValue(snapshot);
-            const name = try self.engine.toString(name_value);
+            defer self.engine.releaseNativeValue(snapshot);
+            const name = try nativeText(self.engine, name_value);
             defer self.gpa.free(name);
             try self.store(&self.commands, name, snapshot);
             return c.pi_js_undefined();
@@ -532,7 +553,7 @@ pub const Bindings = struct {
                 try self.renderers.registerOwned(self.owner_id, if (method == .registerMarkdownTransformer) .markdown else .resolver, "", args[0]);
             } else {
                 if (args.len < 2) return error.MissingExtensionArgument;
-                const name = try self.engine.toString(args[0]);
+                const name = try nativeText(self.engine, args[0]);
                 defer self.gpa.free(name);
                 try self.renderers.registerOwned(self.owner_id, if (method == .registerMessageRenderer) .message else .entry, name, args[1]);
             }
@@ -544,10 +565,11 @@ pub const Bindings = struct {
             return self.recordAction(method, args);
         }
         if (method == .registerTool) {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, args[0], "name"));
-            defer self.engine.freeValue(value);
+            defer self.engine.releaseNativeValue(value);
             if (!c.JS_IsString(value)) return error.InvalidExtensionToolName;
-            const name = try self.engine.toString(value);
+            const name = try nativeText(self.engine, value);
             defer self.gpa.free(name);
             if (name.len == 0) return error.InvalidExtensionToolName;
             try self.store(&self.tools, name, args[0]);
@@ -555,12 +577,13 @@ pub const Bindings = struct {
             if (self.registration_fn) |notify| try notify(self.tool_context, self, name);
             return c.pi_js_undefined();
         }
-        const name = try self.engine.toString(args[0]);
+        const name = try nativeText(self.engine, args[0]);
         defer self.gpa.free(name);
         if (name.len == 0) return error.InvalidExtensionRegistrationName;
         if (method == .getFlag) {
             if (self.flag_overrides.get(name)) |override| return c.JS_DupValue(self.engine.context, override);
             const flag = self.flags.get(name) orelse return c.pi_js_undefined();
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             return self.engine.checked(c.JS_GetPropertyStr(self.engine.context, flag, "default"));
         }
         if (args.len < 2) return error.MissingExtensionArgument;
@@ -569,16 +592,16 @@ pub const Bindings = struct {
                 if (!c.JS_IsFunction(self.engine.context, args[1])) return error.InvalidExtensionHandler;
                 var handler_data = [_]c.JSValue{args[1]};
                 const wrapper = try self.engine.checked(if (self.sdk_resource_owner) c.JS_NewCFunctionData2(self.engine.context, forwardHandler, "registeredHandler", 0, 0, handler_data.len, &handler_data) else c.JS_NewCFunctionData(self.engine.context, forwardHandler, 2, 0, handler_data.len, &handler_data));
-                defer self.engine.freeValue(wrapper);
+                defer self.engine.releaseNativeValue(wrapper);
                 const event_name = try self.engine.checked(c.JS_NewStringLen(self.engine.context, name.ptr, name.len));
-                defer self.engine.freeValue(event_name);
+                defer self.engine.releaseNativeValue(event_name);
                 var data = [_]c.JSValue{ event_name, wrapper, self.owner_token, c.JS_NewInt64(self.engine.context, self.owner_class), self.sdk_command_row orelse c.pi_js_undefined() };
-                defer self.engine.freeValue(data[3]);
+                defer self.engine.releaseNativeValue(data[3]);
                 const unsubscribe = try self.engine.checked(c.JS_NewCFunctionData(self.engine.context, unsubscribeHandler, 0, 0, data.len, &data));
-                errdefer self.engine.freeValue(unsubscribe);
-                const entry = try self.handlers.getOrPut(self.gpa, name);
+                errdefer self.engine.releaseNativeValue(unsubscribe);
+                const entry = try retainHostAllocationFailure(self.engine, self.handlers.getOrPut(self.gpa, name));
                 if (!entry.found_existing) {
-                    entry.key_ptr.* = self.gpa.dupe(u8, name) catch |err| {
+                    entry.key_ptr.* = retainHostAllocationFailure(self.engine, self.gpa.dupe(u8, name)) catch |err| {
                         _ = self.handlers.remove(name);
                         return err;
                     };
@@ -591,34 +614,36 @@ pub const Bindings = struct {
                     self.gpa.free(removed.key);
                 };
                 const handler = c.JS_DupValue(self.engine.context, wrapper);
-                errdefer self.engine.freeValue(handler);
-                try entry.value_ptr.append(self.gpa, handler);
+                errdefer self.engine.releaseNativeValue(handler);
+                try retainHostAllocationFailure(self.engine, entry.value_ptr.append(self.gpa, handler));
                 if (self.sdk_command_row) |row| {
                     const js_values = @import("native_js_values.zig");
                     const handlers_map = try js_values.get(self.engine, row, "handlers");
-                    defer self.engine.freeValue(handlers_map);
+                    defer self.engine.releaseNativeValue(handlers_map);
                     var list = try js_values.invoke(self.engine, handlers_map, "get", &.{event_name});
-                    defer self.engine.freeValue(list);
+                    defer self.engine.releaseNativeValue(list);
                     if (c.JS_IsNull(list) or c.JS_IsUndefined(list)) {
                         const array = try self.engine.checked(c.JS_NewArray(self.engine.context));
-                        self.engine.freeValue(list);
+                        self.engine.releaseNativeValue(list);
                         list = array;
                     }
                     try js_values.push(self.engine, list, wrapper);
                     const stored = try js_values.invoke(self.engine, handlers_map, "set", &.{ event_name, list });
-                    self.engine.freeValue(stored);
+                    self.engine.releaseNativeValue(stored);
                 }
                 return unsubscribe;
             },
             .registerCommand => try self.store(&self.commands, name, args[1]),
             .registerFlag => {
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const kind = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, args[1], "type"));
-                defer self.engine.freeValue(kind);
-                const kind_name = try self.engine.toString(kind);
+                defer self.engine.releaseNativeValue(kind);
+                const kind_name = try nativeText(self.engine, kind);
                 defer self.gpa.free(kind_name);
                 if (!std.mem.eql(u8, kind_name, "boolean") and !std.mem.eql(u8, kind_name, "string")) return error.InvalidExtensionFlagType;
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, args[1], "default"));
-                defer self.engine.freeValue(value);
+                defer self.engine.releaseNativeValue(value);
                 if (!c.JS_IsUndefined(value) and ((std.mem.eql(u8, kind_name, "boolean") and !c.JS_IsBool(value)) or
                     (std.mem.eql(u8, kind_name, "string") and !c.JS_IsString(value)))) return error.InvalidExtensionFlagDefault;
                 try self.store(&self.flags, name, args[1]);
@@ -634,19 +659,21 @@ pub const Bindings = struct {
         const name_value = if (method == .unregisterProvider or named)
             c.JS_DupValue(self.engine.context, args[0])
         else blk: {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const id = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, args[0], "id"));
             if (!c.JS_IsNull(id) and !c.JS_IsUndefined(id)) break :blk id;
-            self.engine.freeValue(id);
+            self.engine.releaseNativeValue(id);
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             break :blk try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, args[0], "name"));
         };
-        defer self.engine.freeValue(name_value);
+        defer self.engine.releaseNativeValue(name_value);
         if (c.JS_IsNull(name_value) or c.JS_IsUndefined(name_value)) return error.InvalidNativeProviderName;
-        const name = try self.engine.toString(name_value);
+        const name = try nativeText(self.engine, name_value);
         defer self.gpa.free(name);
         if (name.len == 0) return error.InvalidNativeProviderName;
         if (method == .registerProvider and named and args.len < 2) return error.MissingExtensionArgument;
         const action = try self.engine.checked(c.JS_NewObject(self.engine.context));
-        defer self.engine.freeValue(action);
+        defer self.engine.releaseNativeValue(action);
         const kind = if (method == .registerProvider) "register_provider" else "unregister_provider";
         try self.actionProperty(action, "type", try self.engine.fromJsonValue(.{ .string = kind }));
         try self.actionProperty(action, "name", try self.engine.fromJsonValue(.{ .string = name }));
@@ -657,11 +684,11 @@ pub const Bindings = struct {
         const reservation = if (recipient) |active| active.actions.items.len else null;
         if (reservation != null) {
             const retained = c.JS_DupValue(self.engine.context, action);
-            errdefer self.engine.freeValue(retained);
-            try recipient.?.actions.append(recipient.?.gpa, retained);
+            errdefer self.engine.releaseNativeValue(retained);
+            try retainHostAllocationFailure(self.engine, recipient.?.actions.append(recipient.?.gpa, retained));
         }
         var published = false;
-        defer if (!published) if (reservation) |index| self.engine.freeValue(recipient.?.actions.orderedRemove(index));
+        defer if (!published) if (reservation) |index| self.engine.releaseNativeValue(recipient.?.actions.orderedRemove(index));
         if (method == .registerProvider) try self.actionProperty(action, "config", c.pi_js_undefined());
         if (method == .registerProvider) {
             const config = if (named) args[1] else args[0];
@@ -688,7 +715,7 @@ pub const Bindings = struct {
 
     fn cloneValue(self: *Bindings, value: c.JSValue) !c.JSValue {
         if (!c.JS_IsObject(value)) return c.JS_DupValue(self.engine.context, value);
-        const json = try self.engine.stringify(value);
+        const json = try nativeStringify(self.engine, value);
         defer self.gpa.free(json);
         return self.parseJson(json, "native-extension-copy");
     }
@@ -704,7 +731,7 @@ pub const Bindings = struct {
             if (method == .getThinkingLevel) return @import("native_values.zig").get(self.engine, caller.session, "thinkingLevel");
             if (method == .getSettings) {
                 const settings = try sdk_mod.publicField(caller.owner, "settingsManager");
-                defer self.engine.freeValue(settings);
+                defer self.engine.releaseNativeValue(settings);
                 return sdk_mod.invoke(self.engine, settings, "getSettings", &.{});
             }
         }
@@ -730,9 +757,10 @@ pub const Bindings = struct {
             while (index > 0) {
                 index -= 1;
                 const action = self.actions.items[index];
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const kind = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, action, "type"));
-                defer self.engine.freeValue(kind);
-                const name = try self.engine.toString(kind);
+                defer self.engine.releaseNativeValue(kind);
+                const name = try nativeText(self.engine, kind);
                 defer self.gpa.free(name);
                 if (!std.mem.eql(u8, name, action_type)) continue;
                 const field: [*:0]const u8 = switch (method) {
@@ -741,21 +769,24 @@ pub const Bindings = struct {
                     .getThinkingLevel => "level",
                     else => unreachable,
                 };
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, action, field));
-                defer self.engine.freeValue(value);
+                defer self.engine.releaseNativeValue(value);
                 return self.cloneValue(value);
             }
         }
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const value = if (self.context_snapshot) |snapshot| try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, key)) else c.pi_js_undefined();
-        defer self.engine.freeValue(value);
+        defer self.engine.releaseNativeValue(value);
         if (method == .getSettings) {
             const result = if (c.JS_IsUndefined(value) or c.JS_IsNull(value)) try self.engine.checked(c.JS_NewObject(self.engine.context)) else try self.cloneValue(value);
-            errdefer self.engine.freeValue(result);
+            errdefer self.engine.releaseNativeValue(result);
             if (self.ui_manager.main_theme_setting) |setting| {
                 if (c.JS_IsUndefined(setting)) {
                     const atom = c.JS_NewAtom(self.engine.context, "theme");
                     if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
                     defer c.JS_FreeAtom(self.engine.context, atom);
+                    try @import("native_pending_owner.zig").checkFatal(self.engine);
                     if (c.JS_DeleteProperty(self.engine.context, result, atom, c.JS_PROP_THROW) < 0) return error.JavaScriptException;
                 } else if (c.JS_SetPropertyStr(self.engine.context, result, "theme", c.JS_DupValue(self.engine.context, setting)) < 0) return error.JavaScriptException;
             }
@@ -780,8 +811,9 @@ pub const Bindings = struct {
         var values: std.json.Array = .init(allocator);
         if (self.context_snapshot) |snapshot| {
             const key: [*:0]const u8 = if (method == .getAllTools) "allTools" else "commands";
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const current = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, key));
-            defer self.engine.freeValue(current);
+            defer self.engine.releaseNativeValue(current);
             if (c.JS_IsArray(current)) {
                 const projected = try self.projectValue(allocator, current);
                 for (projected.array.items) |item| try values.append(item);
@@ -792,18 +824,18 @@ pub const Bindings = struct {
             const raw = try self.projectValue(allocator, entry.value_ptr.*);
             if (raw != .object) return error.InvalidNativeCatalogRegistration;
             var object: std.json.ObjectMap = .empty;
-            try object.put(allocator, "name", .{ .string = entry.key_ptr.* });
-            try object.put(allocator, "description", raw.object.get("description") orelse raw.object.get("label") orelse std.json.Value{ .string = "" });
-            try object.put(allocator, "source", .{ .string = "extension" });
+            try retainHostAllocationFailure(self.engine, object.put(allocator, "name", .{ .string = entry.key_ptr.* }));
+            try retainHostAllocationFailure(self.engine, object.put(allocator, "description", raw.object.get("description") orelse raw.object.get("label") orelse std.json.Value{ .string = "" }));
+            try retainHostAllocationFailure(self.engine, object.put(allocator, "source", .{ .string = "extension" }));
             var source: std.json.ObjectMap = .empty;
-            try source.put(allocator, "path", .{ .string = self.source_path orelse "" });
-            try object.put(allocator, "sourceInfo", .{ .object = source });
+            try retainHostAllocationFailure(self.engine, source.put(allocator, "path", .{ .string = self.source_path orelse "" }));
+            try retainHostAllocationFailure(self.engine, object.put(allocator, "sourceInfo", .{ .object = source }));
             if (method == .getAllTools) {
                 var schema = raw.object.get("parameters") orelse raw.object.get("inputSchema") orelse std.json.Value{ .object = .empty };
                 cleanSchema(&schema);
-                try object.put(allocator, "parameters", schema);
-                for ([_][]const u8{ "promptSnippet", "promptGuidelines", "exposure", "label" }) |field| if (raw.object.get(field)) |value| try object.put(allocator, field, value);
-            } else if (raw.object.get("argumentHint")) |hint| try object.put(allocator, "argumentHint", hint);
+                try retainHostAllocationFailure(self.engine, object.put(allocator, "parameters", schema));
+                for ([_][]const u8{ "promptSnippet", "promptGuidelines", "exposure", "label" }) |field| if (raw.object.get(field)) |value| try retainHostAllocationFailure(self.engine, object.put(allocator, field, value));
+            } else if (raw.object.get("argumentHint")) |hint| try retainHostAllocationFailure(self.engine, object.put(allocator, "argumentHint", hint));
             var replaced = false;
             for (values.items) |*item| {
                 if (item.* != .object) return error.InvalidNativeCatalogSnapshot;
@@ -817,14 +849,14 @@ pub const Bindings = struct {
             }
             if (!replaced) try values.append(.{ .object = object });
         }
-        const json = try std.json.Stringify.valueAlloc(allocator, std.json.Value{ .array = values }, .{});
+        const json = try retainHostAllocationFailure(self.engine, std.json.Stringify.valueAlloc(allocator, std.json.Value{ .array = values }, .{}));
         return self.parseJson(json, "native-extension-catalog");
     }
 
     pub fn sourceInfoValue(self: *Bindings) !c.JSValue {
         if (self.source_info_value) |value| return value;
         const value = try @import("native_values.zig").object(self.engine);
-        errdefer self.engine.freeValue(value);
+        errdefer self.engine.releaseNativeValue(value);
         const path = self.source_path orelse "";
         const source_kind = if (std.mem.startsWith(u8, path, "builtin:")) "builtin" else if (path.len >= 2 and path[0] == '<' and path[path.len - 1] == '>') named: {
             const inner = path[1 .. path.len - 1];
@@ -842,12 +874,12 @@ pub const Bindings = struct {
     fn projectionExposure(raw: ?*anyopaque, name: c.JSValue) !c.JSValue {
         const self: *Bindings = @ptrCast(@alignCast(raw.?));
         if (!c.JS_IsString(name)) return c.pi_js_undefined();
-        const label = try self.engine.toString(name);
+        const label = try nativeText(self.engine, name);
         defer self.gpa.free(label);
         const definition = if (self.tool_lookup) |lookup| lookup(self.tool_context, label) else self.tools.get(label);
         if (definition) |value| {
             const retained = c.JS_DupValue(self.engine.context, value);
-            defer self.engine.freeValue(retained);
+            defer self.engine.releaseNativeValue(retained);
             return @import("native_values.zig").get(self.engine, retained, "exposure");
         }
         return c.pi_js_undefined();
@@ -857,9 +889,10 @@ pub const Bindings = struct {
     }
     pub fn toolCatalogSnapshot(self: *Bindings) !c.JSValue {
         if (self.context_snapshot) |snapshot| {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const current = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "allTools"));
             if (c.JS_IsArray(current)) return current;
-            self.engine.freeValue(current);
+            self.engine.releaseNativeValue(current);
         }
         return self.engine.checked(c.JS_NewArray(self.engine.context));
     }
@@ -870,29 +903,30 @@ pub const Bindings = struct {
         defer {
             for (registrations.items) |entry| {
                 self.gpa.free(entry.name);
-                self.engine.freeValue(entry.value);
+                self.engine.releaseNativeValue(entry.value);
             }
             registrations.deinit(self.gpa);
         }
         for (self.tool_order.items) |name| if (self.tools.get(name)) |definition| {
-            const owned_name = try self.gpa.dupe(u8, name);
+            const owned_name = try retainHostAllocationFailure(self.engine, self.gpa.dupe(u8, name));
             const retained = c.JS_DupValue(self.engine.context, definition);
-            registrations.append(self.gpa, .{ .name = owned_name, .value = retained }) catch |err| {
+            retainHostAllocationFailure(self.engine, registrations.append(self.gpa, .{ .name = owned_name, .value = retained })) catch |err| {
                 self.gpa.free(owned_name);
-                self.engine.freeValue(retained);
+                self.engine.releaseNativeValue(retained);
                 return err;
             };
         };
         const result = try vm.array(self.engine);
-        errdefer self.engine.freeValue(result);
+        errdefer self.engine.releaseNativeValue(result);
         const snapshot = try self.toolCatalogSnapshot();
-        defer self.engine.freeValue(snapshot);
+        defer self.engine.releaseNativeValue(snapshot);
         var count: u32 = 0;
         for (0..try vm.length(self.engine, snapshot)) |index| {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const value = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, snapshot, @intCast(index)));
-            defer self.engine.freeValue(value);
+            defer self.engine.releaseNativeValue(value);
             const source = try vm.get(self.engine, value, "sourceInfo");
-            defer self.engine.freeValue(source);
+            defer self.engine.releaseNativeValue(source);
             const row = try @import("native_tool_info.zig").project(self.engine, value, source, null);
             if (c.JS_SetPropertyUint32(self.engine.context, result, count, row) < 0) return error.JavaScriptException;
             count += 1;
@@ -900,15 +934,16 @@ pub const Bindings = struct {
         for (registrations.items) |entry| {
             const row = try self.toolCatalogEntry(entry.value);
             var row_consumed = false;
-            errdefer if (!row_consumed) self.engine.freeValue(row);
+            errdefer if (!row_consumed) self.engine.releaseNativeValue(row);
             var found: ?u32 = null;
             for (0..count) |index| {
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const existing = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, result, @intCast(index)));
-                defer self.engine.freeValue(existing);
+                defer self.engine.releaseNativeValue(existing);
                 const label_value = try vm.get(self.engine, existing, "name");
-                defer self.engine.freeValue(label_value);
+                defer self.engine.releaseNativeValue(label_value);
                 if (!c.JS_IsString(label_value)) continue;
-                const label = try self.engine.toString(label_value);
+                const label = try nativeText(self.engine, label_value);
                 defer self.gpa.free(label);
                 if (std.mem.eql(u8, label, entry.name)) {
                     found = @intCast(index);
@@ -924,55 +959,69 @@ pub const Bindings = struct {
 
     pub fn catalogEntry(self: *Bindings, allocator: std.mem.Allocator, kind: CatalogKind, name: []const u8, value: c.JSValue) !std.json.Value {
         const retained = c.JS_DupValue(self.engine.context, value);
-        defer self.engine.freeValue(retained);
+        defer self.engine.releaseNativeValue(retained);
         const raw = try self.projectValue(allocator, retained);
         if (raw != .object) return error.InvalidNativeCatalogRegistration;
         var object: std.json.ObjectMap = .empty;
-        try object.put(allocator, "name", .{ .string = name });
-        try object.put(allocator, "description", raw.object.get("description") orelse raw.object.get("label") orelse std.json.Value{ .string = "" });
-        try object.put(allocator, "source", .{ .string = "extension" });
+        try retainHostAllocationFailure(self.engine, object.put(allocator, "name", .{ .string = name }));
+        try retainHostAllocationFailure(self.engine, object.put(allocator, "description", raw.object.get("description") orelse raw.object.get("label") orelse std.json.Value{ .string = "" }));
+        try retainHostAllocationFailure(self.engine, object.put(allocator, "source", .{ .string = "extension" }));
         var source: std.json.ObjectMap = .empty;
-        try source.put(allocator, "path", .{ .string = self.source_path orelse "" });
-        try object.put(allocator, "sourceInfo", .{ .object = source });
+        try retainHostAllocationFailure(self.engine, source.put(allocator, "path", .{ .string = self.source_path orelse "" }));
+        try retainHostAllocationFailure(self.engine, object.put(allocator, "sourceInfo", .{ .object = source }));
         if (kind == .tools) {
             var schema = raw.object.get("parameters") orelse raw.object.get("inputSchema") orelse std.json.Value{ .object = .empty };
             cleanSchema(&schema);
-            try object.put(allocator, "parameters", schema);
-            try object.put(allocator, "exposure", raw.object.get("exposure") orelse std.json.Value{ .string = "direct" });
-            for ([_][]const u8{ "promptSnippet", "promptGuidelines", "label", "namespace", "annotations", "defaultActive" }) |field| if (raw.object.get(field)) |entry| try object.put(allocator, field, entry);
-        } else if (raw.object.get("argumentHint")) |hint| try object.put(allocator, "argumentHint", hint);
+            try retainHostAllocationFailure(self.engine, object.put(allocator, "parameters", schema));
+            try retainHostAllocationFailure(self.engine, object.put(allocator, "exposure", raw.object.get("exposure") orelse std.json.Value{ .string = "direct" }));
+            for ([_][]const u8{ "promptSnippet", "promptGuidelines", "label", "namespace", "annotations", "defaultActive" }) |field| if (raw.object.get(field)) |entry| try retainHostAllocationFailure(self.engine, object.put(allocator, field, entry));
+        } else if (raw.object.get("argumentHint")) |hint| try retainHostAllocationFailure(self.engine, object.put(allocator, "argumentHint", hint));
         return .{ .object = object };
     }
 
     pub fn catalogSnapshot(self: *Bindings, allocator: std.mem.Allocator, kind: CatalogKind) !std.json.Value {
         if (self.context_snapshot) |snapshot| {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const current = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, if (kind == .tools) "allTools" else "commands"));
-            defer self.engine.freeValue(current);
+            defer self.engine.releaseNativeValue(current);
             if (c.JS_IsArray(current)) return self.projectValue(allocator, current);
         }
         return .{ .array = .init(allocator) };
     }
 
-    fn forwardHandler(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    fn forwardHandler(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, ignored_4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+        native_owner.enter() catch |err| return native_owner.finishCallback(publicationFailure(engine, err));
+        return native_owner.finishCallback(forwardHandlerNativeBody(context, ignored_1, argc, argv, ignored_4, data));
+    }
+    fn forwardHandlerNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        @import("native_pending_owner.zig").checkFatal(engine) catch |err| return publicationFailure(engine, err);
         return c.JS_Call(context, data[0], c.pi_js_undefined(), argc, argv);
     }
 
-    fn unsubscribeHandler(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    fn unsubscribeHandler(context: ?*c.JSContext, ignored_1: c.JSValue, ignored_2: c_int, ignored_3: [*c]c.JSValue, ignored_4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+        native_owner.enter() catch |err| return native_owner.finishCallback(publicationFailure(engine, err));
+        return native_owner.finishCallback(unsubscribeHandlerNativeBody(context, ignored_1, ignored_2, ignored_3, ignored_4, data));
+    }
+    fn unsubscribeHandlerNativeBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         if (c.JS_IsObject(data[4])) {
             unsubscribeMap(engine, data[4], data[0], data[1]) catch |err| return publicationFailure(engine, err);
         }
         const self = fromOwnerData(engine, data, 2) catch return c.pi_js_undefined();
-        const name = engine.toString(data[0]) catch |err| {
-            if (err == error.JavaScriptException) return engine.throwCaptured();
-            return c.JS_ThrowOutOfMemory(context);
+        const name = nativeText(engine, data[0]) catch |err| {
+            return publicationFailure(engine, err);
         };
         defer self.gpa.free(name);
         const handlers = self.handlers.getPtr(name) orelse return c.pi_js_undefined();
         for (handlers.items, 0..) |handler, index| {
             if (c.JS_IsStrictEqual(context, handler, data[1])) {
                 self.registration_revision = std.math.add(u64, self.registration_revision, 1) catch return c.JS_ThrowInternalError(context, "Native registration revision exhausted");
-                engine.freeValue(handlers.orderedRemove(index));
+                engine.releaseNativeValue(handlers.orderedRemove(index));
                 if (handlers.items.len == 0) {
                     const entry = self.handlers.fetchRemove(name).?;
                     var empty = entry.value;
@@ -987,20 +1036,20 @@ pub const Bindings = struct {
     fn unsubscribeMap(engine: *engine_mod.Engine, row: c.JSValue, event: c.JSValue, handler: c.JSValue) !void {
         const js_values = @import("native_js_values.zig");
         const map = try js_values.get(engine, row, "handlers");
-        defer engine.freeValue(map);
+        defer engine.releaseNativeValue(map);
         const list = try js_values.invoke(engine, map, "get", &.{event});
-        defer engine.freeValue(list);
+        defer engine.releaseNativeValue(list);
         if (c.JS_ToBool(engine.context, list) != 1) return;
         const index = try js_values.invoke(engine, list, "indexOf", &.{handler});
-        defer engine.freeValue(index);
+        defer engine.releaseNativeValue(index);
         if (c.JS_IsStrictEqual(engine.context, index, c.JS_NewInt32(engine.context, -1))) return;
         const removed = try js_values.invoke(engine, list, "splice", &.{ index, c.JS_NewInt32(engine.context, 1) });
-        engine.freeValue(removed);
+        engine.releaseNativeValue(removed);
         const length = try js_values.get(engine, list, "length");
-        defer engine.freeValue(length);
+        defer engine.releaseNativeValue(length);
         if (c.JS_IsStrictEqual(engine.context, length, c.JS_NewInt32(engine.context, 0))) {
             const deleted = try js_values.invoke(engine, map, "delete", &.{event});
-            engine.freeValue(deleted);
+            engine.releaseNativeValue(deleted);
         }
     }
 
@@ -1022,12 +1071,12 @@ pub const Bindings = struct {
             .setLabel => return sdk.invoke(self.engine, caller.manager, "appendLabelChange", args),
             .appendEntry => {
                 const id = try sdk.invoke(self.engine, caller.manager, "appendCustomEntry", args);
-                defer self.engine.freeValue(id);
+                defer self.engine.releaseNativeValue(id);
                 const entry = try sdk.invoke(self.engine, caller.manager, "getEntry", &.{id});
-                defer self.engine.freeValue(entry);
+                defer self.engine.releaseNativeValue(entry);
                 if (c.JS_ToBool(self.engine.context, entry) == 1) {
                     const notification = try sdk.object(self.engine);
-                    defer self.engine.freeValue(notification);
+                    defer self.engine.releaseNativeValue(notification);
                     try sdk.put(self.engine, notification, "type", try sdk.text(self.engine, "entry_appended"));
                     try sdk.put(self.engine, notification, "entry", c.JS_DupValue(self.engine.context, entry));
                     try sdk.emit(caller.owner, notification);
@@ -1040,13 +1089,14 @@ pub const Bindings = struct {
 
     fn recordAction(self: *Bindings, method: Method, args: []c.JSValue) !c.JSValue {
         if (method == .setModel) {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const provider = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, args[0], "provider"));
-            defer self.engine.freeValue(provider);
+            defer self.engine.releaseNativeValue(provider);
             if (!try self.configuredProvider(self.context_snapshot orelse return error.StaleExtensionActionContext, provider)) return @import("native_sdk.zig").promise(self.engine, c.pi_js_bool(self.engine.context, 0));
         }
         const recipient = if (self.broker) |broker| broker.active orelse return error.StaleExtensionActionContext else if (self.invocation_active) self else return error.StaleExtensionActionContext;
         const action = try self.engine.checked(c.JS_NewObject(self.engine.context));
-        errdefer self.engine.freeValue(action);
+        errdefer self.engine.releaseNativeValue(action);
         const kind: [*:0]const u8 = switch (method) {
             .setSessionName => "set_session_name",
             .setThinkingLevel => "set_thinking_level",
@@ -1079,10 +1129,11 @@ pub const Bindings = struct {
             if (c.JS_DefinePropertyValueStr(self.engine.context, action, "options", c.JS_DupValue(self.engine.context, args[1]), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
         }
         try self.actionOrigin(action);
-        try recipient.actions.ensureUnusedCapacity(recipient.gpa, 1);
+        try retainHostAllocationFailure(self.engine, recipient.actions.ensureUnusedCapacity(recipient.gpa, 1));
         if (method == .setActiveTools) if (self.set_active_tools_fn) |set| {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const names = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, action, "names"));
-            defer self.engine.freeValue(names);
+            defer self.engine.releaseNativeValue(names);
             const selection_sequence = try set(self.tool_context, self, names);
             // The legacy mirror must carry the actual filtered loadout too;
             // callers can name unknown, hidden, or excluded registrations.
@@ -1106,7 +1157,7 @@ pub const Bindings = struct {
             self.ui_manager.provider_action_fn = providerUiAction;
             self.ui_manager.provider_action_context = self;
         }
-        for (self.actions.items) |action| self.engine.freeValue(action);
+        for (self.actions.items) |action| self.engine.releaseNativeValue(action);
         self.actions.clearRetainingCapacity();
         if (!self.sdk_resource_owner) {
             if (self.ui_manager.generation == std.math.maxInt(u32)) return error.ExtensionInvocationGenerationExhausted;
@@ -1130,11 +1181,11 @@ pub const Bindings = struct {
     }
 
     pub fn clearInvocationOptions(self: *Bindings) void {
-        if (self.invocation_signal) |signal| self.engine.freeValue(signal);
+        if (self.invocation_signal) |signal| self.engine.releaseNativeValue(signal);
         self.invocation_signal = null;
         self.tool_update_fn = null;
         self.tool_update_context = null;
-        if (self.tool_update_promise) |promise| self.engine.freeValue(promise);
+        if (self.tool_update_promise) |promise| self.engine.releaseNativeValue(promise);
         self.tool_update_promise = null;
     }
 
@@ -1147,18 +1198,26 @@ pub const Bindings = struct {
         self.clearInvocationOptions();
     }
 
-    fn toolUpdate(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    fn toolUpdate(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, ignored_4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+        native_owner.enter() catch |err| return native_owner.finishCallback(publicationFailure(engine, err));
+        return native_owner.finishCallback(toolUpdateNativeBody(context, ignored_1, argc, argv, ignored_4, data));
+    }
+    fn toolUpdateNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         const self = fromOwnerData(engine, data, 1) catch return c.pi_js_undefined();
         var generation: i64 = 0;
+        @import("native_pending_owner.zig").checkFatal(engine) catch |err| return publicationFailure(engine, err);
         if (c.JS_ToInt64(context, &generation, data[0]) < 0) return engine.throwCaptured();
         // A callback retained by user code belongs to its original invocation;
         // it must never write records into a later invocation's transport.
         if (!self.invocation_active or generation != self.invocation_generation) return c.pi_js_undefined();
         if (self.tool_update_promise) |promise| if (c.JS_PromiseState(context, promise) != c.JS_PROMISE_PENDING) return c.pi_js_undefined();
         if (self.tool_update_fn) |update| update(self.tool_update_context, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| {
+            if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
             if (err == error.JavaScriptException) return engine.throwCaptured();
-            if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+            if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
             return c.JS_ThrowTypeError(context, "Native tool update: %s", @as([*:0]const u8, @errorName(err)));
         };
         return c.pi_js_undefined();
@@ -1168,34 +1227,38 @@ pub const Bindings = struct {
     /// failure response is written. Do not consult a user-authored result here.
     pub fn rejectedActions(self: *Bindings) ![]u8 {
         const result = try self.engine.checked(c.JS_NewObject(self.engine.context));
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         if (self.actions.items.len > 0) try self.mergeActions(result);
-        return self.engine.stringify(result);
+        return nativeStringify(self.engine, result);
     }
 
     fn mergeActions(self: *Bindings, result: c.JSValue) !void {
         if (self.actions.items.len == 0) {
             // Returned JSON may contain an action queue authored by the input
             // extension. Rebuild it and overwrite provenance from this owner.
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const supplied = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, result, "actionQueue"));
-            defer self.engine.freeValue(supplied);
+            defer self.engine.releaseNativeValue(supplied);
             if (c.JS_IsUndefined(supplied) or c.JS_IsNull(supplied)) return;
             if (!try self.providerArray(supplied)) return error.InvalidNativeExtensionActionQueue;
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const length = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, supplied, "length"));
-            defer self.engine.freeValue(length);
+            defer self.engine.releaseNativeValue(length);
             var count: f64 = 0;
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             if (c.JS_ToFloat64(self.engine.context, &count, length) < 0) return error.JavaScriptException;
             if (!std.math.isFinite(count) or count < 0 or count > 1024) return error.NativeExtensionActionLimit;
             const queue = try self.engine.checked(c.JS_NewArray(self.engine.context));
             var consumed = false;
-            errdefer if (!consumed) self.engine.freeValue(queue);
+            errdefer if (!consumed) self.engine.releaseNativeValue(queue);
             for (0..@as(usize, @intFromFloat(count))) |index| {
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const original = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, supplied, @intCast(index)));
-                defer self.engine.freeValue(original);
+                defer self.engine.releaseNativeValue(original);
                 if (!c.JS_IsObject(original) or try self.providerArray(original)) return error.InvalidNativeExtensionAction;
                 const copy = try self.cloneJson(original);
                 var transferred = false;
-                defer if (!transferred) self.engine.freeValue(copy);
+                defer if (!transferred) self.engine.releaseNativeValue(copy);
                 try self.actionOrigin(copy);
                 // Returned user JSON cannot author the internal journal ACK
                 // marker used to suppress an already committed native setter.
@@ -1209,7 +1272,7 @@ pub const Bindings = struct {
         }
         const queue = try self.engine.checked(c.JS_NewArray(self.engine.context));
         var consumed = false;
-        errdefer if (!consumed) self.engine.freeValue(queue);
+        errdefer if (!consumed) self.engine.releaseNativeValue(queue);
         for (self.actions.items, 0..) |action, index| {
             if (c.JS_SetPropertyUint32(self.engine.context, queue, @intCast(index), c.JS_DupValue(self.engine.context, action)) < 0) return error.JavaScriptException;
         }
@@ -1219,13 +1282,20 @@ pub const Bindings = struct {
         if (status < 0) return error.JavaScriptException;
     }
 
-    fn invokeRegistration(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    fn invokeRegistration(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+        native_owner.enter() catch |err| return native_owner.finishCallback(publicationFailure(engine, err));
+        return native_owner.finishCallback(invokeRegistrationNativeBody(context, ignored_1, argc, argv, magic, data));
+    }
+    fn invokeRegistrationNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         @import("native_async_scope.zig").requireTargetOwner(engine, data[0]) catch |err| return publicationFailure(engine, err);
         const self = fromOwnerData(engine, data, 0) catch |err| return publicationFailure(engine, err);
         @import("native_sdk_resource_owners.zig").assertPiRuntime(self) catch |err| return publicationFailure(engine, err);
         const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
         return self.registration(@enumFromInt(magic), args) catch |err| {
+            if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
             if (err == error.JavaScriptException) return engine.throwCaptured();
             if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
             return c.JS_ThrowTypeError(context, "Native extension registration failed: %s", @as([*:0]const u8, @errorName(err)));
@@ -1242,15 +1312,15 @@ pub const Bindings = struct {
     pub fn loadFactory(self: *Bindings, source: []const u8, filename: [:0]const u8) !void {
         try self.setSourcePath(filename);
         const namespace = try self.engine.evalModule(source, filename);
-        defer self.engine.freeValue(namespace);
+        defer self.engine.releaseNativeValue(namespace);
         try self.loadFactoryValue(namespace);
     }
 
     pub fn setSourcePath(self: *Bindings, path: []const u8) !void {
-        const owned = try self.gpa.dupe(u8, path);
+        const owned = try retainHostAllocationFailure(self.engine, self.gpa.dupe(u8, path));
         if (self.source_path) |previous| self.gpa.free(previous);
         self.source_path = owned;
-        if (self.source_info_value) |value| self.engine.freeValue(value);
+        if (self.source_info_value) |value| self.engine.releaseNativeValue(value);
         self.source_info_value = null;
         _ = try self.sourceInfoValue();
     }
@@ -1259,38 +1329,42 @@ pub const Bindings = struct {
         if (self.factory_active) return error.ExtensionInvocationBusy;
         self.factory_active = true;
         defer self.factory_active = false;
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         var factory = if (c.JS_IsFunction(self.engine.context, namespace)) c.JS_DupValue(self.engine.context, namespace) else if (c.JS_IsObject(namespace)) try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, namespace, "default")) else c.pi_js_undefined();
-        defer self.engine.freeValue(factory);
+        defer self.engine.releaseNativeValue(factory);
         if (c.JS_IsObject(factory) and !c.JS_IsFunction(self.engine.context, factory)) {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const nested = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, factory, "default"));
             if (c.JS_IsFunction(self.engine.context, nested)) {
-                self.engine.freeValue(factory);
+                self.engine.releaseNativeValue(factory);
                 factory = nested;
-            } else self.engine.freeValue(nested);
+            } else self.engine.releaseNativeValue(nested);
         }
         if (c.JS_IsUndefined(factory) or c.JS_IsNull(factory)) {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const fallback = if (c.JS_IsObject(namespace)) try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, namespace, "extension")) else c.pi_js_undefined();
-            self.engine.freeValue(factory);
+            self.engine.releaseNativeValue(factory);
             factory = fallback;
         }
         if (!c.JS_IsFunction(self.engine.context, factory)) return error.InvalidExtensionFactory;
         var args = [_]c.JSValue{self.api};
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const promise = try self.engine.checked(c.JS_Call(self.engine.context, factory, c.pi_js_undefined(), 1, &args));
-        defer self.engine.freeValue(promise);
+        defer self.engine.releaseNativeValue(promise);
         // SDK factory loading awaits only the factory result. Draining every
         // ready job here prematurely finishes unrelated runtime refreshes.
         const value = if (self.sdk_resource_owner) sdk_factory: {
             // Await assimilates arbitrary thenables; an already intrinsic
             // promise keeps its existing reaction chain and async ownership.
             const awaited = if (c.JS_PromiseState(self.engine.context, promise) == c.JS_PROMISE_NOT_A_PROMISE) try @import("native_sdk.zig").promise(self.engine, promise) else c.JS_DupValue(self.engine.context, promise);
-            defer self.engine.freeValue(awaited);
+            defer self.engine.releaseNativeValue(awaited);
             break :sdk_factory try self.engine.awaitValueOnly(awaited);
         } else try self.engine.awaitValue(promise);
-        defer self.engine.freeValue(value);
+        defer self.engine.releaseNativeValue(value);
     }
 
     fn parseJson(self: *Bindings, source: []const u8, filename: [*:0]const u8) !c.JSValue {
-        const terminated = try self.gpa.dupeZ(u8, source);
+        const terminated = try retainHostAllocationFailure(self.engine, self.gpa.dupeZ(u8, source));
         defer self.gpa.free(terminated);
         return self.engine.checked(c.JS_ParseJSON(self.engine.context, terminated.ptr, source.len, filename));
     }
@@ -1298,44 +1372,51 @@ pub const Bindings = struct {
     pub fn setContext(self: *Bindings, source: []const u8) !void {
         if (self.invocation_active) return error.ExtensionInvocationBusy;
         const snapshot = try self.parseJson(source, "extension-context");
-        errdefer self.engine.freeValue(snapshot);
+        errdefer self.engine.releaseNativeValue(snapshot);
         if (!c.JS_IsObject(snapshot) or c.JS_IsArray(snapshot)) return error.InvalidExtensionContext;
         inline for (.{ "hasUI", "idle", "projectTrusted", "hasPendingMessages", "strictThemeValidation", "kittyActive", "nativeRuntimeBound" }) |name| {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, name));
-            defer self.engine.freeValue(value);
+            defer self.engine.releaseNativeValue(value);
             if (!c.JS_IsUndefined(value) and !c.JS_IsBool(value)) return error.InvalidExtensionContext;
         }
         inline for (.{ "mode", "cwd", "thinkingLevel", "systemPrompt", "sessionId" }) |name| {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, name));
-            defer self.engine.freeValue(value);
+            defer self.engine.releaseNativeValue(value);
             if (!c.JS_IsUndefined(value) and !c.JS_IsString(value)) return error.InvalidExtensionContext;
         }
         inline for (.{ "sessionDir", "sessionFile", "sessionName", "sessionLeafId" }) |name| {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, name));
-            defer self.engine.freeValue(value);
+            defer self.engine.releaseNativeValue(value);
             if (!c.JS_IsUndefined(value) and !c.JS_IsNull(value) and !c.JS_IsString(value)) return error.InvalidExtensionContext;
         }
         inline for (.{ "scopedModels", "sessionEntries", "sessionBranch", "activeTools", "allTools", "commands" }) |name| {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, name));
-            defer self.engine.freeValue(value);
+            defer self.engine.releaseNativeValue(value);
             if (!c.JS_IsUndefined(value) and !c.JS_IsArray(value)) return error.InvalidExtensionContext;
         }
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const settings = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "settings"));
-        defer self.engine.freeValue(settings);
+        defer self.engine.releaseNativeValue(settings);
         if (!c.JS_IsUndefined(settings) and (!c.JS_IsObject(settings) or c.JS_IsArray(settings))) return error.InvalidExtensionContext;
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const keybindings_config = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "keybindingsConfig"));
-        defer self.engine.freeValue(keybindings_config);
+        defer self.engine.releaseNativeValue(keybindings_config);
         if (!c.JS_IsUndefined(keybindings_config) and (!c.JS_IsObject(keybindings_config) or c.JS_IsArray(keybindings_config))) return error.InvalidExtensionContext;
         try @import("native_terminal_image.zig").validateAdmittedContext(self.engine, snapshot);
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const strict_theme = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "strictThemeValidation"));
-        defer self.engine.freeValue(strict_theme);
+        defer self.engine.releaseNativeValue(strict_theme);
         if (!self.sdk_resource_owner and self.sdk_context == null) {
             if (self.selection_context_fn) |receive| try receive(self.tool_context, source);
             if (!c.JS_IsUndefined(strict_theme)) try @import("native_theme.zig").setStrictFileValidation(self.engine, c.JS_ToBool(self.engine.context, strict_theme) != 0);
             try @import("native_keybindings.zig").hydrateAdmittedConfig(self.engine, snapshot);
             try @import("native_terminal_image.zig").hydrateAdmittedContext(self.engine, snapshot);
         }
-        if (self.context_snapshot) |old| self.engine.freeValue(old);
+        if (self.context_snapshot) |old| self.engine.releaseNativeValue(old);
         self.context_snapshot = snapshot;
     }
     pub fn invalidateContext(self: *Bindings) !void {
@@ -1356,38 +1437,38 @@ pub const Bindings = struct {
         const registry_lease = try sdk.modelRegistryLease(self.engine, scope.registry);
         if (registry_lease.runtime_id != admitted.runtime_id) return error.InvalidNativeSDKContext;
         const registry = try sdk.get(self.engine, state.data, "modelRegistry");
-        defer self.engine.freeValue(registry);
+        defer self.engine.releaseNativeValue(registry);
         const manager = try sdk.publicField(state, "sessionManager");
-        defer self.engine.freeValue(manager);
+        defer self.engine.releaseNativeValue(manager);
         if (!c.JS_IsStrictEqual(self.engine.context, registry, scope.registry) or !c.JS_IsStrictEqual(self.engine.context, manager, scope.manager)) return error.InvalidNativeSDKContext;
         const previous: SavedSdkContext = .{ .context = self.sdk_context, .snapshot = if (self.context_snapshot) |value| c.JS_DupValue(self.engine.context, value) else null };
         self.sdk_context = .{ .session = c.JS_DupValue(self.engine.context, scope.session), .registry = c.JS_DupValue(self.engine.context, scope.registry), .manager = c.JS_DupValue(self.engine.context, scope.manager), .lease = scope.lease, .provenance = scope.provenance };
         return previous;
     }
     fn freeSdkContext(self: *Bindings, scope: SdkContext) void {
-        self.engine.freeValue(scope.session);
-        self.engine.freeValue(scope.registry);
-        self.engine.freeValue(scope.manager);
+        self.engine.releaseNativeValue(scope.session);
+        self.engine.releaseNativeValue(scope.registry);
+        self.engine.releaseNativeValue(scope.manager);
     }
     pub fn restoreSdkContext(self: *Bindings, saved: SavedSdkContext) void {
         if (self.sdk_context) |scope| self.freeSdkContext(scope);
         self.sdk_context = saved.context;
-        if (self.context_snapshot) |snapshot| self.engine.freeValue(snapshot);
+        if (self.context_snapshot) |snapshot| self.engine.releaseNativeValue(snapshot);
         self.context_snapshot = saved.snapshot;
     }
     fn contextFunction(self: *Bindings, name: [:0]const u8, kind: ContextMethod, snapshot: c.JSValue, generation: u32) anyerror!c.JSValue {
         if (self.sdk_resource_owner and self.sdk_context == null) return @import("native_sdk_resource_owners.zig").uninitialized(self.engine);
         const token = c.JS_DupValue(self.engine.context, self.context_guard);
-        defer self.engine.freeValue(token);
+        defer self.engine.releaseNativeValue(token);
         const owner_class = c.JS_NewInt64(self.engine.context, self.owner_class);
-        defer self.engine.freeValue(owner_class);
+        defer self.engine.releaseNativeValue(owner_class);
         var session = c.pi_js_undefined();
         var lease_generation = c.pi_js_undefined();
         var runtime_id = c.pi_js_undefined();
         defer {
-            self.engine.freeValue(session);
-            self.engine.freeValue(lease_generation);
-            self.engine.freeValue(runtime_id);
+            self.engine.releaseNativeValue(session);
+            self.engine.releaseNativeValue(lease_generation);
+            self.engine.releaseNativeValue(runtime_id);
         }
         if (self.sdk_context) |scope| {
             session = c.JS_DupValue(self.engine.context, scope.session);
@@ -1397,7 +1478,7 @@ pub const Bindings = struct {
         var data = [_]c.JSValue{ token, snapshot, self.owner_token, owner_class, session, lease_generation, runtime_id };
         if (kind == .ui or kind == .modelRegistry or kind == .sessionManager) {
             const object = if (kind == .ui) if (self.sdk_context) |scope| try @import("native_sdk_ui_context.zig").current(self.engine, scope.session) else c.pi_js_undefined() else if (kind == .modelRegistry) if (self.sdk_context) |scope| c.JS_DupValue(self.engine.context, scope.registry) else try self.createModelRegistry(snapshot, generation) else if (self.sdk_context) |scope| c.JS_DupValue(self.engine.context, scope.manager) else try self.contextValue(.sessionManager, snapshot, &.{});
-            defer self.engine.freeValue(object);
+            defer self.engine.releaseNativeValue(object);
             var ui_data = [_]c.JSValue{ token, snapshot, object, self.owner_token, owner_class, session, lease_generation, runtime_id };
             return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, contextCallback, name.ptr, 0, @intFromEnum(kind), ui_data.len, &ui_data));
         }
@@ -1407,42 +1488,53 @@ pub const Bindings = struct {
     const RegistryMethod = enum(c_int) { getAll, getAvailable, find, findOfType, getModelsOfType, getModelOfType, getAvailableOfType, getError, hasConfiguredAuth, getProvider, getRegisteredProviderConfig, getRegisteredNativeProvider, getRegisteredProviderIds };
     fn createModelRegistry(self: *Bindings, snapshot: c.JSValue, generation: u32) !c.JSValue {
         const registry = try self.engine.checked(c.JS_NewObject(self.engine.context));
-        errdefer self.engine.freeValue(registry);
+        errdefer self.engine.releaseNativeValue(registry);
         _ = generation;
         var data = [_]c.JSValue{ c.JS_DupValue(self.engine.context, self.context_guard), snapshot, self.owner_token, c.JS_NewInt64(self.engine.context, self.owner_class) };
-        defer self.engine.freeValue(data[0]);
-        defer self.engine.freeValue(data[3]);
+        defer self.engine.releaseNativeValue(data[0]);
+        defer self.engine.releaseNativeValue(data[3]);
         inline for (std.meta.fields(RegistryMethod)) |field| {
             const function = try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, registryCallback, field.name, 0, field.value, data.len, &data));
             try self.actionProperty(registry, field.name, function);
         }
         return registry;
     }
-    fn registryCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    fn registryCallback(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+        native_owner.enter() catch |err| return native_owner.finishCallback(publicationFailure(engine, err));
+        return native_owner.finishCallback(registryCallbackNativeBody(context, ignored_1, argc, argv, magic, data));
+    }
+    fn registryCallbackNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         context_lifetime.assertActive(engine, data[0]) catch return engine.throwCaptured();
         const self = fromOwnerData(engine, data, 2) catch |err| return publicationFailure(engine, err);
         return self.registryValue(@enumFromInt(magic), self.context_snapshot orelse data[1], if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| {
+            if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
             if (err == error.JavaScriptException) return engine.throwCaptured();
-            if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+            if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
             return c.JS_ThrowTypeError(context, "Native model registry: %s", @as([*:0]const u8, @errorName(err)));
         };
     }
     fn configuredProvider(self: *Bindings, snapshot: c.JSValue, name: c.JSValue) !bool {
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const names = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "configuredProviders"));
-        defer self.engine.freeValue(names);
+        defer self.engine.releaseNativeValue(names);
         if (!try self.providerArray(names)) return false;
         for (0..try self.arrayLength(names)) |index| {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const candidate = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, names, @intCast(index)));
-            defer self.engine.freeValue(candidate);
+            defer self.engine.releaseNativeValue(candidate);
             if (c.JS_IsStrictEqual(self.engine.context, name, candidate)) return true;
         }
         return false;
     }
     fn arrayLength(self: *Bindings, array: c.JSValue) !u32 {
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, array, "length"));
-        defer self.engine.freeValue(value);
+        defer self.engine.releaseNativeValue(value);
         var count: u32 = 0;
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         if (c.JS_ToUint32(self.engine.context, &count, value) < 0) return error.JavaScriptException;
         if (count > 65536) return error.NativeModelCatalogLimit;
         return count;
@@ -1450,25 +1542,31 @@ pub const Bindings = struct {
     const ProviderCandidate = struct { name: []u8, ordinal: i64, first: i64, record: c.JSValue };
     fn providerCandidates(self: *Bindings) !std.ArrayList(ProviderCandidate) {
         const snapshot = if (self.provider_catalog_fn) |callback| try callback(self.tool_context) else try self.providers.catalogSnapshot();
-        defer self.engine.freeValue(snapshot);
+        defer self.engine.releaseNativeValue(snapshot);
         var values: std.ArrayList(ProviderCandidate) = .empty;
         errdefer self.freeProviderCandidates(&values);
         for (0..try self.arrayLength(snapshot)) |index| {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const record = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, snapshot, @intCast(index)));
             var retained = false;
-            defer if (!retained) self.engine.freeValue(record);
+            defer if (!retained) self.engine.releaseNativeValue(record);
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const name_value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, record, "name"));
-            defer self.engine.freeValue(name_value);
-            const name = try self.engine.toString(name_value);
+            defer self.engine.releaseNativeValue(name_value);
+            const name = try nativeText(self.engine, name_value);
             var name_retained = false;
             defer if (!name_retained) self.gpa.free(name);
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const ordinal_value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, record, "ordinal"));
-            defer self.engine.freeValue(ordinal_value);
+            defer self.engine.releaseNativeValue(ordinal_value);
             var ordinal: i64 = 0;
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             if (c.JS_ToInt64(self.engine.context, &ordinal, ordinal_value) < 0) return error.JavaScriptException;
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const first_value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, record, "firstOrdinal"));
-            defer self.engine.freeValue(first_value);
+            defer self.engine.releaseNativeValue(first_value);
             var first = ordinal;
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             if (!c.JS_IsUndefined(first_value) and c.JS_ToInt64(self.engine.context, &first, first_value) < 0) return error.JavaScriptException;
             var existing: ?*ProviderCandidate = null;
             for (values.items) |*candidate| if (std.mem.eql(u8, candidate.name, name)) {
@@ -1477,17 +1575,19 @@ pub const Bindings = struct {
             };
             if (existing) |previous| {
                 if (ordinal <= previous.ordinal) continue;
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const previous_native = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, previous.record, "native"));
-                defer self.engine.freeValue(previous_native);
+                defer self.engine.releaseNativeValue(previous_native);
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const incoming_native = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, record, "native"));
-                defer self.engine.freeValue(incoming_native);
+                defer self.engine.releaseNativeValue(incoming_native);
                 previous.first = if (c.JS_IsStrictEqual(self.engine.context, previous_native, incoming_native)) @min(previous.first, first) else first;
-                self.engine.freeValue(previous.record);
+                self.engine.releaseNativeValue(previous.record);
                 previous.record = record;
                 previous.ordinal = ordinal;
                 retained = true;
             } else {
-                try values.append(self.gpa, .{ .name = name, .ordinal = ordinal, .first = first, .record = record });
+                try retainHostAllocationFailure(self.engine, values.append(self.gpa, .{ .name = name, .ordinal = ordinal, .first = first, .record = record }));
                 retained = true;
                 name_retained = true;
             }
@@ -1503,32 +1603,37 @@ pub const Bindings = struct {
     fn freeProviderCandidates(self: *Bindings, values: *std.ArrayList(ProviderCandidate)) void {
         for (values.items) |candidate| {
             self.gpa.free(candidate.name);
-            self.engine.freeValue(candidate.record);
+            self.engine.releaseNativeValue(candidate.record);
         }
         values.deinit(self.gpa);
     }
     fn modelObject(self: *Bindings, snapshot: c.JSValue, candidates: []const ProviderCandidate) !c.JSValue {
         const exports = self.engine.native_module_values.get("@earendil-works/pi-ai") orelse return error.NativeModelsNotInstalled;
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const factory = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, exports, "createModels"));
-        defer self.engine.freeValue(factory);
+        defer self.engine.releaseNativeValue(factory);
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const models_object = try self.engine.checked(c.JS_Call(self.engine.context, factory, exports, 0, null));
-        errdefer self.engine.freeValue(models_object);
+        errdefer self.engine.releaseNativeValue(models_object);
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const models = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "models"));
-        defer self.engine.freeValue(models);
+        defer self.engine.releaseNativeValue(models);
         if (try self.providerArray(models)) {
             // Group the snapshot without stringify: its model objects remain
             // rooted while live provider callbacks run on this owner.
             var names: std.ArrayList(c.JSValue) = .empty;
             defer {
-                for (names.items) |value| self.engine.freeValue(value);
+                for (names.items) |value| self.engine.releaseNativeValue(value);
                 names.deinit(self.gpa);
             }
             for (0..try self.arrayLength(models)) |index| {
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const model = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, models, @intCast(index)));
-                defer self.engine.freeValue(model);
+                defer self.engine.releaseNativeValue(model);
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const name = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, model, "provider"));
                 var retained = false;
-                defer if (!retained) self.engine.freeValue(name);
+                defer if (!retained) self.engine.releaseNativeValue(name);
                 var found = false;
                 for (names.items) |previous| if (c.JS_IsStrictEqual(self.engine.context, previous, name)) {
                     found = true;
@@ -1536,79 +1641,91 @@ pub const Bindings = struct {
                 };
                 if (found) continue;
                 const group = try self.engine.checked(c.JS_NewArray(self.engine.context));
-                defer self.engine.freeValue(group);
+                defer self.engine.releaseNativeValue(group);
                 var output: u32 = 0;
                 for (0..try self.arrayLength(models)) |item| {
+                    try @import("native_pending_owner.zig").checkFatal(self.engine);
                     const candidate = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, models, @intCast(item)));
-                    defer self.engine.freeValue(candidate);
+                    defer self.engine.releaseNativeValue(candidate);
+                    try @import("native_pending_owner.zig").checkFatal(self.engine);
                     const provider = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, candidate, "provider"));
-                    defer self.engine.freeValue(provider);
+                    defer self.engine.releaseNativeValue(provider);
                     if (c.JS_IsStrictEqual(self.engine.context, name, provider)) {
                         if (c.JS_SetPropertyUint32(self.engine.context, group, output, c.JS_DupValue(self.engine.context, candidate)) < 0) return error.JavaScriptException;
                         output += 1;
                     }
                 }
                 const config = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
-                defer self.engine.freeValue(config);
+                defer self.engine.releaseNativeValue(config);
                 try self.actionProperty(config, "models", c.JS_DupValue(self.engine.context, group));
                 const adapted = try native_models.snapshotProvider(self.engine, name, config, try self.configuredProvider(snapshot, name), false);
-                defer self.engine.freeValue(adapted);
+                defer self.engine.releaseNativeValue(adapted);
                 try self.setModelProvider(models_object, adapted);
-                try names.append(self.gpa, name);
+                try retainHostAllocationFailure(self.engine, names.append(self.gpa, name));
                 retained = true;
             }
         }
         for (candidates) |candidate| {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const config = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, candidate.record, "config"));
-            defer self.engine.freeValue(config);
+            defer self.engine.releaseNativeValue(config);
             const name = try self.engine.checked(c.JS_NewStringLen(self.engine.context, candidate.name.ptr, candidate.name.len));
-            defer self.engine.freeValue(name);
+            defer self.engine.releaseNativeValue(name);
             if (c.JS_IsUndefined(config)) {
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const function = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, models_object, "deleteProvider"));
-                defer self.engine.freeValue(function);
+                defer self.engine.releaseNativeValue(function);
                 var args = [_]c.JSValue{name};
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const ignored = try self.engine.checked(c.JS_Call(self.engine.context, function, models_object, args.len, &args));
-                self.engine.freeValue(ignored);
+                self.engine.releaseNativeValue(ignored);
                 continue;
             }
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const native = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, candidate.record, "native"));
-            defer self.engine.freeValue(native);
+            defer self.engine.releaseNativeValue(native);
             const configured = try self.configuredProvider(snapshot, name);
             const provider = if (c.JS_ToBool(self.engine.context, native) == 1) c.JS_DupValue(self.engine.context, config) else try native_models.snapshotProvider(self.engine, name, config, configured, true);
-            defer self.engine.freeValue(provider);
+            defer self.engine.releaseNativeValue(provider);
             try self.setModelProvider(models_object, provider);
         }
         return models_object;
     }
     fn setModelProvider(self: *Bindings, object: c.JSValue, provider: c.JSValue) !void {
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const setter = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, object, "setProvider"));
-        defer self.engine.freeValue(setter);
+        defer self.engine.releaseNativeValue(setter);
         var args = [_]c.JSValue{provider};
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const ignored = try self.engine.checked(c.JS_Call(self.engine.context, setter, object, args.len, &args));
-        self.engine.freeValue(ignored);
+        self.engine.releaseNativeValue(ignored);
     }
     fn registryValue(self: *Bindings, method: RegistryMethod, snapshot: c.JSValue, args: []c.JSValue) !c.JSValue {
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         if (method == .getError) return self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "modelRegistryError"));
         if (method == .hasConfiguredAuth) {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const provider = if (args.len > 0) try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, args[0], "provider")) else c.pi_js_undefined();
-            defer self.engine.freeValue(provider);
+            defer self.engine.releaseNativeValue(provider);
             return c.pi_js_bool(self.engine.context, @intFromBool(try self.configuredProvider(snapshot, provider)));
         }
         var candidates = try self.providerCandidates();
         defer self.freeProviderCandidates(&candidates);
         if (method == .getRegisteredProviderConfig or method == .getRegisteredNativeProvider or method == .getRegisteredProviderIds) {
             const result = if (method == .getRegisteredProviderIds) try self.engine.checked(c.JS_NewArray(self.engine.context)) else c.pi_js_undefined();
-            errdefer self.engine.freeValue(result);
+            errdefer self.engine.releaseNativeValue(result);
             var output: u32 = 0;
             if (method == .getRegisteredProviderIds) {
                 // ModelRuntime exposes declarative registrations first, then
                 // native provider registrations, preserving each map's order.
                 for ([_]bool{ false, true }) |native_kind| for (candidates.items) |candidate| {
+                    try @import("native_pending_owner.zig").checkFatal(self.engine);
                     const config = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, candidate.record, "config"));
-                    defer self.engine.freeValue(config);
+                    defer self.engine.releaseNativeValue(config);
                     if (c.JS_IsUndefined(config)) continue;
+                    try @import("native_pending_owner.zig").checkFatal(self.engine);
                     const native = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, candidate.record, "native"));
-                    defer self.engine.freeValue(native);
+                    defer self.engine.releaseNativeValue(native);
                     if ((c.JS_ToBool(self.engine.context, native) == 1) != native_kind) continue;
                     const name = try self.engine.checked(c.JS_NewStringLen(self.engine.context, candidate.name.ptr, candidate.name.len));
                     if (c.JS_SetPropertyUint32(self.engine.context, result, output, name) < 0) return error.JavaScriptException;
@@ -1617,24 +1734,26 @@ pub const Bindings = struct {
                 return result;
             }
             for (candidates.items) |candidate| {
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const config = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, candidate.record, "config"));
-                defer self.engine.freeValue(config);
+                defer self.engine.releaseNativeValue(config);
                 if (c.JS_IsUndefined(config)) continue;
                 const name = try self.engine.checked(c.JS_NewStringLen(self.engine.context, candidate.name.ptr, candidate.name.len));
-                defer self.engine.freeValue(name);
+                defer self.engine.releaseNativeValue(name);
                 if (method == .getRegisteredProviderIds) {
                     if (c.JS_SetPropertyUint32(self.engine.context, result, output, c.JS_DupValue(self.engine.context, name)) < 0) return error.JavaScriptException;
                     output += 1;
                 } else if (args.len > 0 and c.JS_IsStrictEqual(self.engine.context, name, args[0])) {
+                    try @import("native_pending_owner.zig").checkFatal(self.engine);
                     const native = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, candidate.record, "native"));
-                    defer self.engine.freeValue(native);
+                    defer self.engine.releaseNativeValue(native);
                     if ((c.JS_ToBool(self.engine.context, native) == 1) == (method == .getRegisteredNativeProvider)) return c.JS_DupValue(self.engine.context, config);
                 }
             }
             return result;
         }
         const models = try self.modelObject(snapshot, candidates.items);
-        defer self.engine.freeValue(models);
+        defer self.engine.releaseNativeValue(models);
         const name: [*:0]const u8 = switch (method) {
             .getAll => "getModels",
             .find => "getModel",
@@ -1645,19 +1764,23 @@ pub const Bindings = struct {
             .getAvailable => "getModels",
             else => unreachable,
         };
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const function = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, models, name));
-        defer self.engine.freeValue(function);
+        defer self.engine.releaseNativeValue(function);
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const result = try self.engine.checked(c.JS_Call(self.engine.context, function, models, if (method == .getAll or method == .getAvailable) 0 else @intCast(args.len), args.ptr));
         if (method != .getAvailable) return result;
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         const filtered = try self.engine.checked(c.JS_NewArray(self.engine.context));
-        errdefer self.engine.freeValue(filtered);
+        errdefer self.engine.releaseNativeValue(filtered);
         var output: u32 = 0;
         for (0..try self.arrayLength(result)) |index| {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const model = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, result, @intCast(index)));
-            defer self.engine.freeValue(model);
+            defer self.engine.releaseNativeValue(model);
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const provider = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, model, "provider"));
-            defer self.engine.freeValue(provider);
+            defer self.engine.releaseNativeValue(provider);
             if (try self.configuredProvider(snapshot, provider)) {
                 if (c.JS_SetPropertyUint32(self.engine.context, filtered, output, c.JS_DupValue(self.engine.context, model)) < 0) return error.JavaScriptException;
                 output += 1;
@@ -1666,14 +1789,20 @@ pub const Bindings = struct {
         return filtered;
     }
 
-    fn staleContext(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    fn staleContext(context: ?*c.JSContext, ignored_1: c.JSValue, ignored_2: c_int, ignored_3: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+        native_owner.enter() catch |err| return native_owner.finishCallback(publicationFailure(engine, err));
+        return native_owner.finishCallback(staleContextNativeBody(context, ignored_1, ignored_2, ignored_3));
+    }
+    fn staleContextNativeBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         @import("native_async_scope.zig").throwMessage(engine, context_lifetime.default_message) catch |err| return publicationFailure(engine, err);
         return c.pi_js_undefined();
     }
     fn createStaleContext(self: *Bindings) !c.JSValue {
         const context = try self.engine.checked(c.JS_NewObject(self.engine.context));
-        errdefer self.engine.freeValue(context);
+        errdefer self.engine.releaseNativeValue(context);
         inline for (std.meta.fields(ContextMethod)) |field| {
             const kind: ContextMethod = @enumFromInt(field.value);
             if (@intFromEnum(kind) <= @intFromEnum(ContextMethod.getSystemPrompt)) {
@@ -1690,9 +1819,9 @@ pub const Bindings = struct {
     }
     fn createContext(self: *Bindings) !c.JSValue {
         const snapshot = if (self.context_snapshot) |value| c.JS_DupValue(self.engine.context, value) else try self.engine.checked(c.JS_NewObject(self.engine.context));
-        defer self.engine.freeValue(snapshot);
+        defer self.engine.releaseNativeValue(snapshot);
         const context = try self.engine.checked(c.JS_NewObject(self.engine.context));
-        errdefer self.engine.freeValue(context);
+        errdefer self.engine.releaseNativeValue(context);
         inline for (std.meta.fields(ContextMethod)) |field| {
             const kind: ContextMethod = @enumFromInt(field.value);
             if (@intFromEnum(kind) <= @intFromEnum(ContextMethod.getSystemPrompt) and ((kind != .abort and kind != .shutdown) or self.sdk_context != null)) {
@@ -1709,7 +1838,13 @@ pub const Bindings = struct {
         return context;
     }
 
-    fn contextCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    fn contextCallback(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+        native_owner.enter() catch |err| return native_owner.finishCallback(publicationFailure(engine, err));
+        return native_owner.finishCallback(contextCallbackNativeBody(context, ignored_1, argc, argv, magic, data));
+    }
+    fn contextCallbackNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         const kind: ContextMethod = @enumFromInt(magic);
         context_lifetime.assertActive(engine, data[0]) catch return engine.throwCaptured();
@@ -1720,9 +1855,18 @@ pub const Bindings = struct {
             const sdk = @import("native_sdk.zig");
             var generation: u64 = 0;
             var runtime_id: u64 = 0;
-            if (c.JS_ToBigUint64(context, &generation, data[session_offset + 1]) < 0 or c.JS_ToBigUint64(context, &runtime_id, data[session_offset + 2]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
-            const state = sdk.state(engine, data[session_offset]) catch return self.staleSdkContext();
-            const lease = sdk.sessionModelLease(state) catch return self.staleSdkContext();
+            @import("native_pending_owner.zig").checkFatal(engine) catch |err| return publicationFailure(engine, err);
+            if (c.JS_ToBigUint64(context, &generation, data[session_offset + 1]) < 0) return c.pi_js_exception();
+            @import("native_pending_owner.zig").checkFatal(engine) catch |err| return publicationFailure(engine, err);
+            if (c.JS_ToBigUint64(context, &runtime_id, data[session_offset + 2]) < 0) return c.pi_js_exception();
+            const state = sdk.state(engine, data[session_offset]) catch |err| {
+                @import("native_pending_owner.zig").catchFailure(engine, err) catch |fatal| return publicationFailure(engine, fatal);
+                return self.staleSdkContext();
+            };
+            const lease = sdk.sessionModelLease(state) catch |err| {
+                @import("native_pending_owner.zig").catchFailure(engine, err) catch |fatal| return publicationFailure(engine, fatal);
+                return self.staleSdkContext();
+            };
             if (lease.generation != generation or lease.runtime_id != runtime_id) return self.staleSdkContext();
             if (kind == .model or kind == .thinkingLevel or kind == .scopedModels or kind == .getSystemPrompt) return (if (kind == .model or kind == .thinkingLevel) sdk.agentField(state, @tagName(kind)) else sdk.get(engine, state.data, if (kind == .getSystemPrompt) "systemPrompt" else @tagName(kind))) catch |err| return publicationFailure(engine, err);
             if (kind == .abort or kind == .shutdown) {
@@ -1749,21 +1893,14 @@ pub const Bindings = struct {
         const arguments: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
         const snapshot = if (!c.JS_IsUndefined(data[session_offset])) data[1] else self.context_snapshot orelse data[1];
         return self.contextValue(@enumFromInt(magic), snapshot, arguments) catch |err| {
+            if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
             if (err == error.JavaScriptException) return engine.throwCaptured();
+            if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
             return c.JS_ThrowTypeError(context, "Native extension context failed: %s", @as([*:0]const u8, @errorName(err)));
         };
     }
     fn staleSdkContext(self: *Bindings) c.JSValue {
-        const exception = self.engine.checked(c.JS_NewError(self.engine.context)) catch return c.JS_ThrowOutOfMemory(self.engine.context);
-        const message = self.engine.checked(c.JS_NewString(self.engine.context, context_lifetime.default_message)) catch {
-            self.engine.freeValue(exception);
-            return c.JS_ThrowOutOfMemory(self.engine.context);
-        };
-        if (c.JS_DefinePropertyValueStr(self.engine.context, exception, "message", message, c.JS_PROP_C_W_E) < 0) {
-            self.engine.freeValue(exception);
-            return c.JS_Throw(self.engine.context, c.JS_GetException(self.engine.context));
-        }
-        return c.JS_Throw(self.engine.context, exception);
+        return @import("native_sdk.zig").sourceError(self.engine, context_lifetime.default_message) catch |err| publicationFailure(self.engine, err);
     }
 
     fn contextValue(self: *Bindings, kind: ContextMethod, snapshot: c.JSValue, args: []c.JSValue) !c.JSValue {
@@ -1772,7 +1909,7 @@ pub const Bindings = struct {
         if (kind == .getLeafEntry or kind == .getEntry or kind == .getLabel or kind == .getBranch or kind == .buildContextEntries or kind == .getTree or kind == .buildSessionProjection) return self.sessionApi(kind, snapshot, args);
         if (kind == .sessionManager) {
             const manager = try self.engine.checked(c.JS_NewObject(self.engine.context));
-            errdefer self.engine.freeValue(manager);
+            errdefer self.engine.releaseNativeValue(manager);
             inline for (std.meta.fields(ContextMethod)) |field| {
                 if (field.value >= @intFromEnum(ContextMethod.getCwd)) {
                     const name: [:0]const u8 = field.name;
@@ -1807,8 +1944,9 @@ pub const Bindings = struct {
             .getHeader => "sessionHeader",
             .sessionManager, .getLeafEntry, .getEntry, .getLabel, .getTree, .buildSessionProjection => unreachable,
         };
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, key));
-        defer self.engine.freeValue(value);
+        defer self.engine.releaseNativeValue(value);
         switch (kind) {
             .isIdle => return c.pi_js_bool(self.engine.context, @intFromBool(!c.JS_IsBool(value) or c.JS_ToBool(self.engine.context, value) == 1)),
             .hasUI, .isProjectTrusted, .hasPendingMessages => return c.pi_js_bool(self.engine.context, c.JS_ToBool(self.engine.context, value)),
@@ -1830,7 +1968,7 @@ pub const Bindings = struct {
             else => {},
         }
         if (c.JS_IsObject(value)) {
-            const encoded = try self.engine.stringify(value);
+            const encoded = try nativeStringify(self.engine, value);
             defer self.gpa.free(encoded);
             return self.parseJson(encoded, "extension-context-snapshot");
         }
@@ -1850,7 +1988,7 @@ pub const Bindings = struct {
         }
         var explicit_id: ?[]u8 = null;
         defer if (explicit_id) |id| self.gpa.free(id);
-        if (args.len > 0 and c.JS_IsString(args[0])) explicit_id = try self.engine.toString(args[0]);
+        if (args.len > 0 and c.JS_IsString(args[0])) explicit_id = try nativeText(self.engine, args[0]);
         if (kind == .getLabel) {
             const id = explicit_id orelse return c.pi_js_undefined();
             const name = session.label(id) orelse return c.pi_js_undefined();
@@ -1866,45 +2004,53 @@ pub const Bindings = struct {
             .buildContextEntries => try session.contextEntries(),
             else => unreachable,
         } orelse return c.pi_js_undefined();
-        const json = try std.json.Stringify.valueAlloc(allocator, value, .{});
+        const json = try retainHostAllocationFailure(self.engine, std.json.Stringify.valueAlloc(allocator, value, .{}));
         return self.parseJson(json, "native-session-snapshot");
     }
 
     fn parseSessionTime(context: ?*anyopaque, timestamp: []const u8) anyerror!f64 {
         const self: *Bindings = @ptrCast(@alignCast(context.?));
         const global = c.JS_GetGlobalObject(self.engine.context);
-        defer self.engine.freeValue(global);
+        defer self.engine.releaseNativeValue(global);
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const date = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, global, "Date"));
-        defer self.engine.freeValue(date);
+        defer self.engine.releaseNativeValue(date);
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const parse = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, date, "parse"));
-        defer self.engine.freeValue(parse);
+        defer self.engine.releaseNativeValue(parse);
         var argument = [_]c.JSValue{try self.engine.checked(c.JS_NewStringLen(self.engine.context, timestamp.ptr, timestamp.len))};
-        defer self.engine.freeValue(argument[0]);
+        defer self.engine.releaseNativeValue(argument[0]);
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const value = try self.engine.checked(c.JS_Call(self.engine.context, parse, date, 1, &argument));
-        defer self.engine.freeValue(value);
+        defer self.engine.releaseNativeValue(value);
         var milliseconds: f64 = 0;
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         if (c.JS_ToFloat64(self.engine.context, &milliseconds, value) < 0) return error.JavaScriptException;
         return milliseconds;
     }
 
     fn sessionTree(self: *Bindings, allocator: std.mem.Allocator, session: *const session_snapshot.Snapshot) !c.JSValue {
         const parents = try session.parents();
-        const children = try allocator.alloc(std.ArrayList(usize), session.entries.len);
+        const children = try retainHostAllocationFailure(self.engine, allocator.alloc(std.ArrayList(usize), session.entries.len));
         for (children) |*list| list.* = .empty;
-        for (parents, 0..) |parent, index| if (parent) |position| try children[position].append(allocator, index);
-        const times = try allocator.alloc(f64, session.entries.len);
+        for (parents, 0..) |parent, index| if (parent) |position| try retainHostAllocationFailure(self.engine, children[position].append(allocator, index));
+        const times = try retainHostAllocationFailure(self.engine, allocator.alloc(f64, session.entries.len));
         const global = c.JS_GetGlobalObject(self.engine.context);
-        defer self.engine.freeValue(global);
+        defer self.engine.releaseNativeValue(global);
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const date = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, global, "Date"));
-        defer self.engine.freeValue(date);
+        defer self.engine.releaseNativeValue(date);
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const parse_date = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, date, "parse"));
-        defer self.engine.freeValue(parse_date);
+        defer self.engine.releaseNativeValue(parse_date);
         for (session.entries, times) |entry, *time| {
             const timestamp = session_snapshot.Snapshot.text(entry, "timestamp") orelse "";
             var argument = [_]c.JSValue{try self.engine.checked(c.JS_NewStringLen(self.engine.context, timestamp.ptr, timestamp.len))};
-            defer self.engine.freeValue(argument[0]);
+            defer self.engine.releaseNativeValue(argument[0]);
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const result = try self.engine.checked(c.JS_Call(self.engine.context, parse_date, date, 1, &argument));
-            defer self.engine.freeValue(result);
+            defer self.engine.releaseNativeValue(result);
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             if (c.JS_ToFloat64(self.engine.context, time, result) < 0) return error.JavaScriptException;
         }
         for (children) |*list| std.mem.sort(usize, list.items, times, struct {
@@ -1913,13 +2059,13 @@ pub const Bindings = struct {
                 return timestamps[left] < timestamps[right];
             }
         }.lessThan);
-        const nodes = try allocator.alloc(c.JSValue, session.entries.len);
+        const nodes = try retainHostAllocationFailure(self.engine, allocator.alloc(c.JSValue, session.entries.len));
         var initialized: usize = 0;
-        defer for (nodes[0..initialized]) |node| self.engine.freeValue(node);
+        defer for (nodes[0..initialized]) |node| self.engine.releaseNativeValue(node);
         for (session.entries, nodes) |entry, *node| {
             node.* = try self.engine.checked(c.JS_NewObject(self.engine.context));
             initialized += 1;
-            const entry_json = try std.json.Stringify.valueAlloc(allocator, entry, .{});
+            const entry_json = try retainHostAllocationFailure(self.engine, std.json.Stringify.valueAlloc(allocator, entry, .{}));
             const entry_copy = try self.parseJson(entry_json, "native-session-tree-entry");
             if (c.JS_DefinePropertyValueStr(self.engine.context, node.*, "entry", entry_copy, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
             const descendants = try self.engine.checked(c.JS_NewArray(self.engine.context));
@@ -1942,15 +2088,16 @@ pub const Bindings = struct {
             }
         }
         const roots = try self.engine.checked(c.JS_NewArray(self.engine.context));
-        errdefer self.engine.freeValue(roots);
+        errdefer self.engine.releaseNativeValue(roots);
         var root_index: u32 = 0;
         for (nodes, parents, children) |node, parent, descendants| {
             if (parent == null) {
                 if (c.JS_SetPropertyUint32(self.engine.context, roots, root_index, c.JS_DupValue(self.engine.context, node)) < 0) return error.JavaScriptException;
                 root_index += 1;
             }
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const list = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, node, "children"));
-            defer self.engine.freeValue(list);
+            defer self.engine.releaseNativeValue(list);
             for (descendants.items, 0..) |index, child_index| if (c.JS_SetPropertyUint32(self.engine.context, list, @intCast(child_index), c.JS_DupValue(self.engine.context, nodes[index])) < 0) return error.JavaScriptException;
         }
         return roots;
@@ -1958,10 +2105,11 @@ pub const Bindings = struct {
 
     pub fn setFlags(self: *Bindings, source: []const u8) !void {
         const overrides = try self.parseJson(source, "extension-flags");
-        defer self.engine.freeValue(overrides);
+        defer self.engine.releaseNativeValue(overrides);
         if (!c.JS_IsObject(overrides) or c.JS_IsArray(overrides)) return error.InvalidExtensionFlags;
         var names: [*c]c.JSPropertyEnum = null;
         var count: u32 = 0;
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         if (c.JS_GetOwnPropertyNames(self.engine.context, &names, &count, overrides, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
         defer c.JS_FreePropertyEnum(self.engine.context, names, count);
         self.freeTable(&self.flag_overrides);
@@ -1970,33 +2118,37 @@ pub const Bindings = struct {
             const name = c.JS_AtomToCString(self.engine.context, names[index].atom);
             if (name == null) return error.OutOfMemory;
             defer c.JS_FreeCString(self.engine.context, name);
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const value = try self.engine.checked(c.JS_GetProperty(self.engine.context, overrides, names[index].atom));
-            defer self.engine.freeValue(value);
+            defer self.engine.releaseNativeValue(value);
             try self.store(&self.flag_overrides, std.mem.span(name), value);
         }
     }
 
     fn invokeHandlers(self: *Bindings, name: []const u8, event: c.JSValue, context: c.JSValue, result: c.JSValue) !void {
         const handlers = self.handlers.get(name) orelse return;
-        const snapshot = try self.gpa.alloc(c.JSValue, handlers.items.len);
+        const snapshot = try retainHostAllocationFailure(self.engine, self.gpa.alloc(c.JSValue, handlers.items.len));
         defer self.gpa.free(snapshot);
         for (snapshot, handlers.items) |*slot, handler| slot.* = c.JS_DupValue(self.engine.context, handler);
-        defer for (snapshot) |handler| self.engine.freeValue(handler);
+        defer for (snapshot) |handler| self.engine.releaseNativeValue(handler);
         for (snapshot) |handler| {
             var args = [_]c.JSValue{ event, context };
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const promise = try self.engine.checked(c.JS_Call(self.engine.context, handler, c.pi_js_undefined(), args.len, &args));
-            defer self.engine.freeValue(promise);
+            defer self.engine.releaseNativeValue(promise);
             const value = if (self.sdk_context != null)
                 try self.engine.awaitValueOnly(promise)
             else
                 try self.engine.awaitValue(promise);
-            defer self.engine.freeValue(value);
+            defer self.engine.releaseNativeValue(value);
             if (!c.JS_IsObject(value) or c.JS_IsArray(value)) continue;
             var names: [*c]c.JSPropertyEnum = null;
             var count: u32 = 0;
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             if (c.JS_GetOwnPropertyNames(self.engine.context, &names, &count, value, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
             defer c.JS_FreePropertyEnum(self.engine.context, names, count);
             for (0..count) |index| {
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const property = try self.engine.checked(c.JS_GetProperty(self.engine.context, value, names[index].atom));
                 if (c.JS_DefinePropertyValue(self.engine.context, result, names[index].atom, property, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
             }
@@ -2007,30 +2159,33 @@ pub const Bindings = struct {
         try self.beginActions();
         defer self.finishInvocation();
         const event = try self.parseJson(payload_json, "extension-hook");
-        defer self.engine.freeValue(event);
+        defer self.engine.releaseNativeValue(event);
         if (self.invocation_signal) |signal| try self.actionProperty(event, "signal", c.JS_DupValue(self.engine.context, signal));
         const context = try self.createContext();
-        defer self.engine.freeValue(context);
+        defer self.engine.releaseNativeValue(context);
         const result = try self.engine.checked(c.JS_NewObject(self.engine.context));
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         const type_value = try self.engine.checked(c.JS_NewStringLen(self.engine.context, name.ptr, name.len));
         if (c.JS_DefinePropertyValueStr(self.engine.context, event, "type", type_value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
         try self.invokeHandlers(name, event, context, result);
         if (std.mem.eql(u8, name, "before_prompt")) {
             const input = try self.engine.checked(c.JS_NewObject(self.engine.context));
-            defer self.engine.freeValue(input);
+            defer self.engine.releaseNativeValue(input);
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const text = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, event, "prompt"));
             if (c.JS_DefinePropertyValueStr(self.engine.context, input, "text", text, c.JS_PROP_C_W_E) < 0 or
                 c.JS_DefinePropertyValueStr(self.engine.context, input, "type", c.JS_NewString(self.engine.context, "input"), c.JS_PROP_C_W_E) < 0 or
                 c.JS_DefinePropertyValueStr(self.engine.context, input, "source", c.JS_NewString(self.engine.context, "interactive"), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
             const transformed = try self.engine.checked(c.JS_NewObject(self.engine.context));
-            defer self.engine.freeValue(transformed);
+            defer self.engine.releaseNativeValue(transformed);
             try self.invokeHandlers("input", input, context, transformed);
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const action = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, transformed, "action"));
-            defer self.engine.freeValue(action);
-            const action_name = try self.engine.toString(action);
+            defer self.engine.releaseNativeValue(action);
+            const action_name = try nativeText(self.engine, action);
             defer self.gpa.free(action_name);
             if (std.mem.eql(u8, action_name, "transform")) {
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const replacement = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, transformed, "text"));
                 if (c.JS_DefinePropertyValueStr(self.engine.context, result, "prompt", replacement, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
             } else if (std.mem.eql(u8, action_name, "handled")) {
@@ -2038,14 +2193,14 @@ pub const Bindings = struct {
             }
         }
         try self.mergeActions(result);
-        return self.engine.stringify(result);
+        return nativeStringify(self.engine, result);
     }
 
     /// SDK emit follows JavaScript await boundaries without recursively running
     /// unrelated jobs on a native stack. The handler list is snapshotted once.
     pub fn invokeSdkHookPromise(self: *Bindings, name: []const u8, payload_json: []const u8, session: c.JSValue, stale: bool) !c.JSValue {
         const event = try self.parseJson(payload_json, "sdk-extension-hook");
-        defer self.engine.freeValue(event);
+        defer self.engine.releaseNativeValue(event);
         return self.invokeSdkHookValue(name, event, session, stale);
     }
     pub fn invokeSdkHookValue(self: *Bindings, name: []const u8, event: c.JSValue, session: c.JSValue, stale: bool) !c.JSValue {
@@ -2055,7 +2210,7 @@ pub const Bindings = struct {
         try self.beginActions();
         const sdk = @import("native_sdk.zig");
         const state = try sdk.object(self.engine);
-        defer self.engine.freeValue(state);
+        defer self.engine.releaseNativeValue(state);
         try sdk.put(self.engine, state, "session", c.JS_DupValue(self.engine.context, session));
         try sdk.put(self.engine, state, "ownerToken", c.JS_DupValue(self.engine.context, self.owner_token));
         try sdk.put(self.engine, state, "ownerClass", c.JS_NewInt64(self.engine.context, self.owner_class));
@@ -2072,153 +2227,177 @@ pub const Bindings = struct {
         try sdk.put(self.engine, state, "result", try sdk.object(self.engine));
         try sdk.put(self.engine, state, "index", c.JS_NewInt32(self.engine.context, 0));
         const handlers = if (snapshot) |value| c.JS_DupValue(self.engine.context, value) else try sdk.array(self.engine);
-        defer self.engine.freeValue(handlers);
+        defer self.engine.releaseNativeValue(handlers);
         if (snapshot == null) if (self.handlers.get(name)) |list| for (list.items) |handler| try sdk.append(self.engine, handlers, c.JS_DupValue(self.engine.context, handler));
         try sdk.put(self.engine, state, "handlers", c.JS_DupValue(self.engine.context, handlers));
         var functions: [2]c.JSValue = undefined;
         const pending = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &functions));
-        errdefer self.engine.freeValue(pending);
-        defer for (functions) |function| self.engine.freeValue(function);
+        errdefer self.engine.releaseNativeValue(pending);
+        defer for (functions) |function| self.engine.releaseNativeValue(function);
         try sdk.put(self.engine, state, "resolve", c.JS_DupValue(self.engine.context, functions[0]));
         try sdk.put(self.engine, state, "reject", c.JS_DupValue(self.engine.context, functions[1]));
         var data = [_]c.JSValue{ self.owner_token, c.JS_NewInt64(self.engine.context, self.owner_class), state };
-        defer self.engine.freeValue(data[1]);
+        defer self.engine.releaseNativeValue(data[1]);
         try sdk.put(self.engine, state, "next", try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, sdkHookNext, "sdkHookNext", 1, 0, data.len, &data)));
         try sdk.put(self.engine, state, "failed", try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, sdkHookNext, "sdkHookFailed", 1, 1, data.len, &data)));
         try advanceSdkHook(self.engine, state, c.pi_js_undefined(), false);
         return pending;
     }
-    fn sdkHookNext(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    fn sdkHookNext(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+        native_owner.enter() catch |err| return native_owner.finishCallback(publicationFailure(engine, err));
+        return native_owner.finishCallback(sdkHookNextNativeBody(context, ignored_1, argc, argv, magic, data));
+    }
+    fn sdkHookNextNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         // Housekeeping survives owner retirement; user-facing callbacks retain
         // their original guarded context and Pi owner tokens.
         advanceSdkHook(engine, data[2], if (argc > 0) argv[0] else c.pi_js_undefined(), magic != 0) catch |err| {
+            @import("native_pending_owner.zig").catchFailure(engine, err) catch |fatal| return publicationFailure(engine, fatal);
             const exception = publicationFailure(engine, err);
             _ = exception;
+            @import("native_pending_owner.zig").checkFatal(engine) catch return c.pi_js_exception();
             const reason = c.JS_GetException(context);
-            defer engine.freeValue(reason);
+            defer engine.releaseNativeValue(reason);
             const sdk = @import("native_sdk.zig");
             const ignored = sdk.invoke(engine, data[2], "reject", &.{reason}) catch return engine.throwCaptured();
-            engine.freeValue(ignored);
+            engine.releaseNativeValue(ignored);
         };
         return c.pi_js_undefined();
     }
     fn reportSdkHookError(engine: *engine_mod.Engine, state: c.JSValue, reason: c.JSValue) !void {
         const sdk = @import("native_sdk.zig");
         const session = try sdk.get(engine, state, "session");
-        defer engine.freeValue(session);
+        defer engine.releaseNativeValue(session);
         const actual = try sdk.state(engine, session);
         const listener = try sdk.get(engine, actual.data, "extension_onError");
-        defer engine.freeValue(listener);
+        defer engine.releaseNativeValue(listener);
         if (c.JS_ToBool(engine.context, listener) != 1) return;
         const event = try sdk.get(engine, state, "event");
-        defer engine.freeValue(event);
+        defer engine.releaseNativeValue(event);
         const report = try sdk.object(engine);
-        defer engine.freeValue(report);
+        defer engine.releaseNativeValue(report);
         try sdk.put(engine, report, "extensionPath", try sdk.get(engine, state, "extensionPath"));
         try sdk.put(engine, report, "event", try sdk.get(engine, event, "type"));
         const is_error = c.JS_IsError(reason);
         const message = if (is_error) try sdk.get(engine, reason, "message") else text: {
-            const value = try engine.toString(reason);
+            const value = try nativeText(engine, reason);
             defer engine.gpa.free(value);
             break :text try sdk.text(engine, value);
         };
         try sdk.put(engine, report, "error", message);
         try sdk.put(engine, report, "stack", if (is_error) try sdk.get(engine, reason, "stack") else c.pi_js_undefined());
         var args = [_]c.JSValue{report};
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const ignored = try engine.checked(c.JS_Call(engine.context, listener, c.pi_js_undefined(), args.len, &args));
-        engine.freeValue(ignored);
+        engine.releaseNativeValue(ignored);
     }
     fn advanceSdkHook(engine: *engine_mod.Engine, state: c.JSValue, previous: c.JSValue, rejected: bool) !void {
         const sdk = @import("native_sdk.zig");
         if (rejected) try reportSdkHookError(engine, state, previous);
         const input_flag = try sdk.get(engine, state, "inputReducer");
-        defer engine.freeValue(input_flag);
+        defer engine.releaseNativeValue(input_flag);
         const is_input = c.JS_ToBool(engine.context, input_flag) == 1;
         if (is_input and !rejected) @import("native_sdk_input.zig").reduce(engine, state, previous) catch |err| {
+            try @import("native_pending_owner.zig").catchFailure(engine, err);
             if (err != error.JavaScriptException) return err;
             const reason = engine.captured_exception orelse return err;
             try reportSdkHookError(engine, state, reason);
         };
         const result = try sdk.get(engine, state, "result");
-        defer engine.freeValue(result);
+        defer engine.releaseNativeValue(result);
         const accepts_results = try sdk.get(engine, state, "acceptResults");
-        defer engine.freeValue(accepts_results);
+        defer engine.releaseNativeValue(accepts_results);
         if (!rejected and c.JS_ToBool(engine.context, accepts_results) == 1 and c.JS_IsObject(previous) and !c.JS_IsArray(previous)) {
             var names: [*c]c.JSPropertyEnum = null;
             var count: u32 = 0;
+            try @import("native_pending_owner.zig").checkFatal(engine);
             if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, previous, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
             defer c.JS_FreePropertyEnum(engine.context, names, count);
-            for (names[0..count]) |entry| if (c.JS_DefinePropertyValue(engine.context, result, entry.atom, try engine.checked(c.JS_GetProperty(engine.context, previous, entry.atom)), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+            for (names[0..count]) |entry| {
+                try @import("native_pending_owner.zig").checkFatal(engine);
+                if (c.JS_DefinePropertyValue(engine.context, result, entry.atom, try engine.checked(c.JS_GetProperty(engine.context, previous, entry.atom)), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+            }
         }
         const handlers = try sdk.get(engine, state, "handlers");
-        defer engine.freeValue(handlers);
+        defer engine.releaseNativeValue(handlers);
         const index_value = try sdk.get(engine, state, "index");
-        defer engine.freeValue(index_value);
+        defer engine.releaseNativeValue(index_value);
         var index: u32 = 0;
+        try @import("native_pending_owner.zig").checkFatal(engine);
         if (c.JS_ToUint32(engine.context, &index, index_value) < 0) return error.JavaScriptException;
         if (index == try sdk.length(engine, handlers) or (is_input and try @import("native_sdk_input.zig").handled(engine, state))) {
             var owner_data = [_]c.JSValue{ try sdk.get(engine, state, "ownerToken"), try sdk.get(engine, state, "ownerClass") };
-            defer for (owner_data) |root| engine.freeValue(root);
-            const binding = resolveOwnerData(engine, &owner_data, 0) catch null;
+            defer for (owner_data) |root| engine.releaseNativeValue(root);
+            const binding = resolveOwnerData(engine, &owner_data, 0) catch |err| failed: {
+                try @import("native_pending_owner.zig").catchFailure(engine, err);
+                break :failed null;
+            };
             if (binding) |owner| if (owner.invocation_active) try owner.mergeActions(result);
             const input_result = if (is_input) try @import("native_sdk_input.zig").result(engine, state) else c.pi_js_undefined();
-            defer engine.freeValue(input_result);
+            defer engine.releaseNativeValue(input_result);
             const ignored = try sdk.invoke(engine, state, "resolve", &.{if (is_input) input_result else result});
-            engine.freeValue(ignored);
+            engine.releaseNativeValue(ignored);
             return;
         }
         try sdk.put(engine, state, "index", c.JS_NewInt64(engine.context, index + 1));
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const handler = try engine.checked(c.JS_GetPropertyUint32(engine.context, handlers, index));
-        defer engine.freeValue(handler);
+        defer engine.releaseNativeValue(handler);
         var args = [_]c.JSValue{ if (is_input) try @import("native_sdk_input.zig").nextEvent(engine, state) else try sdk.get(engine, state, "event"), try sdk.get(engine, state, "context") };
-        defer for (args) |value| engine.freeValue(value);
+        defer for (args) |value| engine.releaseNativeValue(value);
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const value = engine.checked(c.JS_Call(engine.context, handler, c.pi_js_undefined(), args.len, &args)) catch |err| {
+            try @import("native_pending_owner.zig").catchFailure(engine, err);
             if (err != error.JavaScriptException) return err;
             const reason = engine.captured_exception orelse return err;
             return advanceSdkHook(engine, state, reason, true);
         };
-        defer engine.freeValue(value);
+        defer engine.releaseNativeValue(value);
         const promise = if (c.JS_PromiseState(engine.context, value) == c.JS_PROMISE_NOT_A_PROMISE) try sdk.promise(engine, value) else c.JS_DupValue(engine.context, value);
-        defer engine.freeValue(promise);
+        defer engine.releaseNativeValue(promise);
         var callbacks = [_]c.JSValue{ try sdk.get(engine, state, "next"), try sdk.get(engine, state, "failed") };
-        defer for (callbacks) |callback| engine.freeValue(callback);
+        defer for (callbacks) |callback| engine.releaseNativeValue(callback);
         const promise_then = try sdk.get(engine, state, "promiseThen");
-        defer engine.freeValue(promise_then);
+        defer engine.releaseNativeValue(promise_then);
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const chained = try engine.checked(c.JS_Call(engine.context, promise_then, promise, callbacks.len, &callbacks));
-        engine.freeValue(chained);
+        engine.releaseNativeValue(chained);
     }
 
     pub fn invokeCommand(self: *Bindings, name: []const u8, raw: []const u8) ![]u8 {
         try self.beginActions();
         defer self.finishInvocation();
         const options = self.commands.get(name) orelse return error.UnknownExtensionCommand;
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const handler = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, options, "handler"));
-        defer self.engine.freeValue(handler);
+        defer self.engine.releaseNativeValue(handler);
         if (!c.JS_IsFunction(self.engine.context, handler)) return error.InvalidExtensionCommand;
         const arguments = try self.engine.checked(c.JS_NewStringLen(self.engine.context, raw.ptr, raw.len));
-        defer self.engine.freeValue(arguments);
+        defer self.engine.releaseNativeValue(arguments);
         const context = try self.createContext();
-        defer self.engine.freeValue(context);
+        defer self.engine.releaseNativeValue(context);
         var args = [_]c.JSValue{ arguments, context };
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const promise = try self.engine.checked(c.JS_Call(self.engine.context, handler, options, args.len, &args));
-        defer self.engine.freeValue(promise);
+        defer self.engine.releaseNativeValue(promise);
         const result = try self.engine.awaitValue(promise);
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         if (c.JS_IsObject(result)) {
             try self.mergeActions(result);
-            return self.engine.stringify(result);
+            return nativeStringify(self.engine, result);
         }
         const empty = try self.engine.checked(c.JS_NewObject(self.engine.context));
-        defer self.engine.freeValue(empty);
+        defer self.engine.releaseNativeValue(empty);
         try self.mergeActions(empty);
-        return self.engine.stringify(empty);
+        return nativeStringify(self.engine, empty);
     }
 
     fn projectValue(self: *Bindings, allocator: std.mem.Allocator, value: c.JSValue) !std.json.Value {
-        const encoded = try self.engine.stringify(value);
+        const encoded = try nativeStringify(self.engine, value);
         defer self.engine.gpa.free(encoded);
-        return std.json.parseFromSliceLeaky(std.json.Value, allocator, encoded, .{ .allocate = .alloc_always });
+        return retainHostAllocationFailure(self.engine, std.json.parseFromSliceLeaky(std.json.Value, allocator, encoded, .{ .allocate = .alloc_always }));
     }
 
     fn cleanSchema(value: *std.json.Value) void {
@@ -2234,8 +2413,9 @@ pub const Bindings = struct {
     }
 
     fn functionProperty(self: *Bindings, value: c.JSValue, name: [*:0]const u8) !bool {
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const property = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, value, name));
-        defer self.engine.freeValue(property);
+        defer self.engine.releaseNativeValue(property);
         return c.JS_IsFunction(self.engine.context, property);
     }
 
@@ -2253,17 +2433,17 @@ pub const Bindings = struct {
 
     fn snapshotRegistrations(self: *Bindings, allocator: std.mem.Allocator, table: *const std.StringHashMapUnmanaged(c.JSValue), order: ?[]const []const u8) ![]ManifestRegistration {
         var result: std.ArrayList(ManifestRegistration) = .empty;
-        errdefer for (result.items) |entry| self.engine.freeValue(entry.value);
-        try result.ensureTotalCapacity(allocator, table.count());
+        errdefer for (result.items) |entry| self.engine.releaseNativeValue(entry.value);
+        try retainHostAllocationFailure(self.engine, result.ensureTotalCapacity(allocator, table.count()));
         if (order) |names| {
             for (names) |name| if (table.get(name)) |value| {
-                const owned_name = try allocator.dupe(u8, name);
+                const owned_name = try retainHostAllocationFailure(self.engine, allocator.dupe(u8, name));
                 result.appendAssumeCapacity(.{ .name = owned_name, .value = c.JS_DupValue(self.engine.context, value) });
             };
         } else {
             var iterator = table.iterator();
             while (iterator.next()) |entry| {
-                const owned_name = try allocator.dupe(u8, entry.key_ptr.*);
+                const owned_name = try retainHostAllocationFailure(self.engine, allocator.dupe(u8, entry.key_ptr.*));
                 result.appendAssumeCapacity(.{ .name = owned_name, .value = c.JS_DupValue(self.engine.context, entry.value_ptr.*) });
             }
         }
@@ -2276,15 +2456,15 @@ pub const Bindings = struct {
         const allocator = arena.allocator();
         // No table slots or borrowed names survive calls into user getters.
         const tool_roots = try self.snapshotRegistrations(allocator, &self.tools, self.tool_order.items);
-        defer for (tool_roots) |entry| self.engine.freeValue(entry.value);
+        defer for (tool_roots) |entry| self.engine.releaseNativeValue(entry.value);
         const command_roots = try self.snapshotRegistrations(allocator, &self.commands, self.command_order.items);
-        defer for (command_roots) |entry| self.engine.freeValue(entry.value);
+        defer for (command_roots) |entry| self.engine.releaseNativeValue(entry.value);
         const flag_roots = try self.snapshotRegistrations(allocator, &self.flags, null);
-        defer for (flag_roots) |entry| self.engine.freeValue(entry.value);
+        defer for (flag_roots) |entry| self.engine.releaseNativeValue(entry.value);
         var manifest: std.json.ObjectMap = .empty;
-        try manifest.put(allocator, "name", .{ .string = std.fs.path.stem(extension_path) });
-        try manifest.put(allocator, "version", .{ .string = "legacy-js" });
-        try manifest.put(allocator, "entry", .{ .string = "" });
+        try retainHostAllocationFailure(self.engine, manifest.put(allocator, "name", .{ .string = std.fs.path.stem(extension_path) }));
+        try retainHostAllocationFailure(self.engine, manifest.put(allocator, "version", .{ .string = "legacy-js" }));
+        try retainHostAllocationFailure(self.engine, manifest.put(allocator, "entry", .{ .string = "" }));
         var hook_names: std.ArrayList(std.json.Value) = .empty;
         var names = self.handlers.keyIterator();
         while (names.next()) |name| {
@@ -2294,13 +2474,13 @@ pub const Bindings = struct {
                 duplicate = true;
                 break;
             };
-            if (!duplicate) try hook_names.append(allocator, .{ .string = try allocator.dupe(u8, alias) });
+            if (!duplicate) try retainHostAllocationFailure(self.engine, hook_names.append(allocator, .{ .string = try retainHostAllocationFailure(self.engine, allocator.dupe(u8, alias)) }));
         }
-        try manifest.put(allocator, "hooks", .{ .array = hook_names.toManaged(allocator) });
+        try retainHostAllocationFailure(self.engine, manifest.put(allocator, "hooks", .{ .array = hook_names.toManaged(allocator) }));
         var message_renderers: std.json.Array = .init(allocator);
-        for (self.renderers.messages.items) |renderer_registration| if (renderer_registration.owner_id == self.owner_id) try message_renderers.append(.{ .string = try allocator.dupe(u8, renderer_registration.name) });
+        for (self.renderers.messages.items) |renderer_registration| if (renderer_registration.owner_id == self.owner_id) try retainHostAllocationFailure(self.engine, message_renderers.append(.{ .string = try retainHostAllocationFailure(self.engine, allocator.dupe(u8, renderer_registration.name)) }));
         var entry_renderers: std.json.Array = .init(allocator);
-        for (self.renderers.entries.items) |renderer_registration| if (renderer_registration.owner_id == self.owner_id) try entry_renderers.append(.{ .string = try allocator.dupe(u8, renderer_registration.name) });
+        for (self.renderers.entries.items) |renderer_registration| if (renderer_registration.owner_id == self.owner_id) try retainHostAllocationFailure(self.engine, entry_renderers.append(.{ .string = try retainHostAllocationFailure(self.engine, allocator.dupe(u8, renderer_registration.name)) }));
         var tools: std.ArrayList(std.json.Value) = .empty;
         for (tool_roots) |registration_root| {
             const tool_name = registration_root.name;
@@ -2308,26 +2488,26 @@ pub const Bindings = struct {
             const raw = try self.projectValue(allocator, definition);
             if (raw != .object) return error.InvalidExtensionTool;
             var tool: std.json.ObjectMap = .empty;
-            try tool.put(allocator, "name", .{ .string = tool_name });
-            try tool.put(allocator, "description", raw.object.get("description") orelse raw.object.get("label") orelse std.json.Value{ .string = "" });
+            try retainHostAllocationFailure(self.engine, tool.put(allocator, "name", .{ .string = tool_name }));
+            try retainHostAllocationFailure(self.engine, tool.put(allocator, "description", raw.object.get("description") orelse raw.object.get("label") orelse std.json.Value{ .string = "" }));
             var schema = raw.object.get("parameters") orelse raw.object.get("inputSchema") orelse std.json.Value{ .object = .empty };
             cleanSchema(&schema);
-            try tool.put(allocator, "parameters", schema);
+            try retainHostAllocationFailure(self.engine, tool.put(allocator, "parameters", schema));
             const default_active = raw.object.get("defaultActive") orelse std.json.Value{ .bool = true };
-            try tool.put(allocator, "defaultActive", .{ .bool = default_active != .bool or default_active.bool });
+            try retainHostAllocationFailure(self.engine, tool.put(allocator, "defaultActive", .{ .bool = default_active != .bool or default_active.bool }));
             const exposure = raw.object.get("exposure") orelse std.json.Value{ .string = "direct" };
-            try tool.put(allocator, "exposure", if (exposure == .string) exposure else std.json.Value{ .string = "direct" });
+            try retainHostAllocationFailure(self.engine, tool.put(allocator, "exposure", if (exposure == .string) exposure else std.json.Value{ .string = "direct" }));
             const mode = raw.object.get("executionMode") orelse std.json.Value{ .string = "parallel" };
-            try tool.put(allocator, "executionMode", if (mode == .string and std.mem.eql(u8, mode.string, "sequential")) mode else std.json.Value{ .string = "parallel" });
-            try tool.put(allocator, "hasRenderCall", .{ .bool = try self.functionProperty(definition, "renderCall") });
-            for ([_][]const u8{ "namespace", "promptGuidelines", "outputSchema" }) |field| if (raw.object.get(field)) |value| try tool.put(allocator, field, value);
-            try tool.put(allocator, "hasRenderResult", .{ .bool = try self.functionProperty(definition, "renderResult") });
-            try tool.put(allocator, "hasPrepareArguments", .{ .bool = try self.functionProperty(definition, "prepareArguments") });
+            try retainHostAllocationFailure(self.engine, tool.put(allocator, "executionMode", if (mode == .string and std.mem.eql(u8, mode.string, "sequential")) mode else std.json.Value{ .string = "parallel" }));
+            try retainHostAllocationFailure(self.engine, tool.put(allocator, "hasRenderCall", .{ .bool = try self.functionProperty(definition, "renderCall") }));
+            for ([_][]const u8{ "namespace", "promptGuidelines", "outputSchema" }) |field| if (raw.object.get(field)) |value| try retainHostAllocationFailure(self.engine, tool.put(allocator, field, value));
+            try retainHostAllocationFailure(self.engine, tool.put(allocator, "hasRenderResult", .{ .bool = try self.functionProperty(definition, "renderResult") }));
+            try retainHostAllocationFailure(self.engine, tool.put(allocator, "hasPrepareArguments", .{ .bool = try self.functionProperty(definition, "prepareArguments") }));
             const shell = raw.object.get("renderShell") orelse std.json.Value{ .string = "default" };
-            try tool.put(allocator, "renderShell", if (shell == .string and std.mem.eql(u8, shell.string, "self")) shell else std.json.Value{ .string = "default" });
-            try tools.append(allocator, .{ .object = tool });
+            try retainHostAllocationFailure(self.engine, tool.put(allocator, "renderShell", if (shell == .string and std.mem.eql(u8, shell.string, "self")) shell else std.json.Value{ .string = "default" }));
+            try retainHostAllocationFailure(self.engine, tools.append(allocator, .{ .object = tool }));
         }
-        try manifest.put(allocator, "tools", .{ .array = tools.toManaged(allocator) });
+        try retainHostAllocationFailure(self.engine, manifest.put(allocator, "tools", .{ .array = tools.toManaged(allocator) }));
         var commands: std.ArrayList(std.json.Value) = .empty;
         for (command_roots) |registration_root| {
             const command_name = registration_root.name;
@@ -2335,29 +2515,29 @@ pub const Bindings = struct {
             const raw = try self.projectValue(allocator, definition);
             if (raw != .object) return error.InvalidExtensionCommand;
             var command: std.json.ObjectMap = .empty;
-            try command.put(allocator, "name", .{ .string = command_name });
-            try command.put(allocator, "description", raw.object.get("description") orelse std.json.Value{ .string = "" });
-            if (raw.object.get("argumentHint")) |hint| try command.put(allocator, "argumentHint", hint);
-            try commands.append(allocator, .{ .object = command });
+            try retainHostAllocationFailure(self.engine, command.put(allocator, "name", .{ .string = command_name }));
+            try retainHostAllocationFailure(self.engine, command.put(allocator, "description", raw.object.get("description") orelse std.json.Value{ .string = "" }));
+            if (raw.object.get("argumentHint")) |hint| try retainHostAllocationFailure(self.engine, command.put(allocator, "argumentHint", hint));
+            try retainHostAllocationFailure(self.engine, commands.append(allocator, .{ .object = command }));
         }
-        try manifest.put(allocator, "commands", .{ .array = commands.toManaged(allocator) });
+        try retainHostAllocationFailure(self.engine, manifest.put(allocator, "commands", .{ .array = commands.toManaged(allocator) }));
         var flags: std.ArrayList(std.json.Value) = .empty;
         for (flag_roots) |entry| {
             var projected = try self.projectValue(allocator, entry.value);
             if (projected != .object) return error.InvalidExtensionFlag;
-            try projected.object.put(allocator, "name", .{ .string = entry.name });
-            if (!projected.object.contains("description")) try projected.object.put(allocator, "description", .{ .string = "" });
-            try flags.append(allocator, projected);
+            try retainHostAllocationFailure(self.engine, projected.object.put(allocator, "name", .{ .string = entry.name }));
+            if (!projected.object.contains("description")) try retainHostAllocationFailure(self.engine, projected.object.put(allocator, "description", .{ .string = "" }));
+            try retainHostAllocationFailure(self.engine, flags.append(allocator, projected));
         }
-        try manifest.put(allocator, "flags", .{ .array = flags.toManaged(allocator) });
+        try retainHostAllocationFailure(self.engine, manifest.put(allocator, "flags", .{ .array = flags.toManaged(allocator) }));
         const registered_providers = try self.providers.manifest();
-        defer self.engine.freeValue(registered_providers);
-        try manifest.put(allocator, "providers", try self.projectValue(allocator, registered_providers));
-        try manifest.put(allocator, "messageRenderers", .{ .array = message_renderers });
-        try manifest.put(allocator, "entryRenderers", .{ .array = entry_renderers });
-        try manifest.put(allocator, "hasMarkdownTransformer", .{ .bool = self.renderers.hasOwner(.markdown, self.owner_id) });
-        try manifest.put(allocator, "hasToolRenderers", .{ .bool = self.renderers.hasOwner(.resolver, self.owner_id) });
-        return std.json.Stringify.valueAlloc(self.gpa, std.json.Value{ .object = manifest }, .{});
+        defer self.engine.releaseNativeValue(registered_providers);
+        try retainHostAllocationFailure(self.engine, manifest.put(allocator, "providers", try self.projectValue(allocator, registered_providers)));
+        try retainHostAllocationFailure(self.engine, manifest.put(allocator, "messageRenderers", .{ .array = message_renderers }));
+        try retainHostAllocationFailure(self.engine, manifest.put(allocator, "entryRenderers", .{ .array = entry_renderers }));
+        try retainHostAllocationFailure(self.engine, manifest.put(allocator, "hasMarkdownTransformer", .{ .bool = self.renderers.hasOwner(.markdown, self.owner_id) }));
+        try retainHostAllocationFailure(self.engine, manifest.put(allocator, "hasToolRenderers", .{ .bool = self.renderers.hasOwner(.resolver, self.owner_id) }));
+        return retainHostAllocationFailure(self.engine, std.json.Stringify.valueAlloc(self.gpa, std.json.Value{ .object = manifest }, .{}));
     }
 
     pub fn invokeProviderMethod(self: *Bindings, id: []const u8, args_json: []const u8) ![]u8 {
@@ -2368,137 +2548,159 @@ pub const Bindings = struct {
         try self.beginActions();
         defer self.finishInvocation();
         const payload = try self.parseJson(payload_json, "native-renderer-payload");
-        defer self.engine.freeValue(payload);
+        defer self.engine.releaseNativeValue(payload);
         if (!c.JS_IsObject(payload) or c.JS_IsArray(payload)) return error.InvalidNativeRendererPayload;
         const registered = if (self.tool_lookup) |lookup| lookup(self.tool_context, name) else self.tools.get(name);
         const tool = if (registered) |value| c.JS_DupValue(self.engine.context, value) else c.pi_js_undefined();
-        defer self.engine.freeValue(tool);
+        defer self.engine.releaseNativeValue(tool);
         const result = try self.renderers.runOwned(self.owner_id, kind, name, payload, self.context_snapshot, tool);
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         try self.mergeActions(result);
-        return self.engine.stringify(result);
+        return nativeStringify(self.engine, result);
     }
 
     pub fn replayRenderer(self: *Bindings, replay: native_renderers.Replay) ![]u8 {
         try self.beginActions();
         defer self.finishInvocation();
         const result = try self.renderers.runOwned(self.owner_id, replay.kind, replay.name, replay.payload, replay.snapshot, replay.tool);
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         try self.mergeActions(result);
-        return self.engine.stringify(result);
+        return nativeStringify(self.engine, result);
     }
 
     fn providerUiAction(context: ?*anyopaque, method: [*:0]const u8, payload: c.JSValue) !void {
         const self: *Bindings = @ptrCast(@alignCast(context.?));
         if (!self.invocation_active) return error.StaleNativeProviderInvocation;
         const action = try self.engine.checked(c.JS_NewObject(self.engine.context));
-        errdefer self.engine.freeValue(action);
+        errdefer self.engine.releaseNativeValue(action);
         try self.actionProperty(action, "type", try self.engine.checked(c.JS_NewString(self.engine.context, "ui_action")));
         try self.actionProperty(action, "method", try self.engine.checked(c.JS_NewString(self.engine.context, method)));
         try self.actionProperty(action, "args", c.JS_DupValue(self.engine.context, payload));
         try self.actionOrigin(action);
-        try self.actions.append(self.gpa, action);
+        try retainHostAllocationFailure(self.engine, self.actions.append(self.gpa, action));
     }
 
     pub fn invokeProviderOAuth(self: *Bindings, id: []const u8, provider: ?[]const u8, generation: u64) ![]u8 {
         const identity = self.providers.callbacks.get(id) orelse return error.UnknownNativeProviderCallback;
-        const actual_provider = try self.gpa.dupe(u8, provider orelse identity.provider);
+        const actual_provider = try retainHostAllocationFailure(self.engine, self.gpa.dupe(u8, provider orelse identity.provider));
         defer self.gpa.free(actual_provider);
         const actual_generation = if (generation == 0) identity.generation else generation;
         try self.beginActions();
         defer self.finishInvocation();
         try self.providers.validate(id, actual_provider, actual_generation);
         const callbacks = try self.ui_manager.createOAuthCallbacks();
-        defer self.engine.freeValue(callbacks);
+        defer self.engine.releaseNativeValue(callbacks);
         const args = try self.engine.checked(c.JS_NewArray(self.engine.context));
-        defer self.engine.freeValue(args);
+        defer self.engine.releaseNativeValue(args);
         if (c.JS_SetPropertyUint32(self.engine.context, args, 0, c.JS_DupValue(self.engine.context, callbacks)) < 0) return error.JavaScriptException;
         const value = try self.providers.invoke(id, args);
-        defer self.engine.freeValue(value);
+        defer self.engine.releaseNativeValue(value);
         try self.providers.validate(id, actual_provider, actual_generation);
         const result = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         try self.actionProperty(result, "value", c.JS_DupValue(self.engine.context, value));
         try self.mergeActions(result);
-        return self.engine.stringify(result);
+        return nativeStringify(self.engine, result);
     }
 
     fn cloneJson(self: *Bindings, value: c.JSValue) !c.JSValue {
         if (c.JS_IsUndefined(value)) return c.pi_js_undefined();
-        const json = try self.engine.stringify(value);
+        const json = try nativeStringify(self.engine, value);
         defer self.gpa.free(json);
         return self.parseJson(json, "native-provider-publication-snapshot");
     }
 
     fn providerArray(self: *Bindings, value: c.JSValue) !bool {
         var args = [_]c.JSValue{value};
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const result = try self.engine.checked(c.JS_Call(self.engine.context, self.ui_manager.components.array_is_array, c.pi_js_undefined(), 1, &args));
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         return c.JS_ToBool(self.engine.context, result) != 0;
     }
 
     fn publicationCheck(self: *Bindings, data: [*c]c.JSValue) !void {
         var invocation: i64 = 0;
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         if (c.JS_ToInt64(self.engine.context, &invocation, data[0]) < 0) return error.JavaScriptException;
         if (!self.invocation_active or invocation != self.invocation_generation) return error.StaleNativeProviderInvocation;
         const signal = self.invocation_signal orelse return error.NativeProviderSignalMissing;
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const aborted = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, signal, "aborted"));
-        defer self.engine.freeValue(aborted);
+        defer self.engine.releaseNativeValue(aborted);
         if (c.JS_ToBool(self.engine.context, aborted) != 0) {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const reason = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, signal, "reason"));
-            _ = try self.engine.checked(c.JS_Throw(self.engine.context, reason));
+            _ = try self.engine.checked(c.JS_PiThrowExceptionData(self.engine.context, reason));
             return error.JavaScriptException;
         }
-        const callback = try self.engine.toString(data[1]);
+        const callback = try nativeText(self.engine, data[1]);
         defer self.gpa.free(callback);
-        const provider = try self.engine.toString(data[2]);
+        const provider = try nativeText(self.engine, data[2]);
         defer self.gpa.free(provider);
         var generation: i64 = 0;
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         if (c.JS_ToInt64(self.engine.context, &generation, data[3]) < 0) return error.JavaScriptException;
         try self.providers.validate(callback, provider, @intCast(generation));
     }
 
     fn publicationFailure(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
+        if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
         if (err == error.JavaScriptException) return engine.throwCaptured();
         if (err == error.StaleNativeExtensionOwner) {
             @import("native_async_scope.zig").throwMessage(engine, context_lifetime.default_message) catch |failure| {
                 if (failure == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
+                if (failure == error.ExecutionTerminated) return engine.throwExecutionTerminated();
                 return engine.throwCaptured();
             };
             unreachable;
         }
-        if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
         return c.JS_ThrowTypeError(engine.context, "Native provider publication: %s", @as([*:0]const u8, @errorName(err)));
     }
 
     fn publicationRejected(self: *Bindings, err: anyerror) !c.JSValue {
+        var owner = @import("native_pending_owner.zig").Frame.init(self.engine);
+        self.engine.enterNativeInvocation(&owner.invocation);
+        return owner.finishValue(publicationRejectedNativeBody(self, err));
+    }
+    fn publicationRejectedNativeBody(self: *Bindings, err: anyerror) !c.JSValue {
+        try @import("native_pending_owner.zig").catchFailure(self.engine, err);
+        _ = publicationFailure(self.engine, err);
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
+        const reason = c.JS_GetException(self.engine.context);
+        defer self.engine.releaseNativeValue(reason);
         var capabilities: [2]c.JSValue = undefined;
         const promise = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &capabilities));
-        errdefer self.engine.freeValue(promise);
-        defer for (capabilities) |value| self.engine.freeValue(value);
-        _ = publicationFailure(self.engine, err);
-        const reason = c.JS_GetException(self.engine.context);
-        defer self.engine.freeValue(reason);
+        errdefer self.engine.releaseNativeValue(promise);
+        defer for (capabilities) |value| self.engine.releaseNativeValue(value);
         var args = [_]c.JSValue{reason};
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const result = try self.engine.checked(c.JS_Call(self.engine.context, capabilities[1], c.pi_js_undefined(), 1, &args));
-        self.engine.freeValue(result);
+        self.engine.releaseNativeValue(result);
         return promise;
     }
 
     fn publicationThen(self: *Bindings, value: c.JSValue, callback: c.JSCFunctionData, data: []c.JSValue) !c.JSValue {
+        var owner = @import("native_pending_owner.zig").Frame.init(self.engine);
+        owner.enter() catch |entry_error| return owner.finishValue(entry_error);
+        return owner.finishValue(publicationThenNativeBody(self, value, callback, data));
+    }
+    fn publicationThenNativeBody(self: *Bindings, value: c.JSValue, callback: c.JSCFunctionData, data: []c.JSValue) !c.JSValue {
         var resolve_args = [_]c.JSValue{value};
         const intrinsics = &self.ui_manager.components;
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const promise = try self.engine.checked(c.JS_Call(self.engine.context, intrinsics.promise_resolve, intrinsics.promise_type, 1, &resolve_args));
-        defer self.engine.freeValue(promise);
+        defer self.engine.releaseNativeValue(promise);
         const reaction = try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, callback, "native provider publication reaction", 1, 0, @intCast(data.len), data.ptr));
-        defer self.engine.freeValue(reaction);
+        defer self.engine.releaseNativeValue(reaction);
         var args = [_]c.JSValue{reaction};
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         return self.engine.checked(c.JS_Call(self.engine.context, intrinsics.promise_then, promise, 1, &args));
     }
 
     fn publicationRequest(self: *Bindings, data: [*c]c.JSValue, catalog: bool) !c.JSValue {
         const object = try self.engine.checked(c.JS_NewObject(self.engine.context));
-        errdefer self.engine.freeValue(object);
+        errdefer self.engine.releaseNativeValue(object);
         if (self.publication_sequence == 9_007_199_254_740_991) return error.NativeProviderPublicationSequenceLimit;
         self.publication_sequence += 1;
         try self.actionProperty(object, "provider", c.JS_DupValue(self.engine.context, data[2]));
@@ -2508,7 +2710,13 @@ pub const Bindings = struct {
         return object;
     }
 
-    fn publishCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    fn publishCallback(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, ignored_4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+        native_owner.enter() catch |err| return native_owner.finishCallback(publicationFailure(engine, err));
+        return native_owner.finishCallback(publishCallbackNativeBody(context, ignored_1, argc, argv, ignored_4, data));
+    }
+    fn publishCallbackNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         const self = fromOwnerData(engine, data, 5) catch |err| return publicationFailure(engine, err);
         return self.publish(if (argc == 0) c.pi_js_undefined() else argv[0], data) catch |err| return self.publicationRejected(err) catch |failure| publicationFailure(engine, failure);
@@ -2517,22 +2725,24 @@ pub const Bindings = struct {
     fn publish(self: *Bindings, raw: c.JSValue, data: [*c]c.JSValue) !c.JSValue {
         try self.publicationCheck(data);
         const publication = if (c.JS_IsUndefined(raw)) try self.engine.checked(c.JS_NewObject(self.engine.context)) else c.JS_DupValue(self.engine.context, raw);
-        defer self.engine.freeValue(publication);
+        defer self.engine.releaseNativeValue(publication);
         if (!c.JS_IsObject(publication) or try self.providerArray(publication)) return error.InvalidNativeProviderPublication;
         const request = try self.publicationRequest(data, false);
-        defer self.engine.freeValue(request);
+        defer self.engine.releaseNativeValue(request);
         const atom = c.JS_NewAtom(self.engine.context, "persist");
         if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
         defer c.JS_FreeAtom(self.engine.context, atom);
         var descriptor: c.JSPropertyDescriptor = undefined;
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const own = c.JS_GetOwnProperty(self.engine.context, &descriptor, publication, atom);
         if (own < 0) return error.JavaScriptException;
         if (own != 0) {
-            self.engine.freeValue(descriptor.value);
-            self.engine.freeValue(descriptor.getter);
-            self.engine.freeValue(descriptor.setter);
+            self.engine.releaseNativeValue(descriptor.value);
+            self.engine.releaseNativeValue(descriptor.getter);
+            self.engine.releaseNativeValue(descriptor.setter);
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const persist = try self.engine.checked(c.JS_GetProperty(self.engine.context, publication, atom));
-            defer self.engine.freeValue(persist);
+            defer self.engine.releaseNativeValue(persist);
             if (!c.JS_IsUndefined(persist)) {
                 if (!c.JS_IsNull(persist) and (!c.JS_IsObject(persist) or try self.providerArray(persist))) return error.InvalidNativeProviderPublicationPersist;
                 try self.actionProperty(request, "hasPersist", c.pi_js_bool(self.engine.context, 1));
@@ -2541,12 +2751,18 @@ pub const Bindings = struct {
         }
         try self.publicationCheck(data);
         const response = try self.ui_manager.requestProvider("provider_models_publish", request);
-        defer self.engine.freeValue(response);
+        defer self.engine.releaseNativeValue(response);
         var reaction_data = [_]c.JSValue{ data[0], data[1], data[2], data[3], data[4], publication, data[5], data[6] };
         return self.publicationThen(response, publicationAccepted, &reaction_data);
     }
 
-    fn publicationAccepted(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    fn publicationAccepted(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, ignored_4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+        native_owner.enter() catch |err| return native_owner.finishCallback(publicationFailure(engine, err));
+        return native_owner.finishCallback(publicationAcceptedNativeBody(context, ignored_1, argc, argv, ignored_4, data));
+    }
+    fn publicationAcceptedNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         const self = fromOwnerData(engine, data, 6) catch |err| return publicationFailure(engine, err);
         return self.afterPublication(if (argc == 0) c.pi_js_undefined() else argv[0], data) catch |err| publicationFailure(engine, err);
@@ -2555,29 +2771,38 @@ pub const Bindings = struct {
     fn afterPublication(self: *Bindings, accepted: c.JSValue, data: [*c]c.JSValue) !c.JSValue {
         try self.publicationCheck(data);
         if (!c.JS_IsBool(accepted) or c.JS_ToBool(self.engine.context, accepted) == 0) return c.pi_js_bool(self.engine.context, 0);
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const update = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, data[5], "update"));
-        defer self.engine.freeValue(update);
+        defer self.engine.releaseNativeValue(update);
         if (c.JS_IsUndefined(update)) return c.pi_js_bool(self.engine.context, 1);
         if (!c.JS_IsFunction(self.engine.context, update)) return error.NativeProviderPublicationUpdateMustBeFunction;
         try self.publicationCheck(data);
         // Preserve publication.update()'s receiver and its original closure.
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const result = try self.engine.checked(c.JS_Call(self.engine.context, update, data[5], 0, null));
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         if (c.JS_IsObject(result)) {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const then = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, result, "then"));
-            defer self.engine.freeValue(then);
+            defer self.engine.releaseNativeValue(then);
             if (c.JS_IsFunction(self.engine.context, then)) return error.NativeProviderPublicationUpdateMustBeSynchronous;
         }
         try self.publicationCheck(data);
-        const provider = try self.engine.toString(data[2]);
+        const provider = try nativeText(self.engine, data[2]);
         defer self.gpa.free(provider);
         const models = try self.providers.currentModelsUnsettled(provider, false);
-        defer self.engine.freeValue(models);
+        defer self.engine.releaseNativeValue(models);
         var next_data = [_]c.JSValue{ data[0], data[1], data[2], data[3], data[4], data[6], data[7] };
         return self.publicationThen(models, publicationCatalogReady, &next_data);
     }
 
-    fn publicationCatalogReady(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    fn publicationCatalogReady(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, ignored_4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+        native_owner.enter() catch |err| return native_owner.finishCallback(publicationFailure(engine, err));
+        return native_owner.finishCallback(publicationCatalogReadyNativeBody(context, ignored_1, argc, argv, ignored_4, data));
+    }
+    fn publicationCatalogReadyNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         const self = fromOwnerData(engine, data, 5) catch |err| return publicationFailure(engine, err);
         return self.catalogPublication(if (argc == 0) c.pi_js_undefined() else argv[0], data) catch |err| publicationFailure(engine, err);
@@ -2588,14 +2813,20 @@ pub const Bindings = struct {
         if (c.JS_IsUndefined(models)) return c.pi_js_bool(self.engine.context, 1);
         if (!try self.providerArray(models)) return error.NativeProviderModelsMustBeArray;
         const request = try self.publicationRequest(data, true);
-        defer self.engine.freeValue(request);
+        defer self.engine.releaseNativeValue(request);
         try self.actionProperty(request, "models", try self.cloneJson(models));
         const response = try self.ui_manager.requestProvider("provider_models_catalog", request);
-        defer self.engine.freeValue(response);
+        defer self.engine.releaseNativeValue(response);
         return self.publicationThen(response, publicationCatalogAccepted, data[0..7]);
     }
 
-    fn publicationCatalogAccepted(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    fn publicationCatalogAccepted(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, ignored_4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+        native_owner.enter() catch |err| return native_owner.finishCallback(publicationFailure(engine, err));
+        return native_owner.finishCallback(publicationCatalogAcceptedNativeBody(context, ignored_1, argc, argv, ignored_4, data));
+    }
+    fn publicationCatalogAcceptedNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         const self = fromOwnerData(engine, data, 5) catch |err| return publicationFailure(engine, err);
         self.publicationCheck(data) catch |err| return publicationFailure(engine, err);
@@ -2609,27 +2840,31 @@ pub const Bindings = struct {
         defer self.finishInvocation();
         try self.providers.validate(id, provider, generation);
         const raw = try self.parseJson(context_json, "native-provider-refresh-context");
-        defer self.engine.freeValue(raw);
+        defer self.engine.releaseNativeValue(raw);
         if (!c.JS_IsObject(raw) or try self.providerArray(raw)) return error.InvalidNativeProviderRefreshContext;
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const refresh_generation = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, raw, "generation"));
-        defer self.engine.freeValue(refresh_generation);
+        defer self.engine.releaseNativeValue(refresh_generation);
         var number: f64 = 0;
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         if (c.JS_ToFloat64(self.engine.context, &number, refresh_generation) < 0) return error.JavaScriptException;
         if (!std.math.isFinite(number) or number <= 0 or number > 9_007_199_254_740_991 or @floor(number) != number) return error.InvalidNativeProviderRefreshGeneration;
         const context = try self.engine.checked(c.JS_NewObject(self.engine.context));
-        defer self.engine.freeValue(context);
+        defer self.engine.releaseNativeValue(context);
         inline for (.{ "credential", "stored" }) |name| {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, raw, name));
-            defer self.engine.freeValue(value);
+            defer self.engine.releaseNativeValue(value);
             const snapshot = try self.cloneJson(value);
             var transferred = false;
-            defer if (!transferred) self.engine.freeValue(snapshot);
+            defer if (!transferred) self.engine.releaseNativeValue(snapshot);
             try native_stream.freezeJson(self.engine, snapshot, 0);
             transferred = true;
             try self.actionProperty(context, name, snapshot);
         }
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const allow = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, raw, "allowNetwork"));
-        defer self.engine.freeValue(allow);
+        defer self.engine.releaseNativeValue(allow);
         const allow_network = c.JS_IsBool(allow) and c.JS_ToBool(self.engine.context, allow) != 0;
         try self.actionProperty(context, "allowNetwork", c.pi_js_bool(self.engine.context, @intFromBool(allow_network)));
         if (allow_network) {
@@ -2637,20 +2872,22 @@ pub const Bindings = struct {
             if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
             defer c.JS_FreeAtom(self.engine.context, atom);
             var descriptor: c.JSPropertyDescriptor = undefined;
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const own = c.JS_GetOwnProperty(self.engine.context, &descriptor, raw, atom);
             if (own < 0) return error.JavaScriptException;
             if (own != 0) {
-                self.engine.freeValue(descriptor.value);
-                self.engine.freeValue(descriptor.getter);
-                self.engine.freeValue(descriptor.setter);
+                self.engine.releaseNativeValue(descriptor.value);
+                self.engine.releaseNativeValue(descriptor.getter);
+                self.engine.releaseNativeValue(descriptor.setter);
+                try @import("native_pending_owner.zig").checkFatal(self.engine);
                 const force = try self.engine.checked(c.JS_GetProperty(self.engine.context, raw, atom));
-                defer self.engine.freeValue(force);
+                defer self.engine.releaseNativeValue(force);
                 try self.actionProperty(context, "force", c.pi_js_bool(self.engine.context, @intFromBool(c.JS_IsBool(force) and c.JS_ToBool(self.engine.context, force) != 0)));
             }
         }
         var data: [7]c.JSValue = undefined;
         var initialized: usize = 0;
-        defer for (data[0..initialized]) |value| self.engine.freeValue(value);
+        defer for (data[0..initialized]) |value| self.engine.releaseNativeValue(value);
         data[0] = c.JS_NewInt64(self.engine.context, self.invocation_generation);
         initialized = 1;
         data[1] = try self.engine.checked(c.JS_NewStringLen(self.engine.context, id.ptr, id.len));
@@ -2667,48 +2904,50 @@ pub const Bindings = struct {
         try self.actionProperty(context, "signal", c.JS_DupValue(self.engine.context, self.invocation_signal orelse return error.NativeProviderSignalMissing));
         try native_stream.freezeJson(self.engine, context, 0);
         const args = try self.engine.checked(c.JS_NewArray(self.engine.context));
-        defer self.engine.freeValue(args);
+        defer self.engine.releaseNativeValue(args);
         if (c.JS_SetPropertyUint32(self.engine.context, args, 0, c.JS_DupValue(self.engine.context, context)) < 0) return error.JavaScriptException;
         const returned = try self.providers.invoke(id, args);
-        defer self.engine.freeValue(returned);
+        defer self.engine.releaseNativeValue(returned);
         const models = if (c.JS_IsUndefined(returned)) blk: {
             const pending = try self.providers.currentModelsUnsettled(provider, true);
-            defer self.engine.freeValue(pending);
+            defer self.engine.releaseNativeValue(pending);
             break :blk try self.engine.awaitValue(pending);
         } else c.JS_DupValue(self.engine.context, returned);
-        defer self.engine.freeValue(models);
+        defer self.engine.releaseNativeValue(models);
         try self.publicationCheck(&data);
         if (!try self.providerArray(models)) return error.NativeProviderRefreshMustReturnArray;
         const result = try self.engine.checked(c.JS_NewObject(self.engine.context));
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         try self.actionProperty(result, "models", try self.cloneJson(models));
         try self.mergeActions(result);
-        return self.engine.stringify(result);
+        return nativeStringify(self.engine, result);
     }
 
     pub fn invokeProviderMethodWithSignal(self: *Bindings, id: []const u8, args_json: []const u8, append_signal: bool, aborted: bool) ![]u8 {
         try self.beginActions();
         defer self.finishInvocation();
         const args = try self.parseJson(args_json, "native-provider-arguments");
-        defer self.engine.freeValue(args);
+        defer self.engine.releaseNativeValue(args);
         if (append_signal) {
             if (!c.JS_IsArray(args)) return error.InvalidNativeProviderArguments;
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const length = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, args, "length"));
-            defer self.engine.freeValue(length);
+            defer self.engine.releaseNativeValue(length);
             var count: u32 = 0;
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             if (c.JS_ToUint32(self.engine.context, &count, length) < 0) return error.JavaScriptException;
             const signal = if (self.invocation_signal) |current| c.JS_DupValue(self.engine.context, current) else try abort_signal.create(self.engine);
-            defer self.engine.freeValue(signal);
+            defer self.engine.releaseNativeValue(signal);
             if (aborted) try abort_signal.abort(self.engine, signal, c.pi_js_undefined());
             if (c.JS_SetPropertyUint32(self.engine.context, args, count, c.JS_DupValue(self.engine.context, signal)) < 0) return error.JavaScriptException;
         } else if (aborted) return error.NativeProviderRequestAborted;
         const value = try self.providers.invoke(id, args);
-        defer self.engine.freeValue(value);
+        defer self.engine.releaseNativeValue(value);
         const result = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         try self.actionProperty(result, "value", c.JS_DupValue(self.engine.context, value));
         try self.mergeActions(result);
-        return self.engine.stringify(result);
+        return nativeStringify(self.engine, result);
     }
     /// Main's typed provider broker admits the exact descriptor generation and
     /// builds its signal/model roots here, never from a context JSON snapshot.
@@ -2716,80 +2955,82 @@ pub const Bindings = struct {
         try self.beginActions();
         defer self.finishInvocation();
         const model = try self.parseJson(model_json, "native-typed-provider-model");
-        defer self.engine.freeValue(model);
+        defer self.engine.releaseNativeValue(model);
         const context = try self.parseJson(context_json, "native-typed-provider-context");
-        defer self.engine.freeValue(context);
+        defer self.engine.releaseNativeValue(context);
         const options = try self.parseJson(options_json, "native-typed-provider-options");
-        defer self.engine.freeValue(options);
+        defer self.engine.releaseNativeValue(options);
         const signal = if (self.invocation_signal) |value| c.JS_DupValue(self.engine.context, value) else try abort_signal.create(self.engine);
-        defer self.engine.freeValue(signal);
+        defer self.engine.releaseNativeValue(signal);
         if (aborted) try abort_signal.abort(self.engine, signal, c.pi_js_undefined());
         const value = try @import("native_provider_operations.zig").invokeResult(self.engine, &self.providers, id, provider, generation, operation, model, context, options, signal, auth_rewrites_model);
-        defer self.engine.freeValue(value);
+        defer self.engine.releaseNativeValue(value);
         const result = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         try self.actionProperty(result, "value", c.JS_DupValue(self.engine.context, value));
         try self.mergeActions(result);
-        return self.engine.stringify(result);
+        return nativeStringify(self.engine, result);
     }
 
     pub fn invokeProviderAuthOperation(self: *Bindings, id: []const u8, provider: []const u8, generation: u64, operation: @import("native_provider_operations.zig").AuthOperation, credential_json: []const u8, options_json: []const u8, aborted: bool) ![]u8 {
         try self.beginActions();
         defer self.finishInvocation();
         const credential = try self.parseJson(credential_json, "native-provider-auth-credential");
-        defer self.engine.freeValue(credential);
+        defer self.engine.releaseNativeValue(credential);
         const options = try self.parseJson(options_json, "native-provider-auth-options");
-        defer self.engine.freeValue(options);
+        defer self.engine.releaseNativeValue(options);
         const signal = if (self.invocation_signal) |value| c.JS_DupValue(self.engine.context, value) else try abort_signal.create(self.engine);
-        defer self.engine.freeValue(signal);
+        defer self.engine.releaseNativeValue(signal);
         if (aborted) try abort_signal.abort(self.engine, signal, c.pi_js_undefined());
         const value = try @import("native_provider_operations.zig").invokeAuth(self.engine, &self.providers, id, provider, generation, operation, credential, options, signal);
-        defer self.engine.freeValue(value);
+        defer self.engine.releaseNativeValue(value);
         const result = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         try self.actionProperty(result, "value", c.JS_DupValue(self.engine.context, value));
         try self.mergeActions(result);
-        return self.engine.stringify(result);
+        return nativeStringify(self.engine, result);
     }
     pub fn invokeTool(self: *Bindings, name: []const u8, call_id: []const u8, args_json: []const u8) ![]u8 {
         try self.beginActions();
         defer self.finishInvocation();
         const tool = self.tools.get(name) orelse return error.UnknownExtensionTool;
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const execute = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, tool, "execute"));
-        defer self.engine.freeValue(execute);
+        defer self.engine.releaseNativeValue(execute);
         if (!c.JS_IsFunction(self.engine.context, execute)) return error.InvalidExtensionTool;
-        const raw = try self.gpa.dupeZ(u8, args_json);
+        const raw = try retainHostAllocationFailure(self.engine, self.gpa.dupeZ(u8, args_json));
         defer self.gpa.free(raw);
         const args = try self.engine.checked(c.JS_ParseJSON(self.engine.context, raw.ptr, args_json.len, "tool-arguments"));
-        defer self.engine.freeValue(args);
+        defer self.engine.releaseNativeValue(args);
         const call = try self.engine.checked(c.JS_NewStringLen(self.engine.context, call_id.ptr, call_id.len));
-        defer self.engine.freeValue(call);
+        defer self.engine.releaseNativeValue(call);
         const context = try self.createContext();
-        defer self.engine.freeValue(context);
+        defer self.engine.releaseNativeValue(context);
         var update_data = [_]c.JSValue{ c.JS_NewInt64(self.engine.context, self.invocation_generation), self.owner_token, c.JS_NewInt64(self.engine.context, self.owner_class) };
-        defer self.engine.freeValue(update_data[0]);
-        defer self.engine.freeValue(update_data[2]);
+        defer self.engine.releaseNativeValue(update_data[0]);
+        defer self.engine.releaseNativeValue(update_data[2]);
         const update = try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, toolUpdate, "onUpdate", 1, 0, update_data.len, &update_data));
-        defer self.engine.freeValue(update);
+        defer self.engine.releaseNativeValue(update);
         var parameters = [_]c.JSValue{ call, args, self.invocation_signal orelse c.pi_js_undefined(), update, context };
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const promise = try self.engine.checked(c.JS_Call(self.engine.context, execute, tool, parameters.len, &parameters));
-        defer self.engine.freeValue(promise);
+        defer self.engine.releaseNativeValue(promise);
         self.tool_update_promise = c.JS_DupValue(self.engine.context, promise);
         const result = try self.engine.awaitValue(promise);
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         try self.mergeActions(result);
-        return self.engine.stringify(result);
+        return nativeStringify(self.engine, result);
     }
 
     pub fn invokeProviderStream(self: *Bindings, callback: []const u8, provider: []const u8, generation: u64, model_json: []const u8, context_json: []const u8, options_json: []const u8, invocation_id: []const u8, bridge: native_stream.Bridge, cancel_only: bool) ![]u8 {
         try self.beginActions();
         defer self.finishInvocation();
         const model = try self.parseJson(model_json, "native-stream-model");
-        defer self.engine.freeValue(model);
+        defer self.engine.releaseNativeValue(model);
         const context = try self.parseJson(context_json, "native-stream-context");
-        defer self.engine.freeValue(context);
+        defer self.engine.releaseNativeValue(context);
         const options = try self.parseJson(options_json, "native-stream-options");
-        defer self.engine.freeValue(options);
+        defer self.engine.releaseNativeValue(options);
         if (!c.JS_IsObject(model) or c.JS_IsArray(model) or !c.JS_IsObject(context) or c.JS_IsArray(context) or !c.JS_IsObject(options) or c.JS_IsArray(options)) return error.InvalidNativeProviderArguments;
         const signal = self.invocation_signal orelse return error.NativeProviderSignalMissing;
         try self.actionProperty(options, "signal", c.JS_DupValue(self.engine.context, signal));
@@ -2797,19 +3038,19 @@ pub const Bindings = struct {
         try native_stream.freezeJson(self.engine, context, 0);
         try native_stream.freezeJson(self.engine, options, 0);
         const arguments = try self.engine.checked(c.JS_NewArray(self.engine.context));
-        defer self.engine.freeValue(arguments);
+        defer self.engine.releaseNativeValue(arguments);
         for ([_]c.JSValue{ model, context, options }, 0..) |argument, index| if (c.JS_SetPropertyUint32(self.engine.context, arguments, @intCast(index), c.JS_DupValue(self.engine.context, argument)) < 0) return error.JavaScriptException;
         const result = try self.stream_runner.consume(&self.providers, callback, provider, generation, arguments, signal, bridge, invocation_id, cancel_only);
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         try self.mergeActions(result);
-        return self.engine.stringify(result);
+        return nativeStringify(self.engine, result);
     }
 
     pub fn commitProviderCallbacks(self: *Bindings, provider: []const u8, selected_json: []const u8) ![]u8 {
-        var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, selected_json, .{});
+        var parsed = try retainHostAllocationFailure(self.engine, std.json.parseFromSlice(std.json.Value, self.gpa, selected_json, .{}));
         defer parsed.deinit();
         if (parsed.value != .array or parsed.value.array.items.len > 16_384) return error.InvalidNativeProviderCallbackSelection;
-        const ids = try self.gpa.alloc([]const u8, parsed.value.array.items.len);
+        const ids = try retainHostAllocationFailure(self.engine, self.gpa.alloc([]const u8, parsed.value.array.items.len));
         defer self.gpa.free(ids);
         for (parsed.value.array.items, ids) |value, *slot| {
             if (value != .string) return error.InvalidNativeProviderCallbackSelection;
@@ -2817,11 +3058,11 @@ pub const Bindings = struct {
         }
         const retired = try self.providers.commit(provider, ids);
         const object = try self.engine.checked(c.JS_NewObject(self.engine.context));
-        defer self.engine.freeValue(object);
+        defer self.engine.releaseNativeValue(object);
         try self.actionProperty(object, "provider", try self.engine.fromJsonValue(.{ .string = provider }));
         try self.actionProperty(object, "retained", c.JS_NewInt64(self.engine.context, @intCast(ids.len)));
         try self.actionProperty(object, "retired", c.JS_NewInt64(self.engine.context, @intCast(retired)));
-        return self.engine.stringify(object);
+        return nativeStringify(self.engine, object);
     }
 };
 

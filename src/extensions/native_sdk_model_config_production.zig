@@ -121,6 +121,12 @@ fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, _: 
     return c.JS_DupValue(engine.context, self);
 }
 fn getter(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(getterPendingBody(context, receiver, argc, argv, magic));
+}
+fn getterPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -163,7 +169,7 @@ fn start(engine: *em.Engine, owner: c.JSValue, bindings: c.JSValue, path: c.JSVa
     const generation = engine.native_allocation_generation;
     const pending = imported(&scope, bindings, "readFile", &.{ try scope.get(owner, "path"), try scope.text("utf-8") }) catch |err| {
         if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-        return readFailure(engine, owner, try scope.own(flow.reason(engine, err)));
+        return readFailure(engine, owner, try scope.own(try flow.reason(engine, err)));
     };
     try flow.wait(loaded, engine, owner, pending, 0);
 }
@@ -200,7 +206,7 @@ fn loadedBody(engine: *em.Engine, owner: c.JSValue, content: c.JSValue) !void {
     const generation = engine.native_allocation_generation;
     const parsed = parse(&scope, bindings, content) catch |err| {
         if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-        const reason = try scope.own(flow.reason(engine, err));
+        const reason = try scope.own(try flow.reason(engine, err));
         return flow.settle(engine, owner, false, try failureConfig(&scope, owner, "Failed to parse models.json: ", reason));
     };
     const validator = try scope.get(bindings, "validateModelsConfig");

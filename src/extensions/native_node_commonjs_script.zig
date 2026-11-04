@@ -50,9 +50,10 @@ pub fn run(prepared: *const Prepared) !c.JSValue {
 fn checkedCompletion(engine: *v.em.Engine, owned: c.JSValue) !c.JSValue {
     if (c.JS_IsException(owned)) return v.js.capture(engine);
     if (c.JS_HasException(engine.context)) {
-        const reason = c.JS_GetException(engine.context); // Own before value cleanup.
+        var generic_fatal: bool = false;
+        const reason = c.JS_PiGetExceptionWithFatal(engine.context, &generic_fatal); // Own before value cleanup.
         engine.freeValue(owned);
-        return engine.checked(c.JS_Throw(engine.context, reason));
+        return engine.checked(c.JS_PiThrowNativePending(engine.context, reason, generic_fatal));
     }
     return owned;
 }

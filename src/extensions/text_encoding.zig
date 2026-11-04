@@ -28,47 +28,68 @@ fn utf8(gpa: std.mem.Allocator, text: []const u8) ![]u8 {
     return output.toOwnedSlice(gpa);
 }
 
-fn construct(context: ?*c.JSContext, new_target: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn construct(context: ?*c.JSContext, new_target: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(constructPendingBody(context, new_target, pending_arg2, pending_arg3));
+}
+fn constructPendingBody(context: ?*c.JSContext, new_target: c.JSValue, _: c_int, _: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    const prototype = c.JS_GetPropertyStr(context, new_target, "prototype");
+    const prototype = native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_GetPropertyStr(context, new_target, "prototype"); };
     if (c.JS_IsException(prototype)) return prototype;
-    defer engine.freeValue(prototype);
+    defer engine.releaseNativeValue(prototype);
     const object = c.JS_NewObjectProtoClass(context, prototype, engine.text_encoder_class);
     if (!c.JS_IsException(object)) _ = c.JS_SetOpaque(object, engine);
     return object;
 }
 
 fn encode(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(encodePendingBody(context, this, argc, argv));
+}
+fn encodePendingBody(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return encodeValue(engine, this, argc, argv) catch |err| failure(engine, err);
 }
 
 fn failure(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
     _ = c.JS_ThrowTypeError(engine.context, "Native TextEncoder failed: %s", @as([*:0]const u8, @errorName(err)));
+    @import("native_pending_owner.zig").checkFatal(engine) catch return c.pi_js_exception();
     const exception = c.JS_GetException(engine.context);
     const code: [*:0]const u8 = if (err == error.IllegalTextEncoderInvocation) "ERR_INVALID_THIS" else "ERR_INVALID_ARG_TYPE";
     if (c.JS_DefinePropertyValueStr(engine.context, exception, "code", c.JS_NewString(engine.context, code), c.JS_PROP_C_W_E) < 0) {
-        engine.freeValue(exception);
-        return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+        engine.releaseNativeValue(exception);
+        return c.pi_js_exception();
     }
-    return c.JS_Throw(engine.context, exception);
+    return c.JS_PiThrowExceptionData(engine.context, exception);
 }
 
 fn encodeValue(engine: *engine_mod.Engine, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue) !c.JSValue {
     try brand(engine, this);
     const text = try input(engine, argc, argv);
     defer engine.gpa.free(text);
-    const bytes = try utf8(engine.gpa, text);
+    const bytes = (utf8(engine.gpa, text) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(bytes);
     const buffer = try engine.checked(c.JS_NewArrayBufferCopy(engine.context, bytes.ptr, bytes.len));
-    defer engine.freeValue(buffer);
+    defer engine.releaseNativeValue(buffer);
     var arguments = [_]c.JSValue{buffer};
     return engine.checked(c.JS_NewTypedArray(engine.context, arguments.len, &arguments, c.JS_TYPED_ARRAY_UINT8));
 }
 
 fn encodeInto(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(encodeIntoPendingBody(context, this, argc, argv));
+}
+fn encodeIntoPendingBody(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return intoValue(engine, this, argc, argv) catch |err| failure(engine, err);
 }
@@ -79,7 +100,7 @@ fn intoValue(engine: *engine_mod.Engine, this: c.JSValue, argc: c_int, argv: [*c
     // encode(), encodeInto() does not invoke source conversion callbacks.
     if (argc < 1 or !c.JS_IsString(argv[0])) return error.InvalidTextEncoderSource;
     if (argc < 2 or c.JS_GetTypedArrayType(argv[1]) != c.JS_TYPED_ARRAY_UINT8) return error.InvalidTextEncoderDestination;
-    const text = try engine.toString(argv[0]);
+    const text = (engine.toString(argv[0]) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(text);
     var offset: usize = 0;
     var length: usize = 0;
@@ -90,35 +111,32 @@ fn intoValue(engine: *engine_mod.Engine, this: c.JSValue, argc: c_int, argv: [*c
         // Node accepts their Uint8Array brand and encodes into zero bytes.
         // Consume only the intrinsic exception, without diagnostic conversion
         // that could invoke a user-defined Error.prototype.toString callback.
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const exception = c.JS_GetException(engine.context);
-        if (c.JS_IsUncatchableError(exception)) {
-            _ = c.JS_Throw(engine.context, exception);
-            return error.JavaScriptException;
-        }
         // An allocation failure while constructing the intrinsic TypeError
         // must not be mistaken for a successful zero-length destination.
         if (c.JS_IsNull(exception)) return error.OutOfMemory;
-        const message = c.JS_GetPropertyStr(engine.context, exception, "message");
+        const message = native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyStr(engine.context, exception, "message"); };
         if (c.JS_IsException(message)) {
-            engine.freeValue(exception);
+            engine.releaseNativeValue(exception);
             return error.JavaScriptException;
         }
-        defer engine.freeValue(message);
+        defer engine.releaseNativeValue(message);
         var message_length: usize = 0;
-        const message_text = c.JS_ToCStringLen(engine.context, &message_length, message);
+        const message_text = native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToCStringLen(engine.context, &message_length, message); };
         if (message_text == null) {
-            engine.freeValue(exception);
+            engine.releaseNativeValue(exception);
             return error.JavaScriptException;
         }
         defer c.JS_FreeCString(engine.context, message_text);
         if (std.mem.eql(u8, message_text[0..message_length], "out of memory")) {
-            engine.freeValue(exception);
+            engine.releaseNativeValue(exception);
             return error.OutOfMemory;
         }
-        engine.freeValue(exception);
+        engine.releaseNativeValue(exception);
         return counts(engine, 0, 0);
     }
-    defer engine.freeValue(buffer);
+    defer engine.releaseNativeValue(buffer);
     var total_length: usize = 0;
     const data = c.JS_GetArrayBuffer(engine.context, &total_length, buffer);
     if (c.JS_HasException(engine.context) or offset > total_length or length > total_length - offset or (data == null and length > 0)) return error.InvalidTextEncoderDestination;
@@ -139,13 +157,19 @@ fn intoValue(engine: *engine_mod.Engine, this: c.JSValue, argc: c_int, argv: [*c
 
 fn counts(engine: *engine_mod.Engine, read: usize, written: usize) !c.JSValue {
     const result = try engine.checked(c.JS_NewObject(engine.context));
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     if (c.JS_DefinePropertyValueStr(engine.context, result, "read", c.JS_NewInt64(engine.context, @intCast(read)), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     if (c.JS_DefinePropertyValueStr(engine.context, result, "written", c.JS_NewInt64(engine.context, @intCast(written)), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     return result;
 }
 
-fn encoding(context: ?*c.JSContext, this: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn encoding(context: ?*c.JSContext, this: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(encodingPendingBody(context, this, pending_arg2, pending_arg3));
+}
+fn encodingPendingBody(context: ?*c.JSContext, this: c.JSValue, _: c_int, _: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     brand(engine, this) catch |err| return failure(engine, err);
     return c.JS_NewString(context, "utf-8");
@@ -157,9 +181,9 @@ pub fn install(engine: *engine_mod.Engine) !void {
     const definition: c.JSClassDef = .{ .class_name = "TextEncoder", .finalizer = null, .gc_mark = null, .call = null, .exotic = null };
     if (c.JS_NewClass(engine.runtime, engine.text_encoder_class, &definition) < 0) return error.TextEncoderClassFailed;
     const prototype = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(prototype);
+    defer engine.releaseNativeValue(prototype);
     const constructor = try engine.checked(c.JS_NewCFunction2(engine.context, construct, "TextEncoder", 0, c.JS_CFUNC_constructor, 0));
-    defer engine.freeValue(constructor);
+    defer engine.releaseNativeValue(constructor);
     if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return error.JavaScriptException;
     c.JS_SetClassProto(engine.context, engine.text_encoder_class, c.JS_DupValue(engine.context, prototype));
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "encode", c.JS_NewCFunction(engine.context, encode, "encode", 0), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
@@ -168,7 +192,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     defer c.JS_FreeAtom(engine.context, atom);
     if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, c.JS_NewCFunction(engine.context, encoding, "encoding", 0), c.pi_js_undefined(), c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
+    defer engine.releaseNativeValue(global);
     if (c.JS_DefinePropertyValueStr(engine.context, global, "TextEncoder", c.JS_DupValue(engine.context, constructor), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
 }
 

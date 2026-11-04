@@ -108,6 +108,7 @@ pub const Adapter = struct {
         return self.dispatch(payload, self.background_context);
     }
     fn dispatch(self: *Adapter, payload: json.Value, context: c.JSValue) !json.Owned {
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         std.debug.assert(std.Thread.getCurrentId() == self.owner);
         const op = std.meta.stringToEnum(Op, try json.asString(try json.required(payload, "op"))) orelse return error.InvalidStorageOperation;
         if (op == .queuedConversationIds) return self.queuedConversationIdsOnOwner(context) catch |err| return self.storageError(op, context, err);
@@ -202,6 +203,11 @@ pub const Adapter = struct {
         return result;
     }
     fn invokeGuardedRead(self: *Adapter, op: Op, args: []const c.JSValue, context: c.JSValue) !c.JSValue {
+        var pending_frame = @import("native_pending_owner.zig").Frame.init(self.engine);
+        pending_frame.enter() catch |err| return pending_frame.finishValue(err);
+        return pending_frame.finishValue(invokeGuardedReadPendingBody(self, op, args, context));
+    }
+    fn invokeGuardedReadPendingBody(self: *Adapter, op: Op, args: []const c.JSValue, context: c.JSValue) !c.JSValue {
         const native = self.session orelse return self.invoke(op, args);
         const storage = &native.session.?.storage;
         try durable.assertVMHealthy(native);
@@ -222,30 +228,56 @@ pub const Adapter = struct {
         return result;
     }
     fn invoke(self: *Adapter, op: Op, args: []const c.JSValue) !c.JSValue {
+        var pending_frame = @import("native_pending_owner.zig").Frame.init(self.engine);
+        pending_frame.enter() catch |err| return pending_frame.finishValue(err);
+        return pending_frame.finishValue(invokePendingBody(self, op, args));
+    }
+    fn invokePendingBody(self: *Adapter, op: Op, args: []const c.JSValue) !c.JSValue {
         const engine = self.engine;
         engine.native_exception_diagnostics_suppressed += 1;
         defer engine.native_exception_diagnostics_suppressed -= 1;
-        const generation = engine.native_allocation_generation;
-        const pending = sdk.invoke(engine, self.raw, @tagName(op), args) catch |err| return engine.nativeAllocationError(err, generation);
+        const pending = try sdk.invoke(engine, self.raw, @tagName(op), args);
         defer engine.freeValue(pending);
-        return engine.awaitValue(pending) catch |err| return engine.nativeAllocationError(err, generation);
+        return engine.awaitValue(pending);
     }
     fn storageError(self: *Adapter, op: Op, context: c.JSValue, err: anyerror) anyerror {
-        if (err == error.OutOfMemory) return err;
+        var pending_frame = @import("native_pending_owner.zig").Frame.init(self.engine);
+        // storageError is the catch owner for an already pending ordinary event.
+        pending_frame.enter() catch |entry_error| {
+            if (c.JS_PiIsPendingUncatchable(self.engine.context)) {
+                pending_frame.finishVoid(if (err == error.OutOfMemory or err == error.ExecutionTerminated) err else entry_error) catch |failure| return failure;
+                unreachable;
+            }
+        };
+        pending_frame.finishVoid(storageErrorPendingBody(self, op, context, err)) catch |failure| return failure;
+        unreachable;
+    }
+    fn storageErrorPendingBody(self: *Adapter, op: Op, context: c.JSValue, err: anyerror) anyerror {
+        @import("native_pending_owner.zig").catchFailure(self.engine, err) catch |fatal_error| return fatal_error;
         const engine = self.engine;
         engine.native_exception_diagnostics_suppressed += 1;
         defer engine.native_exception_diagnostics_suppressed -= 1;
         _ = durable.reject(engine, err);
+        @import("native_pending_owner.zig").checkFatal(engine) catch |fatal_error| return fatal_error;
         const reason = c.JS_GetException(engine.context);
         defer engine.freeValue(reason);
         const read = op != .mintId and op != .commit;
-        const request_error = read and (@import("native_durable_errors.zig").isRequestError(engine, reason) catch false);
+        const request_error = read and (@import("native_durable_errors.zig").isRequestError(engine, reason) catch |classification_error| ordinary: {
+            @import("native_pending_owner.zig").catchFailure(engine, classification_error) catch |fatal_error| return fatal_error;
+            engine.freeValue(c.JS_GetException(engine.context));
+            @import("native_pending_owner.zig").checkFatal(engine) catch |fatal_error| return fatal_error;
+            break :ordinary false;
+        });
         var canceled = false;
-        if (read) durable.checkCancellation(engine, context) catch {
+        if (read) durable.checkCancellation(engine, context) catch |cancellation_error| {
+            @import("native_pending_owner.zig").catchFailure(engine, cancellation_error) catch |fatal_error| return fatal_error;
+            engine.freeValue(c.JS_GetException(engine.context));
+            @import("native_pending_owner.zig").checkFatal(engine) catch |fatal_error| return fatal_error;
             canceled = true;
         };
-        if (!request_error and !canceled) if (self.session) |session| durable.captureStorageFailure(session, self.session_value, reason);
-        _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason))) catch {};
+        if (!request_error and !canceled) if (self.session) |session|
+            durable.captureStorageFailure(session, self.session_value, reason) catch |capture_error| return capture_error;
+        _ = engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, reason))) catch {};
         return if (request_error) error.OwnerStorageRequestError else if (canceled) error.OwnerStorageCanceledRead else error.JavaScriptException;
     }
     fn adoptRecord(self: *Adapter, table: backend.memory.Table, record: json.Value, seq: u64) !void {
@@ -416,12 +448,18 @@ const Hub = struct {
     first_close: ?*Drain = null,
     last_close: ?*Drain = null,
     fn pump(engine: *Engine) !bool {
+        var pending_frame = @import("native_pending_owner.zig").Frame.init(engine);
+        pending_frame.enter() catch |err| return pending_frame.finishBool(err);
+        return pending_frame.finishBool(pumpPendingBody(engine));
+    }
+    fn pumpPendingBody(engine: *Engine) !bool {
         const self: *Hub = @ptrCast(@alignCast(engine.native_durable_storage_context.?));
         var worked = false;
         var index: usize = 0;
-        while (index < self.adapters.items.len) : (index += 1) if (try self.adapters.items[index].broker.drain(Adapter.brokerDispatch, self.adapters.items[index])) {
-            worked = true;
-        };
+        while (index < self.adapters.items.len) : (index += 1) {
+            if (try self.adapters.items[index].broker.drain(Adapter.brokerDispatch, self.adapters.items[index])) worked = true;
+            try @import("native_pending_owner.zig").checkFatal(engine);
+        }
         index = 0;
         while (index < self.commits.items.len) {
             const item = self.commits.items[index];
@@ -443,6 +481,7 @@ const Hub = struct {
 
             defer engine.freeValue(value);
             const rejected = c.JS_IsException(value);
+            if (rejected) try @import("native_pending_owner.zig").checkFatal(engine);
             const returned = if (rejected) c.JS_GetException(engine.context) else c.JS_DupValue(engine.context, value);
             defer engine.freeValue(returned);
             var arguments = [_]c.JSValue{returned};
@@ -469,6 +508,7 @@ const Hub = struct {
             const value = durable.finishPendingBackendClose(request.owner, retained, request.context);
             defer engine.freeValue(value);
             const rejected = c.JS_IsException(value);
+            if (rejected) try @import("native_pending_owner.zig").checkFatal(engine);
             const returned = if (rejected) c.JS_GetException(engine.context) else c.JS_DupValue(engine.context, value);
             defer engine.freeValue(returned);
             var args = [_]c.JSValue{returned};

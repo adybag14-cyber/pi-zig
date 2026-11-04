@@ -100,7 +100,9 @@ pub const Hub = struct {
             defer task.destroy(task);
             if (!task.abandoned) task.complete(task) catch |err| {
                 if (task.propagate_completion_errors) return err;
+                try @import("native_pending_owner.zig").catchFailure(engine, err);
                 _ = @import("native_durable.zig").reject(engine, err);
+                try @import("native_pending_owner.zig").checkFatal(engine);
                 const reason = c.JS_GetException(engine.context);
                 defer engine.freeValue(reason);
                 try task.settled(true, reason);

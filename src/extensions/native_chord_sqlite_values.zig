@@ -27,9 +27,10 @@ pub fn pending(engine: *Engine) !void {
 }
 pub fn success(engine: *Engine, owned: c.JSValue) !c.JSValue {
     if (c.JS_HasException(engine.context)) {
-        const reason = c.JS_GetException(engine.context);
+        var generic_fatal: bool = false;
+        const reason = c.JS_PiGetExceptionWithFatal(engine.context, &generic_fatal);
         engine.freeValue(owned);
-        return engine.checked(c.JS_Throw(engine.context, reason));
+        return engine.checked(c.JS_PiThrowNativePending(engine.context, reason, generic_fatal));
     }
     return owned;
 }

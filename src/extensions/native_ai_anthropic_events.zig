@@ -22,7 +22,7 @@ fn failure(scope: *Scope, err: anyerror) !c.JSValue {
         try @import("native_async_body.zig").enterRejectedContinuation(scope.engine);
         if (scope.engine.captured_exception) |reason| if (c.JS_IsUncatchableError(reason)) return err;
     }
-    const value = try scope.own(flow.reason(scope.engine, err));
+    const value = try scope.own(try flow.reason(scope.engine, err));
     if (scope.engine.captured_exception) |previous| {
         scope.engine.captured_exception = null;
         scope.engine.freeValue(previous);

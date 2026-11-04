@@ -17,13 +17,25 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue, deps: Dependencies) !vo
     if (c.JS_SetPrototype(engine.context, function, try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)))) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "loadExtensionPaths", c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
 }
-fn dispatch(context: ?*c.JSContext, loader: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn dispatch(context: ?*c.JSContext, loader: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, loader, argc, argv, pending_arg4, roots));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, loader: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
     return begin(engine, loader, if (argc > 0) argv[0] else c.pi_js_undefined(), if (argc > 1) argv[1] else c.pi_js_undefined(), roots) catch |err| sdk.fail(engine, err);
 }
-fn predicate(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn predicate(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(predicatePendingBody(context, pending_arg1, argc, argv, magic, roots));
+}
+fn predicatePendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return predicateValue(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), magic, roots) catch |err| sdk.fail(engine, err);
 }
@@ -114,7 +126,7 @@ fn advance(engine: *em.Engine, owner: c.JSValue) !void {
         const generation = engine.native_allocation_generation;
         const result = attempt(&scope, owner, builtin, path) catch |err| {
             if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-            const reason = try scope.own(flow.reason(engine, err));
+            const reason = try scope.own(try flow.reason(engine, err));
             clearException(engine);
             try addError(&scope, owner, reason);
             continue;
@@ -140,7 +152,7 @@ fn continueBuiltin(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejec
         const generation = engine.native_allocation_generation;
         success(&scope, owner, value) catch |err| {
             if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-            const reason = try scope.own(flow.reason(engine, err));
+            const reason = try scope.own(try flow.reason(engine, err));
             clearException(engine);
             try addError(&scope, owner, reason);
         };

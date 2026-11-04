@@ -20,11 +20,15 @@ pub const Scope = struct {
     /// Only explicitly listed direct no-guest VM allocations use this path.
     pub fn rawAllocation(self: *Scope, value: c.JSValue, generation: u64) anyerror!c.JSValue {
         if (c.JS_HasException(self.engine.context)) {
-            const reason = c.JS_GetException(self.engine.context);
+            var generic_fatal: bool = false;
+            const reason = c.JS_PiGetExceptionWithFatal(self.engine.context, &generic_fatal);
             const tag = c.pi_js_native_allocation_error_generation(reason);
             const distance = tag -% generation;
-            if (tag != 0 and distance != 0 and distance <= self.engine.native_allocation_generation -% generation) c.JS_SetUncatchableError(self.engine.context, reason);
-            _ = c.JS_Throw(self.engine.context, reason);
+            if (tag != 0 and distance != 0 and distance <= self.engine.native_allocation_generation -% generation) {
+                c.JS_SetUncatchableError(self.engine.context, reason);
+                generic_fatal = true;
+            }
+            _ = c.JS_PiThrowNativePending(self.engine.context, reason, generic_fatal);
         }
         return self.raw(value, generation);
     }
@@ -209,7 +213,7 @@ pub const Scope = struct {
         _ = c.JS_ThrowInternalError(self.engine.context, "interrupted");
         const reason = c.JS_GetException(self.engine.context);
         c.JS_SetUncatchableError(self.engine.context, reason);
-        _ = try self.raw(c.JS_Throw(self.engine.context, reason), generation);
+        _ = try self.raw(c.JS_PiThrowNativePending(self.engine.context, reason, true), generation);
         unreachable;
     }
     pub fn truthy(self: *Scope, value: c.JSValue) bool { return c.JS_ToBool(self.engine.context, value) == 1; }

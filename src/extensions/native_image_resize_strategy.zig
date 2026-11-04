@@ -11,6 +11,7 @@ const defaults = @import("native_image_resize_options.zig");
 const orientation = @import("../ai/photon_session_orientation.zig");
 const exif = @import("../ai/photon_exif.zig");
 const values = @import("native_select_list.zig");
+const pending = @import("native_pending_owner.zig");
 const Context = struct {
     engine: *js.Engine,
     session: *p.Session,
@@ -20,6 +21,14 @@ const Context = struct {
         return self.session.checked(self.session.call(operation, handle, input, width, height, quality));
     }
 };
+fn cleanupFailure(engine: *js.Engine, prior: ?anyerror, err: anyerror) anyerror {
+    // Publish a genuine cleanup producer, but do not replace an already
+    // observed host unwind tag with the cleanup error's ordinary category.
+    // The pending reason keeps its independently selected actual class.
+    var selected = err;
+    pending.catchFailure(engine, err) catch |fatal| { selected = fatal; };
+    return prior orelse selected;
+}
 fn runtimeError(engine: *js.Engine, message: []const u8) !c.JSValue {
     const failure = try engine.checked(c.JS_NewError(engine.context));
     errdefer engine.freeValue(failure);
@@ -27,25 +36,40 @@ fn runtimeError(engine: *js.Engine, message: []const u8) !c.JSValue {
     return failure;
 }
 pub fn resize(engine: *js.Engine, input: []const u8, mime: c.JSValue, options: c.JSValue) !c.JSValue {
+    var frame = pending.Frame.init(engine);
+    frame.enter() catch |err| return frame.finishValue(err);
+    return frame.finishValue(resizeOwned(engine, input, mime, options));
+}
+fn resizeOwned(engine: *js.Engine, input: []const u8, mime: c.JSValue, options: c.JSValue) !c.JSValue {
     const opts = try defaults.spreadDefaults(engine, options);
     defer engine.freeValue(opts);
     const session = p.Session.init(engine.gpa) catch |err| return if (err == error.OutOfMemory) err else c.pi_js_null();
     defer session.deinit();
     var context: Context = .{ .engine = engine, .session = session };
-    var cause: ?anyerror = null;
+    var fatal_cause: ?anyerror = null;
     const result = attempt(&context, input, mime, opts) catch |err| blk: {
-        cause = err;
+        // Native image handles still retire in their original order. The
+        // source fallback may consume only an ordinary caught reason.
+        pending.catchFailure(engine, err) catch |fatal| {
+            fatal_cause = fatal;
+            break :blk c.pi_js_null();
+        };
         if (err == error.JavaScriptException) {
-            const failure = engine.throwCaptured();
-            _ = failure;
+            if (!c.JS_HasException(engine.context)) _ = engine.throwCaptured();
+            pending.checkFatal(engine) catch |fatal| {
+                fatal_cause = fatal;
+                break :blk c.pi_js_null();
+            };
             const captured = c.JS_GetException(engine.context);
             engine.freeValue(captured);
+            pending.checkFatal(engine) catch |fatal| { fatal_cause = fatal; };
         }
         break :blk c.pi_js_null();
     };
     errdefer engine.freeValue(result);
     if (context.scaled) |handle| {
-        const cleanup = try session.invoke(codec.PI_SESSION_FREE, handle, null, 0, 0, 0);
+        const cleanup = session.invoke(codec.PI_SESSION_FREE, handle, null, 0, 0, 0)
+            catch |err| return cleanupFailure(engine, fatal_cause, err);
         switch (cleanup) {
             .value => |reply| session.freeReply(reply),
             .failure => |failure| {
@@ -55,19 +79,23 @@ pub fn resize(engine: *js.Engine, input: []const u8, mime: c.JSValue, options: c
         }
     }
     if (context.original) |handle| {
-        const cleanup = try session.invoke(codec.PI_SESSION_FREE, handle, null, 0, 0, 0);
+        const cleanup = session.invoke(codec.PI_SESSION_FREE, handle, null, 0, 0, 0)
+            catch |err| return cleanupFailure(engine, fatal_cause, err);
         switch (cleanup) {
             .value => |reply| session.freeReply(reply),
             .failure => |failure| {
                 var owned = failure;
                 defer owned.deinit(engine.gpa);
-                const exception = try runtimeError(engine, owned.message orelse "Image codec failure");
-                _ = try engine.checked(c.JS_Throw(engine.context, exception));
-                unreachable;
+                if (fatal_cause == null) {
+                    try pending.checkFatal(engine);
+                    const exception = try runtimeError(engine, owned.message orelse "Image codec failure");
+                    _ = try engine.checked(c.JS_PiThrowExceptionData(engine.context, exception));
+                    unreachable;
+                }
             },
         }
     }
-    if (cause) |err| if (err == error.OutOfMemory) return err;
+    if (fatal_cause) |err| return err;
     return result;
 }
 fn attempt(ctx: *Context, input: []const u8, mime: c.JSValue, opts: c.JSValue) !c.JSValue {

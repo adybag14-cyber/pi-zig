@@ -80,7 +80,7 @@ fn compose(scope: *Scope, runtime: c.JSValue, bindings: c.JSValue, id: c.JSValue
     }
     const value = imported(scope, bindings, "composeModelProvider", &.{ id, base, try scope.get(runtime, "config"), extension }) catch |err| {
         if (err != error.JavaScriptException) return err;
-        const reason = try scope.own(flow.reason(scope.engine, err));
+        const reason = try scope.own(try flow.reason(scope.engine, err));
         try mapSet(scope, runtime, "compositionErrors", id, try errorText(scope, reason));
         return base;
     };
@@ -271,7 +271,13 @@ fn registration(scope: *Scope, runtime: c.JSValue, bindings: c.JSValue, method: 
 fn callback(scope: *Scope, function: c.JSCFunctionData, magic: c_int, roots: []const c.JSValue, length: c_int) !c.JSValue {
     return scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, function, "", length, magic, @intCast(roots.len), @constCast(roots.ptr))));
 }
-fn providerPairCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn providerPairCallback(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, args: [*c]c.JSValue, pending_arg4: c_int, pending_arg5: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(providerPairCallbackPendingBody(context, pending_arg1, argc, args, pending_arg4, pending_arg5));
+}
+fn providerPairCallbackPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, _: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -294,7 +300,13 @@ fn authPairStart(scope: *Scope, job: c.JSValue, runtime: c.JSValue, input_signal
     try scope.put(job, "providerId", try scope.get(provider, "id"));
     try wait(scope, job, try scope.invoke(try scope.get(runtime, "models"), "checkAuth", &.{ try scope.get(provider, "id"), try signalOptions(scope, input_signal) }), .pair_auth);
 }
-fn routeDefinition(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn routeDefinition(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, args: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(routeDefinitionPendingBody(context, pending_arg1, argc, args, pending_arg4, roots));
+}
+fn routeDefinitionPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return js.invoke(engine, roots[0], "route", &.{if (argc > 0) args[0] else c.pi_js_undefined()}) catch |err| sdk.fail(engine, err);
 }
@@ -331,7 +343,7 @@ fn continuation(engine: *em.Engine, job: c.JSValue, value: c.JSValue, rejected: 
 }
 fn failError(scope: *Scope, job: c.JSValue, err: anyerror) !void {
     if (try flow.nativeFailure(scope.engine, job, err)) return error.OutOfMemory;
-    try failJob(scope, job, try scope.own(flow.reason(scope.engine, err)));
+    try failJob(scope, job, try scope.own(try flow.reason(scope.engine, err)));
 }
 fn failJob(scope: *Scope, job: c.JSValue, reason: c.JSValue) !void {
     if (try flow.nativeAllocationReason(scope.engine, job, reason)) return error.OutOfMemory;
@@ -846,7 +858,13 @@ fn queueAvailability(scope: *Scope, runtime: c.JSValue, bindings: c.JSValue, inp
     const failure = try callback(scope, availabilityFailed, 0, &.{ runtime, error_seq, effective }, 1);
     return scope.invoke(pending, "catch", &.{failure});
 }
-fn availabilityFailed(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn availabilityFailed(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, args: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(availabilityFailedPendingBody(context, pending_arg1, argc, args, pending_arg4, roots));
+}
+fn availabilityFailedPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -1097,7 +1115,13 @@ fn enqueueTail(scope: *Scope, runtime: c.JSValue, bindings: c.JSValue, id: c.JSV
 fn returnCaptured(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.JS_DupValue(context, roots[0]);
 }
-fn credentialCleanup(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn credentialCleanup(context: ?*c.JSContext, pending_arg1: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(credentialCleanupPendingBody(context, pending_arg1, pending_arg2, pending_arg3, pending_arg4, roots));
+}
+fn credentialCleanupPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -1207,7 +1231,7 @@ fn raceAbort(scope: *Scope, operation: c.JSValue, input: c.JSValue) !c.JSValue {
     const on_abort = try callback(scope, abortContinuation, 2, &.{job}, 0);
     try scope.put(job, "onAbort", on_abort);
     raceStart(scope, job, operation, input, on_abort) catch |err| {
-        try promise_flow.settle(scope.engine, job, true, try scope.own(promise_flow.reason(scope.engine, err)));
+        try promise_flow.settle(scope.engine, job, true, try scope.own(try promise_flow.reason(scope.engine, err)));
     };
     return pending.promise;
 }
@@ -1220,7 +1244,13 @@ fn raceStart(scope: *Scope, job: c.JSValue, operation: c.JSValue, input: c.JSVal
         _ = try scope.call(on_abort, c.pi_js_undefined(), &.{});
     }
 }
-fn abortContinuation(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn abortContinuation(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(abortContinuationPendingBody(context, pending_arg1, argc, argv, magic, roots));
+}
+fn abortContinuationPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -1324,6 +1354,12 @@ fn emptySnapshot(scope: *Scope) !c.JSValue {
     return snapshot;
 }
 fn dispatch(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, this, argc, argv, magic, roots));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;

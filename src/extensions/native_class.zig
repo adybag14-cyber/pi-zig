@@ -3,6 +3,13 @@ const std = @import("std");
 const js = @import("native_js_values.zig");
 const Engine = js.Engine;
 const c = js.c;
+// Publish actual typed native allocation failure before caller JS-root cleanup.
+fn nativeAllocation(engine: anytype, result: anytype) @TypeOf(result) {
+    return result catch |err| {
+        if (@as(anyerror, err) == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+        return err;
+    };
+}
 pub const Construct = *const fn (*Engine, c.JSValue, []const c.JSValue, []const c.JSValue) anyerror!c.JSValue;
 const State = struct { engine: *Engine, prototype: c.JSValue, name: [:0]const u8, create: Construct, values: []c.JSValue };
 fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
@@ -20,33 +27,39 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) 
 fn call(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
     const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)) orelse return c.JS_ThrowTypeError(context, "Invalid native constructor")));
     const engine = state.engine;
-    engine.checkNativeEntry() catch return engine.throwCaptured();
+    var callback_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    callback_owner.enter() catch return callback_owner.finishCallback(c.pi_js_exception());
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    if (flags & c.JS_CALL_FLAG_CONSTRUCTOR == 0) return c.JS_ThrowTypeError(engine.context, "Class constructor %s cannot be invoked without 'new'", state.name.ptr);
-    var invocation: Engine.NativeInvocation = .{};
-    engine.enterNativeInvocation(&invocation);
+    if (flags & c.JS_CALL_FLAG_CONSTRUCTOR == 0) return callback_owner.finishCallback(
+        c.JS_ThrowTypeError(engine.context, "Class constructor %s cannot be invoked without 'new'", state.name.ptr));
     const result = state.create(engine, target, if (argc == 0) &.{} else argv[0..@intCast(argc)], state.values) catch |err| failure: {
         break :failure if (err == error.JavaScriptException) engine.throwCaptured()
             else if (err == error.OutOfMemory) engine.throwNativeOutOfMemoryFatal()
+            else if (err == error.ExecutionTerminated) engine.throwExecutionTerminated()
             else c.JS_ThrowTypeError(context, "Native %s: %s", state.name.ptr, @as([*:0]const u8, @errorName(err)));
     };
-    return engine.leaveNativeInvocation(&invocation, result);
+    return callback_owner.finishCallback(result);
 }
 pub fn constructor(engine: *Engine, name: [:0]const u8, length: c_int, prototype: c.JSValue, create: Construct, values: []const c.JSValue) !c.JSValue {
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    frame.enter() catch |err| return frame.finishValue(err);
+    return frame.finishValue(constructorPendingBody(engine, name, length, prototype, create, values));
+}
+fn constructorPendingBody(engine: *Engine, name: [:0]const u8, length: c_int, prototype: c.JSValue, create: Construct, values: []const c.JSValue) !c.JSValue {
     try engine.checkNativeEntry();
     var class: c.JSClassID = 0;
     _ = c.JS_NewClassID(engine.runtime, &class);
     const definition: c.JSClassDef = .{ .class_name = "Native Component Constructor", .finalizer = finalizer, .gc_mark = mark, .call = call };
     if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
     const function_prototype = try engine.checked(c.JS_GetFunctionProto(engine.context));
-    defer engine.freeValue(function_prototype);
+    defer engine.releaseNativeValue(function_prototype);
     const result = try engine.checked(c.JS_NewObjectProtoClass(engine.context, function_prototype, class));
-    errdefer engine.freeValue(result);
-    const owned = try engine.gpa.alloc(c.JSValue, values.len);
+    errdefer engine.releaseNativeValue(result);
+    const owned = try nativeAllocation(engine, engine.gpa.alloc(c.JSValue, values.len));
     var attached = false;
     errdefer if (!attached) engine.gpa.free(owned);
-    const state = try engine.gpa.create(State);
+    const state = try nativeAllocation(engine, engine.gpa.create(State));
     for (values, owned) |value, *slot| slot.* = c.JS_DupValue(engine.context, value);
     state.* = .{ .engine = engine, .prototype = c.JS_DupValue(engine.context, prototype), .name = name, .create = create, .values = owned };
     _ = c.JS_SetOpaque(result, state);
@@ -59,8 +72,13 @@ pub fn constructor(engine: *Engine, name: [:0]const u8, length: c_int, prototype
     return result;
 }
 pub fn object(engine: *Engine, target: c.JSValue) !c.JSValue {
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    frame.enter() catch |err| return frame.finishValue(err);
+    return frame.finishValue(objectPendingBody(engine, target));
+}
+fn objectPendingBody(engine: *Engine, target: c.JSValue) !c.JSValue {
     try engine.checkNativeEntry();
     const prototype = try js.get(engine, target, "prototype");
-    defer engine.freeValue(prototype);
+    defer engine.releaseNativeValue(prototype);
     return engine.checked(if (c.JS_IsObject(prototype)) c.JS_NewObjectProto(engine.context, prototype) else c.JS_NewObject(engine.context));
 }

@@ -9,11 +9,11 @@ pub fn install(engine: *engine_mod.Engine) !void {
     try @import("native_schema_formats.zig").install(engine);
     if (engine.native_module_names.contains("typebox")) return;
     const types = try create(engine);
-    defer engine.freeValue(types);
+    defer engine.releaseNativeValue(types);
     const namespace = try engine.valueNamespace(types);
-    defer engine.freeValue(namespace);
+    defer engine.releaseNativeValue(namespace);
     const exports = try sdk.object(engine);
-    defer engine.freeValue(exports);
+    defer engine.releaseNativeValue(exports);
     if (!copyProperties(engine.context, exports, types, false)) return error.JavaScriptException;
     try sdk.put(engine, exports, "Type", c.JS_DupValue(engine.context, namespace));
     try sdk.put(engine, exports, "default", c.JS_DupValue(engine.context, namespace));
@@ -23,7 +23,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
 
 pub fn create(engine: *engine_mod.Engine) !c.JSValue {
     const object = try engine.checked(c.JS_NewObject(engine.context));
-    errdefer engine.freeValue(object);
+    errdefer engine.releaseNativeValue(object);
     try sdk.put(engine, object, "InvalidLiteralValue", try @import("native_typebox_errors.zig").literalConstructor(engine));
     inline for (std.meta.fields(Kind)) |field| {
         const name: [:0]const u8 = field.name;
@@ -43,34 +43,35 @@ pub fn literalSchema(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
 pub fn evaluateLiteralValues(engine: *engine_mod.Engine, values: c.JSValue) !c.JSValue {
     var choices: std.ArrayList(c.JSValue) = .empty;
     defer {
-        for (choices.items) |choice| engine.freeValue(choice);
+        for (choices.items) |choice| engine.releaseNativeValue(choice);
         choices.deinit(engine.gpa);
     }
     for (0..try sdk.length(engine, values)) |index| {
-        const value = try engine.checked(c.JS_GetPropertyUint32(engine.context, values, @intCast(index)));
-        defer engine.freeValue(value);
+        const value = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, values, @intCast(index)); });
+        defer engine.releaseNativeValue(value);
         const literal = try literalSchema(engine, value);
         var duplicate = false;
         for (choices.items) |choice| {
             const prior = try sdk.get(engine, choice, "const");
-            defer engine.freeValue(prior);
+            defer engine.releaseNativeValue(prior);
             if (c.JS_IsStrictEqual(engine.context, prior, value)) duplicate = true;
         }
         if (duplicate) {
-            engine.freeValue(literal);
+            engine.releaseNativeValue(literal);
         } else choices.append(engine.gpa, literal) catch |err| {
-            engine.freeValue(literal);
+        if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+            engine.releaseNativeValue(literal);
             return err;
         };
     }
     if (choices.items.len == 1) return c.JS_DupValue(engine.context, choices.items[0]);
     const result = try sdk.object(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     if (choices.items.len == 0) {
         try sdk.put(engine, result, "not", try sdk.object(engine));
     } else {
         const array = try sdk.array(engine);
-        defer engine.freeValue(array);
+        defer engine.releaseNativeValue(array);
         for (choices.items, 0..) |choice, index| if (c.JS_SetPropertyUint32(engine.context, array, @intCast(index), c.JS_DupValue(engine.context, choice)) < 0) return error.JavaScriptException;
         try sdk.put(engine, result, "anyOf", c.JS_DupValue(engine.context, array));
     }
@@ -83,12 +84,17 @@ fn put(context: ?*c.JSContext, target: c.JSValue, name: [*:0]const u8, value: c.
 }
 
 fn copyProperties(context: ?*c.JSContext, target: c.JSValue, source: c.JSValue, skip_optional: bool) bool {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    const entry = engine.nativeCallbackResult(c.pi_js_undefined());
+    if (engine.nativeTerminationObserved() or c.JS_IsException(entry)) return false;
     if (!c.JS_IsObject(source)) return true;
     var properties: [*c]c.JSPropertyEnum = null;
     var count: u32 = 0;
     if (c.JS_GetOwnPropertyNames(context, &properties, &count, source, c.JS_GPN_STRING_MASK | c.JS_GPN_SYMBOL_MASK | c.JS_GPN_ENUM_ONLY) < 0) return false;
     defer c.JS_FreePropertyEnum(context, properties, count);
     for (0..count) |index| {
+        const pending = engine.nativeCallbackResult(c.pi_js_undefined());
+        if (engine.nativeTerminationObserved() or c.JS_IsException(pending)) return false;
         const name = c.JS_AtomToCString(context, properties[index].atom);
         if (name == null) return false;
         defer c.JS_FreeCString(context, name);
@@ -100,11 +106,19 @@ fn copyProperties(context: ?*c.JSContext, target: c.JSValue, source: c.JSValue, 
     return true;
 }
 
-fn construct(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn construct(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(constructPendingBody(context, pending_arg1, argc, argv, magic));
+}
+fn constructPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const kind: Kind = @enumFromInt(magic);
     const first = if (argc > 0) argv[0] else c.pi_js_undefined();
     const result = c.JS_NewObject(context);
     if (c.JS_IsException(result)) return result;
+    var result_owned = true;
+    defer if (result_owned) @import("engine.zig").Engine.fromContext(context.?).releaseNativeValue(result);
     var successful = true;
     const type_name: ?[*:0]const u8 = switch (kind) {
         .String => "string",
@@ -125,17 +139,19 @@ fn construct(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVa
             var finite = false;
             if (c.JS_IsNumber(first)) {
                 var number: f64 = 0;
-                if (c.JS_ToFloat64(context, &number, first) < 0) {
-                    c.JS_FreeValue(context, result);
-                    return c.JS_Throw(context, c.JS_GetException(context));
+                if (native_guest_3: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_3 c.JS_ToFloat64(context, &number, first); } < 0) {
+                    @import("engine.zig").Engine.fromContext(context.?).releaseNativeValue(result);
+        result_owned = false;
+                    return c.pi_js_exception();
                 }
                 finite = std.math.isFinite(number);
             }
             if (!c.JS_IsBigInt(first) and !c.JS_IsBool(first) and !finite and !c.JS_IsString(first)) {
-                c.JS_FreeValue(context, result);
+                @import("engine.zig").Engine.fromContext(context.?).releaseNativeValue(result);
+        result_owned = false;
                 const engine = engine_mod.Engine.fromContext(context.?);
                 return @import("native_typebox_errors.zig").invalidLiteral(engine, first) catch |err| {
-                    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+                    if (err == error.OutOfMemory) return @import("engine.zig").Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
                     return engine.throwCaptured();
                 };
             }
@@ -157,44 +173,47 @@ fn construct(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVa
             var active: std.ArrayList(c.JSValue) = .empty;
             defer active.deinit(engine.gpa);
             const copied = cloneMemory(engine, first, &active) catch |err| {
-                c.JS_FreeValue(context, result);
-                if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+        if (err == error.OutOfMemory) _ = @import("engine.zig").Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
+                @import("engine.zig").Engine.fromContext(context.?).releaseNativeValue(result);
+        result_owned = false;
+                if (err == error.OutOfMemory) return @import("engine.zig").Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
                 return engine.throwCaptured();
             };
-            defer engine.freeValue(copied);
+            defer engine.releaseNativeValue(copied);
             successful = successful and copySchemaProperties(context, result, copied);
             successful = successful and c.JS_DefinePropertyValueStr(context, result, "~optional", c.pi_js_bool(context, 1), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) >= 0;
         },
         .Record => {
             const engine = engine_mod.Engine.fromContext(context.?);
-            c.JS_FreeValue(context, result);
+            @import("engine.zig").Engine.fromContext(context.?).releaseNativeValue(result);
+        result_owned = false;
             return record(engine, first, if (argc > 1) argv[1] else c.pi_js_undefined(), if (argc > 2) argv[2] else c.pi_js_undefined()) catch |err| {
-                if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+                if (err == error.OutOfMemory) return @import("engine.zig").Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
                 return engine.throwCaptured();
             };
         },
         .Object => {
             const properties = c.JS_DupValue(context, first);
-            defer c.JS_FreeValue(context, properties);
+            defer @import("engine.zig").Engine.fromContext(context.?).releaseNativeValue(properties);
             const required = c.JS_NewArray(context);
-            defer c.JS_FreeValue(context, required);
+            defer @import("engine.zig").Engine.fromContext(context.?).releaseNativeValue(required);
             if (c.JS_IsException(properties) or c.JS_IsException(required)) successful = false;
             var names: [*c]c.JSPropertyEnum = null;
             var count: u32 = 0;
             var required_count: u32 = 0;
-            if (!c.JS_IsObject(first) or c.JS_GetOwnPropertyNames(context, &names, &count, first, c.JS_GPN_STRING_MASK) < 0) successful = false;
+            if (!c.JS_IsObject(first) or native_guest_2: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_2 c.JS_GetOwnPropertyNames(context, &names, &count, first, c.JS_GPN_STRING_MASK); } < 0) successful = false;
             defer if (names != null) c.JS_FreePropertyEnum(context, names, count);
             for (0..count) |index| {
                 if (!successful) break;
-                const schema = c.JS_GetProperty(context, first, names[index].atom);
-                defer c.JS_FreeValue(context, schema);
+                const schema = native_guest_1: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_1 c.JS_GetProperty(context, first, names[index].atom); };
+                defer @import("engine.zig").Engine.fromContext(context.?).releaseNativeValue(schema);
                 if (c.JS_IsException(schema)) {
                     successful = false;
                     break;
                 }
                 const optional_atom = c.JS_NewAtom(context, "~optional");
                 defer c.JS_FreeAtom(context, optional_atom);
-                const optional = if (c.JS_IsObject(schema)) c.JS_HasProperty(context, schema, optional_atom) else 0;
+                const optional = if (c.JS_IsObject(schema)) native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_HasProperty(context, schema, optional_atom); } else 0;
                 if (optional < 0) {
                     successful = false;
                     break;
@@ -212,44 +231,46 @@ fn construct(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVa
     }
     if (kind != .Optional) successful = successful and c.JS_DefinePropertyValueStr(context, result, "~kind", c.JS_NewString(context, @tagName(kind)), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) >= 0;
     if (!successful) {
-        c.JS_FreeValue(context, result);
-        if (c.JS_HasException(context)) return c.JS_Throw(context, c.JS_GetException(context));
+        @import("engine.zig").Engine.fromContext(context.?).releaseNativeValue(result);
+        result_owned = false;
+        if (c.JS_HasException(context)) return c.pi_js_exception();
         return c.JS_ThrowTypeError(context, "Native schema construction failed");
     }
+    result_owned = false;
     return result;
 }
 fn record(engine: *engine_mod.Engine, key: c.JSValue, value: c.JSValue, options: c.JSValue) !c.JSValue {
     const properties = try sdk.object(engine);
-    defer engine.freeValue(properties);
+    defer engine.releaseNativeValue(properties);
     var pattern: ?c.JSValue = null;
     var labels: std.ArrayList(c.JSValue) = .empty;
     defer {
-        for (labels.items) |label| engine.freeValue(label);
+        for (labels.items) |label| engine.releaseNativeValue(label);
         labels.deinit(engine.gpa);
     }
     try recordKeys(engine, key, properties, value, &pattern, &labels, false);
     const base = try sdk.object(engine);
-    defer engine.freeValue(base);
+    defer engine.releaseNativeValue(base);
     try sdk.put(engine, base, "type", try engine.checked(c.JS_NewString(engine.context, "object")));
     if (pattern) |expression_value| {
-        const expression = try engine.toString(expression_value);
+        const expression = (engine.toString(expression_value) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(expression);
         const patterns = try sdk.object(engine);
-        defer engine.freeValue(patterns);
+        defer engine.releaseNativeValue(patterns);
         const atom = c.JS_NewAtomLen(engine.context, expression.ptr, expression.len);
         defer c.JS_FreeAtom(engine.context, atom);
         if (c.JS_DefinePropertyValue(engine.context, patterns, atom, c.JS_DupValue(engine.context, value), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
         try sdk.put(engine, base, "patternProperties", c.JS_DupValue(engine.context, patterns));
     } else {
         const required = try sdk.array(engine);
-        defer engine.freeValue(required);
+        defer engine.releaseNativeValue(required);
         var names: [*c]c.JSPropertyEnum = null;
         var count: u32 = 0;
-        if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, properties, c.JS_GPN_STRING_MASK) < 0) return error.JavaScriptException;
+        if (native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetOwnPropertyNames(engine.context, &names, &count, properties, c.JS_GPN_STRING_MASK); } < 0) return error.JavaScriptException;
         defer c.JS_FreePropertyEnum(engine.context, names, count);
         const optional_atom = c.JS_NewAtom(engine.context, "~optional");
         defer c.JS_FreeAtom(engine.context, optional_atom);
-        const optional = if (c.JS_IsObject(value)) c.JS_HasProperty(engine.context, value, optional_atom) else 0;
+        const optional = if (c.JS_IsObject(value)) native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_HasProperty(engine.context, value, optional_atom); } else 0;
         if (optional < 0) return error.JavaScriptException;
         if (optional == 0 and count != 0) {
             for (0..count) |index| if (c.JS_SetPropertyUint32(engine.context, required, @intCast(index), try engine.checked(c.JS_AtomToString(engine.context, names[index].atom))) < 0) return error.JavaScriptException;
@@ -261,22 +282,22 @@ fn record(engine: *engine_mod.Engine, key: c.JSValue, value: c.JSValue, options:
     var active: std.ArrayList(c.JSValue) = .empty;
     defer active.deinit(engine.gpa);
     const result = try cloneMemory(engine, base, &active);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     if (!copyProperties(engine.context, result, options, false)) return error.JavaScriptException;
     return result;
 }
 fn recordPattern(engine: *engine_mod.Engine, pattern: *?c.JSValue, labels: *std.ArrayList(c.JSValue), text: []const u8) !void {
     const label = try engine.checked(c.JS_NewStringLen(engine.context, text.ptr, text.len));
-    errdefer engine.freeValue(label);
-    try labels.append(engine.gpa, label);
+    errdefer engine.releaseNativeValue(label);
+    (labels.append(engine.gpa, label) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     pattern.* = label;
 }
 fn recordKeys(engine: *engine_mod.Engine, key: c.JSValue, properties: c.JSValue, value: c.JSValue, pattern: *?c.JSValue, labels: *std.ArrayList(c.JSValue), in_union: bool) anyerror!void {
     if (!c.JS_IsObject(key)) return;
     const kind = try sdk.get(engine, key, "~kind");
-    defer engine.freeValue(kind);
+    defer engine.releaseNativeValue(kind);
     if (!c.JS_IsString(kind)) return;
-    const name = try engine.toString(kind);
+    const name = (engine.toString(kind) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(name);
     if (std.mem.eql(u8, name, "Any") or std.mem.eql(u8, name, "String") or std.mem.eql(u8, name, "Number") or std.mem.eql(u8, name, "Integer")) {
         if (in_union and std.mem.eql(u8, name, "Any")) return;
@@ -284,9 +305,9 @@ fn recordKeys(engine: *engine_mod.Engine, key: c.JSValue, properties: c.JSValue,
             try recordPattern(engine, pattern, labels, "^.*$");
         } else if (std.mem.eql(u8, name, "String")) {
             const raw = try sdk.get(engine, key, "pattern");
-            defer engine.freeValue(raw);
+            defer engine.releaseNativeValue(raw);
             if (c.JS_IsString(raw) or c.JS_IsObject(raw)) {
-                const text = try engine.toString(raw);
+                const text = (engine.toString(raw) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                 defer engine.gpa.free(text);
                 try recordPattern(engine, pattern, labels, text);
             } else try recordPattern(engine, pattern, labels, "^.*$");
@@ -295,10 +316,10 @@ fn recordKeys(engine: *engine_mod.Engine, key: c.JSValue, properties: c.JSValue,
     }
     if (std.mem.eql(u8, name, "Union")) {
         const choices = try sdk.get(engine, key, "anyOf");
-        defer engine.freeValue(choices);
+        defer engine.releaseNativeValue(choices);
         for (0..try sdk.length(engine, choices)) |index| {
-            const choice = try engine.checked(c.JS_GetPropertyUint32(engine.context, choices, @intCast(index)));
-            defer engine.freeValue(choice);
+            const choice = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, choices, @intCast(index)); });
+            defer engine.releaseNativeValue(choice);
             try recordKeys(engine, choice, properties, value, pattern, labels, true);
         }
         return;
@@ -306,7 +327,7 @@ fn recordKeys(engine: *engine_mod.Engine, key: c.JSValue, properties: c.JSValue,
     if (std.mem.eql(u8, name, "Intersect") and !in_union) {
         const choices = try intersectKeys(engine, key);
         defer {
-            for (choices.items) |choice| engine.freeValue(choice);
+            for (choices.items) |choice| engine.releaseNativeValue(choice);
             var owned_choices = choices;
             owned_choices.deinit(engine.gpa);
         }
@@ -318,9 +339,9 @@ fn recordKeys(engine: *engine_mod.Engine, key: c.JSValue, properties: c.JSValue,
         try sdk.put(engine, properties, "false", c.JS_DupValue(engine.context, value));
     } else if (std.mem.eql(u8, name, "Literal")) {
         const literal = try sdk.get(engine, key, "const");
-        defer engine.freeValue(literal);
+        defer engine.releaseNativeValue(literal);
         if (in_union and !c.JS_IsString(literal) and !c.JS_IsNumber(literal)) return;
-        const label = try engine.toString(literal);
+        const label = (engine.toString(literal) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(label);
         const atom = c.JS_NewAtomLen(engine.context, label.ptr, label.len);
         defer c.JS_FreeAtom(engine.context, atom);
@@ -330,29 +351,29 @@ fn recordKeys(engine: *engine_mod.Engine, key: c.JSValue, properties: c.JSValue,
 fn keyKind(engine: *engine_mod.Engine, key: c.JSValue) ![]u8 {
     if (!c.JS_IsObject(key)) return engine.gpa.dupe(u8, "Unknown");
     const kind = try sdk.get(engine, key, "~kind");
-    defer engine.freeValue(kind);
+    defer engine.releaseNativeValue(kind);
     return if (c.JS_IsString(kind)) engine.toString(kind) else engine.gpa.dupe(u8, "Unknown");
 }
 fn ownKey(engine: *engine_mod.Engine, list: *std.ArrayList(c.JSValue), key: c.JSValue) !void {
     const owned = c.JS_DupValue(engine.context, key);
-    errdefer engine.freeValue(owned);
-    try list.append(engine.gpa, owned);
+    errdefer engine.releaseNativeValue(owned);
+    (list.append(engine.gpa, owned) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
 }
 fn keyChoices(engine: *engine_mod.Engine, key: c.JSValue, list: *std.ArrayList(c.JSValue)) anyerror!void {
     const kind = try keyKind(engine, key);
     defer engine.gpa.free(kind);
     if (std.mem.eql(u8, kind, "Union")) {
         const values = try sdk.get(engine, key, "anyOf");
-        defer engine.freeValue(values);
+        defer engine.releaseNativeValue(values);
         for (0..try sdk.length(engine, values)) |index| {
-            const child = try engine.checked(c.JS_GetPropertyUint32(engine.context, values, @intCast(index)));
-            defer engine.freeValue(child);
+            const child = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, values, @intCast(index)); });
+            defer engine.releaseNativeValue(child);
             try keyChoices(engine, child, list);
         }
     } else if (std.mem.eql(u8, kind, "Intersect")) {
         var nested = try intersectKeys(engine, key);
         defer {
-            for (nested.items) |child| engine.freeValue(child);
+            for (nested.items) |child| engine.releaseNativeValue(child);
             nested.deinit(engine.gpa);
         }
         for (nested.items) |child| try ownKey(engine, list, child);
@@ -366,26 +387,26 @@ fn insideKey(engine: *engine_mod.Engine, left: c.JSValue, right: c.JSValue) !boo
     if (std.mem.eql(u8, rhs, "Any") or std.mem.eql(u8, rhs, "Unknown") or std.mem.eql(u8, lhs, "Never")) return true;
     if (std.mem.eql(u8, lhs, "Literal")) {
         const literal = try sdk.get(engine, left, "const");
-        defer engine.freeValue(literal);
+        defer engine.releaseNativeValue(literal);
         if (std.mem.eql(u8, rhs, "Literal")) {
             const other = try sdk.get(engine, right, "const");
-            defer engine.freeValue(other);
+            defer engine.releaseNativeValue(other);
             return c.JS_IsStrictEqual(engine.context, literal, other);
         }
         return (std.mem.eql(u8, rhs, "String") and c.JS_IsString(literal)) or (std.mem.eql(u8, rhs, "Number") and c.JS_IsNumber(literal)) or (std.mem.eql(u8, rhs, "Boolean") and c.JS_IsBool(literal));
     }
     if (std.mem.eql(u8, lhs, "Array") and std.mem.eql(u8, rhs, "Array")) {
         const l = try sdk.get(engine, left, "items");
-        defer engine.freeValue(l);
+        defer engine.releaseNativeValue(l);
         const r = try sdk.get(engine, right, "items");
-        defer engine.freeValue(r);
+        defer engine.releaseNativeValue(r);
         return insideKey(engine, l, r);
     }
     if (std.mem.eql(u8, lhs, "Record") and std.mem.eql(u8, rhs, "Record")) {
         const l = try firstRecordValue(engine, left);
-        defer engine.freeValue(l);
+        defer engine.releaseNativeValue(l);
         const r = try firstRecordValue(engine, right);
-        defer engine.freeValue(r);
+        defer engine.releaseNativeValue(r);
         return insideKey(engine, l, r);
     }
     return std.mem.eql(u8, lhs, rhs) or (std.mem.eql(u8, lhs, "Integer") and std.mem.eql(u8, rhs, "Number"));
@@ -409,29 +430,29 @@ fn narrowKey(engine: *engine_mod.Engine, left: c.JSValue, right: c.JSValue) !c.J
     if (r_inside) return c.JS_DupValue(engine.context, right);
     if (l_inside) return c.JS_DupValue(engine.context, left);
     const never = try sdk.object(engine);
-    errdefer engine.freeValue(never);
+    errdefer engine.releaseNativeValue(never);
     if (c.JS_DefinePropertyValueStr(engine.context, never, "~kind", c.JS_NewString(engine.context, "Never"), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     return never;
 }
 fn firstRecordValue(engine: *engine_mod.Engine, schema: c.JSValue) !c.JSValue {
     const patterns = try sdk.get(engine, schema, "patternProperties");
-    defer engine.freeValue(patterns);
+    defer engine.releaseNativeValue(patterns);
     var names: [*c]c.JSPropertyEnum = null;
     var count: u32 = 0;
-    if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, patterns, c.JS_GPN_STRING_MASK) < 0) return error.JavaScriptException;
+    if (native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetOwnPropertyNames(engine.context, &names, &count, patterns, c.JS_GPN_STRING_MASK); } < 0) return error.JavaScriptException;
     defer c.JS_FreePropertyEnum(engine.context, names, count);
-    return if (count == 0) c.pi_js_undefined() else engine.checked(c.JS_GetProperty(engine.context, patterns, names[0].atom));
+    return if (count == 0) c.pi_js_undefined() else engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetProperty(engine.context, patterns, names[0].atom); });
 }
 fn compositeProperties(engine: *engine_mod.Engine, schema: c.JSValue) !c.JSValue {
     const kind = try keyKind(engine, schema);
     defer engine.gpa.free(kind);
     if (std.mem.eql(u8, kind, "Object")) return sdk.get(engine, schema, "properties");
     const properties = try sdk.object(engine);
-    errdefer engine.freeValue(properties);
+    errdefer engine.releaseNativeValue(properties);
     if (std.mem.eql(u8, kind, "Tuple")) {
         const items = try sdk.get(engine, schema, "items");
-        defer engine.freeValue(items);
-        for (0..try sdk.length(engine, items)) |index| if (c.JS_SetPropertyUint32(engine.context, properties, @intCast(index), try engine.checked(c.JS_GetPropertyUint32(engine.context, items, @intCast(index)))) < 0) return error.JavaScriptException;
+        defer engine.releaseNativeValue(items);
+        for (0..try sdk.length(engine, items)) |index| if (c.JS_SetPropertyUint32(engine.context, properties, @intCast(index), try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, items, @intCast(index)); })) < 0) return error.JavaScriptException;
     }
     return properties;
 }
@@ -439,24 +460,24 @@ fn modifier(engine: *engine_mod.Engine, schema: c.JSValue, name: [:0]const u8) !
     if (!c.JS_IsObject(schema) or c.JS_IsFunction(engine.context, schema)) return false;
     const atom = c.JS_NewAtom(engine.context, name);
     defer c.JS_FreeAtom(engine.context, atom);
-    const present = c.JS_HasProperty(engine.context, schema, atom);
+    const present = native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_HasProperty(engine.context, schema, atom); };
     if (present < 0) return error.JavaScriptException;
     return present > 0;
 }
 fn objectSchema(engine: *engine_mod.Engine, properties: c.JSValue) !c.JSValue {
     const result = try sdk.object(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     try sdk.put(engine, result, "type", try engine.checked(c.JS_NewString(engine.context, "object")));
     const required = try sdk.array(engine);
-    defer engine.freeValue(required);
+    defer engine.releaseNativeValue(required);
     var names: [*c]c.JSPropertyEnum = null;
     var count: u32 = 0;
     var next: u32 = 0;
-    if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, properties, c.JS_GPN_STRING_MASK) < 0) return error.JavaScriptException;
+    if (native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetOwnPropertyNames(engine.context, &names, &count, properties, c.JS_GPN_STRING_MASK); } < 0) return error.JavaScriptException;
     defer c.JS_FreePropertyEnum(engine.context, names, count);
     for (0..count) |index| {
-        const property = try engine.checked(c.JS_GetProperty(engine.context, properties, names[index].atom));
-        defer engine.freeValue(property);
+        const property = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetProperty(engine.context, properties, names[index].atom); });
+        defer engine.releaseNativeValue(property);
         if (!try modifier(engine, property, "~optional")) {
             if (c.JS_SetPropertyUint32(engine.context, required, next, try engine.checked(c.JS_AtomToString(engine.context, names[index].atom))) < 0) return error.JavaScriptException;
             next += 1;
@@ -469,55 +490,55 @@ fn objectSchema(engine: *engine_mod.Engine, properties: c.JSValue) !c.JSValue {
 }
 fn composite(engine: *engine_mod.Engine, left: c.JSValue, right: c.JSValue) anyerror!c.JSValue {
     const lhs = try compositeProperties(engine, left);
-    defer engine.freeValue(lhs);
+    defer engine.releaseNativeValue(lhs);
     const rhs = try compositeProperties(engine, right);
-    defer engine.freeValue(rhs);
+    defer engine.releaseNativeValue(rhs);
     const properties = try sdk.object(engine);
-    defer engine.freeValue(properties);
+    defer engine.releaseNativeValue(properties);
     for ([_]c.JSValue{ lhs, rhs }) |source| {
         var names: [*c]c.JSPropertyEnum = null;
         var count: u32 = 0;
-        if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, source, c.JS_GPN_STRING_MASK) < 0) return error.JavaScriptException;
+        if (native_guest_8: { try engine.checkNativeEntry(); break :native_guest_8 c.JS_GetOwnPropertyNames(engine.context, &names, &count, source, c.JS_GPN_STRING_MASK); } < 0) return error.JavaScriptException;
         defer c.JS_FreePropertyEnum(engine.context, names, count);
         for (0..count) |index| {
             const atom = names[index].atom;
-            const exists = c.JS_HasProperty(engine.context, properties, atom);
+            const exists = native_guest_7: { try engine.checkNativeEntry(); break :native_guest_7 c.JS_HasProperty(engine.context, properties, atom); };
             if (exists < 0) return error.JavaScriptException;
             if (exists > 0) continue;
-            const l = c.JS_HasProperty(engine.context, lhs, atom);
+            const l = native_guest_6: { try engine.checkNativeEntry(); break :native_guest_6 c.JS_HasProperty(engine.context, lhs, atom); };
             if (l < 0) return error.JavaScriptException;
-            const r = c.JS_HasProperty(engine.context, rhs, atom);
+            const r = native_guest_5: { try engine.checkNativeEntry(); break :native_guest_5 c.JS_HasProperty(engine.context, rhs, atom); };
             if (r < 0) return error.JavaScriptException;
             if (l > 0 and r > 0) {
-                const first = try engine.checked(c.JS_GetProperty(engine.context, lhs, atom));
-                defer engine.freeValue(first);
-                const second = try engine.checked(c.JS_GetProperty(engine.context, rhs, atom));
-                defer engine.freeValue(second);
+                const first = try engine.checked(native_guest_4: { try engine.checkNativeEntry(); break :native_guest_4 c.JS_GetProperty(engine.context, lhs, atom); });
+                defer engine.releaseNativeValue(first);
+                const second = try engine.checked(native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_GetProperty(engine.context, rhs, atom); });
+                defer engine.releaseNativeValue(second);
                 const intersection = try sdk.object(engine);
-                defer engine.freeValue(intersection);
+                defer engine.releaseNativeValue(intersection);
                 const items = try sdk.array(engine);
-                defer engine.freeValue(items);
+                defer engine.releaseNativeValue(items);
                 if (c.JS_SetPropertyUint32(engine.context, items, 0, c.JS_DupValue(engine.context, first)) < 0 or c.JS_SetPropertyUint32(engine.context, items, 1, c.JS_DupValue(engine.context, second)) < 0) return error.JavaScriptException;
                 try sdk.put(engine, intersection, "allOf", c.JS_DupValue(engine.context, items));
                 if (c.JS_DefinePropertyValueStr(engine.context, intersection, "~kind", c.JS_NewString(engine.context, "Intersect"), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
                 const evaluated = try evaluateIntersection(engine, intersection);
-                defer engine.freeValue(evaluated);
+                defer engine.releaseNativeValue(evaluated);
                 const copied = try sdk.object(engine);
                 var copied_consumed = false;
-                errdefer if (!copied_consumed) engine.freeValue(copied);
+                errdefer if (!copied_consumed) engine.releaseNativeValue(copied);
                 var child_names: [*c]c.JSPropertyEnum = null;
                 var child_count: u32 = 0;
-                if (c.JS_GetOwnPropertyNames(engine.context, &child_names, &child_count, evaluated, c.JS_GPN_STRING_MASK) < 0) return error.JavaScriptException;
+                if (native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetOwnPropertyNames(engine.context, &child_names, &child_count, evaluated, c.JS_GPN_STRING_MASK); } < 0) return error.JavaScriptException;
                 defer c.JS_FreePropertyEnum(engine.context, child_names, child_count);
                 for (0..child_count) |child_index| {
                     const label = c.JS_AtomToCString(engine.context, child_names[child_index].atom) orelse return error.OutOfMemory;
                     defer c.JS_FreeCString(engine.context, label);
                     if (std.mem.eql(u8, std.mem.span(label), "~optional") or std.mem.eql(u8, std.mem.span(label), "~readonly")) continue;
                     var descriptor: c.JSPropertyDescriptor = undefined;
-                    if (c.JS_GetOwnProperty(engine.context, &descriptor, evaluated, child_names[child_index].atom) < 0) return error.JavaScriptException;
-                    defer engine.freeValue(descriptor.value);
-                    defer engine.freeValue(descriptor.getter);
-                    defer engine.freeValue(descriptor.setter);
+                    if (native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetOwnProperty(engine.context, &descriptor, evaluated, child_names[child_index].atom); } < 0) return error.JavaScriptException;
+                    defer engine.releaseNativeValue(descriptor.value);
+                    defer engine.releaseNativeValue(descriptor.getter);
+                    defer engine.releaseNativeValue(descriptor.setter);
                     if (c.JS_DefinePropertyValue(engine.context, copied, child_names[child_index].atom, c.JS_DupValue(engine.context, descriptor.value), descriptor.flags) < 0) return error.JavaScriptException;
                 }
                 inline for (.{ "~optional", "~readonly" }) |name| if (try modifier(engine, first, name) and try modifier(engine, second, name)) {
@@ -525,7 +546,7 @@ fn composite(engine: *engine_mod.Engine, left: c.JSValue, right: c.JSValue) anye
                 };
                 copied_consumed = true;
                 if (c.JS_DefinePropertyValue(engine.context, properties, atom, copied, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
-            } else if (c.JS_DefinePropertyValue(engine.context, properties, atom, try engine.checked(c.JS_GetProperty(engine.context, if (l > 0) lhs else rhs, atom)), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+            } else if (c.JS_DefinePropertyValue(engine.context, properties, atom, try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetProperty(engine.context, if (l > 0) lhs else rhs, atom); }), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
         }
     }
     return objectSchema(engine, properties);
@@ -533,18 +554,18 @@ fn composite(engine: *engine_mod.Engine, left: c.JSValue, right: c.JSValue) anye
 pub fn evaluateIntersection(engine: *engine_mod.Engine, schema: c.JSValue) !c.JSValue {
     var choices = try intersectKeys(engine, schema);
     defer {
-        for (choices.items) |choice| engine.freeValue(choice);
+        for (choices.items) |choice| engine.releaseNativeValue(choice);
         choices.deinit(engine.gpa);
     }
     if (choices.items.len == 1) return c.JS_DupValue(engine.context, choices.items[0]);
     const result = try sdk.object(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     if (choices.items.len == 0) {
         try sdk.put(engine, result, "not", try sdk.object(engine));
         if (c.JS_DefinePropertyValueStr(engine.context, result, "~kind", c.JS_NewString(engine.context, "Never"), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     } else {
         const items = try sdk.array(engine);
-        defer engine.freeValue(items);
+        defer engine.releaseNativeValue(items);
         for (choices.items, 0..) |choice, index| if (c.JS_SetPropertyUint32(engine.context, items, @intCast(index), c.JS_DupValue(engine.context, choice)) < 0) return error.JavaScriptException;
         try sdk.put(engine, result, "anyOf", c.JS_DupValue(engine.context, items));
         if (c.JS_DefinePropertyValueStr(engine.context, result, "~kind", c.JS_NewString(engine.context, "Union"), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
@@ -554,17 +575,17 @@ pub fn evaluateIntersection(engine: *engine_mod.Engine, schema: c.JSValue) !c.JS
 fn intersectKeys(engine: *engine_mod.Engine, key: c.JSValue) anyerror!std.ArrayList(c.JSValue) {
     var result: std.ArrayList(c.JSValue) = .empty;
     errdefer {
-        for (result.items) |child| engine.freeValue(child);
+        for (result.items) |child| engine.releaseNativeValue(child);
         result.deinit(engine.gpa);
     }
     const operands = try sdk.get(engine, key, "allOf");
-    defer engine.freeValue(operands);
+    defer engine.releaseNativeValue(operands);
     for (0..try sdk.length(engine, operands)) |index| {
-        const operand = try engine.checked(c.JS_GetPropertyUint32(engine.context, operands, @intCast(index)));
-        defer engine.freeValue(operand);
+        const operand = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, operands, @intCast(index)); });
+        defer engine.releaseNativeValue(operand);
         var choices: std.ArrayList(c.JSValue) = .empty;
         defer {
-            for (choices.items) |choice| engine.freeValue(choice);
+            for (choices.items) |choice| engine.releaseNativeValue(choice);
             choices.deinit(engine.gpa);
         }
         try keyChoices(engine, operand, &choices);
@@ -573,24 +594,25 @@ fn intersectKeys(engine: *engine_mod.Engine, key: c.JSValue) anyerror!std.ArrayL
         } else {
             var next: std.ArrayList(c.JSValue) = .empty;
             errdefer {
-                for (next.items) |child| engine.freeValue(child);
+                for (next.items) |child| engine.releaseNativeValue(child);
                 next.deinit(engine.gpa);
             }
             for (result.items) |left| for (choices.items) |right| {
                 const narrowed = try narrowKey(engine, left, right);
                 next.append(engine.gpa, narrowed) catch |err| {
-                    engine.freeValue(narrowed);
+        if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+                    engine.releaseNativeValue(narrowed);
                     return err;
                 };
             };
-            for (result.items) |child| engine.freeValue(child);
+            for (result.items) |child| engine.releaseNativeValue(child);
             result.deinit(engine.gpa);
             result = next;
         }
     }
     var broadened: std.ArrayList(c.JSValue) = .empty;
     errdefer {
-        for (broadened.items) |child| engine.freeValue(child);
+        for (broadened.items) |child| engine.releaseNativeValue(child);
         broadened.deinit(engine.gpa);
     }
     for (result.items) |candidate| {
@@ -598,7 +620,7 @@ fn intersectKeys(engine: *engine_mod.Engine, key: c.JSValue) anyerror!std.ArrayL
         defer engine.gpa.free(kind);
         if (std.mem.eql(u8, kind, "Never")) continue;
         if (std.mem.eql(u8, kind, "Any") or std.mem.eql(u8, kind, "Unknown")) {
-            for (broadened.items) |prior| engine.freeValue(prior);
+            for (broadened.items) |prior| engine.releaseNativeValue(prior);
             broadened.clearRetainingCapacity();
             try ownKey(engine, &broadened, candidate);
             break;
@@ -612,25 +634,30 @@ fn intersectKeys(engine: *engine_mod.Engine, key: c.JSValue) anyerror!std.ArrayL
         var prior_index = broadened.items.len;
         while (prior_index > 0) {
             prior_index -= 1;
-            if (try insideKey(engine, broadened.items[prior_index], candidate)) engine.freeValue(broadened.orderedRemove(prior_index));
+            if (try insideKey(engine, broadened.items[prior_index], candidate)) engine.releaseNativeValue(broadened.orderedRemove(prior_index));
         }
         try ownKey(engine, &broadened, candidate);
     }
-    for (result.items) |child| engine.freeValue(child);
+    for (result.items) |child| engine.releaseNativeValue(child);
     result.deinit(engine.gpa);
     return broadened;
 }
 fn copySchemaProperties(context: ?*c.JSContext, target: c.JSValue, source: c.JSValue) bool {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    const entry = engine.nativeCallbackResult(c.pi_js_undefined());
+    if (engine.nativeTerminationObserved() or c.JS_IsException(entry)) return false;
     var names: [*c]c.JSPropertyEnum = null;
     var count: u32 = 0;
     if (c.JS_GetOwnPropertyNames(context, &names, &count, source, c.JS_GPN_STRING_MASK) < 0) return false;
     defer c.JS_FreePropertyEnum(context, names, count);
     for (0..count) |index| {
+        const pending = engine.nativeCallbackResult(c.pi_js_undefined());
+        if (engine.nativeTerminationObserved() or c.JS_IsException(pending)) return false;
         var descriptor: c.JSPropertyDescriptor = undefined;
         if (c.JS_GetOwnProperty(context, &descriptor, source, names[index].atom) < 0) return false;
-        defer c.JS_FreeValue(context, descriptor.value);
-        defer c.JS_FreeValue(context, descriptor.getter);
-        defer c.JS_FreeValue(context, descriptor.setter);
+        defer @import("engine.zig").Engine.fromContext(context.?).releaseNativeValue(descriptor.value);
+        defer @import("engine.zig").Engine.fromContext(context.?).releaseNativeValue(descriptor.getter);
+        defer @import("engine.zig").Engine.fromContext(context.?).releaseNativeValue(descriptor.setter);
         if (c.JS_DefineProperty(context, target, names[index].atom, descriptor.value, descriptor.getter, descriptor.setter, descriptor.flags | c.JS_PROP_HAS_VALUE | c.JS_PROP_HAS_CONFIGURABLE | c.JS_PROP_HAS_WRITABLE | c.JS_PROP_HAS_ENUMERABLE) < 0) return false;
     }
     return true;
@@ -638,22 +665,22 @@ fn copySchemaProperties(context: ?*c.JSContext, target: c.JSValue, source: c.JSV
 fn cloneMemory(engine: *engine_mod.Engine, value: c.JSValue, active: *std.ArrayList(c.JSValue)) anyerror!c.JSValue {
     if (!c.JS_IsObject(value) or c.JS_IsFunction(engine.context, value)) return c.JS_DupValue(engine.context, value);
     for (active.items) |parent| if (c.JS_IsStrictEqual(engine.context, parent, value)) return engine.checked(c.JS_ThrowRangeError(engine.context, "Maximum call stack size exceeded"));
-    try active.append(engine.gpa, value);
+    (active.append(engine.gpa, value) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer _ = active.pop();
     if (c.JS_GetTypedArrayType(value) >= 0) return sdk.invoke(engine, value, "slice", &.{});
     if (c.JS_IsArray(value)) {
         const result = try sdk.array(engine);
-        errdefer engine.freeValue(result);
+        errdefer engine.releaseNativeValue(result);
         const count = try sdk.length(engine, value);
         try sdk.put(engine, result, "length", c.JS_NewInt64(engine.context, @intCast(count)));
         for (0..count) |index| {
             const key = c.JS_NewAtomUInt32(engine.context, @intCast(index));
             defer c.JS_FreeAtom(engine.context, key);
-            const present = c.JS_HasProperty(engine.context, value, key);
+            const present = native_guest_9: { try engine.checkNativeEntry(); break :native_guest_9 c.JS_HasProperty(engine.context, value, key); };
             if (present < 0) return error.JavaScriptException;
             if (present == 0) continue;
-            const child = try engine.checked(c.JS_GetPropertyUint32(engine.context, value, @intCast(index)));
-            defer engine.freeValue(child);
+            const child = try engine.checked(native_guest_8: { try engine.checkNativeEntry(); break :native_guest_8 c.JS_GetPropertyUint32(engine.context, value, @intCast(index)); });
+            defer engine.releaseNativeValue(child);
             if (c.JS_SetPropertyUint32(engine.context, result, @intCast(index), try cloneMemory(engine, child, active)) < 0) return error.JavaScriptException;
         }
         return result;
@@ -661,76 +688,76 @@ fn cloneMemory(engine: *engine_mod.Engine, value: c.JSValue, active: *std.ArrayL
     const class_atom = c.JS_GetClassName(engine.runtime, c.JS_GetClassID(value));
     defer c.JS_FreeAtom(engine.context, class_atom);
     const class_value = try engine.checked(c.JS_AtomToString(engine.context, class_atom));
-    defer engine.freeValue(class_value);
-    const name = try engine.toString(class_value);
+    defer engine.releaseNativeValue(class_value);
+    const name = (engine.toString(class_value) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(name);
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
+    defer engine.releaseNativeValue(global);
     if (std.mem.eql(u8, name, "RegExp")) {
         const constructor = try sdk.get(engine, global, "RegExp");
-        defer engine.freeValue(constructor);
+        defer engine.releaseNativeValue(constructor);
         const source = try sdk.get(engine, value, "source");
-        defer engine.freeValue(source);
+        defer engine.releaseNativeValue(source);
         const flags = try sdk.get(engine, value, "flags");
-        defer engine.freeValue(flags);
+        defer engine.releaseNativeValue(flags);
         var args = [_]c.JSValue{ source, flags };
-        return engine.checked(c.JS_CallConstructor(engine.context, constructor, args.len, &args));
+        return engine.checked(native_guest_7: { try engine.checkNativeEntry(); break :native_guest_7 c.JS_CallConstructor(engine.context, constructor, args.len, &args); });
     }
     if (std.mem.eql(u8, name, "Map") or std.mem.eql(u8, name, "Set")) {
         const iterator = try sdk.invoke(engine, value, if (std.mem.eql(u8, name, "Map")) "entries" else "values", &.{});
-        defer engine.freeValue(iterator);
+        defer engine.releaseNativeValue(iterator);
         const array = try sdk.get(engine, global, "Array");
-        defer engine.freeValue(array);
+        defer engine.releaseNativeValue(array);
         const items = try sdk.invoke(engine, array, "from", &.{iterator});
-        defer engine.freeValue(items);
+        defer engine.releaseNativeValue(items);
         const cloned = try cloneMemory(engine, items, active);
-        defer engine.freeValue(cloned);
-        const constructor_name = try engine.gpa.dupeZ(u8, name);
+        defer engine.releaseNativeValue(cloned);
+        const constructor_name = (engine.gpa.dupeZ(u8, name) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(constructor_name);
         const constructor = try sdk.get(engine, global, constructor_name);
-        defer engine.freeValue(constructor);
+        defer engine.releaseNativeValue(constructor);
         var args = [_]c.JSValue{cloned};
-        return engine.checked(c.JS_CallConstructor(engine.context, constructor, 1, &args));
+        return engine.checked(native_guest_6: { try engine.checkNativeEntry(); break :native_guest_6 c.JS_CallConstructor(engine.context, constructor, 1, &args); });
     }
-    const prototype = try engine.checked(c.JS_GetPrototype(engine.context, value));
-    defer engine.freeValue(prototype);
+    const prototype = try engine.checked(native_guest_5: { try engine.checkNativeEntry(); break :native_guest_5 c.JS_GetPrototype(engine.context, value); });
+    defer engine.releaseNativeValue(prototype);
     if (!c.JS_IsNull(prototype)) {
         const constructor = try sdk.get(engine, prototype, "constructor");
-        defer engine.freeValue(constructor);
+        defer engine.releaseNativeValue(constructor);
         if (c.JS_IsFunction(engine.context, constructor)) {
             const class_name = try sdk.get(engine, constructor, "name");
-            defer engine.freeValue(class_name);
-            const label = try engine.toString(class_name);
+            defer engine.releaseNativeValue(class_name);
+            const label = (engine.toString(class_name) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(label);
             if (!std.mem.eql(u8, label, "Object")) return c.JS_DupValue(engine.context, value);
         }
     }
     const result = try sdk.object(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     const kind = c.JS_NewAtom(engine.context, "~kind");
     defer c.JS_FreeAtom(engine.context, kind);
     const unsafe = c.JS_NewAtom(engine.context, "~unsafe");
     defer c.JS_FreeAtom(engine.context, unsafe);
-    const is_schema = c.JS_HasProperty(engine.context, value, kind) != 0 or c.JS_HasProperty(engine.context, value, unsafe) != 0;
+    const is_schema = native_guest_4: { try engine.checkNativeEntry(); break :native_guest_4 c.JS_HasProperty(engine.context, value, kind); } != 0 or native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_HasProperty(engine.context, value, unsafe); } != 0;
     var names: [*c]c.JSPropertyEnum = null;
     var count: u32 = 0;
-    if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, value, c.JS_GPN_STRING_MASK | if (is_schema) @as(c_int, 0) else c.JS_GPN_SYMBOL_MASK) < 0) return error.JavaScriptException;
+    if (native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetOwnPropertyNames(engine.context, &names, &count, value, c.JS_GPN_STRING_MASK | if (is_schema) @as(c_int, 0) else c.JS_GPN_SYMBOL_MASK); } < 0) return error.JavaScriptException;
     defer c.JS_FreePropertyEnum(engine.context, names, count);
     for (0..count) |index| {
         const key = try engine.checked(c.JS_AtomToString(engine.context, names[index].atom));
-        defer engine.freeValue(key);
+        defer engine.releaseNativeValue(key);
         if (c.JS_IsString(key)) {
-            const text = try engine.toString(key);
+            const text = (engine.toString(key) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(text);
             if (std.mem.eql(u8, text, "__proto__") or std.mem.eql(u8, text, "constructor") or std.mem.eql(u8, text, "prototype")) continue;
         }
         var descriptor: c.JSPropertyDescriptor = undefined;
-        if (c.JS_GetOwnProperty(engine.context, &descriptor, value, names[index].atom) < 0) return error.JavaScriptException;
-        defer engine.freeValue(descriptor.value);
-        defer engine.freeValue(descriptor.getter);
-        defer engine.freeValue(descriptor.setter);
-        const child = if (is_schema) c.JS_DupValue(engine.context, descriptor.value) else try engine.checked(c.JS_GetProperty(engine.context, value, names[index].atom));
-        defer engine.freeValue(child);
+        if (native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetOwnProperty(engine.context, &descriptor, value, names[index].atom); } < 0) return error.JavaScriptException;
+        defer engine.releaseNativeValue(descriptor.value);
+        defer engine.releaseNativeValue(descriptor.getter);
+        defer engine.releaseNativeValue(descriptor.setter);
+        const child = if (is_schema) c.JS_DupValue(engine.context, descriptor.value) else try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetProperty(engine.context, value, names[index].atom); });
+        defer engine.releaseNativeValue(child);
         const flags = if (is_schema) descriptor.flags else c.JS_PROP_C_W_E;
         if (c.JS_DefinePropertyValue(engine.context, result, names[index].atom, try cloneMemory(engine, child, active), flags) < 0) return error.JavaScriptException;
     }

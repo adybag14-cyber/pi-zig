@@ -159,7 +159,7 @@ fn escapeFatal(engine: *v.em.Engine, err: anyerror, generation: u64) anyerror!vo
 }
 fn failError(scope: *Scope, owner: c.JSValue, err: anyerror, generation: u64) anyerror!void {
     try escapeFatal(scope.engine, err, generation);
-    const reason = flow.reason(scope.engine, err);
+    const reason = try flow.reason(scope.engine, err);
     defer scope.engine.freeValue(reason);
     if (scope.engine.captured_exception) |captured| {
         scope.engine.captured_exception = null;
@@ -202,7 +202,7 @@ fn applyFailure(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     const generation = scope.engine.native_allocation_generation;
     _ = scope.invoke(try scope.get(owner, "decoder"), "fail", &.{ reason, c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner))) }) catch |raw_err| {
         try escapeFatal(scope.engine, raw_err, generation);
-        const failure = flow.reason(scope.engine, raw_err);
+        const failure = try flow.reason(scope.engine, raw_err);
         defer scope.engine.freeValue(failure);
         try @import("native_stream.zig").reject(scope.engine, try scope.get(owner, "stream"), failure);
         try async_body.reject(scope, owner, failure);

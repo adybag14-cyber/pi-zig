@@ -84,6 +84,6 @@ fn run(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roots:
         if (err == error.OutOfMemory) return err;
         const clean = kind == .cleanAndInstallGitDependencies and try stage(&s, job) == 10; const clone = kind == .installGit and s.truthy(try s.get(job, "cloneTry")); if (!clean and !clone) return err;
         var generation: u64 = 0; if (c.JS_ToBigUint64(engine.context, &generation, try s.get(job, "boundary")) < 0) return v.js.capture(engine);
-        const reason = (try package_catch.take(engine, err, generation)) orelse @import("native_agent_async.zig").reason(engine, err); defer engine.freeValue(reason); return if (clean) failClean(&s, manager, job, arg(args, 0), reason) else failClone(&s, manager, imports, job, reason);
+        const reason = (try package_catch.take(engine, err, generation)) orelse try @import("native_agent_async.zig").reason(engine, err); defer engine.freeValue(reason); return if (clean) failClean(&s, manager, job, arg(args, 0), reason) else failClone(&s, manager, imports, job, reason);
     };
 }

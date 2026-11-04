@@ -44,27 +44,34 @@ fn fail(engine: *em.Engine, err: anyerror) c.JSValue {
 fn invoke(_: ?*c.JSContext, owner: c.JSValue, receiver: c.JSValue, argc: c_int, argv: [*c]const c.JSValue, raw: c_int, input: c.JSValue, state: [*c]c.JSValue, action: [*c]c_int) callconv(.c) c.JSValue {
     const captures: *Captures = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)).?));
     const engine = captures.engine;
-    engine.checkNativeEntry() catch return engine.throwCaptured();
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    engine.checkNativeEntry() catch |err|
+        return engine.leaveNativeInvocation(&invocation, failAction(engine, err, action));
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
     const args: []const c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
     const completion: Completion = @enumFromInt(raw);
-    var invocation: em.Engine.NativeInvocation = .{};
-    engine.enterNativeInvocation(&invocation);
     const result = invokeImplementation(captures, receiver, args, state, action, completion, input);
     return engine.leaveNativeInvocation(&invocation, result);
+}
+fn failAction(engine: *em.Engine, err: anyerror, action: [*c]c_int) c.JSValue {
+    // This is an actual native error-union result, never a guest payload.
+    // Keep lifecycle history separate if cancellation selected ordinary cleanup.
+    if (err == error.ExecutionTerminated) action[0] = c.JS_PI_AF_ABORTED;
+    return fail(engine, err);
 }
 fn invokeImplementation(captures: *Captures, receiver: c.JSValue, args: []const c.JSValue, state: [*c]c.JSValue, action: [*c]c_int, completion: Completion, input: c.JSValue) c.JSValue {
     const engine = captures.engine;
     const result: Action = switch (captures.implementation) {
         .callback => |callback| blk: {
             if (completion != .start) return c.JS_ThrowInternalError(engine.context, "Simple native async body resumed");
-            break :blk .{ .returned = callback(engine, receiver, args, captures.values) catch |err| return fail(engine, err) };
+            break :blk .{ .returned = callback(engine, receiver, args, captures.values) catch |err| return failAction(engine, err, action) };
         },
-        .body => |body| body(engine, receiver, args, captures.values, @ptrCast(state), completion, input) catch |err| return fail(engine, err),
+        .body => |body| body(engine, receiver, args, captures.values, @ptrCast(state), completion, input) catch |err| return failAction(engine, err, action),
         .arguments => |definition| blk: {
-            var arguments = Arguments.current(engine, args) catch |err| return fail(engine, err);
-            break :blk definition.body(engine, receiver, &arguments, captures.values, @ptrCast(state), completion, input) catch |err| return fail(engine, err);
+            var arguments = Arguments.current(engine, args) catch |err| return failAction(engine, err, action);
+            break :blk definition.body(engine, receiver, &arguments, captures.values, @ptrCast(state), completion, input) catch |err| return failAction(engine, err, action);
         },
     };
     return switch (result) {

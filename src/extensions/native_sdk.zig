@@ -3,6 +3,31 @@ const std = @import("std");
 const engine_mod = @import("engine.zig");
 const js = @import("native_js_values.zig");
 const c = engine_mod.c;
+
+/// Publish a real typed host allocation failure before caller-owned roots retire.
+/// No diagnostic value, allocation generation range, or Error flag is evidence.
+fn retainHostAllocationFailure(engine: *engine_mod.Engine, outcome: anytype) @TypeOf(outcome) {
+    return outcome catch |err| {
+        if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+        return err;
+    };
+}
+fn nativeText(engine: *engine_mod.Engine, value: c.JSValue) ![]u8 {
+    try engine.checkNativeEntry();
+    return retainHostAllocationFailure(engine, engine.toString(value));
+}
+fn nativeStringify(engine: *engine_mod.Engine, value: c.JSValue) ![]u8 {
+    try engine.checkNativeEntry();
+    return retainHostAllocationFailure(engine, engine.stringify(value));
+}
+// Reserve through this exact Allocating buffer's typed allocator API.
+// A generic Writer.WriteFailed is not allocation authority.
+fn appendNativeBytes(engine: *engine_mod.Engine, output: *std.Io.Writer.Allocating, bytes: []const u8) !void {
+    try retainHostAllocationFailure(engine, output.ensureUnusedCapacity(bytes.len));
+    @memcpy(output.writer.buffer[output.writer.end..][0..bytes.len], bytes);
+    output.writer.end += bytes.len;
+}
+
 const Kind = enum(c_int) { session_manager, settings_manager, resource_loader, model_runtime, agent_session, session_runtime, model_registry };
 pub const State = struct {
     engine: *engine_mod.Engine,
@@ -167,15 +192,15 @@ fn installAgentPrototype(engine: *engine_mod.Engine, prototype: c.JSValue) !void
     try @import("native_sdk_send_user.zig").install(engine, prototype);
     try @import("native_sdk_session_queries.zig").install(engine, prototype);
     for (agent_methods) |operation| {
-        const name = try engine.gpa.dupeZ(u8, @tagName(operation));
+        const name = try retainHostAllocationFailure(engine, engine.gpa.dupeZ(u8, @tagName(operation)));
         defer engine.gpa.free(name);
         const function = try engine.checked(c.pi_js_function_magic(engine.context, method, name, agentArity(operation), @intFromEnum(operation)));
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, name, function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
     }
     for (agent_getters) |which| {
-        const name = try engine.gpa.dupeZ(u8, @tagName(which));
+        const name = try retainHostAllocationFailure(engine, engine.gpa.dupeZ(u8, @tagName(which)));
         defer engine.gpa.free(name);
-        const function_name = try std.fmt.allocPrintSentinel(engine.gpa, "get {s}", .{name}, 0);
+        const function_name = try retainHostAllocationFailure(engine, std.fmt.allocPrintSentinel(engine.gpa, "get {s}", .{name}, 0));
         defer engine.gpa.free(function_name);
         const atom = c.JS_NewAtom(engine.context, name);
         defer c.JS_FreeAtom(engine.context, atom);
@@ -185,53 +210,99 @@ fn installAgentPrototype(engine: *engine_mod.Engine, prototype: c.JSValue) !void
 }
 
 pub fn get(engine: *engine_mod.Engine, target: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    var owner = @import("native_pending_owner.zig").Frame.init(engine);
+    owner.enter() catch |entry_error| return owner.finishValue(entry_error);
+    return owner.finishValue(getNativeBody(engine, target, name));
+}
+fn getNativeBody(engine: *engine_mod.Engine, target: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    try @import("native_pending_owner.zig").checkFatal(engine);
     return engine.checked(c.JS_GetPropertyStr(engine.context, target, name));
 }
 /// The three constructor fields are ordinary writable properties in Source.
 /// The existing owned session root supplies their actual receiver; no borrowed
 /// receiver pointer or unowned GC edge is introduced.
 pub fn sessionDataField(engine: *engine_mod.Engine, data: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    var owner = @import("native_pending_owner.zig").Frame.init(engine);
+    owner.enter() catch |entry_error| return owner.finishValue(entry_error);
+    return owner.finishValue(sessionDataFieldNativeBody(engine, data, name));
+}
+fn sessionDataFieldNativeBody(engine: *engine_mod.Engine, data: c.JSValue, name: [*:0]const u8) !c.JSValue {
     const receiver = try get(engine, data, "_sdkSessionValue");
-    defer engine.freeValue(receiver);
+    defer engine.releaseNativeValue(receiver);
     return get(engine, if (c.JS_IsObject(receiver)) receiver else data, name);
 }
 pub fn publicField(owner: *State, name: [*:0]const u8) !c.JSValue {
     return if (owner.kind == .agent_session) sessionDataField(owner.engine, owner.data, name) else get(owner.engine, owner.data, name);
 }
 pub fn put(engine: *engine_mod.Engine, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
+    var owner = @import("native_pending_owner.zig").Frame.init(engine);
+    owner.enter() catch |entry_error| {
+        engine.releaseNativeValue(value);
+        return owner.finishVoid(entry_error);
+    };
+    return owner.finishVoid(putNativeBody(engine, target, name, value));
+}
+fn putNativeBody(engine: *engine_mod.Engine, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, target, name, value, c.JS_PROP_C_W_E) < 0) return js.capture(engine);
 }
 pub fn object(engine: *engine_mod.Engine) !c.JSValue {
+    var owner = @import("native_pending_owner.zig").Frame.init(engine);
+    owner.enter() catch |entry_error| return owner.finishValue(entry_error);
+    return owner.finishValue(objectNativeBody(engine));
+}
+fn objectNativeBody(engine: *engine_mod.Engine) !c.JSValue {
     return engine.checked(c.JS_NewObject(engine.context));
 }
 pub fn array(engine: *engine_mod.Engine) !c.JSValue {
+    var owner = @import("native_pending_owner.zig").Frame.init(engine);
+    owner.enter() catch |entry_error| return owner.finishValue(entry_error);
+    return owner.finishValue(arrayNativeBody(engine));
+}
+fn arrayNativeBody(engine: *engine_mod.Engine) !c.JSValue {
     return engine.checked(c.JS_NewArray(engine.context));
 }
 pub fn text(engine: *engine_mod.Engine, value: []const u8) !c.JSValue {
+    var owner = @import("native_pending_owner.zig").Frame.init(engine);
+    owner.enter() catch |entry_error| return owner.finishValue(entry_error);
+    return owner.finishValue(textNativeBody(engine, value));
+}
+fn textNativeBody(engine: *engine_mod.Engine, value: []const u8) !c.JSValue {
     return engine.checked(c.JS_NewStringLen(engine.context, value.ptr, value.len));
 }
 pub fn clone(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
     if (c.JS_IsUndefined(value) or c.JS_IsNull(value)) return c.JS_DupValue(engine.context, value);
-    const raw = try engine.stringify(value);
+    const raw = try nativeStringify(engine, value);
     defer engine.gpa.free(raw);
-    const terminated = try engine.gpa.dupeZ(u8, raw);
+    const terminated = try retainHostAllocationFailure(engine, engine.gpa.dupeZ(u8, raw));
     defer engine.gpa.free(terminated);
     return engine.checked(c.JS_ParseJSON(engine.context, terminated, raw.len, "native-sdk-clone"));
 }
 pub fn invoke(engine: *engine_mod.Engine, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
+    var owner = @import("native_pending_owner.zig").Frame.init(engine);
+    owner.enter() catch |entry_error| return owner.finishValue(entry_error);
+    return owner.finishValue(invokeNativeBody(engine, receiver, name, args));
+}
+fn invokeNativeBody(engine: *engine_mod.Engine, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
     const function = try get(engine, receiver, name);
-    defer engine.freeValue(function);
+    defer engine.releaseNativeValue(function);
     if (!c.JS_IsFunction(engine.context, function)) return error.NativeSDKMethodUnavailable;
+    try @import("native_pending_owner.zig").checkFatal(engine);
     return engine.checked(c.JS_Call(engine.context, function, receiver, @intCast(args.len), @constCast(args.ptr)));
 }
 pub fn promise(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
+    var owner = @import("native_pending_owner.zig").Frame.init(engine);
+    owner.enter() catch |entry_error| return owner.finishValue(entry_error);
+    return owner.finishValue(promiseNativeBody(engine, value));
+}
+fn promiseNativeBody(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
     var functions: [2]c.JSValue = undefined;
     const result = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
-    errdefer engine.freeValue(result);
-    defer for (functions) |function| engine.freeValue(function);
+    errdefer engine.releaseNativeValue(result);
+    defer for (functions) |function| engine.releaseNativeValue(function);
     var args = [_]c.JSValue{value};
+    try @import("native_pending_owner.zig").checkFatal(engine);
     const ignored = try engine.checked(c.JS_Call(engine.context, functions[0], c.pi_js_undefined(), 1, &args));
-    engine.freeValue(ignored);
+    engine.releaseNativeValue(ignored);
     return result;
 }
 pub fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
@@ -241,15 +312,20 @@ pub fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
     return c.JS_ThrowTypeError(engine.context, "Native coding SDK: %s", @as([*:0]const u8, @errorName(err)));
 }
 pub fn sourceError(engine: *engine_mod.Engine, message: []const u8) !c.JSValue {
+    var owner = @import("native_pending_owner.zig").Frame.init(engine);
+    owner.enter() catch |entry_error| return owner.finishValue(entry_error);
+    return owner.finishValue(sourceErrorNativeBody(engine, message));
+}
+fn sourceErrorNativeBody(engine: *engine_mod.Engine, message: []const u8) !c.JSValue {
     const value = try engine.checked(c.JS_NewError(engine.context));
-    defer engine.freeValue(value);
+    defer engine.releaseNativeValue(value);
     try put(engine, value, "message", try text(engine, message));
-    return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value)));
+    return engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, value)));
 }
 fn missingEntry(self: *State, id: c.JSValue) !c.JSValue {
-    const raw = try self.engine.toString(id);
+    const raw = try nativeText(self.engine, id);
     defer self.engine.gpa.free(raw);
-    const message = try std.fmt.allocPrint(self.engine.gpa, "Entry {s} not found", .{raw});
+    const message = try retainHostAllocationFailure(self.engine, std.fmt.allocPrint(self.engine.gpa, "Entry {s} not found", .{raw}));
     defer self.engine.gpa.free(message);
     return sourceError(self.engine, message);
 }
@@ -291,13 +367,13 @@ pub fn sessionModelLease(self: *State) !@import("native_sdk_model_bridge.zig").L
 /// here. This is not a decoder for extension/transport context snapshots.
 pub fn sessionDataModelLease(engine: *engine_mod.Engine, data: c.JSValue) !@import("native_sdk_model_bridge.zig").Lease {
     const anchor = try get(engine, data, "_sdkModelLeaseAnchor");
-    defer engine.freeValue(anchor);
+    defer engine.releaseNativeValue(anchor);
     return @import("native_sdk_model_bridge.zig").anchorLease(engine, anchor);
 }
 /// Trusted factory State.data only. Caller owns the returned session root.
 pub fn sessionDataSessionValue(engine: *engine_mod.Engine, data: c.JSValue) !c.JSValue {
     const value = try get(engine, data, "_sdkSessionValue");
-    errdefer engine.freeValue(value);
+    errdefer engine.releaseNativeValue(value);
     const owner = try state(engine, value);
     if (owner.kind != .agent_session) return error.InvalidNativeSDKSession;
     return value;
@@ -324,7 +400,7 @@ fn modelRegistryWithPrototypeBody(scope: *@import("native_sdk_catalog_values.zig
     try ops.put(data, "modelRuntime", runtime);
     const generation = try ops.beforeAllocation();
     const value = try ops.allocation(c.JS_NewObjectProtoClass(engine.context, prototype, engine.native_sdk_class), generation);
-    const self = try engine.gpa.create(State);
+    const self = try retainHostAllocationFailure(engine, engine.gpa.create(State));
     self.* = .{ .engine = engine, .kind = .model_registry, .data = c.JS_DupValue(engine.context, data) };
     _ = c.JS_SetOpaque(value, self);
     // The accepted class emits its own runtime field before the constructor
@@ -340,7 +416,7 @@ fn modelRegistryWithPrototypeBody(scope: *@import("native_sdk_catalog_values.zig
 fn attachSessionModelLease(self: *State) !void {
     const engine = self.engine;
     const runtime = try get(engine, self.data, "modelRuntime");
-    defer engine.freeValue(runtime);
+    defer engine.releaseNativeValue(runtime);
     const pointer = c.JS_GetOpaque(runtime, engine.native_sdk_class) orelse return;
     const owner: *State = @ptrCast(@alignCast(pointer));
     // Preserve ordinary SDK construction for supplied unbranded runtimes, but
@@ -357,7 +433,7 @@ fn attachSessionModelLease(self: *State) !void {
     const anchor = try bridge.admitAnchored(engine, runtime, generation);
     errdefer {
         bridge.invalidateAnchorRT(engine, engine.runtime, anchor.value);
-        engine.freeValue(anchor.value);
+        engine.releaseNativeValue(anchor.value);
     }
     try put(engine, self.data, "_sdkModelLeaseAnchor", c.JS_DupValue(engine.context, anchor.value));
     self.model_lease_anchor = anchor.value;
@@ -371,7 +447,7 @@ fn retireSessionModelLease(self: *State) !void {
     // Invalidate before any allocation or owner Map call can fail.
     bridge.invalidateAnchorRT(self.engine, self.engine.runtime, anchor);
     self.model_lease_anchor = null;
-    defer self.engine.freeValue(anchor);
+    defer self.engine.releaseNativeValue(anchor);
     try put(self.engine, self.data, "_sdkModelLeaseAnchor", c.pi_js_undefined());
     if (lease) |value| try bridge.retire(self.engine, value);
 }
@@ -382,13 +458,19 @@ fn retireNativeSessionValue(engine: *engine_mod.Engine, value: c.JSValue) !void 
 }
 fn method(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(methodNativeBody(context, receiver, argc, argv, magic));
+}
+fn methodNativeBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
     const self = state(engine, receiver) catch |err| return fail(engine, err);
     return dispatch(self, receiver, @enumFromInt(magic), if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| fail(engine, err);
 }
 fn new(engine: *engine_mod.Engine, kind: Kind, data: c.JSValue) !c.JSValue {
     const value = try engine.checked(c.JS_NewObjectProtoClass(engine.context, engine.native_sdk_prototypes[@as(usize, @intCast(@intFromEnum(kind)))] orelse c.pi_js_null(), engine.native_sdk_class));
-    errdefer engine.freeValue(value);
-    const self = try engine.gpa.create(State);
+    errdefer engine.releaseNativeValue(value);
+    const self = try retainHostAllocationFailure(engine, engine.gpa.create(State));
     self.* = .{ .engine = engine, .kind = kind, .data = c.JS_DupValue(engine.context, data) };
     _ = c.JS_SetOpaque(value, self);
     if (kind == .agent_session) {
@@ -416,7 +498,7 @@ fn new(engine: *engine_mod.Engine, kind: Kind, data: c.JSValue) !c.JSValue {
         .session_runtime => &.{ .newSession, .switchSession, .dispose, .setRebindSession, .setBeforeSessionInvalidate },
     };
     for (methods) |operation| {
-        const name = try engine.gpa.dupeZ(u8, @tagName(operation));
+        const name = try retainHostAllocationFailure(engine, engine.gpa.dupeZ(u8, @tagName(operation)));
         defer engine.gpa.free(name);
         try put(engine, value, name, try engine.checked(c.pi_js_function_magic(engine.context, method, name, 1, @intFromEnum(operation))));
     }
@@ -430,7 +512,13 @@ fn new(engine: *engine_mod.Engine, kind: Kind, data: c.JSValue) !c.JSValue {
     };
     return value;
 }
-fn getter(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn getter(context: ?*c.JSContext, receiver: c.JSValue, ignored_2: c_int, ignored_3: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(getterNativeBody(context, receiver, ignored_2, ignored_3, magic));
+}
+fn getterNativeBody(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const self = state(engine, receiver) catch |err| return fail(engine, err);
     return getterValue(self, @enumFromInt(magic)) catch |err| fail(engine, err);
@@ -440,7 +528,7 @@ fn getterValue(self: *State, which: Getter) !c.JSValue {
     if (self.kind == .session_runtime) {
         if (which == .cwd) {
             const service = try get(engine, self.data, "services");
-            defer engine.freeValue(service);
+            defer engine.releaseNativeValue(service);
             return get(engine, service, "cwd");
         }
         return get(engine, self.data, @tagName(which));
@@ -449,7 +537,7 @@ fn getterValue(self: *State, which: Getter) !c.JSValue {
         if (which == .model or which == .thinkingLevel or which == .messages) return agentField(self, @tagName(which));
         if (which == .state) {
             const agent = try publicField(self, "agent");
-            defer engine.freeValue(agent);
+            defer engine.releaseNativeValue(agent);
             return get(engine, agent, "state");
         }
         if (which == .routedModel) return @import("native_sdk_session_usage.zig").routedModel(self);
@@ -458,27 +546,28 @@ fn getterValue(self: *State, which: Getter) !c.JSValue {
         if (which == .steeringMode or which == .followUpMode) return @import("native_sdk_queue.zig").mode(self, if (which == .steeringMode) .steer else .follow_up);
         if (which == .promptTemplates) {
             const loader = try get(engine, self.data, "resourceLoader");
-            defer engine.freeValue(loader);
+            defer engine.releaseNativeValue(loader);
             const prompts = try invoke(engine, loader, "getPrompts", &.{});
-            defer engine.freeValue(prompts);
+            defer engine.releaseNativeValue(prompts);
             return get(engine, prompts, "prompts");
         }
     }
     if (which == .isStreaming) return c.pi_js_bool(engine.context, @intFromBool(self.running and !self.disposed));
     if (which == .sessionId or which == .sessionFile or which == .sessionName) {
         const manager = try publicField(self, "sessionManager");
-        defer engine.freeValue(manager);
+        defer engine.releaseNativeValue(manager);
         if (which == .sessionName) {
             const rows = try invoke(engine, manager, "getBranch", &.{});
-            defer engine.freeValue(rows);
+            defer engine.releaseNativeValue(rows);
             var i = try length(engine, rows);
             while (i > 0) {
                 i -= 1;
+                try @import("native_pending_owner.zig").checkFatal(engine);
                 const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, rows, i));
-                defer engine.freeValue(row);
+                defer engine.releaseNativeValue(row);
                 const typ = try get(engine, row, "type");
-                defer engine.freeValue(typ);
-                const label = try engine.toString(typ);
+                defer engine.releaseNativeValue(typ);
+                const label = try nativeText(engine, typ);
                 defer engine.gpa.free(label);
                 if (std.mem.eql(u8, label, "session_info")) return get(engine, row, "name");
             }
@@ -489,40 +578,53 @@ fn getterValue(self: *State, which: Getter) !c.JSValue {
     return get(engine, self.data, @tagName(which));
 }
 pub fn agentField(self: *State, name: [*:0]const u8) !c.JSValue {
+    var owner = @import("native_pending_owner.zig").Frame.init(self.engine);
+    owner.enter() catch |entry_error| return owner.finishValue(entry_error);
+    return owner.finishValue(agentFieldNativeBody(self, name));
+}
+fn agentFieldNativeBody(self: *State, name: [*:0]const u8) !c.JSValue {
     const agent = try publicField(self, "agent");
-    defer self.engine.freeValue(agent);
+    defer self.engine.releaseNativeValue(agent);
     if (!c.JS_IsObject(agent)) return get(self.engine, self.data, name);
     const view = try get(self.engine, agent, "state");
-    defer self.engine.freeValue(view);
+    defer self.engine.releaseNativeValue(view);
     return get(self.engine, view, name);
 }
 pub fn setAgentField(self: *State, name: [*:0]const u8, value: c.JSValue) !void {
     const agent = try publicField(self, "agent");
-    defer self.engine.freeValue(agent);
+    defer self.engine.releaseNativeValue(agent);
     const state_value = try get(self.engine, agent, "state");
-    defer self.engine.freeValue(state_value);
+    defer self.engine.releaseNativeValue(state_value);
     if (c.JS_SetPropertyStr(self.engine.context, state_value, name, c.JS_DupValue(self.engine.context, value)) < 0) return @import("native_js_values.zig").capture(self.engine);
     try put(self.engine, self.data, name, c.JS_DupValue(self.engine.context, value));
 }
 pub fn emit(self: *State, notification: c.JSValue) !void {
     const listeners = try get(self.engine, self.data, "_sdkEventListeners");
-    defer self.engine.freeValue(listeners);
+    defer self.engine.releaseNativeValue(listeners);
     var index: u32 = 0;
     while (index < try length(self.engine, listeners)) : (index += 1) {
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const listener = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, listeners, index));
-        defer self.engine.freeValue(listener);
+        defer self.engine.releaseNativeValue(listener);
         var args = [_]c.JSValue{notification};
+        try @import("native_pending_owner.zig").checkFatal(self.engine);
         const value = try self.engine.checked(c.JS_Call(self.engine.context, listener, c.pi_js_undefined(), 1, &args));
-        self.engine.freeValue(value);
+        self.engine.releaseNativeValue(value);
     }
 }
 fn event(self: *State, name: []const u8) !c.JSValue {
     const value = try object(self.engine);
-    errdefer self.engine.freeValue(value);
+    errdefer self.engine.releaseNativeValue(value);
     try put(self.engine, value, "type", try text(self.engine, name));
     return value;
 }
-fn unsubscribeCallback(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn unsubscribeCallback(context: ?*c.JSContext, ignored_1: c.JSValue, ignored_2: c_int, ignored_3: [*c]c.JSValue, ignored_4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(unsubscribeCallbackNativeBody(context, ignored_1, ignored_2, ignored_3, ignored_4, data));
+}
+fn unsubscribeCallbackNativeBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const self = state(engine, data[0]) catch return c.pi_js_undefined();
     unsubscribe(self, data[1]) catch |err| return fail(engine, err);
@@ -531,46 +633,61 @@ fn unsubscribeCallback(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.
 fn unsubscribe(self: *State, listener: c.JSValue) !void {
     const engine = self.engine;
     const listeners = try get(engine, self.data, "_sdkEventListeners");
-    defer engine.freeValue(listeners);
+    defer engine.releaseNativeValue(listeners);
     const index = try invoke(engine, listeners, "indexOf", &.{listener});
-    defer engine.freeValue(index);
+    defer engine.releaseNativeValue(index);
     if (c.JS_IsStrictEqual(engine.context, index, c.JS_NewInt32(engine.context, -1))) return;
     const removed = try invoke(engine, listeners, "splice", &.{ index, c.JS_NewInt32(engine.context, 1) });
-    engine.freeValue(removed);
+    engine.releaseNativeValue(removed);
 }
 fn promptJob(context: ?*c.JSContext, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(promptJobNativeBody(context, argc, args));
+}
+fn promptJobNativeBody(context: ?*c.JSContext, argc: c_int, args: [*c]c.JSValue) c.JSValue {
     _ = argc;
     const engine = engine_mod.Engine.fromContext(context.?);
     const self = state(engine, args[0]) catch return c.pi_js_undefined();
     const runtime = get(engine, self.data, "modelRuntime") catch |err| return finishPromptFailure(engine, self, args, err);
-    defer engine.freeValue(runtime);
+    defer engine.releaseNativeValue(runtime);
     const authentication = @import("native_sdk_prompt_auth.zig").begin(engine, args[0], runtime) catch |err| return finishPromptFailure(engine, self, args, err);
     if (authentication) |pending| {
-        defer engine.freeValue(pending);
+        defer engine.releaseNativeValue(pending);
         const fulfilled = engine.checked(c.JS_NewCFunctionData2(context, promptAuthResume, "", 1, 0, 6, args)) catch |err| return finishPromptFailure(engine, self, args, err);
-        defer engine.freeValue(fulfilled);
+        defer engine.releaseNativeValue(fulfilled);
         const rejected = engine.checked(c.JS_NewCFunctionData2(context, promptAuthResume, "", 1, 1, 6, args)) catch |err| return finishPromptFailure(engine, self, args, err);
-        defer engine.freeValue(rejected);
+        defer engine.releaseNativeValue(rejected);
+        @import("native_pending_owner.zig").checkFatal(engine) catch |err| return fail(engine, err);
         const continuation = engine.checked(c.JS_PromiseThen(context, pending, fulfilled, rejected)) catch |err| return finishPromptFailure(engine, self, args, err);
-        engine.freeValue(continuation);
+        engine.releaseNativeValue(continuation);
         return c.pi_js_undefined();
     }
     return continuePrompt(engine, self, args);
 }
-fn promptAuthResume(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn promptAuthResume(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(promptAuthResumeNativeBody(context, ignored_1, argc, argv, magic, args));
+}
+fn promptAuthResumeNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, args: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const self = state(engine, args[0]) catch return c.pi_js_undefined();
     const value = if (argc > 0) argv[0] else c.pi_js_undefined();
     if (magic != 0) return settlePrompt(engine, self, args, value, true);
     const runtime = get(engine, self.data, "modelRuntime") catch |err| return finishPromptFailure(engine, self, args, err);
-    defer engine.freeValue(runtime);
+    defer engine.releaseNativeValue(runtime);
     @import("native_sdk_prompt_auth.zig").finish(engine, args[0], runtime, value) catch |err| return finishPromptFailure(engine, self, args, err);
     return continuePrompt(engine, self, args);
 }
 fn finishPromptFailure(engine: *engine_mod.Engine, self: *State, args: [*c]c.JSValue, err: anyerror) c.JSValue {
-    _ = fail(engine, err);
-    const reason = c.JS_GetException(engine.context);
-    defer engine.freeValue(reason);
+    const reason = @import("native_agent_async.zig").reason(engine, err) catch |fatal| {
+        self.running = false;
+        return fail(engine, fatal);
+    };
+    defer engine.releaseNativeValue(reason);
     return settlePrompt(engine, self, args, reason, true);
 }
 fn continuePrompt(engine: *engine_mod.Engine, self: *State, args: [*c]c.JSValue) c.JSValue {
@@ -581,32 +698,40 @@ fn beforeAgentPrompt(engine: *engine_mod.Engine, args: [*c]c.JSValue) !void {
     // Source reads the selected-tool baseline before resolving the ordinary
     // runner/method, then reads the live options again for the call argument.
     const baseline = try get(engine, args[0], "_baseSystemPromptOptions");
-    defer engine.freeValue(baseline);
+    defer engine.releaseNativeValue(baseline);
     const selected = try get(engine, baseline, "selectedTools");
-    defer engine.freeValue(selected);
+    defer engine.releaseNativeValue(selected);
     const runner = try get(engine, args[0], "_extensionRunner");
-    defer engine.freeValue(runner);
+    defer engine.releaseNativeValue(runner);
     const callback = try get(engine, runner, "emitBeforeAgentStart");
-    defer engine.freeValue(callback);
+    defer engine.releaseNativeValue(callback);
     const options = try get(engine, args[0], "_baseSystemPromptOptions");
-    defer engine.freeValue(options);
+    defer engine.releaseNativeValue(options);
     const trigger = try object(engine);
-    defer engine.freeValue(trigger);
+    defer engine.releaseNativeValue(trigger);
     try put(engine, trigger, "messageType", try text(engine, "user"));
     try put(engine, trigger, "prompt", c.JS_DupValue(engine.context, args[1]));
     try put(engine, trigger, "images", c.JS_DupValue(engine.context, args[5]));
     const pending = try @import("native_js_values.zig").call(engine, callback, runner, &.{ trigger, options });
-    defer engine.freeValue(pending);
+    defer engine.releaseNativeValue(pending);
+    try @import("native_pending_owner.zig").checkFatal(engine);
     const awaited_before = try engine.checked(c.JS_PiPromiseResolve(engine.context, pending));
-    defer engine.freeValue(awaited_before);
+    defer engine.releaseNativeValue(awaited_before);
     const fulfilled = try engine.checked(c.JS_NewCFunctionData2(engine.context, promptBeforeResume, "", 1, 0, 6, args));
-    defer engine.freeValue(fulfilled);
+    defer engine.releaseNativeValue(fulfilled);
     const rejected = try engine.checked(c.JS_NewCFunctionData2(engine.context, promptBeforeResume, "", 1, 1, 6, args));
-    defer engine.freeValue(rejected);
+    defer engine.releaseNativeValue(rejected);
+    try @import("native_pending_owner.zig").checkFatal(engine);
     const continuation = try engine.checked(c.JS_PromiseThen(engine.context, awaited_before, fulfilled, rejected));
-    engine.freeValue(continuation);
+    engine.releaseNativeValue(continuation);
 }
-fn promptBeforeResume(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn promptBeforeResume(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(promptBeforeResumeNativeBody(context, ignored_1, argc, argv, magic, args));
+}
+fn promptBeforeResumeNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, args: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const self = state(engine, args[0]) catch return c.pi_js_undefined();
     const value = if (argc > 0) argv[0] else c.pi_js_undefined();
@@ -618,20 +743,24 @@ fn promptBeforeResume(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [
 fn runPromptContinuation(engine: *engine_mod.Engine, self: *State, args: [*c]c.JSValue) c.JSValue {
     var rejection: ?c.JSValue = null;
     runPrompt(self, args[1], args[2]) catch |err| {
-        const raised = fail(engine, err);
-        _ = raised;
-        rejection = c.JS_GetException(engine.context);
+        rejection = @import("native_agent_async.zig").reason(engine, err) catch |fatal| {
+            self.running = false;
+            return fail(engine, fatal);
+        };
     };
-    defer if (rejection) |held| engine.freeValue(held);
+    defer if (rejection) |held| engine.releaseNativeValue(held);
     return settlePrompt(engine, self, args, rejection orelse c.pi_js_undefined(), rejection != null);
 }
 fn settlePrompt(engine: *engine_mod.Engine, self: *State, args: [*c]c.JSValue, value: c.JSValue, rejected: bool) c.JSValue {
     self.running = false;
-    const idle_resolve = get(engine, self.data, "promptIdleResolve") catch return c.JS_ThrowOutOfMemory(engine.context);
-    defer engine.freeValue(idle_resolve);
+    const idle_resolve = get(engine, self.data, "promptIdleResolve") catch |err| return fail(engine, err);
+    defer engine.releaseNativeValue(idle_resolve);
+    @import("native_pending_owner.zig").checkFatal(engine) catch |err| return fail(engine, err);
     const idle_result = c.JS_Call(engine.context, idle_resolve, c.pi_js_undefined(), 0, null);
-    engine.freeValue(idle_result);
+    engine.releaseNativeValue(idle_result);
+    @import("native_pending_owner.zig").checkFatal(engine) catch |err| return fail(engine, err);
     var values = [_]c.JSValue{value};
+    @import("native_pending_owner.zig").checkFatal(engine) catch |err| return fail(engine, err);
     const result = c.JS_Call(engine.context, if (rejected) args[4] else args[3], c.pi_js_undefined(), 1, &values);
     return result;
 }
@@ -642,19 +771,19 @@ fn startPrompt(self: *State, receiver: c.JSValue, args: []const c.JSValue) !c.JS
     const engine = self.engine;
     const options = if (args.len > 1) args[1] else c.pi_js_undefined();
     const images = if (c.JS_IsNull(options) or c.JS_IsUndefined(options)) c.pi_js_undefined() else try get(engine, options, "images");
-    defer engine.freeValue(images);
+    defer engine.releaseNativeValue(images);
     var functions: [2]c.JSValue = undefined;
     const result = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
-    errdefer engine.freeValue(result);
-    defer for (functions) |function| engine.freeValue(function);
+    errdefer engine.releaseNativeValue(result);
+    defer for (functions) |function| engine.releaseNativeValue(function);
     if (!engine.abort_signals_ready) try @import("abort_signal.zig").install(engine);
     const signal = try @import("abort_signal.zig").create(engine);
-    defer engine.freeValue(signal);
+    defer engine.releaseNativeValue(signal);
     try put(engine, self.data, "promptSignal", c.JS_DupValue(engine.context, signal));
     var idle_functions: [2]c.JSValue = undefined;
     const idle = try engine.checked(c.JS_NewPromiseCapability(engine.context, &idle_functions));
-    defer engine.freeValue(idle);
-    defer for (idle_functions) |function| engine.freeValue(function);
+    defer engine.releaseNativeValue(idle);
+    defer for (idle_functions) |function| engine.releaseNativeValue(function);
     try put(engine, self.data, "promptIdle", c.JS_DupValue(engine.context, idle));
     try put(engine, self.data, "promptIdleResolve", c.JS_DupValue(engine.context, idle_functions[0]));
     var task = [_]c.JSValue{ receiver, args[0], options, functions[0], functions[1], images };
@@ -667,34 +796,34 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
     const engine = self.engine;
     if (self.disposed) return error.NativeSDKDisposed;
     const model = try agentField(self, "model");
-    defer engine.freeValue(model);
+    defer engine.releaseNativeValue(model);
     if (!c.JS_IsObject(model)) return error.NativeSDKNoModelSelected;
     const runtime = try get(engine, self.data, "modelRuntime");
-    defer engine.freeValue(runtime);
+    defer engine.releaseNativeValue(runtime);
     const manager = try publicField(self, "sessionManager");
-    defer engine.freeValue(manager);
+    defer engine.releaseNativeValue(manager);
     const messages = try agentField(self, "messages");
-    defer engine.freeValue(messages);
+    defer engine.releaseNativeValue(messages);
     const start = try event(self, "agent_start");
-    defer engine.freeValue(start);
+    defer engine.releaseNativeValue(start);
     try emit(self, start);
     const turn_start = try event(self, "turn_start");
-    defer engine.freeValue(turn_start);
+    defer engine.releaseNativeValue(turn_start);
     try emit(self, turn_start);
     if (try length(engine, messages) == 0) {
         const system = try object(engine);
-        defer engine.freeValue(system);
+        defer engine.releaseNativeValue(system);
         try put(engine, system, "role", try text(engine, "system"));
         try put(engine, system, "content", try text(engine, ""));
         const sections = try object(engine);
-        defer engine.freeValue(sections);
+        defer engine.releaseNativeValue(sections);
         try put(engine, sections, "preamble", try get(engine, self.data, "systemPrompt"));
         const working_value = try invoke(engine, manager, "getCwd", &.{});
-        defer engine.freeValue(working_value);
-        const working = try engine.toString(working_value);
+        defer engine.releaseNativeValue(working_value);
+        const working = try nativeText(engine, working_value);
         defer engine.gpa.free(working);
         std.mem.replaceScalar(u8, working, '\\', '/');
-        const section_cwd = try std.fmt.allocPrint(engine.gpa, "<cwd>\n{s}\n</cwd>", .{working});
+        const section_cwd = try retainHostAllocationFailure(engine, std.fmt.allocPrint(engine.gpa, "<cwd>\n{s}\n</cwd>", .{working}));
         defer engine.gpa.free(section_cwd);
         try put(engine, sections, "cwd", try text(engine, section_cwd));
         try put(engine, system, "sections", c.JS_DupValue(engine.context, sections));
@@ -702,15 +831,15 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
         try emitMessage(self, "message_start", system);
         try append(engine, messages, c.JS_DupValue(engine.context, system));
         const system_id = try invoke(engine, manager, "appendMessage", &.{system});
-        engine.freeValue(system_id);
+        engine.releaseNativeValue(system_id);
         try emitMessage(self, "message_end", system);
     }
     const user = try object(engine);
-    defer engine.freeValue(user);
+    defer engine.releaseNativeValue(user);
     try put(engine, user, "role", try text(engine, "user"));
     const contents = try array(engine);
     const block = try object(engine);
-    defer engine.freeValue(block);
+    defer engine.releaseNativeValue(block);
     try put(engine, block, "type", try text(engine, "text"));
     try put(engine, block, "text", c.JS_DupValue(engine.context, prompt_text));
     try append(engine, contents, c.JS_DupValue(engine.context, block));
@@ -719,21 +848,21 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
     try emitMessage(self, "message_start", user);
     try append(engine, messages, c.JS_DupValue(engine.context, user));
     const user_id = try invoke(engine, manager, "appendMessage", &.{user});
-    engine.freeValue(user_id);
+    engine.releaseNativeValue(user_id);
     try emitMessage(self, "message_end", user);
     for (0..64) |_| {
         if (self.aborted or self.disposed) break;
         const ctx = try object(engine);
-        defer engine.freeValue(ctx);
+        defer engine.releaseNativeValue(ctx);
         try put(engine, ctx, "messages", c.JS_DupValue(engine.context, messages));
         try put(engine, ctx, "systemPrompt", try get(engine, self.data, "systemPrompt"));
         try put(engine, ctx, "tools", try @import("native_sdk_tool_catalog.zig").activeDefinitions(self));
         const options = try object(engine);
-        defer engine.freeValue(options);
+        defer engine.releaseNativeValue(options);
         const selected_level = try agentField(self, "thinkingLevel");
-        defer engine.freeValue(selected_level);
+        defer engine.releaseNativeValue(selected_level);
         const signal = try get(engine, self.data, "promptSignal");
-        defer engine.freeValue(signal);
+        defer engine.releaseNativeValue(signal);
         var routing_error: ?anyerror = null;
         const projection = if (try @import("native_sdk_virtual.zig").isVirtual(engine, model)) projected: {
             break :projected @import("native_sdk_virtual.zig").sessionProjection(engine, runtime, manager, model, messages, selected_level, signal) catch |err| {
@@ -741,17 +870,17 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
                 break :projected c.pi_js_undefined();
             };
         } else c.pi_js_undefined();
-        defer engine.freeValue(projection);
+        defer engine.releaseNativeValue(projection);
         const request_model = if (c.JS_IsObject(projection)) try get(engine, projection, "model") else c.JS_DupValue(engine.context, model);
-        defer engine.freeValue(request_model);
+        defer engine.releaseNativeValue(request_model);
         const request_level = if (c.JS_IsObject(projection)) try get(engine, projection, "thinkingLevel") else c.JS_DupValue(engine.context, selected_level);
-        defer engine.freeValue(request_level);
+        defer engine.releaseNativeValue(request_level);
         if (c.JS_IsObject(projection)) {
             const state_entry = try get(engine, projection, "stateEntry");
-            defer engine.freeValue(state_entry);
+            defer engine.releaseNativeValue(state_entry);
             if (c.JS_IsObject(state_entry)) {
                 const appended = try event(self, "entry_appended");
-                defer engine.freeValue(appended);
+                defer engine.releaseNativeValue(appended);
                 try put(engine, appended, "entry", c.JS_DupValue(engine.context, state_entry));
                 try emit(self, appended);
             }
@@ -761,64 +890,66 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
         const streamed = if (routing_error) |err| failed: {
             const exports = engine.native_module_values.get("pi-ai") orelse return error.NativeSDKModelModuleUnavailable;
             const output = try invoke(engine, exports, "createAssistantMessageEventStream", &.{});
-            errdefer engine.freeValue(output);
+            errdefer engine.releaseNativeValue(output);
             try @import("native_sdk_chat.zig").finishError(engine, model, output, err);
             break :failed output;
         } else try invoke(engine, runtime, "streamSimple", &.{ request_model, ctx, options });
-        defer engine.freeValue(streamed);
+        defer engine.releaseNativeValue(streamed);
         const stream = try engine.awaitValue(streamed);
-        defer engine.freeValue(stream);
+        defer engine.releaseNativeValue(stream);
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const iterator_fn = try engine.checked(c.JS_GetProperty(engine.context, stream, engine.event_stream_async_atom));
-        defer engine.freeValue(iterator_fn);
+        defer engine.releaseNativeValue(iterator_fn);
         if (!c.JS_IsFunction(engine.context, iterator_fn)) return error.NativeSDKProviderStreamNotIterable;
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const iterator = try engine.checked(c.JS_Call(engine.context, iterator_fn, stream, 0, null));
-        defer engine.freeValue(iterator);
+        defer engine.releaseNativeValue(iterator);
         var final = c.pi_js_undefined();
-        defer engine.freeValue(final);
+        defer engine.releaseNativeValue(final);
         for (0..100000) |_| {
             const pending = try invoke(engine, iterator, "next", &.{});
-            defer engine.freeValue(pending);
+            defer engine.releaseNativeValue(pending);
             const step = try engine.awaitValue(pending);
-            defer engine.freeValue(step);
+            defer engine.releaseNativeValue(step);
             const done = try get(engine, step, "done");
-            defer engine.freeValue(done);
+            defer engine.releaseNativeValue(done);
             if (c.JS_ToBool(engine.context, done) == 1) break;
             const update = try get(engine, step, "value");
-            defer engine.freeValue(update);
+            defer engine.releaseNativeValue(update);
             const typ = try get(engine, update, "type");
-            defer engine.freeValue(typ);
-            const kind = try engine.toString(typ);
+            defer engine.releaseNativeValue(typ);
+            const kind = try nativeText(engine, typ);
             defer engine.gpa.free(kind);
             if (std.mem.eql(u8, kind, "start")) {
                 const partial = try get(engine, update, "partial");
-                defer engine.freeValue(partial);
+                defer engine.releaseNativeValue(partial);
                 try emitMessage(self, "message_start", partial);
             } else if (!std.mem.eql(u8, kind, "done") and !std.mem.eql(u8, kind, "error")) {
                 const emitted = try event(self, "message_update");
-                defer engine.freeValue(emitted);
+                defer engine.releaseNativeValue(emitted);
                 try put(engine, emitted, "assistantMessageEvent", c.JS_DupValue(engine.context, update));
                 try put(engine, emitted, "message", try get(engine, update, "partial"));
                 try emit(self, emitted);
             }
             if (std.mem.eql(u8, kind, "done") or std.mem.eql(u8, kind, "error")) {
-                engine.freeValue(final);
+                engine.releaseNativeValue(final);
                 final = try get(engine, update, if (std.mem.eql(u8, kind, "done")) "message" else "error");
             }
             if (self.aborted or self.disposed) {
                 const returned = try invoke(engine, iterator, "return", &.{});
-                defer engine.freeValue(returned);
+                defer engine.releaseNativeValue(returned);
                 const settled = try engine.awaitValue(returned);
-                engine.freeValue(settled);
+                engine.releaseNativeValue(settled);
                 break;
             }
         }
         if (c.JS_IsUndefined(final)) {
             const get_result = try get(engine, stream, "result");
-            defer engine.freeValue(get_result);
+            defer engine.releaseNativeValue(get_result);
             if (c.JS_IsFunction(engine.context, get_result)) {
                 const pending = try invoke(engine, stream, "result", &.{});
-                defer engine.freeValue(pending);
-                engine.freeValue(final);
+                defer engine.releaseNativeValue(pending);
+                engine.releaseNativeValue(final);
                 final = try engine.awaitValue(pending);
             }
         }
@@ -829,75 +960,77 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
         if (c.JS_IsObject(projection)) try put(engine, final, "thinkingLevel", c.JS_DupValue(engine.context, request_level));
         try append(engine, messages, c.JS_DupValue(engine.context, final));
         const assistant_id = try invoke(engine, manager, "appendMessage", &.{final});
-        engine.freeValue(assistant_id);
+        engine.releaseNativeValue(assistant_id);
         const ended = try event(self, "message_end");
-        defer engine.freeValue(ended);
+        defer engine.releaseNativeValue(ended);
         try put(engine, ended, "message", c.JS_DupValue(engine.context, final));
         try emit(self, ended);
         const content = try get(engine, final, "content");
-        defer engine.freeValue(content);
+        defer engine.releaseNativeValue(content);
         var invoked = false;
         const definitions = try @import("native_sdk_tool_catalog.zig").activeDefinitions(self);
-        defer engine.freeValue(definitions);
+        defer engine.releaseNativeValue(definitions);
         for (0..try length(engine, content)) |i| {
+            try @import("native_pending_owner.zig").checkFatal(engine);
             const call = try engine.checked(c.JS_GetPropertyUint32(engine.context, content, @intCast(i)));
-            defer engine.freeValue(call);
+            defer engine.releaseNativeValue(call);
             const typ = try get(engine, call, "type");
-            defer engine.freeValue(typ);
-            const label = try engine.toString(typ);
+            defer engine.releaseNativeValue(typ);
+            const label = try nativeText(engine, typ);
             defer engine.gpa.free(label);
             if (!std.mem.eql(u8, label, "toolCall")) continue;
             const name = try get(engine, call, "name");
-            defer engine.freeValue(name);
+            defer engine.releaseNativeValue(name);
             const id = try get(engine, call, "id");
-            defer engine.freeValue(id);
+            defer engine.releaseNativeValue(id);
             const arguments = try get(engine, call, "arguments");
-            defer engine.freeValue(arguments);
+            defer engine.releaseNativeValue(arguments);
             var found = false;
             for (0..try length(engine, definitions)) |j| {
+                try @import("native_pending_owner.zig").checkFatal(engine);
                 const tool = try engine.checked(c.JS_GetPropertyUint32(engine.context, definitions, @intCast(j)));
-                defer engine.freeValue(tool);
+                defer engine.releaseNativeValue(tool);
                 const candidate = try get(engine, tool, "name");
-                defer engine.freeValue(candidate);
+                defer engine.releaseNativeValue(candidate);
                 if (!c.JS_IsStrictEqual(engine.context, name, candidate)) continue;
                 found = true;
                 const prepare = try get(engine, tool, "prepareArguments");
-                defer engine.freeValue(prepare);
+                defer engine.releaseNativeValue(prepare);
                 const prepared = if (c.JS_IsFunction(engine.context, prepare)) try invoke(engine, tool, "prepareArguments", &.{arguments}) else c.JS_DupValue(engine.context, arguments);
-                defer engine.freeValue(prepared);
+                defer engine.releaseNativeValue(prepared);
                 const validation_call = try object(engine);
-                defer engine.freeValue(validation_call);
+                defer engine.releaseNativeValue(validation_call);
                 try put(engine, validation_call, "name", c.JS_DupValue(engine.context, name));
                 try put(engine, validation_call, "arguments", c.JS_DupValue(engine.context, prepared));
                 const validated = try @import("native_tool_arguments.zig").validateArguments(engine, tool, validation_call);
-                defer engine.freeValue(validated);
+                defer engine.releaseNativeValue(validated);
                 const pending = try invoke(engine, tool, "execute", &.{ id, validated, signal, c.pi_js_undefined() });
-                defer engine.freeValue(pending);
+                defer engine.releaseNativeValue(pending);
                 const result = try engine.awaitValue(pending);
-                defer engine.freeValue(result);
+                defer engine.releaseNativeValue(result);
                 const message = try object(engine);
-                defer engine.freeValue(message);
+                defer engine.releaseNativeValue(message);
                 try put(engine, message, "role", try text(engine, "toolResult"));
                 try put(engine, message, "toolCallId", c.JS_DupValue(engine.context, id));
                 try put(engine, message, "toolName", c.JS_DupValue(engine.context, name));
                 try put(engine, message, "content", try get(engine, result, "content"));
                 const result_error = try get(engine, result, "isError");
-                defer engine.freeValue(result_error);
+                defer engine.releaseNativeValue(result_error);
                 try put(engine, message, "isError", c.pi_js_bool(engine.context, @intFromBool(c.JS_ToBool(engine.context, result_error) == 1)));
                 try put(engine, message, "details", try get(engine, result, "details"));
                 const structured = try get(engine, result, "structuredContent");
-                defer engine.freeValue(structured);
+                defer engine.releaseNativeValue(structured);
                 if (!c.JS_IsUndefined(structured)) try put(engine, message, "structuredContent", c.JS_DupValue(engine.context, structured));
                 try append(engine, messages, c.JS_DupValue(engine.context, message));
                 const result_id = try invoke(engine, manager, "appendMessage", &.{message});
-                engine.freeValue(result_id);
+                engine.releaseNativeValue(result_id);
                 break;
             }
             if (!found) return error.NativeSDKToolUnavailable;
             invoked = true;
         }
         const turn_end = try event(self, "turn_end");
-        defer engine.freeValue(turn_end);
+        defer engine.releaseNativeValue(turn_end);
         try put(engine, turn_end, "message", c.JS_DupValue(engine.context, final));
         try put(engine, turn_end, "toolResults", try array(engine));
         try emit(self, turn_end);
@@ -905,17 +1038,17 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
         try emit(self, turn_start);
     }
     const end = try event(self, "agent_end");
-    defer engine.freeValue(end);
+    defer engine.releaseNativeValue(end);
     try put(engine, end, "messages", c.JS_DupValue(engine.context, messages));
     try emit(self, end);
     const settled = try event(self, "agent_settled");
-    defer engine.freeValue(settled);
+    defer engine.releaseNativeValue(settled);
     try put(engine, settled, "aborted", c.pi_js_bool(engine.context, @intFromBool(self.aborted)));
     try emit(self, settled);
 }
 fn emitMessage(self: *State, kind: []const u8, message: c.JSValue) !void {
     const value = try event(self, kind);
-    defer self.engine.freeValue(value);
+    defer self.engine.releaseNativeValue(value);
     try put(self.engine, value, "message", c.JS_DupValue(self.engine.context, message));
     try emit(self, value);
 }
@@ -925,40 +1058,40 @@ pub fn cwd(engine: *engine_mod.Engine) ![]u8 {
         const directory = try std.Io.Dir.cwd().openDir(io, ".", .{});
         defer directory.close(io);
         const count = try directory.realPath(io, &buffer);
-        return engine.gpa.dupe(u8, buffer[0..count]);
+        return retainHostAllocationFailure(engine, engine.gpa.dupe(u8, buffer[0..count]));
     }
-    return engine.gpa.dupe(u8, ".");
+    return retainHostAllocationFailure(engine, engine.gpa.dupe(u8, "."));
 }
 pub fn agentDir(engine: *engine_mod.Engine) ![]u8 {
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
+    defer engine.releaseNativeValue(global);
     const process = try get(engine, global, "process");
-    defer engine.freeValue(process);
+    defer engine.releaseNativeValue(process);
     if (c.JS_IsObject(process)) {
         const env = try get(engine, process, "env");
-        defer engine.freeValue(env);
+        defer engine.releaseNativeValue(env);
         if (c.JS_IsObject(env)) {
             inline for (.{ "PI_CODING_AGENT_DIR", "PI_AGENT_DIR" }) |name| {
                 const configured = try get(engine, env, name);
-                defer engine.freeValue(configured);
+                defer engine.releaseNativeValue(configured);
                 if (c.JS_IsString(configured) and c.JS_ToBool(engine.context, configured) != 0) {
                     const normalized = try @import("native_sdk_settings.zig").normalizePath(engine, configured);
-                    defer engine.freeValue(normalized);
-                    return engine.toString(normalized);
+                    defer engine.releaseNativeValue(normalized);
+                    return nativeText(engine, normalized);
                 }
             }
             const home = try get(engine, env, if (@import("builtin").os.tag == .windows) "USERPROFILE" else "HOME");
-            defer engine.freeValue(home);
+            defer engine.releaseNativeValue(home);
             if (c.JS_IsString(home)) {
-                const path = try engine.toString(home);
+                const path = try nativeText(engine, home);
                 defer engine.gpa.free(path);
-                return std.fs.path.join(engine.gpa, &.{ path, ".pi", "agent" });
+                return retainHostAllocationFailure(engine, std.fs.path.join(engine.gpa, &.{ path, ".pi", "agent" }));
             }
         }
     }
     const base = try cwd(engine);
     defer engine.gpa.free(base);
-    return std.fs.path.join(engine.gpa, &.{ base, ".pi", "agent" });
+    return retainHostAllocationFailure(engine, std.fs.path.join(engine.gpa, &.{ base, ".pi", "agent" }));
 }
 var ids = std.atomic.Value(u64).init(1);
 pub fn identifier(engine: *engine_mod.Engine, prefix: []const u8) !c.JSValue {
@@ -973,7 +1106,7 @@ pub fn identifier(engine: *engine_mod.Engine, prefix: []const u8) !c.JSValue {
         bytes[6] = (bytes[6] & 15) | 112;
         bytes[8] = (bytes[8] & 63) | 128;
         const hex = std.fmt.bytesToHex(bytes, .lower);
-        const raw = try std.fmt.allocPrint(engine.gpa, "{s}-{s}-{s}-{s}-{s}", .{ hex[0..8], hex[8..12], hex[12..16], hex[16..20], hex[20..32] });
+        const raw = try retainHostAllocationFailure(engine, std.fmt.allocPrint(engine.gpa, "{s}-{s}-{s}-{s}-{s}", .{ hex[0..8], hex[8..12], hex[12..16], hex[16..20], hex[20..32] }));
         defer engine.gpa.free(raw);
         return text(engine, raw);
     }
@@ -984,31 +1117,33 @@ pub fn identifier(engine: *engine_mod.Engine, prefix: []const u8) !c.JSValue {
 }
 fn timestamp(engine: *engine_mod.Engine) !c.JSValue {
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
+    defer engine.releaseNativeValue(global);
     const date_ctor = try get(engine, global, "Date");
-    defer engine.freeValue(date_ctor);
+    defer engine.releaseNativeValue(date_ctor);
+    try @import("native_pending_owner.zig").checkFatal(engine);
     const date = try engine.checked(c.JS_CallConstructor(engine.context, date_ctor, 0, null));
-    defer engine.freeValue(date);
+    defer engine.releaseNativeValue(date);
     return invoke(engine, date, "toISOString", &.{});
 }
 pub fn length(engine: *engine_mod.Engine, value: c.JSValue) !u32 {
     const len = try get(engine, value, "length");
-    defer engine.freeValue(len);
+    defer engine.releaseNativeValue(len);
     var result: u32 = 0;
+    try @import("native_pending_owner.zig").checkFatal(engine);
     if (c.JS_ToUint32(engine.context, &result, len) < 0) return js.capture(engine);
     return result;
 }
 pub fn append(engine: *engine_mod.Engine, values: c.JSValue, value: c.JSValue) !void {
     const index = length(engine, values) catch |err| {
-        engine.freeValue(value);
+        engine.releaseNativeValue(value);
         return err;
     };
     if (c.JS_SetPropertyUint32(engine.context, values, index, value) < 0) return js.capture(engine);
 }
 pub fn resolveSdkPath(engine: *engine_mod.Engine, value: c.JSValue) ![]u8 {
     const normalized = try @import("native_sdk_settings.zig").normalizePath(engine, value);
-    defer engine.freeValue(normalized);
-    const path = try engine.toString(normalized);
+    defer engine.releaseNativeValue(normalized);
+    const path = try nativeText(engine, normalized);
     defer engine.gpa.free(path);
     const base = try cwd(engine);
     defer engine.gpa.free(base);
@@ -1016,16 +1151,17 @@ pub fn resolveSdkPath(engine: *engine_mod.Engine, value: c.JSValue) ![]u8 {
 }
 pub fn initManager(engine: *engine_mod.Engine, args: []const c.JSValue, persistent: bool) !c.JSValue {
     const data = try object(engine);
-    defer engine.freeValue(data);
+    defer engine.releaseNativeValue(data);
     var has_imported_header = false;
     if (!persistent and args.len > 2 and c.JS_IsArray(args[2])) {
         for (0..try length(engine, args[2])) |index| {
+            try @import("native_pending_owner.zig").checkFatal(engine);
             const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, args[2], @intCast(index)));
-            defer engine.freeValue(row);
+            defer engine.releaseNativeValue(row);
             const typ = try get(engine, row, "type");
-            defer engine.freeValue(typ);
+            defer engine.releaseNativeValue(typ);
             const label = try text(engine, "session");
-            defer engine.freeValue(label);
+            defer engine.releaseNativeValue(label);
             if (c.JS_IsStrictEqual(engine.context, typ, label)) {
                 has_imported_header = true;
                 break;
@@ -1033,15 +1169,15 @@ pub fn initManager(engine: *engine_mod.Engine, args: []const c.JSValue, persiste
         }
         if (has_imported_header) _ = try @import("native_sdk_session_projection.zig").migrate(engine, args[2]);
     }
-    const current = if (args.len > 0 and c.JS_IsString(args[0])) if (engine.native_io != null) try resolveSdkPath(engine, args[0]) else try engine.toString(args[0]) else try cwd(engine);
+    const current = if (args.len > 0 and c.JS_IsString(args[0])) if (engine.native_io != null) try resolveSdkPath(engine, args[0]) else try nativeText(engine, args[0]) else try cwd(engine);
     defer engine.gpa.free(current);
     try put(engine, data, "cwd", try text(engine, current));
-    const directory = if (!persistent) try engine.gpa.dupe(u8, "") else if (args.len > 1 and c.JS_IsString(args[1]) and c.JS_ToBool(engine.context, args[1]) == 1) try engine.toString(args[1]) else blk: {
+    const directory = if (!persistent) try retainHostAllocationFailure(engine, engine.gpa.dupe(u8, "")) else if (args.len > 1 and c.JS_IsString(args[1]) and c.JS_ToBool(engine.context, args[1]) == 1) try nativeText(engine, args[1]) else blk: {
         const root = try agentDir(engine);
         defer engine.gpa.free(root);
         const encoded = try encodeCwd(engine, current);
         defer engine.gpa.free(encoded);
-        break :blk try std.fs.path.join(engine.gpa, &.{ root, "sessions", encoded });
+        break :blk try retainHostAllocationFailure(engine, std.fs.path.join(engine.gpa, &.{ root, "sessions", encoded }));
     };
     defer engine.gpa.free(directory);
     try put(engine, data, "sessionDir", try text(engine, directory));
@@ -1049,16 +1185,16 @@ pub fn initManager(engine: *engine_mod.Engine, args: []const c.JSValue, persiste
     try put(engine, data, "entries", try array(engine));
     try put(engine, data, "leafId", c.pi_js_null());
     const header = try object(engine);
-    defer engine.freeValue(header);
+    defer engine.releaseNativeValue(header);
     try put(engine, header, "type", try text(engine, "session"));
     try put(engine, header, "version", c.JS_NewInt32(engine.context, 3));
     try put(engine, header, "id", try identifier(engine, "session"));
     const options_index: usize = if (persistent) 2 else 1;
     if (!has_imported_header and args.len > options_index and c.JS_IsObject(args[options_index])) {
         const chosen = try get(engine, args[options_index], "id");
-        defer engine.freeValue(chosen);
+        defer engine.releaseNativeValue(chosen);
         if (!c.JS_IsUndefined(chosen)) {
-            const raw = try engine.toString(chosen);
+            const raw = try nativeText(engine, chosen);
             defer engine.gpa.free(raw);
             var valid = raw.len > 0 and std.ascii.isAlphanumeric(raw[0]) and std.ascii.isAlphanumeric(raw[raw.len - 1]);
             for (raw) |byte| if (!std.ascii.isAlphanumeric(byte) and byte != '.' and byte != '_' and byte != '-') {
@@ -1067,7 +1203,7 @@ pub fn initManager(engine: *engine_mod.Engine, args: []const c.JSValue, persiste
             };
             if (!valid) {
                 const ignored = try sourceError(engine, "Session id must be non-empty, contain only alphanumeric characters, '-', '_', and '.', and start and end with an alphanumeric character");
-                engine.freeValue(ignored);
+                engine.releaseNativeValue(ignored);
             }
             if (!c.JS_IsNull(chosen)) try put(engine, header, "id", c.JS_DupValue(engine.context, chosen));
         }
@@ -1082,14 +1218,15 @@ pub fn initManager(engine: *engine_mod.Engine, args: []const c.JSValue, persiste
         // created over that same backing array.
         try put(engine, data, "preloadedFileEntries", c.JS_DupValue(engine.context, args[2]));
         const imported = try array(engine);
-        defer engine.freeValue(imported);
+        defer engine.releaseNativeValue(imported);
         var loaded_header = false;
         for (0..try length(engine, args[2])) |index| {
+            try @import("native_pending_owner.zig").checkFatal(engine);
             const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, args[2], @intCast(index)));
-            defer engine.freeValue(row);
+            defer engine.releaseNativeValue(row);
             const typ = try get(engine, row, "type");
-            defer engine.freeValue(typ);
-            const kind = try engine.toString(typ);
+            defer engine.releaseNativeValue(typ);
+            const kind = try nativeText(engine, typ);
             defer engine.gpa.free(kind);
             if (std.mem.eql(u8, kind, "session")) {
                 if (!loaded_header) {
@@ -1105,19 +1242,19 @@ pub fn initManager(engine: *engine_mod.Engine, args: []const c.JSValue, persiste
     }
     if (persistent) {
         const id = try get(engine, header, "id");
-        defer engine.freeValue(id);
-        const id_text = try engine.toString(id);
+        defer engine.releaseNativeValue(id);
+        const id_text = try nativeText(engine, id);
         defer engine.gpa.free(id_text);
         const created = try get(engine, header, "timestamp");
-        defer engine.freeValue(created);
-        const stamp = try engine.toString(created);
+        defer engine.releaseNativeValue(created);
+        const stamp = try nativeText(engine, created);
         defer engine.gpa.free(stamp);
         for (stamp) |*byte| if (byte.* == ':' or byte.* == '.') {
             byte.* = '-';
         };
-        const name = try std.fmt.allocPrint(engine.gpa, "{s}_{s}.jsonl", .{ stamp, id_text });
+        const name = try retainHostAllocationFailure(engine, std.fmt.allocPrint(engine.gpa, "{s}_{s}.jsonl", .{ stamp, id_text }));
         defer engine.gpa.free(name);
-        const path = try std.fs.path.join(engine.gpa, &.{ directory, name });
+        const path = try retainHostAllocationFailure(engine, std.fs.path.join(engine.gpa, &.{ directory, name }));
         defer engine.gpa.free(path);
         try put(engine, data, "sessionFile", try text(engine, path));
         if (engine.native_io) |io| try std.Io.Dir.cwd().createDirPath(io, directory);
@@ -1127,43 +1264,44 @@ pub fn initManager(engine: *engine_mod.Engine, args: []const c.JSValue, persiste
 }
 fn indexSessionEntry(engine: *engine_mod.Engine, data: c.JSValue, row: c.JSValue) !void {
     const index = try get(engine, data, "entryIndex");
-    defer engine.freeValue(index);
+    defer engine.releaseNativeValue(index);
     const id = try get(engine, row, "id");
-    defer engine.freeValue(id);
+    defer engine.releaseNativeValue(id);
     const added = try invoke(engine, index, "set", &.{ id, row });
-    engine.freeValue(added);
+    engine.releaseNativeValue(added);
     const typ = try get(engine, row, "type");
-    defer engine.freeValue(typ);
+    defer engine.releaseNativeValue(typ);
     const label_type = try text(engine, "label");
-    defer engine.freeValue(label_type);
+    defer engine.releaseNativeValue(label_type);
     if (c.JS_IsStrictEqual(engine.context, typ, label_type)) {
         const target = try get(engine, row, "targetId");
-        defer engine.freeValue(target);
+        defer engine.releaseNativeValue(target);
         const label = try get(engine, row, "label");
-        defer engine.freeValue(label);
+        defer engine.releaseNativeValue(label);
         const stamp = try get(engine, row, "timestamp");
-        defer engine.freeValue(stamp);
+        defer engine.releaseNativeValue(stamp);
         inline for (.{ .{ "sessionLabels", label }, .{ "sessionLabelTimes", stamp } }) |field| {
             const map = try get(engine, data, field[0]);
-            defer engine.freeValue(map);
+            defer engine.releaseNativeValue(map);
             const result = if (c.JS_ToBool(engine.context, label) == 1) try invoke(engine, map, "set", &.{ target, field[1] }) else try invoke(engine, map, "delete", &.{target});
-            engine.freeValue(result);
+            engine.releaseNativeValue(result);
         }
     }
 }
 pub fn rebuildSessionIndex(engine: *engine_mod.Engine, data: c.JSValue) !void {
     inline for (.{ "entryIndex", "sessionLabels", "sessionLabelTimes" }) |field| try put(engine, data, field, try @import("native_sdk_auth_snapshot.zig").collection(engine, "Map"));
     const entries = try get(engine, data, "entries");
-    defer engine.freeValue(entries);
+    defer engine.releaseNativeValue(entries);
     for (0..try length(engine, entries)) |i| {
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, entries, @intCast(i)));
-        defer engine.freeValue(row);
+        defer engine.releaseNativeValue(row);
         try indexSessionEntry(engine, data, row);
     }
 }
 pub fn encodeCwd(engine: *engine_mod.Engine, input: []const u8) ![]u8 {
     const start: usize = if (input.len > 0 and (input[0] == '/' or input[0] == '\\')) 1 else 0;
-    const result = try std.fmt.allocPrint(engine.gpa, "--{s}--", .{input[start..]});
+    const result = try retainHostAllocationFailure(engine, std.fmt.allocPrint(engine.gpa, "--{s}--", .{input[start..]}));
     for (result) |*byte| if (byte.* == '/' or byte.* == '\\' or byte.* == ':') {
         byte.* = '-';
     };
@@ -1172,7 +1310,7 @@ pub fn encodeCwd(engine: *engine_mod.Engine, input: []const u8) ![]u8 {
 pub fn entry(self: *State, kind: []const u8) !c.JSValue {
     const engine = self.engine;
     const result = try object(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     try put(engine, result, "type", try text(engine, kind));
     if (std.mem.eql(u8, kind, "custom") or std.mem.eql(u8, kind, "custom_message")) {
         try put(engine, result, "customType", c.pi_js_undefined());
@@ -1185,22 +1323,28 @@ pub fn entry(self: *State, kind: []const u8) !c.JSValue {
     try put(engine, result, "timestamp", try timestamp(engine));
     return result;
 }
-fn nonHeaderEntry(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn nonHeaderEntry(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(nonHeaderEntryNativeBody(context, ignored_1, argc, argv));
+}
+fn nonHeaderEntryNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const kind = get(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), "type") catch |err| return fail(engine, err);
-    defer engine.freeValue(kind);
+    defer engine.releaseNativeValue(kind);
     const session = text(engine, "session") catch |err| return fail(engine, err);
-    defer engine.freeValue(session);
+    defer engine.releaseNativeValue(session);
     return c.pi_js_bool(engine.context, @intFromBool(!c.JS_IsStrictEqual(engine.context, kind, session)));
 }
 pub fn commitEntry(self: *State, value: c.JSValue) !c.JSValue {
     const engine = self.engine;
     const entries = try get(engine, self.data, "entries");
-    defer engine.freeValue(entries);
+    defer engine.releaseNativeValue(entries);
     const id = try get(engine, value, "id");
-    errdefer engine.freeValue(id);
+    errdefer engine.releaseNativeValue(id);
     const preloaded = try get(engine, self.data, "preloadedFileEntries");
-    defer engine.freeValue(preloaded);
+    defer engine.releaseNativeValue(preloaded);
     if (!c.JS_IsUndefined(preloaded)) try append(engine, preloaded, c.JS_DupValue(engine.context, value));
     try append(engine, entries, c.JS_DupValue(engine.context, value));
     try indexSessionEntry(engine, self.data, value);
@@ -1211,23 +1355,24 @@ pub fn commitEntry(self: *State, value: c.JSValue) !c.JSValue {
 fn persist(self: *State) !void {
     const engine = self.engine;
     const enabled = try get(engine, self.data, "persistent");
-    defer engine.freeValue(enabled);
+    defer engine.releaseNativeValue(enabled);
     if (c.JS_ToBool(engine.context, enabled) != 1) return;
     const path = try get(engine, self.data, "sessionFile");
-    defer engine.freeValue(path);
+    defer engine.releaseNativeValue(path);
     if (!c.JS_IsString(path)) return;
     const entries = try get(engine, self.data, "entries");
-    defer engine.freeValue(entries);
+    defer engine.releaseNativeValue(entries);
     var has_assistant = false;
     for (0..try length(engine, entries)) |i| {
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, entries, @intCast(i)));
-        defer engine.freeValue(row);
+        defer engine.releaseNativeValue(row);
         const message = try get(engine, row, "message");
-        defer engine.freeValue(message);
+        defer engine.releaseNativeValue(message);
         if (!c.JS_IsObject(message)) continue;
         const role = try get(engine, message, "role");
-        defer engine.freeValue(role);
-        const name = try engine.toString(role);
+        defer engine.releaseNativeValue(role);
+        const name = try nativeText(engine, role);
         defer engine.gpa.free(name);
         if (std.mem.eql(u8, name, "assistant") or std.mem.eql(u8, name, "user")) has_assistant = true;
     }
@@ -1235,23 +1380,24 @@ fn persist(self: *State) !void {
     var output: std.Io.Writer.Allocating = .init(engine.gpa);
     defer output.deinit();
     const header = try get(engine, self.data, "header");
-    defer engine.freeValue(header);
+    defer engine.releaseNativeValue(header);
     if (!self.session_flushed) {
-        const raw_header = try engine.stringify(header);
+        const raw_header = try nativeStringify(engine, header);
         defer engine.gpa.free(raw_header);
-        try output.writer.writeAll(raw_header);
-        try output.writer.writeByte('\n');
+        try appendNativeBytes(engine, &output, raw_header);
+        try appendNativeBytes(engine, &output, "\n");
     }
     const count = try length(engine, entries);
     for (self.persisted_count..count) |i| {
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, entries, @intCast(i)));
-        defer engine.freeValue(row);
-        const raw = try engine.stringify(row);
+        defer engine.releaseNativeValue(row);
+        const raw = try nativeStringify(engine, row);
         defer engine.gpa.free(raw);
-        try output.writer.writeAll(raw);
-        try output.writer.writeByte('\n');
+        try appendNativeBytes(engine, &output, raw);
+        try appendNativeBytes(engine, &output, "\n");
     }
-    const filename = try engine.toString(path);
+    const filename = try nativeText(engine, path);
     defer engine.gpa.free(filename);
     const io = engine.native_io orelse return error.NativeSDKRequiresIO;
     if (!self.session_flushed) {
@@ -1270,85 +1416,88 @@ fn persist(self: *State) !void {
 pub fn findEntry(self: *State, id: c.JSValue) !c.JSValue {
     const engine = self.engine;
     const index = try get(engine, self.data, "entryIndex");
-    defer engine.freeValue(index);
+    defer engine.releaseNativeValue(index);
     return invoke(engine, index, "get", &.{id});
 }
 pub fn branchEntries(self: *State, from: c.JSValue) !c.JSValue {
     const engine = self.engine;
     var held: std.ArrayList(c.JSValue) = .empty;
     defer {
-        for (held.items) |row| engine.freeValue(row);
+        for (held.items) |row| engine.releaseNativeValue(row);
         held.deinit(engine.gpa);
     }
     var current = c.JS_DupValue(engine.context, from);
-    defer engine.freeValue(current);
+    defer engine.releaseNativeValue(current);
     for (0..65536) |_| {
         if (!c.JS_IsString(current)) break;
         const row = try findEntry(self, current);
-        defer engine.freeValue(row);
+        defer engine.releaseNativeValue(row);
         if (c.JS_IsUndefined(row)) break;
-        try held.ensureUnusedCapacity(engine.gpa, 1);
+        try retainHostAllocationFailure(engine, held.ensureUnusedCapacity(engine.gpa, 1));
         held.appendAssumeCapacity(c.JS_DupValue(engine.context, row));
         const parent = try get(engine, row, "parentId");
-        engine.freeValue(current);
+        engine.releaseNativeValue(current);
         current = parent;
     }
     const result = try array(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     for (0..held.items.len) |i| try append(engine, result, c.JS_DupValue(engine.context, held.items[held.items.len - 1 - i]));
     return result;
 }
 fn labelFor(self: *State, id: c.JSValue) !c.JSValue {
     const engine = self.engine;
     const labels = try get(engine, self.data, "sessionLabels");
-    defer engine.freeValue(labels);
+    defer engine.releaseNativeValue(labels);
     return invoke(engine, labels, "get", &.{id});
 }
 fn sessionTree(self: *State) !c.JSValue {
     const engine = self.engine;
     const rows = try get(engine, self.data, "entries");
-    defer engine.freeValue(rows);
+    defer engine.releaseNativeValue(rows);
     const nodes = try array(engine);
-    defer engine.freeValue(nodes);
+    defer engine.releaseNativeValue(nodes);
     for (0..try length(engine, rows)) |i| {
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, rows, @intCast(i)));
-        defer engine.freeValue(row);
+        defer engine.releaseNativeValue(row);
         const node = try object(engine);
-        defer engine.freeValue(node);
+        defer engine.releaseNativeValue(node);
         try put(engine, node, "entry", c.JS_DupValue(engine.context, row));
         try put(engine, node, "children", try array(engine));
         const id = try get(engine, row, "id");
-        defer engine.freeValue(id);
+        defer engine.releaseNativeValue(id);
         const label = try labelFor(self, id);
-        defer engine.freeValue(label);
+        defer engine.releaseNativeValue(label);
         try put(engine, node, "label", c.JS_DupValue(engine.context, label));
         const times = try get(engine, self.data, "sessionLabelTimes");
-        defer engine.freeValue(times);
+        defer engine.releaseNativeValue(times);
         try put(engine, node, "labelTimestamp", try invoke(engine, times, "get", &.{id}));
         try append(engine, nodes, c.JS_DupValue(engine.context, node));
     }
     const roots = try array(engine);
-    errdefer engine.freeValue(roots);
+    errdefer engine.releaseNativeValue(roots);
     for (0..try length(engine, nodes)) |i| {
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const node = try engine.checked(c.JS_GetPropertyUint32(engine.context, nodes, @intCast(i)));
-        defer engine.freeValue(node);
+        defer engine.releaseNativeValue(node);
         const row = try get(engine, node, "entry");
-        defer engine.freeValue(row);
+        defer engine.releaseNativeValue(row);
         const parent = try get(engine, row, "parentId");
-        defer engine.freeValue(parent);
+        defer engine.releaseNativeValue(parent);
         const self_id = try get(engine, row, "id");
-        defer engine.freeValue(self_id);
+        defer engine.releaseNativeValue(self_id);
         var attached = false;
         if (c.JS_IsString(parent) and !c.JS_IsStrictEqual(engine.context, self_id, parent)) for (0..try length(engine, nodes)) |j| {
+            try @import("native_pending_owner.zig").checkFatal(engine);
             const other = try engine.checked(c.JS_GetPropertyUint32(engine.context, nodes, @intCast(j)));
-            defer engine.freeValue(other);
+            defer engine.releaseNativeValue(other);
             const other_entry = try get(engine, other, "entry");
-            defer engine.freeValue(other_entry);
+            defer engine.releaseNativeValue(other_entry);
             const id = try get(engine, other_entry, "id");
-            defer engine.freeValue(id);
+            defer engine.releaseNativeValue(id);
             if (!c.JS_IsStrictEqual(engine.context, id, parent)) continue;
             const children = try get(engine, other, "children");
-            defer engine.freeValue(children);
+            defer engine.releaseNativeValue(children);
             try append(engine, children, c.JS_DupValue(engine.context, node));
             attached = true;
             break;
@@ -1356,35 +1505,43 @@ fn sessionTree(self: *State) !c.JSValue {
         if (!attached) try append(engine, roots, c.JS_DupValue(engine.context, node));
     }
     const compare = try engine.checked(c.JS_NewCFunction(engine.context, compareSessionNodes, "compareSessionNodes", 2));
-    defer engine.freeValue(compare);
+    defer engine.releaseNativeValue(compare);
     for (0..try length(engine, nodes)) |index| {
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const node = try engine.checked(c.JS_GetPropertyUint32(engine.context, nodes, @intCast(index)));
-        defer engine.freeValue(node);
+        defer engine.releaseNativeValue(node);
         const children = try get(engine, node, "children");
-        defer engine.freeValue(children);
+        defer engine.releaseNativeValue(children);
         const sorted = try invoke(engine, children, "sort", &.{compare});
-        engine.freeValue(sorted);
+        engine.releaseNativeValue(sorted);
     }
     return roots;
 }
-fn compareSessionNodes(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn compareSessionNodes(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(compareSessionNodesNativeBody(context, ignored_1, argc, args));
+}
+fn compareSessionNodesNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     if (argc < 2) return c.JS_NewInt32(engine.context, 0);
     var numbers: [2]f64 = undefined;
     for (0..2) |index| {
         const row = get(engine, args[index], "entry") catch |err| return fail(engine, err);
-        defer engine.freeValue(row);
+        defer engine.releaseNativeValue(row);
         const stamp = get(engine, row, "timestamp") catch |err| return fail(engine, err);
-        defer engine.freeValue(stamp);
+        defer engine.releaseNativeValue(stamp);
         const number = @import("native_sdk_session_projection.zig").dateTime(engine, stamp) catch |err| return fail(engine, err);
-        defer engine.freeValue(number);
-        if (c.JS_ToFloat64(engine.context, &numbers[index], number) < 0) return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+        defer engine.releaseNativeValue(number);
+        @import("native_pending_owner.zig").checkFatal(engine) catch |err| return fail(engine, err);
+        if (c.JS_ToFloat64(engine.context, &numbers[index], number) < 0) return c.pi_js_exception();
     }
     return c.JS_NewFloat64(engine.context, numbers[0] - numbers[1]);
 }
 
 pub fn jsonObject(engine: *engine_mod.Engine, source: []const u8) !c.JSValue {
-    const raw = try engine.gpa.dupeZ(u8, source);
+    const raw = try retainHostAllocationFailure(engine, engine.gpa.dupeZ(u8, source));
     defer engine.gpa.free(raw);
     return engine.checked(c.JS_ParseJSON(engine.context, raw, source.len, "native-sdk-data"));
 }
@@ -1399,25 +1556,25 @@ fn mergeJson(allocator: std.mem.Allocator, base: std.json.Value, updates: std.js
     return result;
 }
 fn merge(engine: *engine_mod.Engine, base: c.JSValue, updates: c.JSValue) !c.JSValue {
-    const raw_base = try engine.stringify(base);
+    const raw_base = try nativeStringify(engine, base);
     defer engine.gpa.free(raw_base);
-    const raw_updates = try engine.stringify(updates);
+    const raw_updates = try nativeStringify(engine, updates);
     defer engine.gpa.free(raw_updates);
     var arena: std.heap.ArenaAllocator = .init(engine.gpa);
     defer arena.deinit();
-    const old = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), raw_base, .{ .allocate = .alloc_always });
-    const delta = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), raw_updates, .{ .allocate = .alloc_always });
-    return engine.fromJsonValue(try mergeJson(arena.allocator(), old, delta));
+    const old = try retainHostAllocationFailure(engine, std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), raw_base, .{ .allocate = .alloc_always }));
+    const delta = try retainHostAllocationFailure(engine, std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), raw_updates, .{ .allocate = .alloc_always }));
+    return engine.fromJsonValue(try retainHostAllocationFailure(engine, mergeJson(arena.allocator(), old, delta)));
 }
 fn optional(engine: *engine_mod.Engine, value: c.JSValue, key: [*:0]const u8, fallback: c.JSValue) !c.JSValue {
     const candidate = try get(engine, value, key);
     if (!c.JS_IsUndefined(candidate)) return candidate;
-    engine.freeValue(candidate);
+    engine.releaseNativeValue(candidate);
     return c.JS_DupValue(engine.context, fallback);
 }
 fn loadJsonFile(engine: *engine_mod.Engine, path: []const u8) !c.JSValue {
     const io = engine.native_io orelse return error.NativeSDKRequiresIO;
-    const raw = std.Io.Dir.cwd().readFileAlloc(io, path, engine.gpa, .limited(1024 * 1024)) catch |err| switch (err) {
+    const raw = retainHostAllocationFailure(engine, std.Io.Dir.cwd().readFileAlloc(io, path, engine.gpa, .limited(1024 * 1024))) catch |err| switch (err) {
         error.FileNotFound => return object(engine),
         else => return err,
     };
@@ -1426,25 +1583,25 @@ fn loadJsonFile(engine: *engine_mod.Engine, path: []const u8) !c.JSValue {
 }
 fn initSettings(engine: *engine_mod.Engine, args: []const c.JSValue, persistent: bool) !c.JSValue {
     const data = try object(engine);
-    defer engine.freeValue(data);
+    defer engine.releaseNativeValue(data);
     var global = try object(engine);
-    defer engine.freeValue(global);
+    defer engine.releaseNativeValue(global);
     const project = try object(engine);
-    defer engine.freeValue(project);
+    defer engine.releaseNativeValue(project);
     if (persistent) {
-        const working = if (args.len > 0 and c.JS_IsString(args[0])) try engine.toString(args[0]) else try cwd(engine);
+        const working = if (args.len > 0 and c.JS_IsString(args[0])) try nativeText(engine, args[0]) else try cwd(engine);
         defer engine.gpa.free(working);
-        const directory = if (args.len > 1 and c.JS_IsString(args[1])) try engine.toString(args[1]) else try agentDir(engine);
+        const directory = if (args.len > 1 and c.JS_IsString(args[1])) try nativeText(engine, args[1]) else try agentDir(engine);
         defer engine.gpa.free(directory);
-        const global_path = try std.fs.path.join(engine.gpa, &.{ directory, "settings.json" });
+        const global_path = try retainHostAllocationFailure(engine, std.fs.path.join(engine.gpa, &.{ directory, "settings.json" }));
         defer engine.gpa.free(global_path);
-        const project_path = try std.fs.path.join(engine.gpa, &.{ working, ".pi", "settings.json" });
+        const project_path = try retainHostAllocationFailure(engine, std.fs.path.join(engine.gpa, &.{ working, ".pi", "settings.json" }));
         defer engine.gpa.free(project_path);
         try put(engine, data, "settingsPath", try text(engine, global_path));
         try put(engine, data, "projectPath", try text(engine, project_path));
     } else if (args.len > 0 and c.JS_IsObject(args[0])) {
         const loaded_global = try @import("native_sdk_settings.zig").clone(engine, args[0]);
-        engine.freeValue(global);
+        engine.releaseNativeValue(global);
         global = loaded_global;
     }
     try put(engine, data, "global", c.JS_DupValue(engine.context, global));
@@ -1457,21 +1614,21 @@ fn initSettings(engine: *engine_mod.Engine, args: []const c.JSValue, persistent:
 fn initSettingsFromStorage(engine: *engine_mod.Engine, args: []const c.JSValue) !c.JSValue {
     if (args.len == 0 or !c.JS_IsObject(args[0])) return error.NativeSDKMissingArgument;
     const data = try object(engine);
-    defer engine.freeValue(data);
+    defer engine.releaseNativeValue(data);
     try @import("native_sdk_settings_storage.zig").initialize(engine, data, args[0], if (args.len > 1) args[1] else c.pi_js_undefined(), c.pi_js_undefined());
     return new(engine, .settings_manager, data);
 }
 fn initResources(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     const data = try object(engine);
-    defer engine.freeValue(data);
+    defer engine.releaseNativeValue(data);
     try put(engine, data, "options", if (c.JS_IsObject(options)) c.JS_DupValue(engine.context, options) else try object(engine));
     try put(engine, data, "extensions", try jsonObject(engine, "{\"extensions\":[],\"errors\":[],\"warnings\":[]}"));
     const extensions = try get(engine, data, "extensions");
-    defer engine.freeValue(extensions);
+    defer engine.releaseNativeValue(extensions);
     try put(engine, extensions, "runtime", try @import("native_sdk_extension_runtime.zig").create(engine, c.pi_js_undefined()));
     inline for (.{ "skills", "prompts", "themes" }) |name| {
         const value = try object(engine);
-        defer engine.freeValue(value);
+        defer engine.releaseNativeValue(value);
         try put(engine, value, name, try array(engine));
         try put(engine, value, "diagnostics", try array(engine));
         try put(engine, data, name, c.JS_DupValue(engine.context, value));
@@ -1486,22 +1643,23 @@ fn resourcesReload(self: *State, receiver: c.JSValue) !c.JSValue {
     try @import("native_sdk_resources.zig").reload(engine, self.data);
     try @import("native_sdk_resources.zig").factories(engine, self.data);
     const options = try get(engine, self.data, "options");
-    defer engine.freeValue(options);
+    defer engine.releaseNativeValue(options);
     inline for (.{ .{ "skills", "skillsOverride" }, .{ "prompts", "promptsOverride" }, .{ "themes", "themesOverride" }, .{ "agentsFiles", "agentsFilesOverride" } }) |names| {
         if (comptime std.mem.eql(u8, names[0], "themes")) {
             try @import("native_sdk_resource_paths.zig").finishThemeReload(engine, receiver, self.data);
             continue;
         }
         const function = try get(engine, options, names[1]);
-        defer engine.freeValue(function);
+        defer engine.releaseNativeValue(function);
         if (c.JS_IsFunction(engine.context, function)) {
             const current = try get(engine, self.data, names[0]);
-            defer engine.freeValue(current);
+            defer engine.releaseNativeValue(current);
             var args = [_]c.JSValue{current};
+            try @import("native_pending_owner.zig").checkFatal(engine);
             const result = try engine.checked(c.JS_Call(engine.context, function, options, 1, &args));
-            defer engine.freeValue(result);
+            defer engine.releaseNativeValue(result);
             const settled = try engine.awaitValue(result);
-            defer engine.freeValue(settled);
+            defer engine.releaseNativeValue(settled);
             if (comptime std.mem.eql(u8, names[0], "skills")) {
                 const published = try @import("native_sdk_resources.zig").skillOverride(engine, settled);
                 try put(engine, self.data, names[0], published);
@@ -1511,22 +1669,24 @@ fn resourcesReload(self: *State, receiver: c.JSValue) !c.JSValue {
         }
     }
     const append_override = try get(engine, options, "appendSystemPromptOverride");
-    defer engine.freeValue(append_override);
+    defer engine.releaseNativeValue(append_override);
     if (c.JS_IsFunction(engine.context, append_override)) {
         const base = try get(engine, self.data, "appendSystemPrompt");
-        defer engine.freeValue(base);
+        defer engine.releaseNativeValue(base);
         var args = [_]c.JSValue{base};
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const result = try engine.checked(c.JS_Call(engine.context, append_override, options, 1, &args));
         try put(engine, self.data, "appendSystemPrompt", result);
     }
     const override = try get(engine, options, "systemPromptOverride");
-    defer engine.freeValue(override);
+    defer engine.releaseNativeValue(override);
     if (c.JS_IsFunction(engine.context, override)) {
         const base = try get(engine, self.data, "systemPrompt");
-        defer engine.freeValue(base);
+        defer engine.releaseNativeValue(base);
         var args = [_]c.JSValue{base};
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const result = try engine.checked(c.JS_Call(engine.context, override, options, 1, &args));
-        defer engine.freeValue(result);
+        defer engine.releaseNativeValue(result);
         try put(engine, self.data, "systemPrompt", c.JS_DupValue(engine.context, result));
     }
     return promise(engine, c.pi_js_undefined());
@@ -1539,32 +1699,32 @@ fn settingsDispatch(self: *State, operation: Method, args: []const c.JSValue) !c
     const first = if (args.len > 0) args[0] else c.pi_js_undefined();
     if (operation == .getGlobalSettings or operation == .getProjectSettings) {
         const value = try get(engine, self.data, if (operation == .getGlobalSettings) "global" else "project");
-        defer engine.freeValue(value);
+        defer engine.releaseNativeValue(value);
         return clone(engine, value);
     }
     if (operation == .applyOverrides) {
         const old = try get(engine, self.data, "settings");
-        defer engine.freeValue(old);
+        defer engine.releaseNativeValue(old);
         try put(engine, self.data, "settings", try @import("native_sdk_settings.zig").deepMerge(engine, old, first, 0));
         return c.pi_js_undefined();
     }
     if (operation == .setDefaultThinkingLevel) {
         inline for (.{ "global", "settings" }) |name| {
             const target = try get(engine, self.data, name);
-            defer engine.freeValue(target);
+            defer engine.releaseNativeValue(target);
             try put(engine, target, "defaultThinkingLevel", c.JS_DupValue(engine.context, first));
         }
         return c.pi_js_undefined();
     }
     if (operation == .flush) {
         const path = try get(engine, self.data, "settingsPath");
-        defer engine.freeValue(path);
+        defer engine.releaseNativeValue(path);
         if (c.JS_IsString(path)) {
-            const filename = try engine.toString(path);
+            const filename = try nativeText(engine, path);
             defer engine.gpa.free(filename);
             const data = try get(engine, self.data, "global");
-            defer engine.freeValue(data);
-            const raw = try engine.stringify(data);
+            defer engine.releaseNativeValue(data);
+            const raw = try nativeStringify(engine, data);
             defer engine.gpa.free(raw);
             const io = engine.native_io orelse return error.NativeSDKRequiresIO;
             if (std.fs.path.dirname(filename)) |dir| try std.Io.Dir.cwd().createDirPath(io, dir);
@@ -1580,22 +1740,22 @@ fn settingsDispatch(self: *State, operation: Method, args: []const c.JSValue) !c
     if (operation == .reload) {
         inline for (.{ .{ "settingsPath", "global" }, .{ "projectPath", "project" } }) |names| {
             const path = try get(engine, self.data, names[0]);
-            defer engine.freeValue(path);
+            defer engine.releaseNativeValue(path);
             if (c.JS_IsString(path)) {
-                const filename = try engine.toString(path);
+                const filename = try nativeText(engine, path);
                 defer engine.gpa.free(filename);
                 try put(engine, self.data, names[1], try loadJsonFile(engine, filename));
             }
         }
         const global = try get(engine, self.data, "global");
-        defer engine.freeValue(global);
+        defer engine.releaseNativeValue(global);
         const project = try get(engine, self.data, "project");
-        defer engine.freeValue(project);
+        defer engine.releaseNativeValue(project);
         try put(engine, self.data, "settings", try @import("native_sdk_settings.zig").deepMerge(engine, global, project, 0));
         return promise(engine, c.pi_js_undefined());
     }
     const data = try get(engine, self.data, "settings");
-    defer engine.freeValue(data);
+    defer engine.releaseNativeValue(data);
     const key: ?[*:0]const u8 = switch (operation) {
         .getDefaultProvider => "defaultProvider",
         .getDefaultModel => "defaultModel",
@@ -1607,16 +1767,16 @@ fn settingsDispatch(self: *State, operation: Method, args: []const c.JSValue) !c
     if (key) |name| {
         const value = try get(engine, data, name);
         if (operation == .getTransport and c.JS_IsUndefined(value)) {
-            engine.freeValue(value);
+            engine.releaseNativeValue(value);
             return text(engine, "sse");
         }
         return value;
     }
     if (operation == .getCompactionSettings or operation == .getRetrySettings) {
         const defaults = try jsonObject(engine, if (operation == .getCompactionSettings) "{\"enabled\":true,\"reserveTokens\":16384,\"keepRecentTokens\":20000}" else "{\"enabled\":true,\"maxRetries\":3,\"baseDelayMs\":2000,\"maxAgentDelayMs\":60000}");
-        defer engine.freeValue(defaults);
+        defer engine.releaseNativeValue(defaults);
         const override = try get(engine, data, if (operation == .getCompactionSettings) "compaction" else "retry");
-        defer engine.freeValue(override);
+        defer engine.releaseNativeValue(override);
         if (c.JS_IsObject(override)) return merge(engine, defaults, override);
         return clone(engine, defaults);
     }
@@ -1625,31 +1785,31 @@ fn settingsDispatch(self: *State, operation: Method, args: []const c.JSValue) !c
 
 fn initModelRuntime(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     const data = try object(engine);
-    defer engine.freeValue(data);
+    defer engine.releaseNativeValue(data);
     const exports = engine.native_module_values.get("pi-ai") orelse return error.NativeSDKModelModuleUnavailable;
     try put(engine, data, "keys", try object(engine));
     try put(engine, data, "available", try array(engine));
     try @import("native_sdk_auth_snapshot.zig").initialize(engine, data);
     try put(engine, data, "options", if (c.JS_IsObject(options)) c.JS_DupValue(engine.context, options) else try object(engine));
     const configured = try get(engine, data, "options");
-    defer engine.freeValue(configured);
+    defer engine.releaseNativeValue(configured);
     const auth_path = try get(engine, configured, "authPath");
-    defer engine.freeValue(auth_path);
+    defer engine.releaseNativeValue(auth_path);
     if (c.JS_IsString(auth_path)) {
         try put(engine, data, "authPath", c.JS_DupValue(engine.context, auth_path));
     } else {
         const directory = try agentDir(engine);
         defer engine.gpa.free(directory);
-        const filename = try std.fs.path.join(engine.gpa, &.{ directory, "auth.json" });
+        const filename = try retainHostAllocationFailure(engine, std.fs.path.join(engine.gpa, &.{ directory, "auth.json" }));
         defer engine.gpa.free(filename);
         try put(engine, data, "authPath", try text(engine, filename));
     }
     const catalog_options = try object(engine);
-    defer engine.freeValue(catalog_options);
+    defer engine.releaseNativeValue(catalog_options);
     try @import("native_sdk_models.zig").copy(engine, catalog_options, configured);
     try put(engine, catalog_options, "credentials", try @import("native_sdk_models.zig").credentials(engine, data));
     const catalog = try invoke(engine, exports, "createModels", &.{catalog_options});
-    defer engine.freeValue(catalog);
+    defer engine.releaseNativeValue(catalog);
     try put(engine, data, "models", c.JS_DupValue(engine.context, catalog));
     try @import("native_sdk_models.zig").seedBuiltins(engine, catalog);
     try @import("native_sdk_provider_composer.zig").initialize(engine, data);
@@ -1661,15 +1821,16 @@ fn providerModels(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSVal
 }
 fn normalizedModels(engine: *engine_mod.Engine, models: c.JSValue, provider: c.JSValue) !c.JSValue {
     const result = try array(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     for (0..try length(engine, models)) |i| {
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const source = try engine.checked(c.JS_GetPropertyUint32(engine.context, models, @intCast(i)));
-        defer engine.freeValue(source);
+        defer engine.releaseNativeValue(source);
         const value = try clone(engine, source);
-        defer engine.freeValue(value);
+        defer engine.releaseNativeValue(value);
         try put(engine, value, "provider", c.JS_DupValue(engine.context, provider));
         const typ = try get(engine, value, "type");
-        defer engine.freeValue(typ);
+        defer engine.releaseNativeValue(typ);
         if (c.JS_IsUndefined(typ)) try put(engine, value, "type", try text(engine, "chat"));
         try append(engine, result, c.JS_DupValue(engine.context, value));
     }
@@ -1678,111 +1839,111 @@ fn normalizedModels(engine: *engine_mod.Engine, models: c.JSValue, provider: c.J
 
 fn factory(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     const opts = if (c.JS_IsObject(options)) c.JS_DupValue(engine.context, options) else try object(engine);
-    defer engine.freeValue(opts);
+    defer engine.releaseNativeValue(opts);
     var manager = try get(engine, opts, "sessionManager");
-    defer engine.freeValue(manager);
+    defer engine.releaseNativeValue(manager);
     const desired_cwd = try get(engine, opts, "cwd");
-    defer engine.freeValue(desired_cwd);
+    defer engine.releaseNativeValue(desired_cwd);
     const desired_dir = try get(engine, opts, "agentDir");
-    defer engine.freeValue(desired_dir);
+    defer engine.releaseNativeValue(desired_dir);
     if (c.JS_IsUndefined(manager)) {
-        engine.freeValue(manager);
-        const work = if (c.JS_IsString(desired_cwd)) try engine.toString(desired_cwd) else try cwd(engine);
+        engine.releaseNativeValue(manager);
+        const work = if (c.JS_IsString(desired_cwd)) try nativeText(engine, desired_cwd) else try cwd(engine);
         defer engine.gpa.free(work);
-        const root = if (c.JS_IsString(desired_dir)) try engine.toString(desired_dir) else try agentDir(engine);
+        const root = if (c.JS_IsString(desired_dir)) try nativeText(engine, desired_dir) else try agentDir(engine);
         defer engine.gpa.free(root);
-        const dir = try std.fs.path.join(engine.gpa, &.{ root, "sessions" });
+        const dir = try retainHostAllocationFailure(engine, std.fs.path.join(engine.gpa, &.{ root, "sessions" }));
         defer engine.gpa.free(dir);
         const work_value = try text(engine, work);
-        defer engine.freeValue(work_value);
+        defer engine.releaseNativeValue(work_value);
         const dir_value = try text(engine, dir);
-        defer engine.freeValue(dir_value);
+        defer engine.releaseNativeValue(dir_value);
         manager = try initManager(engine, &.{ work_value, dir_value }, true);
     }
     _ = try state(engine, manager);
     var settings = try get(engine, opts, "settingsManager");
-    defer engine.freeValue(settings);
+    defer engine.releaseNativeValue(settings);
     if (c.JS_IsUndefined(settings)) {
-        engine.freeValue(settings);
+        engine.releaseNativeValue(settings);
         settings = try initSettings(engine, &.{ desired_cwd, desired_dir }, engine.native_io != null);
     }
     var runtime = try get(engine, opts, "modelRuntime");
-    defer engine.freeValue(runtime);
+    defer engine.releaseNativeValue(runtime);
     if (c.JS_IsUndefined(runtime)) {
-        engine.freeValue(runtime);
+        engine.releaseNativeValue(runtime);
         runtime = try initModelRuntime(engine, c.pi_js_undefined());
     }
     var resources = try get(engine, opts, "resourceLoader");
-    defer engine.freeValue(resources);
+    defer engine.releaseNativeValue(resources);
     if (c.JS_IsUndefined(resources)) {
-        engine.freeValue(resources);
+        engine.releaseNativeValue(resources);
         resources = try initResources(engine, opts);
         const ready = try invoke(engine, resources, "reload", &.{});
-        defer engine.freeValue(ready);
+        defer engine.releaseNativeValue(ready);
         const settled = try engine.awaitValue(ready);
-        engine.freeValue(settled);
+        engine.releaseNativeValue(settled);
     }
     const data = try object(engine);
-    defer engine.freeValue(data);
+    defer engine.releaseNativeValue(data);
     inline for (.{ .{ "sessionManager", manager }, .{ "settingsManager", settings }, .{ "modelRuntime", runtime }, .{ "resourceLoader", resources } }) |field| try put(engine, data, field[0], c.JS_DupValue(engine.context, field[1]));
     var model = try get(engine, opts, "model");
-    defer engine.freeValue(model);
+    defer engine.releaseNativeValue(model);
     if (!c.JS_IsObject(model)) {
         const selected = try @import("native_sdk_factory_model.zig").select(engine, runtime, settings);
-        engine.freeValue(model);
+        engine.releaseNativeValue(model);
         model = selected;
     }
     try put(engine, data, "model", c.JS_DupValue(engine.context, model));
     const scoped = try get(engine, opts, "scopedModels");
-    defer engine.freeValue(scoped);
+    defer engine.releaseNativeValue(scoped);
     try put(engine, data, "scopedModels", if (c.JS_IsUndefined(scoped)) try array(engine) else c.JS_DupValue(engine.context, scoped));
     const chosen = try get(engine, opts, "thinkingLevel");
-    defer engine.freeValue(chosen);
+    defer engine.releaseNativeValue(chosen);
     const default_thinking = try invoke(engine, settings, "getDefaultThinkingLevel", &.{});
-    defer engine.freeValue(default_thinking);
+    defer engine.releaseNativeValue(default_thinking);
     const reasoning = if (c.JS_IsObject(model)) try get(engine, model, "reasoning") else c.pi_js_undefined();
-    defer engine.freeValue(reasoning);
+    defer engine.releaseNativeValue(reasoning);
     try put(engine, data, "thinkingLevel", if (!c.JS_IsObject(model) or c.JS_ToBool(engine.context, reasoning) != 1) try text(engine, "off") else if (c.JS_IsString(chosen)) c.JS_DupValue(engine.context, chosen) else if (c.JS_IsString(default_thinking)) c.JS_DupValue(engine.context, default_thinking) else try text(engine, "medium"));
     const custom = try get(engine, opts, "customTools");
-    defer engine.freeValue(custom);
+    defer engine.releaseNativeValue(custom);
     try put(engine, data, "customTools", if (c.JS_IsArray(custom)) c.JS_DupValue(engine.context, custom) else try array(engine));
-    const factory_cwd = if (c.JS_IsString(desired_cwd)) try engine.toString(desired_cwd) else try cwd(engine);
+    const factory_cwd = if (c.JS_IsString(desired_cwd)) try nativeText(engine, desired_cwd) else try cwd(engine);
     defer engine.gpa.free(factory_cwd);
     try put(engine, data, "_sdkToolCwd", try text(engine, factory_cwd));
     const image_auto_resize = try invoke(engine, settings, "getImageAutoResize", &.{});
-    defer engine.freeValue(image_auto_resize);
+    defer engine.releaseNativeValue(image_auto_resize);
     const shell_path_value = try invoke(engine, settings, "getShellPath", &.{});
-    defer engine.freeValue(shell_path_value);
-    const shell_path = if (c.JS_IsString(shell_path_value)) try engine.toString(shell_path_value) else null;
+    defer engine.releaseNativeValue(shell_path_value);
+    const shell_path = if (c.JS_IsString(shell_path_value)) try nativeText(engine, shell_path_value) else null;
     defer if (shell_path) |value| engine.gpa.free(value);
     const prefix_value = try invoke(engine, settings, "getShellCommandPrefix", &.{});
-    defer engine.freeValue(prefix_value);
-    const prefix = if (c.JS_IsString(prefix_value)) try engine.toString(prefix_value) else null;
+    defer engine.releaseNativeValue(prefix_value);
+    const prefix = if (c.JS_IsString(prefix_value)) try nativeText(engine, prefix_value) else null;
     defer if (prefix) |value| engine.gpa.free(value);
     try put(engine, data, "_sdkBuiltinDefinitions", try @import("native_sdk_builtin_execution.zig").createDefinitionsWithOptions(engine, factory_cwd, .{ .auto_resize = c.JS_ToBool(engine.context, image_auto_resize) != 0, .shell_path = shell_path, .command_prefix = prefix }));
     const tools = try get(engine, opts, "tools");
-    defer engine.freeValue(tools);
+    defer engine.releaseNativeValue(tools);
     try put(engine, data, "activeTools", if (c.JS_IsArray(tools)) try clone(engine, tools) else try jsonObject(engine, "[\"read\",\"bash\",\"edit\",\"write\"]"));
     const system = try invoke(engine, resources, "getSystemPrompt", &.{});
-    defer engine.freeValue(system);
+    defer engine.releaseNativeValue(system);
     try put(engine, data, "systemPrompt", if (c.JS_IsString(system)) c.JS_DupValue(engine.context, system) else try text(engine, "You are a helpful coding assistant."));
     const context_value = try invoke(engine, manager, "buildSessionContext", &.{});
-    defer engine.freeValue(context_value);
+    defer engine.releaseNativeValue(context_value);
     try put(engine, data, "messages", try get(engine, context_value, "messages"));
     const agent = try object(engine);
-    defer engine.freeValue(agent);
+    defer engine.releaseNativeValue(agent);
     const initial_messages = try get(engine, data, "messages");
-    defer engine.freeValue(initial_messages);
+    defer engine.releaseNativeValue(initial_messages);
     const initial_thinking = try get(engine, data, "thinkingLevel");
-    defer engine.freeValue(initial_thinking);
+    defer engine.releaseNativeValue(initial_thinking);
     const initial_tools = try get(engine, data, "customTools");
-    defer engine.freeValue(initial_tools);
+    defer engine.releaseNativeValue(initial_tools);
     const agent_state = try @import("native_sdk_agent_state.zig").create(engine, model, initial_thinking, initial_tools, initial_messages);
-    defer engine.freeValue(agent_state);
+    defer engine.releaseNativeValue(agent_state);
     try put(engine, agent, "state", c.JS_DupValue(engine.context, agent_state));
     try put(engine, data, "agent", c.JS_DupValue(engine.context, agent));
     const session = try new(engine, .agent_session, data);
-    defer engine.freeValue(session);
+    defer engine.releaseNativeValue(session);
     const session_owner = try state(engine, session);
     try @import("native_sdk_queue.zig").initialize(session_owner, session);
     try put(engine, data, "_sdkSessionValue", c.JS_DupValue(engine.context, session));
@@ -1794,36 +1955,36 @@ fn factory(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     try @import("native_sdk_command_runner.zig").initialize(session_owner, session);
     try @import("native_sdk_system_prompt_options.zig").rebuild(session_owner);
     const result = try object(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     try put(engine, result, "session", c.JS_DupValue(engine.context, session));
     try put(engine, result, "extensionsResult", try invoke(engine, resources, "getExtensions", &.{}));
     if (!c.JS_IsObject(model)) try put(engine, result, "modelFallbackMessage", try text(engine, "No models available."));
     const existing_messages = try get(engine, data, "messages");
-    defer engine.freeValue(existing_messages);
+    defer engine.releaseNativeValue(existing_messages);
     if (try length(engine, existing_messages) == 0 and c.JS_IsObject(model)) {
         const provider = try get(engine, model, "provider");
-        defer engine.freeValue(provider);
+        defer engine.releaseNativeValue(provider);
         const id = try get(engine, model, "id");
-        defer engine.freeValue(id);
+        defer engine.releaseNativeValue(id);
         const model_record = try invoke(engine, manager, "appendModelChange", &.{ provider, id });
-        engine.freeValue(model_record);
+        engine.releaseNativeValue(model_record);
     }
     const thinking = try get(engine, data, "thinkingLevel");
-    defer engine.freeValue(thinking);
+    defer engine.releaseNativeValue(thinking);
     const recorded = try invoke(engine, manager, "appendThinkingLevelChange", &.{thinking});
-    engine.freeValue(recorded);
+    engine.releaseNativeValue(recorded);
     try @import("native_sdk_resource_owners.zig").bindSession(session_owner);
     return result;
 }
 fn modelDispatch(self: *State, operation: Method, args: []const c.JSValue) !c.JSValue {
     const engine = self.engine;
     const catalog = try get(engine, self.data, "models");
-    defer engine.freeValue(catalog);
+    defer engine.releaseNativeValue(catalog);
     if (operation == .registerNativeProvider) return invoke(engine, catalog, "setProvider", args);
     if (operation == .registerProvider) {
         if (args.len != 2 or !c.JS_IsString(args[0]) or !c.JS_IsObject(args[1])) return error.NativeSDKInvalidProviderConfig;
         const provider = try @import("native_sdk_provider_composer.zig").extensionProvider(engine, self.data, args[0], args[1]);
-        defer engine.freeValue(provider);
+        defer engine.releaseNativeValue(provider);
         return invoke(engine, catalog, "setProvider", &.{provider});
     }
     if (operation == .unregisterProvider) return invoke(engine, catalog, "deleteProvider", args);
@@ -1842,10 +2003,10 @@ fn modelDispatch(self: *State, operation: Method, args: []const c.JSValue) !c.JS
     };
     if (delegate) |name| {
         const result = try invoke(engine, catalog, name, args);
-        errdefer engine.freeValue(result);
+        errdefer engine.releaseNativeValue(result);
         if (operation == .getAvailable) {
             const rows = try engine.awaitValue(result);
-            defer engine.freeValue(rows);
+            defer engine.releaseNativeValue(rows);
             try put(engine, self.data, "available", c.JS_DupValue(engine.context, rows));
         }
         return result;
@@ -1854,22 +2015,22 @@ fn modelDispatch(self: *State, operation: Method, args: []const c.JSValue) !c.JS
     if (operation == .getAuth) {
         if (args.len == 0) return error.NativeSDKMissingArgument;
         const resolved = try @import("native_sdk_models.zig").resolveAuth(engine, self.data, args[0], if (args.len > 1) args[1] else c.pi_js_undefined());
-        defer engine.freeValue(resolved);
+        defer engine.releaseNativeValue(resolved);
         return promise(engine, resolved);
     }
     if (operation == .setRuntimeApiKey or operation == .clearRuntimeApiKey or operation == .removeRuntimeApiKey or operation == .hasConfiguredAuth) {
         if (args.len < 1) return error.NativeSDKMissingArgument;
         const keys = try get(engine, self.data, "keys");
-        defer engine.freeValue(keys);
-        const provider = try engine.toString(args[0]);
+        defer engine.releaseNativeValue(keys);
+        const provider = try nativeText(engine, args[0]);
         defer engine.gpa.free(provider);
-        const key = try engine.gpa.dupeZ(u8, provider);
+        const key = try retainHostAllocationFailure(engine, engine.gpa.dupeZ(u8, provider));
         defer engine.gpa.free(key);
         if (operation == .hasConfiguredAuth) {
             const pending = try invoke(engine, catalog, "checkAuth", args);
-            defer engine.freeValue(pending);
+            defer engine.releaseNativeValue(pending);
             const value = try engine.awaitValue(pending);
-            defer engine.freeValue(value);
+            defer engine.releaseNativeValue(value);
             return c.pi_js_bool(engine.context, @intFromBool(c.JS_IsObject(value)));
         }
         try put(engine, keys, key, if (operation == .setRuntimeApiKey and args.len > 1) c.JS_DupValue(engine.context, args[1]) else c.pi_js_undefined());
@@ -1882,7 +2043,7 @@ fn modelDispatch(self: *State, operation: Method, args: []const c.JSValue) !c.JS
         }
         const result = try @import("native_sdk_models.zig").request(engine, self.data, args[0], args[1], if (args.len > 2) args[2] else c.pi_js_undefined(), if (operation == .classify) "classify" else if (operation == .generateImages) "generateImages" else "streamSimple");
         if (operation == .streamSimple) return result;
-        defer engine.freeValue(result);
+        defer engine.releaseNativeValue(result);
         if (operation == .completeSimple) return invoke(engine, result, "result", &.{});
         return promise(engine, result);
     }
@@ -1894,23 +2055,30 @@ fn openManager(engine: *engine_mod.Engine, args: []const c.JSValue) !c.JSValue {
 fn queueTypedOperation(engine: *engine_mod.Engine, data: c.JSValue, model: c.JSValue, context: c.JSValue, options: c.JSValue, images: bool) !c.JSValue {
     var capabilities: [2]c.JSValue = undefined;
     const result = try engine.checked(c.JS_NewPromiseCapability(engine.context, &capabilities));
-    errdefer engine.freeValue(result);
-    defer for (capabilities) |callback| engine.freeValue(callback);
+    errdefer engine.releaseNativeValue(result);
+    defer for (capabilities) |callback| engine.releaseNativeValue(callback);
     var values = [_]c.JSValue{ data, model, context, options, c.pi_js_bool(engine.context, @intFromBool(images)), capabilities[0], capabilities[1] };
     if (c.JS_EnqueueJob(engine.context, typedOperationJob, values.len, &values) < 0) return error.OutOfMemory;
     return result;
 }
-fn typedOperationJob(context: ?*c.JSContext, _: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn typedOperationJob(context: ?*c.JSContext, ignored_1: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(typedOperationJobNativeBody(context, ignored_1, args));
+}
+fn typedOperationJobNativeBody(context: ?*c.JSContext, _: c_int, args: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const value = @import("native_sdk_models.zig").typedOperation(engine, args[0], args[1], args[2], args[3], c.JS_ToBool(context, args[4]) == 1) catch |err| {
-        _ = fail(engine, err);
-        const reason = c.JS_GetException(context);
-        defer engine.freeValue(reason);
+        const reason = @import("native_agent_async.zig").reason(engine, err) catch |fatal| return fail(engine, fatal);
+        defer engine.releaseNativeValue(reason);
         var rejected = [_]c.JSValue{reason};
+        @import("native_pending_owner.zig").checkFatal(engine) catch |err| return fail(engine, err);
         return c.JS_Call(context, args[6], c.pi_js_undefined(), 1, &rejected);
     };
-    defer engine.freeValue(value);
+    defer engine.releaseNativeValue(value);
     var values = [_]c.JSValue{value};
+    @import("native_pending_owner.zig").checkFatal(engine) catch |err| return fail(engine, err);
     return c.JS_Call(context, args[5], c.pi_js_undefined(), 1, &values);
 }
 
@@ -1929,73 +2097,75 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             return c.pi_js_undefined();
         }
         const previous = try get(engine, self.data, "session");
-        defer engine.freeValue(previous);
+        defer engine.releaseNativeValue(previous);
         if (operation == .dispose) {
             try runtimeHook(self, "invalidate", &.{});
             try retireNativeSessionValue(engine, previous);
             const completed = try invoke(engine, previous, "dispose", &.{});
-            engine.freeValue(completed);
+            engine.releaseNativeValue(completed);
             self.disposed = true;
             return promise(engine, c.pi_js_undefined());
         }
         if (operation == .newSession or operation == .switchSession) {
             const old_manager = try get(engine, previous, "sessionManager");
-            defer engine.freeValue(old_manager);
+            defer engine.releaseNativeValue(old_manager);
             const working = try invoke(engine, old_manager, "getCwd", &.{});
-            defer engine.freeValue(working);
+            defer engine.releaseNativeValue(working);
             const directory = try invoke(engine, old_manager, "getSessionDir", &.{});
-            defer engine.freeValue(directory);
+            defer engine.releaseNativeValue(directory);
             const persisted = try invoke(engine, old_manager, "isPersisted", &.{});
-            defer engine.freeValue(persisted);
+            defer engine.releaseNativeValue(persisted);
             const manager = if (operation == .switchSession) try openManager(engine, &.{first}) else try initManager(engine, &.{ working, directory }, c.JS_ToBool(engine.context, persisted) == 1);
-            defer engine.freeValue(manager);
+            defer engine.releaseNativeValue(manager);
             const options = try object(engine);
-            defer engine.freeValue(options);
+            defer engine.releaseNativeValue(options);
             try put(engine, options, "cwd", c.JS_DupValue(engine.context, working));
             const services_value = try get(engine, self.data, "services");
-            defer engine.freeValue(services_value);
+            defer engine.releaseNativeValue(services_value);
             try put(engine, options, "agentDir", try get(engine, services_value, "agentDir"));
             try put(engine, options, "sessionManager", c.JS_DupValue(engine.context, manager));
             const start = try object(engine);
-            defer engine.freeValue(start);
+            defer engine.releaseNativeValue(start);
             try put(engine, start, "type", try text(engine, "session_start"));
             try put(engine, start, "reason", try text(engine, if (operation == .newSession) "new" else "resume"));
             try put(engine, options, "sessionStartEvent", c.JS_DupValue(engine.context, start));
             const creator = try get(engine, self.data, "factory");
-            defer engine.freeValue(creator);
+            defer engine.releaseNativeValue(creator);
             const aborted = try invoke(engine, previous, "abort", &.{});
-            defer engine.freeValue(aborted);
+            defer engine.releaseNativeValue(aborted);
             const settled_abort = try engine.awaitValue(aborted);
-            engine.freeValue(settled_abort);
+            engine.releaseNativeValue(settled_abort);
             try runtimeHook(self, "invalidate", &.{});
             try retireNativeSessionValue(engine, previous);
             const detached = try invoke(engine, previous, "dispose", &.{});
-            engine.freeValue(detached);
+            engine.releaseNativeValue(detached);
             var values = [_]c.JSValue{options};
+            try @import("native_pending_owner.zig").checkFatal(engine);
             const pending = try engine.checked(c.JS_Call(engine.context, creator, c.pi_js_undefined(), 1, &values));
-            defer engine.freeValue(pending);
+            defer engine.releaseNativeValue(pending);
             const created = try engine.awaitValue(pending);
-            defer engine.freeValue(created);
+            defer engine.releaseNativeValue(created);
             const next = try get(engine, created, "session");
-            defer engine.freeValue(next);
+            defer engine.releaseNativeValue(next);
             if (!c.JS_IsObject(next)) return error.InvalidNativeSDKRuntimeFactory;
             try put(engine, self.data, "session", c.JS_DupValue(engine.context, next));
             try put(engine, self.data, "services", try get(engine, created, "services"));
             try put(engine, self.data, "diagnostics", try get(engine, created, "diagnostics"));
             if (operation == .newSession and c.JS_IsObject(first)) {
                 const setup = try get(engine, first, "setup");
-                defer engine.freeValue(setup);
+                defer engine.releaseNativeValue(setup);
                 if (c.JS_IsFunction(engine.context, setup)) {
                     var setup_args = [_]c.JSValue{manager};
+                    try @import("native_pending_owner.zig").checkFatal(engine);
                     const setup_pending = try engine.checked(c.JS_Call(engine.context, setup, first, 1, &setup_args));
-                    defer engine.freeValue(setup_pending);
+                    defer engine.releaseNativeValue(setup_pending);
                     const setup_done = try engine.awaitValue(setup_pending);
-                    engine.freeValue(setup_done);
+                    engine.releaseNativeValue(setup_done);
                 }
             }
             try runtimeHook(self, "rebind", &.{next});
             const result = try jsonObject(engine, "{\"cancelled\":false}");
-            defer engine.freeValue(result);
+            defer engine.releaseNativeValue(result);
             return promise(engine, result);
         }
         return error.NativeSDKMethodUnavailable;
@@ -2004,9 +2174,9 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         if (operation == .prompt) return startPrompt(self, receiver, args);
         if (operation == .subscribe) {
             const listeners = try get(engine, self.data, "_sdkEventListeners");
-            defer engine.freeValue(listeners);
+            defer engine.releaseNativeValue(listeners);
             const ignored = try invoke(engine, listeners, "push", &.{first});
-            engine.freeValue(ignored);
+            engine.releaseNativeValue(ignored);
             var data = [_]c.JSValue{ receiver, first };
             return engine.checked(c.JS_NewCFunctionData2(engine.context, unsubscribeCallback, "unsubscribe", 0, 0, 2, &data));
         }
@@ -2015,10 +2185,10 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             self.aborted = true;
             try retireSessionModelLease(self);
             const runner = try get(engine, self.data, "_sdkCommandRunner");
-            defer engine.freeValue(runner);
+            defer engine.releaseNativeValue(runner);
             if (c.JS_IsObject(runner)) {
                 const invalidated = try @import("native_js_values.zig").invoke(engine, runner, "invalidate", &.{});
-                engine.freeValue(invalidated);
+                engine.releaseNativeValue(invalidated);
             }
             try put(engine, self.data, "_sdkEventListeners", try array(engine));
             return c.pi_js_undefined();
@@ -2026,7 +2196,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         if (operation == .abort) {
             self.aborted = true;
             const signal = try get(engine, self.data, "promptSignal");
-            defer engine.freeValue(signal);
+            defer engine.releaseNativeValue(signal);
             if (c.JS_IsObject(signal)) try @import("abort_signal.zig").abort(engine, signal, c.pi_js_undefined());
             if (self.running) {
                 return get(engine, self.data, "promptIdle");
@@ -2035,10 +2205,10 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         }
         if (operation == .bindExtensions) {
             const session = try sessionDataSessionValue(engine, self.data);
-            defer engine.freeValue(session);
+            defer engine.releaseNativeValue(session);
             try @import("native_sdk_ui_context.zig").bind(engine, session, first);
             const resources = try get(engine, self.data, "resourceLoader");
-            defer engine.freeValue(resources);
+            defer engine.releaseNativeValue(resources);
             return @import("native_sdk_resources.zig").emitAsync(engine, resources, self.data, "session_start", "{\"reason\":\"startup\"}");
         }
         if (operation == .setScopedModels) {
@@ -2061,17 +2231,17 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         if (operation == .getToolDefinition) return @import("native_sdk_tool_catalog.zig").getDefinition(self, first);
         if (operation == .setSessionName) {
             const manager = try publicField(self, "sessionManager");
-            defer engine.freeValue(manager);
+            defer engine.releaseNativeValue(manager);
             const value = try invoke(engine, manager, "appendSessionInfo", &.{first});
-            engine.freeValue(value);
+            engine.releaseNativeValue(value);
             const notification = try event(self, "session_info_changed");
-            defer engine.freeValue(notification);
+            defer engine.releaseNativeValue(notification);
             try put(engine, notification, "name", try invoke(engine, manager, "getSessionName", &.{}));
             try emit(self, notification);
             const resources = try get(engine, self.data, "resourceLoader");
-            defer engine.freeValue(resources);
+            defer engine.releaseNativeValue(resources);
             const pending = try @import("native_sdk_resources.zig").emitValue(engine, resources, self.data, "session_info_changed", notification);
-            engine.freeValue(pending);
+            engine.releaseNativeValue(pending);
             return c.pi_js_undefined();
         }
         if (operation == .setThinkingLevel) {
@@ -2080,7 +2250,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         }
         if (operation == .getAvailableThinkingLevels or operation == .supportsThinking) {
             const model = try agentField(self, "model");
-            defer engine.freeValue(model);
+            defer engine.releaseNativeValue(model);
             return if (operation == .getAvailableThinkingLevels) @import("native_sdk_thinking.zig").available(engine, model) else c.pi_js_bool(engine.context, @intFromBool(try @import("native_sdk_thinking.zig").supports(engine, model)));
         }
         if (operation == .cycleThinkingLevel) return @import("native_sdk_thinking.zig").cycle(engine, receiver, first);
@@ -2095,11 +2265,11 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         if (operation == .newSession) {
             if (self.running) return error.NativeSDKSessionBusy;
             const manager = try publicField(self, "sessionManager");
-            defer engine.freeValue(manager);
+            defer engine.releaseNativeValue(manager);
             const path = try invoke(engine, manager, "newSession", args);
-            engine.freeValue(path);
+            engine.releaseNativeValue(path);
             const empty_messages = try array(engine);
-            defer engine.freeValue(empty_messages);
+            defer engine.releaseNativeValue(empty_messages);
             try setAgentField(self, "messages", empty_messages);
             try retireSessionModelLease(self);
             try attachSessionModelLease(self);
@@ -2117,7 +2287,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
     if (self.kind == .model_runtime) {
         if (operation == .getRegisteredProviderConfig) {
             const extensions = try get(engine, self.data, "registeredExtensions");
-            defer engine.freeValue(extensions);
+            defer engine.releaseNativeValue(extensions);
             return invoke(engine, extensions, "get", args);
         }
         if (operation == .setRuntimeApiKey or operation == .removeRuntimeApiKey or operation == .clearRuntimeApiKey) {
@@ -2138,7 +2308,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         if (auth_query) |query| return @import("native_sdk_auth_snapshot.zig").query(engine, self.data, query, if (args.len > 0) args[0] else c.pi_js_undefined());
         if (operation == .getProvider) {
             const catalog = try get(engine, self.data, "models");
-            defer engine.freeValue(catalog);
+            defer engine.releaseNativeValue(catalog);
             return invoke(engine, catalog, "getProvider", args);
         }
         if (operation == .registerVirtualModel and args.len > 0) return @import("native_sdk_virtual.zig").register(engine, receiver, args[0]);
@@ -2151,23 +2321,23 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         if (operation == .streamSimple or operation == .completeSimple or operation == .stream or operation == .complete or operation == .streamDeferred or operation == .fetchDeferred) {
             const output = try @import("native_sdk_chat.zig").streamMode(engine, receiver, self.data, args, if (operation == .stream or operation == .complete) .api else if (operation == .streamDeferred or operation == .fetchDeferred) .deferred else .simple);
             if (operation == .streamSimple or operation == .stream or operation == .streamDeferred) return output;
-            defer engine.freeValue(output);
+            defer engine.releaseNativeValue(output);
             return invoke(engine, output, "result", &.{});
         }
         if (operation == .getAvailable) return @import("native_sdk_availability.zig").getAvailable(engine, receiver, args);
         if (operation == .registerNativeProvider or operation == .registerProvider or operation == .unregisterProvider) {
             const result = try modelDispatch(self, operation, args);
-            errdefer engine.freeValue(result);
+            errdefer engine.releaseNativeValue(result);
             const id = if (operation == .registerNativeProvider) try get(engine, args[0], "id") else c.JS_DupValue(engine.context, args[0]);
-            defer engine.freeValue(id);
+            defer engine.releaseNativeValue(id);
             try @import("native_sdk_auth_snapshot.zig").registered(engine, self.data, id, if (operation == .registerNativeProvider) args[0] else if (args.len > 1) args[1] else c.pi_js_undefined(), operation == .registerNativeProvider, operation == .unregisterProvider);
             try @import("native_sdk_provider_composer.zig").recompose(engine, self.data, id);
             try @import("native_sdk_auth_snapshot.zig").updateModels(engine, self.data);
             if (operation != .unregisterProvider) {
                 const catalog = try get(engine, self.data, "models");
-                defer engine.freeValue(catalog);
+                defer engine.releaseNativeValue(catalog);
                 const provider = try invoke(engine, catalog, "getProvider", &.{id});
-                defer engine.freeValue(provider);
+                defer engine.releaseNativeValue(provider);
                 try @import("native_sdk_auth_snapshot.zig").markProvisional(engine, self.data, id, provider);
             }
             try @import("native_sdk_availability.zig").registrationRefresh(engine, receiver);
@@ -2190,9 +2360,9 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         if (key) |name| {
             const current = try get(engine, self.data, name);
             if (operation != .getSkills and operation != .getPrompts and operation != .getThemes) return current;
-            defer engine.freeValue(current);
+            defer engine.releaseNativeValue(current);
             const fresh = try object(engine);
-            errdefer engine.freeValue(fresh);
+            errdefer engine.releaseNativeValue(fresh);
             try put(engine, fresh, name, try get(engine, current, name));
             try put(engine, fresh, "diagnostics", try get(engine, current, "diagnostics"));
             return fresh;
@@ -2208,19 +2378,19 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
     if (self.kind == .session_manager) {
         if (operation == .usesDefaultSessionDir) {
             const working = try get(engine, self.data, "cwd");
-            defer engine.freeValue(working);
-            const raw = try engine.toString(working);
+            defer engine.releaseNativeValue(working);
+            const raw = try nativeText(engine, working);
             defer engine.gpa.free(raw);
             const encoded = try encodeCwd(engine, raw);
             defer engine.gpa.free(encoded);
             const root = try agentDir(engine);
             defer engine.gpa.free(root);
-            const path = try std.fs.path.join(engine.gpa, &.{ root, "sessions", encoded });
+            const path = try retainHostAllocationFailure(engine, std.fs.path.join(engine.gpa, &.{ root, "sessions", encoded }));
             defer engine.gpa.free(path);
             const expected = try text(engine, path);
-            defer engine.freeValue(expected);
+            defer engine.releaseNativeValue(expected);
             const actual = try get(engine, self.data, "sessionDir");
-            defer engine.freeValue(actual);
+            defer engine.releaseNativeValue(actual);
             return c.pi_js_bool(engine.context, @intFromBool(c.JS_IsStrictEqual(engine.context, actual, expected)));
         }
         if (operation == .isPersisted) return get(engine, self.data, "persistent");
@@ -2228,23 +2398,24 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         if (operation == .getLabel) return labelFor(self, first);
         if (operation == .getSessionName) {
             const rows = try get(engine, self.data, "entries");
-            defer engine.freeValue(rows);
+            defer engine.releaseNativeValue(rows);
             var index = try length(engine, rows);
             while (index > 0) {
                 index -= 1;
+                try @import("native_pending_owner.zig").checkFatal(engine);
                 const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, rows, index));
-                defer engine.freeValue(row);
+                defer engine.releaseNativeValue(row);
                 const typ = try get(engine, row, "type");
-                defer engine.freeValue(typ);
-                const value = try engine.toString(typ);
+                defer engine.releaseNativeValue(typ);
+                const value = try nativeText(engine, typ);
                 defer engine.gpa.free(value);
                 if (std.mem.eql(u8, value, "session_info")) {
                     const name = try get(engine, row, "name");
-                    defer engine.freeValue(name);
+                    defer engine.releaseNativeValue(name);
                     if (c.JS_IsUndefined(name) or c.JS_IsNull(name)) return c.pi_js_undefined();
                     const trimmed = try invoke(engine, name, "trim", &.{});
                     if (c.JS_ToBool(engine.context, trimmed) == 1) return trimmed;
-                    engine.freeValue(trimmed);
+                    engine.releaseNativeValue(trimmed);
                     return c.pi_js_undefined();
                 }
             }
@@ -2262,49 +2433,49 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         if (simple) |name| {
             if (operation == .getEntries) {
                 const preloaded = try get(engine, self.data, "preloadedFileEntries");
-                defer engine.freeValue(preloaded);
+                defer engine.releaseNativeValue(preloaded);
                 if (!c.JS_IsUndefined(preloaded)) {
                     const predicate = try engine.checked(c.JS_NewCFunction(engine.context, nonHeaderEntry, "", 1));
-                    defer engine.freeValue(predicate);
+                    defer engine.releaseNativeValue(predicate);
                     return invoke(engine, preloaded, "filter", &.{predicate});
                 }
             }
             const value = try get(engine, self.data, name);
             if (operation != .getEntries) return value;
-            defer engine.freeValue(value);
+            defer engine.releaseNativeValue(value);
             return invoke(engine, value, "slice", &.{});
         }
         if (operation == .getSessionId) {
             const header = try get(engine, self.data, "header");
-            defer engine.freeValue(header);
+            defer engine.releaseNativeValue(header);
             return get(engine, header, "id");
         }
         if (operation == .getEntryCount) {
             const index = try get(engine, self.data, "entryIndex");
-            defer engine.freeValue(index);
+            defer engine.releaseNativeValue(index);
             return get(engine, index, "size");
         }
         if (operation == .getEntry or operation == .getLeafEntry) {
             const id = if (operation == .getEntry) c.JS_DupValue(engine.context, first) else try get(engine, self.data, "leafId");
-            defer engine.freeValue(id);
+            defer engine.releaseNativeValue(id);
             return findEntry(self, id);
         }
         if (operation == .getBranch) {
             const id = if (c.JS_IsString(first)) c.JS_DupValue(engine.context, first) else try get(engine, self.data, "leafId");
-            defer engine.freeValue(id);
+            defer engine.releaseNativeValue(id);
             return branchEntries(self, id);
         }
         if (operation == .newSession) {
             const working = try get(engine, self.data, "cwd");
-            defer engine.freeValue(working);
+            defer engine.releaseNativeValue(working);
             const directory = try get(engine, self.data, "sessionDir");
-            defer engine.freeValue(directory);
+            defer engine.releaseNativeValue(directory);
             const persistent = try get(engine, self.data, "persistent");
-            defer engine.freeValue(persistent);
+            defer engine.releaseNativeValue(persistent);
             const created = if (c.JS_ToBool(engine.context, persistent) == 1) try initManager(engine, &.{ working, directory, first }, true) else try initManager(engine, &.{ working, first }, false);
-            defer engine.freeValue(created);
+            defer engine.releaseNativeValue(created);
             const fresh = try state(engine, created);
-            engine.freeValue(self.data);
+            engine.releaseNativeValue(self.data);
             self.data = c.JS_DupValue(engine.context, fresh.data);
             self.persisted_count = 0;
             self.session_flushed = false;
@@ -2312,15 +2483,15 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         }
         if (operation == .setSessionFile) {
             const working = try get(engine, self.data, "cwd");
-            defer engine.freeValue(working);
+            defer engine.releaseNativeValue(working);
             const directory = try get(engine, self.data, "sessionDir");
-            defer engine.freeValue(directory);
+            defer engine.releaseNativeValue(directory);
             const persistent = try get(engine, self.data, "persistent");
-            defer engine.freeValue(persistent);
+            defer engine.releaseNativeValue(persistent);
             const replacement = try @import("native_sdk_session_files.zig").openMode(engine, &.{ first, directory, working }, c.JS_ToBool(engine.context, persistent) == 1);
-            defer engine.freeValue(replacement);
+            defer engine.releaseNativeValue(replacement);
             const fresh = try state(engine, replacement);
-            engine.freeValue(self.data);
+            engine.releaseNativeValue(self.data);
             self.data = c.JS_DupValue(engine.context, fresh.data);
             try put(engine, self.data, "sessionDir", c.JS_DupValue(engine.context, directory));
             self.persisted_count = fresh.persisted_count;
@@ -2330,7 +2501,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         if (operation == .branch or operation == .resetLeaf) {
             if (operation == .branch) {
                 const found = try findEntry(self, first);
-                defer engine.freeValue(found);
+                defer engine.releaseNativeValue(found);
                 if (c.JS_IsUndefined(found)) return missingEntry(self, first);
             }
             try put(engine, self.data, "leafId", if (operation == .branch) c.JS_DupValue(engine.context, first) else c.pi_js_null());
@@ -2338,30 +2509,31 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         }
         if (operation == .getChildren) {
             const rows = try get(engine, self.data, "entries");
-            defer engine.freeValue(rows);
+            defer engine.releaseNativeValue(rows);
             const output = try array(engine);
-            errdefer engine.freeValue(output);
+            errdefer engine.releaseNativeValue(output);
             for (0..try length(engine, rows)) |i| {
+                try @import("native_pending_owner.zig").checkFatal(engine);
                 const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, rows, @intCast(i)));
-                defer engine.freeValue(row);
+                defer engine.releaseNativeValue(row);
                 const parent = try get(engine, row, "parentId");
-                defer engine.freeValue(parent);
+                defer engine.releaseNativeValue(parent);
                 if (c.JS_IsStrictEqual(engine.context, parent, first)) try append(engine, output, c.JS_DupValue(engine.context, row));
             }
             return output;
         }
         if (operation == .buildSessionContext or operation == .buildSessionProjection or operation == .buildContextEntries) {
             const leaf = try get(engine, self.data, "leafId");
-            defer engine.freeValue(leaf);
+            defer engine.releaseNativeValue(leaf);
             const path = try branchEntries(self, leaf);
-            defer engine.freeValue(path);
+            defer engine.releaseNativeValue(path);
             const projection = @import("native_sdk_session_projection.zig");
             if (operation == .buildContextEntries) return projection.contextEntries(engine, path);
             const result = try projection.project(engine, path);
             if (operation == .buildSessionProjection) return result;
-            defer engine.freeValue(result);
+            defer engine.releaseNativeValue(result);
             const context = try object(engine);
-            errdefer engine.freeValue(context);
+            errdefer engine.releaseNativeValue(context);
             inline for (.{ "messages", "thinkingLevel", "model" }) |field| try put(engine, context, field, try get(engine, result, field));
             return context;
         }
@@ -2376,7 +2548,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         };
         if (kind) |name| {
             const row = try entry(self, name);
-            defer engine.freeValue(row);
+            defer engine.releaseNativeValue(row);
             switch (operation) {
                 .appendMessage => try put(engine, row, "message", c.JS_DupValue(engine.context, first)),
                 .appendCustomEntry => {
@@ -2384,22 +2556,22 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
                     try put(engine, row, "data", c.JS_DupValue(engine.context, second));
                 },
                 .appendSessionInfo => {
-                    const raw = try engine.toString(first);
+                    const raw = try nativeText(engine, first);
                     defer engine.gpa.free(raw);
                     var cleaned: std.Io.Writer.Allocating = .init(engine.gpa);
                     defer cleaned.deinit();
                     var newline = false;
                     for (raw) |byte| {
                         if (byte == '\r' or byte == '\n') {
-                            if (!newline) try cleaned.writer.writeByte(' ');
+                            if (!newline) try appendNativeBytes(engine, &cleaned, " ");
                             newline = true;
                         } else {
-                            try cleaned.writer.writeByte(byte);
+                            try appendNativeBytes(engine, &cleaned, &.{byte});
                             newline = false;
                         }
                     }
                     const value = try text(engine, cleaned.written());
-                    defer engine.freeValue(value);
+                    defer engine.releaseNativeValue(value);
                     try put(engine, row, "name", try invoke(engine, value, "trim", &.{}));
                 },
                 .appendModelChange => {
@@ -2409,7 +2581,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
                 .appendThinkingLevelChange => try put(engine, row, "thinkingLevel", c.JS_DupValue(engine.context, first)),
                 .appendLabelChange => {
                     const found = try findEntry(self, first);
-                    defer engine.freeValue(found);
+                    defer engine.releaseNativeValue(found);
                     if (c.JS_IsUndefined(found)) return missingEntry(self, first);
                     try put(engine, row, "targetId", c.JS_DupValue(engine.context, first));
                     try put(engine, row, "label", c.JS_DupValue(engine.context, second));
@@ -2424,15 +2596,22 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
 fn runtimeHook(self: *State, name: [*:0]const u8, args: []const c.JSValue) !void {
     const engine = self.engine;
     const callback = try get(engine, self.data, name);
-    defer engine.freeValue(callback);
+    defer engine.releaseNativeValue(callback);
     if (!c.JS_IsFunction(engine.context, callback)) return;
+    try @import("native_pending_owner.zig").checkFatal(engine);
     const pending = try engine.checked(c.JS_Call(engine.context, callback, c.pi_js_undefined(), @intCast(args.len), @constCast(args.ptr)));
-    defer engine.freeValue(pending);
+    defer engine.releaseNativeValue(pending);
     const settled = try engine.awaitValue(pending);
-    engine.freeValue(settled);
+    engine.releaseNativeValue(settled);
 }
 
-fn constructor(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn constructor(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(constructorNativeBody(context, ignored_1, argc, argv, magic));
+}
+fn constructorNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const kind: Kind = @enumFromInt(magic);
     const args = if (argc > 0) argv[0..@intCast(argc)] else &.{};
@@ -2445,54 +2624,66 @@ fn constructor(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JS
         .agent_session, .session_runtime => error.NativeSDKUseSessionFactory,
     }) catch |err| fail(engine, err);
 }
-fn constructorData(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn constructorData(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, ignored_5: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(constructorDataNativeBody(context, receiver, argc, argv, magic, ignored_5));
+}
+fn constructorDataNativeBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, _: [*c]c.JSValue) c.JSValue {
     return constructor(context, receiver, argc, argv, magic);
 }
-fn createSession(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn createSession(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(createSessionNativeBody(context, ignored_1, argc, args));
+}
+fn createSessionNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const result = factory(engine, if (argc > 0) args[0] else c.pi_js_undefined()) catch |err| return fail(engine, err);
-    defer engine.freeValue(result);
+    defer engine.releaseNativeValue(result);
     return promise(engine, result) catch |err| fail(engine, err);
 }
 fn services(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     if (!c.JS_IsObject(options)) return error.NativeSDKMissingOptions;
     const work = try get(engine, options, "cwd");
-    defer engine.freeValue(work);
+    defer engine.releaseNativeValue(work);
     if (!c.JS_IsString(work)) return error.NativeSDKMissingCwd;
     var directory = try get(engine, options, "agentDir");
-    defer engine.freeValue(directory);
+    defer engine.releaseNativeValue(directory);
     if (!c.JS_IsString(directory)) {
-        engine.freeValue(directory);
+        engine.releaseNativeValue(directory);
         const path = try agentDir(engine);
         defer engine.gpa.free(path);
         directory = try text(engine, path);
     }
     var runtime = try get(engine, options, "modelRuntime");
-    defer engine.freeValue(runtime);
+    defer engine.releaseNativeValue(runtime);
     if (c.JS_IsUndefined(runtime)) {
-        engine.freeValue(runtime);
+        engine.releaseNativeValue(runtime);
         runtime = try initModelRuntime(engine, c.pi_js_undefined());
     }
     var settings = try get(engine, options, "settingsManager");
-    defer engine.freeValue(settings);
+    defer engine.releaseNativeValue(settings);
     if (c.JS_IsUndefined(settings)) {
-        engine.freeValue(settings);
+        engine.releaseNativeValue(settings);
         settings = try initSettings(engine, &.{ work, directory }, engine.native_io != null);
     }
     const supplied = try get(engine, options, "resourceLoaderOptions");
-    defer engine.freeValue(supplied);
+    defer engine.releaseNativeValue(supplied);
     const configured = if (c.JS_IsObject(supplied)) c.JS_DupValue(engine.context, supplied) else try object(engine);
-    defer engine.freeValue(configured);
+    defer engine.releaseNativeValue(configured);
     try put(engine, configured, "cwd", c.JS_DupValue(engine.context, work));
     try put(engine, configured, "agentDir", c.JS_DupValue(engine.context, directory));
     const loader = try initResources(engine, configured);
-    defer engine.freeValue(loader);
+    defer engine.releaseNativeValue(loader);
     const loaded = try invoke(engine, loader, "reload", &.{});
-    defer engine.freeValue(loaded);
+    defer engine.releaseNativeValue(loaded);
     const done = try engine.awaitValue(loaded);
-    engine.freeValue(done);
+    engine.releaseNativeValue(done);
     const result = try object(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     try put(engine, result, "cwd", c.JS_DupValue(engine.context, work));
     try put(engine, result, "agentDir", c.JS_DupValue(engine.context, directory));
     try put(engine, result, "modelRuntime", c.JS_DupValue(engine.context, runtime));
@@ -2501,51 +2692,76 @@ fn services(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     try put(engine, result, "diagnostics", try array(engine));
     return result;
 }
-fn serviceCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn serviceCallback(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, args: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(serviceCallbackNativeBody(context, ignored_1, argc, args, magic));
+}
+fn serviceCallbackNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     if (argc == 0) return fail(engine, error.NativeSDKMissingOptions);
     const result = (if (magic == 0) services(engine, args[0]) else fromServices(engine, args[0])) catch |err| return fail(engine, err);
-    defer engine.freeValue(result);
+    defer engine.releaseNativeValue(result);
     return promise(engine, result) catch |err| fail(engine, err);
 }
 fn fromServices(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     const group = try get(engine, options, "services");
-    defer engine.freeValue(group);
+    defer engine.releaseNativeValue(group);
     if (!c.JS_IsObject(group)) return error.NativeSDKMissingServices;
     const merged = try object(engine);
-    defer engine.freeValue(merged);
+    defer engine.releaseNativeValue(merged);
     inline for (.{ "cwd", "agentDir", "modelRuntime", "settingsManager", "resourceLoader" }) |field| try put(engine, merged, field, try get(engine, group, field));
     inline for (.{ "sessionManager", "model", "thinkingLevel", "tools", "excludeTools", "customTools", "sessionStartEvent", "noTools" }) |field| try put(engine, merged, field, try get(engine, options, field));
     return factory(engine, merged);
 }
-fn createRuntime(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn createRuntime(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(createRuntimeNativeBody(context, ignored_1, argc, args));
+}
+fn createRuntimeNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return runtimeFactory(engine, if (argc > 0) args[0] else c.pi_js_undefined(), if (argc > 1) args[1] else c.pi_js_undefined()) catch |err| fail(engine, err);
 }
 fn runtimeFactory(engine: *engine_mod.Engine, creator: c.JSValue, options: c.JSValue) !c.JSValue {
     if (!c.JS_IsFunction(engine.context, creator)) return error.InvalidNativeSDKRuntimeFactory;
     var args = [_]c.JSValue{options};
+    try @import("native_pending_owner.zig").checkFatal(engine);
     const pending = try engine.checked(c.JS_Call(engine.context, creator, c.pi_js_undefined(), 1, &args));
-    defer engine.freeValue(pending);
+    defer engine.releaseNativeValue(pending);
     const created = try engine.awaitValue(pending);
-    defer engine.freeValue(created);
+    defer engine.releaseNativeValue(created);
     const data = try object(engine);
-    defer engine.freeValue(data);
+    defer engine.releaseNativeValue(data);
     try put(engine, data, "session", try get(engine, created, "session"));
     try put(engine, data, "services", try get(engine, created, "services"));
     try put(engine, data, "diagnostics", try get(engine, created, "diagnostics"));
     try put(engine, data, "factory", c.JS_DupValue(engine.context, creator));
     const result = try new(engine, .session_runtime, data);
-    defer engine.freeValue(result);
+    defer engine.releaseNativeValue(result);
     return promise(engine, result);
 }
-fn getAgentDirectory(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn getAgentDirectory(context: ?*c.JSContext, ignored_1: c.JSValue, ignored_2: c_int, ignored_3: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(getAgentDirectoryNativeBody(context, ignored_1, ignored_2, ignored_3));
+}
+fn getAgentDirectoryNativeBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const path = agentDir(engine) catch |err| return fail(engine, err);
     defer engine.gpa.free(path);
     return text(engine, path) catch |err| fail(engine, err);
 }
-fn staticMethod(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn staticMethod(context: ?*c.JSContext, ignored_1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    var native_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    native_owner.enter() catch |err| return native_owner.finishCallback(fail(engine, err));
+    return native_owner.finishCallback(staticMethodNativeBody(context, ignored_1, argc, argv, magic));
+}
+fn staticMethodNativeBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const args = if (argc > 0) argv[0..@intCast(argc)] else &.{};
     const result = (switch (magic) {
@@ -2559,7 +2775,7 @@ fn staticMethod(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.J
         else => error.NativeSDKMethodUnavailable,
     }) catch |err| return fail(engine, err);
     if (magic == 300) {
-        defer engine.freeValue(result);
+        defer engine.releaseNativeValue(result);
         return @import("native_sdk_refresh.zig").created(engine, result, if (args.len > 0) args[0] else c.pi_js_undefined()) catch |err| fail(engine, err);
     }
     return result;
@@ -2574,14 +2790,9 @@ pub fn managerImports(engine: *engine_mod.Engine) !c.JSValue {
 pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    try engine.checkNativeEntry();
-    var invocation: engine_mod.Engine.NativeInvocation = .{};
-    engine.enterNativeInvocation(&invocation);
-    installWithManagers(engine, exports) catch |err| {
-        _ = try engine.checked(engine.leaveNativeInvocation(&invocation, fail(engine, err)));
-        unreachable;
-    };
-    engine.freeValue(try engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())));
+    var owner = @import("native_pending_owner.zig").Frame.init(engine);
+    owner.enter() catch |entry_error| return owner.finishVoid(entry_error);
+    return owner.finishVoid(installWithManagers(engine, exports));
 }
 fn installWithManagers(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     const original_install = engine.native_sdk_class == 0;
@@ -2610,7 +2821,7 @@ fn installBody(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     try put(engine, exports, "getAgentDir", try engine.checked(c.JS_NewCFunction(engine.context, getAgentDirectory, "getAgentDir", 0)));
     inline for (.{ .{ Kind.session_manager, "SessionManager" }, .{ Kind.settings_manager, "SettingsManager" }, .{ Kind.resource_loader, "DefaultResourceLoader" }, .{ Kind.model_runtime, "ModelRuntime" }, .{ Kind.agent_session, "AgentSession" }, .{ Kind.session_runtime, "AgentSessionRuntime" }, .{ Kind.model_registry, "ModelRegistry" } }) |item| {
         const proto = try object(engine);
-        defer engine.freeValue(proto);
+        defer engine.releaseNativeValue(proto);
         if (item[0] == .agent_session) try installAgentPrototype(engine, proto);
         if (item[0] == .settings_manager) {
             inline for (.{ Method.applyOverrides, Method.reload, Method.flush, Method.drainErrors }) |operation| {
@@ -2624,7 +2835,7 @@ fn installBody(engine: *engine_mod.Engine, exports: c.JSValue) !void {
         const ctor = if (item[0] == .model_registry)
             try @import("native_sdk_model_registry.zig").createConstructor(engine, proto)
         else try engine.checked(c.JS_NewCFunctionData2(engine.context, constructorData, item[1], 1, @intFromEnum(item[0]), 0, null));
-        defer engine.freeValue(ctor);
+        defer engine.releaseNativeValue(ctor);
         if (item[0] != .model_registry) {
             _ = c.JS_SetConstructorBit(engine.context, ctor, true);
             if (c.JS_SetConstructor(engine.context, ctor, proto) < 0) return error.JavaScriptException;
@@ -2632,7 +2843,7 @@ fn installBody(engine: *engine_mod.Engine, exports: c.JSValue) !void {
         if (item[0] == .session_manager) {
             const operations: []const Method = &.{ .getCwd, .getSessionDir, .usesDefaultSessionDir, .getSessionId, .getSessionName, .getSessionFile, .getHeader, .getEntries, .getEntryCount, .getLeafId, .getLeafEntry, .getEntry, .getChildren, .getBranch, .getLabel, .getTree, .appendMessage, .appendCustomEntry, .appendSessionInfo, .appendModelChange, .appendThinkingLevelChange, .appendLabelChange, .branch, .resetLeaf, .buildSessionContext, .buildContextEntries, .buildSessionProjection, .newSession, .setSessionFile, .isPersisted };
             for (operations) |operation| {
-                const name = try engine.gpa.dupeZ(u8, @tagName(operation));
+                const name = try retainHostAllocationFailure(engine, engine.gpa.dupeZ(u8, @tagName(operation)));
                 defer engine.gpa.free(name);
                 const arity: c_int = switch (operation) {
                     .appendModelChange, .appendCustomEntry, .appendLabelChange => 2,

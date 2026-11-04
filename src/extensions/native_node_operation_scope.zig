@@ -1,6 +1,6 @@
 //! Shared native Node local Scope. Guest-capable operations preserve actual
 //! pending/B1 without deriving fatality from a private DATA birth span.
-//! Provider Scope, Engine and C/ABI are unchanged.
+//! Host finishes capture diagnostics; finishCallback publishes the actual C result.
 const v = @import("native_ai_provider_values.zig");
 const c = v.c;
 const Boundary = @import("native_node_commonjs_owned_boundary.zig").Boundary;
@@ -89,4 +89,5 @@ pub const Scope = struct {
     pub fn truthy(self: *Scope, value: c.JSValue) bool { return c.JS_ToBool(self.engine.context, value) == 1; }
     pub fn equal(self: *Scope, left: c.JSValue, right: c.JSValue) bool { return c.JS_IsStrictEqual(self.engine.context, left, right); }
     pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+    pub fn finishCallback(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finishCallback(result, &self.values); }
 };

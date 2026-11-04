@@ -9,13 +9,13 @@ const Callback = enum(i32) { kill, force_kill, timeout, stdout, stderr, fulfille
 pub fn create(engine: *x.em.Engine, inputs: Inputs) !c.JSValue {
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    try engine.checkNativeEntry();
-    var invocation: x.em.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    frame.enter() catch |err| return frame.finishValue(err);
     const result = createScoped(engine, inputs) catch |err| {
-        const failed = @import("native_sdk.zig").fail(engine, err);
-        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+        _ = @import("native_sdk.zig").fail(engine, err);
+        return frame.finishValue(err);
     };
-    return engine.checked(engine.leaveNativeInvocation(&invocation, result));
+    return frame.finishValue(result);
 }
 fn createScoped(engine: *x.em.Engine, inputs: Inputs) !c.JSValue {
     var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
@@ -40,15 +40,19 @@ fn executeBody(o: *x.Ops, args: []const c.JSValue, imports: c.JSValue) !c.JSValu
     return c.JS_DupValue(o.s.engine.context, try fatal.construct(o, constructor, executor, holder));
 }
 fn executePromise(engine: *x.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    var invocation: x.em.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    frame.enter() catch |err| {
+        fatal.record(roots[5], &frame.invocation);
+        return frame.finishValue(err);
+    };
     var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
     const result = x.owned.finishValue(&s, executorBody(&o, x.arg(args, 0), roots)) catch |err| {
-        const failed = @import("native_sdk.zig").fail(engine, err);
-        fatal.record(roots[5], &invocation);
-        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+        _ = @import("native_sdk.zig").fail(engine, err);
+        fatal.record(roots[5], &frame.invocation);
+        return frame.finishValue(err);
     };
-    fatal.record(roots[5], &invocation);
-    return engine.checked(engine.leaveNativeInvocation(&invocation, result));
+    fatal.record(roots[5], &frame.invocation);
+    return frame.finishValue(result);
 }
 fn callback(o: *x.Ops, job: c.JSValue, kind: Callback) !c.JSValue {
     const length: c_int = switch (kind) { .stdout, .stderr, .fulfilled, .rejected => 1, else => 0 };
@@ -105,7 +109,7 @@ fn cleanup(o: *x.Ops, job: c.JSValue) !void {
     }
 }
 fn dispatchBody(o: *x.Ops, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    var raw: i32 = 0; if (c.JS_ToInt32(o.s.engine.context, &raw, roots[1]) < 0) return @import("native_js_values.zig").capture(o.s.engine);
+    var raw: i32 = 0; if (native_guest_0: { try o.s.engine.checkNativeEntry(); break :native_guest_0 c.JS_ToInt32(o.s.engine.context, &raw, roots[1]); } < 0) return @import("native_js_values.zig").capture(o.s.engine);
     const kind: Callback = @enumFromInt(raw); const job = roots[0];
     switch (kind) {
         .kill => if (!o.truthy(try o.get(job, "killed"))) {

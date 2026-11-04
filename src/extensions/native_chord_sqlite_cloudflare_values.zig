@@ -6,18 +6,26 @@ pub const c=v.c;
 pub const functions=@import("native_mlly_function.zig");
 pub const af=@import("native_async_function.zig");
 const allocation=@import("native_async_body.zig");
+const pending_owner=@import("native_pending_owner.zig");
 pub fn current(engine:*v.em.Engine,owned:c.JSValue)!c.JSValue{
-    if(c.JS_HasException(engine.context)){
-        const reason=c.JS_GetException(engine.context);engine.freeValue(owned);
-        return engine.checked(c.JS_Throw(engine.context,reason));
+    const result=engine.nativeCallbackResult(owned);
+    if(engine.nativeTerminationObserved()){
+        if(!c.JS_IsException(result))engine.releaseNativeValue(result);
+        return error.ExecutionTerminated;
     }
-    return owned;
+    if(c.JS_IsException(result))return error.JavaScriptException;
+    return result;
 }
-pub fn pending(engine:*v.em.Engine)!void{if(c.JS_HasException(engine.context))return v.js.capture(engine);}
+pub fn pending(engine:*v.em.Engine)!void{try pending_owner.checkFatal(engine);if(c.JS_HasException(engine.context))return v.js.capture(engine);}
 pub fn get(engine:*v.em.Engine,object:c.JSValue,name:[*:0]const u8)!c.JSValue{return current(engine,try v.js.get(engine,object,name));}
 pub fn call(engine:*v.em.Engine,callee:c.JSValue,receiver:c.JSValue,args:[]const c.JSValue)!c.JSValue{return current(engine,try v.js.call(engine,callee,receiver,args));}
 pub fn invoke(engine:*v.em.Engine,receiver:c.JSValue,name:[*:0]const u8,args:[]const c.JSValue)!c.JSValue{
-    const callee=try get(engine,receiver,name);defer engine.freeValue(callee);return call(engine,callee,receiver,args);
+    var pending_frame=pending_owner.Frame.init(engine);
+    pending_frame.enter() catch|err|return pending_frame.finishValue(@as(anyerror!c.JSValue,err));
+    return pending_frame.finishValue(invokePendingBody(engine,receiver,name,args));
+}
+fn invokePendingBody(engine:*v.em.Engine,receiver:c.JSValue,name:[*:0]const u8,args:[]const c.JSValue)!c.JSValue{
+    const callee=try get(engine,receiver,name);defer engine.releaseNativeValue(callee);return call(engine,callee,receiver,args);
 }
 pub fn global(engine:*v.em.Engine,name:[*:0]const u8)!c.JSValue{return current(engine,try v.js.global(engine,name));}
 pub fn set(engine:*v.em.Engine,object:c.JSValue,name:[*:0]const u8,value:c.JSValue)!void{
@@ -29,13 +37,12 @@ pub fn define(engine:*v.em.Engine,object:c.JSValue,name:[*:0]const u8,value:c.JS
 pub fn field(engine:*v.em.Engine,object:c.JSValue,name:[*:0]const u8,value:c.JSValue)!void{return define(engine,object,name,value,c.JS_PROP_C_W_E);}
 pub fn new(engine:*v.em.Engine,constructor:c.JSValue,args:[]const c.JSValue)!c.JSValue{return current(engine,try engine.checked(c.JS_CallConstructor(engine.context,constructor,@intCast(args.len),@constCast(args.ptr))));}
 pub fn binary(engine:*v.em.Engine,op:c_int,left:c.JSValue,right:c.JSValue)!c.JSValue{return current(engine,try engine.checked(c.JS_PiBinaryOperator(engine.context,op,left,right)));}
-pub fn caught(engine:*v.em.Engine,err:anyerror,generation:u64)!c.JSValue{
-    if(err==error.OutOfMemory)return err;
-    if(c.JS_HasException(engine.context))_ = engine.checked(c.JS_Throw(engine.context,c.JS_GetException(engine.context))) catch {};
+pub fn caught(engine:*v.em.Engine,err:anyerror,_:u64)!c.JSValue{
+    try pending_owner.catchFailure(engine,err);
+    if(c.JS_HasException(engine.context))_ = engine.checked(c.pi_js_exception()) catch {};
+    try pending_owner.checkFatal(engine);
     if(err!=error.JavaScriptException)return err;
     const reason=engine.captured_exception orelse return err;
-    try allocation.rethrowRecognizedAllocation(engine,reason,functions.trustedGeneration(engine,generation));
-    if(c.JS_IsUncatchableError(reason))return err;
     engine.captured_exception=null;return reason;
 }
 pub fn reject(engine:*v.em.Engine,err:anyerror,generation:u64)!af.Action{
@@ -43,20 +50,40 @@ pub fn reject(engine:*v.em.Engine,err:anyerror,generation:u64)!af.Action{
     return .{.thrown=try caught(engine,err,generation)};
 }
 pub fn argsArray(engine:*v.em.Engine,args:[]const c.JSValue)!c.JSValue{
-    const result=try current(engine,try v.js.array(engine));errdefer engine.freeValue(result);
+    var pending_frame=pending_owner.Frame.init(engine);
+    pending_frame.enter() catch|err|return pending_frame.finishValue(@as(anyerror!c.JSValue,err));
+    return pending_frame.finishValue(argsArrayPendingBody(engine,args));
+}
+fn argsArrayPendingBody(engine:*v.em.Engine,args:[]const c.JSValue)!c.JSValue{
+    const result=try current(engine,try v.js.array(engine));errdefer engine.releaseNativeValue(result);
     for(args,0..)|value,index|if(c.JS_DefinePropertyValueUint32(engine.context,result,@intCast(index),c.JS_DupValue(engine.context,value),c.JS_PROP_C_W_E)<0)return v.js.capture(engine);
     return result;
 }
 pub fn errorValue(engine:*v.em.Engine,name:[*:0]const u8,text:c.JSValue)!c.JSValue{
-    const ctor=try global(engine,name);defer engine.freeValue(ctor);return new(engine,ctor,&.{text});
+    var pending_frame=pending_owner.Frame.init(engine);
+    pending_frame.enter() catch|err|return pending_frame.finishValue(@as(anyerror!c.JSValue,err));
+    return pending_frame.finishValue(errorValuePendingBody(engine,name,text));
+}
+fn errorValuePendingBody(engine:*v.em.Engine,name:[*:0]const u8,text:c.JSValue)!c.JSValue{
+    const ctor=try global(engine,name);defer engine.releaseNativeValue(ctor);return new(engine,ctor,&.{text});
 }
 pub fn throw(engine:*v.em.Engine,reason:c.JSValue)anyerror{
-    _ = engine.checked(c.JS_Throw(engine.context,c.JS_DupValue(engine.context,reason))) catch|err|return err;unreachable;
+    _ = engine.checked(c.JS_PiThrowExceptionData(engine.context,c.JS_DupValue(engine.context,reason))) catch|err|return err;unreachable;
 }
 pub fn textError(engine:*v.em.Engine,name:[*:0]const u8,message:[*:0]const u8)anyerror{
-    const constructor=global(engine,name) catch|err|return err;defer engine.freeValue(constructor);
+    var pending_frame=pending_owner.Frame.init(engine);
+    pending_frame.enter() catch|err|{
+        pending_frame.finishVoid(@as(anyerror!void,err)) catch|failure|return failure;
+        unreachable;
+    };
+    const err=textErrorPendingBody(engine,name,message);
+    pending_frame.finishVoid(@as(anyerror!void,err)) catch|failure|return failure;
+    unreachable;
+}
+fn textErrorPendingBody(engine:*v.em.Engine,name:[*:0]const u8,message:[*:0]const u8)anyerror{
+    const constructor=global(engine,name) catch|err|return err;defer engine.releaseNativeValue(constructor);
     const text=engine.checked(c.JS_NewString(engine.context,message)) catch|err|return err;defer engine.freeValue(text);
-    const reason=new(engine,constructor,&.{text}) catch|err|return err;defer engine.freeValue(reason);return throw(engine,reason);
+    const reason=new(engine,constructor,&.{text}) catch|err|return err;defer engine.releaseNativeValue(reason);return throw(engine,reason);
 }
 // Class construction has its own charged/traced callback owner, so prototype
 // lookup/object allocation occurs within the same exact pending/fatal boundary.
@@ -71,19 +98,30 @@ fn classMark(runtime:?*c.JSRuntime,value:c.JSValue,marker:?*const c.JS_MarkFunc)
 fn classCall(_: ?*c.JSContext,function:c.JSValue,target:c.JSValue,argc:c_int,argv:[*c]c.JSValue,flags:c_int)callconv(.c)c.JSValue{
     const state:*Class=@ptrCast(@alignCast(c.JS_GetOpaque(function,c.JS_GetClassID(function)).?));const engine=state.engine;
     engine.native_exception_diagnostics_suppressed+=1;defer engine.native_exception_diagnostics_suppressed-=1;const generation=engine.native_allocation_generation;
+    var owner=pending_owner.Frame.init(engine);
+    owner.enter() catch return owner.finishCallback(c.pi_js_exception());
+    return owner.finishCallback(classCallBody(state,target,if(argc>0)argv[0..@intCast(argc)]else &.{},flags,generation));
+}
+fn classCallBody(state:*Class,target:c.JSValue,args:[]const c.JSValue,flags:c_int,generation:u64)c.JSValue{
+    const engine=state.engine;
     pending(engine) catch|err|return functions.failure(engine,err,generation);
     if(flags&c.JS_CALL_FLAG_CONSTRUCTOR==0)return c.JS_ThrowTypeError(engine.context,"Class constructor %s cannot be invoked without 'new'",state.name.ptr);
-    const result=state.callback(engine,target,if(argc>0)argv[0..@intCast(argc)]else &.{},state.owner) catch|err|return functions.failure(engine,err,generation);
+    const result=state.callback(engine,target,args,state.owner) catch|err|return functions.failure(engine,err,generation);
     return current(engine,result) catch|err|functions.failure(engine,err,generation);
 }
 pub fn class(engine:*v.em.Engine,name:[:0]const u8,length:c_int,prototype:c.JSValue,base:?c.JSValue,callback:@FieldType(Class,"callback"),owner:c.JSValue)!c.JSValue{
+    var pending_frame=pending_owner.Frame.init(engine);
+    pending_frame.enter() catch|err|return pending_frame.finishValue(@as(anyerror!c.JSValue,err));
+    return pending_frame.finishValue(classPendingBody(engine,name,length,prototype,base,callback,owner));
+}
+fn classPendingBody(engine:*v.em.Engine,name:[:0]const u8,length:c_int,prototype:c.JSValue,base:?c.JSValue,callback:@FieldType(Class,"callback"),owner:c.JSValue)!c.JSValue{
     const reserved=@sizeOf(Class);if(c.pi_js_native_memory_reserve(engine.native_memory_owner,reserved)==0)return error.OutOfMemory;
     var attached=false;errdefer if(!attached)c.pi_js_native_memory_release(engine.native_memory_owner,reserved);
     const state=try engine.gpa.create(Class);errdefer if(!attached)engine.gpa.destroy(state);
     var id:c.JSClassID=0;if(c.JS_NewClassID(engine.runtime,&id)==0)return error.OutOfMemory;
     const definition:c.JSClassDef=.{.class_name="Native Durable Object SQLite class",.call=classCall,.finalizer=classFree,.gc_mark=classMark};if(c.JS_NewClass(engine.runtime,id,&definition)<0)return error.OutOfMemory;
-    const function_prototype=if(base)|value|c.JS_DupValue(engine.context,value)else try engine.checked(c.JS_GetFunctionProto(engine.context));defer engine.freeValue(function_prototype);
-    const result=try engine.checked(c.JS_NewObjectProtoClass(engine.context,function_prototype,id));errdefer engine.freeValue(result);
+    const function_prototype=if(base)|value|c.JS_DupValue(engine.context,value)else try engine.checked(c.JS_GetFunctionProto(engine.context));defer engine.releaseNativeValue(function_prototype);
+    const result=try engine.checked(c.JS_NewObjectProtoClass(engine.context,function_prototype,id));errdefer engine.releaseNativeValue(result);
     state.*=.{.engine=engine,.name=name,.callback=callback,.owner=c.JS_DupValue(engine.context,owner),.reserved=reserved};_ = c.JS_SetOpaque(result,state);attached=true;_ = c.JS_SetConstructorBit(engine.context,result,true);
     const label=try engine.checked(c.JS_NewString(engine.context,name.ptr));defer engine.freeValue(label);
     try define(engine,result,"name",label,c.JS_PROP_CONFIGURABLE);try define(engine,result,"length",c.JS_NewInt32(engine.context,length),c.JS_PROP_CONFIGURABLE);try define(engine,result,"prototype",prototype,0);
@@ -94,18 +132,28 @@ pub fn class(engine:*v.em.Engine,name:[:0]const u8,length:c_int,prototype:c.JSVa
 extern fn JS_PiGetPropertyReceiver(?*c.JSContext,c.JSValue,c.JSAtom,c.JSValue)c.JSValue;
 /// Genuine internal Get with actual accessor/Proxy receiver and owned result.
 pub fn superGet(engine:*v.em.Engine,home:c.JSValue,receiver:c.JSValue,name:[*:0]const u8)!c.JSValue{
+    var pending_frame=pending_owner.Frame.init(engine);
+    pending_frame.enter() catch|err|return pending_frame.finishValue(@as(anyerror!c.JSValue,err));
+    return pending_frame.finishValue(superGetPendingBody(engine,home,receiver,name));
+}
+fn superGetPendingBody(engine:*v.em.Engine,home:c.JSValue,receiver:c.JSValue,name:[*:0]const u8)!c.JSValue{
     engine.native_exception_diagnostics_suppressed+=1;defer engine.native_exception_diagnostics_suppressed-=1;
-    const parent=try current(engine,try engine.checked(c.JS_GetPrototype(engine.context,home)));defer engine.freeValue(parent);
+    const parent=try current(engine,try engine.checked(c.JS_GetPrototype(engine.context,home)));defer engine.releaseNativeValue(parent);
     const atom=c.JS_NewAtom(engine.context,name);if(atom==c.JS_ATOM_NULL)return v.js.capture(engine);defer c.JS_FreeAtom(engine.context,atom);
     return current(engine,try engine.checked(JS_PiGetPropertyReceiver(engine.context,parent,atom,receiver)));
 }
 /// Array-literal/argument spread: actual IteratorRecord, no invented Close on
 /// abrupt iterator creation/Step/Value. All yielded arguments remain rooted.
 pub fn spread(engine:*v.em.Engine,iterable:c.JSValue)!c.JSValue{
-    const iterator=try makeIterator(engine,iterable);defer engine.freeValue(iterator);
+    var pending_frame=pending_owner.Frame.init(engine);
+    pending_frame.enter() catch|err|return pending_frame.finishValue(@as(anyerror!c.JSValue,err));
+    return pending_frame.finishValue(spreadPendingBody(engine,iterable));
+}
+fn spreadPendingBody(engine:*v.em.Engine,iterable:c.JSValue)!c.JSValue{
+    const iterator=try makeIterator(engine,iterable);defer engine.releaseNativeValue(iterator);
     if(!c.JS_IsObject(iterator))return v.js.typeError(engine,"Iterator is not an object");
-    const next=try get(engine,iterator,"next");defer engine.freeValue(next);
-    const result=try current(engine,try v.js.array(engine));errdefer engine.freeValue(result);var index:u32=0;var steps:usize=0;
+    const next=try get(engine,iterator,"next");defer engine.releaseNativeValue(next);
+    const result=try current(engine,try v.js.array(engine));errdefer engine.releaseNativeValue(result);var index:u32=0;var steps:usize=0;
     while(true){steps+|=1;try @import("native_jiti_budget.zig").check(engine,steps);const value=(try step(engine,next,iterator)) orelse break;
         if(c.JS_DefinePropertyValueUint32(engine.context,result,index,value,c.JS_PROP_C_W_E)<0)return v.js.capture(engine);try pending(engine);
         index=std.math.add(u32,index,1) catch return error.CloudflareArgumentCountOverflow;
@@ -113,18 +161,36 @@ pub fn spread(engine:*v.em.Engine,iterable:c.JSValue)!c.JSValue{
     return result;
 }
 fn makeIterator(engine:*v.em.Engine,iterable:c.JSValue)!c.JSValue{
+    var pending_frame=pending_owner.Frame.init(engine);
+    pending_frame.enter() catch|err|return pending_frame.finishValue(@as(anyerror!c.JSValue,err));
+    return pending_frame.finishValue(makeIteratorPendingBody(engine,iterable));
+}
+fn makeIteratorPendingBody(engine:*v.em.Engine,iterable:c.JSValue)!c.JSValue{
     const symbol=try engine.checked(c.JS_GetIteratorSymbol(engine.context));defer engine.freeValue(symbol);
-    const method=try current(engine,try v.js.getKey(engine,iterable,symbol));defer engine.freeValue(method);return call(engine,method,iterable,&.{});
+    const method=try current(engine,try v.js.getKey(engine,iterable,symbol));defer engine.releaseNativeValue(method);return call(engine,method,iterable,&.{});
 }
 fn step(engine:*v.em.Engine,next:c.JSValue,iterator:c.JSValue)!?c.JSValue{
-    const result=try call(engine,next,iterator,&.{});defer engine.freeValue(result);if(!c.JS_IsObject(result))return v.js.typeError(engine,"Iterator result is not an object");
-    const done=try get(engine,result,"done");const finished=c.JS_ToBool(engine.context,done)!=0;engine.freeValue(done);if(finished)return null;return try get(engine,result,"value");
+    var pending_frame=pending_owner.Frame.init(engine);
+    pending_frame.enter() catch|err|return try pending_frame.finishValue(@as(anyerror!c.JSValue,err));
+    const result=stepPendingBody(engine,next,iterator) catch|err|return try pending_frame.finishValue(@as(anyerror!c.JSValue,err));
+    if(result)|value|return try pending_frame.finishValue(value);
+    try pending_frame.finishVoid({});
+    return null;
+}
+fn stepPendingBody(engine:*v.em.Engine,next:c.JSValue,iterator:c.JSValue)!?c.JSValue{
+    const result=try call(engine,next,iterator,&.{});defer engine.releaseNativeValue(result);if(!c.JS_IsObject(result))return v.js.typeError(engine,"Iterator result is not an object");
+    const done=try get(engine,result,"done");const finished=c.JS_ToBool(engine.context,done)!=0;engine.releaseNativeValue(done);try pending(engine);if(finished)return null;return try get(engine,result,"value");
 }
 pub fn callSpread(engine:*v.em.Engine,callee:c.JSValue,receiver:c.JSValue,first:c.JSValue,iterable:c.JSValue)!c.JSValue{
-    const values=try spread(engine,iterable);defer engine.freeValue(values);const length=try get(engine,values,"length");defer engine.freeValue(length);var count:u32=0;if(c.JS_ToUint32(engine.context,&count,length)<0)return v.js.capture(engine);
+    var frame=pending_owner.Frame.init(engine);
+    frame.enter() catch|err|return frame.finishValue(@as(anyerror!c.JSValue,err));
+    return frame.finishValue(callSpreadBody(engine,callee,receiver,first,iterable));
+}
+fn callSpreadBody(engine:*v.em.Engine,callee:c.JSValue,receiver:c.JSValue,first:c.JSValue,iterable:c.JSValue)!c.JSValue{
+    const values=try spread(engine,iterable);defer engine.releaseNativeValue(values);const length=try get(engine,values,"length");defer engine.releaseNativeValue(length);var count:u32=0;if(c.JS_ToUint32(engine.context,&count,length)<0)return v.js.capture(engine);
     if(count>=std.math.maxInt(c_int))return error.CloudflareArgumentCountOverflow;
-    const size=try std.math.mul(usize,@as(usize,count)+1,@sizeOf(c.JSValue));if(c.pi_js_native_memory_reserve(engine.native_memory_owner,size)==0)return error.OutOfMemory;defer c.pi_js_native_memory_release(engine.native_memory_owner,size);
-    const args=try engine.gpa.alloc(c.JSValue,@as(usize,count)+1);defer engine.gpa.free(args);args[0]=first;var initialized:usize=0;defer for(args[1..][0..initialized])|value|engine.freeValue(value);
+    const size=try std.math.mul(usize,@as(usize,count)+1,@sizeOf(c.JSValue));if(c.pi_js_native_memory_reserve(engine.native_memory_owner,size)==0){_=engine.throwNativeOutOfMemoryFatal();return error.OutOfMemory;}defer c.pi_js_native_memory_release(engine.native_memory_owner,size);
+    const args=engine.gpa.alloc(c.JSValue,@as(usize,count)+1) catch|err|{_=engine.throwNativeOutOfMemoryFatal();return err;};defer engine.gpa.free(args);args[0]=first;var initialized:usize=0;defer for(args[1..][0..initialized])|value|engine.releaseNativeValue(value);
     for(args[1..],0..)|*slot,index|{slot.*=try current(engine,try engine.checked(c.JS_GetPropertyUint32(engine.context,values,@intCast(index))));initialized+=1;}
     return call(engine,callee,receiver,args);
 }

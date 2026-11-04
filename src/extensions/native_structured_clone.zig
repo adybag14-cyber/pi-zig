@@ -12,34 +12,34 @@ pub fn clone(engine: *Engine, value: c.JSValue) !c.JSValue {
     return copy(engine, value, &seen);
 }
 fn dataCloneError(engine: *Engine, value: c.JSValue) !c.JSValue {
-    return engine.checked(c.JS_Throw(engine.context, try cloneFailureValue(engine, value)));
+    return engine.checked(c.JS_PiThrowExceptionData(engine.context, try cloneFailureValue(engine, value)));
 }
 fn cloneFailureValue(engine: *Engine, value: c.JSValue) !c.JSValue {
     const name = if (c.JS_IsObject(value) and !c.JS_IsFunction(engine.context, value)) blk: {
         const atom = c.JS_GetClassName(engine.runtime, c.JS_GetClassID(value));
         defer c.JS_FreeAtom(engine.context, atom);
         const class = try engine.checked(c.JS_AtomToString(engine.context, atom));
-        defer engine.freeValue(class);
-        const class_name = try engine.toString(class);
+        defer engine.releaseNativeValue(class);
+        const class_name = (engine.toString(class) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(class_name);
-        if (c.JS_IsProxy(value)) break :blk try engine.gpa.dupe(u8, "#<Object>");
-        if (std.mem.eql(u8, class_name, "Symbol")) break :blk try engine.gpa.dupe(u8, "[object Symbol]");
-        break :blk try std.fmt.allocPrint(engine.gpa, "#<{s}>", .{class_name});
+        if (c.JS_IsProxy(value)) break :blk (engine.gpa.dupe(u8, "#<Object>") catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
+        if (std.mem.eql(u8, class_name, "Symbol")) break :blk (engine.gpa.dupe(u8, "[object Symbol]") catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
+        break :blk (std.fmt.allocPrint(engine.gpa, "#<{s}>", .{class_name}) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     } else blk: {
         if (c.JS_IsFunction(engine.context, value)) {
             const rendered = try intrinsicCall(engine, "Function.toString", value, &.{});
-            defer engine.freeValue(rendered);
-            break :blk try engine.toString(rendered);
+            defer engine.releaseNativeValue(rendered);
+            break :blk (engine.toString(rendered) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         }
         const string = try values.get(engine, engine.intrinsic_clone_operations, "String");
-        defer engine.freeValue(string);
+        defer engine.releaseNativeValue(string);
         var description_args = [_]c.JSValue{value};
-        const description = try engine.checked(c.JS_Call(engine.context, string, c.pi_js_undefined(), 1, &description_args));
-        defer engine.freeValue(description);
-        break :blk try engine.toString(description);
+        const description = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_Call(engine.context, string, c.pi_js_undefined(), 1, &description_args); });
+        defer engine.releaseNativeValue(description);
+        break :blk (engine.toString(description) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     };
     defer engine.gpa.free(name);
-    const message = try std.fmt.allocPrint(engine.gpa, "{s} could not be cloned.", .{name});
+    const message = (std.fmt.allocPrint(engine.gpa, "{s} could not be cloned.", .{name}) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(message);
     return @import("dom_exception.zig").create(engine, message, "DataCloneError");
 }
@@ -49,73 +49,74 @@ fn serialized(engine: *Engine, value: c.JSValue) !c.JSValue {
     // It cannot load code and is never accepted from an untrusted producer.
     const bytes = c.JS_WriteObject(engine.context, &size, value, c.JS_WRITE_OBJ_REFERENCE | c.JS_WRITE_OBJ_SAB);
     if (bytes == null) {
-        return checkedBufferOperation(engine, c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+        return checkedBufferOperation(engine, c.pi_js_exception());
     }
     defer c.js_free(engine.context, bytes);
     return engine.checked(c.JS_ReadObject(engine.context, bytes, size, c.JS_READ_OBJ_REFERENCE | c.JS_READ_OBJ_SAB));
 }
 fn checkedBufferOperation(engine: *Engine, result: c.JSValue) !c.JSValue {
     if (!c.JS_IsException(result)) return result;
+    try @import("native_pending_owner.zig").checkFatal(engine);
     const failure = c.JS_GetException(engine.context);
-    defer engine.freeValue(failure);
+    defer engine.releaseNativeValue(failure);
     const message_value = try values.get(engine, failure, "message");
-    defer engine.freeValue(message_value);
+    defer engine.releaseNativeValue(message_value);
     if (c.JS_IsString(message_value)) {
-        const message = try engine.toString(message_value);
+        const message = (engine.toString(message_value) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(message);
         // Only the intrinsic buffer operations call this adapter. No user
         // callback or getter-thrown error is classified by its name/message.
-        if (std.mem.eql(u8, message, "ArrayBuffer is detached")) return engine.checked(c.JS_Throw(engine.context, try @import("dom_exception.zig").create(engine, "An ArrayBuffer is detached and could not be cloned.", "DataCloneError")));
+        if (std.mem.eql(u8, message, "ArrayBuffer is detached")) return engine.checked(c.JS_PiThrowExceptionData(engine.context, try @import("dom_exception.zig").create(engine, "An ArrayBuffer is detached and could not be cloned.", "DataCloneError")));
     }
-    return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, failure)));
+    return engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, failure)));
 }
 fn intrinsicCall(engine: *Engine, key: [:0]const u8, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
     const callback = try values.get(engine, engine.intrinsic_clone_operations, key);
-    defer engine.freeValue(callback);
-    return engine.checked(c.JS_Call(engine.context, callback, receiver, @intCast(args.len), @constCast(args.ptr)));
+    defer engine.releaseNativeValue(callback);
+    return engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_Call(engine.context, callback, receiver, @intCast(args.len), @constCast(args.ptr)); });
 }
 fn ownData(engine: *Engine, value: c.JSValue, key: [:0]const u8) !?c.JSValue {
     const atom = c.JS_NewAtom(engine.context, key);
     defer c.JS_FreeAtom(engine.context, atom);
     var descriptor: c.JSPropertyDescriptor = undefined;
-    const present = c.JS_GetOwnProperty(engine.context, &descriptor, value, atom);
+    const present = native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetOwnProperty(engine.context, &descriptor, value, atom); };
     if (present < 0) return error.JavaScriptException;
     if (present == 0) return null;
-    defer engine.freeValue(descriptor.value);
-    defer engine.freeValue(descriptor.getter);
-    defer engine.freeValue(descriptor.setter);
+    defer engine.releaseNativeValue(descriptor.value);
+    defer engine.releaseNativeValue(descriptor.getter);
+    defer engine.releaseNativeValue(descriptor.setter);
     return if ((descriptor.flags & c.JS_PROP_TMASK) == c.JS_PROP_GETSET) null else c.JS_DupValue(engine.context, descriptor.value);
 }
 fn copyError(engine: *Engine, value: c.JSValue, seen: *std.ArrayList(Pair)) !c.JSValue {
     const name_value = try values.get(engine, value, "name");
-    defer engine.freeValue(name_value);
+    defer engine.releaseNativeValue(name_value);
     var constructor_name: [:0]const u8 = "Error";
     if (c.JS_IsString(name_value)) {
-        const label = try engine.toString(name_value);
+        const label = (engine.toString(name_value) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(label);
         inline for (.{ "EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError" }) |name| if (std.mem.eql(u8, label, name)) {
             constructor_name = name;
         };
     }
     const constructor = try values.get(engine, engine.intrinsic_clone_operations, constructor_name);
-    defer engine.freeValue(constructor);
+    defer engine.releaseNativeValue(constructor);
     const message = try ownData(engine, value, "message");
-    defer if (message) |data| engine.freeValue(data);
-    const result = try engine.checked(c.JS_CallConstructor(engine.context, constructor, 0, null));
-    errdefer engine.freeValue(result);
+    defer if (message) |data| engine.releaseNativeValue(data);
+    const result = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_CallConstructor(engine.context, constructor, 0, null); });
+    errdefer engine.releaseNativeValue(result);
     if (c.JS_DefinePropertyValueStr(engine.context, result, "stack", c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     // Error(undefined) omits message; the serializer retains the own data
     // property and spells its value with the intrinsic ToString operation.
     if (message) |data| {
-        const text = try engine.checked(c.JS_ToString(engine.context, data));
+        const text = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ToString(engine.context, data); });
         if (c.JS_DefinePropertyValueStr(engine.context, result, "message", text, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     }
-    try seen.append(engine.gpa, .{ .source = value, .target = result });
+    (seen.append(engine.gpa, .{ .source = value, .target = result }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     const stack = try values.get(engine, value, "stack");
-    defer engine.freeValue(stack);
+    defer engine.releaseNativeValue(stack);
     if (c.JS_DefinePropertyValueStr(engine.context, result, "stack", if (c.JS_IsString(stack)) c.JS_DupValue(engine.context, stack) else c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     const cause = try ownData(engine, value, "cause");
-    defer if (cause) |data| engine.freeValue(data);
+    defer if (cause) |data| engine.releaseNativeValue(data);
     if (cause) |data| if (c.JS_DefinePropertyValueStr(engine.context, result, "cause", try copy(engine, data, seen), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     return result;
 }
@@ -127,25 +128,25 @@ fn copy(engine: *Engine, value: c.JSValue, seen: *std.ArrayList(Pair)) anyerror!
     const atom = c.JS_GetClassName(engine.runtime, c.JS_GetClassID(value));
     defer c.JS_FreeAtom(engine.context, atom);
     const class = try engine.checked(c.JS_AtomToString(engine.context, atom));
-    defer engine.freeValue(class);
-    const name = try engine.toString(class);
+    defer engine.releaseNativeValue(class);
+    const name = (engine.toString(class) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(name);
     if (c.JS_IsError(value)) return copyError(engine, value, seen);
     if (c.JS_IsDataView(value)) {
         const buffer = try intrinsicCall(engine, "DataView.buffer", value, &.{});
-        defer engine.freeValue(buffer);
+        defer engine.releaseNativeValue(buffer);
         const copied_buffer = try copy(engine, buffer, seen);
-        defer engine.freeValue(copied_buffer);
+        defer engine.releaseNativeValue(copied_buffer);
         const offset = try intrinsicCall(engine, "DataView.byteOffset", value, &.{});
-        defer engine.freeValue(offset);
+        defer engine.releaseNativeValue(offset);
         const length = try intrinsicCall(engine, "DataView.byteLength", value, &.{});
-        defer engine.freeValue(length);
+        defer engine.releaseNativeValue(length);
         const constructor = try values.get(engine, engine.intrinsic_clone_operations, "DataView");
-        defer engine.freeValue(constructor);
+        defer engine.releaseNativeValue(constructor);
         var args = [_]c.JSValue{ copied_buffer, offset, length };
-        const result = try engine.checked(c.JS_CallConstructor(engine.context, constructor, args.len, &args));
-        errdefer engine.freeValue(result);
-        try seen.append(engine.gpa, .{ .source = value, .target = result });
+        const result = try engine.checked(native_guest_5: { try engine.checkNativeEntry(); break :native_guest_5 c.JS_CallConstructor(engine.context, constructor, args.len, &args); });
+        errdefer engine.releaseNativeValue(result);
+        (seen.append(engine.gpa, .{ .source = value, .target = result }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         return result;
     }
     const typed = c.JS_GetTypedArrayType(value);
@@ -154,83 +155,89 @@ fn copy(engine: *Engine, value: c.JSValue, seen: *std.ArrayList(Pair)) anyerror!
         var length: usize = 0;
         var element_size: usize = 0;
         const buffer = try checkedBufferOperation(engine, c.JS_GetTypedArrayBuffer(engine.context, value, &offset, &length, &element_size));
-        defer engine.freeValue(buffer);
+        defer engine.releaseNativeValue(buffer);
         const cloned_buffer = try copy(engine, buffer, seen);
-        defer engine.freeValue(cloned_buffer);
+        defer engine.releaseNativeValue(cloned_buffer);
         var args = [_]c.JSValue{ cloned_buffer, c.JS_NewInt64(engine.context, @intCast(offset)), c.JS_NewInt64(engine.context, @intCast(length / element_size)) };
         const result = try engine.checked(c.JS_NewTypedArray(engine.context, args.len, &args, @intCast(typed)));
-        errdefer engine.freeValue(result);
-        try seen.append(engine.gpa, .{ .source = value, .target = result });
+        errdefer engine.releaseNativeValue(result);
+        (seen.append(engine.gpa, .{ .source = value, .target = result }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         return result;
     }
     if (c.JS_IsDate(value) or c.JS_IsArrayBuffer(value) or std.mem.eql(u8, name, "SharedArrayBuffer") or std.mem.eql(u8, name, "RegExp") or std.mem.eql(u8, name, "Boolean") or std.mem.eql(u8, name, "Number") or std.mem.eql(u8, name, "String") or std.mem.eql(u8, name, "BigInt")) {
         const result = try serialized(engine, value);
-        errdefer engine.freeValue(result);
-        try seen.append(engine.gpa, .{ .source = value, .target = result });
+        errdefer engine.releaseNativeValue(result);
+        (seen.append(engine.gpa, .{ .source = value, .target = result }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         return result;
     }
     const is_map = std.mem.eql(u8, name, "Map");
     const is_set = std.mem.eql(u8, name, "Set");
     if (is_map or is_set) {
         const constructor = try values.get(engine, engine.intrinsic_clone_operations, if (is_map) "Map" else "Set");
-        defer engine.freeValue(constructor);
-        const result = try engine.checked(c.JS_CallConstructor(engine.context, constructor, 0, null));
-        errdefer engine.freeValue(result);
-        try seen.append(engine.gpa, .{ .source = value, .target = result });
+        defer engine.releaseNativeValue(constructor);
+        const result = try engine.checked(native_guest_4: { try engine.checkNativeEntry(); break :native_guest_4 c.JS_CallConstructor(engine.context, constructor, 0, null); });
+        errdefer engine.releaseNativeValue(result);
+        (seen.append(engine.gpa, .{ .source = value, .target = result }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         const iterator = try intrinsicCall(engine, if (is_map) "Map.iterate" else "Set.iterate", value, &.{});
-        defer engine.freeValue(iterator);
+        defer engine.releaseNativeValue(iterator);
         while (true) {
             const next = try intrinsicCall(engine, if (is_map) "Map.next" else "Set.next", iterator, &.{});
-            defer engine.freeValue(next);
+            defer engine.releaseNativeValue(next);
             const done = try values.get(engine, next, "done");
-            defer engine.freeValue(done);
+            defer engine.releaseNativeValue(done);
             if (c.JS_ToBool(engine.context, done) != 0) break;
             const item = try values.get(engine, next, "value");
-            defer engine.freeValue(item);
+            defer engine.releaseNativeValue(item);
             if (is_map) {
-                const key = try engine.checked(c.JS_GetPropertyUint32(engine.context, item, 0));
-                defer engine.freeValue(key);
-                const child = try engine.checked(c.JS_GetPropertyUint32(engine.context, item, 1));
-                defer engine.freeValue(child);
+                const key = try engine.checked(native_guest_3: { try engine.checkNativeEntry(); break :native_guest_3 c.JS_GetPropertyUint32(engine.context, item, 0); });
+                defer engine.releaseNativeValue(key);
+                const child = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetPropertyUint32(engine.context, item, 1); });
+                defer engine.releaseNativeValue(child);
                 const cloned_key = try copy(engine, key, seen);
-                defer engine.freeValue(cloned_key);
+                defer engine.releaseNativeValue(cloned_key);
                 const cloned_child = try copy(engine, child, seen);
-                defer engine.freeValue(cloned_child);
+                defer engine.releaseNativeValue(cloned_child);
                 const ignored = try intrinsicCall(engine, "Map.insert", result, &.{ cloned_key, cloned_child });
-                engine.freeValue(ignored);
+                engine.releaseNativeValue(ignored);
             } else {
                 const child = try copy(engine, item, seen);
-                defer engine.freeValue(child);
+                defer engine.releaseNativeValue(child);
                 const ignored = try intrinsicCall(engine, "Set.insert", result, &.{child});
-                engine.freeValue(ignored);
+                engine.releaseNativeValue(ignored);
             }
         }
         return result;
     }
     if (!std.mem.eql(u8, name, "Object") and !std.mem.eql(u8, name, "Array")) return dataCloneError(engine, value);
     const result = if (c.JS_IsArray(value)) try values.array(engine) else try values.object(engine);
-    errdefer engine.freeValue(result);
-    try seen.append(engine.gpa, .{ .source = value, .target = result });
+    errdefer engine.releaseNativeValue(result);
+    (seen.append(engine.gpa, .{ .source = value, .target = result }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     if (c.JS_IsArray(value)) {
         const length = try values.get(engine, value, "length");
         if (c.JS_SetPropertyStr(engine.context, result, "length", length) < 0) return error.JavaScriptException;
     }
     var properties: [*c]c.JSPropertyEnum = null;
     var count: u32 = 0;
-    if (c.JS_GetOwnPropertyNames(engine.context, &properties, &count, value, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
+    if (native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetOwnPropertyNames(engine.context, &properties, &count, value, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY); } < 0) return error.JavaScriptException;
     defer c.JS_FreePropertyEnum(engine.context, properties, count);
     for (0..count) |index| {
-        const child = try engine.checked(c.JS_GetProperty(engine.context, value, properties[index].atom));
-        defer engine.freeValue(child);
+        const child = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetProperty(engine.context, value, properties[index].atom); });
+        defer engine.releaseNativeValue(child);
         if (c.JS_DefinePropertyValue(engine.context, result, properties[index].atom, try copy(engine, child, seen), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }
     return result;
 }
 
-fn cloned(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn cloned(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(clonedPendingBody(context, pending_arg1, argc, argv));
+}
+fn clonedPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return clone(engine, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| {
-        if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+        if (err == error.OutOfMemory) return @import("engine.zig").Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
         return engine.throwCaptured();
     };
 }

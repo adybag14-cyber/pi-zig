@@ -27,8 +27,10 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, mark_value: ?*const c.JS_MarkF
 }
 
 fn originalFailure(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
     return c.JS_ThrowTypeError(engine.context, "Native Dirent: %s", @as([*:0]const u8, @errorName(err)));
 }
 
@@ -38,10 +40,10 @@ fn set(engine: *engine_mod.Engine, object: c.JSValue, name: [*:0]const u8, value
 
 fn dirent(engine: *engine_mod.Engine, prototype: c.JSValue, symbol: c.JSValue, name: c.JSValue, kind: c.JSValue, parent: c.JSValue) !c.JSValue {
     const object = try engine.checked(c.JS_NewObjectProto(engine.context, prototype));
-    errdefer engine.freeValue(object);
+    errdefer engine.releaseNativeValue(object);
     try set(engine, object, "name", c.JS_DupValue(engine.context, name));
     try set(engine, object, "parentPath", c.JS_DupValue(engine.context, parent));
-    const atom = c.JS_ValueToAtom(engine.context, symbol);
+    const atom = native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_ValueToAtom(engine.context, symbol); };
     if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
     defer c.JS_FreeAtom(engine.context, atom);
     if (c.JS_SetProperty(engine.context, object, atom, c.JS_DupValue(engine.context, kind)) < 0) return error.JavaScriptException;
@@ -49,23 +51,35 @@ fn dirent(engine: *engine_mod.Engine, prototype: c.JSValue, symbol: c.JSValue, n
 }
 
 fn constructorCall(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(constructorCallPendingBody(context, function, target, argc, argv, flags));
+}
+fn constructorCallPendingBody(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     if (flags & c.JS_CALL_FLAG_CONSTRUCTOR == 0) return c.JS_ThrowTypeError(context, "Class constructor Dirent cannot be invoked without new");
     const state: *ConstructorState = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)).?));
-    const prototype_value = c.JS_GetPropertyStr(context, target, "prototype");
+    const prototype_value = native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_GetPropertyStr(context, target, "prototype"); };
     if (c.JS_IsException(prototype_value)) return prototype_value;
-    defer engine.freeValue(prototype_value);
+    defer engine.releaseNativeValue(prototype_value);
     const prototype = if (c.JS_IsObject(prototype_value)) prototype_value else state.prototype;
     return dirent(engine, prototype, state.symbol, if (argc > 0) argv[0] else c.pi_js_undefined(), if (argc > 1) argv[1] else c.pi_js_undefined(), if (argc > 2) argv[2] else c.pi_js_undefined()) catch |err| originalFailure(engine, err);
 }
 
-fn predicate(context: ?*c.JSContext, this: c.JSValue, _: c_int, _: [*c]c.JSValue, kind: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const atom = c.JS_ValueToAtom(context, data[0]);
-    if (atom == c.JS_ATOM_NULL) return c.JS_ThrowOutOfMemory(context);
+fn predicate(context: ?*c.JSContext, this: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, kind: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(predicatePendingBody(context, this, pending_arg2, pending_arg3, kind, data));
+}
+fn predicatePendingBody(context: ?*c.JSContext, this: c.JSValue, _: c_int, _: [*c]c.JSValue, kind: c_int, data: [*c]c.JSValue) c.JSValue {
+    const atom = native_guest_1: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_1 c.JS_ValueToAtom(context, data[0]); };
+    if (atom == c.JS_ATOM_NULL) return @import("engine.zig").Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
     defer c.JS_FreeAtom(context, atom);
-    const value = c.JS_GetProperty(context, this, atom);
+    const value = native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_GetProperty(context, this, atom); };
     if (c.JS_IsException(value)) return value;
-    defer c.JS_FreeValue(context, value);
+    defer @import("engine.zig").Engine.fromContext(context.?).releaseNativeValue(value);
     return c.pi_js_bool(context, @intFromBool(c.JS_IsStrictEqual(context, value, c.JS_NewInt32(context, kind))));
 }
 
@@ -83,7 +97,7 @@ fn typeNumber(kind: std.Io.File.Kind) u8 {
 }
 
 fn get(engine: *engine_mod.Engine, value: c.JSValue, name: [*:0]const u8) !c.JSValue {
-    return engine.checked(c.JS_GetPropertyStr(engine.context, value, name));
+    return engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyStr(engine.context, value, name); });
 }
 
 fn parseEncoding(engine: *engine_mod.Engine, value: c.JSValue) !?node_buffer.encodings.Encoding {
@@ -100,31 +114,31 @@ fn initialOptions(engine: *engine_mod.Engine, input: c.JSValue) !c.JSValue {
         try engine.checked(c.JS_NewObject(engine.context))
     else if (c.JS_IsString(input)) string: {
         const object = try engine.checked(c.JS_NewObject(engine.context));
-        errdefer engine.freeValue(object);
+        errdefer engine.releaseNativeValue(object);
         try set(engine, object, "encoding", c.JS_DupValue(engine.context, input));
         break :string object;
     } else if (c.JS_IsObject(input)) c.JS_DupValue(engine.context, input) else return error.InvalidDirectoryOptions;
-    errdefer engine.freeValue(options);
+    errdefer engine.releaseNativeValue(options);
     const first_encoding = try get(engine, options, "encoding");
-    defer engine.freeValue(first_encoding);
-    const first_bytes = if (c.JS_IsString(first_encoding)) try engine.toString(first_encoding) else null;
+    defer engine.releaseNativeValue(first_encoding);
+    const first_bytes = if (c.JS_IsString(first_encoding)) (engine.toString(first_encoding) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; }) else null;
     defer if (first_bytes) |bytes| engine.gpa.free(bytes);
     if (first_bytes == null or !std.mem.eql(u8, first_bytes.?, "buffer")) {
         const second = try get(engine, options, "encoding");
-        defer engine.freeValue(second);
+        defer engine.releaseNativeValue(second);
         _ = try parseEncoding(engine, second);
     }
     const signal = try get(engine, options, "signal");
-    defer engine.freeValue(signal);
+    defer engine.releaseNativeValue(signal);
     if (!c.JS_IsUndefined(signal)) {
         const validated = try get(engine, options, "signal");
-        defer engine.freeValue(validated);
+        defer engine.releaseNativeValue(validated);
         if (!c.JS_IsUndefined(validated)) {
             if (!c.JS_IsObject(validated) or c.JS_IsFunction(engine.context, validated)) return error.InvalidDirectorySignal;
             const atom = c.JS_NewAtom(engine.context, "aborted");
             if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
             defer c.JS_FreeAtom(engine.context, atom);
-            const present = c.JS_HasProperty(engine.context, validated, atom);
+            const present = native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_HasProperty(engine.context, validated, atom); };
             if (present < 0) return error.JavaScriptException;
             if (present == 0) return error.InvalidDirectorySignal;
         }
@@ -136,7 +150,7 @@ fn initialOptions(engine: *engine_mod.Engine, input: c.JSValue) !c.JSValue {
 // enumerable keys. Keep shadowed keys and original getter exceptions intact.
 fn snapshotOptions(engine: *engine_mod.Engine, source: c.JSValue) !c.JSValue {
     const target = try engine.checked(c.JS_NewObject(engine.context));
-    errdefer engine.freeValue(target);
+    errdefer engine.releaseNativeValue(target);
     var seen: std.AutoHashMapUnmanaged(c.JSAtom, void) = .empty;
     defer {
         var atoms = seen.keyIterator();
@@ -144,43 +158,43 @@ fn snapshotOptions(engine: *engine_mod.Engine, source: c.JSValue) !c.JSValue {
         seen.deinit(engine.gpa);
     }
     var prototype = c.JS_DupValue(engine.context, source);
-    defer engine.freeValue(prototype);
+    defer engine.releaseNativeValue(prototype);
     var depth: usize = 0;
     while (!c.JS_IsNull(prototype)) : (depth += 1) {
         if (depth > 1024) return error.DirectoryEntryLimit;
         var properties: [*c]c.JSPropertyEnum = null;
         var count: u32 = 0;
-        if (c.JS_GetOwnPropertyNames(engine.context, &properties, &count, prototype, c.JS_GPN_STRING_MASK) < 0) return error.JavaScriptException;
+        if (native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_GetOwnPropertyNames(engine.context, &properties, &count, prototype, c.JS_GPN_STRING_MASK); } < 0) return error.JavaScriptException;
         defer c.JS_FreePropertyEnum(engine.context, properties, count);
         for (0..count) |index| {
             const property = properties[index];
             if (seen.contains(property.atom)) continue;
-            try seen.put(engine.gpa, property.atom, {});
+            (seen.put(engine.gpa, property.atom, {}) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             _ = c.JS_DupAtom(engine.context, property.atom);
             if (!property.is_enumerable) continue;
-            const value = try engine.checked(c.JS_GetProperty(engine.context, source, property.atom));
+            const value = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_GetProperty(engine.context, source, property.atom); });
             if (c.JS_SetProperty(engine.context, target, property.atom, value) < 0) return error.JavaScriptException;
         }
-        const next = try engine.checked(c.JS_GetPrototype(engine.context, prototype));
-        engine.freeValue(prototype);
+        const next = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPrototype(engine.context, prototype); });
+        engine.releaseNativeValue(prototype);
         prototype = next;
     }
     return target;
 }
 
 fn pathBytes(engine: *engine_mod.Engine, value: c.JSValue) ![]u8 {
-    const bytes = if (native_url.isURL(engine, value)) try native_url.filePath(engine, value, builtin.os.tag == .windows) else if (c.JS_IsString(value)) try engine.toString(value) else typed: {
+    const bytes = if (native_url.isURL(engine, value)) try native_url.filePath(engine, value, builtin.os.tag == .windows) else if (c.JS_IsString(value)) (engine.toString(value) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; }) else typed: {
         if (c.JS_GetTypedArrayType(value) != c.JS_TYPED_ARRAY_UINT8) return error.InvalidDirectoryPathType;
         var offset: usize = 0;
         var length: usize = 0;
         var element: usize = 0;
         const backing = try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, value, &offset, &length, &element));
-        defer engine.freeValue(backing);
+        defer engine.releaseNativeValue(backing);
         var total: usize = 0;
         const data = c.JS_GetArrayBuffer(engine.context, &total, backing);
         if (c.JS_HasException(engine.context)) return error.JavaScriptException;
         if (offset > total or length > total - offset or (data == null and length != 0)) return error.InvalidDirectoryPathType;
-        break :typed try engine.gpa.dupe(u8, if (length == 0) &.{} else data[offset .. offset + length]);
+        break :typed (engine.gpa.dupe(u8, if (length == 0) &.{} else data[offset .. offset + length]) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     };
     errdefer engine.gpa.free(bytes);
     if (std.mem.indexOfScalar(u8, bytes, 0) != null) return error.InvalidDirectoryPathValue;
@@ -231,7 +245,7 @@ fn joinPath(engine: *engine_mod.Engine, left: []const u8, right: []const u8) ![]
 fn collect(engine: *engine_mod.Engine, input_path: c.JSValue, path: []const u8, options: Options, promise: bool, post_options: c.JSValue, data: [*c]c.JSValue) !c.JSValue {
     const io = engine.native_io orelse return error.NativeIoUnavailable;
     const result = try engine.checked(c.JS_NewArray(engine.context));
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     var queue: std.ArrayList(QueueItem) = .empty;
     defer {
         for (queue.items) |item| {
@@ -240,18 +254,18 @@ fn collect(engine: *engine_mod.Engine, input_path: c.JSValue, path: []const u8, 
         }
         queue.deinit(engine.gpa);
     }
-    const root_path = try engine.gpa.dupe(u8, path);
+    const root_path = (engine.gpa.dupe(u8, path) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     var root_transferred = false;
     errdefer if (!root_transferred) engine.gpa.free(root_path);
-    const relative = try engine.gpa.dupe(u8, "");
+    const relative = (engine.gpa.dupe(u8, "") catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     errdefer if (!root_transferred) engine.gpa.free(relative);
-    try queue.append(engine.gpa, .{ .path = root_path, .relative = relative });
+    (queue.append(engine.gpa, .{ .path = root_path, .relative = relative }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     root_transferred = true;
     var cursor: usize = 0;
     var count: u32 = 0;
     var raw_pair = false;
     var raw_types = c.pi_js_undefined();
-    defer engine.freeValue(raw_types);
+    defer engine.releaseNativeValue(raw_types);
     while (if (promise) queue.items.len != 0 else cursor < queue.items.len) {
         const current = if (promise) queue.pop().? else queue.items[cursor];
         defer if (promise) {
@@ -263,7 +277,7 @@ fn collect(engine: *engine_mod.Engine, input_path: c.JSValue, path: []const u8, 
         defer freeEntries(engine.gpa, &listed);
         if (!options.recursive) {
             const final_types = try get(engine, post_options, "withFileTypes");
-            defer engine.freeValue(final_types);
+            defer engine.releaseNativeValue(final_types);
             const final = c.JS_ToBool(engine.context, final_types) != 0;
             if (final and !options.types) return error.DirectoryOptionsChanged;
             raw_pair = options.types and !final;
@@ -275,13 +289,13 @@ fn collect(engine: *engine_mod.Engine, input_path: c.JSValue, path: []const u8, 
             if (options.recursive and requires_join and (options.encoding == null or !c.JS_IsString(input_path))) return error.InvalidDirectoryPathType;
             const full = try joinPath(engine, current.path, entry.name);
             defer engine.gpa.free(full);
-            const entry_relative = if (current.relative.len == 0) try engine.gpa.dupe(u8, entry.name) else try joinPath(engine, current.relative, entry.name);
+            const entry_relative = if (current.relative.len == 0) (engine.gpa.dupe(u8, entry.name) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; }) else try joinPath(engine, current.relative, entry.name);
             defer engine.gpa.free(entry_relative);
             const name = try nameValue(engine, if (options.recursive and !options.types) entry_relative else entry.name, options.encoding);
-            defer engine.freeValue(name);
+            defer engine.releaseNativeValue(name);
             const value = if (options.types and !raw_pair) typed: {
                 const parent = if (current.relative.len == 0) c.JS_DupValue(engine.context, input_path) else try engine.checked(c.JS_NewStringLen(engine.context, current.path.ptr, current.path.len));
-                defer engine.freeValue(parent);
+                defer engine.releaseNativeValue(parent);
                 break :typed try dirent(engine, data[1], data[2], name, c.JS_NewInt32(engine.context, typeNumber(entry.kind)), parent);
             } else c.JS_DupValue(engine.context, name);
             if (c.JS_SetPropertyUint32(engine.context, result, count, value) < 0) return error.JavaScriptException;
@@ -293,11 +307,11 @@ fn collect(engine: *engine_mod.Engine, input_path: c.JSValue, path: []const u8, 
                     break :stat stat.kind == .directory;
                 };
                 if (descend) {
-                    const child_path = try engine.gpa.dupe(u8, full);
+                    const child_path = (engine.gpa.dupe(u8, full) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                     errdefer engine.gpa.free(child_path);
-                    const child_relative = try engine.gpa.dupe(u8, entry_relative);
+                    const child_relative = (engine.gpa.dupe(u8, entry_relative) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                     errdefer engine.gpa.free(child_relative);
-                    try queue.append(engine.gpa, .{ .path = child_path, .relative = child_relative });
+                    (queue.append(engine.gpa, .{ .path = child_path, .relative = child_relative }) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
                 }
             }
         }
@@ -305,9 +319,9 @@ fn collect(engine: *engine_mod.Engine, input_path: c.JSValue, path: []const u8, 
     }
     if (raw_pair) {
         const pair = try engine.checked(c.JS_NewArray(engine.context));
-        errdefer engine.freeValue(pair);
+        errdefer engine.releaseNativeValue(pair);
         if (c.JS_SetPropertyUint32(engine.context, pair, 0, c.JS_DupValue(engine.context, result)) < 0 or c.JS_SetPropertyUint32(engine.context, pair, 1, c.JS_DupValue(engine.context, raw_types)) < 0) return error.JavaScriptException;
-        engine.freeValue(result);
+        engine.releaseNativeValue(result);
         return pair;
     }
     return result;
@@ -315,14 +329,14 @@ fn collect(engine: *engine_mod.Engine, input_path: c.JSValue, path: []const u8, 
 
 fn call(engine: *engine_mod.Engine, args: []c.JSValue, promise: bool, data: [*c]c.JSValue) !c.JSValue {
     var snapshot: ?c.JSValue = null;
-    defer if (snapshot) |value| engine.freeValue(value);
+    defer if (snapshot) |value| engine.releaseNativeValue(value);
     return callCaptured(engine, args, promise, data, &snapshot);
 }
 fn callCaptured(engine: *engine_mod.Engine, args: []c.JSValue, promise: bool, data: [*c]c.JSValue, snapshot: *?c.JSValue) !c.JSValue {
     const initial = try initialOptions(engine, if (args.len > 1) args[1] else c.pi_js_undefined());
-    defer engine.freeValue(initial);
+    defer engine.releaseNativeValue(initial);
     const object = if (promise) try snapshotOptions(engine, initial) else c.JS_DupValue(engine.context, initial);
-    defer engine.freeValue(object);
+    defer engine.releaseNativeValue(object);
     const input_path = if (args.len > 0) args[0] else c.pi_js_undefined();
     const path = try pathBytes(engine, input_path);
     defer engine.gpa.free(path);
@@ -330,34 +344,35 @@ fn callCaptured(engine: *engine_mod.Engine, args: []c.JSValue, promise: bool, da
     var options: Options = .{};
     if (!promise) {
         const first = try get(engine, object, "recursive");
-        defer engine.freeValue(first);
+        defer engine.releaseNativeValue(first);
         if (!c.JS_IsNull(first) and !c.JS_IsUndefined(first)) {
             const validated = try get(engine, object, "recursive");
-            defer engine.freeValue(validated);
+            defer engine.releaseNativeValue(validated);
             if (!c.JS_IsBool(validated)) return error.InvalidDirectoryRecursive;
         }
     }
     const recursive = try get(engine, object, "recursive");
-    defer engine.freeValue(recursive);
+    defer engine.releaseNativeValue(recursive);
     options.recursive = c.JS_ToBool(engine.context, recursive) != 0;
     if (options.recursive) {
         const types = try get(engine, object, "withFileTypes");
-        defer engine.freeValue(types);
+        defer engine.releaseNativeValue(types);
         options.types = c.JS_ToBool(engine.context, types) != 0;
     }
     const encoding = try get(engine, object, "encoding");
-    defer engine.freeValue(encoding);
+    defer engine.releaseNativeValue(encoding);
     options.encoding = try parseEncoding(engine, encoding);
     if (!options.recursive) {
         const types = try get(engine, object, "withFileTypes");
-        defer engine.freeValue(types);
+        defer engine.releaseNativeValue(types);
         options.types = c.JS_ToBool(engine.context, types) != 0;
     }
     return collect(engine, snapshot.* orelse input_path, path, options, promise, object, data);
 }
 
 fn failure(engine: *engine_mod.Engine, err: anyerror, args: []c.JSValue) c.JSValue {
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+    if (err == error.OutOfMemory) return @import("engine.zig").Engine.fromContext(engine.context).throwNativeOutOfMemoryFatal();
     if (native_url.isFilePathError(err)) return native_url.filePathErrorValue(engine, err);
     const code: ?[:0]const u8 = switch (err) {
         error.InvalidDirectoryPathType, error.InvalidDirectoryOptions, error.InvalidDirectorySignal, error.InvalidDirectoryRecursive => "ERR_INVALID_ARG_TYPE",
@@ -377,103 +392,118 @@ fn failure(engine: *engine_mod.Engine, err: anyerror, args: []c.JSValue) c.JSVal
     const validation = err == error.DirectoryOptionsChanged or (code != null and std.mem.startsWith(u8, code.?, "ERR_"));
     const value = if (validation) typed: {
         _ = if (err == error.DirectoryEntryLimit) c.JS_ThrowRangeError(engine.context, "Native readdir: %s", @as([*:0]const u8, @errorName(err))) else c.JS_ThrowTypeError(engine.context, "Native readdir: %s", @as([*:0]const u8, @errorName(err)));
+        @import("native_pending_owner.zig").checkFatal(engine) catch return c.pi_js_exception();
         const exception = c.JS_GetException(engine.context);
-        if (!c.JS_IsError(exception)) return c.JS_Throw(engine.context, exception);
+        if (!c.JS_IsError(exception)) return c.JS_PiThrowExceptionData(engine.context, exception);
         break :typed exception;
     } else c.JS_NewError(engine.context);
     if (c.JS_IsException(value)) return value;
     if (!validation and c.JS_DefinePropertyValueStr(engine.context, value, "message", c.JS_NewString(engine.context, @as([*:0]const u8, @errorName(err))), c.JS_PROP_C_W_E) < 0) {
-        engine.freeValue(value);
-        return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+        engine.releaseNativeValue(value);
+        return c.pi_js_exception();
     }
     if (code) |name| {
         if (c.JS_DefinePropertyValueStr(engine.context, value, "code", c.JS_NewString(engine.context, name.ptr), c.JS_PROP_C_W_E) < 0) {
-            engine.freeValue(value);
-            return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+            engine.releaseNativeValue(value);
+            return c.pi_js_exception();
         }
         if (!validation) {
             if (c.JS_DefinePropertyValueStr(engine.context, value, "syscall", c.JS_NewString(engine.context, "scandir"), c.JS_PROP_C_W_E) < 0) {
-                engine.freeValue(value);
-                return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+                engine.releaseNativeValue(value);
+                return c.pi_js_exception();
             }
             if (args.len > 0 and c.JS_IsString(args[0]) and c.JS_DefinePropertyValueStr(engine.context, value, "path", c.JS_DupValue(engine.context, args[0]), c.JS_PROP_C_W_E) < 0) {
-                engine.freeValue(value);
-                return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+                engine.releaseNativeValue(value);
+                return c.pi_js_exception();
             }
         }
     }
     return value;
 }
 
-fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, promise_mode: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn invoke(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, promise_mode: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(invokePendingBody(context, pending_arg1, argc, argv, promise_mode, data));
+}
+fn invokePendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, promise_mode: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
     var snapshot: ?c.JSValue = null;
-    defer if (snapshot) |value| engine.freeValue(value);
+    defer if (snapshot) |value| engine.releaseNativeValue(value);
     if (promise_mode == 0) return callCaptured(engine, args, false, data, &snapshot) catch |err| {
         if (err == error.JavaScriptException) return engine.throwCaptured();
+        if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
         var error_args = [_]c.JSValue{snapshot orelse c.pi_js_undefined()};
         const value = failure(engine, err, if (snapshot != null) &error_args else args);
-        return if (c.JS_IsException(value)) value else c.JS_Throw(context, value);
+        return if (c.JS_IsException(value)) value else c.JS_PiThrowExceptionData(context, value);
     };
     var resolvers: [2]c.JSValue = undefined;
     const promise = c.JS_NewPromiseCapability(context, &resolvers);
     if (c.JS_IsException(promise)) return promise;
-    defer engine.freeValue(resolvers[0]);
-    defer engine.freeValue(resolvers[1]);
+    var promise_owned = true;
+    defer if (promise_owned) engine.releaseNativeValue(promise);
+    defer engine.releaseNativeValue(resolvers[0]);
+    defer engine.releaseNativeValue(resolvers[1]);
     var rejected = false;
     const result = callCaptured(engine, args, true, data, &snapshot) catch |err| rejected: {
+        @import("native_pending_owner.zig").catchFailure(engine, err) catch |fatal_error| return if (fatal_error == error.ExecutionTerminated) engine.throwExecutionTerminated() else engine.throwCaptured();
         rejected = true;
         if (err == error.JavaScriptException) {
             _ = engine.throwCaptured();
+            @import("native_pending_owner.zig").checkFatal(@import("engine.zig").Engine.fromContext(context.?)) catch |pending_error| return if (pending_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else c.pi_js_exception();
             break :rejected c.JS_GetException(context);
         }
         var error_args = [_]c.JSValue{snapshot orelse c.pi_js_undefined()};
         break :rejected failure(engine, err, if (snapshot != null) &error_args else args);
     };
-    defer engine.freeValue(result);
+    defer engine.releaseNativeValue(result);
     if (c.JS_IsException(result)) {
-        engine.freeValue(promise);
+        engine.releaseNativeValue(promise);
+        promise_owned = false;
         return result;
     }
     var arguments = [_]c.JSValue{result};
-    const settled = c.JS_Call(context, resolvers[@intFromBool(rejected)], c.pi_js_undefined(), 1, &arguments);
+    const settled = native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_Call(context, resolvers[@intFromBool(rejected)], c.pi_js_undefined(), 1, &arguments); };
     if (c.JS_IsException(settled)) {
-        engine.freeValue(promise);
+        engine.releaseNativeValue(promise);
+        promise_owned = false;
         return settled;
     }
-    engine.freeValue(settled);
+    engine.releaseNativeValue(settled);
+    promise_owned = false;
     return promise;
 }
 
 pub fn install(engine: *engine_mod.Engine, exports: c.JSValue, promises: c.JSValue) !void {
     try node_buffer.install(engine);
     const prototype = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(prototype);
+    defer engine.releaseNativeValue(prototype);
     const symbol = try engine.checked(c.JS_NewSymbol(engine.context, "type", false));
-    defer engine.freeValue(symbol);
+    defer engine.releaseNativeValue(symbol);
     var class_id: c.JSClassID = 0;
     _ = c.JS_NewClassID(engine.runtime, &class_id);
     const definition: c.JSClassDef = .{ .class_name = "Dirent", .finalizer = finalizer, .gc_mark = mark, .call = constructorCall, .exotic = null };
     if (c.JS_NewClass(engine.runtime, class_id, &definition) < 0) return error.DirentClassFailed;
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
+    defer engine.releaseNativeValue(global);
     const function = try get(engine, global, "Function");
-    defer engine.freeValue(function);
+    defer engine.releaseNativeValue(function);
     const function_prototype = try get(engine, function, "prototype");
-    defer engine.freeValue(function_prototype);
-    const state = try engine.gpa.create(ConstructorState);
+    defer engine.releaseNativeValue(function_prototype);
+    const state = (engine.gpa.create(ConstructorState) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     state.* = .{ .engine = engine, .prototype = c.JS_DupValue(engine.context, prototype), .symbol = c.JS_DupValue(engine.context, symbol) };
     var transferred = false;
     errdefer if (!transferred) {
-        engine.freeValue(state.prototype);
-        engine.freeValue(state.symbol);
+        engine.releaseNativeValue(state.prototype);
+        engine.releaseNativeValue(state.symbol);
         engine.gpa.destroy(state);
     };
     const constructor = try engine.checked(c.JS_NewObjectProtoClass(engine.context, function_prototype, class_id));
     _ = c.JS_SetOpaque(constructor, state);
     transferred = true;
-    defer engine.freeValue(constructor);
+    defer engine.releaseNativeValue(constructor);
     _ = c.JS_SetConstructorBit(engine.context, constructor, true);
     if (c.JS_DefinePropertyValueStr(engine.context, constructor, "name", c.JS_NewString(engine.context, "Dirent"), c.JS_PROP_CONFIGURABLE) < 0 or c.JS_DefinePropertyValueStr(engine.context, constructor, "length", c.JS_NewInt32(engine.context, 3), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
     if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return error.JavaScriptException;

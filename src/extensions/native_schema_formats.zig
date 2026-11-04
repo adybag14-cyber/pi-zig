@@ -12,41 +12,41 @@ pub const exported = [_][:0]const u8{ "IsDateTime", "IsDate", "IsDuration", "IsE
 pub fn install(engine: *Engine) !void {
     if (engine.native_module_names.contains("typebox/format")) return;
     const exports = try create(engine);
-    defer engine.freeValue(exports);
+    defer engine.releaseNativeValue(exports);
     try engine.registerValueModule("typebox/format", exports);
 }
 pub fn patterns(engine: *Engine) !c.JSValue {
     const result = try vm.array(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
+    defer engine.releaseNativeValue(global);
     const constructor = try vm.get(engine, global, "RegExp");
-    defer engine.freeValue(constructor);
+    defer engine.releaseNativeValue(constructor);
     for (generated.patterns, 0..) |pattern, index| {
         const expression = try engine.checked(c.JS_NewStringLen(engine.context, pattern.expression.ptr, pattern.expression.len));
-        defer engine.freeValue(expression);
+        defer engine.releaseNativeValue(expression);
         const flags = try engine.checked(c.JS_NewStringLen(engine.context, pattern.flags.ptr, pattern.flags.len));
-        defer engine.freeValue(flags);
+        defer engine.releaseNativeValue(flags);
         var args = [_]c.JSValue{ expression, flags };
-        if (c.JS_SetPropertyUint32(engine.context, result, @intCast(index), try engine.checked(c.JS_CallConstructor(engine.context, constructor, 2, &args))) < 0) return error.JavaScriptException;
+        if (c.JS_SetPropertyUint32(engine.context, result, @intCast(index), try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_CallConstructor(engine.context, constructor, 2, &args); })) < 0) return error.JavaScriptException;
     }
     inline for (.{ "RE_EUROPEAN_NUMBER", "RE_PERMITTED_CATEGORY" }, 0..) |binding, index| {
         const members: []const []const u8 = if (index == 0) &.{ "RE_ASCII_DIGIT", "RE_EXT_ARABIC_INDIC_DIGIT" } else &.{ "RE_LETTER", "RE_EUROPEAN_SEPARATOR", "RE_COMMON_SEPARATOR", "RE_NUMBER_DECIMAL", "RE_MARK_NONSPACING", "RE_MARK_SPACING_COMBINING", "RE_CONTEXTO_EXCEPTIONS", "RE_PVALID_EXCEPTIONS" };
         var pieces: std.ArrayList([]const u8) = .empty;
         defer pieces.deinit(engine.gpa);
         for (members) |member| for (generated.patterns) |pattern| if (std.mem.eql(u8, pattern.file, "idna/pattern/pattern.mjs") and std.mem.eql(u8, pattern.binding, member)) {
-            try pieces.append(engine.gpa, pattern.expression);
+            (pieces.append(engine.gpa, pattern.expression) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             break;
         };
         if (pieces.items.len != members.len) return error.UnboundCompositeFormatPattern;
-        const combined = try std.mem.join(engine.gpa, "|", pieces.items);
+        const combined = (std.mem.join(engine.gpa, "|", pieces.items) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(combined);
         const expression = try engine.checked(c.JS_NewStringLen(engine.context, combined.ptr, combined.len));
-        defer engine.freeValue(expression);
+        defer engine.releaseNativeValue(expression);
         const flags = try engine.checked(c.JS_NewString(engine.context, "u"));
-        defer engine.freeValue(flags);
+        defer engine.releaseNativeValue(flags);
         var args = [_]c.JSValue{ expression, flags };
-        if (c.JS_SetPropertyUint32(engine.context, result, @intCast(generated.patterns.len + index), try engine.checked(c.JS_CallConstructor(engine.context, constructor, 2, &args))) < 0) return error.JavaScriptException;
+        if (c.JS_SetPropertyUint32(engine.context, result, @intCast(generated.patterns.len + index), try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(engine.context, constructor, 2, &args); })) < 0) return error.JavaScriptException;
         _ = binding;
     }
     return result;
@@ -55,22 +55,22 @@ pub const Context = struct {
     engine: *Engine,
     patterns: c.JSValue,
     fn expressionFor(self: Context, file: []const u8, binding: []const u8) !c.JSValue {
-        for (generated.patterns, 0..) |pattern, index| if (std.mem.eql(u8, pattern.file, file) and std.mem.eql(u8, pattern.binding, binding)) return self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, self.patterns, @intCast(index)));
+        for (generated.patterns, 0..) |pattern, index| if (std.mem.eql(u8, pattern.file, file) and std.mem.eql(u8, pattern.binding, binding)) return self.engine.checked(native_guest_1: { try self.engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyUint32(self.engine.context, self.patterns, @intCast(index)); });
         if (std.mem.eql(u8, file, "idna/pattern/pattern.mjs")) inline for (.{ "RE_EUROPEAN_NUMBER", "RE_PERMITTED_CATEGORY" }, 0..) |composite, index| {
-            if (std.mem.eql(u8, binding, composite)) return self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, self.patterns, @intCast(generated.patterns.len + index)));
+            if (std.mem.eql(u8, binding, composite)) return self.engine.checked(native_guest_0: { try self.engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(self.engine.context, self.patterns, @intCast(generated.patterns.len + index)); });
         };
         return error.UnboundTypeBoxFormatPattern;
     }
     fn match(self: Context, file: []const u8, binding: []const u8, value: c.JSValue) !bool {
         const regexp = try self.expressionFor(file, binding);
-        defer self.engine.freeValue(regexp);
+        defer self.engine.releaseNativeValue(regexp);
         const result = try vm.invoke(self.engine, regexp, "test", &.{value});
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         return c.JS_ToBool(self.engine.context, result) != 0;
     }
     fn matchText(self: Context, file: []const u8, binding: []const u8, text: []const u8) !bool {
         const value = try self.string(text);
-        defer self.engine.freeValue(value);
+        defer self.engine.releaseNativeValue(value);
         return self.match(file, binding, value);
     }
     fn string(self: Context, text: []const u8) !c.JSValue {
@@ -78,14 +78,14 @@ pub const Context = struct {
     }
     fn exec(self: Context, file: []const u8, binding: []const u8, value: c.JSValue) !c.JSValue {
         const regexp = try self.expressionFor(file, binding);
-        defer self.engine.freeValue(regexp);
+        defer self.engine.releaseNativeValue(regexp);
         return vm.invoke(self.engine, regexp, "exec", &.{value});
     }
     fn integer(self: Context, array: c.JSValue, index: u32) !i32 {
-        const value = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, array, index));
-        defer self.engine.freeValue(value);
+        const value = try self.engine.checked(native_guest_1: { try self.engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyUint32(self.engine.context, array, index); });
+        defer self.engine.releaseNativeValue(value);
         var number: i32 = 0;
-        if (!c.JS_IsUndefined(value) and c.JS_ToInt32(self.engine.context, &number, value) < 0) return error.JavaScriptException;
+        if (!c.JS_IsUndefined(value) and native_guest_0: { try self.engine.checkNativeEntry(); break :native_guest_0 c.JS_ToInt32(self.engine.context, &number, value); } < 0) return error.JavaScriptException;
         return number;
     }
     pub fn check(self: Context, kind: Kind, value: c.JSValue, strict_timezone: bool) !bool {
@@ -106,9 +106,9 @@ pub const Context = struct {
             .uuid => self.match("uuid.mjs", "Uuid", value),
             .idn_email => blk: {
                 const form = try self.string("NFC");
-                defer self.engine.freeValue(form);
+                defer self.engine.releaseNativeValue(form);
                 const normalized = try vm.invoke(self.engine, value, "normalize", &.{form});
-                defer self.engine.freeValue(normalized);
+                defer self.engine.releaseNativeValue(normalized);
                 break :blk self.match("idn_email.mjs", "IdnEmail", normalized);
             },
             .hostname, .idn_hostname => self.hostname(value, kind == .idn_hostname),
@@ -120,7 +120,7 @@ pub const Context = struct {
     }
     fn date(self: Context, value: c.JSValue) !bool {
         const found = try self.exec("date.mjs", "DATE", value);
-        defer self.engine.freeValue(found);
+        defer self.engine.releaseNativeValue(found);
         if (c.JS_IsNull(found)) return false;
         const year = try self.integer(found, 1);
         const month = try self.integer(found, 2);
@@ -131,12 +131,12 @@ pub const Context = struct {
     }
     fn time(self: Context, value: c.JSValue, strict: bool) !bool {
         const found = try self.exec("time.mjs", "TIME", value);
-        defer self.engine.freeValue(found);
+        defer self.engine.releaseNativeValue(found);
         if (c.JS_IsNull(found)) return false;
-        const zone = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, found, 4));
-        defer self.engine.freeValue(zone);
-        const sign_value = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, found, 5));
-        defer self.engine.freeValue(sign_value);
+        const zone = try self.engine.checked(native_guest_1: { try self.engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyUint32(self.engine.context, found, 4); });
+        defer self.engine.releaseNativeValue(zone);
+        const sign_value = try self.engine.checked(native_guest_0: { try self.engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(self.engine.context, found, 5); });
+        defer self.engine.releaseNativeValue(sign_value);
         if (strict and c.JS_IsUndefined(zone) and c.JS_IsUndefined(sign_value)) return false;
         const hr = try self.integer(found, 1);
         const minute = try self.integer(found, 2);
@@ -147,7 +147,7 @@ pub const Context = struct {
         if (!c.JS_IsUndefined(sign_value) and (zone_hr > 23 or zone_minute > 59)) return false;
         if (second < 60) return true;
         const sign = if (!c.JS_IsUndefined(sign_value)) blk: {
-            const label = try self.engine.toString(sign_value);
+            const label = (self.engine.toString(sign_value) catch |native_error| { if (native_error == error.OutOfMemory) _ = self.engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer self.engine.gpa.free(label);
             break :blk if (std.mem.eql(u8, label, "-")) @as(i32, -1) else @as(i32, 1);
         } else @as(i32, 1);
@@ -155,53 +155,53 @@ pub const Context = struct {
     }
     fn dateTime(self: Context, value: c.JSValue) !bool {
         const global = c.JS_GetGlobalObject(self.engine.context);
-        defer self.engine.freeValue(global);
+        defer self.engine.releaseNativeValue(global);
         const constructor = try vm.get(self.engine, global, "RegExp");
-        defer self.engine.freeValue(constructor);
+        defer self.engine.releaseNativeValue(constructor);
         const pattern = try self.string("T");
-        defer self.engine.freeValue(pattern);
+        defer self.engine.releaseNativeValue(pattern);
         const flags = try self.string("i");
-        defer self.engine.freeValue(flags);
+        defer self.engine.releaseNativeValue(flags);
         var args = [_]c.JSValue{ pattern, flags };
-        const delimiter = try self.engine.checked(c.JS_CallConstructor(self.engine.context, constructor, args.len, &args));
-        defer self.engine.freeValue(delimiter);
+        const delimiter = try self.engine.checked(native_guest_3: { try self.engine.checkNativeEntry(); break :native_guest_3 c.JS_CallConstructor(self.engine.context, constructor, args.len, &args); });
+        defer self.engine.releaseNativeValue(delimiter);
         const parts = try vm.invoke(self.engine, value, "split", &.{delimiter});
-        defer self.engine.freeValue(parts);
+        defer self.engine.releaseNativeValue(parts);
         const length = try vm.get(self.engine, parts, "length");
-        defer self.engine.freeValue(length);
+        defer self.engine.releaseNativeValue(length);
         var count: f64 = 0;
         if (!c.JS_IsNumber(length)) return false;
-        if (c.JS_ToFloat64(self.engine.context, &count, length) < 0) return error.JavaScriptException;
+        if (native_guest_2: { try self.engine.checkNativeEntry(); break :native_guest_2 c.JS_ToFloat64(self.engine.context, &count, length); } < 0) return error.JavaScriptException;
         if (count != 2) return false;
-        const day = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, parts, 0));
-        defer self.engine.freeValue(day);
-        const clock = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, parts, 1));
-        defer self.engine.freeValue(clock);
+        const day = try self.engine.checked(native_guest_1: { try self.engine.checkNativeEntry(); break :native_guest_1 c.JS_GetPropertyUint32(self.engine.context, parts, 0); });
+        defer self.engine.releaseNativeValue(day);
+        const clock = try self.engine.checked(native_guest_0: { try self.engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(self.engine.context, parts, 1); });
+        defer self.engine.releaseNativeValue(clock);
         return try self.date(day) and try self.time(clock, true);
     }
     fn url(self: Context, value: c.JSValue, base: ?c.JSValue) !bool {
         if (self.engine.url_class == 0) try @import("native_url.zig").install(self.engine);
         const global = c.JS_GetGlobalObject(self.engine.context);
-        defer self.engine.freeValue(global);
+        defer self.engine.releaseNativeValue(global);
         const constructor = try vm.get(self.engine, global, "URL");
-        defer self.engine.freeValue(constructor);
+        defer self.engine.releaseNativeValue(constructor);
         const result = try vm.invoke(self.engine, constructor, "canParse", if (base) |parent| &.{ value, parent } else &.{value});
-        defer self.engine.freeValue(result);
+        defer self.engine.releaseNativeValue(result);
         return c.JS_ToBool(self.engine.context, result) != 0;
     }
     fn iri(self: Context, value: c.JSValue) !bool {
         if (try self.match("iri.mjs", "InvalidIriChars", value) or try self.match("iri.mjs", "InvalidPercentEncoding", value)) return false;
         const size = try vm.get(self.engine, value, "length");
-        defer self.engine.freeValue(size);
+        defer self.engine.releaseNativeValue(size);
         var count: f64 = 0;
-        if (c.JS_ToFloat64(self.engine.context, &count, size) < 0) return error.JavaScriptException;
+        if (native_guest_0: { try self.engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(self.engine.context, &count, size); } < 0) return error.JavaScriptException;
         if (count < 2048) {
             const regexp = try self.expressionFor("iri.mjs", "IpvFutureMatch");
-            defer self.engine.freeValue(regexp);
+            defer self.engine.releaseNativeValue(regexp);
             const replacement = try self.string("[::1]");
-            defer self.engine.freeValue(replacement);
+            defer self.engine.releaseNativeValue(replacement);
             const narrowed = try vm.invoke(self.engine, value, "replace", &.{ regexp, replacement });
-            defer self.engine.freeValue(narrowed);
+            defer self.engine.releaseNativeValue(narrowed);
             return self.url(narrowed, null);
         }
         return self.url(value, null);
@@ -209,24 +209,25 @@ pub const Context = struct {
     fn iriReference(self: Context, value: c.JSValue) !bool {
         if (try self.match("iri_reference.mjs", "InvalidIriChars", value) or try self.match("iri_reference.mjs", "MalformedScheme", value)) return false;
         const base = try self.string("http://example.com");
-        defer self.engine.freeValue(base);
+        defer self.engine.releaseNativeValue(base);
         return self.url(value, base);
     }
     fn regex(self: Context, value: c.JSValue) !bool {
         const global = c.JS_GetGlobalObject(self.engine.context);
-        defer self.engine.freeValue(global);
+        defer self.engine.releaseNativeValue(global);
         const constructor = try vm.get(self.engine, global, "RegExp");
-        defer self.engine.freeValue(constructor);
+        defer self.engine.releaseNativeValue(constructor);
         const flags = try self.string("u");
-        defer self.engine.freeValue(flags);
+        defer self.engine.releaseNativeValue(flags);
         var args = [_]c.JSValue{ value, flags };
-        const result = c.JS_CallConstructor(self.engine.context, constructor, args.len, &args);
+        const result = native_guest_0: { try self.engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(self.engine.context, constructor, args.len, &args); };
         if (c.JS_IsException(result)) {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const failure = c.JS_GetException(self.engine.context);
-            self.engine.freeValue(failure);
+            self.engine.releaseNativeValue(failure);
             return false;
         }
-        self.engine.freeValue(result);
+        self.engine.releaseNativeValue(result);
         return true;
     }
     fn patternPoint(self: Context, binding: []const u8, point: u21) !bool {
@@ -312,10 +313,10 @@ pub const Context = struct {
     fn punyLabel(self: Context, text: []const u8) !bool {
         if (!ace(text)) return false;
         const body = try self.string(text[4..]);
-        defer self.engine.freeValue(body);
+        defer self.engine.releaseNativeValue(body);
         const lower = try vm.invoke(self.engine, body, "toLowerCase", &.{});
-        defer self.engine.freeValue(lower);
-        const bytes = try self.engine.toString(lower);
+        defer self.engine.releaseNativeValue(lower);
+        const bytes = (self.engine.toString(lower) catch |native_error| { if (native_error == error.OutOfMemory) _ = self.engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer self.engine.gpa.free(bytes);
         if (std.mem.lastIndexOfScalar(u8, bytes, '-') == @as(?usize, 0)) return false;
         const decoded = decodePuny(self.engine.gpa, bytes) catch |err| {
@@ -329,10 +330,10 @@ pub const Context = struct {
     fn hasBidiLabel(self: Context, text: []const u8) !bool {
         if (!ace(text)) return self.hasRtl(text);
         const body = try self.string(text[4..]);
-        defer self.engine.freeValue(body);
+        defer self.engine.releaseNativeValue(body);
         const lower = try vm.invoke(self.engine, body, "toLowerCase", &.{});
-        defer self.engine.freeValue(lower);
-        const bytes = try self.engine.toString(lower);
+        defer self.engine.releaseNativeValue(lower);
+        const bytes = (self.engine.toString(lower) catch |native_error| { if (native_error == error.OutOfMemory) _ = self.engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer self.engine.gpa.free(bytes);
         const decoded = decodePuny(self.engine.gpa, bytes) catch |err| {
             if (err == error.OutOfMemory) return err;
@@ -343,31 +344,31 @@ pub const Context = struct {
     }
     fn hostname(self: Context, value: c.JSValue, international: bool) !bool {
         const length = try vm.get(self.engine, value, "length");
-        defer self.engine.freeValue(length);
+        defer self.engine.releaseNativeValue(length);
         var count: f64 = 0;
-        if (c.JS_ToFloat64(self.engine.context, &count, length) < 0) return error.JavaScriptException;
+        if (native_guest_1: { try self.engine.checkNativeEntry(); break :native_guest_1 c.JS_ToFloat64(self.engine.context, &count, length); } < 0) return error.JavaScriptException;
         if ((c.JS_IsNumber(length) and count == 0) or (!international and count > 253)) return false;
         if (international) {
             const space = try self.string(" ");
-            defer self.engine.freeValue(space);
+            defer self.engine.releaseNativeValue(space);
             const included = try vm.invoke(self.engine, value, "includes", &.{space});
-            defer self.engine.freeValue(included);
+            defer self.engine.releaseNativeValue(included);
             if (c.JS_ToBool(self.engine.context, included) != 0) return false;
         } else {
             const last = try self.engine.checked(c.JS_NewFloat64(self.engine.context, count - 1));
-            defer self.engine.freeValue(last);
+            defer self.engine.releaseNativeValue(last);
             const code = try vm.invoke(self.engine, value, "charCodeAt", &.{last});
-            defer self.engine.freeValue(code);
+            defer self.engine.releaseNativeValue(code);
             var number: f64 = 0;
             if (c.JS_IsNumber(code)) {
-                if (c.JS_ToFloat64(self.engine.context, &number, code) < 0) return error.JavaScriptException;
+                if (native_guest_0: { try self.engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(self.engine.context, &number, code); } < 0) return error.JavaScriptException;
                 if (number == 46) return false;
             }
         }
-        const input = try self.engine.toString(value);
+        const input = (self.engine.toString(value) catch |native_error| { if (native_error == error.OutOfMemory) _ = self.engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer self.engine.gpa.free(input);
         if (input.len == 0 or (international and std.mem.indexOfScalar(u8, input, ' ') != null)) return false;
-        const normalized = if (international) try self.normalizedHostname(input) else try self.engine.gpa.dupe(u8, input);
+        const normalized = if (international) try self.normalizedHostname(input) else (self.engine.gpa.dupe(u8, input) catch |native_error| { if (native_error == error.OutOfMemory) _ = self.engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer self.engine.gpa.free(normalized);
         if (try std.unicode.calcWtf16LeLen(normalized) > 253) return false;
         var has_bidi = false;
@@ -392,21 +393,21 @@ pub const Context = struct {
         var mapped: std.ArrayList(u8) = .empty;
         defer mapped.deinit(self.engine.gpa);
         var iterator = (try std.unicode.Wtf8View.init(input)).iterator();
-        while (iterator.nextCodepoint()) |point| try appendPoint(self.engine.gpa, &mapped, if (point >= 0xff01 and point <= 0xff5e) point - 0xfee0 else point);
+        while (iterator.nextCodepoint()) |point| (appendPoint(self.engine.gpa, &mapped, if (point >= 0xff01 and point <= 0xff5e) point - 0xfee0 else point) catch |native_error| { if (native_error == error.OutOfMemory) _ = self.engine.throwNativeOutOfMemoryFatal(); return native_error; });
         const source = try self.string(mapped.items);
-        defer self.engine.freeValue(source);
+        defer self.engine.releaseNativeValue(source);
         const form = try self.string("NFC");
-        defer self.engine.freeValue(form);
+        defer self.engine.releaseNativeValue(form);
         const normalized = try vm.invoke(self.engine, source, "normalize", &.{form});
-        defer self.engine.freeValue(normalized);
-        const text = try self.engine.toString(normalized);
+        defer self.engine.releaseNativeValue(normalized);
+        const text = (self.engine.toString(normalized) catch |native_error| { if (native_error == error.OutOfMemory) _ = self.engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer self.engine.gpa.free(text);
         var output: std.ArrayList(u8) = .empty;
         errdefer output.deinit(self.engine.gpa);
         iterator = (try std.unicode.Wtf8View.init(text)).iterator();
         while (iterator.nextCodepoint()) |point| {
             if (point == 0xad or point == 0x34f or (point >= 0x180b and point <= 0x180d) or point == 0x200b or (point >= 0xfe00 and point <= 0xfe0f) or (point >= 0xe0100 and point <= 0xe01ef)) continue;
-            try appendPoint(self.engine.gpa, &output, if (point == 0x3002 or point == 0xff0e or point == 0xff61) '.' else point);
+            (appendPoint(self.engine.gpa, &output, if (point == 0x3002 or point == 0xff0e or point == 0xff61) '.' else point) catch |native_error| { if (native_error == error.OutOfMemory) _ = self.engine.throwNativeOutOfMemoryFatal(); return native_error; });
         }
         return output.toOwnedSlice(self.engine.gpa);
     }
@@ -517,13 +518,20 @@ fn decodePuny(gpa: std.mem.Allocator, input: []const u8) ![]u8 {
     return output.toOwnedSlice(gpa);
 }
 
-fn formatCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn formatCallback(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(formatCallbackPendingBody(context, pending_arg1, argc, argv, magic, data));
+}
+fn formatCallbackPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = Engine.fromContext(context.?);
     const owner: Context = .{ .engine = engine, .patterns = data[0] };
     const strict = argc < 2 or c.JS_IsUndefined(argv[1]) or c.JS_ToBool(context, argv[1]) != 0;
     const result = owner.check(@enumFromInt(magic), if (argc > 0) argv[0] else c.pi_js_undefined(), strict) catch |err| {
-        if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+        if (err == error.OutOfMemory) return @import("engine.zig").Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
         if (err == error.JavaScriptException) return engine.throwCaptured();
+        if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
         return c.JS_ThrowTypeError(context, "Native format: %s", @as([*:0]const u8, @errorName(err)));
     };
     return c.pi_js_bool(context, @intFromBool(result));
@@ -531,55 +539,55 @@ fn formatCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c
 pub fn createFunctions(engine: *Engine) !c.JSValue {
     if (engine.url_class == 0) try @import("native_url.zig").install(engine);
     const expressions = try patterns(engine);
-    defer engine.freeValue(expressions);
+    defer engine.releaseNativeValue(expressions);
     const result = try vm.object(engine);
-    errdefer engine.freeValue(result);
+    errdefer engine.releaseNativeValue(result);
     var data = [_]c.JSValue{expressions};
     for (exported, 0..) |name, index| try vm.put(engine, result, name, try engine.checked(c.JS_NewCFunctionData2(engine.context, formatCallback, name.ptr, 1, @intCast(index), data.len, &data)));
     return result;
 }
 pub fn create(engine: *Engine) !c.JSValue {
     const functions = try createFunctions(engine);
-    defer engine.freeValue(functions);
+    defer engine.releaseNativeValue(functions);
     const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
+    defer engine.releaseNativeValue(global);
     const constructor = try vm.get(engine, global, "Map");
-    defer engine.freeValue(constructor);
-    const registry = try engine.checked(c.JS_CallConstructor(engine.context, constructor, 0, null));
-    defer engine.freeValue(registry);
+    defer engine.releaseNativeValue(constructor);
+    const registry = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(engine.context, constructor, 0, null); });
+    defer engine.releaseNativeValue(registry);
     const defaults = try vm.array(engine);
-    defer engine.freeValue(defaults);
+    defer engine.releaseNativeValue(defaults);
     for (exported, 0..) |name, index| if (c.JS_SetPropertyUint32(engine.context, defaults, @intCast(index), try vm.get(engine, functions, name)) < 0) return error.JavaScriptException;
     try reset(engine, registry, defaults);
     var data = [_]c.JSValue{ registry, defaults };
     inline for (.{ "Clear", "Entries", "Set", "Has", "Get", "Test", "Reset" }, .{ 0, 0, 2, 1, 1, 2, 0 }, 0..) |name, length, index| try vm.put(engine, functions, name, try engine.checked(c.JS_NewCFunctionData2(engine.context, registryCallback, name, length, @intCast(index), data.len, &data)));
     const exports = try vm.object(engine);
-    errdefer engine.freeValue(exports);
+    errdefer engine.releaseNativeValue(exports);
     const object = try vm.get(engine, global, "Object");
-    defer engine.freeValue(object);
+    defer engine.releaseNativeValue(object);
     const assigned = try vm.invoke(engine, object, "assign", &.{ exports, functions });
-    engine.freeValue(assigned);
+    engine.releaseNativeValue(assigned);
     const namespace = try engine.valueNamespace(functions);
-    defer engine.freeValue(namespace);
+    defer engine.releaseNativeValue(namespace);
     try vm.put(engine, exports, "Format", c.JS_DupValue(engine.context, namespace));
     try vm.put(engine, exports, "default", c.JS_DupValue(engine.context, namespace));
     return exports;
 }
 fn reset(engine: *Engine, registry: c.JSValue, defaults: c.JSValue) !void {
     const cleared = try vm.invoke(engine, registry, "clear", &.{});
-    engine.freeValue(cleared);
+    engine.releaseNativeValue(cleared);
     for (names, 0..) |name, index| {
         const label = try engine.checked(c.JS_NewStringLen(engine.context, name.ptr, name.len));
-        defer engine.freeValue(label);
-        const callback = try engine.checked(c.JS_GetPropertyUint32(engine.context, defaults, @intCast(index)));
-        defer engine.freeValue(callback);
+        defer engine.releaseNativeValue(label);
+        const callback = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_GetPropertyUint32(engine.context, defaults, @intCast(index)); });
+        defer engine.releaseNativeValue(callback);
         const ignored = try vm.invoke(engine, registry, "set", &.{ label, callback });
-        engine.freeValue(ignored);
+        engine.releaseNativeValue(ignored);
     }
 }
 pub fn checkRegistry(engine: *Engine, registry: c.JSValue, name: c.JSValue, value: c.JSValue) !bool {
     const result = try testRegistry(engine, registry, name, value);
-    defer engine.freeValue(result);
+    defer engine.releaseNativeValue(result);
     return c.JS_ToBool(engine.context, result) != 0;
 }
 pub fn testRegistry(engine: *Engine, registry: c.JSValue, name: c.JSValue, value: c.JSValue) !c.JSValue {
@@ -595,11 +603,18 @@ pub fn testRegistry(engine: *Engine, registry: c.JSValue, name: c.JSValue, value
     }
     return result;
 }
-fn registryCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn registryCallback(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(registryCallbackPendingBody(context, pending_arg1, argc, argv, operation, data));
+}
+fn registryCallbackPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return registryOwned(engine, argv[0..@intCast(argc)], operation, data) catch |err| {
-        if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+        if (err == error.OutOfMemory) return @import("engine.zig").Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
         if (err == error.JavaScriptException) return engine.throwCaptured();
+        if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
         return c.JS_ThrowTypeError(context, "Native format: %s", @as([*:0]const u8, @errorName(err)));
     };
 }
@@ -610,16 +625,16 @@ fn registryOwned(engine: *Engine, args: []const c.JSValue, operation: c_int, dat
         0 => return vm.invoke(engine, data[0], "clear", &.{}),
         1 => {
             const iterator = try vm.invoke(engine, data[0], "entries", &.{});
-            defer engine.freeValue(iterator);
+            defer engine.releaseNativeValue(iterator);
             const global = c.JS_GetGlobalObject(engine.context);
-            defer engine.freeValue(global);
+            defer engine.releaseNativeValue(global);
             const array = try vm.get(engine, global, "Array");
-            defer engine.freeValue(array);
+            defer engine.releaseNativeValue(array);
             return vm.invoke(engine, array, "from", &.{iterator});
         },
         2 => {
             const ignored = try vm.invoke(engine, data[0], "set", &.{ first, second });
-            engine.freeValue(ignored);
+            engine.releaseNativeValue(ignored);
             return c.pi_js_undefined();
         },
         3 => return vm.invoke(engine, data[0], "has", &.{first}),

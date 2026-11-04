@@ -576,6 +576,9 @@ typedef enum JSPiAsyncFunctionCompletion {
 } JSPiAsyncFunctionCompletion;
 typedef enum JSPiAsyncFunctionAction {
     JS_PI_AF_RETURN, JS_PI_AF_AWAIT, JS_PI_AF_THROW,
+    /* Actual native unwind history only; result remains JS_EXCEPTION and
+       the selected pending event retains its independent generic class. */
+    JS_PI_AF_ABORTED,
 } JSPiAsyncFunctionAction;
 enum { JS_PI_AF_LEXICAL_THIS = 1 };
 typedef JSValue JSPiAsyncFunctionBody(JSContext *ctx, JSValueConst captures,
@@ -639,6 +642,7 @@ typedef enum JSPiAsyncGeneratorAction {
     JS_PI_AG_RETURN,      /* return expression: mandatory Await(value) */
     JS_PI_AG_COMPLETE,    /* implicit/bare return or already-awaited completion */
     JS_PI_AG_THROW,       /* raw abrupt completion, no string coercion */
+    JS_PI_AG_ABORTED,     /* actual native unwind; selected reason stays classified */
 } JSPiAsyncGeneratorAction;
 typedef JSValue JSPiAsyncGeneratorResume(JSContext *ctx, JSValueConst owner,
                                        int completion, JSValueConst value,
@@ -1080,6 +1084,15 @@ static inline bool JS_IsModule(JSValueConst v)
 
 JS_EXTERN JSValue JS_Throw(JSContext *ctx, JSValue obj);
 JS_EXTERN JSValue JS_GetException(JSContext *ctx);
+/* Actual native pending-completion transfers. Never classify detached DATA.
+   Taking through either API clears the pending classification. */
+JS_EXTERN JSValue JS_PiGetExceptionWithFatal(JSContext *ctx, bool *generic_fatal);
+JS_EXTERN JSValue JS_PiThrowNativePending(JSContext *ctx, JSValue reason,
+                                        bool generic_fatal);
+JS_EXTERN bool JS_PiIsPendingUncatchable(JSContext *ctx);
+/* Consumes explicit source/diagnostic DATA as a NEW ordinary completion.
+   Earlier actual pending events retain precedence. Private tokens are invalid. */
+JS_EXTERN JSValue JS_PiThrowExceptionData(JSContext *ctx, JSValue value);
 JS_EXTERN bool JS_HasException(JSContext *ctx);
 /* Native execution termination. A request alone is not a pending event.
    Request may be made by another thread in CONFIG_ATOMICS builds; all other

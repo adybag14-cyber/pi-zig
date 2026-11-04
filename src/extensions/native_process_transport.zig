@@ -19,7 +19,7 @@ pub const Worker = struct {
     closed: bool = false,
     owner: std.Thread.Id,
     pub fn bridge(self: *Worker, metadata: protocol.Metadata) streams.Bridge {
-        return .{ .context = self, .guard_fn = guard, .control_fn = control, .write_fn = write, .is_shift_pressed_fn = if (metadata.has_shift_helper) shift else null, .enable_vt_input_fn = if (metadata.has_vt_input_helper) vtInput else null };
+        return .{ .context = self, .guard_fn = guard, .control_fn = control, .write_fn = write, .is_shift_pressed_fn = if (metadata.has_shift_helper) shift else null, .is_modifier_pressed_fn = if (metadata.has_modifier_helper) modifier else null, .enable_vt_input_fn = if (metadata.has_vt_input_helper) vtInput else null };
     }
     fn guard(context: ?*anyopaque) !void {
         const self: *Worker = @ptrCast(@alignCast(context.?));
@@ -55,6 +55,11 @@ pub const Worker = struct {
         const self: *Worker = @ptrCast(@alignCast(context.?));
         return self.request(.is_shift_pressed);
     }
+    fn modifier(context: ?*anyopaque, name: []const u8) !bool {
+        const self: *Worker = @ptrCast(@alignCast(context.?));
+        if (name.len > 15) return error.InvalidProcessStreamRecord;
+        return self.request(.{ .is_modifier_pressed = name });
+    }
     fn vtInput(context: ?*anyopaque) !bool {
         const self: *Worker = @ptrCast(@alignCast(context.?));
         return self.request(.enable_vt_input);
@@ -83,6 +88,10 @@ pub const Worker = struct {
                 },
             },
             .is_shift_pressed => try out.writer.writeAll(",\"method\":\"is_shift_pressed\""),
+            .is_modifier_pressed => |name| {
+                try out.writer.writeAll(",\"method\":\"is_modifier_pressed\",\"name\":");
+                try std.json.Stringify.value(name, .{}, &out.writer);
+            },
             .enable_vt_input => try out.writer.writeAll(",\"method\":\"enable_vt_input\""),
         }
         try out.writer.writeByte('}');

@@ -392,13 +392,22 @@ size_t pi_js_array_buffer_backing_page_size(void *opaque) {
     return backing->page_size;
 }
 
-JSRuntime *pi_js_new_runtime(size_t memory_limit, void **memory_owner) {
+/* A host-only native consumer can own the same aggregate allocator budget
+ * without constructing a JavaScript runtime. The caller owns the initial
+ * reference and supplies its explicit memory policy. */
+void *pi_js_new_memory_owner(size_t memory_limit) {
     PiMemoryOwner *owner = malloc(sizeof(*owner));
     if (!owner) return NULL;
     atomic_init(&owner->references, 1);
     atomic_init(&owner->used, 0);
     owner->limit = memory_limit;
     atomic_fetch_add_explicit(&pi_memory_owners, 1, memory_order_relaxed);
+    return owner;
+}
+
+JSRuntime *pi_js_new_runtime(size_t memory_limit, void **memory_owner) {
+    PiMemoryOwner *owner = pi_js_new_memory_owner(memory_limit);
+    if (!owner) return NULL;
     const JSMallocFunctions allocator = {
         .js_calloc = pi_calloc, .js_malloc = pi_malloc, .js_free = pi_free,
         .js_realloc = pi_realloc, .js_malloc_usable_size = pi_usable_size,

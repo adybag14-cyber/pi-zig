@@ -24,7 +24,7 @@ fn value(root: *Root, slot: Slot) c.JSValue {
     return root.values[@intFromEnum(slot)];
 }
 fn replace(root: *Root, slot: Slot, item: c.JSValue) void {
-    root.engine.freeValue(root.values[@intFromEnum(slot)]);
+    root.engine.releaseNativeValue(root.values[@intFromEnum(slot)]);
     root.values[@intFromEnum(slot)] = item;
 }
 fn freeRoot(runtime: ?*c.JSRuntime, owner: c.JSValue) callconv(.c) void {
@@ -134,8 +134,8 @@ fn appendPart(scope: *Scope, owner: c.JSValue, output: *std.ArrayList(u8), part:
         const buffer = if (view) try scope.get(part, "buffer") else part;
         var offset: u64 = 0;
         var length: u64 = 0;
-        if (view and c.JS_ToIndex(scope.engine.context, &offset, try scope.get(part, "byteOffset")) < 0) return js.capture(scope.engine);
-        if (c.JS_ToIndex(scope.engine.context, &length, try scope.get(part, "byteLength")) < 0) return js.capture(scope.engine);
+        if (view and native_guest_1: { try scope.engine.checkNativeEntry(); break :native_guest_1 c.JS_ToIndex(scope.engine.context, &offset, try scope.get(part, "byteOffset")); } < 0) return js.capture(scope.engine);
+        if (native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_ToIndex(scope.engine.context, &length, try scope.get(part, "byteLength")); } < 0) return js.capture(scope.engine);
         var size: usize = 0;
         const bytes = c.JS_GetArrayBuffer(scope.engine.context, &size, buffer);
         if (bytes == null and c.JS_HasException(scope.engine.context)) return js.capture(scope.engine);
@@ -200,7 +200,7 @@ fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, cap
     defer iterator.deinit();
     errdefer iterator.closePreserving();
     while (try iterator.next()) |part| {
-        defer engine.freeValue(part);
+        defer engine.releaseNativeValue(part);
         try appendPart(&scope, owner, &output, part, native_endings);
     }
     const mime = try normalizeType(&scope, if (c.JS_IsUndefined(raw_type)) try scope.text("") else raw_type);
@@ -219,7 +219,7 @@ fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, cap
 fn integer(scope: *Scope, input: c.JSValue, maximum: usize) !usize {
     const number = try scope.own(try scope.engine.checked(c.JS_ToNumber(scope.engine.context, input)));
     var raw: f64 = 0;
-    if (c.JS_ToFloat64(scope.engine.context, &raw, number) < 0) return js.capture(scope.engine);
+    if (native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(scope.engine.context, &raw, number); } < 0) return js.capture(scope.engine);
     if (!std.math.isFinite(raw) or raw == 0) return 0;
     // Actual internal/webidl signed64 conversion keeps signed remainder.
     raw = @rem(@trunc(raw), 18446744073709551616.0);
@@ -248,7 +248,7 @@ fn operation(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, args: []const
         .bytes => return scope.own(try scope.engine.checked(c.JS_NewUint8ArrayCopy(scope.engine.context, state.bytes.ptr, state.bytes.len))),
         .text => {
             if (c.JS_IsUndefined(value(root, .decoder))) {
-                const decoder = try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, value(root, .decoder_ctor), 0, null));
+                const decoder = try scope.engine.checked(native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(scope.engine.context, value(root, .decoder_ctor), 0, null); });
                 replace(root, .decoder, decoder);
             }
             const buffer = try scope.own(try scope.engine.checked(c.JS_NewArrayBufferCopy(scope.engine.context, state.bytes.ptr, state.bytes.len)));
@@ -262,20 +262,29 @@ fn operation(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, args: []const
     }
 }
 fn fail(engine: *em.Engine, err: anyerror) c.JSValue {
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
     return c.JS_ThrowInternalError(engine.context, "Native Web Blob: %s", @as([*:0]const u8, @errorName(err)));
 }
-fn asyncJob(context: ?*c.JSContext, _: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn asyncJob(context: ?*c.JSContext, pending_arg1: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(asyncJobPendingBody(context, pending_arg1, captures));
+}
+fn asyncJobPendingBody(context: ?*c.JSContext, _: c_int, captures: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     var tag: i32 = 0;
-    if (c.JS_ToInt32(context, &tag, captures[4]) < 0) return fail(engine, js.capture(engine));
+    if (native_guest_0: { @import("engine.zig").Engine.fromContext(context.?).checkNativeEntry() catch |native_error| return if (native_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else @import("engine.zig").Engine.fromContext(context.?).throwCaptured(); break :native_guest_0 c.JS_ToInt32(context, &tag, captures[4]); } < 0) return fail(engine, js.capture(engine));
     const result = operation(&scope, captures[0], captures[1], &.{}, @enumFromInt(tag)) catch |err| {
         _ = fail(engine, err);
+        @import("native_pending_owner.zig").checkFatal(@import("engine.zig").Engine.fromContext(context.?)) catch |pending_error| return if (pending_error == error.ExecutionTerminated) @import("engine.zig").Engine.fromContext(context.?).throwExecutionTerminated() else c.pi_js_exception();
         const reason = c.JS_GetException(context);
-        defer engine.freeValue(reason);
+        defer engine.releaseNativeValue(reason);
         _ = scope.call(captures[3], c.pi_js_undefined(), &.{reason}) catch |failure| return fail(engine, failure);
         return c.pi_js_undefined();
     };
@@ -286,20 +295,27 @@ fn invoke(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, args: []const c.
     if (kind != .text and kind != .bytes and kind != .arrayBuffer) return operation(scope, owner, receiver, args, kind);
     var caps: [2]c.JSValue = undefined;
     const promise = try scope.own(try scope.engine.checked(c.JS_NewPromiseCapability(scope.engine.context, &caps)));
-    defer for (caps) |cap| scope.engine.freeValue(cap);
+    defer for (caps) |cap| scope.engine.releaseNativeValue(cap);
     if (stateOf(owner, receiver) == null) {
         _ = checkedState(scope, owner, receiver, false) catch |err| {
             _ = fail(scope.engine, err);
+            try @import("native_pending_owner.zig").checkFatal(scope.engine);
             const reason = try scope.own(c.JS_GetException(scope.engine.context));
             _ = try scope.call(caps[1], c.pi_js_undefined(), &.{reason});
             return promise;
         };
     }
     var captures = [_]c.JSValue{ owner, receiver, caps[0], caps[1], c.JS_NewInt32(scope.engine.context, @intFromEnum(kind)) };
-    if (c.JS_EnqueueJob(scope.engine.context, asyncJob, captures.len, &captures) < 0) return js.capture(scope.engine);
+    if (native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_EnqueueJob(scope.engine.context, asyncJob, captures.len, &captures); } < 0) return js.capture(scope.engine);
     return promise;
 }
 fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, tag: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callbackPendingBody(context, receiver, argc, argv, tag, captures));
+}
+fn callbackPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, tag: c_int, captures: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -336,7 +352,7 @@ pub fn install(engine: *em.Engine) !void {
     defer scope.deinit();
     const root_class = try newClass(engine, "Native Blob Owner", freeRoot, markRoot);
     const owner = try scope.own(try engine.checked(c.JS_NewObjectClass(engine.context, root_class)));
-    const root = try engine.gpa.create(Root);
+    const root = (engine.gpa.create(Root) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     root.* = .{ .engine = engine, .class = 0, .values = undefined };
     for (&root.values) |*slot| slot.* = c.pi_js_undefined();
     _ = c.JS_SetOpaque(owner, root);
@@ -358,7 +374,7 @@ pub fn install(engine: *em.Engine) !void {
     try getter(&scope, owner, value(root, .file_proto), "lastModified", "get lastModified", .lastModified);
     try defineTag(&scope, value(root, .blob_proto), "Blob");
     try defineTag(&scope, value(root, .file_proto), "File");
-    try engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1);
+    (engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
     if (c.JS_DefinePropertyValueStr(engine.context, global, "Blob", c.JS_DupValue(engine.context, value(root, .blob_ctor)), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, global, "File", c.JS_DupValue(engine.context, value(root, .file_ctor)), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);

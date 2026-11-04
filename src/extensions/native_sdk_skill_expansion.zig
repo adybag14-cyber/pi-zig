@@ -17,7 +17,13 @@ fn addOne(engine: *em.Engine, value: c.JSValue) !c.JSValue {
     defer engine.freeValue(symbol);
     return @import("native_tui_value_arithmetic.zig").add(engine, value, c.JS_NewInt32(engine.context, 1), symbol);
 }
-fn matches(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn matches(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, args: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(matchesPendingBody(context, pending_arg1, argc, args, pending_arg4, roots));
+}
+fn matchesPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     const name = sdk.get(engine, if (argc > 0) args[0] else c.pi_js_undefined(), "name") catch |err| return sdk.fail(engine, err);
     defer engine.freeValue(name);
@@ -142,13 +148,12 @@ fn throwYaml(engine: *em.Engine, source: []const u8, diagnostic: frontmatter.yam
         engine.freeValue(reason);
         return err;
     };
-    _ = c.JS_Throw(engine.context, reason);
+    _ = c.JS_PiThrowExceptionData(engine.context, reason);
     return js.capture(engine);
 }
 fn emitError(owner: *sdk.State, skill: c.JSValue, failure: anyerror) !void {
     const engine = owner.engine;
-    _ = sdk.fail(engine, failure);
-    const reason = c.JS_GetException(engine.context);
+    const reason = try @import("native_agent_async.zig").reason(engine, failure);
     defer engine.freeValue(reason);
     const event = try sdk.object(engine);
     defer engine.freeValue(event);
@@ -177,7 +182,7 @@ fn emitError(owner: *sdk.State, skill: c.JSValue, failure: anyerror) !void {
     engine.freeValue(ignored);
 }
 fn emitSessionError(engine: *em.Engine, receiver: c.JSValue, skill: c.JSValue, failure: anyerror) !void {
-    const reason = @import("native_agent_async.zig").reason(engine, failure);
+    const reason = try @import("native_agent_async.zig").reason(engine, failure);
     defer engine.freeValue(reason);
     var scope: @import("native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
     defer scope.deinit();

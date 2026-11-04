@@ -41,7 +41,7 @@ fn next(s: *p.Scope, owner: c.JSValue) !af.Action {
         _ = c.JS_ThrowInternalError(s.engine.context, "interrupted");
         const reason = c.JS_GetException(s.engine.context);
         c.JS_SetUncatchableError(s.engine.context, reason);
-        _ = try s.engine.checked(c.JS_Throw(s.engine.context, reason));
+        _ = try s.engine.checked(c.JS_PiThrowNativePending(s.engine.context, reason, true));
         unreachable;
     }
     try s.put(owner, "steps", try s.own(try s.engine.checked(c.JS_NewBigUint64(s.engine.context, steps))));

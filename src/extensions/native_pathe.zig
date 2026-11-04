@@ -93,7 +93,7 @@ fn budget(engine: *v.em.Engine, steps: *usize) !void {
         _ = c.JS_ThrowInternalError(engine.context, "interrupted");
         const reason = c.JS_GetException(engine.context);
         c.JS_SetUncatchableError(engine.context, reason);
-        _ = try engine.checked(c.JS_Throw(engine.context, reason)); unreachable;
+        _ = try engine.checked(c.JS_PiThrowNativePending(engine.context, reason, true)); unreachable;
     }
 }
 fn upper(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue { return v.js.invoke(engine, arg(args, 0), "toUpperCase", &.{}); }

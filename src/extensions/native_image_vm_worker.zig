@@ -4,6 +4,7 @@ const js = @import("native_js_values.zig");
 const c = js.c;
 const options = @import("native_image_resize_options.zig");
 const strategy = @import("native_image_resize_strategy.zig");
+const pending = @import("native_pending_owner.zig");
 pub const Worker = struct {
     allocator: std.mem.Allocator,
     input: []u8,
@@ -36,6 +37,14 @@ pub const Worker = struct {
     fn execute(self: *Worker) !void {
         const engine = try js.Engine.init(self.allocator, .{});
         defer engine.deinit();
+        var frame = pending.Frame.init(engine);
+        frame.enter() catch |err| return frame.finishVoid(err);
+        // Finish the local pending event before retiring this independent VM.
+        // run() publishes only host error/message bytes after that retirement;
+        // neither a VM value nor its private token crosses to the owner VM.
+        return frame.finishVoid(self.executeOwned(engine));
+    }
+    fn executeOwned(self: *Worker, engine: *js.Engine) !void {
         const mime = try self.mime.read(engine);
         defer engine.freeValue(mime);
         // Source validates the worker request before calling the codec. An
@@ -48,8 +57,10 @@ pub const Worker = struct {
         const request_options = try self.options.read(engine);
         defer engine.freeValue(request_options);
         const resized = strategy.resize(engine, self.input, mime, request_options) catch |err| {
+            try pending.catchFailure(engine, err);
             if (err == error.JavaScriptException) {
-                _ = engine.throwCaptured();
+                if (!c.JS_HasException(engine.context)) _ = engine.throwCaptured();
+                try pending.checkFatal(engine);
                 const failure = c.JS_GetException(engine.context);
                 defer engine.freeValue(failure);
                 const message = js.get(engine, failure, "message") catch return err;

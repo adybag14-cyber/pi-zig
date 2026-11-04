@@ -12,7 +12,7 @@ pub fn check(engine: *v.em.Engine, steps: usize) !void {
     _ = c.JS_ThrowInternalError(engine.context, "interrupted");
     const reason = c.JS_GetException(engine.context);
     c.JS_SetUncatchableError(engine.context, reason);
-    _ = try engine.checked(c.JS_Throw(engine.context, reason));
+    _ = try engine.checked(c.JS_PiThrowNativePending(engine.context, reason, true));
     unreachable;
 }
 /// Array-literal spread advances the real iterator, with the same normal

@@ -38,10 +38,10 @@ fn accessFailure(engine: *em.Engine, state: c.JSValue, reason: c.JSValue) !void 
     try async_api.settle(engine, state, false, try outputError(&s, try s.concat(try s.concat(prefix, code), try s.text("."))));
 }
 fn handleError(engine: *em.Engine, state: c.JSValue, err: anyerror, access_error: bool) !void {
-    const reason = async_api.reason(engine, err);
+    const reason = try async_api.reason(engine, err);
     defer engine.freeValue(reason);
     if (access_error) accessFailure(engine, state, reason) catch |failure| {
-        const outer = async_api.reason(engine, failure);
+        const outer = try async_api.reason(engine, failure);
         defer engine.freeValue(outer);
         try outerFailure(engine, state, outer);
     } else try outerFailure(engine, state, reason);
@@ -99,7 +99,13 @@ fn call(engine: *em.Engine, args: []const c.JSValue, roots: []const c.JSValue) a
     begin(engine, pending.owner, args, roots) catch |err| try async_api.rejectError(engine, pending.owner, err);
     return pending.promise;
 }
-fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn callback(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callbackPendingBody(context, pending_arg1, argc, argv, pending_arg4, roots));
+}
+fn callbackPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return call(engine, if (argc > 0) argv[0..@intCast(argc)] else &.{}, roots[0..3]) catch |err| sdk.fail(engine, err);
 }

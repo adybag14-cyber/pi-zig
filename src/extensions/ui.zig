@@ -1833,6 +1833,7 @@ test "extension copyToClipboard request uses the native clipboard without requir
     defer fake.copied.deinit(std.testing.allocator);
     controller.clipboard_options = .{
         .platform = .macos,
+        .native_backend = coding_clipboard.native_clipboard.unavailable,
         .write_runner = .{ .context = &fake, .run_fn = Fake.run },
         .osc52_fallback = false,
     };

@@ -27,11 +27,11 @@ pub fn failure(engine: *v.em.Engine, err: anyerror, _: u64) c.JSValue {
     if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
     if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     _ = engine.nativeCallbackResult(c.pi_js_undefined());
-    if (c.JS_HasException(engine.context)) return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+    if (c.JS_HasException(engine.context)) return c.pi_js_exception();
     if (err == error.JavaScriptException) {
         if (engine.captured_exception) |reason| {
             engine.captured_exception = null;
-            return c.JS_Throw(engine.context, reason);
+            return c.JS_PiThrowExceptionData(engine.context, reason);
         }
         return engine.throwCaptured();
     }
@@ -48,7 +48,7 @@ fn call(_: ?*c.JSContext, function: c.JSValue, receiver_or_target: c.JSValue, ar
         invokeArguments(&scope, function, state, receiver_or_target, argc, argv, flags, definition)
     else
         invoke(&scope, state, receiver_or_target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0);
-    return scope.finish(result) catch |err| failure(engine, err, 0);
+    return scope.finishCallback(result) catch |err| failure(engine, err, 0);
 }
 fn invoke(scope: *Scope, state: *State, receiver_or_target: c.JSValue, args: []const c.JSValue, constructing: bool) !c.JSValue {
     try scope.pending(); try state.engine.checkNativeEntry();

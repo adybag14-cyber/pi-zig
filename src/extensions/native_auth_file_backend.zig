@@ -12,7 +12,7 @@ fn nullish(value: c.JSValue) bool {
 }
 fn clock(scope: *Scope) !i64 {
     var value: i64 = 0;
-    if (c.JS_ToInt64(scope.engine.context, &value, try scope.invoke(try scope.global("Date"), "now", &.{})) < 0) return js.capture(scope.engine);
+    if (native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_ToInt64(scope.engine.context, &value, try scope.invoke(try scope.global("Date"), "now", &.{})); } < 0) return js.capture(scope.engine);
     return value;
 }
 fn pathText(scope: *Scope, state: c.JSValue) ![]u8 {
@@ -25,7 +25,7 @@ fn checkSignal(scope: *Scope, job: c.JSValue) !void {
 fn errorValue(scope: *Scope, message: []const u8, code: []const u8) !c.JSValue {
     const text = try scope.text(message);
     var args = [_]c.JSValue{text};
-    const value = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.global("Error"), 1, &args)));
+    const value = try scope.own(try scope.engine.checked(native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(scope.engine.context, try scope.global("Error"), 1, &args); }));
     try scope.put(value, "code", try scope.text(code));
     return value;
 }
@@ -43,11 +43,17 @@ pub fn install(engine: *em.Engine, exports: c.JSValue, cache: c.JSValue) !void {
     try fileio.initialize(engine, cache);
     var data = [_]c.JSValue{cache};
     const constructor = try engine.checked(c.JS_NewCFunctionData2(engine.context, construct, "FileAuthStorageBackend", 1, 0, data.len, &data));
-    defer engine.freeValue(constructor);
+    defer engine.releaseNativeValue(constructor);
     _ = c.JS_SetConstructorBit(engine.context, constructor, true);
     try js.define(engine, exports, "FileAuthStorageBackend", c.JS_DupValue(engine.context, constructor));
 }
-fn construct(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn construct(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, args: [*c]c.JSValue, pending_arg4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(constructPendingBody(context, pending_arg1, argc, args, pending_arg4, data));
+}
+fn constructPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return create(engine, data[0], if (argc > 0) args[0] else c.pi_js_undefined()) catch |err| @import("native_durable.zig").reject(engine, err);
 }
@@ -63,7 +69,13 @@ pub fn create(engine: *em.Engine, cache: c.JSValue, path: c.JSValue) !c.JSValue 
     inline for (.{ "withLock", "withLockAsync" }, 0..) |name, index| try scope.put(result, name, try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, name, 1, @intCast(index), data.len, &data))));
     return c.JS_DupValue(engine.context, result);
 }
-fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn dispatch(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, args: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, pending_arg1, argc, args, magic, data));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return invoke(engine, data[0], if (argc > 0) args[0] else c.pi_js_undefined(), if (argc > 1) args[1] else c.pi_js_undefined(), magic == 1) catch |err| if (magic == 1) @import("native_durable.zig").rejectedPromise(engine, err) else @import("native_durable.zig").reject(engine, err);
 }
@@ -90,12 +102,12 @@ fn invoke(engine: *em.Engine, backend: c.JSValue, fn_value: c.JSValue, options: 
     try checkSignal(&scope, job);
     const path = try pathText(&scope, backend);
     defer engine.gpa.free(path);
-    fileio.ensureFile(engine, path) catch |err| return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, try ioError(&scope, err))));
+    fileio.ensureFile(engine, path) catch |err| return engine.checked(c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, try ioError(&scope, err))));
     try scope.put(job, "lease", try fileio.newLease(&scope, try scope.get(backend, "cache"), try scope.get(backend, "path")));
     if (!asynchronous) return runSync(&scope, job);
     var caps: [2]c.JSValue = undefined;
     const promise = try scope.own(try engine.checked(c.JS_NewPromiseCapability(engine.context, &caps)));
-    defer for (caps) |value| engine.freeValue(value);
+    defer for (caps) |value| engine.releaseNativeValue(value);
     try scope.put(job, "resolve", caps[0]);
     try scope.put(job, "reject", caps[1]);
     try scope.put(job, "closed", c.pi_js_bool(engine.context, 0));
@@ -133,7 +145,7 @@ fn runSync(scope: *Scope, job: c.JSValue) !c.JSValue {
     var attempts: usize = 0;
     while (!try fileio.tryAcquire(lease, 10000, try clock(scope))) {
         attempts += 1;
-        if (attempts >= 10) return scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, try errorValue(scope, "Lock file is already being held", "ELOCKED"))));
+        if (attempts >= 10) return scope.engine.checked(c.JS_PiThrowExceptionData(scope.engine.context, c.JS_DupValue(scope.engine.context, try errorValue(scope, "Lock file is already being held", "ELOCKED"))));
         try lease.io.sleep(.fromMilliseconds(20), .awake);
     }
     const result = try scope.call(try scope.get(job, "fn"), c.pi_js_undefined(), &.{try current(scope, job)});
@@ -175,13 +187,13 @@ fn attempt(scope: *Scope, job: c.JSValue) !c.JSValue {
     const now = try clock(scope);
     if (!try fileio.tryAcquire(lease, 30000, now)) {
         var deadline: i64 = 0;
-        if (c.JS_ToInt64(scope.engine.context, &deadline, try scope.get(job, "deadline")) < 0) return js.capture(scope.engine);
+        if (native_guest_2: { try scope.engine.checkNativeEntry(); break :native_guest_2 c.JS_ToInt64(scope.engine.context, &deadline, try scope.get(job, "deadline")); } < 0) return js.capture(scope.engine);
         if (now >= deadline) return settle(scope, job, try errorValue(scope, "Lock file is already being held", "ELOCKED"), true);
         var retry: u32 = 0;
-        if (c.JS_ToUint32(scope.engine.context, &retry, try scope.get(job, "retry")) < 0) return js.capture(scope.engine);
+        if (native_guest_1: { try scope.engine.checkNativeEntry(); break :native_guest_1 c.JS_ToUint32(scope.engine.context, &retry, try scope.get(job, "retry")); } < 0) return js.capture(scope.engine);
         try scope.put(job, "retry", c.JS_NewInt64(scope.engine.context, retry + 1));
         var random: f64 = 0;
-        if (c.JS_ToFloat64(scope.engine.context, &random, try scope.invoke(try scope.global("Math"), "random", &.{})) < 0) return js.capture(scope.engine);
+        if (native_guest_0: { try scope.engine.checkNativeEntry(); break :native_guest_0 c.JS_ToFloat64(scope.engine.context, &random, try scope.invoke(try scope.global("Math"), "random", &.{})); } < 0) return js.capture(scope.engine);
         const base = @min(@as(i64, 10) << @as(u6, @intCast(@min(retry, 7))), 1000);
         const delay = @min(@as(i64, @intFromFloat(@floor(@as(f64, @floatFromInt(base)) * (1 + random) + 0.5))), deadline - now);
         try schedule(scope, job, .attempt, delay, "retryTimer");
@@ -196,17 +208,26 @@ fn attempt(scope: *Scope, job: c.JSValue) !c.JSValue {
     _ = try scope.own(try captured.chain(scope.engine, pending, good, bad));
     return c.pi_js_undefined();
 }
-fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn callback(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, args: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callbackPendingBody(context, pending_arg1, argc, args, raw, data));
+}
+fn callbackPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return after(engine, data[0], if (argc > 0) args[0] else c.pi_js_undefined(), false, raw) catch |err| @import("native_durable.zig").reject(engine, err);
 }
 fn after(engine: *em.Engine, job: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) anyerror!c.JSValue {
     return advance(engine, job, value, rejected, @enumFromInt(raw)) catch |err| {
+        if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
         var scope: Scope = .{ .engine = engine };
         defer scope.deinit();
+        try @import("native_pending_owner.zig").catchFailure(engine, err);
         _ = @import("native_durable.zig").reject(engine, err);
+        try @import("native_pending_owner.zig").checkFatal(engine);
         const reason = c.JS_GetException(engine.context);
-        defer engine.freeValue(reason);
+        defer engine.releaseNativeValue(reason);
         _ = settle(&scope, job, reason, true) catch {};
         return err;
     };

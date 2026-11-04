@@ -48,7 +48,7 @@ pub fn create(engine: *v.em.Engine, model: c.JSValue, stream: c.JSValue, json: c
                     finish(&row, owner_value, row.truthy(input)) catch |err| {
                         const classified = host.nativeAllocationError(err, generation);
                         if (classified == error.OutOfMemory) return classified;
-                        const reason = @import("native_agent_async.zig").reason(host, err);
+                        const reason = try @import("native_agent_async.zig").reason(host, err);
                         defer host.freeValue(reason);
                         try fail(&row, owner_value, reason, row.truthy(input));
                     };

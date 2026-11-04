@@ -11,7 +11,7 @@ pub fn http(s: *Scope, response: c.JSValue, request_id: c.JSValue, body: c.JSVal
     var parse_failure = false;
     const parsed = s.invoke(try s.global("JSON"), "parse", &.{body}) catch |err| blk: {
         parse_failure = true;
-        const reason = try s.own(flow.reason(s.engine, err));
+        const reason = try s.own(try flow.reason(s.engine, err));
         if (s.engine.captured_exception) |captured| {
             s.engine.captured_exception = null;
             s.engine.freeValue(captured);

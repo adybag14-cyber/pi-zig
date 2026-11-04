@@ -108,7 +108,7 @@ fn refresh(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []con
             try flow.rejectError(engine, pending.owner, err);
             return pending.promise;
         }
-        const reason = try s.own(flow.reason(engine, err));
+        const reason = try s.own(try flow.reason(engine, err));
         continued(engine, pending.owner, reason, true, @intFromEnum(Stage.token)) catch |failure_err| try flow.rejectError(engine, pending.owner, failure_err);
     };
     return pending.promise;
@@ -157,7 +157,7 @@ fn loginFetch(s: *Scope, owner: c.JSValue, url: []const u8, init: c.JSValue, sta
     const generation = s.engine.native_allocation_generation;
     loginFetchBody(s, owner, url, init, stage) catch |err| {
         if (s.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return flow.rejectError(s.engine, owner, err);
-        const reason = try s.own(flow.reason(s.engine, err));
+        const reason = try s.own(try flow.reason(s.engine, err));
         return continued(s.engine, owner, reason, true, @intFromEnum(stage));
     };
 }
@@ -190,7 +190,7 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
         return finish(&s, owner, true, value);
     }
     advance(&s, owner, value, stage) catch |err| {
-        const reason = try s.own(flow.reason(engine, err));
+        const reason = try s.own(try flow.reason(engine, err));
         return finish(&s, owner, true, reason);
     };
 }

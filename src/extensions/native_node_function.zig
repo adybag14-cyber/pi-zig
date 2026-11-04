@@ -2,6 +2,13 @@
 const std = @import("std");
 const js = @import("native_js_values.zig");
 const c = js.c;
+// Publish actual typed native allocation failure before caller JS-root cleanup.
+fn nativeAllocation(engine: anytype, result: anytype) @TypeOf(result) {
+    return result catch |err| {
+        if (@as(anyerror, err) == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+        return err;
+    };
+}
 const heap = @import("native_typebox_continuation.zig");
 const sync = @import("native_sync_arguments.zig");
 const NodeScope = @import("native_node_operation_scope.zig").Scope;
@@ -31,29 +38,28 @@ fn fail(engine: *js.Engine, err: anyerror) c.JSValue {
 fn call(_: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
     const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)).?));
     const engine = owned.engine;
-    engine.checkNativeEntry() catch return engine.throwCaptured();
+    var callback_owner = @import("native_pending_owner.zig").Frame.init(engine);
+    callback_owner.enter() catch return callback_owner.finishCallback(c.pi_js_exception());
     // A guest catch must receive the original exception before host diagnostic
     // formatting can invoke its observable toString/getters. Uncaught failures
     // are diagnosed by the outer Engine eval/await after this frame returns.
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    var invocation: js.Engine.NativeInvocation = .{};
-    engine.enterNativeInvocation(&invocation);
     const result = if (owned.arguments) |definition|
         callArguments(engine, function, owned, target, argc, argv, flags, definition)
     else
         invoke(engine, function, owned, target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0) catch |err| failFor(engine, function, err);
-    return engine.leaveNativeInvocation(&invocation, result);
+    return callback_owner.finishCallback(result);
 }
 fn invoke(engine: *js.Engine, function: c.JSValue, owned: *State, target: c.JSValue, args: []const c.JSValue, constructing: bool) !c.JSValue {
     if (try heap.intercept(engine, function, provenance(function, owned), target, args, constructing)) |ack| return ack;
     if (!owned.constructible) return invokeBody(engine, function, owned, if (owned.arrow) c.pi_js_undefined() else target, args);
     if (!constructing) return invokeBody(engine, function, owned, target, args);
     const receiver = try @import("native_class.zig").object(engine, target);
-    defer engine.freeValue(receiver);
-    const returned = try invokeBody(engine, function, owned, receiver, args);
+    defer engine.releaseNativeValue(receiver);
+    const returned = try nativeAllocation(engine, invokeBody(engine, function, owned, receiver, args));
     if (c.JS_IsObject(returned)) return returned;
-    engine.freeValue(returned);
+    engine.releaseNativeValue(returned);
     return c.JS_DupValue(engine.context, receiver);
 }
 fn provenance(function: c.JSValue, owned: *State) heap.Provenance {
@@ -69,10 +75,15 @@ fn invokeBody(engine: *js.Engine, function: c.JSValue, owned: *State, receiver: 
 /// Plan selection is explicit at the known generated creation point. The weak
 /// registry never discovers descriptors by name or callback-pointer scanning.
 pub fn createPlanned(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: Callback, values: []const c.JSValue, arrow: bool, plan: *const heap.Plan) !c.JSValue {
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    frame.enter() catch |err| return frame.finishValue(err);
+    return frame.finishValue(createPlannedPendingBody(engine, name, length, callback, values, arrow, plan));
+}
+fn createPlannedPendingBody(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: Callback, values: []const c.JSValue, arrow: bool, plan: *const heap.Plan) !c.JSValue {
     const function = try createKind(engine, name, length, callback, values, !arrow, arrow);
-    errdefer engine.freeValue(function);
+    errdefer engine.releaseNativeValue(function);
     const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)).?));
-    try heap.register(engine, function, provenance(function, owned), plan);
+    try nativeAllocation(engine, heap.register(engine, function, provenance(function, owned), plan));
     return function;
 }
 pub fn create(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: Callback, values: []const c.JSValue) !c.JSValue {
@@ -89,19 +100,24 @@ pub fn createMethod(engine: *js.Engine, name: [*:0]const u8, length: c_int, call
     return createKind(engine, name, length, callback, values, false, false);
 }
 fn createKind(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: Callback, values: []const c.JSValue, constructible: bool, arrow: bool) !c.JSValue {
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    frame.enter() catch |err| return frame.finishValue(err);
+    return frame.finishValue(createKindPendingBody(engine, name, length, callback, values, constructible, arrow));
+}
+fn createKindPendingBody(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: Callback, values: []const c.JSValue, constructible: bool, arrow: bool) !c.JSValue {
     try engine.checkNativeEntry();
     var class: c.JSClassID = 0;
     _ = c.JS_NewClassID(engine.runtime, &class);
     const definition: c.JSClassDef = .{ .class_name = "Native Node Function", .call = call, .finalizer = finalizer, .gc_mark = mark };
     if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
     const prototype = try engine.checked(c.JS_GetFunctionProto(engine.context));
-    defer engine.freeValue(prototype);
+    defer engine.releaseNativeValue(prototype);
     const function = try engine.checked(c.JS_NewObjectProtoClass(engine.context, prototype, class));
-    errdefer engine.freeValue(function);
-    const owned_values = try engine.gpa.alloc(c.JSValue, values.len);
+    errdefer engine.releaseNativeValue(function);
+    const owned_values = try nativeAllocation(engine, engine.gpa.alloc(c.JSValue, values.len));
     var attached = false;
     errdefer if (!attached) engine.gpa.free(owned_values);
-    const owned = try engine.gpa.create(State);
+    const owned = try nativeAllocation(engine, engine.gpa.create(State));
     for (values, owned_values) |value, *slot| slot.* = c.JS_DupValue(engine.context, value);
     owned.* = .{ .engine = engine, .callback = callback, .values = owned_values, .constructible = constructible, .arrow = arrow };
     _ = c.JS_SetOpaque(function, owned);

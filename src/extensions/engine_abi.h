@@ -15,6 +15,8 @@ void pi_js_mark_native_allocation_error(JSValueConst value, uint64_t generation)
 uint64_t pi_js_native_allocation_error_generation(JSValueConst value);
 JSValue pi_js_module_value(JSContext *context, JSModuleDef *module);
 JSValue pi_js_function_magic(JSContext *context, JSCFunctionMagic *function, const char *name, int length, int magic);
+/* Caller-owned aggregate native allocator budget; no JS runtime is created. */
+void *pi_js_new_memory_owner(size_t memory_limit);
 JSRuntime *pi_js_new_runtime(size_t memory_limit, void **memory_owner);
 void pi_js_release_memory_owner(void *memory_owner);
 size_t pi_js_shared_buffer_allocations(void);

@@ -47,6 +47,11 @@ fn wait(engine: *Engine, state: c.JSValue, value: c.JSValue, stage: Stage) !c.JS
 }
 
 pub fn run(engine: *Engine, intrinsics: *awaiting.Intrinsics, tokens: Tokens, runtime: c.JSValue, input: c.JSValue, call: c.JSValue, ending: Ending, result: Result, context: c.JSValue, duration_ms: c.JSValue, failure_message: c.JSValue) !c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(engine);
+    pending_frame.enter() catch |err| return pending_frame.finishValue(err);
+    return pending_frame.finishValue(runPendingBody(engine, intrinsics, tokens, runtime, input, call, ending, result, context, duration_ms, failure_message));
+}
+fn runPendingBody(engine: *Engine, intrinsics: *awaiting.Intrinsics, tokens: Tokens, runtime: c.JSValue, input: c.JSValue, call: c.JSValue, ending: Ending, result: Result, context: c.JSValue, duration_ms: c.JSValue, failure_message: c.JSValue) !c.JSValue {
     const state = try vm.object(engine);
     defer engine.freeValue(state);
     inline for (.{ .{ "runtime", runtime }, .{ "input", input }, .{ "call", call }, .{ "context", context }, .{ "duration", duration_ms }, .{ "failureMessage", failure_message }, .{ "liveToken", tokens.live }, .{ "nestedCallsToken", tokens.nested_calls }, .{ "nestedResultToken", tokens.nested_results }, .{ "toolResultToken", tokens.tool_result }, .{ "usageToken", tokens.usage }, .{ "promiseConstructor", intrinsics.constructor }, .{ "promiseResolve", intrinsics.resolve }, .{ "promiseThen", intrinsics.then_function } }) |field| try statePut(engine, state, field[0], field[1]);
@@ -66,7 +71,12 @@ pub fn run(engine: *Engine, intrinsics: *awaiting.Intrinsics, tokens: Tokens, ru
 }
 
 fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, raw_stage: c_int) !c.JSValue {
-    if (rejected) return c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value));
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(engine);
+    pending_frame.enter() catch |err| return pending_frame.finishValue(err);
+    return pending_frame.finishValue(advancePendingBody(engine, state, value, rejected, raw_stage));
+}
+fn advancePendingBody(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, raw_stage: c_int) !c.JSValue {
+    if (rejected) return c.JS_PiThrowExceptionData(engine.context, c.JS_DupValue(engine.context, value));
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const runtime = try scope.get(state, "runtime");
@@ -107,18 +117,33 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
         else => return transactionStep(engine, state, value, @enumFromInt(raw_stage)),
     }
 }
-fn numericOrder(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn numericOrder(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(numericOrderPendingBody(callback_context, callback_receiver, callback_argc, callback_argv));
+}
+fn numericOrderPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     var left: f64 = 0;
     var right: f64 = 0;
     if (c.JS_ToFloat64(engine.context, &left, if (argc > 0) argv[0] else c.pi_js_undefined()) < 0 or c.JS_ToFloat64(engine.context, &right, if (argc > 1) argv[1] else c.pi_js_undefined()) < 0) return engine.throwCaptured();
     return c.JS_NewFloat64(engine.context, left - right);
 }
-fn abortChild(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn abortChild(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(abortChildPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn abortChildPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return vm.invoke(engine, data[0], "abortOwned", &.{ if (argc > 0) argv[0] else c.pi_js_undefined(), data[1] }) catch |err| @import("native_durable.zig").reject(engine, err);
 }
-fn transaction(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn transaction(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(transactionPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn transactionPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return startTransaction(engine, data[0], if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| @import("native_durable.zig").reject(engine, err);
 }
@@ -275,8 +300,7 @@ fn hasParent(engine: *Engine, slot: c.JSValue) !bool {
     defer c.JS_FreeAtom(engine.context, atom);
     const result = c.JS_HasProperty(engine.context, slot, atom);
     if (result < 0) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
-        unreachable;
+        return error.JavaScriptException;
     }
     return result != 0;
 }
@@ -295,7 +319,7 @@ fn throwError(engine: *Engine, message: []const u8) !c.JSValue {
     defer engine.freeValue(text);
     var args = [_]c.JSValue{text};
     const failure = try engine.checked(c.JS_CallConstructor(engine.context, constructor, args.len, &args));
-    return engine.checked(c.JS_Throw(engine.context, failure));
+    return engine.checked(c.JS_PiThrowExceptionData(engine.context, failure));
 }
 fn nullish(value: c.JSValue) bool {
     return c.JS_IsUndefined(value) or c.JS_IsNull(value);
@@ -311,8 +335,7 @@ pub fn resultFromSlot(engine: *Engine, slot: c.JSValue, code: c.JSValue, message
     const bytes = if (nullish(raw_bytes)) c.JS_NewInt32(engine.context, 0) else raw_bytes;
     var numeric_bytes: f64 = 0;
     if (c.JS_ToFloat64(engine.context, &numeric_bytes, bytes) < 0) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
-        unreachable;
+        return error.JavaScriptException;
     }
     if (numeric_bytes > 0) {
         const raw_lines = if (nullish(slot)) c.pi_js_undefined() else try scope.get(slot, "droppedLines");
@@ -405,7 +428,12 @@ fn buildEntry(engine: *Engine, state: c.JSValue) !void {
     try statePut(engine, entry, "data", metadata);
     try statePut(engine, state, "entryData", entry);
 }
-fn formatDiagnostic(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn formatDiagnostic(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(formatDiagnosticPendingBody(callback_context, callback_receiver, callback_argc, callback_argv));
+}
+fn formatDiagnosticPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return diagnosticText(engine, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| @import("native_durable.zig").reject(engine, err);
 }
@@ -453,12 +481,10 @@ fn addCounter(engine: *Engine, target: c.JSValue, added: c.JSValue, name: [:0]co
     var left: f64 = 0;
     var right: f64 = 0;
     if ((!optional or !nullish(previous)) and c.JS_ToFloat64(engine.context, &left, previous) < 0) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
-        unreachable;
+        return error.JavaScriptException;
     }
     if (c.JS_ToFloat64(engine.context, &right, next) < 0) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
-        unreachable;
+        return error.JavaScriptException;
     }
     try vm.put(engine, target, name, c.JS_NewFloat64(engine.context, left + right));
 }
@@ -492,7 +518,12 @@ fn buildSummary(engine: *Engine, nested: c.JSValue, result: c.JSValue) !c.JSValu
     }
     return summary;
 }
-fn diagnosticField(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn diagnosticField(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(diagnosticFieldPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic));
+}
+fn diagnosticFieldPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return diagnosticFieldOwned(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), magic) catch |err| @import("native_durable.zig").reject(engine, err);
 }

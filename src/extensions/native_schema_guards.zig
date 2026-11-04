@@ -72,7 +72,7 @@ pub fn pattern(engine: *Engine, value: c.JSValue) !bool {
     defer engine.freeValue(constructor);
     const result = c.JS_IsInstanceOf(engine.context, value, constructor);
     if (result < 0) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+        _ = try engine.checked(c.pi_js_exception());
         unreachable;
     }
     return result != 0;

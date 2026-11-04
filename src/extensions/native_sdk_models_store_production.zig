@@ -115,6 +115,12 @@ fn memoryAsync(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue,
     return c.JS_DupValue(engine.context, result);
 }
 fn fileDispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(fileDispatchPendingBody(context, receiver, argc, argv, magic, roots));
+}
+fn fileDispatchPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     const method: Method = @enumFromInt(magic);
     const args = if (argc > 0) argv[0..@intCast(argc)] else &.{};
@@ -212,7 +218,7 @@ fn startLatest(engine: *em.Engine, owner: c.JSValue, state: c.JSValue) !void {
     try scope.set(reload, "readers", try scope.own(try engine.checked(c.JS_PiIncrement(engine.context, readers))));
     waitRace(engine, owner) catch |err| {
         // The original failure reason must survive successful finally cleanup.
-        const reason = try scope.own(flow.reason(engine, err));
+        const reason = try scope.own(try flow.reason(engine, err));
         try finishReader(&scope, owner);
         return flow.settle(engine, owner, true, reason);
     };

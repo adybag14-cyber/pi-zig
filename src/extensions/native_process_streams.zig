@@ -14,6 +14,7 @@ pub const Bridge = struct {
     control_fn: *const fn (?*anyopaque, Control) anyerror!void,
     write_fn: *const fn (?*anyopaque, Output, []const u8) anyerror!void,
     is_shift_pressed_fn: ?*const fn (?*anyopaque) anyerror!bool = null,
+    is_modifier_pressed_fn: ?*const fn (?*anyopaque, []const u8) anyerror!bool = null,
     enable_vt_input_fn: ?*const fn (?*anyopaque) anyerror!bool = null,
 };
 pub const Lease = struct { context: ?*anyopaque, generation: u64 };
@@ -124,6 +125,16 @@ pub fn isShiftPressed(engine: *js.Engine) !bool {
     const query = bridge.is_shift_pressed_fn orelse return false;
     return query(bridge.context);
 }
+/// The actual direct/frontend owner supplies this callback. Framed workers
+/// retain the authenticated parent route; no worker-local console fallback.
+pub fn isModifierPressed(engine: *js.Engine, name: []const u8) !bool {
+    const bridge = try checkBridge(try state(engine));
+    if (bridge.is_modifier_pressed_fn) |query| return query(bridge.context, name);
+    if (std.mem.eql(u8, name, "shift")) {
+        if (bridge.is_shift_pressed_fn) |query| return query(bridge.context);
+    }
+    return false;
+}
 pub fn enableVirtualTerminalInput(engine: *js.Engine) !bool {
     const bridge = try checkBridge(try state(engine));
     const enable = bridge.enable_vt_input_fn orelse return false;
@@ -134,9 +145,9 @@ pub fn deliverResize(engine: *js.Engine, columns: u32, rows: u32) !void {
     _ = try checkBridge(owned);
     try hydrateDimensions(engine, columns, rows);
     const event = try v.text(engine, "resize");
-    defer engine.freeValue(event);
+    defer engine.releaseNativeValue(event);
     const returned = try js.invoke(engine, owned.output, "emit", &.{event});
-    engine.freeValue(returned);
+    engine.releaseNativeValue(returned);
     try @import("node_events.zig").drainHostTicks(engine);
 }
 fn emitInput(owned: *State) !void {
@@ -155,13 +166,13 @@ fn emitInput(owned: *State) !void {
     }
     if (count == 0) return;
     const value = if (owned.utf8) blk: {
-        const decoded = try @import("binary_encoding.zig").decode(engine.gpa, owned.pending.items[0..count], .utf8);
+        const decoded = (@import("binary_encoding.zig").decode(engine.gpa, owned.pending.items[0..count], .utf8) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
         defer engine.gpa.free(decoded);
         break :blk try engine.checked(c.JS_NewStringLen(engine.context, decoded.ptr, decoded.len));
     } else blk: {
         break :blk try @import("node_buffer.zig").fromBytes(engine, owned.pending.items[0..count]);
     };
-    defer engine.freeValue(value);
+    defer engine.releaseNativeValue(value);
     // Consume before emitting so listener reentry can safely append input.
     std.mem.copyForwards(u8, owned.pending.items[0 .. owned.pending.items.len - count], owned.pending.items[count..]);
     owned.pending.items.len -= count;
@@ -170,9 +181,9 @@ fn emitInput(owned: *State) !void {
     // pause from that listener cannot suppress an already queued end event.
     if (owned.end_received and owned.pending.items.len == 0) try scheduleEnd(owned);
     const event = try v.text(engine, "data");
-    defer engine.freeValue(event);
+    defer engine.releaseNativeValue(event);
     const returned = try js.invoke(engine, owned.input, "emit", &.{ event, value });
-    engine.freeValue(returned);
+    engine.releaseNativeValue(returned);
     // Keep decoder tail delivery separate from its preceding complete text.
     // A listener may pause after the complete prefix and defer that tail/end.
     if (owned.end_received and owned.pending.items.len > 0) try emitInput(owned);
@@ -226,47 +237,67 @@ fn scheduleEnd(owned: *State) !void {
     const engine = owned.engine;
     const holder = engine.native_module_values.get(private_module).?;
     const generation = try engine.checked(c.JS_NewBigUint64(engine.context, owned.generation));
-    defer engine.freeValue(generation);
+    defer engine.releaseNativeValue(generation);
     var data = [_]c.JSValue{ holder, generation };
     const callback = try engine.checked(c.JS_NewCFunctionData2(engine.context, ended, "endReadableNT", 0, 0, 2, &data));
-    defer engine.freeValue(callback);
+    defer engine.releaseNativeValue(callback);
     const process = try js.global(engine, "process");
-    defer engine.freeValue(process);
+    defer engine.releaseNativeValue(process);
     const returned = try js.invoke(engine, process, "nextTick", &.{callback});
-    engine.freeValue(returned);
+    engine.releaseNativeValue(returned);
     owned.end_scheduled = true;
 }
-fn ended(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn ended(context: ?*c.JSContext, pending_arg1: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, pending_arg4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(endedPendingBody(context, pending_arg1, pending_arg2, pending_arg3, pending_arg4, data));
+}
+fn endedPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
     const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(data[0], c.JS_GetClassID(data[0])).?));
     var queued_generation: u64 = 0;
-    if (c.JS_ToBigUint64(context, &queued_generation, data[1]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
+    if (c.JS_ToBigUint64(context, &queued_generation, data[1]) < 0) return c.pi_js_exception();
     if (owned.generation != queued_generation) return c.pi_js_undefined();
     owned.end_scheduled = false;
     _ = checkBridge(owned) catch return c.pi_js_undefined();
     if (!owned.end_received or owned.end_emitted or owned.pending.items.len != 0) return c.pi_js_undefined();
     const event = v.text(engine, "end") catch |err| return fail(engine, err);
-    defer engine.freeValue(event);
+    defer engine.releaseNativeValue(event);
     owned.end_emitted = true;
     const returned = js.invoke(engine, owned.input, "emit", &.{event}) catch |err| return fail(engine, err);
-    engine.freeValue(returned);
+    engine.releaseNativeValue(returned);
     return c.pi_js_undefined();
 }
 fn fail(engine: *js.Engine, err: anyerror) c.JSValue {
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
+    if (err == error.OutOfMemory) return @import("engine.zig").Engine.fromContext(engine.context).throwNativeOutOfMemoryFatal();
     return c.JS_ThrowTypeError(engine.context, "Native terminal stream: %s", @as([*:0]const u8, @errorName(err)));
 }
 fn call(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callPendingBody(context, receiver, argc, argv, magic, data));
+}
+fn callPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
     const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(data[0], c.JS_GetClassID(data[0])).?));
     return operation(owned, receiver, @enumFromInt(magic), if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| fail(engine, err);
 }
-fn resumed(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn resumed(context: ?*c.JSContext, pending_arg1: c.JSValue, pending_arg2: c_int, pending_arg3: [*c]c.JSValue, pending_arg4: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(resumedPendingBody(context, pending_arg1, pending_arg2, pending_arg3, pending_arg4, data));
+}
+fn resumedPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
     const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(data[0], c.JS_GetClassID(data[0])).?));
     var queued_generation: u64 = 0;
-    if (c.JS_ToBigUint64(context, &queued_generation, data[1]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
+    if (c.JS_ToBigUint64(context, &queued_generation, data[1]) < 0) return c.pi_js_exception();
     if (owned.generation != queued_generation) return c.pi_js_undefined();
     owned.resume_scheduled = false;
     _ = checkBridge(owned) catch return c.pi_js_undefined();
@@ -284,7 +315,7 @@ fn operation(owned: *State, receiver: c.JSValue, method: Method, args: []const c
             try v.set(engine, owned.input, "isRaw", c.pi_js_bool(engine.context, @intFromBool(enabled)));
         },
         .setEncoding => {
-            const encoding = if (c.JS_IsUndefined(v.arg(args, 0))) try engine.gpa.dupe(u8, "utf8") else try engine.toString(v.arg(args, 0));
+            const encoding = if (c.JS_IsUndefined(v.arg(args, 0))) (engine.gpa.dupe(u8, "utf8") catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; }) else (engine.toString(v.arg(args, 0)) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
             defer engine.gpa.free(encoding);
             if (!std.ascii.eqlIgnoreCase(encoding, "utf8") and !std.ascii.eqlIgnoreCase(encoding, "utf-8")) return error.NativeTerminalEncodingUnsupported;
             try bridge.control_fn(bridge.context, .{ .encoding = encoding });
@@ -297,14 +328,14 @@ fn operation(owned: *State, receiver: c.JSValue, method: Method, args: []const c
             if (!owned.resume_scheduled) {
                 const holder = engine.native_module_values.get(private_module).?;
                 const generation = try engine.checked(c.JS_NewBigUint64(engine.context, owned.generation));
-                defer engine.freeValue(generation);
+                defer engine.releaseNativeValue(generation);
                 var data = [_]c.JSValue{ holder, generation };
                 const callback = try engine.checked(c.JS_NewCFunctionData2(engine.context, resumed, "resume_", 0, 0, 2, &data));
-                defer engine.freeValue(callback);
+                defer engine.releaseNativeValue(callback);
                 const process = try js.global(engine, "process");
-                defer engine.freeValue(process);
+                defer engine.releaseNativeValue(process);
                 const returned = try js.invoke(engine, process, "nextTick", &.{callback});
-                engine.freeValue(returned);
+                engine.releaseNativeValue(returned);
                 owned.resume_scheduled = true;
             }
         },
@@ -321,9 +352,9 @@ fn operation(owned: *State, receiver: c.JSValue, method: Method, args: []const c
             const callback = if (c.JS_IsFunction(engine.context, v.arg(args, 1))) v.arg(args, 1) else v.arg(args, 2);
             if (c.JS_IsFunction(engine.context, callback)) {
                 const process = try js.global(engine, "process");
-                defer engine.freeValue(process);
+                defer engine.releaseNativeValue(process);
                 const returned = try js.invoke(engine, process, "nextTick", &.{callback});
-                engine.freeValue(returned);
+                engine.releaseNativeValue(returned);
             }
             return c.pi_js_bool(engine.context, 1);
         },
@@ -337,14 +368,14 @@ pub fn outputBytes(engine: *js.Engine, value: c.JSValue) ![]u8 {
         var length: usize = 0;
         var element: usize = 0;
         const backing = try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, value, &offset, &length, &element));
-        defer engine.freeValue(backing);
+        defer engine.releaseNativeValue(backing);
         var total: usize = 0;
         const pointer = c.JS_GetArrayBuffer(engine.context, &total, backing);
         if ((pointer == null and length > 0) or offset > total or length > total - offset) return error.NativeTerminalDetachedBuffer;
         return engine.gpa.dupe(u8, if (length == 0) &.{} else pointer[offset .. offset + length]);
     }
     if (!c.JS_IsString(value)) return js.typeError(engine, "Terminal output must be a string or Buffer");
-    const text = try engine.toString(value);
+    const text = (engine.toString(value) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     defer engine.gpa.free(text);
     return @import("binary_encoding.zig").encode(engine.gpa, text, .utf8);
 }
@@ -355,14 +386,14 @@ fn makeMethod(engine: *js.Engine, holder: c.JSValue, name: [*:0]const u8, length
 fn inputOn(engine: *js.Engine, receiver: c.JSValue, args: []const c.JSValue, values: []const c.JSValue) anyerror!c.JSValue {
     const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(values[0], c.JS_GetClassID(values[0])).?));
     const returned = try js.call(engine, values[1], receiver, args);
-    errdefer engine.freeValue(returned);
+    errdefer engine.releaseNativeValue(returned);
     const data = try v.text(engine, "data");
-    defer engine.freeValue(data);
+    defer engine.releaseNativeValue(data);
     if (c.JS_IsStrictEqual(engine.context, v.arg(args, 0), data) and !owned.explicitly_paused) {
         // Node Readable.on('data') starts flow on the next tick and still calls
         // the public resume method when the stream is already flowing.
         const resumed_value = try js.invoke(engine, receiver, "resume", &.{});
-        engine.freeValue(resumed_value);
+        engine.releaseNativeValue(resumed_value);
     }
     return returned;
 }
@@ -372,28 +403,28 @@ pub fn install(engine: *js.Engine, process: c.JSValue) !void {
     try @import("node_buffer.zig").install(engine);
     const event_exports = engine.native_module_values.get("node:events").?;
     const emitter = try js.get(engine, event_exports, "EventEmitter");
-    defer engine.freeValue(emitter);
-    const input = try engine.checked(c.JS_CallConstructor(engine.context, emitter, 0, null));
-    defer engine.freeValue(input);
-    const output = try engine.checked(c.JS_CallConstructor(engine.context, emitter, 0, null));
-    defer engine.freeValue(output);
-    const errors = try engine.checked(c.JS_CallConstructor(engine.context, emitter, 0, null));
-    defer engine.freeValue(errors);
+    defer engine.releaseNativeValue(emitter);
+    const input = try engine.checked(native_guest_2: { try engine.checkNativeEntry(); break :native_guest_2 c.JS_CallConstructor(engine.context, emitter, 0, null); });
+    defer engine.releaseNativeValue(input);
+    const output = try engine.checked(native_guest_1: { try engine.checkNativeEntry(); break :native_guest_1 c.JS_CallConstructor(engine.context, emitter, 0, null); });
+    defer engine.releaseNativeValue(output);
+    const errors = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(engine.context, emitter, 0, null); });
+    defer engine.releaseNativeValue(errors);
     var class: c.JSClassID = 0;
     _ = c.JS_NewClassID(engine.runtime, &class);
     const definition: c.JSClassDef = .{ .class_name = "Native private terminal stream binding", .finalizer = finalize, .gc_mark = mark };
     if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
     const holder = try engine.checked(c.JS_NewObjectClass(engine.context, class));
-    defer engine.freeValue(holder);
-    const owned = try engine.gpa.create(State);
+    defer engine.releaseNativeValue(holder);
+    const owned = (engine.gpa.create(State) catch |native_error| { if (native_error == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal(); return native_error; });
     owned.* = .{ .engine = engine, .input = c.JS_DupValue(engine.context, input), .output = c.JS_DupValue(engine.context, output), .errors = c.JS_DupValue(engine.context, errors), .raw_method = c.pi_js_undefined() };
     _ = c.JS_SetOpaque(holder, owned);
     inline for (.{ .{ "setRawMode", 1, Method.setRawMode }, .{ "setEncoding", 1, Method.setEncoding }, .{ "resume", 0, Method.@"resume" }, .{ "pause", 0, Method.pause }, .{ "isPaused", 0, Method.isPaused } }) |entry| try js.define(engine, input, entry[0], try makeMethod(engine, holder, entry[0], entry[1], entry[2]));
     owned.raw_method = try js.get(engine, input, "setRawMode");
     const emitter_on = try js.get(engine, input, "on");
-    defer engine.freeValue(emitter_on);
+    defer engine.releaseNativeValue(emitter_on);
     const on = try @import("native_node_function.zig").create(engine, "on", 2, inputOn, &.{ holder, emitter_on });
-    defer engine.freeValue(on);
+    defer engine.releaseNativeValue(on);
     try js.define(engine, input, "on", c.JS_DupValue(engine.context, on));
     try js.define(engine, input, "addListener", c.JS_DupValue(engine.context, on));
     try js.define(engine, input, "isRaw", c.pi_js_bool(engine.context, 0));

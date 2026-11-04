@@ -249,11 +249,11 @@ fn allocated(engine: *em.Engine, value: c.JSValue) !c.JSValue {
     if (!c.JS_IsException(value)) return engine.checked(value);
     const reason = c.JS_GetException(engine.context);
     c.JS_SetUncatchableError(engine.context, reason);
-    return engine.checked(c.JS_Throw(engine.context, reason));
+    return engine.checked(c.JS_PiThrowNativePending(engine.context, reason, true));
 }
 pub fn allocationFailure(engine: *em.Engine) anyerror {
     const reason = c.JS_GetException(engine.context); c.JS_SetUncatchableError(engine.context, reason);
-    _ = engine.checked(c.JS_Throw(engine.context, reason)) catch |err| return err; unreachable;
+    _ = engine.checked(c.JS_PiThrowNativePending(engine.context, reason, true)) catch |err| return err; unreachable;
 }
 pub fn current(engine: *em.Engine, err: anyerror) anyerror {
     // Only actual pending/current native producer retention can override the

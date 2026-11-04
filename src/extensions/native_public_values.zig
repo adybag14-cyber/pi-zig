@@ -38,12 +38,15 @@ fn allocation(s: *Scope, boundary: *guest.Boundary, value: c.JSValue, generation
     // a non-guest JS_New* operation, never around ToPropertyKey/get/call.
     _ = s.engine.nativeCallbackResult(c.pi_js_undefined());
     if (c.JS_HasException(s.engine.context)) {
-        const reason = c.JS_GetException(s.engine.context);
+        var generic_fatal: bool = false;
+        const reason = c.JS_PiGetExceptionWithFatal(s.engine.context, &generic_fatal);
         const tag = c.pi_js_native_allocation_error_generation(reason);
         const distance = tag -% generation;
-        if (tag != 0 and distance != 0 and distance <= s.engine.native_allocation_generation -% generation)
+        if (tag != 0 and distance != 0 and distance <= s.engine.native_allocation_generation -% generation) {
             c.JS_SetUncatchableError(s.engine.context, reason);
-        _ = c.JS_Throw(s.engine.context, reason);
+            generic_fatal = true;
+        }
+        _ = c.JS_PiThrowNativePending(s.engine.context, reason, generic_fatal);
         var completion = owned.Completion.initValue(s.engine, @as(anyerror!c.JSValue, error.JavaScriptException));
         if (!c.JS_IsException(value)) completion.release(value);
         return boundary.finishValue(s, completion.finishValue());

@@ -899,11 +899,26 @@ fn truncate(s: []const u8, max: usize) []const u8 {
     return s[0..max];
 }
 
-test "summarization output budgets match upstream reserve fractions" {
-    try std.testing.expectEqual(@as(u64, 13_107), summarizationMaxOutputTokens(16_384, false));
-    try std.testing.expectEqual(@as(u64, 8_192), summarizationMaxOutputTokens(16_384, true));
-    try std.testing.expectEqual(@as(u64, 3), summarizationMaxOutputTokens(4, false));
-    try std.testing.expectEqual(@as(u64, 2), summarizationMaxOutputTokens(5, true));
+test "model compaction preserves provider output defaults for history and split turns" {
+    const gpa = std.testing.allocator;
+    const mock = @import("../ai/mock.zig");
+    for ([_]bool{ false, true }) |turn_prefix| {
+        for ([_]u64{ 0, 4, 16_384, 65_536 }) |reserve_tokens| {
+            var model = try mock.MockModel.loadFromJson(gpa,
+                "[{\"content\":\"summary\",\"tool_calls\":[]}]");
+            defer model.deinit(gpa);
+            var summary = try generatedSummary(gpa, "transcript", null, null, turn_prefix, .{
+                .io = std.testing.io,
+                .settings = .{ .reserve_tokens = reserve_tokens },
+                .client = model.client(),
+                .retry_enabled = false,
+            });
+            defer summary.deinit(gpa);
+            try std.testing.expectEqualStrings("summary", summary.text);
+            try std.testing.expectEqual(@as(u64, 0), model.last_completion_options.max_tokens);
+            try std.testing.expect(model.last_completion_options.isolate_cache);
+        }
+    }
 }
 
 test "compaction threshold uses reserve tokens without underflow" {

@@ -23,6 +23,11 @@ pub fn object(engine: *Engine, session: c.JSValue) !c.JSValue {
 }
 
 fn method(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(methodPendingBody(context, receiver, argc, argv, magic));
+}
+fn methodPendingBody(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     const self = durable.state(engine, receiver) catch |err| return durable.rejectedPromise(engine, err);
     if (self.kind != .guarded_storage) return durable.rejectedPromise(engine, error.InvalidDurableReceiver);
@@ -81,7 +86,9 @@ fn call(self: *durable.State, receiver: c.JSValue, op: durable.Method, args: []c
     var synchronous_error = false;
     var forwarded: [4]c.JSValue = undefined;
     const returned = sdk.invoke(engine, native.parent, @tagName(op), forwardedArguments(op, args, &forwarded)) catch |err| blk: {
+        try @import("native_pending_owner.zig").catchFailure(engine, err);
         _ = durable.reject(engine, err);
+        try @import("native_pending_owner.zig").checkFatal(engine);
         synchronous_error = true;
         break :blk c.JS_GetException(engine.context);
     };
@@ -99,7 +106,12 @@ fn call(self: *durable.State, receiver: c.JSValue, op: durable.Method, args: []c
     return promise;
 }
 
-fn settled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, rejected: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn settled(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, rejected: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(settledPendingBody(context, receiver, argc, argv, rejected, data));
+}
+fn settledPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, rejected: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     const self = durable.state(engine, data[0]) catch |err| return durable.reject(engine, err);
     const native = durable.state(engine, self.parent) catch |err| return durable.reject(engine, err);
@@ -125,6 +137,7 @@ fn settled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValu
     }
     return complete(native, data[1], rejected != 0, value, data[2], data[3]) catch |err| blk: {
         _ = durable.reject(engine, err);
+        if (err == error.ExecutionTerminated or c.JS_PiIsPendingUncatchable(engine.context)) return c.pi_js_exception();
         const reason = c.JS_GetException(engine.context);
         defer engine.freeValue(reason);
         break :blk resolve(engine, data[3], reason) catch |settle_error| durable.reject(engine, settle_error);
@@ -150,7 +163,7 @@ fn complete(native: *durable.State, read: c.JSValue, rejected: bool, value: c.JS
                 }
             }
         }
-        if (!exempt) durable.captureStorageFailure(native, native.session_lease.?.adapter.?.session_value, value);
+        if (!exempt) try durable.captureStorageFailure(native, native.session_lease.?.adapter.?.session_value, value);
     }
     return resolve(engine, if (rejected) reject else fulfill, value);
 }
@@ -168,7 +181,12 @@ fn ignore(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.
 fn adopt(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.JS_DupValue(context, data[0]);
 }
-fn closeRaw(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn closeRaw(callback_context: ?*c.JSContext, callback_receiver: c.JSValue, callback_argc: c_int, callback_argv: [*c]c.JSValue, callback_magic: c_int, callback_data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(Engine.fromContext(callback_context.?));
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(closeRawPendingBody(callback_context, callback_receiver, callback_argc, callback_argv, callback_magic, callback_data));
+}
+fn closeRawPendingBody(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     const native = durable.state(engine, data[0]) catch |err| return durable.reject(engine, err);
     // Public GuardedStorage.close always reaches the original backend and does

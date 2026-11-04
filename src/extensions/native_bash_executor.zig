@@ -37,7 +37,13 @@ fn arg(args: []const c.JSValue, i: usize) c.JSValue {
 fn optional(scope: *Scope, object: c.JSValue, key: [*:0]const u8) !c.JSValue {
     return if (temp.nullish(object)) c.pi_js_undefined() else scope.get(object, key);
 }
-fn execute(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn execute(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(executePendingBody(context, pending_arg1, argc, argv, pending_arg4, roots));
+}
+fn executePendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -62,7 +68,7 @@ fn start(engine: *em.Engine, owner: c.JSValue, args: []const c.JSValue, helpers:
     try scope.put(owner, "decoder", try scope.own(try js.builtin(engine, "TextDecoder", &.{})));
     try scope.put(owner, "exitCode", c.pi_js_null());
     beginTry(engine, owner, args) catch |err| {
-        const reason = flow.reason(engine, err);
+        const reason = try flow.reason(engine, err);
         defer engine.freeValue(reason);
         return finish(engine, owner, reason, true, 0);
     };
@@ -77,7 +83,13 @@ fn beginTry(engine: *em.Engine, owner: c.JSValue, args: []const c.JSValue) !void
     const result = try scope.invoke(arg(args, 2), "exec", &.{ arg(args, 0), arg(args, 1), options });
     try flow.wait(finish, engine, owner, result, 0);
 }
-fn onData(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn onData(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(onDataPendingBody(context, pending_arg1, argc, argv, pending_arg4, roots));
+}
+fn onDataPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -187,7 +199,7 @@ fn finish(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool
     if (!failure) {
         const exit = scope.get(value, "exitCode") catch |err| failed: {
             failure = true;
-            reason = try scope.own(flow.reason(engine, err));
+            reason = try scope.own(try flow.reason(engine, err));
             break :failed c.pi_js_null();
         };
         if (!failure) try scope.put(owner, "exitCode", exit);

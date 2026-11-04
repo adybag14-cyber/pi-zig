@@ -35,6 +35,12 @@ fn optional(scope: *Scope, value: c.JSValue, name: [*:0]const u8) !c.JSValue {
     return if (temp.nullish(value)) c.pi_js_undefined() else scope.get(value, name);
 }
 fn dispatch(context: ?*c.JSContext, session: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, session, argc, argv, magic, roots));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, session: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -82,7 +88,7 @@ fn start(engine: *em.Engine, owner: c.JSValue, args: []const c.JSValue, executor
     const shell_path = try scope.invoke(try scope.get(session, "settingsManager"), "getShellPath", &.{});
     const command = if (scope.truthy(prefix)) try scope.concat(try scope.concat(try scope.stringify(prefix), try scope.text("\n")), try scope.stringify(argument(args, 0))) else argument(args, 0);
     beginTry(engine, owner, command, shell_path, executor, local_operations) catch |err| {
-        const reason = flow.reason(engine, err);
+        const reason = try flow.reason(engine, err);
         defer engine.freeValue(reason);
         return finish(engine, owner, reason, true, 0);
     };
@@ -105,7 +111,13 @@ fn beginTry(engine: *em.Engine, owner: c.JSValue, command: c.JSValue, shell_path
     const result = try scope.call(executor, c.pi_js_undefined(), &.{ command, cwd, operations, execution_options });
     try flow.wait(finish, engine, owner, result, 0);
 }
-fn chunk(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn chunk(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(chunkPendingBody(context, pending_arg1, argc, argv, pending_arg4, roots));
+}
+fn chunkPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -132,7 +144,7 @@ fn finish(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool
     if (!failure) {
         _ = scope.invoke(session, "recordBashResult", &.{ try scope.get(owner, "command"), value, try scope.get(owner, "options") }) catch |err| failed_record: {
             failure = true;
-            settled = try scope.own(flow.reason(engine, err));
+            settled = try scope.own(try flow.reason(engine, err));
             break :failed_record c.pi_js_undefined();
         };
     }

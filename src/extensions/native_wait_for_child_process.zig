@@ -8,13 +8,13 @@ const Kind = enum(i32) { cleanup, finalize, maybeFinalizeAfterExit, armIdleTimer
 pub fn create(engine: *x.em.Engine) !c.JSValue {
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    try engine.checkNativeEntry();
-    var invocation: x.em.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    frame.enter() catch |err| return frame.finishValue(err);
     const result = f.create(engine, "waitForChildProcess", 1, called, &.{}) catch |err| {
-        const failed = @import("native_sdk.zig").fail(engine, err);
-        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+        _ = @import("native_sdk.zig").fail(engine, err);
+        return frame.finishValue(err);
     };
-    return engine.checked(engine.leaveNativeInvocation(&invocation, result));
+    return frame.finishValue(result);
 }
 fn called(engine: *x.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
@@ -27,14 +27,18 @@ fn calledBody(o: *x.Ops, child: c.JSValue) !c.JSValue {
     return c.JS_DupValue(o.s.engine.context, try fatal.construct(o, constructor, executor, holder));
 }
 fn executorCall(engine: *x.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    var invocation: x.em.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    frame.enter() catch |err| {
+        fatal.record(roots[1], &frame.invocation);
+        return frame.finishValue(err);
+    };
     var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
     const result = x.owned.finishValue(&s, executorBody(&o, roots[0], x.arg(args, 0), x.arg(args, 1))) catch |err| {
-        const failed = @import("native_sdk.zig").fail(engine, err); fatal.record(roots[1], &invocation);
-        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+        _ = @import("native_sdk.zig").fail(engine, err); fatal.record(roots[1], &frame.invocation);
+        return frame.finishValue(err);
     };
-    fatal.record(roots[1], &invocation);
-    return engine.checked(engine.leaveNativeInvocation(&invocation, result));
+    fatal.record(roots[1], &frame.invocation);
+    return frame.finishValue(result);
 }
 fn closure(o: *x.Ops, owner: c.JSValue, kind: Kind) !c.JSValue {
     const name: [*:0]const u8 = switch (kind) {
@@ -121,7 +125,7 @@ fn cleanup(o: *x.Ops, owner: c.JSValue) !void {
     try streamCall(o, child, "stderr", "removeListener", "data", owner, "onData");
 }
 fn dispatchBody(o: *x.Ops, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    var raw: i32 = 0; if (c.JS_ToInt32(o.s.engine.context, &raw, roots[1]) < 0) return @import("native_js_values.zig").capture(o.s.engine);
+    var raw: i32 = 0; if (native_guest_0: { try o.s.engine.checkNativeEntry(); break :native_guest_0 c.JS_ToInt32(o.s.engine.context, &raw, roots[1]); } < 0) return @import("native_js_values.zig").capture(o.s.engine);
     const kind: Kind = @enumFromInt(raw); const owner = roots[0];
     switch (kind) {
         .cleanup => try cleanup(o, owner),

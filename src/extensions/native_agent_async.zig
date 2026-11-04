@@ -21,7 +21,13 @@ pub fn create(engine: *em.Engine, agent: c.JSValue) !Pending {
 
 pub fn wait(comptime step: *const fn (*em.Engine, c.JSValue, c.JSValue, bool, c_int) anyerror!void, engine: *em.Engine, owner: c.JSValue, value: c.JSValue, stage: c_int) !void {
     const Adapter = struct {
-        fn continuation(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+        fn continuation(context: ?*c.JSContext, this_value: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const host = em.Engine.fromContext(context.?);
+            var frame = @import("native_pending_owner.zig").Frame.init(host);
+            frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+            return frame.finishCallback(continuationOwned(context, this_value, argc, argv, magic, roots));
+        }
+        fn continuationOwned(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
             const host = em.Engine.fromContext(context.?);
             host.native_exception_diagnostics_suppressed += 1;
             defer host.native_exception_diagnostics_suppressed -= 1;
@@ -50,13 +56,20 @@ pub fn settle(engine: *em.Engine, owner: c.JSValue, rejected: bool, value: c.JSV
 }
 
 pub fn rejectError(engine: *em.Engine, owner: c.JSValue, err: anyerror) !void {
-    const raw = reason(engine, err);
+    const raw = try reason(engine, err);
     defer engine.freeValue(raw);
     try settle(engine, owner, true, raw);
 }
 
-pub fn reason(engine: *em.Engine, err: anyerror) c.JSValue {
-    if (err == error.JavaScriptException and engine.captured_exception != null) return c.JS_DupValue(engine.context, engine.captured_exception.?);
+pub fn reason(engine: *em.Engine, err: anyerror) !c.JSValue {
+    // Only the actual pending slot or a stable invocation proves fatality.
+    // Captured diagnostics supply ordinary rejection DATA after that check.
+    try @import("native_pending_owner.zig").catchFailure(engine, err);
+    if (c.JS_HasException(engine.context)) return c.JS_GetException(engine.context);
+    if (err == error.JavaScriptException and engine.captured_exception != null)
+        return c.JS_DupValue(engine.context, engine.captured_exception.?);
     _ = sdk.fail(engine, err);
+    try @import("native_pending_owner.zig").checkFatal(engine);
+    if (!c.JS_HasException(engine.context)) return error.NativeAgentFailureWithoutPendingReason;
     return c.JS_GetException(engine.context);
 }

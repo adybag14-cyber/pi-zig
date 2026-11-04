@@ -5,6 +5,7 @@ const js = e.js;
 const c = e.c;
 const v = e.v;
 const Engine = e.Engine;
+const pending = @import("native_pending_owner.zig");
 const Method = @import("native_editor_methods.zig").Method;
 const Callback = enum(c_int) { begin, ready, timer, selected, settled, fulfilled };
 pub fn supports(method: Method) bool {
@@ -39,22 +40,32 @@ fn function(engine: *Engine, constants: c.JSValue, editor: c.JSValue, packet: c.
 }
 fn fail(engine: *Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     return c.JS_ThrowTypeError(engine.context, "Native Editor provider: %s", @as([*:0]const u8, @errorName(err)));
 }
-fn errorValue(engine: *Engine, err: anyerror) c.JSValue {
-    const raw = if (err == error.JavaScriptException and engine.captured_exception != null) c.JS_DupValue(engine.context, engine.captured_exception.?) else raw: {
-        _ = fail(engine, err);
-        break :raw c.JS_GetException(engine.context);
-    };
-    if (engine.captured_exception) |value| engine.freeValue(value);
+fn errorValue(engine: *Engine, err: anyerror) !c.JSValue {
+    try pending.catchFailure(engine, err);
+    const raw = if (c.JS_HasException(engine.context)) c.JS_GetException(engine.context)
+        else if (err == error.JavaScriptException and engine.captured_exception != null)
+            c.JS_DupValue(engine.context, engine.captured_exception.?)
+        else raw: {
+            _ = fail(engine, err);
+            try pending.checkFatal(engine);
+            if (!c.JS_HasException(engine.context)) return error.EditorFailureWithoutPendingReason;
+            break :raw c.JS_GetException(engine.context);
+        };
+    errdefer engine.freeValue(raw);
+    const diagnostic = engine.captured_exception;
     engine.captured_exception = null;
+    if (diagnostic) |value| engine.freeValue(value);
     if (engine.last_error) |value| engine.gpa.free(value);
     engine.last_error = null;
+    try pending.checkFatal(engine);
     return raw;
 }
 fn rejected(engine: *Engine, err: anyerror) !c.JSValue {
-    const raw = errorValue(engine, err);
+    const raw = try errorValue(engine, err);
     defer engine.freeValue(raw);
     return engine.checked(c.JS_NewSettledPromise(engine.context, true, raw));
 }
@@ -167,10 +178,15 @@ fn begin(engine: *Engine, constants: c.JSValue, editor: c.JSValue, packet: c.JSV
 }
 fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
+    var frame = pending.Frame.init(engine);
+    frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+    return frame.finishCallback(callbackOwned(engine, argc, argv, magic, data));
+}
+fn callbackOwned(engine: *Engine, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) c.JSValue {
     const kind: Callback = @enumFromInt(magic);
     return callbackOperation(engine, data[0], data[1], data[2], kind, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| {
         if (kind == .begin) {
-            const raw = errorValue(engine, err);
+            const raw = errorValue(engine, err) catch |failure| return fail(engine, failure);
             defer engine.freeValue(raw);
             const reject = v.fieldAt(engine, data[2], 3) catch |failure| return fail(engine, failure);
             defer engine.freeValue(reject);
@@ -382,6 +398,11 @@ fn triggerPatterns(engine: *Engine, editor: c.JSValue, characters: c.JSValue) !v
     try e.set(engine, editor, "autocompleteDebouncePattern", try js.builtin(engine, "RegExp", &.{ debounce_body, flags }));
 }
 pub fn operation(engine: *Engine, constants: c.JSValue, editor: c.JSValue, method: Method, args: []const c.JSValue) !c.JSValue {
+    var frame = pending.Frame.init(engine);
+    frame.enter() catch |err| return frame.finishValue(err);
+    return frame.finishValue(operationOwned(engine, constants, editor, method, args));
+}
+fn operationOwned(engine: *Engine, constants: c.JSValue, editor: c.JSValue, method: Method, args: []const c.JSValue) !c.JSValue {
     const first = v.arg(args, 0);
     switch (method) {
         .startAutocompleteRequest => return start(engine, constants, editor, first, v.arg(args, 1)) catch |err| rejected(engine, err),

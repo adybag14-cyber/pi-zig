@@ -82,7 +82,7 @@ fn forwardBody(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: 
     const generation = engine.native_allocation_generation;
     _ = scope.invoke(try scope.get(owner, "outer"), "push", &.{event}) catch |err| {
         if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-        const reason = try scope.own(flow.reason(engine, err));
+        const reason = try scope.own(try flow.reason(engine, err));
         try scope.put(owner, "closeReason", reason);
         if (engine.captured_exception) |captured| {
             engine.captured_exception = null;

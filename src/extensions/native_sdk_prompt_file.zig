@@ -25,7 +25,7 @@ fn warning(scope: *Scope, diagnostics: c.JSValue, path: c.JSValue, message: c.JS
 fn failure(scope: *Scope, diagnostics: c.JSValue, path: c.JSValue, err: anyerror, generation: u64, fallback: []const u8) !void {
     const original = scope.engine.nativeAllocationError(err, generation);
     if (original == error.OutOfMemory) return original;
-    const reason = try scope.own(flow.reason(scope.engine, original));
+    const reason = try scope.own(try flow.reason(scope.engine, original));
     if (scope.engine.captured_exception) |value| scope.engine.freeValue(value);
     scope.engine.captured_exception = null;
     const instance = c.JS_IsInstanceOf(scope.engine.context, reason, try scope.global("Error"));
@@ -41,7 +41,13 @@ fn result(scope: *Scope, template: c.JSValue, diagnostics: c.JSValue) !c.JSValue
 fn parse(scope: *Scope, raw: c.JSValue) !fm.Result {
     return fm.parseValue(scope, raw);
 }
-fn nonempty(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn nonempty(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(nonemptyPendingBody(context, pending_arg1, argc, argv));
+}
+fn nonemptyPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return js.invoke(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), "trim", &.{}) catch |err| sdk.fail(engine, err);
 }

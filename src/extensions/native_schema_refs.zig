@@ -82,6 +82,7 @@ pub const Stack = struct {
         var args = [_]c.JSValue{ reference, origin };
         const result = c.JS_CallConstructor(self.engine.context, constructor, args.len, &args);
         if (c.JS_IsException(result) and self.engine.native_url_constructor != null and c.JS_IsStrictEqual(self.engine.context, constructor, self.engine.native_url_constructor.?)) {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const failure = c.JS_GetException(self.engine.context);
             defer self.engine.freeValue(failure);
             const name = try vm.get(self.engine, failure, "name");
@@ -193,6 +194,7 @@ pub const Stack = struct {
         var args = [_]c.JSValue{value};
         const result = c.JS_Call(self.engine.context, callback, c.pi_js_undefined(), 1, &args);
         if (c.JS_IsException(result) and c.JS_IsStrictEqual(self.engine.context, callback, self.engine.intrinsic_decode_uri_component)) {
+            try @import("native_pending_owner.zig").checkFatal(self.engine);
             const failure = c.JS_GetException(self.engine.context);
             defer self.engine.freeValue(failure);
             const name = try vm.get(self.engine, failure, "name");

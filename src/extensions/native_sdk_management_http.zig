@@ -311,7 +311,7 @@ fn tick(engine: *em.Engine, steps: *usize) !void {
     if (engine.cancelled.load(.acquire) or (steps.* % 256 == 0 and blk: { engine.interrupts +|= 1; break :blk engine.interrupts > engine.options.interrupt_budget; })) {
         _ = c.JS_ThrowInternalError(engine.context, "interrupted");
         const reason = c.JS_GetException(engine.context); c.JS_SetUncatchableError(engine.context, reason);
-        _ = try engine.checked(c.JS_Throw(engine.context, reason)); unreachable;
+        _ = try engine.checked(c.JS_PiThrowNativePending(engine.context, reason, true)); unreachable;
     }
 }
 fn run(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: p.af.Completion, input: c.JSValue) !p.af.Action {

@@ -143,7 +143,7 @@ fn start(s: *Scope, job: c.JSValue, kind: Kind) !void {
             const generation = s.engine.native_allocation_generation;
             readStart(s, job) catch |err| {
                 if (s.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-                const raw = try s.own(flow.reason(s.engine, err));
+                const raw = try s.own(try flow.reason(s.engine, err));
                 try failWrapped(s, job, "Credential store read failed for ", a, raw);
             };
         },
@@ -164,7 +164,7 @@ fn start(s: *Scope, job: c.JSValue, kind: Kind) !void {
                 const generation = s.engine.native_allocation_generation;
                 checkStart(s, job, a, b, signal) catch |err| {
                     if (s.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-                    const raw = try s.own(flow.reason(s.engine, err));
+                    const raw = try s.own(try flow.reason(s.engine, err));
                     try failWrapped(s, job, "API key auth check failed for provider ", try s.get(a, "id"), raw);
                 };
             } else {
@@ -244,7 +244,7 @@ fn start(s: *Scope, job: c.JSValue, kind: Kind) !void {
             const generation = s.engine.native_allocation_generation;
             logoutStart(s, job, a, signal) catch |err| {
                 if (s.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-                const raw = try s.own(flow.reason(s.engine, err));
+                const raw = try s.own(try flow.reason(s.engine, err));
                 try mutationFailure(s, job, raw, "Credential store delete failed for ");
             };
         },
@@ -548,7 +548,7 @@ fn loginMutation(s: *Scope, job: c.JSValue, credential: c.JSValue) !void {
     const generation = s.engine.native_allocation_generation;
     const barrier = s.own(v.js.builtin(s.engine, "Promise", &.{try arrow(s, barrierExecutor, 2, &.{job}, false)}) catch |err| {
         if (s.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-        return mutationFailure(s, job, try s.own(flow.reason(s.engine, err)), "Credential store modify failed for ");
+        return mutationFailure(s, job, try s.own(try flow.reason(s.engine, err)), "Credential store modify failed for ");
     }) catch |err| return err;
     try awaitValue(s, job, barrier, .login_barrier);
 }

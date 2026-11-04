@@ -225,11 +225,11 @@ fn fallback(scope: *Scope, owner: c.JSValue, failure: c.JSValue) !bool {
     return false;
 }
 fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
-    const reason = flow.reason(scope.engine, err);
+    const reason = try flow.reason(scope.engine, err);
     defer scope.engine.freeValue(reason);
     if (err == error.OutOfMemory or try nativeAllocationReason(scope.engine, owner, reason)) return retireNativeAllocation(scope.engine, owner, reason);
     return fail(scope, owner, reason) catch |secondary| {
-        const secondary_reason = flow.reason(scope.engine, secondary);
+        const secondary_reason = try flow.reason(scope.engine, secondary);
         defer scope.engine.freeValue(secondary_reason);
         if (secondary == error.OutOfMemory or try nativeAllocationReason(scope.engine, owner, secondary_reason)) return retireNativeAllocation(scope.engine, owner, secondary_reason);
         return secondary;
@@ -272,7 +272,7 @@ fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
         try scope.put(owner, "producerClosed", c.pi_js_bool(scope.engine.context, 1));
         try scope.put(owner, "failureReason", reason);
         const close = scope.invoke(iterator, "return", &.{}) catch |err| {
-            const close_reason = flow.reason(scope.engine, err);
+            const close_reason = try flow.reason(scope.engine, err);
             defer scope.engine.freeValue(close_reason);
             if (err == error.OutOfMemory or try nativeAllocationReason(scope.engine, owner, close_reason)) return retireNativeAllocation(scope.engine, owner, close_reason);
             return failFinal(scope, owner, reason);
@@ -283,14 +283,14 @@ fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
 }
 fn failFinal(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     release(scope, owner) catch |err| {
-        const release_reason = flow.reason(scope.engine, err);
+        const release_reason = try flow.reason(scope.engine, err);
         defer scope.engine.freeValue(release_reason);
         if (err == error.OutOfMemory or try nativeAllocationReason(scope.engine, owner, release_reason)) return retireNativeAllocation(scope.engine, owner, release_reason);
     };
     const wire = try scope.get(owner, "http");
     if (!v.nullish(wire)) _ = try scope.invoke(wire, "cancel", &.{});
     _ = scope.invoke(try scope.get(owner, "decoder"), "fail", &.{ reason, c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner))) }) catch |err| {
-        const decoder_reason = flow.reason(scope.engine, err);
+        const decoder_reason = try flow.reason(scope.engine, err);
         defer scope.engine.freeValue(decoder_reason);
         if (err == error.OutOfMemory or try nativeAllocationReason(scope.engine, owner, decoder_reason)) return retireNativeAllocation(scope.engine, owner, decoder_reason);
         try @import("native_stream.zig").reject(scope.engine, try scope.get(owner, "stream"), reason);

@@ -18782,7 +18782,12 @@ static_assert(sizeof(__m512i) <= simdjson::SIMDJSON_PADDING, "insufficient paddi
 /* end file simdjson/icelake/intrinsics.h */
 
 #if !SIMDJSON_CAN_ALWAYS_RUN_ICELAKE
+// Clang 18-21 needs a separate target feature for 512-bit EVEX intrinsics.
+#if defined(__clang__) && __clang_major__ >= 18 && __clang_major__ < 22
+SIMDJSON_TARGET_REGION("avx512f,avx512dq,avx512cd,avx512bw,avx512vbmi,avx512vbmi2,avx512vl,avx2,bmi,pclmul,lzcnt,popcnt,evex512")
+#else
 SIMDJSON_TARGET_REGION("avx512f,avx512dq,avx512cd,avx512bw,avx512vbmi,avx512vbmi2,avx512vl,avx2,bmi,pclmul,lzcnt,popcnt")
+#endif
 #endif
 
 /* including simdjson/icelake/bitmanipulation.h: #include "simdjson/icelake/bitmanipulation.h" */
@@ -76524,7 +76529,12 @@ static_assert(sizeof(__m512i) <= simdjson::SIMDJSON_PADDING, "insufficient paddi
 /* end file simdjson/icelake/intrinsics.h */
 
 #if !SIMDJSON_CAN_ALWAYS_RUN_ICELAKE
+// Clang 18-21 needs a separate target feature for 512-bit EVEX intrinsics.
+#if defined(__clang__) && __clang_major__ >= 18 && __clang_major__ < 22
+SIMDJSON_TARGET_REGION("avx512f,avx512dq,avx512cd,avx512bw,avx512vbmi,avx512vbmi2,avx512vl,avx2,bmi,pclmul,lzcnt,popcnt,evex512")
+#else
 SIMDJSON_TARGET_REGION("avx512f,avx512dq,avx512cd,avx512bw,avx512vbmi,avx512vbmi2,avx512vl,avx2,bmi,pclmul,lzcnt,popcnt")
+#endif
 #endif
 
 /* including simdjson/icelake/bitmanipulation.h: #include "simdjson/icelake/bitmanipulation.h" */

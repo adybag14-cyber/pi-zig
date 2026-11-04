@@ -25,12 +25,15 @@ pub const Ops = struct {
         const engine = o.s.engine;
         _ = engine.nativeCallbackResult(c.pi_js_undefined());
         if (c.JS_HasException(engine.context)) {
-            const reason = c.JS_GetException(engine.context);
+            var generic_fatal: bool = false;
+            const reason = c.JS_PiGetExceptionWithFatal(engine.context, &generic_fatal);
             const tag = c.pi_js_native_allocation_error_generation(reason);
             const distance = tag -% generation;
-            if (tag != 0 and distance != 0 and distance <= engine.native_allocation_generation -% generation)
+            if (tag != 0 and distance != 0 and distance <= engine.native_allocation_generation -% generation) {
                 c.JS_SetUncatchableError(engine.context, reason);
-            _ = c.JS_Throw(engine.context, reason);
+                generic_fatal = true;
+            }
+            _ = c.JS_PiThrowNativePending(engine.context, reason, generic_fatal);
         }
         // checked consumes the raw result on failure before ownRoot sees it.
         return o.own(try engine.checked(value));

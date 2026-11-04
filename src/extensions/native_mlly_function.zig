@@ -5,6 +5,7 @@ const std = @import("std");
 const js = @import("native_js_values.zig");
 const c = js.c;
 const allocation = @import("native_async_body.zig");
+const pending_owner = @import("native_pending_owner.zig");
 pub const Callback = *const fn (*js.Engine, c.JSValue, []const c.JSValue, []const c.JSValue) anyerror!c.JSValue;
 const State = struct { engine: *js.Engine, callback: Callback, values: []c.JSValue, constructible: bool, arrow: bool, reserved: usize };
 // Synchronous invocation provenance only: no JS root, allocation or cross-thread
@@ -37,45 +38,42 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc)
 }
 fn clearCaptured(engine: *js.Engine) void {
     const previous = engine.captured_exception; engine.captured_exception = null;
-    if (previous) |reason| engine.freeValue(reason);
+    if (previous) |reason| engine.releaseNativeValue(reason);
 }
-/// The owned pending reason outranks an older diagnostic capture. Direct OOM
-/// marks an existing Error without replacing it; a pending primitive combined
-/// with direct OOM is explicitly outside this leaf's supported host contract.
+/// Actual pending ownership and stable invocation producers outrank diagnostic
+/// DATA. A typed host OOM produces a genuine fatal event, including primitive
+/// reasons; no Error flag or historical generation promotes captured DATA.
 pub fn failure(engine: *js.Engine, err: anyerror, generation: u64) c.JSValue {
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    if (c.JS_HasException(engine.context)) {
-        const reason = c.JS_GetException(engine.context);
-        if (err == error.OutOfMemory and c.JS_IsError(reason)) c.JS_SetUncatchableError(engine.context, reason);
-        return throwOwned(engine, reason, generation);
+    if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal();
+    engine.releaseNativeValue(c.pi_js_undefined());
+    if (c.JS_HasException(engine.context) or engine.nativeTerminationObserved() or err == error.ExecutionTerminated) {
+        clearCaptured(engine);
+        engine.releaseNativeValue(c.pi_js_undefined());
+        return if (c.JS_HasException(engine.context)) c.pi_js_exception() else c.JS_PiNativeTerminationResult();
     }
     if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
         engine.captured_exception = null;
         return throwOwned(engine, reason, generation);
     };
-    if (err == error.OutOfMemory) {
-        _ = engine.throwNativeOutOfMemory();
-        const reason = c.JS_GetException(engine.context);
-        c.JS_SetUncatchableError(engine.context, reason);
-        return throwOwned(engine, reason, generation);
-    }
     clearCaptured(engine);
+    engine.releaseNativeValue(c.pi_js_undefined());
+    if (c.JS_HasException(engine.context)) return c.pi_js_exception();
+    if (engine.nativeTerminationObserved()) return c.JS_PiNativeTerminationResult();
     if (err == error.JavaScriptException) return c.JS_ThrowInternalError(engine.context, "mlly callback failed without an exception value");
     return c.JS_ThrowTypeError(engine.context, "Native mlly function: %s", @as([*:0]const u8, @errorName(err)));
 }
-fn throwOwned(engine: *js.Engine, reason: c.JSValue, generation: u64) c.JSValue {
-    // reason is one owned reference, either taken from pending VM state or
-    // transferred from captured_exception. Remove every prior diagnostic root
-    // before classifying/rethrowing, retaining this exact reference throughout.
+fn throwOwned(engine: *js.Engine, reason: c.JSValue, _: u64) c.JSValue {
+    // This reference came from captured diagnostics. An actual event or
+    // retained invocation producer is handled independently, before DATA.
     clearCaptured(engine);
-    allocation.rethrowRecognizedAllocation(engine, reason, trustedGeneration(engine, generation)) catch |err| {
-        if (err != error.JavaScriptException) { engine.freeValue(reason); return failure(engine, err, generation); }
-        // The recognized-error helper owns a fresh duplicate capture. The
-        // original reason below is still owned; free only that duplicate.
-        clearCaptured(engine);
-    };
-    return c.JS_Throw(engine.context, reason);
+    engine.releaseNativeValue(c.pi_js_undefined());
+    if (c.JS_HasException(engine.context) or engine.nativeTerminationObserved()) {
+        engine.releaseNativeValue(reason);
+        return if (c.JS_HasException(engine.context)) c.pi_js_exception() else c.JS_PiNativeTerminationResult();
+    }
+    return c.JS_PiThrowExceptionData(engine.context, reason);
 }
 fn call(_: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
     const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)).?));
@@ -84,20 +82,28 @@ fn call(_: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, a
     invocation = &frame; defer invocation = frame.previous;
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    return invoke(engine, owned, target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0) catch |err| failure(engine, err, generation);
+    var owner = pending_owner.Frame.init(engine);
+    owner.enter() catch return owner.finishCallback(c.pi_js_exception());
+    const completed = invoke(engine, owned, target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0) catch |err| failure(engine, err, generation);
+    return owner.finishCallback(completed);
 }
 fn invoke(engine: *js.Engine, owned: *State, target: c.JSValue, args: []const c.JSValue, constructing: bool) !c.JSValue {
     if (!owned.constructible) return owned.callback(engine, if (owned.arrow) c.pi_js_undefined() else target, args, owned.values);
     if (!constructing) return owned.callback(engine, target, args, owned.values);
-    const receiver = try @import("native_class.zig").object(engine, target); defer engine.freeValue(receiver);
+    const receiver = try @import("native_class.zig").object(engine, target); defer engine.releaseNativeValue(receiver);
     const returned = try owned.callback(engine, receiver, args, owned.values);
     if (c.JS_IsObject(returned)) return returned;
-    engine.freeValue(returned); return c.JS_DupValue(engine.context, receiver);
+    engine.releaseNativeValue(returned); return c.JS_DupValue(engine.context, receiver);
 }
 pub fn create(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: Callback, values: []const c.JSValue) !c.JSValue { return createKind(engine, name, length, callback, values, true, false); }
 pub fn createArrow(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: Callback, values: []const c.JSValue) !c.JSValue { return createKind(engine, name, length, callback, values, false, true); }
 pub fn createMethod(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: Callback, values: []const c.JSValue) !c.JSValue { return createKind(engine, name, length, callback, values, false, false); }
 fn createKind(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: Callback, values: []const c.JSValue, constructible: bool, arrow: bool) !c.JSValue {
+    var pending_frame = pending_owner.Frame.init(engine);
+    pending_frame.enter() catch |err| return pending_frame.finishValue(@as(anyerror!c.JSValue, err));
+    return pending_frame.finishValue(createKindPendingBody(engine, name, length, callback, values, constructible, arrow));
+}
+fn createKindPendingBody(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: Callback, values: []const c.JSValue, constructible: bool, arrow: bool) !c.JSValue {
     const root_bytes = std.math.mul(usize, values.len, @sizeOf(c.JSValue)) catch return error.OutOfMemory;
     const reserved = std.math.add(usize, @sizeOf(State), root_bytes) catch return error.OutOfMemory;
     if (c.pi_js_native_memory_reserve(engine.native_memory_owner, reserved) == 0) return error.OutOfMemory;
@@ -109,7 +115,7 @@ fn createKind(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: 
     const definition: c.JSClassDef = .{ .class_name = "Native mlly Function", .call = call, .finalizer = finalizer, .gc_mark = mark };
     if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
     const prototype = try engine.checked(c.JS_GetFunctionProto(engine.context)); defer engine.freeValue(prototype);
-    const function = try engine.checked(c.JS_NewObjectProtoClass(engine.context, prototype, class)); errdefer engine.freeValue(function);
+    const function = try engine.checked(c.JS_NewObjectProtoClass(engine.context, prototype, class)); errdefer engine.releaseNativeValue(function);
     for (values, owned_values) |value, *slot| slot.* = c.JS_DupValue(engine.context, value);
     owned.* = .{ .engine=engine,.callback=callback,.values=owned_values,.constructible=constructible,.arrow=arrow,.reserved=reserved };
     _ = c.JS_SetOpaque(function, owned); attached = true;
@@ -117,7 +123,7 @@ fn createKind(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: 
     if (c.JS_DefinePropertyValueStr(engine.context, function, "length", c.JS_NewInt32(engine.context, length), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, function, "name", try engine.checked(c.JS_NewString(engine.context, name)), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     if (constructible) {
-        const instance_prototype = try js.object(engine); defer engine.freeValue(instance_prototype);
+        const instance_prototype = try js.object(engine); defer engine.releaseNativeValue(instance_prototype);
         if (c.JS_DefinePropertyValueStr(engine.context, instance_prototype, "constructor", c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
         if (c.JS_DefinePropertyValueStr(engine.context, function, "prototype", c.JS_DupValue(engine.context, instance_prototype), c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     }
@@ -170,9 +176,13 @@ test "mlly actual cross Engine reentry cannot hide a caller fresh allocation" {
             return js.typeError(engine, "controlled foreign ordinary completion");
         }
         fn parent(engine: *js.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
-            _ = engine.throwNativeOutOfMemory(); const primary = c.JS_GetException(engine.context); defer engine.freeValue(primary);
+            _ = engine.throwNativeOutOfMemoryFatal();
+            var primary_fatal: bool = false;
+            const primary = c.JS_PiGetExceptionWithFatal(engine.context, &primary_fatal);
+            defer engine.releaseNativeValue(primary);
             const value = try other.?.evalModule("try{MllyForeignProbe()}catch(reason){if(!(reason instanceof TypeError))throw reason}", "mlly-real-foreign-reentry.mjs"); other.?.freeValue(value);
-            return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, primary)));
+            return engine.checked(c.JS_PiThrowNativePending(engine.context,
+                c.JS_DupValue(engine.context, primary), primary_fatal));
         }
     };
     const first = try js.Engine.init(std.testing.allocator, .{}); defer first.deinit();

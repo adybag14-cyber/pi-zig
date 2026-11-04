@@ -70,7 +70,7 @@ pub const Hub = struct {
         return .{ .userdata = self.backing.userdata, .vtable = &self.table };
     }
     pub fn bridge(self: *Hub) bridge_mod.Bridge {
-        return .{ .context = self, .guard_fn = guard, .metadata_fn = describe, .control_fn = control, .write_fn = write, .attach_fn = attach, .detach_fn = detach };
+        return .{ .context = self, .guard_fn = guard, .metadata_fn = describe, .control_fn = control, .write_fn = write, .attach_fn = attach, .detach_fn = detach, .is_shift_pressed_fn = if (builtin.os.tag == .windows) shift else null, .is_modifier_pressed_fn = if (builtin.os.tag == .windows) modifier else null, .enable_vt_input_fn = if (builtin.os.tag == .windows) enableVTInput else null };
     }
     pub fn deinit(self: *Hub) void {
         self.mutex.lockUncancelable(self.backing);
@@ -97,6 +97,30 @@ pub const Hub = struct {
         self.mutex.lockUncancelable(self.backing);
         defer self.mutex.unlock(self.backing);
         if (self.closing) return error.NativeProcessFrontendClosed;
+    }
+    fn shift(raw: ?*anyopaque) !bool {
+        return modifier(raw, "shift");
+    }
+    fn modifier(raw: ?*anyopaque, name: []const u8) !bool {
+        const self: *Hub = @ptrCast(@alignCast(raw.?));
+        self.mutex.lockUncancelable(self.backing);
+        defer self.mutex.unlock(self.backing);
+        if (self.closing) return error.NativeProcessFrontendClosed;
+        if (name.len > 15) return error.InvalidProcessStreamRecord;
+        if (comptime builtin.os.tag != .windows) return false;
+        var terminated: [16:0]u8 = @splat(0);
+        @memcpy(terminated[0..name.len], name);
+        return @import("native_tui_win32_platform_abi.zig").pi_tui_win32_is_modifier_pressed(&terminated) != 0;
+    }
+    fn enableVTInput(raw: ?*anyopaque) !bool {
+        const self: *Hub = @ptrCast(@alignCast(raw.?));
+        self.mutex.lockUncancelable(self.backing);
+        defer self.mutex.unlock(self.backing);
+        if (self.closing) return error.NativeProcessFrontendClosed;
+        if (comptime builtin.os.tag != .windows) return false;
+        // The original console owner captured this process's stdin mode.
+        // Hub.close restores it; a worker pipe is never consulted here.
+        return @import("native_tui_win32_platform_abi.zig").pi_tui_win32_enable_virtual_terminal_input() != 0;
     }
     fn describe(raw: ?*anyopaque) !protocol.Metadata {
         const self: *Hub = @ptrCast(@alignCast(raw.?));

@@ -3,7 +3,7 @@
 const v = @import("native_ai_provider_values.zig");
 const c = v.c;
 const functions = @import("native_node_module_callable.zig");
-const allocation = @import("native_async_body.zig");
+const Boundary = @import("native_node_commonjs_owned_boundary.zig").Boundary;
 
 // Additive compiler ABI from the separately sealed direct-C implementation.
 // No C/H is copied into this 1fd8-based product worktree. Composition and actual
@@ -35,68 +35,100 @@ pub const static_import_export: c_uint = 1;
 pub const import_meta: c_uint = 2;
 pub const top_level_await: c_uint = 4;
 
-fn takeCurrent(engine: *v.em.Engine) !c.JSValue {
-    if (!c.JS_HasException(engine.context)) return error.MissingActualCompilerCurrentReason;
-    return c.JS_GetException(engine.context);
+/// Consume only a selected actual ordinary compiler event as syntax DATA.
+/// Generic fatal policy and observed private unwind never enter this route.
+fn takeSyntaxReason(boundary: *Boundary) !c.JSValue {
+    if (boundary.terminated) return error.ExecutionTerminated;
+    if (boundary.fatal) return error.JavaScriptException;
+    const reason = boundary.reason orelse return error.MissingActualCompilerCurrentReason;
+    if (!boundary.reason_pending) return error.MissingActualCompilerCurrentReason;
+    if (c.JS_PiIsExecutionTermination(reason)) return error.ExecutionTerminated;
+    boundary.reason = null;
+    boundary.reason_pending = false;
+    boundary.fatal = false;
+    return reason;
 }
 
-fn throwOwned(engine: *v.em.Engine, owned: c.JSValue, generation: u64) anyerror {
-    defer engine.freeValue(owned);
-    allocation.rethrowRecognizedAllocation(engine, owned, generation) catch |err| return err;
-    _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, owned))) catch |err| return err;
-    return error.ActualCompilerThrowDidNotFail;
-}
-
-fn protectCurrent(engine: *v.em.Engine, reason: c.JSValue, generation: u64) !void {
-    // This is the just-taken actual current exception from the native operation,
-    // never Promise rejection data or an unrelated captured_exception slot.
-    try allocation.rethrowRecognizedAllocation(engine, reason, generation);
-    if (c.JS_IsUncatchableError(reason)) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
-        return error.ActualCompilerThrowDidNotFail;
-    }
+fn observeFailure(boundary: *Boundary, result: *c.JSValue) !void {
+    // checkCurrent takes the value and policy together into the stable owner.
+    // It is deliberately observed before any returned root is retired.
+    boundary.checkCurrent() catch {};
+    boundary.release(result);
+    if (boundary.reason == null or !boundary.reason_pending)
+        return error.MissingActualCompilerCurrentReason;
+    if (boundary.terminated) return error.ExecutionTerminated;
+    if (boundary.fatal) return error.JavaScriptException;
+    if (c.JS_PiIsExecutionTermination(boundary.reason.?)) return error.ExecutionTerminated;
 }
 
 /// Compile the original body with five real formal parameters and true EOF.
-/// No body runs, no outer promise, source wrapper, cache record or realm shim.
+/// The local stable owner spans the actual C compiler and every result root.
 pub fn compile(engine: *v.em.Engine, content: c.JSValue, physical_filename: c.JSValue) !Completion {
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    const generation = engine.native_allocation_generation;
-    if (c.JS_HasException(engine.context)) return throwOwned(engine, try takeCurrent(engine), generation);
+    var boundary = Boundary.begin(engine);
+    var scope: v.Scope = .{ .engine = engine };
+    var roots = [_]c.JSValue{c.pi_js_undefined()};
+    var syntax: ?SyntaxCategory = null;
+    var host_error: ?anyerror = null;
+    if (compileBody(&boundary, engine, content, physical_filename)) |completion| {
+        switch (completion) {
+            .function => |value| roots[0] = value,
+            .syntax => |value| {
+                roots[0] = value.reason;
+                syntax = value.category;
+            },
+        }
+    } else |err| host_error = err;
+    try boundary.finishManyPending(host_error, &scope, &roots);
+    if (syntax) |category| return .{ .syntax = .{ .reason = roots[0], .category = category } };
+    return .{ .function = roots[0] };
+}
+
+fn compileBody(boundary: *Boundary, engine: *v.em.Engine, content: c.JSValue, physical_filename: c.JSValue) !Completion {
+    try boundary.checkCurrent();
     var category: c_int = 0;
-    const result = JS_PiCompileCJSFunction(engine.context, content, physical_filename, &category);
+    var result = JS_PiCompileCJSFunction(engine.context, content, physical_filename, &category);
     if (!c.JS_IsException(result) and !c.JS_HasException(engine.context)) {
         if (category != 0) {
-            engine.freeValue(result);
+            boundary.release(&result);
             return error.ActualCompilerCompletionAbiMismatch;
         }
         return .{ .function = result };
     }
-    const reason = takeCurrent(engine) catch |err| {
-        engine.freeValue(result);
-        return err;
-    };
-    errdefer engine.freeValue(reason);
-    engine.freeValue(result); // Own the first actual reason before result cleanup.
-    try protectCurrent(engine, reason, generation);
+    try observeFailure(boundary, &result);
     const syntax: SyntaxCategory = switch (category) {
         1 => .ordinary,
         2 => .direct_module,
         3 => .module_probe_required,
-        0 => return throwOwned(engine, c.JS_DupValue(engine.context, reason), generation),
+        0 => return error.JavaScriptException,
         else => return error.ActualCompilerCompletionAbiMismatch,
     };
-    return .{ .syntax = .{ .reason = reason, .category = syntax } };
+    return .{ .syntax = .{ .reason = try takeSyntaxReason(boundary), .category = syntax } };
 }
 
-/// Actual strict module syntax+semantic compilation of a detached module.
+/// Actual strict module syntax and semantic compilation of a detached module.
 /// No resolving/loading/linking, namespaces, cache insertion, body or jobs.
 pub fn probe(engine: *v.em.Engine, content: c.JSValue, physical_filename: c.JSValue) !Probe {
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    const generation = engine.native_allocation_generation;
-    if (c.JS_HasException(engine.context)) return throwOwned(engine, try takeCurrent(engine), generation);
+    var boundary = Boundary.begin(engine);
+    var scope: v.Scope = .{ .engine = engine };
+    var roots = [_]c.JSValue{c.pi_js_undefined()};
+    var flags: c_uint = 0;
+    var syntax = false;
+    var host_error: ?anyerror = null;
+    if (probeBody(&boundary, engine, content, physical_filename)) |completion| {
+        switch (completion) {
+            .parsed => |value| flags = value,
+            .syntax => |reason| {
+                roots[0] = reason;
+                syntax = true;
+            },
+        }
+    } else |err| host_error = err;
+    try boundary.finishManyPending(host_error, &scope, &roots);
+    return if (syntax) .{ .syntax = roots[0] } else .{ .parsed = flags };
+}
+
+fn probeBody(boundary: *Boundary, engine: *v.em.Engine, content: c.JSValue, physical_filename: c.JSValue) !Probe {
+    try boundary.checkCurrent();
     var flags: c_uint = 0;
     var diagnostic: c_int = 0;
     const status = JS_PiParseModuleSyntax(engine.context, content, physical_filename, &flags, &diagnostic);
@@ -104,33 +136,37 @@ pub fn probe(engine: *v.em.Engine, content: c.JSValue, physical_filename: c.JSVa
         if (diagnostic != 0 or flags & ~@as(c_uint, 7) != 0) return error.ActualCompilerProbeAbiMismatch;
         return .{ .parsed = flags };
     }
-    const reason = try takeCurrent(engine);
-    errdefer engine.freeValue(reason);
-    try protectCurrent(engine, reason, generation);
-    if (status == 1 and diagnostic == 1) return .{ .syntax = reason };
-    return throwOwned(engine, c.JS_DupValue(engine.context, reason), generation);
+    var unused = c.pi_js_undefined();
+    try observeFailure(boundary, &unused);
+    if (status == 1 and diagnostic == 1)
+        return .{ .syntax = try takeSyntaxReason(boundary) };
+    return error.JavaScriptException;
 }
 
-/// An ordinary private host callable. A successful result is the exact compiled
-/// function; syntax rejection throws the exact completed compiler reason. This
-/// is deliberately not exposed as Node's richer compileFunctionForCJSLoader.
+/// An ordinary private host callable. The actual module callable owns its ABI
+/// return; a completed syntax reason becomes a new ordinary source throw.
 pub fn createBodyCompiler(engine: *v.em.Engine) !c.JSValue {
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    const generation = engine.native_allocation_generation;
-    if (c.JS_HasException(engine.context)) return throwOwned(engine, try takeCurrent(engine), generation);
-    return functions.create(engine, "compileBody", 2, false, compileCall, &.{}) catch |err| {
-        if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
-            allocation.rethrowRecognizedAllocation(engine, reason, generation) catch |fatal| return fatal;
+    var boundary = Boundary.begin(engine);
+    var scope: v.Scope = .{ .engine = engine };
+    var roots = [_]c.JSValue{c.pi_js_undefined()};
+    var host_error: ?anyerror = null;
+    if (boundary.checkCurrent()) |_| {
+        roots[0] = functions.create(engine, "compileBody", 2, false, compileCall, &.{}) catch |err| blk: {
+            host_error = err;
+            break :blk c.pi_js_undefined();
         };
-        return err;
-    };
+    } else |err| host_error = err;
+    try boundary.finishManyPending(host_error, &scope, &roots);
+    return roots[0];
 }
+
 fn compileCall(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
-    const generation = engine.native_allocation_generation;
     const completion = try compile(engine, if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined());
     return switch (completion) {
         .function => |function| function,
-        .syntax => |syntax| throwOwned(engine, syntax.reason, generation),
+        .syntax => |syntax| blk: {
+            _ = c.JS_PiThrowExceptionData(engine.context, syntax.reason);
+            break :blk error.JavaScriptException;
+        },
     };
 }

@@ -40,6 +40,12 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue {
     return if (index < args.len) args[index] else c.pi_js_undefined();
 }
 fn dispatch(context: ?*c.JSContext, runner: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, runner, argc, argv, magic));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, runner: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     const args = if (argc > 0) argv[0..@intCast(argc)] else &.{};
     return ordinary(engine, runner, @enumFromInt(magic), arg(args, 0)) catch |err| sdk.fail(engine, err);
@@ -59,7 +65,13 @@ fn ordinary(engine: *em.Engine, runner: c.JSValue, method: Method, id: c.JSValue
     try scope.put(result, "usage", try scope.get(try scope.get(found, "recorder"), "totalUsage"));
     return c.JS_DupValue(engine.context, result);
 }
-fn executeDispatch(context: ?*c.JSContext, runner: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn executeDispatch(context: ?*c.JSContext, runner: c.JSValue, argc: c_int, argv: [*c]c.JSValue, pending_arg4: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(executeDispatchPendingBody(context, runner, argc, argv, pending_arg4, roots));
+}
+fn executeDispatchPendingBody(context: ?*c.JSContext, runner: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return execute(engine, runner, if (argc > 0) argv[0..@intCast(argc)] else &.{}, roots[0]) catch |err| sdk.fail(engine, err);
 }
@@ -78,7 +90,13 @@ fn callback(scope: *Scope, kind: Callback, roots: []const c.JSValue) !c.JSValue 
     }
     return function;
 }
-fn callbackDispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn callbackDispatch(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(callbackDispatchPendingBody(context, pending_arg1, argc, argv, magic, roots));
+}
+fn callbackDispatchPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return callbackBody(engine, @enumFromInt(magic), if (argc > 0) argv[0] else c.pi_js_undefined(), roots) catch |err| sdk.fail(engine, err);
 }
@@ -196,7 +214,7 @@ fn runCall(engine: *em.Engine, owner: c.JSValue) !void {
     _ = try scope.call(set, scopes, &.{ id, nested });
     runAttempt(engine, owner) catch |err| {
         // Retain the original rejection before finally can change captured state.
-        const reason = flow.reason(engine, err);
+        const reason = try flow.reason(engine, err);
         defer engine.freeValue(reason);
         try finishScope(&scope, owner);
         try flow.settle(engine, owner, true, reason);

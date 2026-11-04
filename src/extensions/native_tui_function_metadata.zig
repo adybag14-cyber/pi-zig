@@ -76,11 +76,7 @@ pub fn install(engine: *js.Engine, exports: c.JSValue) !void {
     }) |entry| {
         const value = try js.get(engine, exports, entry[0]);
         defer engine.freeValue(value);
-        // Clipboard is implemented by a separate native platform packet.
-        const clipboard = comptime @import("std").mem.eql(u8, entry[0], "getNativeClipboard");
-        if (!(clipboard and c.JS_IsUndefined(value))) {
-            if (!c.JS_IsFunction(engine.context, value)) return error.NativeTuiOrdinaryFunctionMissing;
-            try js.define(engine, exports, entry[0], try @import("native_node_function.zig").create(engine, entry[1], entry[2], original, &.{value}));
-        }
+        if (!c.JS_IsFunction(engine.context, value)) return error.NativeTuiOrdinaryFunctionMissing;
+        try js.define(engine, exports, entry[0], try @import("native_node_function.zig").create(engine, entry[1], entry[2], original, &.{value}));
     }
 }

@@ -4,6 +4,8 @@ const js = @import("native_js_values.zig");
 const c = js.c;
 const worker = @import("native_image_vm_worker.zig");
 const timers = @import("timers.zig");
+const pending = @import("native_pending_owner.zig");
+const sdk = @import("native_sdk.zig");
 const State = struct {
     allocator: std.mem.Allocator,
     task: *worker.Worker,
@@ -27,10 +29,10 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, callback: ?*const c.JS_MarkFun
     c.JS_MarkValue(runtime, owner.reject, callback);
 }
 fn failureValue(engine: *js.Engine, owner: *State) !c.JSValue {
-    if (owner.task.failure) |cause| if (cause == error.OutOfMemory) {
-        _ = engine.throwNativeOutOfMemory();
-        return c.JS_GetException(engine.context);
-    };
+    // Worker-local VM exceptions cross only as serialized failure DATA.
+    // A genuine host allocator failure is the sole cross-worker OOM producer.
+    if (owner.task.failure) |cause| if (cause == error.OutOfMemory)
+        try pending.catchFailure(engine, cause);
     const result = try engine.checked(c.JS_NewError(engine.context));
     errdefer engine.freeValue(result);
     try js.define(engine, result, "message", try engine.checked(c.JS_NewStringLen(engine.context, if (owner.task.message) |message| message.ptr else "Image worker failed", if (owner.task.message) |message| message.len else "Image worker failed".len)));
@@ -38,27 +40,30 @@ fn failureValue(engine: *js.Engine, owner: *State) !c.JSValue {
 }
 fn poll(context: ?*c.JSContext, handle: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
+    var frame = pending.Frame.init(engine);
+    frame.enter() catch return frame.finishCallback(c.pi_js_exception());
+    const result = pollOwned(engine, handle, data) catch |err| sdk.fail(engine, err);
+    return frame.finishCallback(result);
+}
+fn pollOwned(engine: *js.Engine, handle: c.JSValue, data: [*c]c.JSValue) !c.JSValue {
     const owner = state(data[0]);
     if (owner.settled) return c.pi_js_undefined();
     if (!owner.task.isDone()) return c.pi_js_undefined();
-    timers.cancelHandle(engine, handle) catch return engine.throwCaptured();
+    try timers.cancelHandle(engine, handle);
     owner.task.join();
     var rejected = owner.task.failure != null;
-    const result = if (rejected) failureValue(engine, owner) catch blk: {
-        _ = engine.throwNativeOutOfMemory();
-        break :blk c.JS_GetException(engine.context);
-    } else owner.task.result(engine) catch |err| blk: {
-        rejected = true;
-        if (err == error.JavaScriptException) {
-            _ = engine.throwCaptured();
+    const result = if (rejected) try failureValue(engine, owner)
+        else owner.task.result(engine) catch |err| blk: {
+            try pending.catchFailure(engine, err);
+            rejected = true;
+            if (!c.JS_HasException(engine.context)) _ = sdk.fail(engine, err);
+            try pending.checkFatal(engine);
+            if (!c.JS_HasException(engine.context)) return error.ImageResultFailureWithoutPendingReason;
             break :blk c.JS_GetException(engine.context);
-        }
-        _ = engine.throwNativeOutOfMemory();
-        break :blk c.JS_GetException(engine.context);
-    };
+        };
     defer engine.freeValue(result);
     owner.settled = true;
-    const ignored = js.call(engine, if (rejected) owner.reject else owner.resolve, c.pi_js_undefined(), &.{result}) catch return engine.throwCaptured();
+    const ignored = try js.call(engine, if (rejected) owner.reject else owner.resolve, c.pi_js_undefined(), &.{result});
     engine.freeValue(ignored);
     return c.pi_js_undefined();
 }

@@ -64,7 +64,7 @@ pub fn budget(engine: *v.em.Engine, steps: *usize) !void {
     steps.* +|= 1;
     if (engine.cancelled.load(.acquire) or (steps.* % 256 == 0 and blk: { engine.interrupts +|= 1; break :blk engine.interrupts > engine.options.interrupt_budget; })) {
         _ = c.JS_ThrowInternalError(engine.context, "interrupted"); const reason = c.JS_GetException(engine.context);
-        c.JS_SetUncatchableError(engine.context, reason); _ = try engine.checked(c.JS_Throw(engine.context, reason)); unreachable;
+        c.JS_SetUncatchableError(engine.context, reason); _ = try engine.checked(c.JS_PiThrowNativePending(engine.context, reason, true)); unreachable;
     }
 }
 pub fn advance(engine: *v.em.Engine, iterator: *v.js.Iterator) !?c.JSValue {

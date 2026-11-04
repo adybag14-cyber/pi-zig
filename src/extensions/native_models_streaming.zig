@@ -26,7 +26,13 @@ pub fn install(engine: *em.Engine, instance: c.JSValue, store: c.JSValue) !void 
     var data = [_]c.JSValue{store};
     inline for (std.meta.fields(Action)) |field| try scope.put(instance, field.name, try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, field.name, 3, field.value, data.len, &data))));
 }
-fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn dispatch(context: ?*c.JSContext, pending_arg1: c.JSValue, argc: c_int, args: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const pending_engine = @import("engine.zig").Engine.fromContext(context.?);
+    var pending_frame = @import("native_pending_owner.zig").Frame.init(pending_engine);
+    pending_frame.enter() catch return pending_frame.finishCallback(c.pi_js_exception());
+    return pending_frame.finishCallback(dispatchPendingBody(context, pending_arg1, argc, args, raw, data));
+}
+fn dispatchPendingBody(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     const action: Action = @enumFromInt(raw);
     return invoke(engine, data[0], action, args[0..@intCast(argc)]) catch |err| switch (action) {
@@ -60,10 +66,11 @@ fn invoke(engine: *em.Engine, store: c.JSValue, action: Action, args: []const c.
         const exports = engine.native_module_values.get("@earendil-works/pi-ai") orelse return error.NativeModelsStreamUnavailable;
         const constructor = try scope.get(exports, "AssistantMessageEventStream");
         try scope.put(state, "startedAt", try scope.invoke(try scope.global("Date"), "now", &.{}));
-        const outer = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, constructor, 0, null)));
+        const outer = try scope.own(try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(engine.context, constructor, 0, null); }));
         try scope.put(state, "outer", outer);
     }
     const pending = setup(&scope, state) catch |err| {
+        try @import("native_pending_owner.zig").catchFailure(engine, err);
         if (err != error.JavaScriptException or engine.captured_exception == null) return err;
         // An async setup failure is observed after the synchronous stream return.
         const reason = engine.captured_exception.?;
@@ -81,18 +88,18 @@ fn invoke(engine: *em.Engine, store: c.JSValue, action: Action, args: []const c.
 fn rejection(engine: *em.Engine, reason: c.JSValue) !c.JSValue {
     var functions: [2]c.JSValue = undefined;
     const promise = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
-    errdefer engine.freeValue(promise);
-    defer for (functions) |value| engine.freeValue(value);
+    errdefer engine.releaseNativeValue(promise);
+    defer for (functions) |value| engine.releaseNativeValue(value);
     var args = [_]c.JSValue{reason};
-    const ignored = try engine.checked(c.JS_Call(engine.context, functions[1], c.pi_js_undefined(), 1, &args));
-    engine.freeValue(ignored);
+    const ignored = try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_Call(engine.context, functions[1], c.pi_js_undefined(), 1, &args); });
+    engine.releaseNativeValue(ignored);
     return promise;
 }
 fn raise(scope: *Scope, state: c.JSValue, code: []const u8, message: c.JSValue) anyerror {
     const text = scope.engine.toString(message) catch |err| return err;
     defer scope.engine.gpa.free(text);
     const reason = scope.own(models.fromCause(scope.engine, scope.get(state, "store") catch |err| return err, code, text, c.pi_js_undefined()) catch |err| return err) catch |err| return err;
-    _ = scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, reason))) catch |err| return err;
+    _ = scope.engine.checked(c.JS_PiThrowExceptionData(scope.engine.context, c.JS_DupValue(scope.engine.context, reason))) catch |err| return err;
     unreachable;
 }
 fn setup(scope: *Scope, state: c.JSValue) !c.JSValue {
@@ -109,7 +116,7 @@ fn setup(scope: *Scope, state: c.JSValue) !c.JSValue {
     return scope.own(try @import("native_models_typed.zig").applyAuth(scope.engine, try scope.get(state, "store"), model, try scope.get(state, "options")));
 }
 fn failed(scope: *Scope, state: c.JSValue, reason: c.JSValue) !c.JSValue {
-    if (scope.truthy(try scope.get(state, "cancel"))) return scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, reason)));
+    if (scope.truthy(try scope.get(state, "cancel"))) return scope.engine.checked(c.JS_PiThrowExceptionData(scope.engine.context, c.JS_DupValue(scope.engine.context, reason)));
     const model = try scope.get(state, "model");
     const message = try scope.object();
     try scope.put(message, "role", try scope.text("assistant"));
@@ -142,6 +149,7 @@ fn next(scope: *Scope, state: c.JSValue) !c.JSValue {
 }
 fn advance(engine: *em.Engine, state: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) anyerror!c.JSValue {
     return advanceInner(engine, state, value, rejected, @enumFromInt(raw)) catch |err| {
+        try @import("native_pending_owner.zig").catchFailure(engine, err);
         if (err != error.JavaScriptException or engine.captured_exception == null) {
             retireHostFailure(engine, state, err);
             return err;
@@ -149,6 +157,7 @@ fn advance(engine: *em.Engine, state: c.JSValue, value: c.JSValue, rejected: boo
         var scope: Scope = .{ .engine = engine };
         defer scope.deinit();
         return failed(&scope, state, engine.captured_exception.?) catch |terminal_error| {
+            try @import("native_pending_owner.zig").catchFailure(engine, terminal_error);
             retireHostFailure(engine, state, terminal_error);
             return terminal_error;
         };
@@ -205,17 +214,29 @@ fn advanceInner(engine: *em.Engine, state: c.JSValue, value: c.JSValue, rejected
 // Retire a public stream even when a failed host allocation prevents building
 // the normal setup-error DTO. Native EventStream rejection needs no host roots.
 fn retireHostFailure(engine: *em.Engine, state: c.JSValue, err: anyerror) void {
+    var frame = @import("native_pending_owner.zig").Frame.init(engine);
+    // This Source rejection path may begin with an actual ordinary failure.
+    engine.enterNativeInvocation(&frame.invocation);
+    frame.finishVoid(retireHostFailurePendingBody(engine, state, err)) catch {};
+}
+fn retireHostFailurePendingBody(engine: *em.Engine, state: c.JSValue, err: anyerror) !void {
+    try @import("native_pending_owner.zig").catchFailure(engine, err);
+    if (c.JS_HasException(engine.context)) {
+        // Detach only a real ordinary tuple into diagnostic DATA while this
+        // rejection owner remains live; fatal/history was rejected above.
+        engine.checkNativeEntry() catch |failure| {
+            if (failure != error.JavaScriptException) return failure;
+        };
+    }
+    try @import("native_pending_owner.zig").checkFatal(engine);
     const outer = c.JS_GetPropertyStr(engine.context, state, "outer");
-    defer engine.freeValue(outer);
-    if (!c.JS_IsObject(outer) or c.JS_IsException(outer)) return;
-    const reason = if (err == error.JavaScriptException and engine.captured_exception != null)
-        c.JS_DupValue(engine.context, engine.captured_exception.?)
-    else allocation: {
-        _ = engine.throwNativeOutOfMemory();
-        break :allocation c.JS_GetException(engine.context);
-    };
-    defer engine.freeValue(reason);
-    @import("native_stream.zig").reject(engine, outer, reason) catch {};
+    defer engine.releaseNativeValue(outer);
+    if (c.JS_IsException(outer)) return error.JavaScriptException;
+    if (!c.JS_IsObject(outer)) return;
+    const reason = try @import("native_agent_async.zig").reason(engine, err);
+    defer engine.releaseNativeValue(reason);
+    @import("native_stream.zig").reject(engine, outer, reason) catch |failure|
+        try @import("native_pending_owner.zig").catchFailure(engine, failure);
 }
 
 /// Source lazyStream used by native Provider factory deferred dispatch. Setup
@@ -228,9 +249,10 @@ pub fn fromSetup(engine: *em.Engine, store: c.JSValue, model: c.JSValue, setup_f
     try scope.put(state, "model", model);
     try scope.put(state, "startedAt", try scope.invoke(try scope.global("Date"), "now", &.{}));
     const exports = engine.native_module_values.get("@earendil-works/pi-ai") orelse return error.NativeModelsStreamUnavailable;
-    const outer = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, try scope.get(exports, "AssistantMessageEventStream"), 0, null)));
+    const outer = try scope.own(try engine.checked(native_guest_0: { try engine.checkNativeEntry(); break :native_guest_0 c.JS_CallConstructor(engine.context, try scope.get(exports, "AssistantMessageEventStream"), 0, null); }));
     try scope.put(state, "outer", outer);
     const pending = scope.call(setup_function, c.pi_js_undefined(), &.{}) catch |err| pending: {
+        try @import("native_pending_owner.zig").catchFailure(engine, err);
         if (err != error.JavaScriptException or engine.captured_exception == null) return err;
         break :pending try scope.own(try rejection(engine, engine.captured_exception.?));
     };
