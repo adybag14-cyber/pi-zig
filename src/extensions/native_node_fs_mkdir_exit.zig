@@ -27,17 +27,17 @@ pub fn before(_: *js.Engine) void {}
 fn takePending(engine: *js.Engine, release_generation: ?u64) ?Reason {
     if (!c.JS_HasException(engine.context)) return null;
     var fatal: bool = false;
-    const value = c.JS_PiGetExceptionWithFatal(engine.context, &fatal);
-    if (!c.JS_PiIsExecutionTermination(value)) if (release_generation) |generation| {
+    const pending_value = c.JS_PiGetExceptionWithFatal(engine.context, &fatal);
+    if (!c.JS_PiIsExecutionTermination(pending_value)) if (release_generation) |generation| {
         // Only an individual root free supplies this snapshot.
-        const tag = c.pi_js_native_allocation_error_generation(value);
+        const tag = c.pi_js_native_allocation_error_generation(pending_value);
         const distance = tag -% generation;
         if (tag != 0 and distance != 0 and distance <= engine.native_allocation_generation -% generation) {
             fatal = true;
-            c.JS_SetUncatchableError(engine.context, value);
+            c.JS_SetUncatchableError(engine.context, pending_value);
         }
     };
-    return .{ .value = value, .fatal = fatal };
+    return .{ .value = pending_value, .fatal = fatal };
 }
 fn rememberProducer(engine: *js.Engine, reason: Reason) void {
     if (!reason.actual_pending) return;
