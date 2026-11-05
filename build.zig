@@ -5776,6 +5776,44 @@ pub fn build(b: *std.Build) void {
             node_microtask_checkpoint.root_module.linkSystemLibrary("userenv", .{});
         }
         b.step("build-native-node-microtask-checkpoint", "Install actual Node microtask checkpoint controls without execution").dependOn(&b.addInstallArtifact(node_microtask_checkpoint, .{ .dest_sub_path = b.fmt("native-node-microtask-checkpoint{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        const root_owner_regression_tests = b.addTest(.{
+            .name = "pi-native-root-owner-regression-test",
+            .root_module = b.createModule(.{
+                .root_source_file = b.path("src/native_root_owner_regression_test.zig"),
+                .target = target,
+                .optimize = optimize,
+            }),
+            .filters = &.{
+                "mkdir owned exit retains first fatal and promotes actual cleanup fatal over ordinary",
+                "mkdir old flagged captured history is DATA on success",
+                "mkdir success-returning native callback keeps its NEW captured fatal before returned cleanup",
+                "mkdir primitive fatal capture survives actual invocation pop and later cleanup",
+                "mkdir canceled private completion yields to a later actual ordinary null",
+                "raw owned Socket result retains initial pending and fresh cleanup OOM before shared checked",
+                "Socket owned primitive OOM retains actual policy through unwind and later cleanup",
+                "Socket typed allocator OOM promotes actual ordinary cleanup without Error allocation",
+                "readline cleanup preserves primitive fatal capture until actual callback owner publication",
+                "native CommonJS compiler owners preserve genuine exhausted heap primitive fatal",
+                "native CommonJS ordinary syntax remains DATA and script null remains actual",
+                "native microtask checkpoint final pop preserves actual primitive fatal policy",
+                "native microtask canceled job acknowledgement preserves earlier owner history",
+            },
+            .use_llvm = use_llvm,
+        });
+        root_owner_regression_tests.stack_size = 16 * 1024 * 1024;
+        linkQuickJs(b, root_owner_regression_tests.root_module, quickjs, sqlite_lib_dir);
+        root_owner_regression_tests.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        linkTypeScriptParser(b, root_owner_regression_tests.root_module, typescript_parser);
+        linkSqlite(root_owner_regression_tests.root_module, sqlite_lib_dir, sqlite_library);
+        root_owner_regression_tests.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            root_owner_regression_tests.root_module.linkSystemLibrary("advapi32", .{});
+            root_owner_regression_tests.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step(
+            "build-native-root-owner-regressions",
+            "Compile and install the thirteen native root-owner regressions without execution",
+        ).dependOn(&b.addInstallArtifact(root_owner_regression_tests, .{}).step);
         const node_callbacks = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_callback_scope_test.zig"), .target = target, .optimize = optimize }),
             .filters = &.{"native Node callback scope"}, .use_llvm = use_llvm,
